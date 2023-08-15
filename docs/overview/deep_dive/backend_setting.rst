@@ -58,13 +58,13 @@ In addition, all the previously set backends can be cleared by calling :func:`iv
 Dynamic Backend Setting
 -----------------------
 
-.. _`ivy.set_dynamic_backend`: https://github.com/unifyai/ivy/blob/master/ivy/__init__.py#L1134.
-.. _`ivy.unset_dynamic_backend`: https://github.com/unifyai/ivy/blob/master/ivy/__init__.py#L1143.
-.. _`ivy.dynamic_backend_as`: https://github.com/unifyai/ivy/blob/master/ivy/__init__.py#L1174.
-.. _`ivy.Array`: https://github.com/unifyai/ivy/blob/master/ivy/data_classes/array/array.py#L186.
-.. _`ivy.Container`: https://github.com/unifyai/ivy/blob/master/ivy/data_classes/container/base.py#L4166.
-.. _`converted to numpy`: https://github.com/unifyai/ivy/blob/master/ivy/utils/backend/handler.py#L283.
-.. _`converted from numpy`: https://github.com/unifyai/ivy/blob/master/ivy/utils/backend/handler.py#L363.
+.. _`ivy.set_dynamic_backend`: https://github.com/unifyai/ivy/blob/main/ivy/__init__.py#L1134.
+.. _`ivy.unset_dynamic_backend`: https://github.com/unifyai/ivy/blob/main/ivy/__init__.py#L1143.
+.. _`ivy.dynamic_backend_as`: https://github.com/unifyai/ivy/blob/main/ivy/__init__.py#L1174.
+.. _`ivy.Array`: https://github.com/unifyai/ivy/blob/main/ivy/data_classes/array/array.py#L186.
+.. _`ivy.Container`: https://github.com/unifyai/ivy/blob/main/ivy/data_classes/container/base.py#L4166.
+.. _`converted to numpy`: https://github.com/unifyai/ivy/blob/main/ivy/utils/backend/handler.py#L283.
+.. _`converted from numpy`: https://github.com/unifyai/ivy/blob/main/ivy/utils/backend/handler.py#L363.
 
 Working with different backends in Ivy can be challenging, especially when you need to switch between backends frequently.
 To make this easier, users can make use of the dynamic backend attribute of :class:`ivy.Array` and :class:`ivy.Container` classes which allow you to automatically convert ivy arrays to the new backend whenever the backend is changed.
