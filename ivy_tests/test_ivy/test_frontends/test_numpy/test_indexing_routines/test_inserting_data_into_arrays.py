@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 import ivy.functional.frontends.numpy as np_frontend
 
 
@@ -148,10 +148,11 @@ def test_numpy_fill_diagonal(
 
 
 @handle_frontend_test(fn_tree="numpy.add", inputs=_helper_r_())  # dummy fn_tree
-def test_numpy_r_(inputs):
+def test_numpy_r_(inputs, backend_fw):
     inputs, elems_in_last_dim, dim = inputs
     ret_gt = np.r_.__getitem__(tuple(inputs))
-    ret = np_frontend.r_.__getitem__(tuple(inputs))
+    with update_backend(backend_fw):
+        ret = np_frontend.r_.__getitem__(tuple(inputs))
     if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
         ret = ret._data
     else:
@@ -160,9 +161,10 @@ def test_numpy_r_(inputs):
 
 
 @handle_frontend_test(fn_tree="numpy.add", inputs=_helper_c_())  # dummy fn_tree
-def test_numpy_c_(inputs):
+def test_numpy_c_(inputs, backend_fw):
     ret_gt = np.c_.__getitem__(tuple(inputs))
-    ret = np_frontend.c_.__getitem__(tuple(inputs))
+    with update_backend(backend_fw):
+        ret = np_frontend.c_.__getitem__(tuple(inputs))
     if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
         ret = ret._data
     else:
