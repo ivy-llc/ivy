@@ -556,12 +556,12 @@ def segment_mean(
     ivy.utils.assertions.check_equal(
         list(segment_ids.shape), [list(data.shape)[0]], as_array=False
     )
-    x = ivy.zeros(tuple([segment_ids[-1]+1] + (list(data.shape))[1:]))
-    count = ivy.zeros((segment_ids[-1]+1,))
+    x = ivy.zeros(tuple([segment_ids[-1] + 1] + (list(data.shape))[1:]))
+    count = ivy.zeros((segment_ids[-1] + 1,))
     for i in range((segment_ids).shape[0]):
         x[segment_ids[i]] = x[segment_ids[i]] + data[i]
         count[segment_ids[i]] += 1
-    for j in range(segment_ids[-1]+1):
+    for j in range(segment_ids[-1] + 1):
         x[j] = ivy.divide(x[j], count[j])
     return x
 
