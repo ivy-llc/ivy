@@ -165,8 +165,8 @@ def depthwise_conv2d_backprop_input(
     out_backprop,
     strides,
     padding,
-    data_format='NHWC',
-    dilations=[1, 1, 1, 1],
+    data_format,
+    dilations,
     name=None
 ):
     if input_sizes is None:
@@ -179,7 +179,7 @@ def depthwise_conv2d_backprop_input(
     out_backprop,
     strides,
     padding,
-    data_format='NHWC',
-    dilations=[1, 1, 1, 1],
-    name=None
+    data_format,
+    dilations,
+    name
 )
