@@ -77,7 +77,7 @@ if __name__ == "__main__":
                 response = requests.get(url, params=params)
                 if response.status_code == 200:
                     if response.json():
-                        # The test passes on master but fails in this fork/branch
+                        # The test passes on main but fails in this fork/branch
                         f_write.write(line)
 
     f_write.close()
