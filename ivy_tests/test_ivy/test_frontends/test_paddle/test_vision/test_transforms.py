@@ -1,4 +1,5 @@
 # global
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -29,6 +30,16 @@ def test_paddle_to_tensor(
         on_device=on_device,
         pic=input[0],
     )
+
+
+@st.composite
+def _chw_image_shape_helper(draw):
+    c = draw(st.sampled_from([1, 3]), label="channel")
+    h = draw(st.integers(min_value=1, max_value=100), label="height")
+    w = draw(st.integers(min_value=1, max_value=100), label="width")
+
+    shape = (c, h, w)
+    return shape
 
 
 # adjust_hue
@@ -75,10 +86,7 @@ def test_paddle_adjust_hue(
     fn_tree="paddle.vision.transforms.adjust_brightness",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=3,
-        max_num_dims=3,
-        min_dim_size=3,
-        max_dim_size=3,
+        shape=_chw_image_shape_helper(),
     ),
     brightness_factor=helpers.floats(min_value=0),
 )
