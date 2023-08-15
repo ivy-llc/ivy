@@ -2860,6 +2860,7 @@ def test_torch_lgamma(
         input=input[0],
     )
 
+
 # gradient
 @handle_frontend_test(
     fn_tree="torch.pointwise_ops.gradient",
@@ -2878,7 +2879,6 @@ def test_torch_lgamma(
     ),
     test_with_out=st.just(False),
 )
-
 def test_torch_gradient(
     *,
     dtype_input_axis,

@@ -570,6 +570,7 @@ def igamma(input, other, *, out=None):
 def lgamma(input, *, out=None):
     return ivy.lgamma(input, out=out)
 
+
 @to_ivy_arrays_and_back
 def gradient(input, *, spacing=1, dim=None, edge_order=1):
     return ivy.gradient(input, spacing, edge_order, dim)
