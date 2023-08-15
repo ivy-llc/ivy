@@ -2864,28 +2864,41 @@ def test_torch_lgamma(
 @handle_frontend_test(
     fn_tree="torch.pointwise_ops.gradient",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         force_int_axis=True,
         min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
         valid_axis=True,
     ),
+    spacing=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+    test_with_out=st.just(False),
 )
 
 def test_torch_gradient(
     *,
     dtype_input_axis,
+    spacing,
     test_flags,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        f=x[0],
-        axis=axis
+        input=x[0],
+        spacing=spacing,
+        axis=axis,
     )
+    
