@@ -395,6 +395,33 @@ def test_unsorted_segment_sum(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.unsorted_segment_sum",
+    d_x_n_s=valid_unsorted_segment_min_inputs(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_unsorted_segment_sum(
+    *,
+    d_x_n_s,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, data, num_segments, segment_ids = d_x_n_s
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
+
+
 @st.composite
 def _random_tucker_data(draw):
     shape = draw(
