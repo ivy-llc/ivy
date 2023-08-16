@@ -465,10 +465,10 @@ def interpolate(
         raise ValueError("antialias is not supported in paddle backend")
 
     return paddle.nn.functional.interpolate(x,
-                                            size,
-                                            mode=interpolation_method,
-                                            align_corners=align_corners,
-                                            scale_factor=scale_factor
+        size,
+        mode=interpolation_method,
+        align_corners=align_corners,
+        scale_factor=scale_factor
     )
 
 
