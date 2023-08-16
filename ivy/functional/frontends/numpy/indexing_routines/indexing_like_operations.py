@@ -98,8 +98,3 @@ def compress(condition, a, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
-
-@to_ivy_arrays_and_back
-def ravel_multi_index(arr, dims, mode='raise', order='C'):
-    """ravel_multi_index"""
-    return ivy.ravel_multi_index(arr, dims, mode=mode, order=order)

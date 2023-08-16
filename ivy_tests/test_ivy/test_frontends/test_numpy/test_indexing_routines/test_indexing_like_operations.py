@@ -188,10 +188,3 @@ def test_numpy_compress(
         a=arr[0],
         axis=ax,
     )
-
-@handle_frontend_test(
-    fn_tree="numpy.ravel_multi_index",
-)
-def test_numpy_ravel_multi_index():
-    """test_numpy_ravel_multi_index"""
-    pass
