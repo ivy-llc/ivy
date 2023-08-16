@@ -1335,3 +1335,36 @@ def digamma(
     ivy.array([-0.7549271   0.92278427  0.9988394])
     """
     return ivy.current_backend(x).digamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+def sparsify_tensor(
+    tensor: ivy.Array,
+    card: int,
+) -> ivy.Array:
+    """
+    Zeros out all elements in the `tensor` except `card` elements with maximum absolute
+    values.
+
+    Parameters
+    ----------
+    tensor : ndarray
+    card : int
+        Desired number of non-zero elements in the `tensor`
+
+    Returns
+    -------
+    ndarray of shape tensor.shape
+    """
+    if card >= ivy.prod(tensor.shape):
+        return tensor
+    bound = ivy.sort(ivy.abs(tensor), axis=None)[-card]
+
+    return ivy.where(
+        ivy.abs(tensor) < bound,
+        ivy.zeros_like(tensor),
+        tensor,
+    )
