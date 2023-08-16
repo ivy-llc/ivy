@@ -813,3 +813,8 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 @to_ivy_arrays_and_back
 def softsign(features, name=None):
     return ivy.divide(features, ivy.abs(features) + 1)
+
+
+@to_ivy_arrays_and_back
+def digamma(x, name=None):
+    return ivy.digamma(x)
