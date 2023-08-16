@@ -464,7 +464,8 @@ def interpolate(
     if antialias is not None:
         raise ValueError("antialias is not supported in paddle backend")
 
-    return paddle.nn.functional.interpolate(x,
+    return paddle.nn.functional.interpolate(
+        x,
         size,
         mode=interpolation_method,
         align_corners=align_corners,
