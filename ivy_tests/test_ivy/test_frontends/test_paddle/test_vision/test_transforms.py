@@ -97,3 +97,36 @@ def test_paddle_vflip(
         img=x[0],
         backend_to_test=backend_fw,
     )
+
+
+# hflip
+@handle_frontend_test(
+    fn_tree="paddle.vision.transforms.hflip",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=0,
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
+)
+def test_paddle_hflip(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        img=x[0],
+    )
