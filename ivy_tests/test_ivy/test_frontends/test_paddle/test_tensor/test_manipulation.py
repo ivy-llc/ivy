@@ -688,7 +688,6 @@ def test_paddle_rot90(
     ),
     none_axis=st.booleans(),
     test_with_out=st.just(False),
-    ground_truth_backend="torch",
 )
 def test_paddle_unique(*, dtype_x_axis, none_axis, test_flags, backend_fw, fn_name, on_device):
     dtype, x, axis = dtype_x_axis
