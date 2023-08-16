@@ -1,4 +1,3 @@
-# TODO: uncomment after frontend is not required
 # global
 from hypothesis import strategies as st
 import pytest
