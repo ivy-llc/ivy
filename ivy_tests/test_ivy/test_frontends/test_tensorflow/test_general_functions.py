@@ -2330,31 +2330,44 @@ def test_tensorflow_unravel_index(
         dims=dims[0],
     )
 
+
 # sequence_mask
+@st.composite
+def _sequence_mask_helper(draw):
+    max_val= draw(
+        st.integers(min_value=1, max_value=100000)
+    )
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            num_arrays=1,
+            min_value=1,
+            max_value=max_val,
+        )
+    )
+
+    max_len = draw(
+        st.integers(min_value=int(ivy.max(x)), max_value=max_val)
+    )
+    return dtype, x, max_len
+
 @handle_frontend_test(
     fn_tree="tensorflow.sequence_mask",
-    dtype_and_lens=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=1,
-        min_value=1,
-        max_value=5,
-    ),
-    max_len=st.integers(min_value=5, max_value=1000),
+    dtype_lens_maxlen=_sequence_mask_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_sequence_mask(
     *,
-    dtype_and_lens,
-    max_len,
+    dtype_lens_maxlen,
     frontend,
     test_flags,
     fn_tree,
     on_device,
     backend_fw,
 ):
-    input_dtype, lens = dtype_and_lens
+    input_dtype, lens, max_len = dtype_lens_maxlen
     helpers.test_frontend_function(
-        input_dtypes=['int32'],
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,

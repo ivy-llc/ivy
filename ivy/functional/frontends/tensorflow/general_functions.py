@@ -666,6 +666,6 @@ def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
                          f"with shape '{maxlen.get_shape()}' instead")
 
     row_vector = ivy.arange(0, int(maxlen), 1)
-    matrix = cast(ivy.expand_dims(lengths, axis=-1), maxlen.dtype)._ivy_array
+    matrix = ivy.expand_dims(lengths, axis=-1)
     result = row_vector < matrix
     return result
