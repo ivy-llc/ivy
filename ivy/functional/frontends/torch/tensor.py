@@ -483,6 +483,12 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "complex")}, "torch"
+    )
+    def erf_(self, *, out=None):
+        self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
+
     def new_zeros(
         self,
         *args,
