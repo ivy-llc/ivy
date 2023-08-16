@@ -133,6 +133,26 @@ def unsorted_segment_min(
     return res
 
 
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if size < 2:
+        return paddle.ones([size], dtype=dtype)
+    if periodic:
+        count = paddle.arange(size) / size
+    else:
+        count = paddle.linspace(start=0, stop=size, num=size)
+    return (
+        (0.42 - 0.5 * paddle.cos(2 * math.pi * count))
+        + (0.08 * paddle.cos(2 * math.pi * 2 * count))
+    ).cast(dtype)
+
+
 def unsorted_segment_sum(
     data: paddle.Tensor,
     segment_ids: paddle.Tensor,
