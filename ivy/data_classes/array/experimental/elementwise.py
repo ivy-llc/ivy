@@ -1020,3 +1020,42 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([-0.7549271   0.92278427  0.9988394])
         """
         return ivy.digamma(self._data, out=out)
+
+    def sparsify_tensor(
+        self: ivy.Array,
+        card: int,
+    ) -> ivy.Array:
+        """
+        ivy.Array class method variant of ivy.sparsify_tensor. This method simply wraps
+        the function, and so the docstring for ivy.sparsify_tensor also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self : array
+            The tensor to sparsify.
+        card : int
+            The number of values to keep.
+
+        Returns
+        -------
+        ret : array
+            The sparsified tensor.
+
+        Examples
+        --------
+        >>> x = ivy.arange(100)
+        >>> x = ivy.reshape(x, (10, 10))
+        >>> x.sparsify_tensor(10)
+        ivy.array([[ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+        [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
+        """
+        return ivy.sparsify_tensor(self._data, card)

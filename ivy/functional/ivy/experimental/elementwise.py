@@ -1358,8 +1358,24 @@ def sparsify_tensor(
     Returns
     -------
     ivy.array of shape tensor.shape
+
+    Examples
+    --------
+    >>> x = ivy.arange(100)
+    >>> x = ivy.reshape(x, (10, 10))
+    >>> x.sparsify_tensor(10)
+    ivy.array([[ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
     """
-    if card >= ivy.prod(tensor.shape):
+    if card >= ivy.prod(ivy.array(tensor.shape)):
         return tensor
     bound = ivy.reshape(ivy.abs(tensor), (-1,))[-card]
 

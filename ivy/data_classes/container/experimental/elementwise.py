@@ -2975,3 +2975,88 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_sparsify_tensor(
+        tensor: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        card: int,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sparsify_tensor. This method simply
+        wraps the function, and so the docstring for ivy.sparsify_tensor also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container containing input arrays.
+        card
+            The number of values to keep in each tensor.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the sparsified tensor computed element-wise
+        Examples
+        --------
+        >>> x = ivy.Container(
+                a=ivy.reshape(ivy.arange(100), (10, 10)),
+                b=ivy.reshape(ivy.arange(100), (10, 10)),
+            )
+        >>> ivy.Container.static_sparsify_tensor(x, 10)
+            {
+                a: (<class ivy.data_classes.array.array.Array> shape=[10, 10]),
+                b: (<class ivy.data_classes.array.array.Array> shape=[10, 10])
+            }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "sparsify_tensor",
+            tensor,
+            card,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def sparsify_tensor(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        card: Union[int, ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sparsify_tensor.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.sparsify_tensor also applies to this method with minimal
+        changes.
+        """
+        return self.static_sparsify_tensor(
+            self,
+            card,
+            out=out,
+        )
