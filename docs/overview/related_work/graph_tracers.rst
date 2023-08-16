@@ -8,8 +8,6 @@ Graph Tracers
 .. _`PyTorch`: https://pytorch.org/
 .. _`FX`: https://pytorch.org/docs/stable/fx.html
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 Graph tracers enable acyclic directed computation graphs to be extracted from functions which operate on the tensors, expressed as source code in the framework.
 There is inevitably some overlap with the role of the lower level compilers here, but for the purpose of this discussion, we consider tracers as being any tool which executes the function to be traced and produces a computation graph consisting solely of the lowest level functions defined within the framework itself, without going any lower.
@@ -57,7 +55,3 @@ Taken together, this pipeline of components (symbolic tracing -> intermediate re
 In addition, these components can be used separately.
 For example, symbolic tracing can be used in isolation to capture a form of the code for analysis (and not transformation) purposes.
 Code generation can be used for programmatically generating models, for example from a config file.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!

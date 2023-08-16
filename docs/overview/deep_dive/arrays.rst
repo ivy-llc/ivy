@@ -22,7 +22,6 @@ Arrays
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
-.. _`arrays forum`: https://discord.com/channels/799879767196958751/1028296936203235359
 .. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
 .. _`NumPy's`: https://numpy.org/doc/stable/user/basics.dispatch.html#basics-dispatch
 .. _`PyTorch's`: https://pytorch.org/docs/stable/notes/extending.html#extending-torch
@@ -177,7 +176,7 @@ It is relevant to mention again that any function not stored inside the dict :co
 
 This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `arrays channel`_ or in the `arrays forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `arrays channel`_!
 
 
 **Video**

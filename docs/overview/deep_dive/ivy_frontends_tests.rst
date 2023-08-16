@@ -3,7 +3,6 @@ Ivy Frontend Tests
 
 .. _`here`: https://unify.ai/docs/ivy/design/ivy_as_a_transpiler.html
 .. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
-.. _`ivy frontends tests forum`: https://discord.com/channels/799879767196958751/1028297887605587998
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
@@ -814,7 +813,7 @@ The configuration files are located at: :code:`ivy_tests/test_ivy/test_frontends
 
 This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_ or in the `ivy frontends tests forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_!
 
 
 **Video**

@@ -20,8 +20,6 @@ What does Ivy Add?
 .. _`Modular`: https://www.modular.com/
 .. _`Apache TVM`: https://tvm.apache.org/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 .. _`Flux`: https://fluxml.ai/
 .. _`Julia`: https://julialang.org/
 
@@ -110,7 +108,3 @@ Again very complementary objectives.
 Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their "", and this would also be a great addition to the field.
 Compared to Modular which focuses on the lower levels of the stack, Ivy instead unifies the ML frameworks at the functional API level, enabling code conversions to and from the user-facing APIs themselves, without diving into any of the lower level details.
 All of these features are entirely complementary, and together would form a powerful suite of unifying tools for ML practitioners.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!

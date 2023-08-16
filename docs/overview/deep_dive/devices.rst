@@ -26,7 +26,6 @@ Devices
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
-.. _`devices forum`: https://discord.com/channels/799879767196958751/1028297346662015057
 
 The devices currently supported by Ivy are as follows:
 
@@ -263,7 +262,7 @@ On exiting the context manager(`__exit__`_ method), the default device and soft 
 
 This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `devices channel`_ or in the `devices forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `devices channel`_!
 
 
 **Video**

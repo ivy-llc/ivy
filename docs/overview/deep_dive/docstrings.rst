@@ -6,7 +6,6 @@ Docstrings
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
-.. _`docstrings forum`: https://discord.com/channels/799879767196958751/1028297612408913982
 
 
 All functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
@@ -194,7 +193,7 @@ Therefore, with the exception of the :class:`ivy.Array` and :class:`ivy.Containe
 
 These examples should hopefully give you a good understanding of what is required when adding docstings.
 
-If you have any questions,please feel free to reach out on `discord`_ in the `docstrings channel`_ or in the `docstrings forum`_!
+If you have any questions,please feel free to reach out on `discord`_ in the `docstrings channel`_!
 
 
 **Video**

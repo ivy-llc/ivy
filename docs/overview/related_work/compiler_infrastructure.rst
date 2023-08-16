@@ -12,8 +12,6 @@ Compiler Infrastructure
 .. _`Intel`: https://www.intel.com/
 .. _`OneDNN`: https://github.com/oneapi-src/oneDNN
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 Compiler infrastructure generally provides carefully thought through frameworks and principles to simplify the lives of compiler designers, maximizing the reusability of tools and interoperability when deploying to various different hardware targets.
 This infrastructure doesn’t provide “full” solutions for compiling to hardware, but instead provides the general scaffolding to make the design of such compilers as principled and interoperable as possible, with maximal code sharing and interoperability being at the heart of their design.
@@ -45,7 +43,3 @@ In a similar manner to `MLIR`_, OneAPI is also designed to operate at a lower le
 The interface is lower level and more primitive than the neural network exchange formats, with focus on the core low-level operations such as convolutions, matrix multiplications, batch normalization etc.
 This makes OneDNN very much complementary to these formats, where OneDNN can sit below the exchange formats in the overall stack, enabling accelerators to be fully leveraged with minimal hardware-specific considerations, with this all helpfully being abstracted by the OneDNN API.
 Indeed, OneAPI and MLIR can work together in tandem, and OneDNN are working to `integrate Tensor Possessing Primitives in the MLIR compilers used underneath TensorFlow <https://www.oneapi.io/blog/tensorflow-and-onednn-in-partnership/>`_.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!
