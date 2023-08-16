@@ -971,6 +971,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         ivy.Container static method variant of ivy.blackman_window. This method simply
         wraps the function, and so the docstring for ivy.blackman_window also applies to
         this method with minimal changes.
+
         Parameters
         ----------
         window_length
@@ -1020,6 +1021,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.blackman_window. This method simply
         wraps the function, and so the docstring for ivy.blackman_window also applies to
         this method with minimal changes.
+
         Parameters
         ----------
         self
