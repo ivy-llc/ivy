@@ -1,5 +1,7 @@
 # global
 from hypothesis import strategies as st
+from hypothesis import draw
+
 import math
 
 # local
@@ -396,6 +398,58 @@ def test_paddle_expand(
         on_device=on_device,
         x=x[0],
         shape=shape,
+    )
+
+
+# expand_as
+@st.composite
+def _expand_as_helper(draw):
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
+
+    dtype, x = dtype_and_x
+    input_shape = x[0].shape
+
+    max_num_dims = 6 - len(input_shape)
+    shape = draw(helpers.get_shape(max_num_dims=max_num_dims)) + input_shape
+
+    return dtype, x, shape
+
+
+@handle_frontend_test(
+    fn_tree="paddle.expand_as",
+    dtype_x_and_shape=_expand_as_helper(),
+)
+def test_paddle_expand_as(
+    *,
+    dtype_x_and_shape,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, shape = dtype_x_and_shape
+    y = draw(
+        helpers.array_values(
+            shape=shape,
+            dtype=input_dtype,
+        )
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        shape=y,
     )
 
 
