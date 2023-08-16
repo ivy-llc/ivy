@@ -479,10 +479,3 @@ def amax(x, axis=None, keepdims=False):
         if i < 0 or i >= x.ndim:
             raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
     return ivy.max(x, axis=axis, keepdims=keepdims)
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-@to_ivy_arrays_and_back
-def min(x, axis=None, keepdim=False, name=None):
-    return ivy.min(x, axis=axis, keepdims=keepdim)
