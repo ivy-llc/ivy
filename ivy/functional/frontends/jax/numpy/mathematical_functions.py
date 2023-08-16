@@ -698,8 +698,10 @@ def product(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
     if promote_integers:
-        if dtype is None:
-            dtype = a.dtype
+        if ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
     if initial is not None:
         if axis is not None:
             s = ivy.to_list(ivy.shape(a, as_array=True))

@@ -127,6 +127,27 @@ class Array:
             fill_value=fill_value,
         )
 
+    def prod(
+        self,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+        out=None,
+    ):
+        return jax_frontend.numpy.product(
+            self,
+            axis=axis,
+            dtype=self.dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+            out=out,
+        )
+
     def ravel(self, order="C"):
         return jax_frontend.numpy.ravel(
             self,
