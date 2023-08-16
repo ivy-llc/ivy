@@ -959,6 +959,4 @@ Einsum = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Igamma(*, a, x, name=None):
-    return ivy.igamma(a, x=x)
+Igamma = to_ivy_arrays_and_back((map_raw_ops_alias(tf_frontend.math.igamma)))
