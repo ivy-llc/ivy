@@ -449,16 +449,16 @@ def interpolate(
         raise ValueError("Invalid interpolation mode")
 
     if align_corners is None:
-            align_corners = False
+        align_corners = False
 
     interpolated_tensor = paddle.nn.functional.interpolate(
         x=x,
         size=size,
         scale_factor=scale_factor,
-        #recompute_scale_factor=recompute_scale_factor,
+        # recompute_scale_factor=recompute_scale_factor,
         mode=interpolation_method,
         align_corners=align_corners,
-        #antialias=antialias,
+        # antialias=antialias,
         data_format=data_format,
         out=out,
     )
