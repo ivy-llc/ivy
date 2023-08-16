@@ -94,3 +94,14 @@ class DataFrame(NDFrame):
         else:
             ret = _array.sum(axis=axis)
         return Series(ret, index=self.columns if axis in (0, "index") else self.index)
+
+    def mean(self, axis=0, skipna=True, numeric_only=None, **kwargs):
+        _array = ivy.astype(self.array, ivy.default_float_dtype())
+        axis = 0 if axis == "index" else 1 if axis == "columns" else axis
+        if skipna:
+            ret = ivy.nanmean(_array, axis=axis)
+        else:
+            ret = _array.mean(axis=axis)
+        if axis is None:
+            return ret  # scalar case
+        return Series(ret, index=self.columns if axis in (0, "index") else self.index)
