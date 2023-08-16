@@ -18,14 +18,7 @@ class GELU(Module):
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(
-        self,
-        x,
-        /,
-        *,
-        approximate=None,
-        complex_mode=None,
-    ):
+    def _forward(self, x):
         """
         Perform forward pass of the GELU activation.
 
@@ -41,8 +34,8 @@ class GELU(Module):
         """
         return ivy.gelu(
             x,
-            approximate=ivy.default(approximate, self._approximate),
-            complex_mode=ivy.default(complex_mode, self._complex_mode),
+            approximate=self._approximate,
+            complex_mode=self._complex_mode,
         )
 
 
@@ -78,7 +71,7 @@ class ReLU(Module):
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -91,7 +84,7 @@ class ReLU(Module):
         ret
             The outputs following the RELU activation *[batch_shape, d]*
         """
-        return ivy.relu(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
+        return ivy.relu(x, self._complex_mode)
 
 
 class LeakyReLU(Module):
@@ -114,17 +107,13 @@ class LeakyReLU(Module):
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, *, alpha=None, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
               Inputs to process *[batch_shape, d]*.
-        alpha
-              Negative slope for ReLU.
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
@@ -133,8 +122,8 @@ class LeakyReLU(Module):
         """
         return ivy.leaky_relu(
             x,
-            alpha=ivy.default(alpha, self._alpha),
-            complex_mode=ivy.default(complex_mode, self._complex_mode),
+            alpha=self._alpha,
+            complex_mode=self._complex_mode,
         )
 
 
@@ -287,22 +276,20 @@ class Tanh(Module):
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
              Inputs to process *[batch_shape, d]*.
-        complex_mode
-             Specifies how to handle complex input.
 
         Returns
         -------
          ret
             The outputs following the TANH activation *[batch_shape, d]*
         """
-        return ivy.tanh(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
+        return ivy.tanh(x, self._complex_mode)
 
 
 class ReLU6(Module):

@@ -1524,8 +1524,9 @@ def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex")
     ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
-def test_tanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -1536,6 +1537,7 @@ def test_tanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-1,
         atol_=1e-2,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 
