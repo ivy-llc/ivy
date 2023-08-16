@@ -218,18 +218,46 @@ def test_torch_grad(grad_args, backend_fw):
 
     y_ivy2 = torch_frontend.mean(
         torch_frontend.matmul(
-            torch_frontend.add(x_ivy1, x_ivy2), torch_frontend.sin(x_ivy2)
+            torch_frontend.add(x_ivy1.pow(3), x_ivy2), torch_frontend.sin(x_ivy2)
         )
     )
     y_torch2 = torch.mean(
         torch.matmul(
-            torch.add(x_torch1, x_torch2),
+            torch.add(x_torch1.pow(3), x_torch2),
             torch.sin(x_torch2),
         )
     )
 
-    grads_ivy2 = torch_frontend.autograd.grad(y_ivy2, (x_ivy1, x_ivy2))
-    grads_torch2 = torch.autograd.grad(y_torch2, (x_torch1, x_torch2))
+    grads_ivy1 = torch_frontend.autograd.grad(y_ivy2, (x_ivy1, x_ivy2))
+    grads_torch1 = torch.autograd.grad(
+        y_torch2, (x_torch1, x_torch2), create_graph=True
+    )
+    with update_backend("torch") as ivy_torch:
+        for g_ivy, g_torch in zip(grads_ivy1, grads_torch1):
+            grads_flat_np = helpers.flatten_frontend_to_np(
+                ret=g_ivy, backend=backend_fw
+            )
+            grads_flat_np_gt = helpers.flatten_and_to_np(
+                backend="torch", ret=ivy_torch.to_ivy(g_torch)
+            )
+
+            helpers.value_test(
+                ret_np_flat=grads_flat_np,
+                ret_np_from_gt_flat=grads_flat_np_gt,
+                rtol=1e-4,
+                atol=1e-4,
+                backend=backend_fw,
+            )
+
+    # Test higher order gradients
+    grads_ivy2 = torch_frontend.autograd.grad(grads_ivy1, (x_ivy1, x_ivy2))
+    grad_outputs = [torch.ones_like(g) for g in grads_torch1]
+    grads_torch2 = torch.autograd.grad(
+        grads_torch1,
+        (x_torch1, x_torch2),
+        grad_outputs=grad_outputs,
+    )
+
     with update_backend("torch") as ivy_torch:
         for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
             grads_flat_np = helpers.flatten_frontend_to_np(
