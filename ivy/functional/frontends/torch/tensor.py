@@ -44,9 +44,14 @@ class Tensor:
         return len(self._ivy_array)
 
     def __repr__(self):
-        return str(self.ivy_array.__repr__()).replace(
+        repr = str(self.ivy_array.__repr__()).replace(
             "ivy.array", "ivy.frontends.torch.Tensor"
         )
+        if self._func is not None:
+            repr = repr.replace(
+                ")", f", grad_fn=<{self._func.__name__.capitalize()}Backward>)"
+            )
+        return repr
 
     # Properties #
     # ---------- #
