@@ -93,6 +93,7 @@ def ihfft(a, n=None, axis=-1, norm=None):
     output = ivy.conj(rfft(a, n, axis, norm=norm).ivy_array)
     return output
 
+@with_unsupported_dtypes({"1.25.2 and below": ("int",)}, "numpy")
 @to_ivy_arrays_and_back
 def fftfreq(n, d=1.0):
     if not isinstance(
