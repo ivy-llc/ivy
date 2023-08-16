@@ -45,6 +45,10 @@ class Array:
     def T(self):
         return self.ivy_array.T
 
+    @property
+    def ndim(self):
+        return self.ivy_array.ndim
+
     # Instance Methods #
     # ---------------- #
 
@@ -145,6 +149,16 @@ class Array:
         return jax_frontend.numpy.any(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
+
+    def reshape(self, *args, order="C"):
+        if not isinstance(args[0], int):
+            if len(args) > 1:
+                raise TypeError(
+                    "Shapes must be 1D sequences of concrete values of integer type,"
+                    f" got {args}."
+                )
+            args = args[0]
+        return jax_frontend.numpy.reshape(self, tuple(args), order)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
@@ -264,14 +278,16 @@ class Array:
         )
 
     def __iter__(self):
-        ndim = len(self.shape)
-        if ndim == 0:
+        if self.ndim == 0:
             raise TypeError("iteration over a 0-d Array not supported")
         for i in range(self.shape[0]):
             yield self[i]
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def repeat(self, repeats, axis=None, *, total_repeat_length=None):
+        return jax_frontend.numpy.repeat(self, repeats, axis=axis)
 
     def searchsorted(self, v, side="left", sorter=None, *, method="scan"):
         return jax_frontend.numpy.searchsorted(self, v, side=side, sorter=sorter)
@@ -304,3 +320,8 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
+
+
+# Jax supports DeviceArray from 0.4.13 and below
+# Hence aliasing it here
+DeviceArray = Array

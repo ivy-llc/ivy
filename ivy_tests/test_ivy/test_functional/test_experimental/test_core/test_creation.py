@@ -393,3 +393,106 @@ def test_unsorted_segment_sum(
         segment_ids=segment_ids,
         num_segments=num_segments,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.unsorted_segment_sum",
+    d_x_n_s=valid_unsorted_segment_min_inputs(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_unsorted_segment_sum(
+    *,
+    d_x_n_s,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, data, num_segments, segment_ids = d_x_n_s
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
+
+
+@st.composite
+def _random_tucker_data(draw):
+    shape = draw(
+        st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
+    )
+    rank = []
+    for dim in shape:
+        rank.append(draw(helpers.ints(min_value=1, max_value=dim)))
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    full = draw(st.booleans())
+    orthogonal = draw(st.booleans())
+    seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
+    non_negative = draw(st.booleans())
+    return shape, rank, dtype[0], full, orthogonal, seed, non_negative
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.random_tucker",
+    data=_random_tucker_data(),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_random_tucker(
+    *,
+    data,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    shape, rank, dtype, full, orthogonal, seed, non_negative = data
+    results = helpers.test_function(
+        input_dtypes=[],
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_name=fn_name,
+        shape=shape,
+        rank=rank,
+        dtype=dtype,
+        full=full,
+        orthogonal=orthogonal,
+        seed=seed,
+        non_negative=non_negative,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    if full:
+        reconstructed_tensor = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+        reconstructed_tensor_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+        )
+        for x, x_gt in zip(reconstructed_tensor, reconstructed_tensor_gt):
+            assert np.prod(shape) == np.prod(x.shape)
+            assert np.prod(shape) == np.prod(x_gt.shape)
+
+    else:
+        core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+        factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+        core_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+        )
+        factors_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+        )
+
+        for c, c_gt in zip(core, core_gt):
+            assert np.prod(c.shape) == np.prod(rank)
+            assert np.prod(c_gt.shape) == np.prod(rank)
+
+        for f, f_gt in zip(factors, factors_gt):
+            assert np.prod(f.shape) == np.prod(f_gt.shape)
