@@ -1054,7 +1054,7 @@ class Tensor:
         return torch_frontend.remainder(self, other, out=out)
 
     @with_supported_dtypes(
-        {"2.0.1 and below": ("float16", "float32", "float64")}, "torch"
+        {"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
     )
     def remainder_(self, other, *, out=None):
         self.ivy_array = torch_frontend.remainder(self, other, out=out).ivy_array
