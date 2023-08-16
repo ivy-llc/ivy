@@ -188,22 +188,16 @@ def test_tensorflow_max_pool(
     fn_tree="tensorflow.compat.v1.nn.depthwise_conv2d_backprop_input",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC","NCHW"]),
+        data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
-        type="depthwise"
+        type="depthwise",
     ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_depthwise_conv2d_backprop_input(
-    *,
-    x_f_d_df,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device
+    *, x_f_d_df, frontend, test_flags, fn_tree, backend_fw, on_device
 ):
-    dtype, x, filters, dilations, data_format, stride, padding,output_shape  = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, padding, output_shape  = x_f_d_df
     helpers.test_frontend_function(
         dtype=dtype,
         backend_to_test=backend_fw,
@@ -217,5 +211,5 @@ def test_tensorflow_depthwise_conv2d_backprop_input(
         padding=padding,
         dilations=dilations,
         data_format=data_format,
-        output_shape =output_shape
+        output_shape =output_shape,
     )
