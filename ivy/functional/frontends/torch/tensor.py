@@ -1091,6 +1091,9 @@ class Tensor:
         self.ivy_array = self.fix().ivy_array
         return self
 
+    def isfinite(self):
+        return torch_frontend.isfinite(self._ivy_array)
+
     def isinf(self):
         return torch_frontend.isinf(self._ivy_array)
 
