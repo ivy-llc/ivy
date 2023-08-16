@@ -2,12 +2,15 @@
 import ivy
 from hypothesis import strategies as st, assume
 import numpy as np
-import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test, matrix_is_stable
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
+    _get_second_matrix,
+    _get_cholesky_matrix,
+)
 
 # Helpers #
 # ------ #
@@ -530,56 +533,18 @@ def test_paddle_solve(
 
 # cholesky_solve
 @st.composite
-def _get_cholesky_matrix(draw):
-    # batch_shape, random_size, shared
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))),
-            key="shared_dtype",
-        )
-    )
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    gen = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
-            min_value=2,
-            max_value=5,
-        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
-    )
-    spd = np.matmul(gen.T, gen) + np.identity(gen.shape[0])
-    spd_chol = np.linalg.cholesky(spd)
+def _get_paddle_cholesky_matrix(draw):
+    input_dtype, spd_chol = draw(_get_cholesky_matrix())
     probability = draw(st.floats(min_value=0, max_value=1))
     if probability > 0.5:
         spd_chol = spd_chol.T  # randomly transpose the matrix
     return input_dtype, spd_chol
 
 
-@st.composite
-def _get_second_matrix(draw):
-    # batch_shape, shared, random_size
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))),
-            key="shared_dtype",
-        )
-    )
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    return input_dtype, draw(
-        helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
-        )
-    )
-
-
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.cholesky_solve",
-    x=_get_cholesky_matrix(),
-    y=_get_second_matrix(),
+    x=_get_second_matrix(),
+    y=_get_paddle_cholesky_matrix(),
     test_with_out=st.just(False),
 )
 def test_paddle_cholesky_solve(
@@ -603,9 +568,9 @@ def test_paddle_cholesky_solve(
         on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
-        x=x2,
-        y=x1,
-        upper=np.array_equal(x1, np.triu(x1)),  # check whether the matrix is upper
+        x=x1,
+        y=x2,
+        upper=np.array_equal(x2, np.triu(x2)),  # check whether the matrix is upper
     )
 
 

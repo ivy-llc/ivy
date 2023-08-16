@@ -125,11 +125,11 @@ def solve(x1, x2, name=None):
 # cholesky_solve
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def cholesky_solve(y, x, /, *, upper=False, name=None):
+def cholesky_solve(x, y, /, *, upper=False, name=None):
     if upper:
-        x = ivy.matrix_transpose(x)
-    Y = ivy.solve(x, y)
-    return ivy.solve(ivy.matrix_transpose(x), Y)
+        y = ivy.matrix_transpose(y)
+    Y = ivy.solve(y, x)
+    return ivy.solve(ivy.matrix_transpose(y), Y)
 
 
 # cholesky
