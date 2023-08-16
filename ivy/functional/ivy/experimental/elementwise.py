@@ -1361,7 +1361,7 @@ def sparsify_tensor(
     """
     if card >= ivy.prod(tensor.shape):
         return tensor
-    bound = ivy.sort(ivy.abs(tensor), axis=None)[-card]
+    bound = ivy.reshape(ivy.abs(tensor), (-1,))[-card]
 
     return ivy.where(
         ivy.abs(tensor) < bound,
