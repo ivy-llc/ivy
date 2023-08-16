@@ -101,3 +101,31 @@ def unsorted_segment_min(
     num_segments: Union[int, tf.Tensor],
 ) -> tf.Tensor:
     return tf.math.unsorted_segment_min(data, segment_ids, num_segments)
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if size < 2:
+        return tnp.ones([size], dtype=tnp.result_type(size, 0.0))
+    if periodic:
+        count = tnp.arange(size) / size
+    else:
+        count = tnp.linspace(start=0, stop=size, num=size)
+
+    return (0.42 - 0.5 * tnp.cos(2 * tnp.pi * count)) + (
+        0.08 * tnp.cos(2 * tnp.pi * 2 * count)
+    )
+
+def unsorted_segment_sum(
+    data: tf.Tensor,
+    segment_ids: tf.Tensor,
+    num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
+
