@@ -162,3 +162,44 @@ def test_pandas_series_mean(
         on_device=on_device,
         backend_to_test=backend_fw,
     )
+
+
+@pytest.mark.xfail(reason="testing pipeline fixes")
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="pandas.Series",
+    method_name="add",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"),
+                                     num_arrays=2,
+                                     shared_dtype=True),
+    axis=st.sampled_from(["index", 0]),
+)
+def test_pandas_series_add(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+    axis,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+            "level": None,
+            "axis": axis,
+            "fill_value": None},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+    )
