@@ -391,7 +391,7 @@ def test_paddle_margin_ranking_loss(
         margin=margin,
         reduction=reduction,
     )
-    
+
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.triplet_margin_loss",
@@ -491,8 +491,8 @@ def test_paddle_nll_loss(
         ignore_index=ignore_index,
         reduction=reduction,
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.multi_label_soft_margin_loss",
     dtype_and_x=helpers.dtype_and_values(
@@ -501,6 +501,7 @@ def test_paddle_nll_loss(
         min_value=-2,
         max_value=2,
         shared_dtype=True,
+        allow_inf=False,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -509,6 +510,8 @@ def test_paddle_nll_loss(
     dtype_and_weight=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
+        min_value=-2,
+        max_value=2,
     ),
     reduction=st.sampled_from(["mean", "none", "sum"]),
 )
