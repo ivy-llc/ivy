@@ -1412,7 +1412,7 @@ class Tensor:
         return self
 
     @with_supported_dtypes({"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch")
-    def true_divide_(self, other, *, rounding_mode=None):
+    def true_divide_(self, other):
         self.ivy_array = self.div(other).ivy_array
         return self
 
