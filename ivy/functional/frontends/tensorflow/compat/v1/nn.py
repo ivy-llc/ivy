@@ -157,7 +157,7 @@ def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, inpu
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("float64",)},
+    {"2.13.0 and below": ("float32",)},
     "tensorflow",
 )
 def depthwise_conv2d_backprop_input(
