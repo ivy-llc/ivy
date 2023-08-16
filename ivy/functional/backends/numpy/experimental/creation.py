@@ -136,6 +136,7 @@ def blackman_window(
 
 blackman_window.support_native_out = False
 
+
 def unsorted_segment_sum(
     data: np.ndarray,
     segment_ids: np.ndarray,
@@ -158,3 +159,15 @@ def unsorted_segment_sum(
 
     return res
 
+
+def trilu(
+    x: np.ndarray,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if upper:
+        return np.triu(x, k)
+    return np.tril(x, k)
