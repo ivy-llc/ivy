@@ -665,7 +665,7 @@ When listing frontend functions, extra care should be taken to keep note of thes
 Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
 If the function is an alias, you should check if there is an implementation that can be aliased.
 
-* If an implementation exist then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
+* If an implementation exist then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/main/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
 
 * If there is no implementation to be aliased then feel free to contribute the implementation first, then go ahead to create the alias.
 

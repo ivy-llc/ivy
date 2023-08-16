@@ -747,8 +747,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> y = x.eye_like()
         >>> print(y)
         {
-            a: ivy.array([[1.]]),
-            b: ivy.array([[1.]])
+            a: ivy.array([[1.],
+                          [0.]]),
+            b: ivy.array([[1.],
+                          [0.]])
         }
         """
         return self.static_eye_like(
@@ -952,3 +954,98 @@ class _ContainerWithCreationExperimental(ContainerBase):
             segment_ids,
             num_segments,
         )
+
+    @staticmethod
+    def static_blackman_window(
+        window_length: Union[int, ivy.Container],
+        periodic: bool = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        window_length
+            container including multiple window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            The container that contains the Blackman windows.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_blackman_window(x)
+        {
+            a: ivy.array([-1.38777878e-17,  6.30000000e-01,  6.30000000e-01])
+            b: ivy.array([-1.38777878e-17,  2.00770143e-01,  8.49229857e-01,
+                        8.49229857e-01, 2.00770143e-01])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "blackman_window",
+            window_length,
+            periodic,
+            dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def blackman_window(
+        self: ivy.Container,
+        periodic: bool = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with window sizes.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+        dtype
+            The data type to produce. Must be a floating point type.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            The container containing the Blackman windows.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.blackman_window(x)
+        {
+            a: ivy.array([-1.38777878e-17,  6.30000000e-01,  6.30000000e-01])
+            b: ivy.array([-1.38777878e-17,  2.00770143e-01,  8.49229857e-01,
+                            8.49229857e-01, 2.00770143e-01])
+        }
+        """
+        return self.static_blackman_window(self, periodic, dtype, out=out)
