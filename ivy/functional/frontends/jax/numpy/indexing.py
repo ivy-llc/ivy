@@ -96,3 +96,9 @@ def indices(dimensions, dtype=int, sparse=False):
     else:
         grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
         return ivy.stack(grid, axis=0).astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def choose(arr, choices, out=None, mode='raise'):
+    """jax.numpy.choose(arr, choices, out=None, mode='raise')"""
+    return ivy.choose(arr, choices, out=out, mode=mode)
