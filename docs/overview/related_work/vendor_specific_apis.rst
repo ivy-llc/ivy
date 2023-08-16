@@ -10,13 +10,11 @@ Vendor-Specific APIs
 .. _`TensorFlow`: https://www.tensorflow.org/
 .. _`Compute Unified Device Architecture (CUDA)`: https://developer.nvidia.com/cuda-toolkit
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
-.. |tensorrt| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/tensorrt.png
+.. |tensorrt| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/vendor_specific_apis/tensorrt.png
     :height: 15pt
     :class: dark-light
-.. |cuda| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/cuda.png
+.. |cuda| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/vendor_specific_apis/cuda.png
     :height: 20pt
     :class: dark-light
 
@@ -36,7 +34,3 @@ CUDA |cuda|
 `Compute Unified Device Architecture (CUDA)`_ is a parallel computing platform and application programming interface (API) that allows software to use certain types of graphics processing units (GPUs) for general purpose processing, an approach called general-purpose computing on GPUs (GPGPU).
 It is a software layer that gives direct access to the GPU's virtual instruction set and parallel computational elements, for the execution of compute kernels.
 It is designed to work with programming languages such as C, C++, and Fortran.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!

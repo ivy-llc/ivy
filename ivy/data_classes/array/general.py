@@ -69,7 +69,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> ret = x.is_ivy_array()
         >>> print(ret)
         True
-
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
@@ -842,7 +841,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
         True
-
         """
         return ivy.assert_supports_inplace(self)
 
