@@ -197,7 +197,7 @@ def test_tensorflow_max_pool(
 def test_tensorflow_depthwise_conv2d_backprop_input(
     *, x_f_d_df, frontend, test_flags, fn_tree, backend_fw, on_device
 ):
-    dtype, x, filters, dilations, data_format, stride, padding, output_shape  = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, padding, output_shape = x_f_d_df
     helpers.test_frontend_function(
         dtype=dtype,
         backend_to_test=backend_fw,
@@ -211,5 +211,5 @@ def test_tensorflow_depthwise_conv2d_backprop_input(
         padding=padding,
         dilations=dilations,
         data_format=data_format,
-        output_shape =output_shape,
+        output_shape=output_shape,
     )
