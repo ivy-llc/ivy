@@ -198,7 +198,6 @@ def adaptive_avg_pool2d(input, output_size):
     "torch",
 )
 @to_ivy_arrays_and_back
-@to_ivy_arrays_and_back
 def lp_pool1d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
     data_format = "NCW"
     padding = "VALID"
