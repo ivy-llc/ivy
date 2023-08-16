@@ -1006,7 +1006,6 @@ def map(
 @handle_exceptions
 def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
-    /,
     fn: Callable,
     include_derived: Optional[Union[Dict[type, bool], bool]] = None,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
@@ -1020,115 +1019,97 @@ def nested_map(
     shallow: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """
-    Apply a function on x in a nested manner, whereby all dicts, lists and tuples are
+    Apply a function on x in a nested manner, whereby all dicts, lists, and tuples are
     traversed to their lowest leaves before applying the method and returning x. If x is
     not nested, the method is applied to x directly.
 
     Parameters
     ----------
-    x
+    x : Union[ivy.Array, ivy.NativeArray, Iterable]
         The item to apply the mapped function to.
-    fn
+    fn : Callable
         The function to map onto x.
-    include_derived
-        Whether to also recursive for classes derived from tuple, list and dict.
+    include_derived : Optional[Union[Dict[type, bool], bool]], optional
+        Whether to also recursively consider classes derived from tuple, list, and dict.
         Default is ``False``.
-    to_ignore
-        Types to ignore when deciding whether to go deeper into the nest or not
-    to_mutable
+    to_ignore : Optional[Union[type, Tuple[type]]], optional
+        Types to ignore when deciding whether to go deeper into the nest or not.
+    to_mutable : bool, optional
         Whether to convert the nest to a mutable form, changing all tuples to lists.
         Default is ``False``.
-    max_depth
+    max_depth : Optional[int], optional
         The maximum nested depth to reach. Default is 1. Increase this if the nest is
         deeper.
-    _depth
+    _depth : int, optional
         Placeholder for tracking the recursive depth, do not set this parameter.
-    _tuple_check_fn
+    _tuple_check_fn : Optional[Callable], optional
         Placeholder for the tuple check function, do not set this parameter.
-    _list_check_fn
+    _list_check_fn : Optional[Callable], optional
         Placeholder for the list check function, do not set this parameter.
-    _dict_check_fn
+    _dict_check_fn : Optional[Callable], optional
         Placeholder for the dict check function, do not set this parameter.
-    extra_nest_types
-        Types to recursively check when deciding whether to go deeper into the
-        nest or not
-    shallow
-        Whether to inplace update the input nest or not
-        Only works if nest is a mutable type. Default is ``True``.
+    extra_nest_types : Optional[Union[type, Tuple[type]]], optional
+        Types to recursively check when deciding whether to go deeper into the nest or not.
+    shallow : bool, optional
+        Whether to inplace update the input nest or not. Only works if the nest is a
+        mutable type. Default is ``True``.
 
     Returns
     -------
-    ret
-        x following the applicable of fn to it's nested leaves, or x itself if x is not
+    ret : Union[ivy.Array, ivy.NativeArray, Iterable, Dict]
+        x following the application of fn to its nested leaves, or x itself if x is not
         nested.
 
     Examples
     --------
-    With :class:`Tuple` inputs:
+    With Ivy API:
 
-    >>> x = ([[1., 2.], [3., 4.]])
-    >>> function = lambda a : a * 2
+    >>> import ivy
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> function = lambda a: a * 2
     >>> ivy.nested_map(x, function)
-    [[2.0, 4.0], [6.0, 8.0]]
-    >>> print(x)
-    [[2.0, 4.0], [6.0, 8.0]]
+    # Output: ivy.array([[2.0, 4.0], [6.0, 8.0]])
 
-    With :code:`Dict` input:
+    With Backend API:
 
-    >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
-    >>> function = lambda a : a + 1
+    >>> import ivy
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> function = lambda a: a * 2
     >>> ivy.nested_map(x, function)
-    {1 : [2, [3, 4]], 2: (5, 6)}
-    >>> print(x)
-    {1 : [2, [3, 4]], 2: (5, 6)}
+    # Output: ivy.array([[2.0, 4.0], [6.0, 8.0]])
 
-    With :code:`List` inputs:
-
-    >>> x = [['a', 'b', 'c'],
-    ...      ['d', 'e', 'f'],
-    ...      ['g', ['h', 'i']]]
-    >>> function = lambda a: a + 'H'
-    >>> ivy.nested_map(x, function)
-    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
-    >>> print(x)
-    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(
-    ...   a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
-    ... )
-    >>> function = lambda a : a  + 1
-    >>> ivy.nested_map(x, function)
-    {
-        a: ivy.array([[2, 3, 4],
-                      [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7],
-                      [13, 14, 15]])
-    }
-    >>> print(x)
-    {
-        a: ivy.array([[2, 3, 4],
-                      [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7],
-                      [13, 14, 15]])
-    }
-
-    >>> nest = ([1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3})
-    >>> function = lambda a :  a * 2
-    >>> ivy.nested_map(nest, function,  to_ignore=list)
-    ([1, 2, 1, 2], [3, 4, 3, 4], [5, 6, 5, 6], {'a': 2, 'b': 4, 'c': 6})
+    Nested List Example:
 
     >>> nest = [[1, 2], [3, [4, 5]], [[6], [7, 8, [9, 10]]]]
-    >>> function = lambda a :  a * 2
-    >>> ivy.nested_map(nest, function, max_depth = 3)
-    [[2, 4], [6, [8, 10]], [[12], [14, 16, [9, 10]]]]
+    >>> function = lambda a: a * 2
+    >>> ivy.nested_map(nest, function, max_depth=3)
+    # Output: [[2, 4], [6, [8, 10]], [[12], [14, 16, [18, 20]]]]
 
-    >>> nest = ([23, 25, 1337], [63, 98, 6])
-    >>> function = lambda a :  a + 1
-    >>> ivy.nested_map(nest, function, to_mutable = True)
-    [[24, 25, 1338], [64, 99, 7]]
+    Nested Dictionary Example:
+
+    >>> nest = {"a": [1, 2], "b": {"x": [3, 4], "y": [5, 6]}}
+    >>> function = lambda a: [i + 1 for i in a]
+    >>> ivy.nested_map(nest, function)
+    # Output: {"a": [2, 3], "b": {"x": [4, 5], "y": [6, 7]}}
     """
+    def tuple_check_fn(x: Any, include_derived: Dict[type, bool]) -> bool:
+        if include_derived[tuple]:
+            return isinstance(x, tuple)
+        else:
+            return type(x) is tuple
+
+    def list_check_fn(x: Any, include_derived: Dict[type, bool]) -> bool:
+        if include_derived[list]:
+            return isinstance(x, list)
+        else:
+            return type(x) is list
+
+    def dict_check_fn(x: Any, include_derived: Dict[type, bool]) -> bool:
+        if include_derived[dict]:
+            return isinstance(x, dict)
+        else:
+            return type(x) is dict
+
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
@@ -1141,41 +1122,26 @@ def nested_map(
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
-    # TODO: Fixes iterating over tracked instances from the graph
-    # during transpilation. However, there might be a better fix
-    # than this. Remove the check below if that's the case
     if (
-        hasattr(x, "is_tracked_proxy")
-        and hasattr(class_instance, "__bases__")
-        and not set(class_instance.__bases__).intersection(set(to_ignore))
+            hasattr(x, "is_tracked_proxy")
+            and hasattr(class_instance, "__bases__")
+            and not set(class_instance.__bases__).intersection(set(to_ignore))
     ):
         to_ignore += (class_instance,)
     tuple_check_fn = ivy.default(
         _tuple_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[tuple]
-            else (lambda x_, t_: type(x_) is t_)
-        ),
+        tuple_check_fn,
     )
     list_check_fn = ivy.default(
         _list_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[list]
-            else (lambda x_, t_: type(x_) is t_)
-        ),
+        list_check_fn,
     )
     dict_check_fn = ivy.default(
         _dict_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[dict]
-            else (lambda x_, t_: type(x_) is t_)
-        ),
+        dict_check_fn,
     )
 
-    if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
+    if tuple_check_fn(x, include_derived) and not isinstance(x, to_ignore):
         ret_list = [
             nested_map(
                 i,
@@ -1196,12 +1162,11 @@ def nested_map(
         if to_mutable:
             return ret_list
         elif hasattr(x, "_fields"):
-            # noinspection PyProtectedMember
             return class_instance(**dict(zip(x._fields, ret_list)))
         else:
             return class_instance(ret_list)
-    elif (list_check_fn(x, list) or isinstance(x, extra_nest_types)) and not isinstance(
-        x, to_ignore
+    elif (list_check_fn(x, include_derived) or isinstance(x, extra_nest_types)) and not isinstance(
+            x, to_ignore
     ):
         if isinstance(x, (ivy.Array, ivy.NativeArray)):
             ret = fn(x)
@@ -1229,8 +1194,8 @@ def nested_map(
             x[:] = ret_list[:]
             return x
         return class_instance(ret_list)
-    elif (dict_check_fn(x, dict) or isinstance(x, UserDict)) and not isinstance(
-        x, to_ignore
+    elif (dict_check_fn(x, include_derived) or isinstance(x, UserDict)) and not isinstance(
+            x, to_ignore
     ):
         class_instance = type(x)
         ret = {
@@ -1255,7 +1220,6 @@ def nested_map(
             return x
         return class_instance(ret)
     elif isinstance(x, slice):
-        # TODO: add tests for this
         return slice(*nested_map([x.start, x.stop, x.step], fn))
     return fn(x)
 
