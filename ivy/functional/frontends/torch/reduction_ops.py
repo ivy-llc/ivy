@@ -112,6 +112,27 @@ def median(input, dim=None, keepdim=False, *, out=None):
     return result
 
 
+# how to implement pytorch 'nanmedian' function?
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
+def nanmedian(input, dim=None, keepdim=False):
+    if dim is None:
+        input = input.flatten()
+        dim = 0
+    else:
+        if not isinstance(dim, (list, tuple)):
+            dim = [dim]
+
+    input = input.clone()
+    input[input != input] = -float("inf")
+
+    median = ivy.median(input, dim=dim, keepdim=keepdim)
+
+    median[median == -float("inf")] = float("nan")
+
+    return median
+
+
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
