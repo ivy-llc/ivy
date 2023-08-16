@@ -213,8 +213,7 @@ def test_tensorflow_depthwise_conv2d_backprop_input(
         dilations=dilations,
         data_format=data_format,
         output_shape=output_shape,
-    
     )
 
-    
+
 
