@@ -134,9 +134,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.blackman_window. This method simply wraps the
-        function, and so the docstring for ivy.blackman_window also applies to this method with
-        minimal changes.
+        ivy.Array instance method variant of ivy.blackman_window. This method simply
+        wraps the function, and so the docstring for ivy.blackman_window also applies to
+        this method with minimal changes.
+
         Parameters
         ----------
         self
