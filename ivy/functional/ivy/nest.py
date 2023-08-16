@@ -407,17 +407,6 @@ def multi_index_nest(
     return [index_nest(nest, index) for index in indices]
 
 
-def _split_list_by_length(indices):
-    indices_sorted_by_len = sorted(indices, key=len, reverse=True)
-    split_indices = [[]]
-    for idx in indices_sorted_by_len:
-        if len(split_indices[-1]) and len(idx) == len(split_indices[-1][-1]):
-            split_indices[-1] += [idx]
-        else:
-            split_indices += [[idx]]
-    return split_indices
-
-
 @handle_exceptions
 def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
     """

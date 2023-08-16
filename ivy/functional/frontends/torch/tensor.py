@@ -206,7 +206,7 @@ class Tensor:
         self.ivy_array = self.asin().ivy_array
         return self
 
-    # @numpy_to_torch_style_args
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def sum(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.sum(self, dim=dim, keepdim=keepdim, dtype=dtype)
@@ -911,8 +911,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def ne(self, other):
-        x = torch_frontend.ne(self, other)
-        return x
+        return torch_frontend.ne(self, other)
 
     @numpy_to_torch_style_args
     def squeeze(self, dim=None):
