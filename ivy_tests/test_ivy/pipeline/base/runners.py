@@ -29,3 +29,21 @@ class TestCaseRunner(ABC):
     @abstractmethod
     def run(self):
         pass
+
+
+class TestCaseSubRunner(ABC):
+    @abstractmethod
+    def _search_args():
+        pass
+
+    @abstractmethod
+    def _preprocess_args():
+        pass
+
+    @abstractmethod
+    def _call_function():
+        pass
+
+    @abstractmethod
+    def get_results():
+        pass
