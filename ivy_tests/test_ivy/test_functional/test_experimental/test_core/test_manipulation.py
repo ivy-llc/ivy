@@ -980,11 +980,13 @@ def quantize_linear_helper(draw):
     dtype, x, axis = draw(stg)
 
     if axis == 0:
-        scale = np.random.randint(10, dtype=np.int32, size=())
-        zero_point = np.random.randint(100, dtype=np.int8, size=())
+        scale = draw(nph.arrays(np.int32, (), elements=st.integers(0, 10)))
+        zero_point = draw(nph.arrays(np.int8, (), elements=st.integers(0, 100)))
     else:
-        scale = np.random.randint(0, 10, size=(abs(axis),))
-        zero_point = np.random.randint(0, 100, size=(abs(axis),))
+        scale = draw(nph.arrays(np.int32, (abs(axis),), elements=st.integers(0, 10)))
+        zero_point = draw(
+            nph.arrays(np.int8, (abs(axis),), elements=st.integers(0, 100))
+        )
 
     return dtype, x, axis, [scale, zero_point]
 
@@ -1003,14 +1005,12 @@ def test_quantize_linear(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x, axis, scale_zero_pt = dtype_x_ax
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
