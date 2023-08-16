@@ -1,6 +1,9 @@
+# global
+import operator
+
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -26,6 +29,26 @@ def normal(key, shape=(), dtype=None):
     return ivy.random_normal(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def orthogonal(key, n, shape=(), dtype=None):
+    flat_shape = (n, n)
+    if shape:
+        flat_shape = shape + flat_shape
+
+    # Generate a random matrix with the given shape and dtype
+    random_matrix = ivy.random_uniform(key, shape=flat_shape, dtype=dtype)
+
+    # Compute the QR decomposition of the random matrix
+    q, _ = ivy.linalg.qr(random_matrix)
+
+    # Reshape the resulting orthogonal matrix to the desired shape
+    if shape:
+        q = ivy.reshape(q, shape + (n, n))
+
+    return q
+
+
 def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
@@ -35,7 +58,7 @@ def _get_seed(key):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -51,7 +74,7 @@ def beta(key, a, b, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -75,7 +98,7 @@ def cauchy(key, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def poisson(key, lam, shape=None, dtype=None):
@@ -87,7 +110,7 @@ def poisson(key, lam, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -103,7 +126,7 @@ def gamma(key, a, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -125,7 +148,7 @@ def gumbel(key, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def rademacher(key, shape, dtype="int64"):
@@ -139,7 +162,7 @@ def rademacher(key, shape, dtype="int64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -165,7 +188,7 @@ def t(key, df, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def randint(key, shape, minval, maxval, dtype="int64"):
@@ -207,7 +230,7 @@ def permutation(key, x, axis=0, independent=False):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -230,7 +253,7 @@ def shuffle(key, x, axis=0):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -248,7 +271,7 @@ def exponential(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -267,7 +290,7 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -283,3 +306,49 @@ def pareto(key, b, shape=None, dtype="float64"):
     e = -ivy.log(1 - uniform)
 
     return ivy.exp(e / b)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def maxwell(key, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    # generate uniform random numbers between 0 and 1
+    z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    # applying inverse transform sampling
+    x = (z**2) * ivy.exp(-(z**2) / 2)
+    return x
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+def ball(key, d, p=2.0, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    d = operator.index(d)
+
+    g = ivy.gamma(1 / p, 1.0, shape=shape, dtype=dtype, seed=seed)
+    b = ivy.bernoulli(ivy.array([0.5]), shape=shape, dtype=dtype, seed=seed)
+    r = 2 * b - 1
+    gn = r * g ** (1 / p)
+
+    uniform = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    exp = -ivy.log(1 - uniform)
+
+    return gn / (((ivy.abs(gn) ** p).sum(axis=-1) + exp) ** (1 / p))[..., None]

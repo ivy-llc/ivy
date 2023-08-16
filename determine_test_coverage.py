@@ -11,7 +11,7 @@ from run_tests_CLI.get_all_tests import get_all_tests
 # Shared Map
 tests = {}
 
-N = 64
+N = 128
 run_iter = int(sys.argv[1]) - 1
 
 test_names = get_all_tests()

@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import inspect
 import os
+from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
@@ -71,6 +72,10 @@ class Container:
 
 
 class Array:
+    pass
+
+
+class TuckerTensor:
     pass
 
 
@@ -182,6 +187,10 @@ class Dtype(str):
         return as_native_dtype(self)
 
     @property
+    def name(self) -> str:
+        return str(self)
+
+    @property
     def info(self):
         if self.is_int_dtype or self.is_uint_dtype:
             return iinfo(self)
@@ -194,7 +203,7 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-class Shape:
+class Shape(Sequence):
     def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
@@ -351,9 +360,138 @@ class Shape:
     def __dir__(self):
         return self._shape.__dir__()
 
+    def __pow__(self, power, modulo=None):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __rdivmod__(self, other):
+        pass
+
+    def __truediv__(self, other):
+        pass
+
+    def __rtruediv__(self, other):
+        pass
+
+    def __rfloordiv__(self, other):
+        pass
+
+    def __ne__(self, other):
+        pass
+
     @property
     def shape(self):
         return self._shape
+
+    @property
+    def value(self):
+        return self._value
+
+    def concatenate(self, other):
+        if self._shape is None or other.dims is None:
+            raise ValueError("Unknown Shape")
+        else:
+            return Shape(self.dims + other.dims)
+
+    def index(self, index):
+        assert isinstance(self._shape, Shape)
+        if self._shape.rank is None:
+            return Shape(None)
+        else:
+            return self._shape[index]
+
+    @property
+    def shape(self):
+        return self._shape
+
+    def as_dimension(self):
+        if isinstance(self._shape, Shape):
+            return self._shape
+        else:
+            return Shape(self._shape)
+
+    def is_compatible_with(self, other):
+        return self._shape is None or other.value is None or self._shape == other.value
+
+    @property
+    def rank(self):
+        """Returns the rank of this shape, or None if it is unspecified."""
+        if self._shape is not None:
+            return len(self._shape)
+        return None
+
+    def assert_same_rank(self, other):
+        other = Shape(other)
+        if self.rank != other.rank:
+            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+
+    def assert_has_rank(self, rank):
+        if self.rank not in (None, rank):
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def unknown_shape(rank=None, **kwargs):
+        if rank is None and "ndims" in kwargs:
+            rank = kwargs.pop("ndims")
+        if kwargs:
+            raise TypeError("Unknown argument: %s" % kwargs)
+        if rank is None:
+            return Shape(None)
+        else:
+            return Shape([Shape(None)] * rank)
+
+    def with_rank(self, rank):
+        try:
+            return self.merge_with(unknown_shape(rank=rank))
+        except ValueError:
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def with_rank_at_least(self, rank):
+        if self.rank is not None and self.rank < rank:
+            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+        else:
+            return self
+
+    def with_rank_at_most(self, rank):
+        if self.rank is not None and self.rank > rank:
+            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+        else:
+            return self
+
+    def as_shape(shape):
+        if isinstance(shape, Shape):
+            return shape
+        else:
+            return Shape(shape)
+
+    @property
+    def dims(self):
+        if self._shape is None:
+            return None
+        # return [as_dimension(d) for d in self._shape]
+
+    @property
+    def ndims(self):
+        """Deprecated accessor for `rank`."""
+        return self.rank
+
+    @property
+    def is_fully_defined(self):
+        return self._shape is not None and all(
+            shape is not None for shape in self._shape
+        )
+
+    property
+
+    def num_elements(self):
+        if not self.is_fully_defined():
+            return None
+
+    @property
+    def assert_is_fully_defined(self):
+        if not self.is_fully_defined():
+            raise ValueError("Shape %s is not fully defined" % self)
 
     def as_list(self):
         if self._shape is None:
@@ -616,6 +754,7 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
+from .data_classes.FactorizedTensor import TuckerTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -792,6 +931,7 @@ globals_vars = GlobalsDict(
         "warning_level_stack": warning_level_stack,
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
+        "soft_device_mode_stack": device.soft_device_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
         "show_func_wrapper_trace_mode_stack": (
             general.show_func_wrapper_trace_mode_stack
@@ -827,8 +967,8 @@ def del_global_attr(attr_name):
     delattr(globals_vars, attr_name)
 
 
-backend = "none"
-backend_version = "none"
+backend = ""
+backend_version = {}
 
 native_inplace_support = None
 
@@ -844,25 +984,21 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 # ToDo: SF formating for complex number
-def _sf(x, sig_fig=3):
+def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
     if isinstance(x, complex):
         return complex(x)
-    if "float" in type(x).__name__:
-        x = float(
-            np.format_float_positional(
-                x, precision=sig_fig, unique=False, fractional=False, trim="k"
-            )
-        )
+    if np.issubdtype(x.dtype, np.floating):
+        x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10 ** (sig_fig - 1))
+        mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))
+        return np.round(x * mags) / mags
     return x
 
 
-vec_sig_fig = np.vectorize(_sf)
-vec_sig_fig.__name__ = "vec_sig_fig"
-
-
-ivy.array_significant_figures = 10
+ivy.array_significant_figures = (
+    array_significant_figures_stack[-1] if array_significant_figures_stack else 10
+)
 
 
 def set_array_significant_figures(sig_figs):
@@ -901,7 +1037,9 @@ def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True, as_array=False)
 
 
-ivy.array_decimal_values = 8
+ivy.array_decimal_values = (
+    array_decimal_values_stack[-1] if array_decimal_values_stack else 8
+)
 
 
 def set_array_decimal_values(dec_vals):
@@ -928,7 +1066,7 @@ def unset_array_decimal_values():
         ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
-ivy.warning_level = "ivy_only"
+ivy.warning_level = warning_level_stack[-1] if warning_level_stack else "ivy_only"
 
 
 def set_warning_level(warn_level):
@@ -961,7 +1099,7 @@ def warn(warning_message, stacklevel=0):
 
 
 # nan policy #
-ivy.nan_policy = "nothing"
+ivy.nan_policy = nan_policy_stack[-1] if nan_policy_stack else "nothing"
 
 
 def set_nan_policy(warn_level):
@@ -995,7 +1133,7 @@ def unset_nan_policy():
 # Dynamic Backend
 
 
-ivy.dynamic_backend = True
+ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else True
 
 
 def set_dynamic_backend(flag):
@@ -1282,6 +1420,13 @@ GLOBAL_PROPS = [
     "shape_array_mode",
     "dynamic_backend",
     "precise_mode",
+    "soft_device_mode",
+    "logging_mode",
+    "default_dtype",
+    "default_float_dtype",
+    "default_int_dtype",
+    "default_complex_dtype",
+    "default_uint_dtype",
 ]
 
 
@@ -1298,7 +1443,40 @@ INTERNAL_FILENAMES = [
 
 
 def _is_from_internal(filename):
-    return ivy.any([fn in filename for fn in INTERNAL_FILENAMES])
+    return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
+
+
+class LoggingMode:
+    logging_modes = ["DEBUG", "INFO", "WARNING", "ERROR"]
+    logging_mode_stack = []
+
+    def __init__(self):
+        # Set up the initial logging mode
+        logging.basicConfig(level=logging.WARNING)
+        self.logging_mode_stack.append(logging.WARNING)
+
+    def set_logging_mode(self, mode):
+        """
+        Set the current logging mode for Ivy.
+
+        Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
+        """
+        assert (
+            mode in self.logging_modes
+        ), "Invalid logging mode. Choose from: " + ", ".join(self.logging_modes)
+
+        # Update the logging level
+        logging.getLogger().setLevel(mode)
+        self.logging_mode_stack.append(mode)
+
+    def unset_logging_mode(self):
+        """Remove the most recently set logging mode, returning to the previous one."""
+        if len(self.logging_mode_stack) > 1:
+            # Remove the current mode
+            self.logging_mode_stack.pop()
+
+            # Set the previous mode
+            logging.getLogger().setLevel(self.logging_mode_stack[-1])
 
 
 class IvyWithGlobalProps(sys.modules[__name__].__class__):
@@ -1314,4 +1492,13 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 
-sys.modules[__name__].__class__ = IvyWithGlobalProps
+if (
+    "ivy" in sys.modules.keys()
+    and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
+):
+    # Required for ivy.with_backend internal compilation
+    sys.modules["ivy"].utils._importlib.import_cache[
+        __name__
+    ].__class__ = IvyWithGlobalProps
+else:
+    sys.modules[__name__].__class__ = IvyWithGlobalProps

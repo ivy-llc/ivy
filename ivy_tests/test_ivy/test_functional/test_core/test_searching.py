@@ -67,15 +67,13 @@ def test_argmax(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
-    ground_truth_backend,
+    on_device
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -102,15 +100,13 @@ def test_argmin(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
-    ground_truth_backend,
+    on_device
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -142,15 +138,13 @@ def test_nonzero(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
-    ground_truth_backend,
+    on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -164,22 +158,13 @@ def test_nonzero(
     fn_tree="functional.ivy.where",
     broadcastables=_broadcastable_trio(),
 )
-def test_where(
-    *,
-    broadcastables,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
     cond, xs, dtypes = broadcastables
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=["bool"] + dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         condition=cond,
@@ -192,22 +177,14 @@ def test_where(
 @handle_test(
     fn_tree="functional.ivy.argwhere",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    ground_truth_backend="torch",
 )
-def test_argwhere(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_argwhere(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend="torch",
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],

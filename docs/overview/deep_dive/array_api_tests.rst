@@ -13,12 +13,12 @@ Array API Tests
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
-.. _`here`: https://unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
+.. _`here`: https://unify.ai/docs/ivy/overview/contributing/the_basics.html#running-tests-locally
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
-.. _`ivy tests`: https://unify.ai/docs/ivy/deep_dive/ivy_tests.html
-.. _`final section`: https://unify.ai/docs/ivy/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`ivy tests`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
+.. _`final section`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
+.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_.
 These tests check that all ivy backend libraries behave according to the `Array API Standard`_ which was established in May 2020 by a group of maintainers.
@@ -28,7 +28,7 @@ Since Ivy aims to unify machine learning frameworks, it makes sense that we valu
 The test suite is included in the ivy repository as a submodule in the folder `test_array_api`_, which we keep updated with the upstream test suite.
 The array-api tests repository is maintained by a group of developers unconnected to Ivy.
 We have made the decision to import the test suite directly from this repository rather than having our own fork.
-This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy master branch.
+This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy main branch.
 Instead, the change must be made to the array-api repository directly and then our submodule must be updated with the commands:
 
 .. code-block:: none
@@ -39,7 +39,7 @@ Instead, the change must be made to the array-api repository directly and then o
         # pulls changes from upstream remote repo and merges them
         git submodule update --recursive --remote --merge
 
-and only *then* can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the source array-api repository.
+and only *then* can changes to the submodule be pushed to ivy-main, i.e. only when these changes exist in the source array-api repository.
 See the `git website`_ for further information on working with submodules.
 
 Running the Tests
@@ -153,7 +153,7 @@ You may also need to include the hypothesis import of `reproduce_failure` as sho
 
 The test should then include the inputs which led to the previous failure and recreate it.
 If you are taking the :code:`@reproduce_failure` decorator from a CI stack trace and trying to reproduce it locally, you may find that sometimes the local test unexpectedly passes.
-This is usually caused by a discrepancy in your local source code and ivy-master, so try pulling from master to sync the behaviour.
+This is usually caused by a discrepancy in your local source code and ivy-main, so try pulling from main to sync the behaviour.
 
 Test Skipping
 -------------
@@ -205,6 +205,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `a
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
     </iframe>

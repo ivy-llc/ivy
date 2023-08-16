@@ -33,15 +33,19 @@ def _fn4(x: Union[Sequence[ivy.Array], ivy.Array]):
         (_fn4, [1, 2], list),
     ],
 )
-def test_handle_array_like_without_promotion(fn, x, expected_type):
+def test_handle_array_like_without_promotion(fn, x, expected_type, backend_fw):
+    ivy.set_backend(backend_fw)
     assert isinstance(handle_array_like_without_promotion(fn)(x), expected_type)
+    ivy.previous_backend()
 
 
-def test_outputs_to_ivy_arrays():
+def test_outputs_to_ivy_arrays(backend_fw):
+    ivy.set_backend(backend_fw)
     assert isinstance(
         ivy.outputs_to_ivy_arrays(_fn1)(ivy.to_native(ivy.array([2.0]))), ivy.Array
     )
     assert ivy.outputs_to_ivy_arrays(_fn1)(ivy.array(1)) == ivy.array(1)
+    ivy.previous_backend()
 
 
 def _fn5(x):
@@ -49,8 +53,10 @@ def _fn5(x):
     assert isinstance(x, ivy.NativeArray)
 
 
-def test_inputs_to_native_arrays():
+def test_inputs_to_native_arrays(backend_fw):
+    ivy.set_backend(backend_fw)
     ivy.inputs_to_native_arrays(_fn5)(ivy.array(1))
+    ivy.previous_backend()
 
 
 def _fn6(x):
@@ -58,8 +64,10 @@ def _fn6(x):
     assert isinstance(x, ivy.Array)
 
 
-def test_inputs_to_ivy_arrays():
+def test_inputs_to_ivy_arrays(backend_fw):
+    ivy.set_backend(backend_fw)
     ivy.inputs_to_ivy_arrays(_fn6)(ivy.native_array(1))
+    ivy.previous_backend()
 
 
 def _fn7(x):
@@ -68,29 +76,12 @@ def _fn7(x):
     return x
 
 
-def test_to_native_arrays_and_back():
+def test_to_native_arrays_and_back(backend_fw):
+    ivy.set_backend(backend_fw)
     x = ivy.array(1.0)
     res = ivy.func_wrapper.to_native_arrays_and_back(_fn7)(x)
     assert isinstance(res, ivy.Array)
-
-
-@pytest.mark.parametrize(
-    ("x", "expected"),
-    [
-        (1, 1.0),
-        ([1, 3], [1.0, 3.0]),
-        (
-            [[[1, 0], [-2, 1.0]]],
-            [[[1.0, 0.0], [-2.0, 1.0]]],
-        ),
-    ],
-)
-def test_integer_arrays_to_float(x, expected):
-    # Todo: Fix dtype issue (update: fixed)
-    x = ivy.array(x)
-    expected = ivy.array(expected)
-
-    assert ivy.array_equal(ivy.func_wrapper.integer_arrays_to_float(_fn1)(x), expected)
+    ivy.previous_backend()
 
 
 @pytest.mark.parametrize(
@@ -108,7 +99,8 @@ def test_integer_arrays_to_float(x, expected):
         ),
     ],
 )
-def test_handle_mixed_function(x, weight, expected):
+def test_handle_partial_mixed_function(x, weight, expected, backend_fw):
+    ivy.set_backend(backend_fw)
     test_fn = "torch.nn.functional.linear"
     if ivy.current_backend_str() != "torch":
         # ivy.matmul is used inside the compositional implementation
@@ -117,13 +109,15 @@ def test_handle_mixed_function(x, weight, expected):
     with patch(test_fn) as test_mock_function:
         ivy.linear(ivy.array(x), ivy.array(weight))
         assert test_mock_function.called == expected
+    ivy.previous_backend()
 
 
 @pytest.mark.parametrize(
     "array_to_update",
     [0, 1, 2, 3, 4],
 )
-def test_views(array_to_update):
+def test_views(array_to_update, backend_fw):
+    ivy.set_backend(backend_fw)
     a = ivy.random.random_normal(shape=(6,))
     a_copy = ivy.copy_array(a)
     b = a.reshape((2, 3))
@@ -145,3 +139,65 @@ def test_views(array_to_update):
     assert np.allclose(c, c_copy + 1)
     assert np.allclose(d, d_copy + 1)
     assert np.allclose(e[0], e_copy + 1)
+    ivy.previous_backend()
+
+
+def _fn8(x):
+    return ivy.ones_like(x)
+
+
+def _jl(x, *args, fn_original, **kwargs):
+    return fn_original(x) * 3j
+
+
+@pytest.mark.parametrize(
+    ("x", "mode", "jax_like", "expected"),
+    [
+        ([3.0, 7.0, -5.0], None, None, [1.0, 1.0, 1.0]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], None, None, [1 + 0j, 1 + 0j, 1 + 0j]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "split", None, [1 + 1j, 1 + 1j, 1 + 1j]),
+        (
+            [3 + 4j, 7 - 6j, -5 - 2j],
+            "magnitude",
+            None,
+            [0.6 + 0.8j, 0.75926 - 0.65079j, -0.92848 - 0.37139j],
+        ),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", None, [1 + 0j, 1 + 0j, 1 + 0j]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", "entire", [1 + 0j, 1 + 0j, 1 + 0j]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", "split", [1 + 1j, 1 + 1j, 1 + 1j]),
+        (
+            [3 + 4j, 7 - 6j, -5 - 2j],
+            "jax",
+            "magnitude",
+            [0.6 + 0.8j, 0.75926 - 0.65079j, -0.92848 - 0.37139j],
+        ),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", _jl, [3j, 3j, 3j]),
+    ],
+)
+def test_handle_complex_input(x, mode, jax_like, expected, backend_fw):
+    ivy.set_backend(backend_fw)
+    x = ivy.array(x)
+    expected = ivy.array(expected)
+    if jax_like is not None:
+        _fn8.jax_like = jax_like
+    elif hasattr(_fn8, "jax_like"):
+        # _fn8 might have the jax_like attribute still attached from previous tests
+        delattr(_fn8, "jax_like")
+    test_fn = ivy.handle_complex_input(_fn8)
+    out = test_fn(x) if mode is None else test_fn(x, complex_mode=mode)
+    if "float" in x.dtype:
+        assert ivy.all(out == expected)
+    else:
+        assert ivy.all(
+            ivy.logical_or(
+                ivy.real(out) > ivy.real(expected) - 1e-4,
+                ivy.real(out) < ivy.real(expected) + 1e-4,
+            )
+        )
+        assert ivy.all(
+            ivy.logical_or(
+                ivy.imag(out) > ivy.imag(expected) - 1e-4,
+                ivy.imag(out) < ivy.imag(expected) + 1e-4,
+            )
+        )
+    ivy.previous_backend()

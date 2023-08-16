@@ -3,7 +3,12 @@
     <module name="ivy" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
-    <option name="SDK_HOME" value="docker://ivydl/ivy:latest/python3" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="PYTHONPATH" value="/opt/fw/numpy:/opt/fw/jax:/opt/fw/tensorflow:/opt/fw/torch:/opt/fw/paddle:/opt/fw/mxnet" />
+    </envs>
+    <option name="SDK_HOME" value="python" />
+    <option name="SDK_NAME" value="Remote Python 3.10.0 Docker (unifyai/ivy:latest)" />
     <option name="WORKING_DIRECTORY" value="" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -24,12 +29,12 @@
         <list />
       </option>
       <option name="publishAllPorts" value="false" />
-      <option name="runCliOptions" value="--entrypoint= --rm " />
+      <option name="runCliOptions" value="--entrypoint= --rm" />
       <option name="version" value="2" />
       <option name="volumeBindings">
         <list>
           <DockerVolumeBindingImpl>
-            <option name="containerPath" value="/ivy" />
+            <option name="containerPath" value="/opt/project" />
             <option name="editable" value="true" />
             <option name="hostPath" value="$PROJECT_DIR$" />
             <option name="readOnly" value="false" />
@@ -42,7 +47,7 @@
     <option name="_new_parameters" value="&quot;&quot;" />
     <option name="_new_additionalArguments" value="&quot;&quot;" />
     <option name="_new_target" value="&quot;&quot;" />
-    <option name="_new_targetType" value="&quot;PATH&quot;" />
+    <option name="_new_targetType" value="&quot;PYTHON&quot;" />
     <method v="2" />
   </configuration>
 </component>

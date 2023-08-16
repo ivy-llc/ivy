@@ -353,8 +353,8 @@ class _ArrayWithManipulation(abc.ABC):
     def squeeze(
         self: ivy.Array,
         /,
-        axis: Union[int, Sequence[int]],
         *,
+        axis: Optional[Union[int, Sequence[int]]],
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -391,7 +391,7 @@ class _ArrayWithManipulation(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[[0.],[ 1.]]])
-        >>> y = x.squeeze(2)
+        >>> y = x.squeeze(axis=2)
         >>> print(y)
         ivy.array([[0., 1.]])
         """

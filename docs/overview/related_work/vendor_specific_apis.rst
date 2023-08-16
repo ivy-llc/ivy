@@ -13,10 +13,10 @@ Vendor-Specific APIs
 .. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
 .. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
-.. |tensorrt| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/tensorrt.png
+.. |tensorrt| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/vendor_specific_apis/tensorrt.png
     :height: 15pt
     :class: dark-light
-.. |cuda| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/cuda.png
+.. |cuda| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/vendor_specific_apis/cuda.png
     :height: 20pt
     :class: dark-light
 

@@ -9,6 +9,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,10 +20,12 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -145,10 +149,12 @@ def unique_all(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -238,20 +244,25 @@ def unique_inverse(
     ...                   b=ivy.array([3, 2, 6, 3, 7, 4, 9]))
     >>> y = ivy.ivy.unique_inverse(x)
     >>> print(y)
-    {
-        a: (list[2], <class ivy.array.array.Array> shape=[5]),
-        b: (list[2], <class ivy.array.array.Array> shape=[6])
-    }
+    [{
+        a: ivy.array([1., 3., 4., 5., 7.]),
+        b: ivy.array([2, 3, 4, 6, 7, 9])
+    }, {
+        a: ivy.array([0, 2, 1, 3, 1, 4]),
+        b: ivy.array([1, 0, 3, 1, 4, 2, 5])
+    }]
     """
     return ivy.current_backend(x).unique_inverse(x)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -318,13 +329,17 @@ def unique_values(
 
     Examples
     --------
+    With :class:`ivy.Array` inputs:
+
     >>> import ivy
     >>> a = ivy.array([1, 1, 2, 2, 3, 4, 4, 5])
     >>> ivy.unique_values(a)
     array([1, 2, 3, 4, 5])
+
     >>> b = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.unique_values(b)
     array([1, 2, 3, 4, 5])
+
     >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'),
     ...                float('nan')])
     >>> ivy.unique_values(c)
@@ -335,10 +350,12 @@ def unique_values(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

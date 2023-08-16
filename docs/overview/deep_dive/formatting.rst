@@ -2,125 +2,195 @@ Formatting
 ==========
 
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
-.. _`pre-commit guide`: https://unify.ai/docs/ivy/contributing/setting_up.html#pre-commit
+.. _`black`: https://black.readthedocs.io/en/stable/index.html
+.. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 .. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
 .. _`formatting forum`: https://discord.com/channels/799879767196958751/1028297504820838480
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
+Currently Ivy follows `black`_ code style, and `flake8`_ formatter in order to ensure that our code is consistent,
+readable and bug free. This deep-dive will explain how to use these tools to ensure that your code is formatted
+correctly.
+
+Please ensure to conform to the formatting rules before submitting a pull request. You are encouraged to take a look
+these coding style guides before you start contributing to Ivy.
+
 Lint Checks
 -----------
 
-To ensure that Ivy is always formatted correctly, `flake8`_ is used to run lint checks on all Python files in the `CI <https://github.com/unifyai/ivy/blob/ff7d40e7f1e6ea5b48b7b460013c011cd7752a0e/.github/workflows/lint.yml>`_.
-Some of the main things which `flake8`_ checks for are listed below.
+In addition to `black`_ and `flake8`_, Ivy uses other linters to help automate the formatting process, specially for
+issues `flake8`_ detects but doesn't fix automatically. In addition to that, we validate docstring as part of our
+linting process. You can learn more about our docstring formatting in the :ref:`Docstrings` section.
 
-**Imports**
+We use the following linters:
 
-Module imports are checked to detect:
+* `black`_
+* `flake8`_
+* `autoflake <https://github.com/PyCQA/autoflake>`_
+* `docformatter <https://github.com/PyCQA/docformatter>`_
+* `pydocstyle <https://github.com/pycqa/pydocstyle>`_
+* `ivy-lint <https://github.com/unifyai/lint-hook>`_ (WIP 🚧)
 
-* unused imports
-* module imported but not used
-* module used without imports
-* duplicate imports
-* undefined import names
+You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/main/setup.cfg>`_
+file.
 
-**Syntax**
+Setup Formatting Locally
+------------------------
 
-Flake8 is useful in detecting syntax errors, which are one of the most common mistakes.
-Some examples are:
+Pre-commit
+~~~~~~~~~~
 
-* :code:`break` or :code:`continue` statement outside a :code:`for` or :code:`while` loop
-* :code:`continue` statement in the :code:`finally` block of a loop
-* :code:`yield` or :code:`yield from` statement outside a function
-* :code:`return` statement used with arguments in a generator, or outside a function or method
-* :code:`except:` block not being the last exception handler
-* syntax or length errors in docstrings, comments, or annotations
+To centralize the formatting process, we use `pre-commit <https://pre-commit.com/>`_. This tool allows us to run all
+the checks written in the `.pre-commit-config.yaml <https://github.com/unifyai/ivy/blob/main/.pre-commit-config.yaml>`_
+file.
 
-**Literals**
+Pre-commit can run alone or as a git hook. To install it, you can run the following command:
 
-Literals formatting are often used in a string statement; some common checks related to this are:
+.. code-block:: bash
 
-* invalid :code:`%` format
-* :code:`%` format with missing arguments or unsupported character
-* :code:`.format(...)` with invalid format, missing or unused arguments
-* f-string without placeholders
+    pip install pre-commit
 
-**Others**
+Once you have installed pre-commit, you can install the git hook by running the following command:
 
-There are many more types of checks which :code:`flake8` can perform.
-These include but are not limited to:
+.. code-block:: bash
 
-* repeated :code:`dict` key or variable assigned to different values
-* star-unpacking assignment with too many expressions
-* assertion test is a :code:`tuple`, which is always :code:`true`
-* use of :code:`==` or :code:`!=` to compare :code:`str`, :code:`bytes` or :code:`int` literals
-* :code:`raise NotImplemented` should be :code:`raise NotImplementedError`
+    pre-commit install
 
-Pre-Commit Hook
----------------
+This will install the git hook and will run the checks before you commit your code. If you want to run the checks
+manually, you can run the following command:
 
-In Ivy, we try our best to avoid committing code with lint errors.
-To achieve this, we make use of the pre-commit package.
-The installation is explained in the `pre-commit guide`_.
+.. code-block:: bash
 
-The pre-commit hook runs the :code:`flake8` lint checks before each commit.
-This is efficient and useful in preventing errors being pushed to the repository.
+    pre-commit run --all-files
 
-In the case where errors are found, error messages will be raised and committing will be unsuccessful until the mistake is corrected.
-If the errors are related to argument formatting, it will be reformatted automatically.
+This will run all the required checks and will show you the output of each check.
 
-For example, the line length limit might be exceeded if arguments are all added in a single line of code like so:
+Also when you make a commit, pre-commit will run the required checks and will show you the output of each check. If
+there are any errors, it will not allow you to commit your code. You can fix the errors and commit again.
 
-.. code-block:: python
+You should expect to see something similar to the following output when you run the checks:
 
-    def argwhere(
-        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+.. code-block:: text
 
-When a commit is attempted, `pre-commit` would detect this error by running the lint check, and it would then reformat the arguments automatically.
+    [INFO] Stashing unstaged files to ~/.cache/pre-commit/patch1687898304-8072.
+    black....................................................................Passed
+    autoflake................................................................Passed
+    flake8...................................................................Passed
+    docformatter.............................................................Passed
+    pydocstyle...............................................................Passed
+    [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
+    [formatting-docs 3516aed563] Test commit
+    1 file changed, 1 insertion(+)
 
-.. code-block:: none
+If something goes wrong, you will see the following output:
 
+.. code-block:: text
+
+    [INFO] Stashing unstaged files to ~/.cache/pre-commit/patch1687898304-8072.
     black....................................................................Failed
     - hook id: black
     - files were modified by this hook
 
-    reformatted ivy/functional/ivy/general.py
+    reformatted ivy/stateful/activations.py
 
     All done! ✨ 🍰 ✨
     1 file reformatted.
 
+    autoflake................................................................Passed
     flake8...................................................................Passed
+    docformatter.............................................................Passed
+    pydocstyle...............................................................Passed
+    [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
 
-The above message indicates that a file disobeying the formatting rules is detected and reformatting has taken place successfully.
-The correctly formatted code, with each argument added on a new line, has been saved and the related file(s) can now be staged and committed accordingly.
+You will notice that some files have changed if you checked ``git status``, you'll need to add them and commit again.
 
-.. code-block:: python
+VS Code
+~~~~~~~
 
-    def argwhere(
-        x: Union[ivy.Array, ivy.NativeArray],
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+There are some helpful extensions for VS Code that can detect and format your code according to our style guide. Here
+is the list of extensions that we recommend:
 
+* `Black Formatter <https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter>`_
+* `Flake8 Extension <https://marketplace.visualstudio.com/items?itemName=ms-python.flake8>`_
 
-If the code is all formatted correctly, then in this case `pre-commit` will not modify the code.
-For example, when the line limit is not exceeded by the function arguments, then the arguments should indeed be listed on the same line, together with the function :code:`def(...)` syntax, as shown below.
+PyCharm
+~~~~~~~
 
-.. code-block:: python
+Unfortunately, PyCharm doesn't have formatting extensions like VS Code. We don't have specific instructions for PyCharm
+but you can use the following links to set up the formatting:
 
-    def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
+* `Akshay Jain's article on Pycharm + Black with Formatting on Auto-save
+  <https://akshay-jain.medium.com/pycharm-black-with-formatting-on-auto-save-4797972cf5de>`_
 
-This would pass the lint checks, and :code:`pre-commit` would allow the code to be committed without error.
+Common Issues with Pre-Commit
+-----------------------------
 
-.. code-block:: none
+As pre-commit hook runs before each commit, when it fails it provides an error message that's readable on terminals
+but not on IDE GUIs. So you might see a cryptic error message like one of the following:
 
-    black....................................................................Passed
-    flake8...................................................................Passed
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/formatting/vscode_error.png?raw=true
+   :alt: git commit error in VS Code
 
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/formatting/pycharm_error.png?raw=true
+   :alt: git commit error in PyCharm
+
+We recommend you commit your code from the terminal when you contribute to Ivy. But if you want to commit from your IDE,
+you can always either click on "Show Command Output" or "Show details in console" to see the error message.
+
+And be aware that some of the linters we use format your code automatically like ``black`` and ``autoflake``. So you
+will need to add the changes to your commit and commit again.
+
+Continuous Integration
+----------------------
+
+We have multiple GitHub actions to check and fix the formatting of the code. They can be divided into lint checks and
+lint formatting (or lint-bot).
+
+All the check we do are made by pre-commit, you don't need to worry about lint errors arising from the CI checks that
+are not caught by pre-commit.
+
+Lint Checks
+~~~~~~~~~~~
+
+We have a GitHub action that runs:
+
+1. Every commit
+2. Every pull request
+
+The important check is the one that runs on every pull request. You should expect this check to pass if you have
+pre-commit correctly set up. Note that you can also reformat your code directly from GitHub making a comment with
+``ivy-gardener``, we will go through more details about it in the next section.
+
+Lint Formatting
+~~~~~~~~~~~~~~~
+
+We have a GitHub action that runs:
+
+1. Every day at 08:00 UTC
+2. Manually invoked by making a comment with ``ivy-gardener`` on a PR
+
+The first action is to ensure that the code in the whole codebase is always formatted correctly. The second action 
+is to reformat the files you changed in your PR directly on GitHub. This is useful in case if you didn't setup 
+pre-commit correctly or if you or one of our maintainers want to reformat your code remotely.
+
+Under the hood, when ``ivy-gardener`` is found in a comment, a ivy bot will trigger the same set of lint checks 
+as in the pre-commit process. Then the suggested changes produced in the checks will be applied automatically as
+a new commit if there is any. 
+
+However, it is possible for the linters run in the ``ivy-gardener`` and the GitHub action every day to face 
+formatting errors that need human intervention like typos and uninitialized arguments. In this case, errors will 
+be thrown by the linters and by the lint checks that runs later, while fixes to other simpler errors will still 
+be applied by the ``ivy-gardener`` properly.
+
+On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes 
+suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you 
+should try give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it 
+another try, or manually resolve the formatting errors by commiting the changes yourself.
 
 **Round Up**
 
-This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
+This should have hopefully given you a good feel for what is our coding style and how to format your code to contribute
+to Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `formatting channel`_ or in the `formatting forum`_!
 
@@ -128,6 +198,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 
 .. raw:: html
 
-    <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/zfO1l71GZuM" class="video">
+    <iframe width="420" height="315" allow="fullscreen;"
+    src="https://www.youtube.com/embed/JXQ8aI8vJ_8" class="video">
     </iframe>

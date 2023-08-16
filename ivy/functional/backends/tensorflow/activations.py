@@ -13,25 +13,22 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def gelu(
     x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.gelu(x, approximate)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def leaky_relu(
     x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
@@ -42,14 +39,16 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.sigmoid(x)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.softmax(x, axis)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "bfloat16", "float32", "float64")}, backend_version
+)
 def softplus(
     x: Tensor,
     /,
@@ -69,41 +68,14 @@ def softplus(
     return res
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def log_softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ):
     return tf.nn.log_softmax(x, axis)
 
 
-def deserialize(
-    name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
-) -> Union[ivy.Callable, None]:
-    return tf.keras.activations.deserialize(name, custom_objects)
-
-
-def get(
-    identifier: Union[str, ivy.Callable, None],
-    /,
-    *,
-    custom_objects: Optional[ivy.Dict] = None,
-) -> Union[ivy.Callable, None]:
-    if identifier is None:
-        return tf.keras.activations.linear
-
-    if isinstance(identifier, str):
-        identifier = str(identifier)
-        return ivy.deserialize(identifier, custom_objects=custom_objects)
-
-    elif callable(identifier):
-        return identifier
-    else:
-        raise TypeError(
-            f"Could not interpret activation function identifier: {identifier}"
-        )
-
-
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def mish(
     x: Tensor,
     /,
@@ -111,3 +83,8 @@ def mish(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return x * tf.math.tanh(tf.math.softplus(x))
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return x * tf.nn.relu6(x + 3) / 6

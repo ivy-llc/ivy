@@ -85,3 +85,76 @@ def indices(
     sparse: bool = False,
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
     return np.indices(dimensions, dtype=dtype, sparse=sparse)
+
+
+def unsorted_segment_min(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    if data.dtype in [np.float32, np.float64]:
+        init_val = np.finfo(data.dtype).max
+    elif data.dtype in [np.int32, np.int64, np.int8, np.int16, np.uint8]:
+        init_val = np.iinfo(data.dtype).max
+    else:
+        raise ValueError("Unsupported data type")
+
+    res = np.full((num_segments,) + data.shape[1:], init_val, dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if np.any(mask_index):
+            res[i] = np.min(data[mask_index], axis=0)
+
+    return res
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if size < 2:
+        return np.ones([size], dtype=dtype)
+    if periodic:
+        count = np.arange(size) / size
+    else:
+        count = np.linspace(start=0, stop=size, num=size)
+
+    return (
+        (0.42 - 0.5 * np.cos(2 * np.pi * count))
+        + (0.08 * np.cos(2 * np.pi * 2 * count))
+    ).astype(dtype)
+
+
+blackman_window.support_native_out = False
+
+def unsorted_segment_sum(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    res = np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if np.any(mask_index):
+            res[i] = np.sum(data[mask_index], axis=0)
+
+    return res
+

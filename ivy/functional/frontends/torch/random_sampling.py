@@ -17,6 +17,11 @@ def manual_seed(seed: int):
     return None
 
 
+@to_ivy_arrays_and_back
+def set_rng_state(new_state):
+    return ivy.seed(seed_value=new_state)
+
+
 @with_supported_dtypes(
     {
         "2.0.1 and below": (
@@ -66,7 +71,7 @@ def randint(
     dtype=None,
     layout=None,
     device=None,
-    requires_grad=False
+    requires_grad=False,
 ):
     seed = generator.initial_seed() if generator is not None else None
     return ivy.randint(
@@ -82,16 +87,25 @@ def randint(
 
 @to_ivy_arrays_and_back
 def rand(
-    size,
-    *,
+    *size,
     generator=None,
     out=None,
     dtype=None,
     layout=None,
     device=None,
     requires_grad=False,
-    pin_memory=False
+    pin_memory=False,
+    **kwargs,
 ):
+    if not size and "size" not in kwargs:
+        raise ValueError("Missing 1 required positional/keyword argument: size")
+    size = kwargs["size"] if not size else size
+    if (
+        isinstance(size, (list, tuple))
+        and len(size) == 1
+        and isinstance(size[0], (list, tuple))
+    ):
+        size = size[0]
     seed = generator.initial_seed() if generator is not None else None
     return ivy.random_uniform(
         shape=size,
@@ -125,7 +139,7 @@ def rand_like(
     layout=None,
     device=None,
     requires_grad=False,
-    memory_format=False
+    memory_format=False,
 ):
     shape = input.shape
     if not dtype:
@@ -140,16 +154,25 @@ def rand_like(
 
 @to_ivy_arrays_and_back
 def randn(
-    size,
-    *,
+    *size,
     generator=None,
     out=None,
     dtype=None,
     layout=None,
     device=None,
     requires_grad=False,
-    pin_memory=False
+    pin_memory=False,
+    **kwargs,
 ):
+    if not size and "size" not in kwargs:
+        raise ValueError("Missing 1 required positional/keyword argument: size")
+    size = kwargs["size"] if not size else size
+    if (
+        isinstance(size, (list, tuple))
+        and len(size) == 1
+        and isinstance(size[0], (list, tuple))
+    ):
+        size = size[0]
     seed = generator.initial_seed() if generator is not None else None
     return ivy.random_normal(
         shape=size,
@@ -168,7 +191,7 @@ def randn_like(
     layout=None,
     device=None,
     requires_grad=False,
-    memory_format=None
+    memory_format=None,
 ):
     shape = input.shape
     if not dtype:
@@ -206,9 +229,32 @@ def randperm(
     layout=None,
     device=None,
     requires_grad=False,
-    pin_memory=False
+    pin_memory=False,
 ):
     seed = generator.initial_seed() if generator is not None else None
     arr = ivy.arange(n, device=device, dtype=dtype)
     ret = ivy.shuffle(arr, seed=seed, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def randint_like(
+    input,
+    low,
+    high,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None,
+):
+    shape = input.shape
+
+    return ivy.randint(
+        low,
+        high,
+        shape=shape,
+        device=device,
+        dtype=dtype,
+    )

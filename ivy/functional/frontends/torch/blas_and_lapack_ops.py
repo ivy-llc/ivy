@@ -140,6 +140,10 @@ def mm(input, mat2, *, out=None):
     return ivy.matmul(input, mat2, out=out)
 
 
+# alias to fix mm transpilation issue as mm() gets mapped to spmm() after transpilation
+spmm = mm
+
+
 @to_ivy_arrays_and_back
 def mv(input, vec, *, out=None):
     if len(ivy.shape(input)) != 2 or len(ivy.shape(vec)) != 1:

@@ -1,31 +1,34 @@
 Function Wrapping
 =================
 
-.. _`wrapped`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L340
-.. _`abs`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/functional/ivy/elementwise.py#L2142
-.. _`creation submodule`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/functional/ivy/creation.py
-.. _`zeros`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/functional/ivy/creation.py#L158
-.. _`asarray`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/functional/ivy/creation.py#L110
-.. _`inputs_to_native_arrays`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L62
-.. _`inputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L104
-.. _`outputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L134
-.. _`to_native_arrays_and_back`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L164
-.. _`infer_dtype`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L176
-.. _`infer_device`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L213
-.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L250
-.. _`handle_nestable`: https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L297
+.. _`wrapped`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/utils/backend/handler.py#L259
+.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L965
+.. _`abs`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/elementwise.py#L28
+.. _`creation submodule`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py
+.. _`zeros`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py#L482
+.. _`asarray`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py#L383
+.. _`inputs_to_native_arrays`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L405
+.. _`inputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L445
+.. _`outputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L525
+.. _`to_native_arrays_and_back`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L595
+.. _`infer_dtype`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L725
+.. _`infer_device`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L763
+.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L800
+.. _`handle_nestable`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L896
+.. _`inputs_to_native_shapes`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L488
+.. _`outputs_to_ivy_shapes`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L501
+.. _`handle_view`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L627
+.. _`handle_view_indexing`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L659 
+.. _`handle_array_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L299
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function wrapping channel`: https://discord.com/channels/799879767196958751/982737993028755496
 .. _`function wrapping forum`: https://discord.com/channels/799879767196958751/1028297461611122809
-.. _`integer_array_to_float`: https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/ivy/func_wrapper.py#L244
-.. _`handle_cmd_line_args`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/helpers.py#L3081
-.. _`corresponding flags`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/conftest.py#L174
-.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L923
-.. _`stored as an attribute`: https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L701
-.. _`ivy.linear`: https://github.com/unifyai/ivy/blob/7a8fc1ea4eca6d061ae7a3efd1814518d4a6016f/ivy/functional/ivy/layers.py#L172
-.. _`handle_exceptions`: https://github.com/unifyai/ivy/blob/40c3f381043d1c470fb4f04a0a5fd380a8a95130/ivy/utils/exceptions.py#L189
+.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L944
+.. _`stored as an attribute`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L1054
+.. _`ivy.linear`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/layers.py#L81
+.. _`handle_exceptions`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/utils/exceptions.py#L189
+.. _`example`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/backends/torch/layers.py#L30
 
 When a backend framework is set by calling :code:`ivy.set_backend(backend_name)`, then all Ivy functions are `wrapped`_.
 This is achieved by calling `_wrap_function`_, which will apply the appropriate wrapping to the given function, based on what decorators it has.
@@ -36,6 +39,33 @@ This is the main purpose of the wrapping, to avoid code duplication which would 
 
 Depending on the function being wrapped, the new function might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
 
+Our test decorators actually transforms to :code:`@given` decorators at Pytest collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
+
+Decorator order
+^^^^^^^^^^^^^^^
+
+The order in which Ivy decorators are applied is important. It is important to follow this order, as the functionality of many functions depends on it. If the decorators are applied in the wrong order, the test may fail or the function may not behave as expected.
+The following is the recommended order to follow :
+
+1.  :code:`@infer_device`
+2.  :code:`@infer_dtype`
+3.  :code:`@handle_array_function`
+4.  :code:`@outputs_to_ivy_arrays`
+5.  :code:`@outputs_to_native_arrays`
+6.  :code:`@inputs_to_native_arrays`
+7.  :code:`@inputs_to_ivy_arrays`
+8.  :code:`@handle_out_argument`
+9.  :code:`@handle_view_indexing`
+10.  :code:`@handle_view`
+11.  :code:`@handle_array_like_without_promotion`
+12.  :code:`@handle_nestable`
+13.  :code:`@handle_exceptions`
+14.  :code:`@with_unsupported_dtypes`
+15.  :code:`@handle_nans`
+16.  :code:`@handle_mixed_function`
+
+This recommended order is followed to ensure that tests are efficient and accurate. It is important to follow this order because the decorators depend on each other. For example, the :code:`@infer_device` decorator needs to be applied before the :code:`@infer_dtype` decorator, because the :code:`@infer_dtype` decorator needs to know the device of the function in order to infer the data type.
+
 Conversion Wrappers
 ^^^^^^^^^^^^^^^^^^^
 
@@ -44,8 +74,6 @@ Conversion Wrappers
 #.  `outputs_to_ivy_arrays`_ : This wrapping function converts all :class:`ivy.NativeArray` instances in the outputs to their :class:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
 #.  `to_native_arrays_and_back`_ : This wrapping function converts all :class:`ivy.Array` instances in the arguments to their :class:`ivy.NativeArray` counterparts, calls the function with those arguments and then converts the :class:`ivy.NativeArray` instances in the output back to :class:`ivy.Array`.
     This wrapping function is heavily used because it enables achieving the objective of ensuring that every ivy function could accept an :class:`ivy.Array` and return an :class:`ivy.Array`, making it independent of the :ref:`Backend Setting`.
-#.  `integer_array_to_float`_: This wrapping function enables conversion of integer array inputs in the positional and keyword arguments to a function to the default float dtype.
-    This is currently used to support integer array arguments to functions for which one or more backend frameworks only non-integer numeric dtypes.
 
 Inference Wrappers
 ^^^^^^^^^^^^^^^^^^
@@ -67,28 +95,38 @@ Out Argument Support
 Nestable Support
 ^^^^^^^^^^^^^^^^
 
-#.  `handle_nestable`_ : This wrapping function enables the use of :class:`ivy.Container` arguments in functions and directly calling them through the :code:`ivy` namespace, just like calling a function with :class:`ivy.Array` arguments instead.
-    Whenever there's a :class:`ivy.Container` argument, this wrapping function defers to the corresponding :ref:`Containers` static method to facilitate the same.
-    As a result, the function can be called by passing an :class:`ivy.Container` to any or all of its arguments.
+#.  `handle_nestable`_ : This wrapping function enables the use of :class:`ivy.Container` arguments in functions and directly calling them through the :code:`ivy` namespace, just like calling a function with :class:`ivy.Array` arguments instead. Thus, the function can be called by passing an :class:`ivy.Container` to any or all of its arguments.
 
 Partial Mixed Function Support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#. `handle_mixed_function`_: This wrapping function enables switching between compositional and primary implementations of :ref:`Mixed Functions` based on some condition on the arguments of the function. The condition is specified through a lambda function which when evaluates to `True` the primary implementation is run and otherwise the compositional implementation is executed. For backends that have a primary implementation of a mixed function, the reference to the compositional implementation is `stored as an attribute`_ inside the backend function during backend setting. To make use of this wrapper, it is necessary to set the `mixed_function` attribute of the function to True, as is done for example in `ivy.linear`_. This attribute also automatically activates the :code:`inputs_to_ivy_arrays` wrapper when calling the compositional implementation of the mixed function, and the :code:`outputs_to_ivy_arrays` and :code:`inputs_to_native_arrays` wrappers when calling the backend implementation. It is therefore preferable to avoid adding those decorators to mixed functions manually.
+#. `handle_partial_mixed_function`_: This wrapping function enables switching between compositional and primary implementations of :ref:`Mixed Functions` based on some condition on the arguments of the function.
+#.  The condition is specified through a lambda function which when evaluates to `True` the primary implementation is run and otherwise the compositional implementation is executed.
+#.  For backends that have a primary implementation of a mixed function, the reference to the compositional implementation is `stored as an attribute`_ inside the backend function during backend setting. To make use of this decorator, one must
+#.  add the :code:`partial_mixed_handler` attribute containing the lambda function to the backend implementation. Here's an `example`_ from the torch backend implementation of linear.
+
+Shape Conversion
+^^^^^^^^^^^^^^^^
+
+#.  `inputs_to_native_shapes`_ : This wrapping function converts all :class:`ivy.Shape` instances in the arguments to their :class:`ivy.NativeShape` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `outputs_to_ivy_shapes`_ : This wrapping function converts all :class:`ivy.NativeShape` instances in the outputs to their :class:`ivy.Shape` counterparts, based on the :ref:`Backend Setting` before calling the function.
+#.  `to_native_shapes_and_back`_ : This wrapping function converts all :class:`ivy.Shape` instances in the arguments to their :class:`ivy.NativeShape` counterparts, calls the function with those arguments and then converts the :class:`ivy.NativeShape` instances in the output back to :class:`ivy.Shape`.
+
+View Handling
+^^^^^^^^^^^^^
+
+#.  `handle_view`_ : This wrapping function performs view handling based on our :ref:`Views` policy.
+#.  `handle_view_indexing`_ : This wrapping function is aimed at handling views for indexing.
 
 Exception Handling 
 ^^^^^^^^^^^^^^^^^^
 
-#. `handle_exceptions`_: This wrapping function helps in catching native exceptions and unifying them into `IvyException` or the relevant subclasses. More information can be found in the :ref:`Exception Handling` section.
+#. `handle_exceptions`_ : This wrapping function helps in catching native exceptions and unifying them into `IvyException` or the relevant subclasses. More information can be found in the :ref:`Exception Handling` section.
 
 Miscellaneous Wrappers 
 ^^^^^^^^^^^^^^^^^^^^^^
 
-#.  `handle_cmd_line_args`_: This wrapping function enables us to arbitrarily sample backend at test time using Hypothesis strategies.
-    This enables us to infer the framework and generate appropriate data types directly inside the :code:`@given` decorator.
-    With this approach in place, it's no longer necessary to check if the data type is supported and skip the test if it's not.
-    Another place wherein this decorator is helpful is when we perform configurable argument testing for the parameters :code:`(as_variable, with_out, native_array, container, instance_method, test_gradients)` through the command line.
-    The `corresponding flags`_ are used to set these values.
+#.  `handle_array_function`_ : This wrapping function enables :ref:`Integrating custom classes with Ivy`
 
 
 When calling `_wrap_function`_ during :ref:`Backend Setting`, firstly the attributes of the functions are checked to get all the wrapping functions for a particular functions.
@@ -108,6 +146,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/-RGXxrP849k" class="video">
     </iframe>

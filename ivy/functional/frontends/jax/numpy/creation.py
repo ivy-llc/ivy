@@ -1,6 +1,6 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.jax.array import Array
 
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -15,7 +15,6 @@ from ivy.func_wrapper import handle_out_argument
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
-    # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
         raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
@@ -23,9 +22,16 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     ret = ivy.array(object, dtype=dtype)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
+
+    default_device = ivy.default_device()
+    ret = ivy.to_device(ret, default_device)
+
     if ret.shape == () and dtype is None:
-        return DeviceArray(ret, weak_type=True)
-    return DeviceArray(ret)
+        return Array(ret, weak_type=True)
+    return Array(ret)
+
+
+ndarray = Array
 
 
 @handle_jax_dtype
@@ -45,13 +51,13 @@ def arange(start, stop=None, step=1, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def zeros(shape, dtype=None):
-    return DeviceArray(ivy.zeros(shape, dtype=dtype))
+    return Array(ivy.zeros(shape, dtype=dtype))
 
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=None):
-    return DeviceArray(ivy.ones(shape, dtype=dtype))
+    return Array(ivy.ones(shape, dtype=dtype))
 
 
 @handle_jax_dtype
@@ -83,7 +89,7 @@ def hstack(tup, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
-    return DeviceArray(ivy.eye(N, M, k=k, dtype=dtype))
+    return Array(ivy.eye(N, M, k=k, dtype=dtype))
 
 
 @to_ivy_arrays_and_back
@@ -94,7 +100,7 @@ def triu(m, k=0):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
-    return DeviceArray(ivy.empty(shape=shape, dtype=dtype))
+    return Array(ivy.empty(shape=shape, dtype=dtype))
 
 
 @to_ivy_arrays_and_back
@@ -144,7 +150,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -169,7 +175,7 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -236,9 +242,7 @@ def compress(condition, a, *, axis=None, out=None):
         axis = 0
     else:
         arr = ivy.moveaxis(a, axis, 0)
-
-    condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
-    if any(extra):
+    if condition_arr.shape[0] > arr.shape[0]:
         raise ivy.utils.exceptions.IvyException(
             "Condition contains entries that are out of bounds"
         )
@@ -258,3 +262,8 @@ def size(a, axis=None):
         sh = ivy.shape(a)
         return sh[axis]
     return a.size
+
+
+@to_ivy_arrays_and_back
+def frombuffer(buffer, dtype="float", count=-1, offset=0):
+    return ivy.frombuffer(buffer, dtype, count, offset)

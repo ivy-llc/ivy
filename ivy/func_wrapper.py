@@ -6,17 +6,20 @@ import weakref
 import warnings
 import copy as python_copy
 from types import FunctionType
-from typing import Callable
+from typing import Callable, Literal
 import inspect
 import numpy as np
+
+from ivy.utils.exceptions import IvyValueError
 
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
+    "handle_complex_input",
     "infer_device",
+    "handle_device_shifting",
     "infer_dtype",
     "handle_array_function",
-    "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
@@ -27,8 +30,10 @@ FN_DECORATORS = [
     "handle_view_indexing",
     "handle_view",
     "handle_array_like_without_promotion",
-    "handle_mixed_function",
+    "handle_partial_mixed_function",
     "handle_nestable",
+    "handle_ragged",
+    "handle_backend_invalid",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -219,17 +224,18 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+    array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
-        arr_idxs = ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(args, arr_idxs[0])
         else:
-            arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
+            arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
             if arr_idxs:
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
@@ -310,43 +316,45 @@ def handle_array_function(fn):
         overloaded_args = []
 
         for arg in args + tuple(kwargs.values()):
-            if ivy.exists(arg) and (
-                not isinstance(arg, ivy.Container)
-                and hasattr(arg, "__ivy_array_function__")
-            ):
-                if type(arg) not in overloaded_types:
-                    overloaded_types.append(type(arg))
-                    if (
-                        arg.__ivy_array_function__
-                        is not ivy.Array.__ivy_array_function__
-                        and not isinstance(arg, (ivy.Array, ivy.NativeArray))
-                    ):
-                        index = len(overloaded_args)
-                        for i, old_arg in enumerate(overloaded_args):
-                            if issubclass(type(arg), type(old_arg)):
-                                index = i
-                                break
-                        overloaded_args.insert(index, arg)
-            if ivy.exists(arg) and isinstance(arg, ivy.Container):
-                arg = ivy.Container.cont_flatten_key_chains(arg)
-                indices = ivy.nested_argwhere(
-                    arg, lambda x: hasattr(x, "__ivy_array_function__")
-                )
-                for a in indices:
-                    if type(getattr(arg, a[0])) not in overloaded_types:
-                        overloaded_types.append(type(getattr(arg, a[0])))
-
-                        if getattr(
-                            arg, a[0]
-                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
-                            getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
+            if ivy.exists(arg):
+                if not isinstance(arg, ivy.Container) and hasattr(
+                    arg, "__ivy_array_function__"
+                ):
+                    if type(arg) not in overloaded_types:
+                        overloaded_types.append(type(arg))
+                        if (
+                            arg.__ivy_array_function__
+                            is not ivy.Array.__ivy_array_function__
+                            and not isinstance(arg, (ivy.Array, ivy.NativeArray))
                         ):
                             index = len(overloaded_args)
                             for i, old_arg in enumerate(overloaded_args):
-                                if issubclass(type(getattr(arg, a[0])), type(old_arg)):
+                                if issubclass(type(arg), type(old_arg)):
                                     index = i
                                     break
                             overloaded_args.insert(index, arg)
+                elif isinstance(arg, ivy.Container):
+                    arg = ivy.Container.cont_flatten_key_chains(arg)
+                    indices = ivy.nested_argwhere(
+                        arg, lambda x: hasattr(x, "__ivy_array_function__")
+                    )
+                    for a in indices:
+                        if type(getattr(arg, a[0])) not in overloaded_types:
+                            overloaded_types.append(type(getattr(arg, a[0])))
+
+                            if getattr(
+                                arg, a[0]
+                            ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
+                                getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
+                            ):
+                                index = len(overloaded_args)
+                                for i, old_arg in enumerate(overloaded_args):
+                                    if issubclass(
+                                        type(getattr(arg, a[0])), type(old_arg)
+                                    ):
+                                        index = i
+                                        break
+                                overloaded_args.insert(index, arg)
 
         success, value = try_array_function_override(
             ivy.__dict__[fn.__name__], overloaded_args, overloaded_types, args, kwargs
@@ -756,42 +764,6 @@ def infer_dtype(fn: Callable) -> Callable:
     return _infer_dtype
 
 
-def integer_arrays_to_float(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _integer_arrays_to_float(*args, **kwargs):
-        """
-        Promote all the integer array inputs passed to the function both as positional
-        or keyword arguments to the default float dtype.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with integer array arguments
-            promoted to default float dtype.
-        """
-
-        def _to_float_array(x):
-            if not ivy.is_array(x) or not ivy.is_int_dtype(x.dtype):
-                return x
-            if ivy.is_ivy_array(x):
-                return ivy.asarray(x, dtype=ivy.default_float_dtype())
-            return ivy.native_array(x, dtype=ivy.default_float_dtype(as_native=True))
-
-        args = ivy.nested_map(args, _to_float_array, to_mutable=True)
-        kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
-        return fn(*args, **kwargs)
-
-    _integer_arrays_to_float.integer_arrays_to_float = True
-    return _integer_arrays_to_float
-
-
 # Device Handling #
 # ----------------#
 
@@ -829,13 +801,51 @@ def infer_device(fn: Callable) -> Callable:
     return _infer_device
 
 
+def handle_device_shifting(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_device_shifting(*args, **kwargs):
+        """
+        Move all array inputs of the function to `ivy.default_device()`.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function.
+        """
+        if ivy.soft_device_mode:
+            return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+        inputs = args + tuple(kwargs.values())
+        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
+        unique_devices = set(devices)
+        # check if arrays are on the same device
+        if len(unique_devices) == 1:
+            with ivy.DefaultDevice(next(iter(unique_devices))):
+                return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+        # raise when arrays are on different devices
+        elif len(unique_devices) > 1:
+            raise ivy.utils.exceptions.IvyException(
+                "Expected all input arrays to be on the same device, "
+                f"but found atleast two devices - {devices}, "
+                "set `ivy.set_soft_device_mode(True)` to handle this problem."
+            )
+        return fn(*args, **kwargs)
+
+    _handle_device_shifting.handle_device_shifting = True
+    return _handle_device_shifting
+
+
 # Inplace Update Handling #
 # ------------------------#
 
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
-    is_compos_fn = "ivy.functional.ivy" in fn.__module__
 
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
@@ -860,7 +870,7 @@ def handle_out_argument(fn: Callable) -> Callable:
             inplace updates.
         """
         nonlocal handle_out_in_backend
-        if out is None or is_compos_fn:
+        if out is None:
             return fn(*args, out=out, **kwargs)
         if ivy.gradients._is_variable(out):
             handle_out_in_backend = False
@@ -872,11 +882,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             ret = fn(*args, out=native_out, **kwargs)
             if isinstance(ret, (tuple, list)):
                 for i in range(len(ret)):
-                    out[i].data = ivy.to_native(ret[i])
+                    ivy.inplace_update(out[i], ret[i])
                     if ivy.backend == "torch":
                         _update_torch_views(out[i])
             else:
-                out.data = ivy.to_native(ret)
+                ivy.inplace_update(out, ret)
                 if ivy.backend == "torch":
                     _update_torch_views(out)
             return out
@@ -975,6 +985,65 @@ def handle_nestable(fn: Callable) -> Callable:
     return _handle_nestable
 
 
+def handle_ragged(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_ragged(*args, **kwargs):
+        """
+        Call `fn` with the *ragged* property of the function correctly handled. This
+        means mapping the function to the RaggedArray arrays if any RaggedArrays are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the ragged property handled correctly.
+        """
+        nested_fn = (
+            lambda *args, **kwargs: ivy.NestedArray.ragged_multi_map_in_function(
+                fn, *args, **kwargs
+            )
+        )
+        if ivy.nested_any(
+            args, ivy.is_ivy_nested_array, check_nests=True
+        ) or ivy.nested_any(kwargs, ivy.is_ivy_nested_array, check_nests=True):
+            return nested_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    _handle_ragged.handle_ragged = True
+    return _handle_ragged
+
+
+# Partial Mixed Function Handling #
+
+
+def handle_partial_mixed_function(fn) -> Callable:
+    @functools.wraps(fn)
+    def _handle_partial_mixed_function(*args, **kwargs):
+        handle_mixed_in_backend = False
+        if not hasattr(fn, "partial_mixed_handler"):
+            handle_mixed_in_backend = True
+        else:
+            compos = getattr(fn, "compos")
+            condition = getattr(fn, "partial_mixed_handler")
+
+        if handle_mixed_in_backend or condition(*args, **kwargs):
+            return fn(*args, **kwargs)
+        return compos(*args, **kwargs)
+
+    _handle_partial_mixed_function.handle_partial_mixed_function = True
+    return _handle_partial_mixed_function
+
+
 # Functions #
 
 
@@ -1023,7 +1092,11 @@ def _wrap_function(
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
-            if attr.startswith("_") or hasattr(ivy, attr):
+            if (
+                attr.startswith("_")
+                or hasattr(ivy, attr)
+                or attr == "mixed_backend_wrappers"
+            ):
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
         # Copy docstring
@@ -1031,36 +1104,40 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
 
-        mixed_fn = (
-            original != to_wrap
-            and hasattr(original, "inputs_to_ivy_arrays")
-            and not original.__name__.startswith("inplace")
+        mixed_fn = hasattr(original, "mixed_backend_wrappers") and original != to_wrap
+        partial_mixed = (
+            mixed_fn
+            and hasattr(original, "handle_partial_mixed_function")
+            and hasattr(to_wrap, "partial_mixed_handler")
         )
+        add_wrappers, skip_wrappers = [], []
+        if mixed_fn:
+            backend_wrappers = getattr(original, "mixed_backend_wrappers")
+            add_wrappers = backend_wrappers.get("to_add")
+            skip_wrappers = backend_wrappers.get("to_skip")
 
         for attr in FN_DECORATORS:
-            if (hasattr(original, attr) and not hasattr(to_wrap, attr)) or (
-                mixed_fn
-                and (
-                    attr
-                    in [
-                        "inputs_to_native_arrays",
-                        "outputs_to_ivy_arrays",
-                        "handle_mixed_function",
-                    ]
-                )
-            ):
-                if mixed_fn:
-                    if attr == "inputs_to_ivy_arrays":
-                        continue
-                    if attr == "handle_mixed_function":
-                        if hasattr(to_wrap, "partial_mixed_handler"):
-                            to_wrap.compos = original
-                            to_wrap = handle_mixed_function(
-                                getattr(to_wrap, "partial_mixed_handler")
-                            )(to_wrap)
-                        continue
+            if hasattr(original, attr) and not hasattr(to_wrap, attr):
+                if partial_mixed and attr == "handle_partial_mixed_function":
+                    to_wrap.compos = original
+                    to_wrap = handle_partial_mixed_function(to_wrap)
+                if attr not in skip_wrappers:
+                    to_wrap = getattr(ivy, attr)(to_wrap)
+            if attr in add_wrappers:
                 to_wrap = getattr(ivy, attr)(to_wrap)
 
+        # we should remove the all the decorators
+        # after handle_mixed_fuction in FN_DECORATORS
+        # from the compos function because these will
+        # be run from the primary implementation.
+        if partial_mixed:
+            array_spec = to_wrap.compos.__dict__["array_spec"]
+            for attr in FN_DECORATORS[
+                -1 : FN_DECORATORS.index("handle_partial_mixed_function") : -1
+            ]:
+                if hasattr(to_wrap.compos, attr):
+                    to_wrap.compos = to_wrap.compos.__wrapped__
+            to_wrap.compos.__dict__["array_spec"] = array_spec
     return to_wrap
 
 
@@ -1189,21 +1266,6 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
 
     def _wrapper_outer(version_dict, version, exclusive=True):
-        typesets = {
-            "valid": ivy.valid_dtypes,
-            "numeric": ivy.valid_numeric_dtypes,
-            "float": ivy.valid_float_dtypes,
-            "integer": ivy.valid_int_dtypes,
-            "unsigned": ivy.valid_uint_dtypes,
-            "complex": ivy.valid_complex_dtypes,
-        }
-        for key, value in version_dict.items():
-            for i, v in enumerate(value):
-                if v in typesets:
-                    version_dict[key] = (
-                        version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
-                    )
-
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
@@ -1327,20 +1389,176 @@ def handle_nans(fn: Callable) -> Callable:
     return _handle_nans
 
 
-def handle_mixed_function(condition) -> Callable:
-    def inner_function(fn):
-        @functools.wraps(fn)
-        def _handle_mixed_function(*args, **kwargs):
-            compos = getattr(_handle_mixed_function, "compos")
-            if condition(*args, **kwargs):
-                return fn(*args, **kwargs)
+# Complex number handling #
+# ----------------------- #
+def handle_complex_input(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_complex_input(
+        inp,
+        *args,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        **kwargs,
+    ):
+        """
+        Check whether the first positional argument is an array of complex type, and if
+        so handle it according to the provided `complex_mode`.
 
-            return compos(*args, **kwargs)
+        The options are:
+        `"jax"` (default): emulate the behaviour of the JAX framework. If the function
+            has a `jax_like` attribute then this will be used to decide on the
+            behaviour (see below) and if not, then the entire array will be passed to
+            the function.
+        `"split"`: execute the function separately on the real and imaginary parts of
+            the input.
+        `"magnitude"`: execute the function on the magnitude of the input, and keep the
+            angle constant.
 
-        _handle_mixed_function.handle_mixed_functions = True
-        return _handle_mixed_function
+        The `jax_like` attribute (which should be added to the function itself, and not
+        passed as a parameter) has the following options:
+        `"entire"` (default): pass the entire input to the function. This is best used
+            for purely mathematical operators which are already well defined on complex
+            inputs, as many backends will throw exceptions otherwise.
+        `"split"`: as the `"split"` option for `complex_mode`
+        `"magnitude"`: as the `"magnitude"` option for `complex_mode`
+        A callable function: the function will be called instead of the originally
+            decorated function. It will be passed `inp` and `*args` as positional
+            arguments, and the original `**kwargs` plus `fn_original` as keyword
+            arguments. The latter is the original function, in case the `jax_like`
+            function wishes to call it.
 
-    return inner_function
+        Parameters
+        ----------
+        inp
+            The first positional argument to the function, which is expected to be an
+            :class:`ivy.Array`.
+        args
+            The remaining positional arguments to be passed to the function.
+        complex_mode
+            Optional argument which specifies the method that will be used to handle
+            the input, if it is complex.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with handling of inputs based
+            on the selected `complex_mode`.
+
+        Examples
+        --------
+        Using the default `jax_like` behaviour
+        >>> @handle_complex_input
+        >>> def my_func(inp):
+        >>>     return ivy.ones_like(inp)
+
+        >>> x = ivy.array([1+1j, 3+4j, 5+12j])
+        >>> my_func(x)  # equivalent to setting complex_mode="jax"
+        ivy.array([1.+0.j, 1.+0.j, 1.+0.j])
+
+        >>> my_func(x, complex_mode="split")
+        ivy.array([1.+1.j, 1.+1.j, 1.+1.j])
+
+        >>> my_func(x, complex_mode="magnitude")
+        ivy.array([0.70710681+0.70710675j, 0.60000001+0.79999999j,
+                   0.38461535+0.92307694j])
+
+        Using non-default `jax_like` behaviour
+        >>> @handle_complex_input
+        >>> def my_func(inp):
+        >>>     return ivy.ones_like(inp)
+        >>> my_func.jax_like = "split"
+        >>> my_func(x, complex_mode="jax")
+        ivy.array([1.+1.j, 1.+1.j, 1.+1.j])
+
+        Using callable `jax_like` behaviour
+        >>> def _my_func_jax_like(inp, fn_original=None):
+        >>>     return fn_original(inp) * 3j
+        >>> @handle_complex_input
+        >>> def my_func(inp):
+        >>>     return ivy.ones_like(inp)
+        >>> my_func.jax_like = _my_func_jax_like
+        >>> my_func(x, complex_mode="jax")
+        ivy.array([0.+3.j, 0.+3.j, 0.+3.j])
+        """
+        if not ivy.is_complex_dtype(inp):
+            return fn(inp, *args, **kwargs)
+
+        jax_like = fn.jax_like if hasattr(fn, "jax_like") else "entire"
+
+        if complex_mode == "split" or (complex_mode == "jax" and jax_like == "split"):
+            real_inp = ivy.real(inp)
+            imag_inp = ivy.imag(inp)
+            return fn(real_inp, *args, **kwargs) + 1j * fn(imag_inp, *args, **kwargs)
+
+        elif complex_mode == "magnitude" or (
+            complex_mode == "jax" and jax_like == "magnitude"
+        ):
+            mag_inp = ivy.abs(inp)
+            angle_inp = ivy.angle(inp)
+            return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
+
+        elif complex_mode == "jax" and jax_like == "entire":
+            return fn(inp, *args, **kwargs)
+
+        elif complex_mode == "jax":
+            return jax_like(inp, *args, **kwargs, fn_original=fn)
+
+        else:
+            raise IvyValueError(f"complex_mode '{complex_mode}' is not recognised.")
+
+    _handle_complex_input.handle_complex_input = True
+    return _handle_complex_input
+
+
+def handle_backend_invalid(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_backend_invalid(*args, **kwargs):
+        """
+        Check if any of the arguments (or nested arguments) passed to the function are
+        instances of ivy.Array or ivy.NativeArray. If so, it returns the function. If
+        not, it raises an InvalidBackendException.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function if the current
+            backend matches the argument backend.
+            If not, it raises an InvalidBackendException
+        """
+        array_indices = ivy.nested_argwhere(
+            [args, kwargs], lambda x: isinstance(x, ivy.Array)
+        )
+        array_vals = ivy.multi_index_nest([args, kwargs], array_indices)
+
+        def func(x):
+            target_backend = ivy.utils.backend.handler._determine_backend_from_args(x)
+            if (
+                target_backend is not None
+                and ivy.backend != ""
+                and ivy.current_backend_str() != target_backend.backend
+            ):
+                raise ivy.utils.exceptions.InvalidBackendException(
+                    "Operation not allowed. Array was instantiated with backend"
+                    f" {target_backend.backend}. But current backend is"
+                    f" {ivy.backend}. Please set dynamic=True"
+                    " for the array if you want to convert it to the target"
+                    " backend"
+                )
+            return x
+
+        ivy.nested_map(array_vals, func, include_derived=True)
+
+        return fn(*args, **kwargs)
+
+    _handle_backend_invalid.handle_backend_invalid = True
+    return _handle_backend_invalid
 
 
 attribute_dict = {

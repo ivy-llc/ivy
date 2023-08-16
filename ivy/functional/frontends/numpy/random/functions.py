@@ -110,20 +110,8 @@ def binomial(n, p, size=None):
         size = size
     if isinstance(size, int):
         size = (size,)
-    binomial_numbers = ivy.zeros(
-        size, dtype=int
-    )  # Initialize an array to store the binomial numbers
-
-    for i in ivy.ndindex(size):
-        successes = 0
-        for j in range(n):
-            uniform_number = (
-                ivy.random_uniform()
-            )  # Generate a random number from a uniform distribution
-            if uniform_number < p:
-                successes += 1
-        binomial_numbers[i] = successes  # Store the number of successes
-    return binomial_numbers
+    lambda_ = ivy.multiply(n, p)
+    return ivy.poisson(lambda_, shape=size)
 
 
 @to_ivy_arrays_and_back
@@ -162,3 +150,86 @@ def negative_binomial(n, p, size=None):
         size = (size,)
     lambda_ = ivy.gamma(n, scale, shape=size)
     return ivy.poisson(lam=lambda_, shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def weibull(a, size=None):
+    if a < 0:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.pow(-ivy.log(1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_cauchy(size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.tan(ivy.pi * (u - 0.5))
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def rayleigh(scale, size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    log_u = ivy.log(u)
+    x = ivy.multiply(scale, ivy.sqrt(ivy.multiply(-2, log_u)))
+    return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def gumbel(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    x = loc - scale * ivy.log(-ivy.log(u))
+    return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def f(dfn, dfd, size=None):
+    # Generate samples from the uniform distribution
+    x1 = ivy.gamma(ivy.to_scalar(ivy.divide(dfn, 2)), 2.0, shape=size, dtype="float64")
+    x2 = ivy.gamma(ivy.to_scalar(ivy.divide(dfd, 2)), 2.0, shape=size, dtype="float64")
+    # Calculate the F-distributed samples
+    samples = ivy.divide(ivy.divide(x1, ivy.array(dfn)), ivy.divide(x2, ivy.array(dfd)))
+    return samples
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def gamma(shape, scale=1.0, size=None):
+    return ivy.gamma(shape, scale, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logistic(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    x = loc + scale * ivy.log(u / (1 - u))
+    return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def pareto(a, size=None):
+    if a < 0:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    return ivy.pow(1 / (1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def triangular(left, mode, right, size=None):
+    if left > mode or mode > right or left == right:
+        raise ivy.utils.exceptions.IvyValueError(
+            "left < mode < right is not being followed"
+        )
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    condition = u <= (mode - left) / (right - left)
+    values1 = left + (right - left) * (u * (mode - left) / (right - left)) ** 0.5
+    values2 = (
+        right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
+    )
+    return ivy.where(condition, values1, values2)

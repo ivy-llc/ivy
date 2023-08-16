@@ -1,21 +1,23 @@
 # global
 from typing import Optional, Union, Sequence
 import paddle
-
+from ivy.functional.backends.paddle.device import to_device
 from ivy import with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 # local
 import ivy
-from paddle.fluid.libpaddle import Place
+from paddle.device import core
+from ivy import with_supported_device_and_dtypes
 
 # dirichlet
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -49,6 +51,7 @@ def dirichlet(
     return res
 
 
+# beta
 def beta(
     alpha: Union[float, paddle.Tensor],
     beta: Union[float, paddle.Tensor],
@@ -56,11 +59,19 @@ def beta(
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: Optional[Union[paddle.dtype, ivy.Dtype]] = None,
-    device: Place = None,
+    device: core.Place = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if seed is not None:
+        paddle.seed(seed)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    dtype = paddle.float32 if dtype is None else dtype
+    beta = paddle.cast(beta, alpha.dtype)
+    dist = paddle.distribution.Beta(alpha, beta)
+    sample = dist.sample(shape)
+    sample = paddle.cast(sample, dtype)
+    return to_device(sample, device) if device is not None else sample
 
 
 def gamma(
@@ -70,7 +81,7 @@ def gamma(
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: Optional[Union[paddle.dtype, ivy.Dtype]] = None,
-    device: Place = None,
+    device: core.Place = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -81,7 +92,7 @@ def poisson(
     lam: Union[float, paddle.Tensor],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Place,
+    device: core.Place,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
     fill_value: Optional[Union[float, int]] = 0,
@@ -90,14 +101,41 @@ def poisson(
     raise IvyNotImplementedException()
 
 
+# bernoulli
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        },
+        "2.4.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": ("float16", "float32", "float64"),
+        },
+    },
+    backend_version,
+)
 def bernoulli(
     probs: Union[float, paddle.Tensor],
     *,
     logits: Union[float, paddle.Tensor] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: Place,
+    device: core.Place,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if seed is not None:
+        paddle.seed(seed)
+    if probs is not None:
+        probs = probs
+    elif logits is not None:
+        probs = ivy.softmax(logits)
+    probs = paddle.cast(probs, dtype)
+    probs = paddle.unsqueeze(probs, 0) if len(probs.shape) == 0 else probs
+    probs = paddle.maximum(probs, paddle.full_like(probs, 1e-6))
+    sample = paddle.bernoulli(probs)
+    return to_device(sample, device)
