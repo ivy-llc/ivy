@@ -163,6 +163,27 @@ class Array:
             order=order,
         )
 
+    def sum(
+        self,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+    ):
+        return jax_frontend.numpy.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+        )
+
     def argsort(self, axis=-1, kind="stable", order=None):
         return jax_frontend.numpy.argsort(self, axis=axis, kind=kind, order=order)
 
