@@ -679,7 +679,6 @@ def test_paddle_rot90(
 @st.composite
 def _moveaxis_helper(draw, **kwargs):
     dtypes, a, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    dtypes = [dtype for dtype in dtypes if dtype != "bfloat16"]
 
     source = draw(
         st.lists(

@@ -184,13 +184,8 @@ def rot90(x, k=1, axes=(0, 1), name=None):
                 "complex64",
                 "complex128",
             ),
-            "gpu": ("float16",),
         },
     },
-    "paddle",
-)
-@with_unsupported_dtypes(
-    {"2.5.1 and below": "bfloat16"},
     "paddle",
 )
 @to_ivy_arrays_and_back
