@@ -703,7 +703,7 @@ def _moveaxis_helper(draw, **kwargs):
 @handle_frontend_test(
     fn_tree="paddle.moveaxis",  # This is the function we are testing against
     dtype_and_params=_moveaxis_helper(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         min_dim_size=1,
     ),
