@@ -1,5 +1,4 @@
-from turtle import st
-import ivy
+from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -8,14 +7,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 import ivy.functional.frontends.numpy as np_frontend
 
-
-@to_ivy_arrays_and_back
-def put(arr, indices, values):
-    """Inserts the value of the desired location of indices"""
-    flat_arr = ivy.flatten(arr)
-    flat_arr[indices] = values
-    reshape_arr = ivy.reshape(flat_arr,arr.shape)
-    arr[...] = reshape_arr
 
 @handle_frontend_test(
     fn_tree="put",
