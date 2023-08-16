@@ -578,6 +578,7 @@ def test_paddle_resharp_(
     input_dtype, x, shape = dtype_x_and_shape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
