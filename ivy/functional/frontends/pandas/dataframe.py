@@ -79,7 +79,7 @@ class DataFrame(NDFrame):
     def sum(self, axis=None, skipna=True, level=None, numeric_only=None, min_count=0):
         _array = self.array
         if axis is None or axis == "index":
-            axis = 0
+            axis = 0  # due to https://github.com/pandas-dev/pandas/issues/54547. TODO: remove this when fixed
         elif axis == "columns":
             axis = 1
         if min_count > 0:
