@@ -10,8 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 CLASS_TREE = "ivy.functional.frontends.pandas.DataFrame"
 
-# ToDo: uncomment this when frontend tests are independent of backends
-
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_method(
