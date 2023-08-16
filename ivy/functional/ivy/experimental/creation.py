@@ -652,7 +652,6 @@ def unsorted_segment_min(
     return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
 
 
-
 @handle_exceptions
 @handle_nestable
 @to_native_arrays_and_back
@@ -688,7 +687,6 @@ def unsorted_segment_sum(
     return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)
 
 
-
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -706,6 +704,7 @@ def blackman_window(
     Generate a Blackman window. The Blackman window is a taper formed by using the first
     three terms of a summation of cosines. It was designed to have close to the minimal
     leakage possible. It is close to optimal, only slightly worse than a Kaiser window.
+
     Parameters
     ----------
     window_length
@@ -732,7 +731,6 @@ def blackman_window(
     return ivy.current_backend().blackman_window(
         size, periodic=periodic, dtype=dtype, out=out
     )
-
 
 
 @handle_exceptions
@@ -803,4 +801,3 @@ def random_tucker(
         return ivy.TuckerTensor.tucker_to_tensor((core, factors))
     else:
         return ivy.TuckerTensor((core, factors))
-

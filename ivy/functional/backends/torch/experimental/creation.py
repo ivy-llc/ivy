@@ -170,6 +170,7 @@ def blackman_window(
 
 blackman_window.support_native_out = False
 
+
 def unsorted_segment_sum(
     data: torch.Tensor,
     segment_ids: torch.Tensor,
@@ -193,5 +194,3 @@ def unsorted_segment_sum(
             res[i] = torch.sum(data[mask_index], dim=0)
 
     return res
-
-
