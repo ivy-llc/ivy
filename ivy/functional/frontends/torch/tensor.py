@@ -1091,6 +1091,7 @@ class Tensor:
         self.ivy_array = self.fix().ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def isfinite(self):
         return torch_frontend.isfinite(self._ivy_array)
 
