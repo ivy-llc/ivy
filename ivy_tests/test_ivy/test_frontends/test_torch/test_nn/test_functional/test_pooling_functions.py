@@ -410,7 +410,7 @@ def test_torch_adaptive_max_pool2d(
         max_dims=3,
         min_side=1,
         max_side=3,
-        data_format="channel_first"
+        data_format="channel_first",
     ),
     norm_type=helpers.ints(min_value=1, max_value=6),
     test_with_out=st.just(False),
