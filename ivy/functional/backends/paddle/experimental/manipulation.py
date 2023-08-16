@@ -74,6 +74,24 @@ _i0B = [
 ]
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and above": {
+            "cpu": (
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "complex64",
+                "complex128",
+            ),
+            "gpu": ("float16",),
+        },
+    },
+    backend_version,
+)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],

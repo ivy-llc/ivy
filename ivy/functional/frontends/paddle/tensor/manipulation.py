@@ -171,22 +171,25 @@ def rot90(x, k=1, axes=(0, 1), name=None):
     return ivy.rot90(x, k=k, axes=axes)
 
 
-@with_supported_dtypes(
+@with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": (
-            "bool",
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-            "complex64",
-            "complex128",
-        )
+        "2.5.1 and above": {
+            "cpu": (
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "complex64",
+                "complex128",
+            ),
+            "gpu": ("float16",),
+        },
     },
     "paddle",
 )
-@with_supported_dtypes(
+@with_unsupported_dtypes(
     {"2.5.1 and below": "bfloat16"},
     "paddle",
 )
