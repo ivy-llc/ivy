@@ -34,6 +34,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     outputs_to_ivy_shapes,
+    outputs_to_ivy_arrays,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -1037,8 +1038,8 @@ def clip_vector_norm(
 
 @handle_exceptions
 @handle_nestable
-@handle_array_function
 @inputs_to_ivy_arrays
+@handle_array_function
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1565,7 +1566,10 @@ def to_native_shape(
      ret
         the input in its native framework form
     """
-    if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
+    native_shape_type = (ivy.NativeShape,)
+    if ivy.current_backend_str() == "torch":
+        native_shape_type += (tuple,)
+    if len(backend_stack) != 0 and isinstance(shape, native_shape_type):
         return shape
     ivy.utils.assertions.check_isinstance(
         shape, (int, list, tuple, ivy.Array, ivy.NativeArray, ivy.Shape)
@@ -2675,8 +2679,8 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @handle_nestable
-@handle_view_indexing
 @handle_partial_mixed_function
+@handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
@@ -2757,8 +2761,8 @@ get_item.mixed_backend_wrappers = {
 
 
 @handle_nestable
-@handle_view_indexing
 @handle_partial_mixed_function
+@handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
 def set_item(
@@ -2820,8 +2824,6 @@ def set_item(
     else:
         query, target_shape = _parse_query(query, x.shape, scatter=True)
     val = _broadcast_to(val, target_shape).astype(x.dtype)
-    if copy:
-        x = ivy.copy_array(x)
     return ivy.scatter_nd(query, val, reduction="replace", out=x)
 
 
@@ -3401,8 +3403,8 @@ def scatter_flat(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@to_native_arrays_and_back
 @inputs_to_native_shapes
+@to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
 def scatter_nd(
@@ -3698,8 +3700,9 @@ def multiprocessing(context: Optional[str] = None):
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
+@inputs_to_native_arrays
 @outputs_to_ivy_shapes
-@to_native_arrays_and_back
+@outputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
 def shape(
