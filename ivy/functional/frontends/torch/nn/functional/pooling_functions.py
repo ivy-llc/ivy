@@ -160,6 +160,42 @@ def max_pool2d(
 
 
 @to_ivy_arrays_and_back
+def max_pool3d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
+):
+    if stride is None:
+        stride = kernel_size
+
+    if not isinstance(padding, int):
+        padding = [(padding[i],) * 2 for i in range(3)]
+
+    if not all([pad <= kernel // 2 for kernel, pad in zip(kernel_size, padding)]):
+        raise ValueError(
+            "pad should be smaller than or equal to half of kernel size, "
+            f"but got padding={padding}, kernel_size={kernel_size}. "
+        )
+
+    if dilation < 0:
+        raise ValueError("dilation must be greater than 0")
+
+    return ivy.max_pool3d(
+        input,
+        kernel_size,
+        stride,
+        padding,
+        data_format="NCDHW",
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
+@to_ivy_arrays_and_back
 def adaptive_max_pool2d(
     input,
     output_size,
