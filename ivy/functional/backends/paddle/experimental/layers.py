@@ -446,7 +446,7 @@ def interpolate(
         interpolation_method = "trilinear"
     else:
         raise ValueError("Invalid interpolation mode")
-    
+
     if scale_factor is not None:
         if isinstance(scale_factor, int):
             scale_factor = (scale_factor,) * len(size)
@@ -454,13 +454,13 @@ def interpolate(
             scale_factor = scale_factor
         else:
             raise ValueError("Invalid scale_factor type")
-    
+
     if recompute_scale_factor is not None:
         raise ValueError("recompute_scale_factor is not supported in paddle backend")
-    
+
     if align_corners is None:
         align_corners = False
-    
+
     if antialias is not None:
         raise ValueError("antialias is not supported in paddle backend")
 
