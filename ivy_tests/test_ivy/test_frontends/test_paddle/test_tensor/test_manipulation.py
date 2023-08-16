@@ -674,3 +674,27 @@ def test_paddle_rot90(
         k=k,
         axes=tuple(axes),
     )
+
+@handle_frontend_test(
+    fn_tree="paddle.resharp_",
+    dtype_x_and_shape=_reshape_helper()
+)
+def test_paddle_resharp_(
+    *,
+    dtype_x_and_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, shape = dtype_x_and_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+    )
