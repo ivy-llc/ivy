@@ -173,7 +173,7 @@ def rot90(x, k=1, axes=(0, 1), name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and above": {
+        "2.5.1 and below": {
             "cpu": (
                 "bool",
                 "float16",
