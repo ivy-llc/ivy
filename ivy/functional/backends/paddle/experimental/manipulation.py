@@ -92,6 +92,15 @@ _i0B = [
     },
     backend_version,
 )
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and above": {
+            "cpu": ("bfloat16", "uint8"),
+            "gpu": ("bfloat16", "uint8"),
+        },
+    },
+    backend_version,
+)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
