@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_device_shifting,
     handle_backend_invalid,
+    handle_array_function,
 )
 
 
