@@ -37,6 +37,8 @@ def avg_pool1d(
     if stride is None:
         stride = kernel_size
     data_format = "NCW"
+    # TODO: remove the broadcasting and padding string specification when ivy.avg_pool
+    #   support explicit padding
     kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "1d", name="padding")
     if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]):
@@ -66,6 +68,8 @@ def avg_pool2d(
     if stride is None:
         stride = kernel_size
     data_format = "NCHW"
+    # TODO: remove the broadcasting and padding string specification when ivy.avg_pool
+    #   support explicit padding
     kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "2d", name="padding")
     if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]):
@@ -253,6 +257,14 @@ def avg_pool3d(
 ):
     if stride is None:
         stride = kernel_size
+    # TODO: remove the broadcasting and padding string specification when ivy.avg_pool
+    #   support explicit padding
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]):
+        padding = "SAME"
+    else:
+        padding = "VALID"
     return ivy.avg_pool3d(
         input,
         kernel_size,

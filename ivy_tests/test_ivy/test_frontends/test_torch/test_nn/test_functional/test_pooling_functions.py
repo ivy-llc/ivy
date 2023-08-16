@@ -66,8 +66,10 @@ def test_torch_avg_pool1d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
+    # TODO: remove the processing of padding attribute when ivy.avg_pool
+    #   support explicit padding
     x_shape = [x[0].shape[2]]
-    padding = (padding[0][0], )
+    padding = (pad[i] for i, pad in enumerate(padding))
     # figuring out the exact kernel_size for SAME and VALID padding
     # As ivy.avg_pool1d doesn't support explicit padding scheme
     if not sum(padding) == 0:
@@ -115,6 +117,8 @@ def test_torch_avg_pool2d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
+    # TODO: remove the processing of padding attribute when ivy.avg_pool
+    #   support explicit padding
     padding = (pad[i] for i, pad in enumerate(padding))
     x_shape = x[0].shape[2:]
     if not sum(padding) == 0:
@@ -165,13 +169,13 @@ def test_torch_avg_pool3d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-
-    if len(stride) == 1:
-        stride = [stride[0]] * 3
+    # TODO: remove the processing of padding and strides attributes when ivy.avg_pool
+    #   support explicit padding
     x_shape = x[0].shape[2:]
-    padding = (pad[i] for i, pad in enumerate(padding))
+    padding = [pad[0] for pad in padding]
     if not sum(padding) == 0:
-        padding = calculate_same_padding(kernel_size, [stride[0]] * 3, x_shape)
+        stride_broad = (stride[0],) * 3 if len(stride) == 1 else stride
+        padding = calculate_same_padding(kernel_size, stride_broad, x_shape)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
