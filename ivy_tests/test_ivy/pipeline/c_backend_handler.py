@@ -8,6 +8,7 @@ class SetBackendHandler(BackendHandler):
         return ivy.set_backend(backend)
 
     def unset_backend(self):
+        self._backend = "None"
         return ivy.unset_backend()
 
 
@@ -17,4 +18,5 @@ class WithBackendHandler(BackendHandler):
         return ivy.with_backend(backend, cached=True)
 
     def unset_backend(self):
+        self._backend = "None"
         return None
