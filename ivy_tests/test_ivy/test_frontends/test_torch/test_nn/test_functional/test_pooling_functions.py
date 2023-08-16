@@ -215,7 +215,7 @@ def test_torch_max_pool1d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-    padding = (padding[0][0], )
+    padding = (padding[0][0],)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
