@@ -728,3 +728,36 @@ class CPTensor(FactorizedTensor):
         if len(permuted_tensors) == 1:
             permuted_tensors = permuted_tensors[0]
         return permuted_tensors, permutation
+
+    @staticmethod
+    def unfolding_dot_khatri_rao(tensor, cp_tensor, mode):
+        """
+        Mode-n unfolding times khatri-rao product of factors.
+
+        Parameters
+        ----------
+        tensor : tl.tensor
+            tensor to unfold
+        factors : tl.tensor list
+            list of matrices of which to the khatri-rao product
+        mode : int
+            mode on which to unfold `tensor`
+
+        Returns
+        -------
+        mttkrp
+            dot(unfold(tensor, mode), khatri-rao(factors))
+        """
+        mttkrp_parts = []
+        weights, factors = cp_tensor
+        rank = ivy.shape(factors[0])[1]
+        for r in range(rank):
+            component = ivy.multi_mode_dot(
+                tensor, [ivy.conj(f[:, r]) for f in factors], skip=mode
+            )
+            mttkrp_parts.append(component)
+
+        if weights is None:
+            return ivy.stack(mttkrp_parts, axis=1)
+        else:
+            return ivy.stack(mttkrp_parts, axis=1) * ivy.reshape(weights, (1, -1))
