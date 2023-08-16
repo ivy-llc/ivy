@@ -76,7 +76,7 @@ _i0B = [
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and above": {
+        "2.5.1 and below": {
             "cpu": ("bfloat16", "uint8"),
         },
     },
