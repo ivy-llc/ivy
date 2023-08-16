@@ -872,8 +872,8 @@ def stack(
 @handle_device_shifting
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
-    x_min: Union[Number, ivy.Array, ivy.NativeArray],
-    x_max: Union[Number, ivy.Array, ivy.NativeArray],
+    x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+    x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -987,7 +987,22 @@ def clip(
         b: ivy.array([3., 4., 3.])
     }
     """
-    return current_backend(x).clip(x, x_min, x_max, out=out)
+    backend = current_backend(x)
+
+    if x_min is not None and x_max is not None:
+        return backend.clip(x, x_min, x_max, out=out)
+
+    if x_min is not None:
+        x = backend.maximum(x, x_min)
+
+    if x_max is not None:
+        x = backend.minimum(x, x_max)
+
+    if out is not None:
+        backend.copy(x, out)
+        return out
+
+    return x
 
 
 @handle_exceptions
