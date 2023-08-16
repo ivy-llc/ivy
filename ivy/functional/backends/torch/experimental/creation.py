@@ -152,6 +152,25 @@ def unsorted_segment_min(
     return res
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.blackman_window(
+        size,
+        periodic=periodic,
+        dtype=dtype,
+    )
+
+
+blackman_window.support_native_out = False
+
+
 def unsorted_segment_sum(
     data: torch.Tensor,
     segment_ids: torch.Tensor,
