@@ -436,9 +436,34 @@ def interpolate(
     recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    data_format: Optional[str] = "NCHW",
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if mode == "linear":
+        interpolation_method = paddle.nn.functional.interpolate.LINEAR
+    elif mode == "bilinear":
+        interpolation_method = paddle.nn.functional.interpolate.BILINEAR
+    elif mode == "trilinear":
+        interpolation_method = paddle.nn.functional.interpolate.TRILINEAR
+    else:
+        raise ValueError("Invalid interpolation mode")
+
+    if align_corners is None:
+        align_corners = False
+
+    interpolated_tensor = paddle.nn.functional.interpolate(
+        x=x,
+        size=size,
+        scale_factor=scale_factor,
+        # recompute_scale_factor=recompute_scale_factor,
+        mode=interpolation_method,
+        align_corners=align_corners,
+        # antialias=antialias,
+        data_format=data_format,
+        out=out,
+    )
+    
+    return interpolated_tensor
 
 
 def adaptive_max_pool2d(
