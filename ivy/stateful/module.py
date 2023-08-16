@@ -699,8 +699,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             True for successfully built a module.
         """
         self._dev = ivy.default(device, self._dev)
-        # build buffers if any
-        self._create_buffers()
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == "on_call":
             return self.v
@@ -862,11 +860,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 self._build_and_return_v(
                     self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
-        if name == "buffers":
-            return super().__getattribute__(name)
-        elif hasattr(self, "buffers"):
-            if name in self.buffers:
-                return self.buffers[name]
+        if name != "buffers":
+            if hasattr(self, "buffers"):
+                if name in self.buffers:
+                    return self.buffers[name]
         return super().__getattribute__(name)
 
     def __setattr__(self, name, value):
@@ -874,12 +871,12 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if name in self.buffers:
                 self.buffers[name] = value
                 return
-
         return super().__setattr__(name, value)
 
     def __delattr__(self, name):
-        if name in self.buffers:
-            del self.buffers
+        if hasattr(self, "buffers"):
+            if name in self.buffers:
+                del self.buffers[name]
         else:
             super().__delattr__(name)
 
