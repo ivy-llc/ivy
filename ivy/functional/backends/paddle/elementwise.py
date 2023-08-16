@@ -781,7 +781,7 @@ def pow(
         paddle.bool,
     ]:
         return paddle.pow(x1.astype("float32"), x2.astype("float32")).astype(ret_dtype)
-    if x1.dtype in [paddle.complex64, paddle.complex128]:
+    if paddle.is_complex(x1):
         # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
         r = paddle.abs(x1)
         theta = paddle.angle(x1)
@@ -1045,7 +1045,7 @@ def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
             paddle.exp(x.real()),
             paddle.complex(paddle.cos(x.imag()), paddle.sin(x.imag())),
         )
-    return pow(math.e, x).astype(x.dtype)
+    return paddle_backend.pow(math.e, x).astype(x.dtype)
 
 
 def exp2(
