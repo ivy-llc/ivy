@@ -108,6 +108,7 @@ def unsorted_segment_sum(
     return jax.ops.segment_sum(data, segment_ids, num_segments)
 
 
+
 def blackman_window(
     size: int,
     /,
@@ -125,3 +126,11 @@ def blackman_window(
     return (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count)) + (
         0.08 * jnp.cos(2 * jnp.pi * 2 * count)
     )
+
+  
+def trilu(
+    x: JaxArray, /, *, k: int = 0, upper: bool = True, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if upper:
+        return jnp.triu(x, k)
+    return jnp.tril(x, k)

@@ -194,3 +194,19 @@ def unsorted_segment_sum(
             res[i] = torch.sum(data[mask_index], dim=0)
 
     return res
+
+
+def trilu(
+    x: torch.Tensor,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if upper:
+        return torch.triu(x, diagonal=k, out=out)
+    return torch.tril(x, diagonal=k, out=out)
+
+
+trilu.support_native_out = True
