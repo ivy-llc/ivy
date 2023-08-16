@@ -98,3 +98,29 @@ def compress(condition, a, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+def _ndindex(shape):
+    # Create a range for each dimension based on the given shape
+    ranges = [range(dim_size) for dim_size in shape]
+
+    def product(*args, repeat=1):
+        """Create a cartesian product of the ranges."""
+        pools = [tuple(pool) for pool in args] * repeat
+        result = [[]]
+        for pool in pools:
+            result = [x + [y] for x in result for y in pool]
+        for prod in result:
+            yield tuple(prod)
+
+    return product(*ranges)
+
+
+@to_ivy_arrays_and_back
+@handle_numpy_out
+def choose(a, choices, out=None, mode="raise"):
+    a, choices = ivy.asarray(a), ivy.asarray(choices)
+    ivy.broadcast_shapes(a.shape, choices.shape)
+    if mode != "raise":
+        raise NotImplementedError("Only mode='raise' is currently supported")
+    return ivy.array([choices[a[i]][i] for i in _ndindex(a.shape)])
