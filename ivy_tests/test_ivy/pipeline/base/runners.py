@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+import numpy as np  # for type hint only
 
 
 class TestCaseRunner(ABC):
@@ -47,3 +49,11 @@ class TestCaseSubRunner(ABC):
     @abstractmethod
     def get_results():
         pass
+
+
+@dataclass
+class TestCaseSubRunnerResult:
+    flatten_elements_np: np.ndarray
+    shape: tuple
+    dtype: str
+    type: str
