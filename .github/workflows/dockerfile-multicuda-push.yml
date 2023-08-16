@@ -23,5 +23,5 @@ jobs:
 
       - name: Build and push Dockerfile
         run: |
-          docker build --progress=plain --no-cache -t unifyai/multicuda:base_and_requirements -f docker/DockerfileGPUMultiCuda ..
+          docker build --progress=plain --no-cache -t unifyai/multicuda:base_and_requirements -f docker/DockerfileGPUMultiCuda .
           docker push unifyai/multicuda:base_and_requirements
