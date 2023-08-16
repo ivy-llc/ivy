@@ -13,23 +13,43 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_complex_input,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
+def _gelu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    approximate: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    # We don't have the exact implementation
+    # cuz the erf function doesn't work on complex numbers
+    sqrt_2_over_pi = ivy.sqrt(2 / ivy.pi).astype(x.dtype)
+    x_pw = ivy.pow(x, 3)
+    cdf = 0.5 * (1.0 + ivy.tanh(sqrt_2_over_pi * (x + 0.044715 * x_pw)))
+    return x * cdf
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     approximate: bool = False,
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the Gaussian error linear unit (GELU) activation function.
@@ -43,6 +63,9 @@ def gelu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -78,6 +101,9 @@ def gelu(
     return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
+gelu.jax_like = _gelu_jax_like
+
+
 def _leaky_relu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -98,6 +124,7 @@ def _leaky_relu_jax_like(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -178,6 +205,7 @@ leaky_relu.jax_like = _leaky_relu_jax_like
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -250,18 +278,47 @@ def log_softmax(
     return current_backend(x).log_softmax(x, axis=axis, out=out)
 
 
+def _relu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        ivy.array(0.0, dtype=x.dtype),
+        x,
+    )
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the rectified linear unit function element-wise.
+
+    If the input is complex, then by default each element is set to zero  if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative.
+    This behaviour can be changed by specifying a different `complex_mode`.
 
     Parameters
     ----------
@@ -270,6 +327,9 @@ def relu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -305,7 +365,11 @@ def relu(
     return current_backend(x).relu(x, out=out)
 
 
+relu.jax_like = _relu_jax_like
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -340,42 +404,42 @@ def sigmoid(
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
+    ivy.array([0.2689414 , 0.7310586 , 0.88079703])
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.zeros(3)
-    >>> ivy.sigmoid(x,out=y)
+    >>> ivy.sigmoid(x, out=y)
     >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
+    ivy.array([0.2689414 , 0.7310586 , 0.88079703])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.]),
-                          b=ivy.Container(c=ivy.array([1.]),
-                                          d=ivy.array([2.])))
+    ...                   b=ivy.Container(c=ivy.array([1.]),
+    ...                                   d=ivy.array([2.])))
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     {
-        a: ivy.array([0.]),
+        a: ivy.array([0.5]),
         b: {
-            c: ivy.array([1.]),
-            d: ivy.array([2.])
+            c: ivy.array([0.7310586]),
+            d: ivy.array([0.88079703])
         }
     }
 
     >>> x = ivy.Container(a=ivy.array([0.]),
-                          b=ivy.Container(c=ivy.array([1.]),
-                                          d=ivy.array([2.]))))
+    ...                   b=ivy.Container(c=ivy.array([1.]),
+    ...                                   d=ivy.array([2.])))
     >>> y = ivy.Container(a=ivy.array([0.]),
-                          b=ivy.Container(c=ivy.array([0.]),
-                                          d=ivy.array([0.]))))
-    >>> ivy.sigmoid(x,out=y)
+    ...                   b=ivy.Container(c=ivy.array([0.]),
+    ...                                   d=ivy.array([0.])))
+    >>> ivy.sigmoid(x, out=y)
     >>> print(y)
     {
-        a: ivy.array([0.]),
+        a: ivy.array([0.5]),
         b: {
-            c: ivy.array([1.]),
-            d: ivy.array([2.])
+            c: ivy.array([0.7310586]),
+            d: ivy.array([0.88079703])
         }
     }
     """
@@ -383,6 +447,7 @@ def sigmoid(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -434,6 +499,7 @@ def softmax(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -492,6 +558,7 @@ def softplus(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -547,6 +614,7 @@ def mish(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
