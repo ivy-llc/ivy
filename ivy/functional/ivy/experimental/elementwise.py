@@ -1342,7 +1342,7 @@ def digamma(
 @to_native_arrays_and_back
 @inputs_to_ivy_arrays
 def sparsify_tensor(
-    tensor: ivy.Array,
+    tensor: Union[ivy.Array, ivy.NativeArray],
     card: int,
 ) -> ivy.Array:
     """
@@ -1351,13 +1351,13 @@ def sparsify_tensor(
 
     Parameters
     ----------
-    tensor : ndarray
+    tensor : Union[ivy.Array, ivy.NativeArray]
     card : int
         Desired number of non-zero elements in the `tensor`
 
     Returns
     -------
-    ndarray of shape tensor.shape
+    ivy.array of shape tensor.shape
     """
     if card >= ivy.prod(tensor.shape):
         return tensor
