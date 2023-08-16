@@ -7,8 +7,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# TODO: uncomment after frontend is not required
-#  to be set as backend in test_frontend_function
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="mindspore.numpy.array",
