@@ -51,4 +51,4 @@ jobs:
           destination-repository-name: 'Mapping'
           user-email: rashul.chutani@gmail.com
           commit-message: Update Mapping
-          target-branch: main${{ matrix.branch }}
+          target-branch: master${{ matrix.branch }}

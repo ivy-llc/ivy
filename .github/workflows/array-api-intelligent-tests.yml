@@ -29,7 +29,7 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
-          source ./ivy/clone_mapping.sh main
+          source ./ivy/clone_mapping.sh master
           pip install pydriller pymongo 
           cp Mapping/tests.pbz2 ivy/
           cd ivy
@@ -39,7 +39,7 @@ jobs:
           cd Mapping
           git add .
           git commit -m "Update Mapping"
-          git push origin main
+          git push origin master
         continue-on-error: true
 
       - name: Run Tests
