@@ -421,8 +421,7 @@ def test_unsorted_segment_sum(
         num_segments=num_segments,
     )
 
-    
-    
+
 @st.composite
 def _random_tucker_data(draw):
     shape = draw(
@@ -497,4 +496,3 @@ def test_random_tucker(
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
-

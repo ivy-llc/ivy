@@ -2362,7 +2362,6 @@ def test_jax_array_searchsorted(
     )
 
 
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
@@ -2405,7 +2404,7 @@ def test_jax_array_reshape(
         on_device=on_device,
     )
 
-    
+
 # repeat
 @st.composite
 def _repeat_helper(draw):
@@ -2500,4 +2499,3 @@ def test_jax_repeat(
             method_flags=method_flags,
             on_device=on_device,
         )
-

@@ -123,6 +123,7 @@ def test_pandas_series_sum(
         backend_to_test=backend_fw,
     )
 
+
 @pytest.mark.xfail(reason="testing pipeline fixes")
 @handle_frontend_method(
     class_tree=CLASS_TREE,

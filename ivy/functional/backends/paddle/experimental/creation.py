@@ -133,8 +133,6 @@ def unsorted_segment_min(
     return res
 
 
-
-
 def blackman_window(
     size: int,
     /,
@@ -153,6 +151,7 @@ def blackman_window(
         (0.42 - 0.5 * paddle.cos(2 * math.pi * count))
         + (0.08 * paddle.cos(2 * math.pi * 2 * count))
     ).cast(dtype)
+
 
 def unsorted_segment_sum(
     data: paddle.Tensor,
@@ -186,4 +185,3 @@ def unsorted_segment_sum(
         res = paddle.cast(res, "int32")
 
     return res
-

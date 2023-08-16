@@ -136,6 +136,7 @@ def blackman_window(
 
 blackman_window.support_native_out = False
 
+
 def unsorted_segment_sum(
     data: np.ndarray,
     segment_ids: np.ndarray,
@@ -157,4 +158,3 @@ def unsorted_segment_sum(
             res[i] = np.sum(data[mask_index], axis=0)
 
     return res
-
