@@ -106,10 +106,10 @@ def test_paddle_vflip(
         min_dim_size=2,
         max_dim_size=100
     ),
-    top=st.integers(min_value=0, max_value=50),
-    left=st.integers(min_value=0, max_value=50),
-    height=st.integers(min_value=0, max_value=50),
-    width=st.integers(min_value=0, max_value=50),
+    top=st.integers(min_value=0, max_value=100),
+    left=st.integers(min_value=0, max_value=100),
+    height=st.integers(min_value=0, max_value=100),
+    width=st.integers(min_value=0, max_value=100),
 )
 def test_paddle_crop(
     *,
