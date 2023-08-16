@@ -68,7 +68,7 @@ def gelu(
     approximate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [paddle.complex64, paddle.complex128]:
+    if paddle.is_complex(x):
         sqrt_2_over_pi = 0.7978845608
         # the other magic number comes directly from the formula in
         # https://doi.org/10.48550/arXiv.1606.08415
