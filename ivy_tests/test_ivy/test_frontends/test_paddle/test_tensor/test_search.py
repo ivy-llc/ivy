@@ -297,7 +297,6 @@ def test_paddle_topk(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="paddle.where",
     dtype_x_and_axis=helpers.dtype_values_axis(
@@ -329,3 +328,4 @@ def test_paddle_where(
         x=x[0],
         y=axis,
     )
+    
