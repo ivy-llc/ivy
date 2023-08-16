@@ -35,8 +35,8 @@ def test_paddle_to_tensor(
 @st.composite
 def _chw_image_shape_helper(draw):
     c = draw(st.sampled_from([1, 3]), label="channel")
-    h = draw(st.integers(min_value=1, max_value=100), label="height")
-    w = draw(st.integers(min_value=1, max_value=100), label="width")
+    h = draw(helpers.ints(min_value=1, max_value=100), label="height")
+    w = draw(helpers.ints(min_value=1, max_value=100), label="width")
 
     shape = (c, h, w)
     return shape
