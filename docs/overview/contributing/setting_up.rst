@@ -116,11 +116,11 @@ Using miniconda
 
       conda activate ivy_dev
 
-#. Now install ivy package from GitHub by running:
+#. Now install ivy package for development by running the command below:
 
    .. code-block:: none
 
-      pip install git+https://github.com/unifyai/ivy.git
+      pip install e .
 
 #. Setup the interpreter by:
 
@@ -185,11 +185,11 @@ This is a builtin package and doesn't require explicit installation.
 
    (on Mac/Linux)
 
-#. Now install ivy package from GitHub by running:
+#. Now install ivy package for development by running the command below:
 
    .. code-block:: none
 
-      pip install git+https://github.com/unifyai/ivy.git
+      pip install -e .
 
 #. Setup the interpreter by:
 
