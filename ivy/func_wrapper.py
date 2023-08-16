@@ -313,9 +313,9 @@ def get_decorators(fn_name, decorator_lookup):
     decorator_lookup : dict
         The lookup table of frozen sets of function names to decorators list
     """
-    for funcs, decorators in decorator_lookup.items():
+    for funcs in decorator_lookup.keys():
         if fn_name in funcs:
-            return decorators
+            return decorator_lookup[funcs]
     return []
 
 
