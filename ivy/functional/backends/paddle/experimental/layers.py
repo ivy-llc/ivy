@@ -449,7 +449,7 @@ def interpolate(
     
     if scale_factor is not None:
         if isinstance(scale_factor, int):
-            scale_factor = (scale_factor, ) * len(size)
+            scale_factor = (scale_factor,) * len(size)
         elif isinstance(scale_factor, tuple):
             scale_factor = scale_factor
         else:
@@ -458,13 +458,18 @@ def interpolate(
     if recompute_scale_factor is not None:
         raise ValueError("recompute_scale_factor is not supported in paddle backend")
     
-    if align_corners == None:
+    if align_corners is None:
         align_corners = False
     
     if antialias is not None:
         raise ValueError("antialias is not supported in paddle backend")
 
-    return paddle.nn.functional.interpolate(x, size, mode=interpolation_method, align_corners=align_corners, scale_factor=scale_factor)
+    return paddle.nn.functional.interpolate(x,
+                                            size,
+                                            mode=interpolation_method,
+                                            align_corners=align_corners,
+                                            scale_factor=scale_factor
+    )
 
 
 def adaptive_max_pool2d(
