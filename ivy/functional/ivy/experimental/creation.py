@@ -1,5 +1,6 @@
 # global
 from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
+import warnings
 
 # local
 import ivy
@@ -14,14 +15,18 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -58,10 +63,12 @@ def vorbis_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def hann_window(
     size: int,
     *,
@@ -104,10 +111,12 @@ def hann_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -207,7 +216,6 @@ def kaiser_bessel_derived_window(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @infer_dtype
 def hamming_window(
     window_length: int,
@@ -258,7 +266,19 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
     return result
+
+
+hamming_window.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_out_argument",
+        "handle_device_shifting",
+    ),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
@@ -407,13 +427,13 @@ def eye_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([0, 1],[2, 3])
+    >>> x1 = ivy.array([[0, 1],[2, 3]])
     >>> y1 = ivy.eye_like(x1)
     >>> print(y1)
     ivy.array([[1., 0.],
                [0., 1.]])
 
-    >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
+    >>> x1 = ivy.array([[0, 1, 2],[3, 4, 5],[6, 7, 8]])
     >>> y1 = ivy.eye_like(x1, k=1)
     >>> print(y1)
     ivy.array([[0., 1., 0.],
@@ -423,7 +443,7 @@ def eye_like(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[3, 8],[0, 2]]), b=ivy.array([[0, 2], [8, 5]]))
-    >>> y = ivy.eye_like(x)
+    >>> y = x.eye_like()
     >>> print(y)
     {
         a: ivy.array([[1., 0.],
@@ -534,7 +554,7 @@ def ndindex(
 
 @handle_exceptions
 def indices(
-    dimensions: Sequence,
+    dimensions: Sequence[int],
     *,
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
@@ -583,3 +603,201 @@ def indices(
     else:
         grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
         return ivy.stack(grid, axis=0).astype(dtype)
+
+
+indices.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_min(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the minimum along segments of an array. Segments are defined by an integer
+    array of segment IDs.
+
+    Note
+    ----
+    If the given segment ID `i` is negative, then the corresponding
+    value is dropped, and will not be included in the result.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented min operation.
+        For each segment, it computes the min value in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_sum(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the sum of elements along segments of an array. Segments are defined by an
+    integer array of segment IDs.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented sum operation.
+        For each segment, it computes the sum of values in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
+def blackman_window(
+    size: int,
+    *,
+    periodic: bool = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Generate a Blackman window. The Blackman window is a taper formed by using the first
+    three terms of a summation of cosines. It was designed to have close to the minimal
+    leakage possible. It is close to optimal, only slightly worse than a Kaiser window.
+
+    Parameters
+    ----------
+    window_length
+        the window_length of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function.
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        The array containing the window.
+    Functional Examples
+    -------------------
+    >>> ivy.blackman_window(4, periodic = True)
+    ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
+    >>> ivy.blackman_window(7, periodic = False)
+    ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
+        6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
+    """
+    return ivy.current_backend().blackman_window(
+        size, periodic=periodic, dtype=dtype, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tucker(
+    shape: Sequence[int],
+    rank: Sequence[int],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    orthogonal: Optional[bool] = False,
+    seed: Optional[int] = None,
+    non_negative: Optional[bool] = False,
+) -> ivy.TuckerTensor:
+    """
+    Generate a random Tucker tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the Tucker decomposition
+        if int, the same rank is used for each mode
+        otherwise, dimension of each mode
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    orthogonal
+        if True, creates a tensor with orthogonal components
+    seed
+        seed for generating random numbers
+    non_negative
+
+
+    Returns
+    -------
+        ivy.TuckerTensor
+    """
+    rank = ivy.TuckerTensor.validate_tucker_rank(shape, rank)
+
+    if orthogonal:
+        for i, (s, r) in enumerate(zip(shape, rank)):
+            if r > s:
+                warnings.warn(
+                    "Selected orthogonal=True, but selected a rank larger than the"
+                    f" tensor size for mode {{0}}: rank[{i}]={r} > shape[{i}]={s}."
+                )
+
+    factors = []
+    for s, r in zip(shape, rank):
+        if orthogonal:
+            factor = ivy.random_uniform(shape=(s, s), seed=seed, dtype=dtype)
+            Q, _ = ivy.qr(factor)
+            factors.append(ivy.array(Q[:, :r]))
+        else:
+            factors.append(ivy.random_uniform(shape=(s, r), seed=seed, dtype=dtype))
+
+    core = ivy.random_uniform(shape=rank, seed=seed, dtype=dtype)
+
+    if non_negative:
+        factors = [ivy.abs(f) for f in factors]
+        core = ivy.abs(core)
+
+    if full:
+        return ivy.TuckerTensor.tucker_to_tensor((core, factors))
+    else:
+        return ivy.TuckerTensor((core, factors))

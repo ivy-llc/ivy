@@ -1,7 +1,6 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from functools import reduce as _reduce
-import math
 from numbers import Number
 from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
@@ -16,8 +15,8 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
-from ivy.functional.ivy.general import _parse_ellipsis
 from . import backend_version, is_variable
+from ...ivy.general import _broadcast_to
 
 torch_scatter = None
 
@@ -67,37 +66,59 @@ def current_backend_str() -> str:
     return "torch"
 
 
+def neg_step(query):
+    return (
+        not isinstance(query, (int, bool))
+        and not ivy.is_array(query)
+        and query is not None
+        and query is not Ellipsis
+        and (
+            (isinstance(query, slice) and query.step is not None and query.step < 0)
+            or (
+                not isinstance(query, slice)
+                and any(
+                    isinstance(q, slice) and q.step is not None and q.step < 0
+                    for q in query
+                )
+            )
+        )
+    )
+
+
 def get_item(
     x: torch.Tensor,
     /,
-    query: torch.Tensor,
+    query: Union[torch.Tensor, Tuple],
     *,
     copy: bool = None,
 ) -> torch.Tensor:
     if copy:
-        x = torch.clone(x)
-    if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
-        return x.__getitem__(query.to(torch.int64))
-    if isinstance(query, slice) and query.step is not None and query.step < 0:
-        start = query.start if query.start is not None else x.shape[0] - 1
-        stop = query.stop if query.stop is not None else -1
-        step = query.step if query.step is not None else -1
-        return gather(x, torch.arange(start, stop, step, device=x.device), axis=0)
-    try:
-        return x.__getitem__(query)
-    except ValueError:
-        new_query = []
-        shape_idx = 0
-        for q in query:
-            if isinstance(q, slice) and q.step is not None and q.step < 0:
-                start = q.start if q.start is not None else x.shape[shape_idx] - 1
-                stop = q.stop if q.stop is not None else -1
-                step = q.step
-                new_query.append(torch.arange(start, stop, step, device=x.device))
-            else:
-                new_query.append(q)
-            shape_idx += 1
-        return x.__getitem__(new_query)
+        return x.__getitem__(query).clone()
+    return x.__getitem__(query)
+
+
+get_item.partial_mixed_handler = lambda x, query, **kwargs: not neg_step(query)
+
+
+def set_item(
+    x: torch.Tensor,
+    query: Union[torch.Tensor, Tuple],
+    val: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> torch.Tensor:
+    if hasattr(x, "dtype") and hasattr(val, "dtype") and x.dtype != val.dtype:
+        val = val.to(x.dtype)
+    if copy:
+        x = x.clone()
+    x.__setitem__(query, val)
+    return x
+
+
+set_item.partial_mixed_handler = (
+    lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
+)
 
 
 def to_numpy(
@@ -397,9 +418,8 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # handle numeric updates
     updates = torch.tensor(
-        [updates] if isinstance(updates, (float, int, bool)) else updates,
+        updates,
         dtype=(
             ivy.dtype(out, as_native=True)
             if ivy.exists(out)
@@ -407,97 +427,18 @@ def scatter_nd(
         ),
     )
 
-    # handle non-tensor indices
-    if indices == ():
-        return updates
-    elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
-        if updates.shape == () and ivy.exists(out) and out.shape == ():
-            return updates
-        shape = out.shape if ivy.exists(out) else updates.shape
-        indices = torch.stack(
-            [
-                torch.reshape(value, (-1,))
-                for value in torch.meshgrid(*[torch.range(0, shape[0] - 1)])
-            ],
-            dim=-1,
-        )
-    elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = (
-            shape
-            if ivy.exists(shape)
-            else out.shape if ivy.exists(out) else updates.shape
-        )
-        indices = _parse_ellipsis(indices, len(shape))
-        indices = torch.stack(
-            [
-                torch.reshape(value, (-1,))
-                for value in torch.meshgrid(
-                    *[
-                        (
-                            torch.range(0, s - 1)
-                            if idx == slice(None, None, None)
-                            else torch.Tensor([idx % s])
-                        )
-                        for s, idx in zip(shape, indices)
-                    ],
-                    indexing="ij",
-                )
-            ],
-            dim=-1,
-        )
-    else:
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = (
-            torch.tensor(indices) if isinstance(indices, (tuple, list)) else indices
-        )
-        if len(indices.shape) < 2:
-            indices = torch.unsqueeze(indices, -1)
-        if torch.any(indices == -1):
-            shape = (
-                shape
-                if ivy.exists(shape)
-                else out.shape if ivy.exists(out) else updates.shape
-            )
-            indices = _parse_index(indices, len(shape))
-            indices = [
-                torch.stack(
-                    [
-                        torch.reshape(value, (-1,))
-                        for value in torch.meshgrid(
-                            *[
-                                (
-                                    torch.range(0, s - 1)
-                                    if idx == slice(None, None, None)
-                                    else torch.tensor([idx % s])
-                                )
-                                for s, idx in zip(shape, index)
-                            ],
-                            indexing="xy",
-                        )
-                    ],
-                    dim=-1,
-                )
-                for index in indices
-            ]
-            indices = torch.concat(indices, axis=-1)
-
-    # broadcast updates to indices
     expected_shape = (
-        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
         if ivy.exists(out)
-        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
-    if sum(updates.shape) < sum(expected_shape):
-        updates = ivy.broadcast_to(updates, expected_shape)._data
-    elif sum(updates.shape) > sum(expected_shape):
-        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
+    updates = _broadcast_to(updates, expected_shape)._data
 
     # implementation
-    target = out
-    target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
+    target_given = ivy.exists(out)
+    if ivy.exists(shape) and target_given:
         ivy.utils.assertions.check_equal(
-            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+            ivy.Shape(out.shape), ivy.Shape(shape), as_array=False
         )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
@@ -515,9 +456,8 @@ def scatter_nd(
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if target_given:
-        flat_output = torch.reshape(out._data, (flat_result_size,))
+        flat_output = torch.reshape(out, (flat_result_size,)).detach()
     else:
-        reduction = "replace"
         flat_output = torch.zeros(flat_result_size, dtype=dtype)
     flat_updates = torch.reshape(updates, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
@@ -609,9 +549,3 @@ isin.support_native_out = True
 
 def itemsize(x: torch.tensor) -> int:
     return x.element_size()
-
-
-def strides(x: torch.tensor) -> Tuple[int]:
-    return tuple(
-        [int(stride * math.ceil(ivy.dtype_bits(x.dtype) / 8)) for stride in x.stride()]
-    )

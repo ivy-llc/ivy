@@ -120,7 +120,7 @@ def conv3d(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -146,7 +146,7 @@ def conv3d_transpose(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
     input,
@@ -174,7 +174,7 @@ def depthwise_conv2d(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def separable_conv2d(
     input,
@@ -225,7 +225,7 @@ def silu(features, beta: float = 1.0):
 
 @with_unsupported_dtypes(
     {
-        "2.12.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -248,7 +248,7 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.12.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -278,7 +278,7 @@ def weighted_cross_entropy_with_logits(
     return ivy.add(first_term, second_term)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def local_response_normalization(
     input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
@@ -321,7 +321,7 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -440,7 +440,7 @@ def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
@@ -451,13 +451,13 @@ def relu6(features, name=None):
     return ivy.relu6(features)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": "float16"}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": "float16"}, "tensorflow")
 @to_ivy_arrays_and_back
 def leaky_relu(features, alpha=0.2, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
@@ -513,7 +513,6 @@ def pool(
     )
 
 
-
 # sufficient_statistics
 @to_ivy_arrays_and_back
 def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
@@ -548,10 +547,21 @@ def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
         ivy.reshape(sum_of_squares, ())
     return count, sum_of_elements, sum_of_squares, shift
 
+
 # log_poisson_loss
 @to_ivy_arrays_and_back
 def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
-    return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss=compute_full_loss)
+
+
+# ctc_unique_labels
+@to_ivy_arrays_and_back
+def ctc_unique_labels(labels, name=None):
+    ctc_labels = ivy.unique_all(labels, by_value=False)
+    unique_pad = ivy.pad(
+        ctc_labels[0], (0, labels.size - ctc_labels[0].size), mode="constant"
+    )
+    return unique_pad, ctc_labels[2]
 
 
 # weighted_moments

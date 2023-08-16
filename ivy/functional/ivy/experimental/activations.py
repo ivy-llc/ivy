@@ -12,14 +12,18 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_out_argument,
     inputs_to_ivy_arrays,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -122,10 +126,12 @@ def prelu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -181,11 +187,13 @@ def thresholded_relu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -220,28 +228,17 @@ def relu6(
     >>> ivy.relu6(x, out = y)
     >>> print(y)
     ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = {
-                a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-            }
-    >>> x = ivy.relu6(x, out=x)
-    >>> print(x)
-    {
-    a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-    b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
-    }
     """
     return current_backend(x).relu6(x, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -287,11 +284,13 @@ def logsigmoid(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -318,38 +317,39 @@ def selu(
     >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
     >>> y = ivy.selu(x)
     >>> print(y)
-    ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
-                4.20280409,  5.25350523,  6.30420589,  7.35490704])
+    ivy.array([-1.11133075,  0.        ,  1.05070102,  2.10140204,  3.15210295,
+            4.20280409,  5.25350523,  6.30420589,  7.35490704])
     >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
     >>> y = ivy.zeros(9)
     >>> ivy.selu(x, out = y)
     >>> print(y)
-    ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
-                4.20280409,  5.25350523,  6.30420589,  7.35490704])
+    ivy.array([-1.11133075,  0.        ,  1.05070102,  2.10140204,  3.15210295,
+            4.20280409,  5.25350523,  6.30420589,  7.35490704])
 
     With :class:`ivy.Container` input:
-    >>> x = ivy.Container(
-            a=ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-            b=ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-        )
+    >>> x = ivy.Container(a=ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+    ...                   b=ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    ...                   )
     >>> x = ivy.selu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([-1.6705687, -1.52016652, -1.11133075, 0.,1.05070102,
-                        2.10140204, 3.15210295, 4.20280409, 5.25350523]),
+        a: ivy.array([-1.6705687, -1.52016652, -1.11133075, 0., 1.05070102,
+                      2.10140204, 3.15210295, 4.20280409, 5.25350523]),
         b: ivy.array([1.05070102, 2.10140204, 3.15210295, 4.20280409, 5.25350523,
-                        6.30420589, 7.35490704, 8.40560818, 9.45630932])
+                      6.30420589, 7.35490704, 8.40560818, 9.45630932])
     }
     """
     return current_backend(x).selu(x, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -393,6 +393,7 @@ def silu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -429,25 +430,59 @@ def elu(
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.elu(x)
     >>> print(y)
-    ivy.array([ 0.39, -0.57])
+    ivy.array([ 0.38999999, -0.57258511])
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.elu(x, out=y)
     >>> print(y)
-    ivy.array([ 1.5 ,  0.7 , -0.91])
+    ivy.array([ 1.5, 0.69999999, -0.90928203])
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.elu(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
-       [-0.98, -0.99 , -0.73]])
+    ivy.array([[ 1.10000002,  2.20000005,  3.29999995],
+           [-0.98772264, -0.99591321, -0.99863964]])
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
     >>> x = ivy.elu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([0., -0.6988]),
-        b: ivy.array([0.40000001, -0.181269])
+        a: ivy.array([0., -0.69880581]),
+        b: ivy.array([0.40000001, -0.18126924])
     }
     """
     return current_backend(x).elu(x, alpha=alpha, out=out)
+
+
+def sequence_length(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.int64:
+    """
+    Produce a scalar (tensor of empty shape) containing the number of tensors in the ivy
+    array input.
+
+    Parameters
+    ----------
+    x
+        Can be a sequence of any tensor type: bool, complex128,
+        complex64, double, float, float16, int16, int32, int64,
+        int8, string, uint16, uint32, uint64, uint8
+
+    Returns
+    -------
+    length
+        Length of the input sequence, as a scalar (empty shape tensor).
+
+    Examples
+    --------
+    >>> x = ivy.array([True, False, True])
+    >>> y = ivy.sequence_length(x)
+    >>> print(y)
+    3
+
+    >>> x = [1.0, 2.5, -3.4, 5.6, -85.3]
+    >>> y = ivy.sequence_length(x)
+    >>> print(y)
+    5
+    """
+    return current_backend(x).sequence_length(x, out=out)

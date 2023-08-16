@@ -7,19 +7,8 @@ from typing import Optional, Union
 import time
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
-from paddle.fluid.libpaddle import Place
-from paddle.fluid import core
-from paddle.framework import _get_paddle_place
+from paddle.device import core
 
-_paddle_dev_types = Union[
-    core.Place,
-    core.XPUPlace,
-    core.CPUPlace,
-    core.CUDAPinnedPlace,
-    core.CUDAPlace,
-    core.IPUPlace,
-    core.CustomPlace,
-]
 
 # API #
 # ----#
@@ -27,105 +16,70 @@ _paddle_dev_types = Union[
 
 def dev(
     x: paddle.Tensor, /, *, as_native: bool = False
-) -> Union[ivy.Device, _paddle_dev_types]:
-    dv = x.place
-    if as_native:
-        return dv
-    return as_ivy_dev(dv)
+) -> Union[ivy.Device, core.Place]:
+    return x.place if as_native else as_ivy_dev(x.place)
 
 
 def to_device(
     x: paddle.Tensor,
-    device: Union[ivy.Device, _paddle_dev_types],
+    device: core.Place,
     /,
     *,
     stream: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if device is not None:
-        native_dev = as_native_dev(device)
-        if not dev(x, as_native=True)._equals(native_dev):  # type: ignore
-            # TODO: check memory leak because ret is copying the original tensor
-            return paddle.to_tensor(x, place=native_dev, stop_gradient=x.stop_gradient)
-    return x
+    device = as_native_dev(device)
+    if device.is_cpu_place():
+        return x.cpu()
+    elif device.is_gpu_place():
+        return x.cuda(device.gpu_device_id())
 
 
-def as_ivy_dev(
-    device: Union[str, _paddle_dev_types],
-    /,
-) -> ivy.Device:
+def as_ivy_dev(device: core.Place, /):
+    # TODO: add handling to string inputs without indices for gpu
     if isinstance(device, str):
         return ivy.Device(device)
 
-    if is_native_dev(device):
-        if not isinstance(device, Place):
-            native_dev = Place()
-            native_dev.set_place(device)
-        else:
-            native_dev = device
-        if native_dev.is_cpu_place():
-            return ivy.Device("cpu")
-        elif native_dev.is_gpu_place():
-            dev_type = "gpu"
-            dev_idx = device.gpu_device_id()
-            return ivy.Device(dev_type + ":" + str(dev_idx))
-        elif native_dev.is_gpu_pinned_place():
-            return ivy.Device("gpu:0")  # simiplification
-        else:
-            raise ivy.utils.exceptions.IvyError(
-                f"Cannot convert {device} to an ivyDevice. ",
-                "Currently only cpu, tpu and gpu are supported.",
-            )
-
-    raise ivy.utils.exceptions.IvyError(
-        f"Cannot convert {device} to an ivy device. Expected a "
-        f"paddle.fluid.libpaddle.Place or str, got {type(device)}"
-    )
+    # TODO: remove this once ivy.Device accepts native device inputs
+    if device.is_cpu_place():
+        return ivy.Device("cpu")
+    elif device.is_gpu_place():
+        dev_idx = device.gpu_device_id()
+        return ivy.Device("gpu:" + str(dev_idx))
 
 
 def as_native_dev(
-    device: Union[ivy.Device, str, _paddle_dev_types],
+    device: Optional[Union[ivy.Device, core.Place]] = None,
     /,
-) -> _paddle_dev_types:
-    if is_native_dev(device):
+) -> core.Place:
+    if isinstance(device, core.Place):
         return device
-    if isinstance(device, str):
-        if "tpu" in device:
-            raise ivy.utils.exceptions.IvyBackendException(
-                "TPU not supported in paddle backend. Consider using ",
-                "TensorFlow or JaX.",
-            )
+    native_dev = core.Place()
+    if "cpu" in device:
+        native_dev.set_place(paddle.device.core.CPUPlace())
+
+    elif "gpu" in device:
+        if ":" in device:
+            gpu_idx = int(device.split(":")[-1])
+            assert (
+                gpu_idx < num_gpus()
+            ), "The requested device is higher than the number of available devices"
         else:
-            # Internal function handles more edge cases and devices
-            return _get_paddle_place(device)
-    else:
-        raise ivy.utils.exceptions.IvyError(
-            f"{device} cannot be converted to paddle native device."
-        )
+            gpu_idx = 0
+        native_dev.set_place(paddle.device.core.CUDAPlace(gpu_idx))
+    return native_dev
 
 
-def is_native_dev(device, /):
-    return isinstance(device, _paddle_dev_types.__args__)
-
-
-def clear_mem_on_dev(device: Place, /):
-    try:
-        # throws and error if not compiled with cuda
-        device = as_native_dev(device)
-        if (
-            isinstance(device, Place)
-            and device.is_cuda_place()
-            or isinstance(device, (core.CUDAPlace, core.CUDAPinnedPlace))
-        ):
-            paddle.device.cuda.empty_cache()
-    except Exception:
-        pass
+def clear_mem_on_dev(device: core.Place, /):
+    device = as_native_dev(device)
+    if device.is_gpu_place():
+        paddle.device.cuda.empty_cache()
 
 
 def clear_cached_mem_on_dev(device: str, /):
-    if "gpu" in device:
+    device = as_native_dev(device)
+    if device.is_gpu_place():
         paddle.device.cuda.empty_cache()
-    return None
 
 
 def num_gpus() -> int:

@@ -29,6 +29,11 @@ def add(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def imag(val, /):
+    return ivy.imag(val)
+
+
+@to_ivy_arrays_and_back
 def angle(z, deg=False):
     return ivy.angle(z, deg=deg)
 
@@ -69,12 +74,7 @@ def arctan2(x1, x2, /):
 @to_ivy_arrays_and_back
 def convolve(a, v, mode="full", *, precision=None):
     a, v = promote_types_of_jax_inputs(a, v)
-    if ivy.get_num_dims(a) != 1:
-        raise ValueError("convolve() only support 1-dimensional inputs.")
-    if len(a) == 0 or len(v) == 0:
-        raise ValueError(
-            f"convolve: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
-        )
+
     if len(a) < len(v):
         a, v = v, a
     v = ivy.flip(v)
@@ -88,9 +88,12 @@ def convolve(a, v, mode="full", *, precision=None):
     elif mode == "full":
         padding = [(v.shape[0] - 1, v.shape[0] - 1)]
 
+    a = a.reshape([1, 1, a.shape[0]])
+    v = v.reshape([v.shape[0], 1, 1])
+
     result = ivy.conv_general_dilated(
-        a[None, None, :],
-        v[:, None, None],
+        a,
+        v,
         (1,),
         padding,
         dims=1,
@@ -121,6 +124,7 @@ def floor(x, /):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, "jax")
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
@@ -385,7 +389,7 @@ def fmin(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("uint16",)},
+    {"0.4.14 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -439,7 +443,7 @@ def sinc(x, /):
 
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "bfloat16",
             "float16",
         )
@@ -474,7 +478,7 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("bfloat16",)},
+    {"0.4.14 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -542,6 +546,11 @@ def around(a, decimals=0, out=None):
 
 
 @to_ivy_arrays_and_back
+def round(a, decimals=0, out=None):
+    return ivy.round(a, decimals=decimals, out=out)
+
+
+@to_ivy_arrays_and_back
 def frexp(x, /):
     return ivy.frexp(x)
 
@@ -579,7 +588,7 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("float16",)},
+    {"0.4.14 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -599,7 +608,7 @@ def polyder(p, m=1):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("float16",)},
+    {"0.4.14 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -689,8 +698,10 @@ def product(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
     if promote_integers:
-        if dtype is None:
-            dtype = a.dtype
+        if ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
     if initial is not None:
         if axis is not None:
             s = ivy.to_list(ivy.shape(a, as_array=True))
@@ -700,11 +711,6 @@ def product(
         else:
             a[0] *= initial
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
-
-
-@to_ivy_arrays_and_back
-def round(x, decimals=0, /):
-    return ivy.round(x, decimals=decimals)
 
 
 @to_ivy_arrays_and_back

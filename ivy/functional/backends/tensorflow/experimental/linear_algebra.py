@@ -7,11 +7,12 @@ import ivy
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.13.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -125,7 +126,7 @@ def adjoint(
 
 @with_supported_dtypes(
     {
-        "2.12.0": (
+        "2.13.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -150,6 +151,7 @@ def multi_dot(
     return dot_out
 
 
+@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -189,3 +191,26 @@ def cond(
             tf.linalg.inv(x), ord=p, axis=[-2, -1]
         )
     return k
+
+
+def lu_factor(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    raise IvyNotImplementedException()
+
+
+def dot(
+    a: tf.Tensor,
+    b: tf.Tensor,
+    /,
+    *,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    return tf.tensordot(a, b, out=out)
+
+
+dot.support_native_out = True

@@ -27,7 +27,7 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -40,7 +40,7 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
-@with_supported_dtypes({"2.12.0 and below": ("float32",)}, "tensorflow")
+@with_supported_dtypes({"2.13.0 and below": ("float32",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     if use_norm is not None:
@@ -54,7 +54,7 @@ def clip_by_global_norm(t_list, clip_norm, use_norm=None):
     ], global_norm
 
 
-@with_supported_dtypes({"2.12.0 and below": ("float", "complex")}, "tensorflow")
+@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, "tensorflow")
 @to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
     t, clip_norm = check_tensorflow_casting(t, clip_norm)
@@ -72,7 +72,7 @@ def clip_by_norm(t, clip_norm, axes=None):
     return t_clip
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
@@ -115,7 +115,7 @@ def foldl(
     return result
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
@@ -243,7 +243,7 @@ def ensure_shape(x, shape, name=None):
     return x
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def range(start, limit=None, delta=1, dtype=None, name=None):
@@ -469,14 +469,19 @@ def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("unsigned", "integer")}, "tensorflow")
+@to_ivy_arrays_and_back
+def no_op(name=None):
+    return
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("uint16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def tile(input, multiples, name=None):
     return ivy.tile(input, multiples)
@@ -510,7 +515,7 @@ def roll(input, shift, axis, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
+    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64", "int16")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def split(value, num_or_size_splits, axis=0, num=None, name=None):
@@ -529,7 +534,7 @@ def repeat(
     return ivy.repeat(input, repeats, axis=axis)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
@@ -578,6 +583,45 @@ def unique(x, out_idx=ivy.int32, name=None):
 
 
 @to_ivy_arrays_and_back
+def unique_with_counts(x, out_idx="int32", name=None):
+    x = x.to_list() if ivy.is_array(x) else x
+
+    ivy.utils.assertions.check_equal(
+        ivy.array(x).ndim,
+        1,
+        message="unique_with_counts expects a 1D vector.",
+    )
+    ivy.utils.assertions.check_elem_in_list(
+        out_idx,
+        ["int32", "int64"],
+        message=(
+            f"Value for attr 'out_idx' of {out_idx} is not in the list of allowed"
+            " values: [int32, int64]"
+        ),
+    )
+
+    values = []
+    indices = []
+    counts = []
+
+    for element in x:
+        if element not in values:
+            values.append(element)
+            indices.append(len(values) - 1)
+            counts.append(1)
+        else:
+            index = values.index(element)
+            counts[index] += 1
+            indices.append(index)
+
+    return (
+        ivy.array(values),
+        ivy.array(indices, dtype=out_idx),
+        ivy.array(counts, dtype=out_idx),
+    )
+
+
+@to_ivy_arrays_and_back
 def while_loop(
     cond,
     body,
@@ -592,14 +636,14 @@ def while_loop(
     return ivy.while_loop(test_fn=cond, body_fn=body, vars=loop_vars)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def truncatediv(x, y, name=None):
     return x.trunc_divide(y)
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
+    {"2.13.0 and below": ("int16", "int8", "uint8", " uint16")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def truncatemod(x, y):
@@ -611,3 +655,12 @@ def truncatemod(x, y):
 @to_ivy_arrays_and_back
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def zeros_initializer(shape, dtype=None, name=None):
+    # todo internal: fix behaviour
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    return ivy.zeros(shape, dtype=dtype)

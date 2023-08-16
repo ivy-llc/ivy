@@ -13,7 +13,7 @@ Ivy Tests
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
 .. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
-.. _`Function Types`: https://unify.ai/docs/ivy/deep_dive/function_types.html#function-types
+.. _`Function Types`: https://unify.ai/docs/ivy/overview/deep_dive/function_types.html
 .. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
@@ -36,9 +36,9 @@ Ivy Tests
 .. _`this`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
 .. _`example`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1085
 .. _`test_concat`: https://github.com/unifyai/ivy/blob/1281a2baa15b8e43a06df8926ceef1a3d7605ea6/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L51
-.. _`test_device`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_device.py
-.. _`test_manipulation`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py
-.. _`test_layers`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_nn/test_layers.py
+.. _`test_device`: https://github.com/unifyai/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_core/test_device.py
+.. _`test_manipulation`: https://github.com/unifyai/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py
+.. _`test_layers`: https://github.com/unifyai/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_nn/test_layers.py
 .. _`keyword`:https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1108
 .. _`arguments`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354
 .. _`documentation`: https://hypothesis.readthedocs.io/en/latest/quickstart.html
@@ -49,12 +49,12 @@ Ivy Tests
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
 .. _`ivy tests forum`: https://discord.com/channels/799879767196958751/1028297802826121326
-.. _`test helpers`:  https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers
+.. _`test helpers`:  https://github.com/unifyai/ivy/tree/main/ivy_tests/test_ivy/helpers/hypothesis_helpers
 .. _`get_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L60
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
 .. _`Setting Up Testing in PyCharm`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-testing-in-pycharm
 .. _`Setting up for Free`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-for-free
 .. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
@@ -72,7 +72,7 @@ As done in the `test suite`_, we also make use of `hypothesis`_ for performing p
 Testing Pipeline
 ----------------
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/ivy_tests/testing_pipeline.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/ivy_tests/testing_pipeline.png?raw=true
    :align: center
    :width: 100%
    :class: dark-light
@@ -612,6 +612,82 @@ It would be helpful to keep in mind the following points while writing test -:
 - If the logic is general enough, this can instead be added to the :code:`helpers`, enabling it to be used for tests in other submodules
 
 
+
+Testing Partial Mixed Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+As explained in the :ref:`Function Types` section, partial mixed functions are a special type of mixed functions that either utilize the compositional implementation
+or the primary implementation depending on some conditions on the input. Therefore, the data-types supported by partial mixed functions depend on which implementation will
+be used for the given input. For example, when :code:`function_supported_dtypes` is called with respect to `ivy.linear` with torch backend, the following output is returned:
+
+.. code-block:: python
+
+    {'compositional': ('float32', 'int8', 'uint8', 'float64', 'int16', 'int32', 'int64'), 'primary': ('bool', 'float32', 'int8', 'uint8', 'float64', 'int64', 'int16', 'int32')}
+
+As can be seen from the above output that the data-types supported will depend on the implementation used for the given input. It's because of this reason that we need a slighlty
+different pipeline for testing partial mixed functions. Basically, while writing the strategies for the tests of these functions, we need to first determine which implementation 
+will be used and then based on that generate the data to test the function. Here's a example from the test of :code:`ivy.linear` function:
+
+
+.. code-block:: python
+
+    def x_and_linear(draw):
+        mixed_fn_compos = draw(st.booleans())
+        is_torch_backend = ivy.current_backend_str() == "torch"
+        dtype = draw(
+            helpers.get_dtypes("numeric", full=False, mixed_fn_compos=mixed_fn_compos)
+        )
+        in_features = draw(
+            helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
+        )
+        out_features = draw(
+            helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
+        )
+
+        x_shape = (
+            1,
+            1,
+            in_features,
+        )
+
+        weight_shape = (1,) + (out_features,) + (in_features,)
+        # if backend is torch and we're testing the primary implementation
+        # weight.ndim should be equal to 2
+        if is_torch_backend and not mixed_fn_compos:
+            weight_shape = (out_features,) + (in_features,)
+
+        bias_shape = (
+            1,
+            out_features,
+        )
+
+        x = draw(
+            helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=10)
+        )
+        weight = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=weight_shape, min_value=0, max_value=10
+            )
+        )
+        bias = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=bias_shape, min_value=0, max_value=10
+            )
+        )
+        return dtype, x, weight, bias
+
+As can be seen from the above code, a boolean parameter :code:`mixed_fn_compos` is generated first to determine whether to generate test data for
+the compositional implementation or the primary one. When it is equal to :code:`True`, the relevant data for the compositional implementation should
+be generated and when :code:`False`, data corresponding to the primary implementation should be generated. Another boolean, :code:`is_torch_backend` 
+is to used to determine if the current backend is :code:`torch`. Then these booleans are used together in this :code:`if` condition: 
+:code:`if is_torch_backend and not mixed_fn_compos` and :code:`weight_shape` is updated to be 2 dimensional because the torch backend implementation
+only supports 2 dimensional weights. Notice that the parameter :code:`mixed_fn_compos` is also be passed to :code:`helpers.get_dtypes` and
+:code:`helpers.ints` functions so that the dtypes corresponding to the implementation to be tested are returned. In general, :code:`helpers.get_dtypes`,
+:code:`helpers.ints`, :code:`helpers.floats`, and :code:`helpers.numbers` all have the `mixed_fn_compos` argument which must be supplied for the correct
+dtypes to be returned. In case the backend has a partial mixed implementation, the dtypes corresponding to either the compositional or the primary
+implementation are returned, depending on the value of the parameter, and otherwise the parameter is ignored. Rest of the testing pipeline is the
+same is as other functions.
+
+
 Bonus: Hypothesis' Extended Features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -681,19 +757,19 @@ Let’s look at the function `test_gelu`_ -:
 This test runs for every backend, and the output is shown below-:
 
 * **Jax**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/ivy_tests/Jax_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/ivy_tests/Jax_data_gen.png
    :width: 600
 
 * **Numpy**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/ivy_tests/numpy_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/ivy_tests/numpy_data_gen.png
    :width: 600
 
 * **Tensorflow**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/ivy_tests/tensorflow_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/ivy_tests/tensorflow_data_gen.png
    :width: 600
 
 * **Torch**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/ivy_tests/torch_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/ivy_tests/torch_data_gen.png
    :width: 600
 
 
@@ -705,7 +781,7 @@ If the tests are re-run, *reuse phase* statistics are printed as well where nota
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**.
 Let’s look at the newer output, for the same example -:
 
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/ivy_tests/test_run_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/ivy_tests/test_run_data_gen.png
    :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.
