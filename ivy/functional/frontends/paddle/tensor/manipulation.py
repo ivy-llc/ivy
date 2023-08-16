@@ -115,7 +115,12 @@ def broadcast_to(x, shape, name=None):
 def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64", "int32", "int64",  "bool")}, "paddle",)
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": ("float32", "float64", "int32", "int64", "bool")
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def resharp_(x, shape, name=None):
-    return ivy.resharp_(x, shape)
+    return ivy.reshape(x, shape, name=name)
