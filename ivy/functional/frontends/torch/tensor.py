@@ -1589,6 +1589,12 @@ class Tensor:
     def log1p(self):
         return torch_frontend.log1p(self)
 
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    def log1p_(self):
+        promoted_type = ivy.promote_types(self.dtype, "float32")
+        self.ivy_array = torch_frontend.log1p(self).to(promoted_type).ivy_array
+        return self
+
     def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.baddbmm(
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
@@ -1763,6 +1769,13 @@ class Tensor:
     )
     def sinc(self):
         return torch_frontend.sinc(self)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("uint8",)}, "torch")
+    def index_fill(self, dim, index, value):
+        arr = torch_frontend.moveaxis(self, dim, 0)
+        arr[ivy.to_list(index)] = value
+        arr = torch_frontend.moveaxis(self, 0, dim)
+        return arr
 
 
 class Size(tuple):

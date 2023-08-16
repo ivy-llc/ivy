@@ -376,9 +376,6 @@ def cov(
     aweights: Optional[np.ndarray] = None,
     dtype: Optional[np.dtype] = None,
 ) -> np.ndarray:
-    if fweights is not None:
-        fweights = fweights.astype(np.int64)
-
     return np.cov(
         m=x1,
         y=x2,
