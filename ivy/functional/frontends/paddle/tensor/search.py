@@ -85,3 +85,15 @@ def masked_select(x, mask, name=None):
 )
 def topk(x, k, axis=None, largest=True, sorted=True, name=None):
     return ivy.top_k(x, k, axis=axis, largest=largest, sorted=sorted)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def where(condition, x=None, y=None, name=None):
+    if x is None and y is None:
+        return ivy.argwhere(condition)
+    else:
+        return ivy.where(condition, x, y)

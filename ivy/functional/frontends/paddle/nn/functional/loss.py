@@ -315,3 +315,14 @@ def nll_loss(
     if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
         output = output - loss[ignore_index] / den
     return output
+
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32",)},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def square_error_cost(input, label):
+    # out = (input - label) ** 2
+    return ivy.square(ivy.subtract(input,label))
