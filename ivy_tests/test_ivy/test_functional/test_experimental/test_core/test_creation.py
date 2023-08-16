@@ -395,34 +395,6 @@ def test_unsorted_segment_sum(
     )
 
 
-@handle_test(
-    fn_tree="functional.ivy.experimental.unsorted_segment_sum",
-    d_x_n_s=valid_unsorted_segment_min_inputs(),
-    test_with_out=st.just(False),
-    test_gradients=st.just(False),
-)
-def test_unsorted_segment_sum(
-    *,
-    d_x_n_s,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    dtypes, data, num_segments, segment_ids = d_x_n_s
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
-        fn_name=fn_name,
-        data=data,
-        segment_ids=segment_ids,
-        num_segments=num_segments,
-    )
-
-    
-    
 @st.composite
 def _random_tucker_data(draw):
     shape = draw(
@@ -498,3 +470,78 @@ def test_random_tucker(
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
 
+
+@st.composite
+def _random_cp_data(draw):
+    shape = draw(
+        st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
+    )
+    rank = draw(helpers.ints(min_value=1, max_value=10))
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    full = draw(st.booleans())
+    orthogonal = draw(st.booleans())
+    if (rank > min(shape)) and orthogonal:
+        rank = min(shape)
+    seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
+    normalise_factors = draw(st.booleans())
+    return shape, rank, dtype[0], full, orthogonal, seed, normalise_factors
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.random_cp",
+    data=_random_cp_data(),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_random_cp(
+    *,
+    data,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    shape, rank, dtype, full, orthogonal, seed, normalise_factors = data
+    results = helpers.test_function(
+        input_dtypes=[],
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_name=fn_name,
+        shape=shape,
+        rank=rank,
+        dtype=dtype,
+        full=full,
+        orthogonal=orthogonal,
+        seed=seed,
+        normalise_factors=normalise_factors,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    if full:
+        reconstructed_tensor = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+        reconstructed_tensor_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+        )
+        for x, x_gt in zip(reconstructed_tensor, reconstructed_tensor_gt):
+            assert np.prod(shape) == np.prod(x.shape)
+            assert np.prod(shape) == np.prod(x_gt.shape)
+
+    else:
+        weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+        factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+        weights_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+        )
+        factors_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+        )
+
+        for w, w_gt in zip(weights, weights_gt):
+            assert len(w) == rank
+            assert len(w_gt) == rank
+
+        for f, f_gt in zip(factors, factors_gt):
+            assert np.prod(f.shape) == np.prod(f_gt.shape)
