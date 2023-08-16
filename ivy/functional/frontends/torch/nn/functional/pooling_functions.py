@@ -1,5 +1,6 @@
 # global
 from functools import reduce
+
 # local
 import ivy
 from ivy import with_unsupported_dtypes
