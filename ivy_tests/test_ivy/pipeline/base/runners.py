@@ -55,5 +55,6 @@ class TestCaseSubRunner(ABC):
 class TestCaseSubRunnerResult:
     flatten_elements_np: np.ndarray
     shape: tuple
+    device: str
     dtype: str
     type: str
