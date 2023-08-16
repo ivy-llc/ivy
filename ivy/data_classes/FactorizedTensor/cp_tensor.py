@@ -325,7 +325,7 @@ class CPTensor(FactorizedTensor):
         for i, factor in enumerate(factors):
             if i == 0:
                 factor = factor * weights
-                weights = ivy.ones(rank, factor.dtype)
+                weights = ivy.ones((rank,), dtype=factor.dtype)
 
             scales = ivy.sqrt(ivy.sum(ivy.square(factor), axis=0))
             scales_non_zero = ivy.where(
@@ -497,7 +497,7 @@ class CPTensor(FactorizedTensor):
             weights = 1
 
         if mask is None:
-            full_tensor = ivy.dot(
+            full_tensor = ivy.matmul(
                 factors[0] * weights,
                 ivy.permute_dims(ivy.khatri_rao(factors, skip_matrix=0), (1, 0)),
             )
@@ -681,53 +681,60 @@ class CPTensor(FactorizedTensor):
 
         return ivy.sqrt(ivy.sum(norm))
 
-    @staticmethod
-    def cp_permute_factors(ref_cp_tensor, tensors_to_permute):
-        """
-        Compare factors of a reference cp tensor with factors of other another tensor
-        (or list of tensor) in order to match component order. Permutation occurs on the
-        columns of factors, minimizing the cosine distance to reference cp tensor with
-        scipy Linear Sum Assignment method. The permuted tensor (or list of tensors) and
-        list of permutation for each permuted tensors are returned.
+    # uncomment when ivy.congruence_coefficient has been implemented
+    # which inturn requires linear_sum_assignment to be implemented.
+    # @staticmethod
+    # def cp_permute_factors(ref_cp_tensor, tensors_to_permute):
+    #    """
+    #    Compare factors of a reference cp tensor
+    #    with factors of other another tensor
+    #    (or list of tensor) in order to match
+    #    component order. Permutation occurs on the
+    #    columns of factors, minimizing the cosine distance
+    #    to reference cp tensor with
+    #    scipy Linear Sum Assignment method. The permuted
+    #    tensor (or list of tensors) and
+    #    list of permutation for each
+    #    permuted tensors are returned.
 
-        Parameters
-        ----------
-        ref_cp_tensor : cp tensor
-            The tensor that serves as a reference for permutation.
-        tensors_to_permute : cp tensor or list of cp tensors
-            The tensors to permute so that the order of components
-            match the reference tensor. Number of components must match.
+    #    Parameters
+    #    ----------
+    #    ref_cp_tensor : cp tensor
+    #        The tensor that serves as a reference for permutation.
+    #    tensors_to_permute : cp tensor or list of cp tensors
+    #        The tensors to permute so that the order of components
+    #        match the reference tensor. Number of components must match.
 
-        Returns
-        -------
-        permuted_tensors : permuted cp tensor or list of cp tensors
-        permutation : list
-            list of permuted indices. Lenght is equal to rank of cp_tensors.
-        """
-        if not isinstance(tensors_to_permute, list):
-            permuted_tensors = [tensors_to_permute.cp_copy()]
-            tensors_to_permute = [tensors_to_permute]
-        else:
-            permuted_tensors = []
-            for i in range(len(tensors_to_permute)):
-                permuted_tensors.append(tensors_to_permute[i].cp_copy())
-                tensors_to_permute[i] = ivy.CPTensor.cp_normalize(tensors_to_permute[i])
-        ref_cp_tensor = ivy.CPTensor.cp_normalize(ref_cp_tensor)
-        n_tensors = len(tensors_to_permute)
-        n_factors = len(ref_cp_tensor.factors)
-        permutation = []
-        for i in range(n_tensors):
-            _, col = ivy.congruence_coefficient(
-                ref_cp_tensor.factors, tensors_to_permute[i].factors
-            )
-            col = ivy.array(col, dtype=ivy.int64)
-            for f in range(n_factors):
-                permuted_tensors[i].factors[f] = permuted_tensors[i].factors[f][:, col]
-            permuted_tensors[i].weights = permuted_tensors[i].weights[col]
-            permutation.append(col)
-        if len(permuted_tensors) == 1:
-            permuted_tensors = permuted_tensors[0]
-        return permuted_tensors, permutation
+    #    Returns
+    #    -------
+    #    permuted_tensors : permuted cp tensor or list of cp tensors
+    #    permutation : list
+    #        list of permuted indices. Lenght is equal to rank of cp_tensors.
+    #    """
+    #    if not isinstance(tensors_to_permute, list):
+    #        permuted_tensors = [tensors_to_permute.cp_copy()]
+    #        tensors_to_permute = [tensors_to_permute]
+    #    else:
+    #        permuted_tensors = []
+    #        for i in range(len(tensors_to_permute)):
+    #            permuted_tensors.append(tensors_to_permute[i].cp_copy())
+    #            tensors_to_permute[i] = ivy.CPTensor.cp_normalize(tensors_to_permute[i]) # noqa
+    #    ref_cp_tensor = ivy.CPTensor.cp_normalize(ref_cp_tensor)
+    #    n_tensors = len(tensors_to_permute)
+    #    n_factors = len(ref_cp_tensor.factors)
+    #    permutation = []
+    #    for i in range(n_tensors):
+    #        _, col = ivy.congruence_coefficient(
+    #            ref_cp_tensor.factors, tensors_to_permute[i].factors
+    #        )
+    #        col = ivy.array(col, dtype=ivy.int64)
+    #        for f in range(n_factors):
+    #            permuted_tensors[i].factors[f] = permuted_tensors[i].factors[f][:, col]
+    #        permuted_tensors[i].weights = permuted_tensors[i].weights[col]
+    #        permutation.append(col)
+    #    if len(permuted_tensors) == 1:
+    #        permuted_tensors = permuted_tensors[0]
+    #    return permuted_tensors, permutation
 
     @staticmethod
     def unfolding_dot_khatri_rao(tensor, cp_tensor, mode):
