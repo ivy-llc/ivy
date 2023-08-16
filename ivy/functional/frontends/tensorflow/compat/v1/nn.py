@@ -167,19 +167,17 @@ def depthwise_conv2d_backprop_input(
     padding,
     data_format,
     dilations,
-    name=None
+    name=None,
 ):
     if input_sizes is None:
-        raise ivy.utils.exceptions.IvyException(
-            "Cannot specify'input_sizes'."
-        )
+        raise ivy.utils.exceptions.IvyException("Cannot specify'input_sizes'.")
     return tf_nn.depthwise_conv2d_backprop_input(
-    input_sizes,
-    filter,
-    out_backprop,
-    strides,
-    padding,
-    data_format,
-    dilations,
-    name
-)
+        input_sizes,
+        filter,
+        out_backprop,
+        strides,
+        padding,
+        data_format,
+        dilations,
+        name,
+    )
