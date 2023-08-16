@@ -1562,7 +1562,7 @@ class Tensor:
             return strides[dim]
         return strides
 
-    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "bfloat16")}, "torch")
     def log1p(self):
         promoted_type = ivy.promote_types(self.dtype, "float32")
         return torch_frontend.log1p(self).to(promoted_type)
