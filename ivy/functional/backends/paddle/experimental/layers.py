@@ -468,7 +468,7 @@ def interpolate(
         size,
         mode=interpolation_method,
         align_corners=align_corners,
-        scale_factor=scale_factor
+        scale_factor=scale_factor,
     )
 
 
