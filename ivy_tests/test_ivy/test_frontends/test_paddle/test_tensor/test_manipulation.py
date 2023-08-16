@@ -677,37 +677,36 @@ def test_paddle_rot90(
 
 
 @st.composite
-def _moveaxis_helper(draw , **kwargs):
-    dtypes, a , shape= draw(helpers.dtype_and_values(**kwargs , ret_shape=True))
+def _moveaxis_helper(draw, **kwargs):
+    dtypes, a, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
 
     source = draw(
         st.lists(
-            helpers.ints(min_value=0 , max_value=len(shape) - 1),
-            min_size = len(shape),
-            max_size = len(shape),
+            helpers.ints(min_value=0, max_value=len(shape) - 1),
+            min_size=len(shape),
+            max_size=len(shape),
             unique=True,
         )
     )
     destination = draw(
         st.lists(
-            helpers.ints(min_value=0 , max_value=len(shape) - 1),
-            min_size = len(shape),
-            max_size = len(shape),
+            helpers.ints(min_value=0, max_value=len(shape) - 1),
+            min_size=len(shape),
+            max_size=len(shape),
             unique=True,
         )
     )
 
-    return dtypes, a , source, destination
+    return dtypes, a, source, destination
 
 
 @handle_frontend_test(
-    fn_tree="paddle.moveaxis", # This is the function we are testing against
-    dtype_and_params = _moveaxis_helper(
+    fn_tree="paddle.moveaxis",  # This is the function we are testing against
+    dtype_and_params=_moveaxis_helper(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
-        )
-
+    ),
 )
 def test_paddle_moveaxis(
     # Parameters for the test
@@ -717,15 +716,17 @@ def test_paddle_moveaxis(
     test_flags,
     fn_tree,
     backend_fw,
+    on_device,
 ):
-    input_dtype , a , source , destination = dtype_and_params
+    input_dtype, a, source, destination = dtype_and_params
     helpers.test_frontend_function(
-        input_dtypes= input_dtype,
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x = a[0],
-        source = source,
-        destination = destination,
+        x=a[0],
+        source=source,
+        destination=destination,
+        on_device=on_device,
     )
