@@ -673,6 +673,15 @@ def cbrt(x):
     return ivy.pow(x, 1 / 3)
 
 
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cummin(operand, axis=0, reverse=False):
+    return ivy.cummin(operand, axis=axis, reverse=reverse, dtype=operand.dtype)
+
+
 @to_ivy_arrays_and_back
 def tie_in(x, y):
     return y
@@ -693,3 +702,12 @@ def erfc(x):
     value = ivy.erf(x)
     value = (1.0 - value) if value is not None else None
     return value
+
+
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("bool", "bfloat16")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def iota(dtype, size):
+    return ivy.arange(0, size, dtype=dtype)
