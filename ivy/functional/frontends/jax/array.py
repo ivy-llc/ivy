@@ -45,6 +45,10 @@ class Array:
     def T(self):
         return self.ivy_array.T
 
+    @property
+    def ndim(self):
+        return self.ivy_array.ndim
+
     # Instance Methods #
     # ---------------- #
 
@@ -123,6 +127,27 @@ class Array:
             fill_value=fill_value,
         )
 
+    def prod(
+        self,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+        out=None,
+    ):
+        return jax_frontend.numpy.product(
+            self,
+            axis=axis,
+            dtype=self.dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+            out=out,
+        )
+
     def ravel(self, order="C"):
         return jax_frontend.numpy.ravel(
             self,
@@ -138,6 +163,27 @@ class Array:
             order=order,
         )
 
+    def sum(
+        self,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+    ):
+        return jax_frontend.numpy.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+        )
+
     def argsort(self, axis=-1, kind="stable", order=None):
         return jax_frontend.numpy.argsort(self, axis=axis, kind=kind, order=order)
 
@@ -145,6 +191,16 @@ class Array:
         return jax_frontend.numpy.any(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
+
+    def reshape(self, *args, order="C"):
+        if not isinstance(args[0], int):
+            if len(args) > 1:
+                raise TypeError(
+                    "Shapes must be 1D sequences of concrete values of integer type,"
+                    f" got {args}."
+                )
+            args = args[0]
+        return jax_frontend.numpy.reshape(self, tuple(args), order)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
@@ -264,8 +320,7 @@ class Array:
         )
 
     def __iter__(self):
-        ndim = len(self.shape)
-        if ndim == 0:
+        if self.ndim == 0:
             raise TypeError("iteration over a 0-d Array not supported")
         for i in range(self.shape[0]):
             yield self[i]

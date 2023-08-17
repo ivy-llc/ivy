@@ -41,7 +41,7 @@ def install_pkg(path, pkg, base="fw/"):
             (
                 f"yes |pip3 install --upgrade {pkg} --target"
                 f" {path} --default-timeout=100 --extra-index-url"
-                " https://download.pytorch.org/whl/cu118  --no-cache-dir -y"
+                " https://download.pytorch.org/whl/cu118  --no-cache-dir"
             ),
             shell=True,
         )
@@ -51,7 +51,6 @@ def install_pkg(path, pkg, base="fw/"):
                 f"yes |pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
                 " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
                 " --no-cache-dir"
-                " -y"
             ),
             shell=True,
         )
@@ -86,6 +85,6 @@ if __name__ == "__main__":
     # uninstall requests when done
     # install requests only for build, and uninstall it later
     subprocess.run(
-        f"pip3 uninstall -y requests",
+        f"yes |pip3 uninstall requests",
         shell=True,
     )
