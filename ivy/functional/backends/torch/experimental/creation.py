@@ -210,35 +210,3 @@ def trilu(
 
 
 trilu.support_native_out = True
-
-
-def mel_weight_matrix(
-    num_mel_bins: int,
-    dft_length: int,
-    sample_rate: int,
-    lower_edge_hertz: float = 125.0,
-    upper_edge_hertz: float = 3000.0,
-):
-    # transform the inputs to tensors
-    lower_edge_hertz = torch.tensor(lower_edge_hertz)
-    upper_edge_hertz = torch.tensor(upper_edge_hertz)
-    zero = torch.tensor(0.0)
-    # mel transform lambda function
-    hz_to_mel = lambda f: 2595 * torch.log10(1 + f / 700)
-    nyquist_hz = sample_rate / 2
-    # define a range of frequencies in HZ
-    linear_freqs = torch.linspace(0, nyquist_hz, dft_length)[1:]
-    # transform the frequencies from HZ to mels
-    spec_bin_mels = hz_to_mel(linear_freqs).unsqueeze(1)
-    mel_edges = torch.linspace(
-        hz_to_mel(lower_edge_hertz), hz_to_mel(upper_edge_hertz), num_mel_bins + 2
-    )
-    # create overlapping frames of size 3
-    mel_edges = mel_edges.unfold(0, size=3, step=1)
-    lower_edge_mel, center_mel, upper_edge_mel = [
-        t.reshape((1, num_mel_bins)) for t in mel_edges.split(1, dim=1)
-    ]
-    lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
-    upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
-    mel_weights = torch.maximum(zero, torch.minimum(lower_slopes, upper_slopes))
-    return torch.nn.functional.pad(mel_weights, (0, 0, 1, 0))
