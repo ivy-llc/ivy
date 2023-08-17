@@ -255,10 +255,7 @@ def hyper_helper(ngood, nbad, nsample):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def hypergeometric(ngood, nbad, nsample, size=None):
-    if size is None:
-        return hyper_helper(ngood, nbad, nsample)
     u = ivy.empty(size, dtype=int)
     for index, s in ivy.ndenumerate(u):
         u[index] = hyper_helper(ngood, nbad, nsample)
-    return u
-    # return u.squeeze() if size == 1 else u
+    return u.squeeze() if size == 1 else u
