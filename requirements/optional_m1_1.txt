@@ -8,7 +8,9 @@ matplotlib
 opencv-python  # mod_name=cv2
 jax
 jaxlib
+jax-metal
 tensorflow-macos  # mod_name=tensorflow_macos
+tensorflow-metal
 tensorflow-probability  # mod_name=tensorflow_probability
 torch
 paddlepaddle  # unpinned , mod_name=paddle
