@@ -341,21 +341,29 @@ def swapaxes(
 )
 def clip(
     x: torch.Tensor,
-    x_min: Union[Number, torch.Tensor],
-    x_max: Union[Number, torch.Tensor],
+    x_min: Optional[Union[Number, torch.Tensor]] = None,
+    x_max: Optional[Union[Number, torch.Tensor]] = None,
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if hasattr(x_min, "dtype"):
-        x_min = torch.asarray(x_min, device=x.device)
-        x_max = torch.asarray(x_max, device=x.device)
+
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+
+    if x_min is not None and hasattr(x_min, "dtype"):
+        x_min = torch.as_tensor(x_min, device=x.device)
+    if x_max is not None and hasattr(x_max, "dtype"):
+        x_max = torch.as_tensor(x_max, device=x.device)
+
+    if x_min is not None and x_max is not None:
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)
         x_max = x_max.to(promoted_type)
         x = x.to(promoted_type)
-    return torch.clamp(x, x_min, x_max, out=out)
+
+    return torch.clamp(x, min=x_min, max=x_max, out=out)
 
 
 clip.support_native_out = True
