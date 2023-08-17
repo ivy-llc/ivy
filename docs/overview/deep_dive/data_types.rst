@@ -25,7 +25,6 @@ Data Types
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
-.. _`data types forum`: https://discord.com/channels/799879767196958751/1028297299799060490
 
 
 The data types supported by Ivy are as follows:
@@ -642,7 +641,7 @@ As with all superset design decisions, this behavior makes it much easier to sup
 
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_ or in the `data types forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_!
 
 
 **Video**
