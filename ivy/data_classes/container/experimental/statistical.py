@@ -495,7 +495,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         --------
         >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
                                 y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
-        >>> ivy.Container.static_moveaxis(a)
+        >>> ivy.Container.static_nanprod(a)
         {
             x: 12.0
             y: 12.0
@@ -562,7 +562,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         --------
         >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
                                 y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
-        >>> ivy.Container.static_moveaxis(a)
+        >>> a.nanprod()
         {
             x: 12.0
             y: 12.0
