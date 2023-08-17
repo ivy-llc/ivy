@@ -2922,8 +2922,8 @@ def _parse_query(query, x_shape, scatter=False):
         )
     if not scatter:
         for ax in new_axes:
-            if len(array_inds) and to_front and ax <= array_inds[-1]:
-                ax = array_inds[0] + 1
+            if len(array_inds) and to_front:
+                ax -= sum(1 for x in array_inds if x < ax) - 1
             target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape = _deep_flatten(target_shape)
 
