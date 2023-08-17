@@ -197,3 +197,13 @@ def logistic(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     x = loc + scale * ivy.log(u / (1 - u))
     return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def zipf(a, size=None):
+    if a <= 1:
+        raise ValueError(
+            "Parameter 'alpha' must be greater than 1 for the Zipf distribution."
+        )
+    return ivy.floor((1.0 / a) ** 1.0).astype(int)
