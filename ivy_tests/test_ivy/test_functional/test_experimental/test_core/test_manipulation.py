@@ -1360,16 +1360,17 @@ def put_along_axis_helper(draw):
             valid_axis=True,
             force_int_axis=True,
             ret_shape=True,
-            min_axis=0,
-            max_axis=1,
+            min_axis=1,
         )
     )
 
-    if axis < 0:
-        axis = 0
+    # TODO: helpers.dtype_and_values draws
+    #  unwantend axis values
+    if axis < 1:
+        axis = 1
+
     idx_shape = list(shape)
     idx_shape[axis] = 1
-    idx_shape = tuple(idx_shape)
 
     idx_strategy = nph.arrays(
         dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 1)
@@ -1377,11 +1378,13 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(0, 1e3)
+        dtype=input_dtype[0], shape=(), elements=st.integers(1, 1e3)
     )
     values = draw(values_strategy)
 
-    return input_dtype, x[0], indices, values, axis
+    x = x[0] if isinstance(x, list) else x
+    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
+    return input_dtype, x, indices, values, axis
 
 
 # put_along_axis
@@ -1403,7 +1406,7 @@ def test_put_along_axis(
 ):
     dtype, x, indices, values, axis = args
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,

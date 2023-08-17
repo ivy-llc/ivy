@@ -518,7 +518,7 @@ def put_along_axis(
     out: Optional[np.ndarray] = None,
 ):
     np.put_along_axis(arr, indices, values, axis)
-    return arr
+    return ivy.inplace_update(out, arr) if ivy.exists(out) else arr
 
 
 put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [

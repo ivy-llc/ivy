@@ -1775,7 +1775,7 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: Optional[str] = "assign",
+    mode: str = "assign",
     out: Optional[ivy.Array] = None,
 ) -> None:
     """
@@ -1825,12 +1825,11 @@ def put_along_axis(
         raise ivy.utils.exceptions.IvyValueError(
             "indices and arr must have the same number of dimensions"
         )
-    # out = ivy.zeros_like(arr) if out is None else out
     broadcast_shape = ivy.broadcast_shapes(*[arr.shape, indices.shape, values.shape])
     values = ivy.asarray(values) if not isinstance(values, ivy.Array) else values
-    if broadcast_shape:
-        indices = ivy.broadcast_to(indices, broadcast_shape)
-        values = ivy.broadcast_to(values, broadcast_shape)
+
+    indices = ivy.broadcast_to(indices, broadcast_shape)
+    values = ivy.broadcast_to(values, broadcast_shape)
 
     Ni, Nk = arr.shape[:axis], arr.shape[axis + 1 :]
     ret = []
@@ -1843,7 +1842,7 @@ def put_along_axis(
             a = _handle_reduction_op(mode, arr_1d, indices_1d, values_1d)
             ret.append(a)
 
-    ret = ivy.vstack(ret).T
+    ret = ivy.vstack(ret)
     ret = ivy.reshape(ret, arr.shape)
 
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret

@@ -504,7 +504,7 @@ def put_along_axis(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
-    return ret
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
 
 put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
