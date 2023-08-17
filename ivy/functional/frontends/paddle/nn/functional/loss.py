@@ -316,7 +316,6 @@ def nll_loss(
         output = output - loss[ignore_index] / den
     return output
 
-
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32",)},
     "paddle",
