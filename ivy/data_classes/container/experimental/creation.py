@@ -1115,6 +1115,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.mel_weight_matrix. This method
         simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
         applies to this method with minimal changes.
+
         Parameters
         ----------
         num_mel_bins
@@ -1138,6 +1139,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+
         Returns
         -------
         ret
@@ -1168,6 +1170,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.mel_weight_matrix. This method
         simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
         applies to this method with minimal changes.
+
         Parameters
         ----------
         num_mel_bins
@@ -1180,6 +1183,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
             Lower bound on the frequencies to be included in the mel spectrum.
         upper_edge_hertz
             The desired top edge of the highest frequency band.
+
         Returns
         -------
         ret
