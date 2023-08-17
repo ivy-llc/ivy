@@ -6,48 +6,52 @@ import ivy
 
 
 def _to_ivy_array(x):
+    # if x is any frontend array including frontend list
+    # then extract the wrapped ivy array
     if hasattr(x, "ivy_array"):
         return x.ivy_array
 
-    elif isinstance(x, (ivy.NativeArray, list)):
+    # convert native arrays and lists to ivy arrays
+    elif isinstance(x, (ivy.NativeArray, list, tuple)):
         return ivy.array(x)
 
     return x
 
 
 def _infer_return_array(x: Iterable) -> Callable:
-    module_path = x.__class__.__module__
-    frontend_array_name = x.__class__.__name__
+    # get module's name which is the first element
+    module_str = x.__class__.__module__.split(".")[0]
 
-    if frontend_array_name in ["int", "float", "bool", "complex"]:
-        frontend_path = "ivy.functional.frontends.builtins"
-        frontend_array_name = "list"
+    # if function's input is a scalar, list, or tuple
+    # convert to current backend's frontend array
+    if module_str in ["builtins"]:
+        # get current backend str
+        cur_backend = ivy.current_backend_str()
+        # assign current backend str unless it's empty, otherwise numpy
+        module_str = cur_backend if len(cur_backend) != 0 else "numpy"
 
-    elif "ivy" not in module_path:
-        module_str = module_path.split(".")[0]
-        module_str = "jax" if module_str == "jaxlib" else module_str
-        frontend_path = "ivy.functional.frontends." + module_str
-        frontend_array_name = "Array" if module_str == "jax" else frontend_array_name
+    # replace jaxlib with jax to construct a valid path
+    module_str = "jax" if module_str == "jaxlib" else module_str
+    frontend_path = "ivy.functional.frontends." + module_str
 
-    else:
-        frontend_path = module_path
-
+    # import the module and get a corresponding frontend array
     module = import_module(frontend_path)
-    frontend_array = getattr(module, frontend_array_name)
+    frontend_array = getattr(module, "_frontend_array")
 
-    if "numpy" in frontend_path:
-        return functools.partial(frontend_array, _init_overload=True)
     return frontend_array
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_builtins(*args, **kwargs):
-        ivy_args = ivy.nested_map(args, _to_ivy_array, shallow=False, to_ignore=list)
+        ivy_args = ivy.nested_map(
+            args, _to_ivy_array, shallow=False, to_ignore=(list, tuple)
+        )
         ivy_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, shallow=False, to_ignore=list
+            kwargs, _to_ivy_array, shallow=False, to_ignore=(list, tuple)
         )
 
+        # array is the first argument given to a function
         frontend_array = _infer_return_array(args[0])
 
         return fn(*ivy_args, **ivy_kwargs), frontend_array
