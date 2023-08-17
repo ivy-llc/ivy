@@ -297,3 +297,49 @@ def test_paddle_topk(
         sorted=sorted,
         test_values=False,
     )
+
+
+@st.composite
+def where_helper(draw):
+    input_dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_dim_size=1,
+            max_dim_size=3,
+            min_num_dims=1,
+            max_num_dims=3,
+            num_arrays=2,
+            shared_dtype=True,
+        )
+    )
+
+    condition = draw(helpers.array_values(dtype="bool", shape=x[0].shape))
+    return input_dtypes, condition, x[0], x[1]
+
+
+# where
+@handle_frontend_test(
+    fn_tree="paddle.where",
+    dtype_condition_x_y=where_helper(),
+)
+def test_paddle_where(
+    *,
+    dtype_condition_x_y,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, condition, x, y = dtype_condition_x_y
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        x=x,
+        y=y,
+    )

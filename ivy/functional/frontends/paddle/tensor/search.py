@@ -85,3 +85,55 @@ def masked_select(x, mask, name=None):
 )
 def topk(x, k, axis=None, largest=True, sorted=True, name=None):
     return ivy.top_k(x, k, axis=axis, largest=largest, sorted=sorted)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+def where(condition, x=None, y=None, name=None):
+    if ivy.isscalar(x):
+        x = ivy.full([1], x, ivy.asarray([x]).dtype.name)
+
+    if ivy.isscalar(y):
+        y = ivy.full([1], y, ivy.asarray([y]).dtype.name)
+
+    if x is None and y is None:
+        return nonzero(condition, as_tuple=True)
+
+    if x is None or y is None:
+        raise ValueError("either both or neither of x and y should be given")
+
+    condition_shape = list(condition.shape)
+    x_shape = list(x.shape)
+    y_shape = list(y.shape)
+
+    if x_shape == y_shape and condition_shape == x_shape:
+        broadcast_condition = condition
+        broadcast_x = x
+        broadcast_y = y
+    else:
+        zeros_like_x = ivy.zeros_like(x)
+        zeros_like_y = ivy.zeros_like(y)
+        zeros_like_condition = ivy.zeros_like(condition)
+        zeros_like_condition = ivy.cast(zeros_like_condition, x.dtype)
+        cast_cond = ivy.cast(condition, x.dtype)
+
+        broadcast_zeros = ivy.add(zeros_like_x, zeros_like_y)
+        broadcast_zeros = ivy.add(broadcast_zeros, zeros_like_condition)
+        broadcast_x = ivy.add(x, broadcast_zeros)
+        broadcast_y = ivy.add(y, broadcast_zeros)
+        broadcast_condition = ivy.add(cast_cond, broadcast_zeros)
+        broadcast_condition = ivy.cast(broadcast_condition, "bool")
+
+    ret = ivy.where(broadcast_condition, broadcast_x, broadcast_y)
+    return ret
