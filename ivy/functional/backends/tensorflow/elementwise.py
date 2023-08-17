@@ -337,6 +337,7 @@ def greater_equal(
     return tf.math.greater_equal(x1, x2)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def isfinite(
     x: Union[tf.Tensor, tf.Variable],
     /,
