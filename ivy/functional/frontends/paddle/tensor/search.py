@@ -77,3 +77,12 @@ def searchsorted(sorted_sequence, values, out_int32=False, right=False, name=Non
 @to_ivy_arrays_and_back
 def topk(x, k, axis=None, largest=True, sorted=True, name=None):
     return ivy.top_k(x, k, axis=axis, largest=largest, sorted=sorted)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def mode(x, axis=None, keepdim=False, name=None):
+    return ivy.indices(x, axis, keepdim, sorted=sorted)

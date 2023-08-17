@@ -248,3 +248,34 @@ def test_paddle_topk(
         sorted=sorted,
         test_values=False,
     )
+
+
+# mode
+@handle_frontend_test(
+    fn_tree="paddle.mode",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_paddle_mode(
+    *,
+    dtype_x_and_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
