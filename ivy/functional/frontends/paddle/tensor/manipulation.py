@@ -71,6 +71,17 @@ def squeeze(x, axis=None, name=None):
     return ivy.squeeze(x, axis=axis)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "bfloat16", "int8", "int16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def squeeze_(x, axis=None, name=None):
+    ret = ivy.squeeze(x, axis=axis)
+    ivy.inplace_update(x, ret)
+    return x
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
