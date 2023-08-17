@@ -189,7 +189,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 del Module._init_var
 
             return
-        self.build(*args, dynamic_backend=dynamic_backend, buffers=buffers**kwargs)
+        self.build(*args, dynamic_backend=dynamic_backend, buffers=buffers, **kwargs)
 
     # Private #
     # --------#
