@@ -69,3 +69,12 @@ def nanmedian(x, axis=None, keepdim=True, name=None):
         else ivy.astype(x, ivy.float32)
     )
     return ivy.median(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def quantile(x, q, axis=None, keepdim=False):
+    return ivy.quantile(x, q, axis=axis, keepdims=keepdim)
