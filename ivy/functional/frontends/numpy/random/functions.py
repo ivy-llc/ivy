@@ -258,4 +258,5 @@ def hypergeometric(ngood, nbad, nsample, size=None):
     u = ivy.empty(size, dtype=int)
     for index, s in ivy.ndenumerate(u):
         u[index] = hyper_helper(ngood, nbad, nsample)
-    return u.squeeze() if size == 1 else u
+    return u
+    # return u.squeeze() if size == 1 else u
