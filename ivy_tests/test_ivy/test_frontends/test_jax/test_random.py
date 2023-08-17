@@ -1387,7 +1387,6 @@ def test_jax_double_sided_maxwell(
     backend_fw,
 ):
     input_dtype, key = dtype_key
-
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,

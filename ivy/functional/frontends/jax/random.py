@@ -335,7 +335,6 @@ def maxwell(key, shape=None, dtype="float64"):
         "0.4.14 and below": (
             "float16",
             "bfloat16",
-            "uint32",
         )
     },
     "jax",  
