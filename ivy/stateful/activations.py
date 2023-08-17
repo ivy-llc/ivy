@@ -13,7 +13,17 @@ class GELU(Module):
         approximate: bool = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the GELU activation function."""
+        """
+        Apply the GELU activation function.
+
+        Parameters
+        ----------
+        approximate
+            whether to use the gelu approximation algorithm or exact formulation.
+        complex_mode
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         self._approximate = approximate
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -67,7 +77,15 @@ class ReLU(Module):
         self,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the RELU activation function."""
+        """
+        Apply the RELU activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
@@ -99,9 +117,10 @@ class LeakyReLU(Module):
         Parameters
         ----------
         alpha
-             Negative slope for ReLU.
+            Negative slope for ReLU.
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._alpha = alpha
         self._complex_mode = complex_mode
@@ -271,7 +290,8 @@ class Tanh(Module):
         Parameters
         ----------
         complex_mode
-            Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)

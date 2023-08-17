@@ -17,8 +17,9 @@ from ivy_tests.test_ivy.helpers import handle_test
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
-def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_relu(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -27,6 +28,7 @@ def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 
@@ -42,8 +44,11 @@ def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         safety_factor_scale="log",
     ),
     alpha=st.floats(min_value=-1e-4, max_value=1e-4),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
-def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_device):
+def test_leaky_relu(
+    *, dtype_and_x, alpha, complex_mode, test_flags, backend_fw, fn_name, on_device
+):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -55,6 +60,7 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
         atol_=1e-2,
         x=x[0],
         alpha=alpha,
+        complex_mode=complex_mode,
     )
 
 
@@ -67,8 +73,18 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
         max_value=1e4,
     ),
     approximate=st.booleans(),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
-def test_gelu(*, dtype_and_x, approximate, test_flags, backend_fw, fn_name, on_device):
+def test_gelu(
+    *,
+    dtype_and_x,
+    approximate,
+    complex_mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -80,6 +96,7 @@ def test_gelu(*, dtype_and_x, approximate, test_flags, backend_fw, fn_name, on_d
         rtol_=1e-2,
         x=x[0],
         approximate=approximate,
+        complex_mode=complex_mode,
     )
 
 
