@@ -354,7 +354,7 @@ The test then runs on the newly created arrays with specified data types.
 Why do we need helper functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It is usually the case that any ivy function should run seamlessly on `all the possible varieties, as well as the edge cases` encountered by the following parameters -:
+It is usually the case that any ivy function should run seamlessly on ‘all the possible varieties, as well as the edge cases’ encountered by the following parameters -:
 
 * All possible data types - **composite**
 * Boolean array types if the function expects one - **composite**
