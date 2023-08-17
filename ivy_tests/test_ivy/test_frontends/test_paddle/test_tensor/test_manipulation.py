@@ -353,6 +353,52 @@ def test_paddle_squeeze(
     )
 
 
+# unsqueeze
+@st.composite
+def _unsqueeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, axis in enumerate(shape):
+        if axis == 1:
+            valid_axes.append(index)
+    valid_axes.insert(0, None)
+
+    return draw(st.sampled_from(valid_axes))
+
+
+@handle_frontend_test(
+    fn_tree="paddle.unsqueeze",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    axis=st.integers(
+        min_value=0, max_value=len(st.shared(helpers.get_shape(), key="value_shape"))
+    ),
+)
+def test_paddle_unsqueeze(
+    *,
+    dtype_and_x,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+    )
+
+
 # expand
 @st.composite
 def _expand_helper(draw):
