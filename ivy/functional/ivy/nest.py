@@ -1049,7 +1049,7 @@ def nested_map(
     _dict_check_fn : Optional[Callable], optional
         Placeholder for the dict check function, do not set this parameter.
     extra_nest_types : Optional[Union[type, Tuple[type]]], optional
-        Types to recursively check when deciding whether to go deeper into the nest or not.
+        Types to recursively check when deciding whether to go deeper into the nest.
     shallow : bool, optional
         Whether to inplace update the input nest or not. Only works if the nest is a
         mutable type. Default is ``True``.
@@ -1092,6 +1092,7 @@ def nested_map(
     >>> ivy.nested_map(nest, function)
     # Output: {"a": [2, 3], "b": {"x": [4, 5], "y": [6, 7]}}
     """
+
     def tuple_check_fn(x: Any, include_derived: Dict[type, bool]) -> bool:
         if include_derived[tuple]:
             return isinstance(x, tuple)
@@ -1122,10 +1123,13 @@ def nested_map(
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
+    # TODO: Fixes iterating over tracked instances from the graph
+    # during transpilation. However, there might be a better fix
+    # than this. Remove the check below if that's the case
     if (
-            hasattr(x, "is_tracked_proxy")
-            and hasattr(class_instance, "__bases__")
-            and not set(class_instance.__bases__).intersection(set(to_ignore))
+        hasattr(x, "is_tracked_proxy")
+        and hasattr(class_instance, "__bases__")
+        and not set(class_instance.__bases__).intersection(set(to_ignore))
     ):
         to_ignore += (class_instance,)
     tuple_check_fn = ivy.default(
@@ -1141,7 +1145,7 @@ def nested_map(
         dict_check_fn,
     )
 
-    if tuple_check_fn(x, include_derived) and not isinstance(x, to_ignore):
+    if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
             nested_map(
                 i,
@@ -1165,8 +1169,8 @@ def nested_map(
             return class_instance(**dict(zip(x._fields, ret_list)))
         else:
             return class_instance(ret_list)
-    elif (list_check_fn(x, include_derived) or isinstance(x, extra_nest_types)) and not isinstance(
-            x, to_ignore
+    elif (list_check_fn(x, list) or isinstance(x, extra_nest_types)) and not isinstance(
+        x, to_ignore
     ):
         if isinstance(x, (ivy.Array, ivy.NativeArray)):
             ret = fn(x)
@@ -1194,8 +1198,8 @@ def nested_map(
             x[:] = ret_list[:]
             return x
         return class_instance(ret_list)
-    elif (dict_check_fn(x, include_derived) or isinstance(x, UserDict)) and not isinstance(
-            x, to_ignore
+    elif (dict_check_fn(x, dict) or isinstance(x, UserDict)) and not isinstance(
+        x, to_ignore
     ):
         class_instance = type(x)
         ret = {
@@ -1220,6 +1224,7 @@ def nested_map(
             return x
         return class_instance(ret)
     elif isinstance(x, slice):
+        # TODO: add tests for this
         return slice(*nested_map([x.start, x.stop, x.step], fn))
     return fn(x)
 
