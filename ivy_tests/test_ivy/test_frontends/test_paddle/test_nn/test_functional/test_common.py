@@ -416,3 +416,95 @@ def test_linear(
         weight=weight,
         bias=bias,
     )
+
+
+# Dropout3d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.dropout3d",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=5,
+        max_num_dims=5,
+    ),
+    p=st.floats(min_value=0.0, max_value=1.0),
+    training=st.booleans(),
+    data_format=st.sampled_from(["NCDHW", "NDHWC"]),
+)
+def test_paddle_dropout3d(
+    *,
+    d_type_and_x,
+    p,
+    training,
+    data_format,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        p=p,
+        training=training,
+        data_format=data_format,
+    )
+
+
+@st.composite
+def paddle_unfold_handler(draw, dtype):
+    dtype = draw(dtype)
+    h_size = draw(helpers.ints(min_value=10, max_value=30))
+    w_size = draw(helpers.ints(min_value=10, max_value=30))
+    channels = draw(helpers.ints(min_value=1, max_value=3))
+    batch = draw(helpers.ints(min_value=1, max_value=10))
+
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=[batch, channels, h_size, w_size],
+            min_value=0,
+            max_value=1,
+        )
+    )
+
+    kernel_sizes = draw(helpers.ints(min_value=1, max_value=3))
+    strides = draw(helpers.ints(min_value=1, max_value=3))
+    paddings = draw(helpers.ints(min_value=1, max_value=3))
+    dilations = draw(helpers.ints(min_value=1, max_value=3))
+    return dtype, x, kernel_sizes, strides, paddings, dilations
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.unfold",
+    dtype_inputs=paddle_unfold_handler(dtype=helpers.get_dtypes("valid", full=False)),
+)
+def test_unfold(
+    *,
+    dtype_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x, kernel_sizes, strides, paddings, dilations = dtype_inputs
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        kernel_sizes=kernel_sizes,
+        strides=strides,
+        paddings=paddings,
+        dilations=dilations,
+    )
