@@ -187,7 +187,7 @@ Suppose you need to generate a 1-D array or a scaler value, which also generates
 
 we can then later use this strategy in any of our tests.
 
-Writing Hypothesis Test
+Writing Hypothesis Tests
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Writing Hypothesis tests are intuitive and simple, as an example, we've implemented our own :code:`add` function, which takes in 2 parameters :code:`x` and :code:`y`.
@@ -225,17 +225,17 @@ In order to run a test, a lot of pre-processing must be done, e.g. import the fu
     3.  :code:`with_out` flag
 2.  Generate :code:`num_positional_args`
 
-The flags that the decorators would generate, may be more or less depending on the function, **Ivy Functional API** requires :code:`gradient_test` flag, some test functions like :code:`test_gpu_is_available` does not requrie any of these flags, and therefore the decorator will not generate any of these.
+The flags that the decorators would generate, may be more or less depending on the function, **Ivy Functional API** requires :code:`gradient_test` flag, some test functions like :code:`test_gpu_is_available` does not require any of these flags, and therefore the decorator will not generate any of these.
 
 3.  Generate test specific parameters, :code:`fn_name`, :code:`fn_tree`, :code:`method_tree`.
 4.  Check for the function's supported data types and devices.
 5.  Implicitly wraps the test function using Hypothesis :code:`@given` decorator, this allows us to write less code, more readable, and easy to update and maintain.
 
-This is not an exhaustive list of what the :code:`handle_test` decorators actually do, they may do more or less in the future, to summaraize, the test decorators does some of **Pretest-processing** part in the testing pipeline.
+This is not an exhaustive list of what the :code:`handle_test` decorators actually do, they may do more or less in the future, to summarize, the test decorators do some of the **Pretest-processing** part in the testing pipeline.
 
 - Why do we have multiple handle test decorators?
 
-Having multiple test decorator is mainly for efficiency, `handle_test` could do what `handle_frontend_test` does, it just handles the parameters slighlty different, and this can be inferred at run time, but we choose to seperate the decorator for general different usages, currently we have 4 seperate decorators
+Having multiple test decorator is mainly for efficiency, `handle_test` could do what `handle_frontend_test` does, it just handles the parameters slightly different, and this can be inferred at run time, but we choose to separate the decorator for general different usages, currently we have 4 separate decorators
 
 1.  :code:`handle_test`
 2.  :code:`handle_method`
@@ -246,7 +246,7 @@ One of the few differences between the 4 decorators that they generate different
 
 - Integration
 
-Our test decorators actually transforms to :code:`@given` decorators at PyTets collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
+Our test decorators actually transforms to :code:`@given` decorators at PyTest collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
 
 Writing Ivy Tests
 ^^^^^^^^^^^^^^^^^
@@ -303,7 +303,7 @@ The generated data is returned as a tuple.
 
 One thing to note here is the :code:`test_flags` variable in the test function. This is basically an object which is initialized internally, which captures all the flags mentioned above for the test during collection time. These flags are then available for the helper function at test time.
 
-The test flags can also be generated explicitely like this -:
+The test flags can also be generated explicitly like this -:
 
 .. code-block:: python
     
@@ -624,7 +624,7 @@ be used for the given input. For example, when :code:`function_supported_dtypes`
 
     {'compositional': ('float32', 'int8', 'uint8', 'float64', 'int16', 'int32', 'int64'), 'primary': ('bool', 'float32', 'int8', 'uint8', 'float64', 'int64', 'int16', 'int32')}
 
-As can be seen from the above output that the data-types supported will depend on the implementation used for the given input. It's because of this reason that we need a slighlty
+As can be seen from the above output that the data-types supported will depend on the implementation used for the given input. It's because of this reason that we need a slightly
 different pipeline for testing partial mixed functions. Basically, while writing the strategies for the tests of these functions, we need to first determine which implementation 
 will be used and then based on that generate the data to test the function. Here's a example from the test of :code:`ivy.linear` function:
 
