@@ -4,6 +4,7 @@ import numpy as np
 from tensorflow import errors as tf_errors
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_list
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
