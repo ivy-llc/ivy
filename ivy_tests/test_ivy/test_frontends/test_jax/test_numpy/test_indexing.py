@@ -6,7 +6,7 @@ from jax.numpy import tril, triu, r_, c_
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (
     _helper_r_,
     _helper_c_,
@@ -470,7 +470,7 @@ def test_jax_numpy_indices(
 def test_jax_numpy_r_(inputs, backend_fw):
     inputs, *_ = inputs
     ret_gt = r_.__getitem__(tuple(inputs))
-    with update_backend(backend_fw):
+    with BackendHandler.update_backend(backend_fw):
         ret = jnp_frontend.r_.__getitem__(tuple(inputs))
     assert np.allclose(ret.ivy_array, ret_gt)
 
@@ -478,6 +478,6 @@ def test_jax_numpy_r_(inputs, backend_fw):
 @handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_c_())  # dummy fn_tree
 def test_jax_numpy_c_(inputs, backend_fw):
     ret_gt = c_.__getitem__(tuple(inputs))
-    with update_backend(backend_fw):
+    with BackendHandler.update_backend(backend_fw):
         ret = jnp_frontend.c_.__getitem__(tuple(inputs))
     assert np.allclose(ret.ivy_array, ret_gt)

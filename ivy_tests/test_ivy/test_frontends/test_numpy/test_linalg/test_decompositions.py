@@ -5,7 +5,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
@@ -120,7 +120,7 @@ def test_numpy_svd(
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for u, v in zip(ret, ret_gt):
             u = ivy_backend.to_numpy(ivy_backend.abs(u))
             v = ivy_backend.to_numpy(ivy_backend.abs(v))

@@ -4,7 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
 # empty
@@ -304,7 +304,7 @@ def test_numpy_zeros_like(
 def _input_fill_and_dtype(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))
     dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype[0]):
             fill_values = draw(st.integers(min_value=0, max_value=5))
         elif ivy_backend.is_int_dtype(dtype[0]):
