@@ -1348,7 +1348,7 @@ def sparsify_tensor(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Zeros out all elements in the `tensor` except `card` elements with maximum absolute
+    Zeros out all elements in the tensor except `card` elements with maximum absolute
     values.
 
     Parameters
@@ -1356,7 +1356,7 @@ def sparsify_tensor(
     x : Union[ivy.Array, ivy.NativeArray]
         Tensor to be sparsified
     card : int
-        Desired number of non-zero elements in the `tensor`
+        Desired number of non-zero elements in the tensor
 
     Returns
     -------
