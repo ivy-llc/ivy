@@ -45,7 +45,8 @@ class _ContainerWithActivations(ContainerBase):
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -109,7 +110,8 @@ class _ContainerWithActivations(ContainerBase):
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -176,7 +178,8 @@ class _ContainerWithActivations(ContainerBase):
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -243,7 +246,8 @@ class _ContainerWithActivations(ContainerBase):
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -310,7 +314,8 @@ class _ContainerWithActivations(ContainerBase):
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -376,7 +381,8 @@ class _ContainerWithActivations(ContainerBase):
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------

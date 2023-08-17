@@ -84,7 +84,7 @@ class ReLU(Module):
         ret
             The outputs following the RELU activation *[batch_shape, d]*
         """
-        return ivy.relu(x, self._complex_mode)
+        return ivy.relu(x, complex_mode=self._complex_mode)
 
 
 class LeakyReLU(Module):
@@ -289,7 +289,7 @@ class Tanh(Module):
          ret
             The outputs following the TANH activation *[batch_shape, d]*
         """
-        return ivy.tanh(x, self._complex_mode)
+        return ivy.tanh(x, complex_mode=self._complex_mode)
 
 
 class ReLU6(Module):

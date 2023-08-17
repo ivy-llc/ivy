@@ -30,7 +30,8 @@ class _ArrayWithActivations(abc.ABC):
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -69,7 +70,8 @@ class _ArrayWithActivations(abc.ABC):
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -93,6 +95,7 @@ class _ArrayWithActivations(abc.ABC):
         *,
         approximate: bool = False,
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gelu. This method simply wraps the
@@ -108,6 +111,9 @@ class _ArrayWithActivations(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -121,7 +127,9 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([-0.138, -0.165, 1.4])
         """
-        return ivy.gelu(self._data, approximate=approximate, out=out)
+        return ivy.gelu(
+            self._data, approximate=approximate, out=out, complex_mode=complex_mode
+        )
 
     def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

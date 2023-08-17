@@ -56,13 +56,14 @@ def gelu(
     x
         Input array.
     approximate
-        Whether to approximate, default is ``True``.
+        Whether to approximate, default is ``True``. An approximation is always used if
+        the input array is complex.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
     Returns
     -------
@@ -156,7 +157,7 @@ def leaky_relu(
         inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
     Returns
     -------
@@ -314,8 +315,8 @@ def relu(
 
     If the input is complex, then by default each element is set to zero  if
     either its real part is strictly negative or if its real part is zero and its
-    imaginary part is negative.
-    This behaviour can be changed by specifying a different `complex_mode`.
+    imaginary part is negative. This behaviour can be changed by specifying a different
+    `complex_mode`.
 
     Parameters
     ----------
@@ -326,7 +327,7 @@ def relu(
         inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
     Returns
     -------

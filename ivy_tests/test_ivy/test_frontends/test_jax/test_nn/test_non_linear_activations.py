@@ -189,7 +189,7 @@ def test_jax_gelu(
 ):
     input_dtype, x = dtype_and_x
     # As erf function doesn't support complex dtype
-    if "complex" in str(input_dtype):
+    if "complex" in str(input_dtype[0]):
         approximate = True
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
