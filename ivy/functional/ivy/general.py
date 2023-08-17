@@ -3,7 +3,6 @@
 # global
 import gc
 import inspect
-import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -2816,15 +2815,26 @@ def set_item(
         x = ivy.copy_array(x)
     if 0 in x.shape or 0 in val.shape:
         return x
+    inv_perm = None
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
         target_shape = ivy.get_item(x, query).shape
         query = ivy.nonzero(query, as_tuple=False)
     else:
-        query, target_shape = _parse_query(query, x.shape, scatter=True)
+        query, target_shape, vector_inds = _parse_query(query, x.shape, scatter=True)
+        if vector_inds is not None:
+            perm = [
+                    *vector_inds,
+                    *[i for i in range(len(x.shape)) if i not in vector_inds],
+                ]
+            x = ivy.permute_dims(x, axes=perm)
+            inv_perm = ivy.invert_permutation(perm)
     val = _broadcast_to(val, target_shape).astype(x.dtype)
-    return ivy.scatter_nd(query, val, reduction="replace", out=x)
+    ret = ivy.scatter_nd(query, val, reduction="replace", out=x)
+    if inv_perm is not None:
+        return ivy.permute_dims(x, axes=inv_perm)
+    return ret
 
 
 set_item.mixed_backend_wrappers = {
@@ -2846,12 +2856,8 @@ def _parse_query(query, x_shape, scatter=False):
     # check if non-slice queries are in consecutive positions
     # if so, they have to be moved to the front
     # https://numpy.org/neps/nep-0021-advanced-indexing.html#mixed-indexing
-    # relevant only for gathering
-    if not scatter:
-        non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
-        to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
-    else:
-        to_front = False
+    non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
+    to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
 
     # extract newaxis queries
     if not scatter:
@@ -2892,7 +2898,7 @@ def _parse_query(query, x_shape, scatter=False):
     if len(query) < len(x_shape):
         query += [ivy.arange(0, s, 1).astype(ivy.int64) for s in x_shape[len(query) :]]
 
-    # calculate target_shape, i.e. the shape the gathered values should be in
+    # calculate target_shape, i.e. the shape the gathered/scattered values should have
     if len(array_inds) and to_front:
         target_shape = (
             [list(new_arrays[0].shape)]
@@ -2987,14 +2993,11 @@ def _parse_query(query, x_shape, scatter=False):
             (*target_shape, len(x_shape))
         )
 
-    if scatter:
-        return indices.astype(ivy.int64), target_shape
-    else:
-        return (
-            indices.astype(ivy.int64),
-            target_shape,
-            array_inds if len(array_inds) and to_front else None,
-        )
+    return (
+        indices.astype(ivy.int64),
+        target_shape,
+        array_inds if len(array_inds) and to_front else None,
+    )
 
 
 def _parse_ellipsis(so, ndims):
