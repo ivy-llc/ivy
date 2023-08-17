@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'master'
+      - 'main'
 permissions:
   actions: read
 jobs:
@@ -29,7 +29,7 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
-          source ./ivy/clone_mapping.sh master
+          source ./ivy/clone_mapping.sh main
           pip install pydriller pymongo 
           cp Mapping/tests.pbz2 ivy/
           cd ivy
@@ -39,7 +39,7 @@ jobs:
           cd Mapping
           git add .
           git commit -m "Update Mapping"
-          git push origin master
+          git push origin main
         continue-on-error: true
 
       - name: Run Tests

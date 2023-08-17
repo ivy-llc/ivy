@@ -4,6 +4,10 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_input_and_matrices,
+    _get_dtype_and_3dbatch_matrices,
+)
 
 
 # sin
@@ -951,7 +955,7 @@ def test_paddle_lgamma(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1E-4,
+        atol=1e-4,
         x=x[0],
     )
 
@@ -1863,4 +1867,184 @@ def test_paddle_diff(
         axis=axis,
         prepend=prepend[0],
         append=append[0],
+    )
+
+
+# mm
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.mm",
+    dtype_xy=_get_dtype_input_and_matrices(),
+)
+def test_paddle_mm(
+    *,
+    dtype_xy,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, y = dtype_xy
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        mat2=y,
+    )
+
+
+# addmm
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.addmm",
+    dtype_input_xy=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_paddle_addmm(
+    *,
+    dtype_input_xy,
+    beta,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input, x, y = dtype_input_xy
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        x=x[0],
+        y=y[0],
+        beta=beta,
+        alpha=alpha,
+    )
+
+
+# kron
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.kron",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_kron(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@st.composite
+def _test_paddle_take_helper(draw):
+    mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
+
+    safe_bounds = mode == "raise"
+
+    dtypes, xs, indices, _, _ = draw(
+        helpers.array_indices_axis(
+            array_dtypes=helpers.get_dtypes("float_and_integer"),
+            indices_dtypes=["int32", "int64"],
+            valid_bounds=safe_bounds,
+        )
+    )
+
+    return dtypes, xs, indices, mode
+
+
+# take
+@handle_frontend_test(
+    fn_tree="paddle.take", dtype_and_values=_test_paddle_take_helper()
+)
+def test_paddle_take(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    dtypes, xs, indices, modes = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs,
+        index=indices,
+        mode=modes,
+    )
+
+
+# amax
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.amax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_amax(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
     )

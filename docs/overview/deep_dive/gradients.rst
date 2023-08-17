@@ -3,7 +3,6 @@ Gradients
 
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
-.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
 
 Overview
 --------
@@ -172,7 +171,7 @@ Framework-specific Considerations
 
 This should have hopefully given you a good feel for how the gradient API is implemented in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_ or in the `gradients forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_!
 
 
 **Video**
