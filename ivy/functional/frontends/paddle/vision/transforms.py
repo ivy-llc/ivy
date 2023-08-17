@@ -144,3 +144,13 @@ def vflip(img, data_format="CHW"):
 def hflip(img):
     img = ivy.array(img)
     return ivy.flip(img, axis=-1)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def pad(x, pad, mode="constant", value=0.0, data_format="NCHW", name=None):
+    ret = ivy.pad(x, pad, mode=mode, constant_values=value, data_format=data_format)
+    # ivy.permute_dims()
+    return ret
