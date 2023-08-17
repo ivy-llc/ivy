@@ -8,13 +8,13 @@ import typing
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 
 
 # dtype objects
 @handle_test(fn_tree="functional.ivy.exists")  # dummy fn_tree
 def test_dtype_instances(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         assert ivy_backend.exists(ivy_backend.int8)
         assert ivy_backend.exists(ivy_backend.int16)
         assert ivy_backend.exists(ivy_backend.int32)
@@ -317,7 +317,7 @@ def test_is_hashable_dtype(
     input_dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         res = ivy_backend.is_hashable_dtype(input_dtype)
         assert res
@@ -333,7 +333,7 @@ def test_as_ivy_dtype(
     input_dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         res = ivy_backend.as_ivy_dtype(input_dtype)
         if isinstance(input_dtype, str):
@@ -356,7 +356,7 @@ def test_as_native_dtype(
     input_dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         res = ivy_backend.as_native_dtype(input_dtype)
         if isinstance(input_dtype, ivy_backend.NativeDtype):
@@ -379,7 +379,7 @@ def test_as_native_dtype(
 def test_closest_valid_dtype(
     *, input_dtype, test_flags, backend_fw, fn_name, on_device
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         res = ivy_backend.closest_valid_dtype(input_dtype)
         assert isinstance(input_dtype, ivy_backend.Dtype) or isinstance(
@@ -402,7 +402,7 @@ def test_default_dtype(
     as_native,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         res = ivy_backend.default_dtype(dtype=input_dtype, as_native=as_native)
         assert (
@@ -653,7 +653,7 @@ def test_default_float_dtype(
     as_native,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         float_dtype, x = dtype_x
         res = ivy_backend.default_float_dtype(
             input=input,
@@ -693,7 +693,7 @@ def test_default_int_dtype(
     backend_fw,
 ):
     int_dtype, x = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.default_int_dtype(
             input=input,
             int_dtype=int_dtype[0],
@@ -730,7 +730,7 @@ def test_default_complex_dtype(
     backend_fw,
 ):
     complex_dtype, x = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.default_complex_dtype(
             input=input,
             complex_dtype=complex_dtype[0],
@@ -820,7 +820,7 @@ _composition_2.test_unsupported_dtypes = {
     func=st.sampled_from([_composition_1, _composition_2]),
 )
 def test_function_supported_dtypes(*, func, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.function_supported_dtypes(func)
         exp = set(ivy_backend.all_dtypes).difference(
             set(func.test_unsupported_dtypes[backend_fw])
@@ -834,7 +834,7 @@ def test_function_supported_dtypes(*, func, backend_fw):
     func=st.sampled_from([_composition_2]),
 )
 def test_function_unsupported_dtypes(*, func, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.function_unsupported_dtypes(func)
         exp = func.test_unsupported_dtypes[backend_fw]
         assert set(tuple(exp)) == set(res)
@@ -861,7 +861,7 @@ def test_function_dtype_versioning(
     func_and_version,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for key in func_and_version:
             if key != backend_fw:
                 continue
@@ -905,7 +905,7 @@ def test_function_dtype_versioning_frontend(
     func_and_version,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         _import_mod = ivy_backend.utils.dynamic_import
         for key in func_and_version:
             if key != backend_fw:
@@ -943,7 +943,7 @@ def test_invalid_dtype(
     dtype_in,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype_in = dtype_in[0]
         res = ivy_backend.invalid_dtype(dtype_in)
         invalid_dtypes = ivy_backend.invalid_dtypes
@@ -969,7 +969,7 @@ def test_unset_default_dtype(
     dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype = dtype[0]
         stack_size_before = len(ivy_backend.default_dtype_stack)
         ivy_backend.set_default_dtype(dtype)
@@ -990,7 +990,7 @@ def test_unset_default_float_dtype(
     dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype = dtype[0]
         stack_size_before = len(ivy_backend.default_float_dtype_stack)
         ivy_backend.set_default_float_dtype(dtype)
@@ -1011,7 +1011,7 @@ def test_unset_default_int_dtype(
     dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype = dtype[0]
         stack_size_before = len(ivy_backend.default_int_dtype_stack)
         ivy_backend.set_default_int_dtype(dtype)
@@ -1032,7 +1032,7 @@ def test_unset_default_complex_dtype(
     dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype = dtype[0]
         stack_size_before = len(ivy_backend.default_complex_dtype_stack)
         ivy_backend.set_default_complex_dtype(dtype)
@@ -1053,7 +1053,7 @@ def test_valid_dtype(
     dtype_in,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype_in = dtype_in[0]
         res = ivy_backend.valid_dtype(dtype_in)
         valid_dtypes = ivy_backend.valid_dtypes
@@ -1078,7 +1078,7 @@ def test_is_native_dtype(
     input_dtype,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         input_dtype = input_dtype[0]
         if isinstance(input_dtype, str):
             assert ivy_backend.is_native_dtype(input_dtype) is False

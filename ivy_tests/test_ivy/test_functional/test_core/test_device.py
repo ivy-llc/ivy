@@ -28,7 +28,7 @@ except ImportError:
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 
 
 # Helpers #
@@ -56,7 +56,7 @@ def _ram_array_and_clear_test(metric_fn, device, size=10000000):
 
 def _get_possible_devices():
     # Return all the possible usable devices
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         devices = ["cpu"]
         if ivy_backend.gpu_is_available():
             for i in range(ivy_backend.num_gpus()):
@@ -92,7 +92,7 @@ def test_dev(*, dtype_and_x, test_flags, backend_fw):
     dtype = dtype[0]
     x = x[0]
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for device in _get_possible_devices():
             x = ivy_backend.array(x, device=device)
             if test_flags.as_variable and ivy_backend.is_float_dtype(dtype):
@@ -124,7 +124,7 @@ def test_as_ivy_dev(*, dtype_and_x, test_flags, backend_fw):
     dtype = dtype[0]
     x = x[0]
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for device in _get_possible_devices():
             x = ivy_backend.array(x, device=device)
             if test_flags.as_variable and ivy_backend.is_float_dtype(dtype):
@@ -151,7 +151,7 @@ def test_as_native_dev(*, dtype_and_x, test_flags, on_device, backend_fw):
     dtype = dtype[0]
     x = x[0]
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for device in _get_possible_devices():
             x = ivy_backend.asarray(x, device=on_device)
             if test_flags.as_variable:
@@ -176,7 +176,7 @@ def test_as_native_dev(*, dtype_and_x, test_flags, on_device, backend_fw):
 # default_device
 @handle_test(fn_tree="functional.ivy.default_device")
 def test_default_device(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # setting and unsetting
         orig_len = len(ivy_backend.default_device_stack)
         ivy_backend.set_default_device("cpu")
@@ -218,7 +218,7 @@ def test_to_device(
     dtype = dtype[0]
     x = x[0]
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.asarray(x)
         if test_flags.as_variable and ivy_backend.is_float_dtype(dtype):
             x = ivy_backend.functional.ivy.gradients._variable(x)
@@ -284,7 +284,7 @@ def test_to_device(
 def test_handle_soft_device_variable(*, dtype_and_x, backend_fw):
     dtype, x = dtype_and_x
     dtype = dtype[0]
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.to_device(x[0], "cpu")
 
         def fn(x, y):
@@ -328,7 +328,7 @@ def test_split_func_call(
     test_flags,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # inputs
         shape = tuple(array_shape)
         x1 = np.random.uniform(size=shape).astype(dtype[0])
@@ -385,7 +385,7 @@ def test_split_func_call_with_cont_input(
     on_device,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         shape = tuple(array_shape)
         x1 = np.random.uniform(size=shape).astype(dtype[0])
         x2 = np.random.uniform(size=shape).astype(dtype[0])
@@ -441,7 +441,7 @@ def test_profiler(*, backend_fw):
 
     # log dir, each framework uses their own folder,
     # so we can run this test in parallel
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         this_dir = os.path.dirname(os.path.realpath(__file__))
         log_dir = os.path.join(this_dir, "../log")
         fw_log_dir = os.path.join(log_dir, backend_fw)
@@ -493,7 +493,7 @@ def test_num_ivy_arrays_on_dev(
     on_device,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         arrays = [
             ivy_backend.array(np.random.uniform(size=2).tolist(), device=on_device)
             for _ in range(num)
@@ -513,7 +513,7 @@ def test_get_all_ivy_arrays_on_dev(
     on_device,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         arrays = [ivy_backend.array(np.random.uniform(size=2)) for _ in range(num)]
         arr_ids_on_dev = [
             id(a) for a in ivy_backend.get_all_ivy_arrays_on_dev(on_device).values()
@@ -534,7 +534,7 @@ def test_print_all_ivy_arrays_on_dev(
     on_device,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         arr = [ivy_backend.array(np.random.uniform(size=2)) for _ in range(num)]
 
         # Flush to avoid artifact
@@ -571,7 +571,7 @@ def test_print_all_ivy_arrays_on_dev(
 
 @handle_test(fn_tree="total_mem_on_dev")
 def test_total_mem_on_dev(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         devices = _get_possible_devices()
         for device in devices:
             if "cpu" in device:
@@ -587,7 +587,7 @@ def test_total_mem_on_dev(backend_fw):
 
 @handle_test(fn_tree="used_mem_on_dev")
 def test_used_mem_on_dev(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         devices = _get_possible_devices()
 
         # Check that there not all memory is used
@@ -605,7 +605,7 @@ def test_used_mem_on_dev(backend_fw):
 
 @handle_test(fn_tree="percent_used_mem_on_dev")
 def test_percent_used_mem_on_dev(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         devices = _get_possible_devices()
 
         for device in devices:
@@ -624,7 +624,7 @@ def test_percent_used_mem_on_dev(backend_fw):
 
 @handle_test(fn_tree="gpu_is_available")
 def test_gpu_is_available(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # If gpu is available but cannot be initialised it will fail the test
         if ivy_backend.gpu_is_available():
             try:
@@ -635,7 +635,7 @@ def test_gpu_is_available(backend_fw):
 
 @handle_test(fn_tree="num_cpu_cores")
 def test_num_cpu_cores(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # using multiprocessing module too because ivy uses psutil as basis.
         p_cpu_cores = psutil.cpu_count()
         m_cpu_cores = multiprocessing.cpu_count()
@@ -645,12 +645,12 @@ def test_num_cpu_cores(backend_fw):
 
 
 def _composition_1(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         return ivy_backend.relu().argmax()
 
 
 def _composition_2(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         return ivy_backend.ceil() or ivy_backend.floor()
 
 
@@ -666,7 +666,7 @@ def test_function_supported_devices(
     expected,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.function_supported_devices(func)
         exp = set(expected)
 
@@ -685,7 +685,7 @@ def test_function_unsupported_devices(
     expected,
     backend_fw,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.function_unsupported_devices(func)
         exp = set(expected)
 
@@ -700,7 +700,7 @@ def get_gpu_mem_usage(backend, device="gpu:0"):
 
 @handle_test(fn_tree="clear_cached_mem_on_dev")
 def test_clear_cached_mem_on_dev(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         devices = _get_possible_devices()
         for device in devices:
             # Testing on only GPU since clearing cache mem is relevant
@@ -724,7 +724,7 @@ def get_cpu_percent():
 
 @handle_test(fn_tree="dev_util")
 def test_dev_util(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         devices = _get_possible_devices()
         for device in devices:
             # The internally called psutil.cpu_percent() has a unique behavior where it
@@ -745,7 +745,7 @@ def test_dev_util(backend_fw):
 
 @handle_test(fn_tree="tpu_is_available")
 def test_tpu_is_available(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         import tensorflow as tf
 
         try:
