@@ -5,7 +5,6 @@ Formatting
 .. _`black`: https://black.readthedocs.io/en/stable/index.html
 .. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 .. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
-.. _`formatting forum`: https://discord.com/channels/799879767196958751/1028297504820838480
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 Currently Ivy follows `black`_ code style, and `flake8`_ formatter in order to ensure that our code is consistent,
@@ -192,7 +191,7 @@ another try, or manually resolve the formatting errors by commiting the changes 
 This should have hopefully given you a good feel for what is our coding style and how to format your code to contribute
 to Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `formatting channel`_ or in the `formatting forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `formatting channel`_!
 
 **Video**
 
