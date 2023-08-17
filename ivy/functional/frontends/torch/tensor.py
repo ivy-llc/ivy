@@ -537,7 +537,7 @@ class Tensor:
                         [
                             "cpu",
                             "cuda",
-                            "mps"
+                            "mps",
                             "xpu",
                             "mkldnn",
                             "opengl",
