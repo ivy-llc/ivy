@@ -2,7 +2,7 @@ from hypothesis import assume, strategies as st
 import numpy as np
 
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_method, update_backend
+from ivy_tests.test_ivy.helpers import handle_method, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
     pow_helper,
@@ -94,7 +94,7 @@ def test_shape__pow__(
     assume(not ("bfloat16" in input_dtype))
 
     # Make sure x2 isn't a float when x1 is integer
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         assume(
             not (
                 ivy_backend.is_int_dtype(

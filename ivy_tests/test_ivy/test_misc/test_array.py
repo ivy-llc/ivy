@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_method, handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_method, handle_test, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
     pow_helper,
@@ -71,7 +71,7 @@ def test_array_property_data(
     test_flags,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.data, backend=backend_fw)
@@ -93,7 +93,7 @@ def test_array_property_dtype(
     backend_fw,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ivy_backend.utils.assertions.check_equal(
@@ -110,7 +110,7 @@ def test_array_property_device(
     backend_fw,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ivy_backend.utils.assertions.check_equal(
@@ -130,7 +130,7 @@ def test_array_property_ndim(
     backend_fw,
 ):
     _, data, input_shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ivy_backend.utils.assertions.check_equal(
@@ -150,7 +150,7 @@ def test_array_property_shape(
     backend_fw,
 ):
     _, data, input_shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ivy_backend.utils.assertions.check_equal(
@@ -171,7 +171,7 @@ def test_array_property_size(
     backend_fw,
 ):
     _, data, input_shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         size_gt = 1
@@ -191,7 +191,7 @@ def test_array_property_itemsize(
     backend_fw,
 ):
     dtype, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ivy_backend.utils.assertions.check_equal(
@@ -207,7 +207,7 @@ def test_array_property_itemsize(
 )
 def test_array_property_strides(dtype_x, backend_fw):
     dtype, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ivy_backend.utils.assertions.check_equal(
@@ -228,7 +228,7 @@ def test_array_property_mT(
     test_flags,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.mT, backend=backend_fw)
@@ -257,7 +257,7 @@ def test_array_property_T(
     test_flags,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.T, backend=backend_fw)
@@ -282,7 +282,7 @@ def test_array_property_real(
     test_flags,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.real, backend=backend_fw)
@@ -305,7 +305,7 @@ def test_array_property_imag(
     test_flags,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.imag, backend=backend_fw)
