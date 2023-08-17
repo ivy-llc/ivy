@@ -1955,7 +1955,7 @@ def check_float(x: Any) -> bool:
     ret
         "True" if the input is a float or a float-like object, otherwise "False".
     """
-    return isinstance(x, (int, np.float)) and not type(x) == bool
+    return isinstance(x, (int, float)) and not type(x) == bool
 
 
 @handle_exceptions
