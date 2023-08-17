@@ -1458,7 +1458,7 @@ def get_mean_cov_vector(draw):
     return input_dtype, dtype_mean, dtype_cov, batch_shape
 
 
-# @pytest.mark.xfail
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.multivariate_normal",
     dtype_key=helpers.dtype_and_values(
@@ -1493,7 +1493,7 @@ def test_jax_multivariate_normal(
 
     def call():
         helpers.test_frontend_function(
-            input_dtypes=input_dtype,
+            input_dtypes=input_dtype + [shared_dtype],
             frontend=frontend,
             test_flags=test_flags,
             backend_to_test=backend_fw,
