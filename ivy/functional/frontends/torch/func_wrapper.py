@@ -277,6 +277,9 @@ def outputs_to_native_arrays(fn: Callable):
 
 
 def to_ivy_shape(fn: Callable) -> Callable:
+    """Wrap `fn` so that any `torch_frontend.Size` arguments are converted to
+    `ivy.Shape` instances."""
+    
     @functools.wraps(fn)
     def to_ivy_shape_torch(*args, **kwargs):
         new_kwargs = {
