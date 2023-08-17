@@ -20,6 +20,7 @@ update_backend: Callable = WithBackendContext
 
 
 def get_frontend_config(frontend: str):
-    return importlib.import_module(
+    config_module = importlib.import_module(
         f"ivy_tests.test_ivy.test_frontends.config.{frontend}"
     )
+    return config_module.get_config()

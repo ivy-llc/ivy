@@ -135,3 +135,12 @@ def vflip(img, data_format="CHW"):
     elif data_format.lower() == "hwc":
         axis = -3
     return ivy.flip(img, axis=axis)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def hflip(img):
+    img = ivy.array(img)
+    return ivy.flip(img, axis=-1)

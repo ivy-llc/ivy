@@ -198,7 +198,7 @@ def dot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.dot(a, b, out=out)
+    return torch.matmul(a, b)
 
 
 dot.support_native_out = True
