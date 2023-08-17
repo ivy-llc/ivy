@@ -89,12 +89,13 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> JaxArray:
-    if copy:
-        x = x.copy()
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query, expected_shape = _mask_to_index(query, x)
         val = _broadcast_to(val, expected_shape)._data
     return x.at[query].set(val)
+
+
+set_item.partial_mixed_handler = (lambda *args, copy=False: copy)
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
