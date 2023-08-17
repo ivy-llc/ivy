@@ -107,14 +107,11 @@ def std(
     where=True,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype is None and not ivy.is_float_dtype(x.dtype):
-        if ivy.is_complex_dtype(x.dtype) and ivy.dtype_bits(x.dtype) == 64:
-            dtype = ivy.float32
-        else:
+    if dtype is None:
+        if ivy.is_int_dtype(x.dtype):
             dtype = ivy.float64
-            x = x.astype(dtype, copy=False) if not ivy.is_complex_dtype(x.dtype) else x
-    else:
-        dtype = x.dtype
+        else:
+            dtype = x.dtype
     if where is True or not ivy.any(~ivy.array(where)):
         ret = ivy.std(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     elif ivy.any(where):
