@@ -483,6 +483,10 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def erf_(self, *, out=None):
+        self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
+
     def new_zeros(
         self,
         *args,
@@ -1059,6 +1063,10 @@ class Tensor:
     def reciprocal_(self):
         self.ivy_array = torch_frontend.reciprocal(self).ivy_array
         return self
+      
+    def remainder_(self, other, *, out=None):
+        self.ivy_array = torch_frontend.remainder(self, other, out=out).ivy_array
+        return self  
 
     def bitwise_not_(self):
         self.ivy_array = self.bitwise_not().ivy_array
