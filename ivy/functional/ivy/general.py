@@ -3039,7 +3039,7 @@ def _parse_slice(idx, s):
                 stop = stop + s
     else:
         start = s - 1 if idx.start is None else idx.start
-        if start <= -s:
+        if start < -s:
             stop = start
         else:
             if start >= s:
