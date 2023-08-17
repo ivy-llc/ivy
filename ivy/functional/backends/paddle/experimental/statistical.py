@@ -129,7 +129,7 @@ def nanprod(
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
     if a.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        a = paddle.nan_to_num(a.cast("float32"), nan=1.0)
+        a = paddle.nan_to_num(a.cast("float64"), nan=1.0)
         ret = paddle.prod(a, axis=axis, keepdim=keepdims)
     else:
         a = paddle.nan_to_num(a, nan=1.0)

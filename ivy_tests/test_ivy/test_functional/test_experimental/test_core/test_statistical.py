@@ -261,12 +261,6 @@ def test_nanprod(
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     x = x[0]
-    # Added clipping because the min_value and max_value arguments
-    # don't seem to clip the returned array.
-    # Also, for really big/small numbers some backends return something like Xe300
-    # and some return inf some the value checks fail
-    # and that's why I clipped the input.
-    x = np.clip(x, -5, 5)
     if "torch" in backend_fw:
         assume(
             not (
@@ -275,12 +269,6 @@ def test_nanprod(
                 and on_device == "cpu"
             )
         )
-    # This assumption is made because for some reason when
-    # testing with paddle and bfloat16,
-    # the returned and ground truth returned type were different,
-    # one was uint16 and the other bfloat16.
-    # This could be removed when this issue is resolved.
-    assume("bfloat16" not in castable_dtype)
     helpers.test_function(
         input_dtypes=[input_dtype],
         test_flags=test_flags,

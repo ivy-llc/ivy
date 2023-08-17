@@ -82,6 +82,24 @@ def to_numpy(
         else:
             return x
     elif paddle.is_tensor(x):
+        unsqueezed = False
+        if x.dtype == paddle.bfloat16:
+            if x.ndim == 0 and ivy.is_array(x):
+                x = paddle.unsqueeze(x, axis=0)
+                unsqueezed = True
+            default_dtype = ivy.default_float_dtype(as_native=True)
+            if default_dtype is paddle.bfloat16:
+                x = x.cast(paddle.float32)
+            else:
+                x = x.cast(default_dtype)
+            if copy:
+                if unsqueezed:
+                    return np.squeeze(np.array(x).astype("bfloat16"), 0)
+                return np.array(x).astype("bfloat16")
+            else:
+                if unsqueezed:
+                    return np.squeeze(np.asarray(x).astype("bfloat16"), 0)
+                return np.asarray(x).astype("bfloat16")
         if copy:
             return np.array(x)
         else:
