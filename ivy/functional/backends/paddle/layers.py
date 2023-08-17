@@ -156,7 +156,10 @@ def conv1d(
     raise IvyNotImplementedException()
 
 
-# noinspection PyUnresolvedReferences
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}},
+    backend_version,
+)
 def conv1d_transpose(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -170,7 +173,28 @@ def conv1d_transpose(
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if data_format == "NWC":
+        x = x.transpose([0, 2, 1])
+    strides = [strides] if isinstance(strides, int) else strides
+    dilations = [dilations] if isinstance(dilations, int) else dilations
+    filters = filters.transpose([1, 2, 0])
+    not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
+        x, filters, strides, padding, 1, dilations, output_shape, filters.shape[2:]
+    )
+    res = paddle.nn.functional.conv1d_transpose(
+        x,
+        filters,
+        stride=strides,
+        padding=padding_list,
+        output_padding=output_padding,
+        dilation=dilations,
+        data_format="NCL",
+    )
+    if not_valid_pad[0]:
+        res = res[:, :, 0:-1]
+    if data_format == "NWC":
+        res = res.transpose([0, 2, 1])
+    return res
 
 
 # noinspection PyUnresolvedReferences
@@ -192,7 +216,7 @@ def conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}},
+    {"2.5.1 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv2d_transpose(
@@ -251,7 +275,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}},
+    {"2.5.1 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -310,7 +334,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}},
+    {"2.5.1 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(

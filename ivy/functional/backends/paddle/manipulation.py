@@ -213,7 +213,7 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
+    {"2.5.1 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
@@ -230,6 +230,12 @@ def stack(
             dtype = ivy.promote_types(dtype, d)
 
     arrays = list(map(lambda x: x.cast(dtype), arrays))
+
+    first_shape = arrays[0].shape
+    if not all(arr.shape == first_shape for arr in arrays):
+        raise Exception("Shapes of all inputs must match")
+    if 0 in first_shape:
+        return ivy.empty(first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype)
 
     if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.bool]:
         arrays = list(map(lambda x: x.cast("float32"), arrays))

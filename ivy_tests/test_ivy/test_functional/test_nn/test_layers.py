@@ -168,63 +168,101 @@ def test_dropout(
 @st.composite
 def x_and_scaled_attention(draw, dtypes):
     dtype = draw(dtypes)
-    num_queries = draw(helpers.ints(min_value=1, max_value=2))
-    num_keys = draw(helpers.ints(min_value=1, max_value=2))
-    feat_dim = draw(helpers.ints(min_value=1, max_value=2))
-    scale = draw(helpers.floats(min_value=0.1, max_value=1))
+    num_queries = draw(helpers.ints(min_value=2, max_value=4))
+    num_keys = draw(helpers.ints(min_value=2, max_value=4))
+    feat_dim = draw(helpers.ints(min_value=2, max_value=4))
+    batch_size = draw(helpers.ints(min_value=1, max_value=2))
+    q_shape = (batch_size,) + (num_queries,) + (feat_dim,)
+    k_shape = (batch_size,) + (num_keys,) + (feat_dim,)
+    v_shape = (batch_size,) + (num_keys,) + (feat_dim,)
+    mask_shape = (batch_size,) + (num_queries,) + (num_keys,)
 
-    q_shape = (1,) + (num_queries,) + (feat_dim,)
-    k_shape = (1,) + (num_keys,) + (feat_dim,)
-    v_shape = (1,) + (num_keys,) + (feat_dim,)
-    mask_shape = (1,) + (num_queries,) + (num_keys,)
-
-    q = draw(
-        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=10)
-    )
-    k = draw(
-        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=10)
-    )
-    v = draw(
-        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=10)
-    )
-    mask = draw(
+    query = draw(
         helpers.array_values(
             dtype=dtype[0],
-            shape=mask_shape,
-            min_value=0,
-            max_value=10,
-            large_abs_safety_factor=2,
+            shape=q_shape,
+            min_value=1e-3,
+            max_value=1e2,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
             safety_factor_scale="linear",
         )
     )
-    return dtype, q, k, v, mask, scale
+    key = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=k_shape,
+            min_value=1e-3,
+            max_value=1e2,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        )
+    )
+    value = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=v_shape,
+            min_value=1e-3,
+            max_value=1e2,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        )
+    )
+    mask = draw(
+        helpers.array_values(
+            dtype="bool",
+            shape=mask_shape,
+        )
+        | st.none()
+    )
+    return dtype, query, key, value, mask
 
 
 # scaled_dot_product_attention
 @handle_test(
     fn_tree="functional.ivy.scaled_dot_product_attention",
-    dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("numeric", full=False),
+    dtype_q_k_v_mask=x_and_scaled_attention(
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
+    scale=st.floats(min_value=0.1, max_value=1),
+    dropout_p=st.floats(min_value=0, max_value=0.99),
+    is_causal=st.booleans(),
+    training=st.just(False),  # st.booleans(), disabled until proper testing is used
     ground_truth_backend="jax",
+    test_with_out=st.just(True),
 )
 def test_scaled_dot_product_attention(
-    *, dtype_q_k_v_mask_scale, test_flags, backend_fw, fn_name, on_device
+    *,
+    dtype_q_k_v_mask,
+    scale,
+    dropout_p,
+    is_causal,
+    training,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
+    (dtype, query, key, value, mask) = dtype_q_k_v_mask
+    is_causal = is_causal if mask is None else False
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-02,
         atol_=1e-02,
-        q=q,
-        k=k,
-        v=v,
+        rtol_=1e-02,
+        query=query,
+        key=key,
+        value=value,
         scale=scale,
         mask=mask,
+        dropout_p=dropout_p,
+        is_causal=is_causal,
+        training=training,
     )
 
 
@@ -606,14 +644,14 @@ def x_and_filters(
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
-
-    x_dilation = draw(
-        st.one_of(
-            st.integers(1, 3),
-            st.lists(st.integers(1, 3), min_size=dim, max_size=dim),
+    if not transpose:
+        x_dilation = draw(
+            st.one_of(
+                st.integers(1, 3),
+                st.lists(st.integers(1, 3), min_size=dim, max_size=dim),
+            )
         )
-    )
-    dilations = (dilations, x_dilation)
+        dilations = (dilations, x_dilation)
     if filter_format is not None:
         filter_format = draw(filter_format)
         if filter_format == "channel_first":
@@ -656,9 +694,18 @@ def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
     ground_truth_backend="jax",
 )
 def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        fc,
+        ff_format,
+        bias,
+    ) = x_f_d_df
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
@@ -692,9 +739,18 @@ def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     ground_truth_backend="jax",
 )
 def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        output_shape,
+        fc,
+        bias,
+    ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         input_dtypes=dtype,
@@ -727,9 +783,18 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     ground_truth_backend="jax",
 )
 def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        fc,
+        ff_format,
+        bias,
+    ) = x_f_d_df
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
@@ -764,9 +829,18 @@ def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     ground_truth_backend="jax",
 )
 def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        output_shape,
+        fc,
+        bias,
+    ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
 
     helpers.test_function(
@@ -832,9 +906,18 @@ def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     ground_truth_backend="jax",
 )
 def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        fc,
+        ff_format,
+        bias,
+    ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         input_dtypes=dtype,
@@ -867,9 +950,18 @@ def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     ground_truth_backend="jax",
 )
 def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        output_shape,
+        fc,
+        bias,
+    ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         input_dtypes=dtype,
@@ -984,6 +1076,130 @@ def test_conv_general_transpose(
         data_format=data_format,
         dilations=dilations,
         feature_group_count=fc,
+        bias=bias,
+    )
+
+
+# filter_format not in conv_general_transpose
+# output_shape not in conv_general_dilated
+@st.composite
+def x_and_filters_and_transpose(
+    draw,
+    dim: int = 2,
+    general=False,
+    bias=False,
+    filter_format=None,
+):
+    transpose = draw(st.booleans())
+    if not transpose:
+        filter_format = st.sampled_from(["channel_last", "channel_first"])
+    all_args = draw(
+        x_and_filters(
+            dim=dim,
+            general=general,
+            bias=bias,
+            filter_format=filter_format,
+            transpose=transpose,
+        )
+    )
+    output_shape = None
+    filter_format = "channel_last"
+    if transpose:
+        (
+            dtype,
+            x,
+            filters,
+            dilations,
+            data_format,
+            stride,
+            pad,
+            output_shape,
+            fc,
+            bias,
+        ) = all_args
+    else:
+        (
+            dtype,
+            x,
+            filters,
+            dilations,
+            data_format,
+            stride,
+            pad,
+            fc,
+            filter_format,
+            bias,
+        ) = all_args
+    return (
+        dtype,
+        x,
+        filters,
+        stride,
+        pad,
+        transpose,
+        output_shape,
+        data_format,
+        filter_format,
+        fc,
+        dilations,
+        bias,
+    )
+
+
+# conv
+@handle_test(
+    fn_tree="functional.ivy.conv",
+    dims=st.shared(st.integers(1, 3), key="dims"),
+    x_f_d_df_tr=x_and_filters_and_transpose(
+        dim=st.shared(st.integers(1, 3), key="dims"),
+        general=True,
+        bias=True,
+    ),
+    ground_truth_backend="jax",
+)
+def test_conv(*, dims, x_f_d_df_tr, test_flags, backend_fw, fn_name, on_device):
+    # pass
+    (
+        dtype,
+        x,
+        filters,
+        stride,
+        pad,
+        transpose,
+        output_shape,
+        data_format,
+        filter_format,
+        fc,
+        dilations,
+        bias,
+    ) = x_f_d_df_tr
+    tf_dilations = dilations
+    if not transpose:
+        tf_dilations = tf_dilations[0]
+        dilations, x_dilations = dilations
+    else:
+        x_dilations = None
+    _assume_tf_dilation_gt_1(backend_fw, on_device, tf_dilations)
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        transpose=transpose,
+        dims=dims,
+        output_shape=output_shape,
+        data_format=data_format,
+        filter_format=filter_format,
+        feature_group_count=fc,
+        x_dilations=x_dilations,
+        dilations=dilations,
         bias=bias,
     )
 

@@ -333,11 +333,12 @@ def test_paddle_l1_loss(
     reduction=st.sampled_from(["mean", "batchmean", "sum", "none"]),
 )
 def test_paddle_kl_div(
-    dtype_and_x, reduction, on_device, fn_tree, frontend, test_flags
+    dtype_and_x, reduction, on_device, backend_fw, fn_tree, frontend, test_flags
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
