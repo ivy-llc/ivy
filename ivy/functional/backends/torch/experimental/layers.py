@@ -1010,3 +1010,55 @@ def rfftn(
     return torch.tensor(
         torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128
     )
+
+
+def sliding_window(
+    input: torch.Tensor,
+    kernel_size: Union[int, Tuple[int, int]],
+    dilation: Union[int, Tuple[int, int]],
+    padding: Union[str, int, Tuple[int, int]],
+    stride: Union[int, Tuple[int, int]],
+    /,
+    *,
+    data_format: str = "NHWC",
+):
+    if input.ndim == 4:
+        if data_format == "NHWC":
+            input = input.permute(0, 3, 1, 2)
+
+    else:
+        # convert input to 4D tensor unfold only accepts 4D data
+        input_shape = input.shape
+        extend_dims = max(0, 4 - len(input_shape))
+        new_shape = (1,) * extend_dims + input_shape
+        input = input.view(*new_shape)
+
+    # check padding and convert to right format
+    if isinstance(padding, str):
+        # convert padding from str to seq
+        if padding.upper() == "SAME":
+            pad_vals = []
+            for dim in input.shape:
+                pad_val = _handle_padding(
+                    dim,
+                    stride[0] if isinstance(stride, tuple) else stride,
+                    kernel_size[0],
+                    padding,
+                )
+                pad_vals.append(pad_val)
+            padding = pad_vals[:2]
+        else:
+            padding = 0
+    else:
+        padding = (padding) * 2 if isinstance(padding, int) else padding
+
+    kernel_size = (kernel_size) * 2 if isinstance(kernel_size, int) else kernel_size
+    dilation = (dilation) * 2 if isinstance(dilation, int) else dilation
+    stride = (stride) * 2 if isinstance(padding, int) else stride
+
+    res = torch.nn.functional.unfold(input, kernel_size, dilation, padding, stride)
+
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+
+    return res
