@@ -1975,7 +1975,6 @@ def test_paddle_kron(
     )
 
 
-=======
 @st.composite
 def _test_paddle_take_helper(draw):
     mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
@@ -2018,7 +2017,6 @@ def test_paddle_take(
         index=indices,
         mode=modes,
     )
-
 # amax
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.amax",
@@ -2038,9 +2036,10 @@ def test_paddle_amax(
     frontend,
     test_flags,
 ):
-  
-
-=======
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
@@ -2057,7 +2056,15 @@ def test_paddle_amax(
     scale_b=st.floats(1e-5, 1e5),
 )
 def test_paddle_stanh(
-    *, dtype_and_x, on_device, fn_tree, frontend, test_flags, scale_a, scale_b
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    scale_a,
+    scale_b,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
