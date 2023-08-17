@@ -317,7 +317,6 @@ def nll_loss(
     return output
 
 
-
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32",)},
     "paddle",
@@ -326,3 +325,4 @@ def nll_loss(
 def square_error_cost(input, label):
     # out = (input - label) ** 2
     return ivy.square(ivy.subtract(input,label))
+    
