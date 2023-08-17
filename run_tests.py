@@ -177,6 +177,8 @@ if __name__ == "__main__":
     db_multi = cluster["Ivy_tests_multi"]
     db_gpu = cluster["Ivy_tests_multi_gpu"]
     db_priority = cluster["Ivy_tests_priority"]
+    if with_gpu:
+        os.system("docker pull unifyai/multicuda:base_and_requirements")
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")

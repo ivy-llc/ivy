@@ -10,8 +10,6 @@ Exchange Formats
 .. _`Khronos Group`: https://www.khronos.org/
 .. _`Apple`: https://www.apple.com/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 .. |onnx| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/onnx.png
     :height: 20pt
@@ -46,7 +44,3 @@ CoreML |coreml|
 `CoreML`_ itself is not an exchange format, it is a framework which enables models to be trained and deployed on `Apple`_ devices with a simple zero-code interactive interface.
 However, CoreML is built upon its own Core ML format, and Apple have open sourced :code:`coremltools`, which provides a set of tools to convert ML models from various frameworks into the Core ML format.
 The Core ML format is itself an exchange format, albeit with the sole purpose of exchanging to Apple’s CoreML framework, rather than enabling exchanges between multiple different parties as is the case for the other exchange formats.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!
