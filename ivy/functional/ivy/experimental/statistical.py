@@ -306,6 +306,10 @@ def nanprod(
     >>> a = ivy.array([[1, ivy.nan], [3, 4]])
     >>> ivy.nanprod(a)
     12.0
+    >>> ivy.nanprod(a, axis=0)
+    [3. 4.]
+    >>> ivy.nanprod(a, axis=0, keepdims=True)
+    [[3. 4.]]
     """
     return ivy.current_backend(a).nanprod(
         a,
