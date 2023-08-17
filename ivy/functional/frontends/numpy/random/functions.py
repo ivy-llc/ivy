@@ -233,3 +233,14 @@ def triangular(left, mode, right, size=None):
         right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
     )
     return ivy.where(condition, values1, values2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def zipf(a, size=None):
+    if a <= 1:
+        raise ValueError(
+            "Parameter 'alpha' must be greater than 1 for the Zipf distribution."
+        )
+    return ivy.floor((1.0 / a) ** 1.0).astype(int)
+
