@@ -2303,6 +2303,64 @@ def stable_pow(
     -------
     ret
         The new item following the numerically stable power.
+
+    Examples
+    --------
+    With :code:`int` input:
+
+    >>> x = ivy.stable_pow(2, 2)
+    >>> print(x)
+    ivy.array(4.00004)
+
+    >>> x = ivy.stable_pow(2, 2, min_base=2)
+    >>> print(x)
+    ivy.array(16)
+
+    With float input:
+
+    >>> x = ivy.stable_pow(4.0, .5)
+    >>> print(x)
+    ivy.array(2.00000262)
+
+    With :code:`complex` input:
+
+    >>> x = ivy.stable_pow(3+4j, 2j)
+    >>> print(x)
+    ivy.array(-0.15605032-0.01208451j)
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.asarray([[2, 4],
+    ...                  [6, 8]])
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    ivy.array([[ 4.00004, 16.00008],
+           [36.00012, 64.00016]])
+
+    >>> x = ivy.asarray([2, 4, 6])
+    >>> y = ivy.asarray([2, 3, 4])
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    ivy.array([   4.00004,   64.00048, 1296.00864])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    {
+        a: ivy.array([4.00004, 16.00008]),
+        b: ivy.array([36.00012, 64.00016])
+    }
+
+    >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+    >>> y = ivy.Container(a=ivy.asarray([1, 3]), b=ivy.asarray([4, 5]))
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([2.00001, 64.00048]),
+        b: ivy.array([1296.00864, 32768.2048])
+    }
     """
     return_dtype = ivy.promote_types(
         ivy.default_dtype(item=base),
