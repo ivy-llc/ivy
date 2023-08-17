@@ -193,3 +193,36 @@ def test_paddle_nanmedian(
         axis=axis,
         keepdim=keepdim,
     )
+
+
+# quantile
+@handle_frontend_test(
+    fn_tree="paddle.quantile",
+    dtype_and_x=_statistical_dtype_values(function="quantile"),
+    q=st.floats(0.0, 1.0),
+    keepdim=st.booleans(),
+)
+def test_paddle_quantile(
+    *,
+    dtype_and_x,
+    q,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        q=q,
+        axis=axis,
+        keepdim=keepdim,
+    )
