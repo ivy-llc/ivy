@@ -104,7 +104,7 @@ def test_paddle_vflip(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_dim_size=2,
-        max_dim_size=100
+        max_dim_size=100,
     ),
     top=st.integers(min_value=0, max_value=100),
     left=st.integers(min_value=0, max_value=100),
