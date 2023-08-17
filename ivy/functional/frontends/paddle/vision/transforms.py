@@ -1,7 +1,7 @@
 import ivy
 
 from ivy.func_wrapper import with_supported_dtypes
-
+from ivy.func_wrapper import with_unsupported_dtypes
 from ..tensor.tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -17,8 +17,6 @@ def to_tensor(pic, data_format="CHW"):
     return Tensor(array)
 
 
-
-# helpers
 def _get_image_c_axis(data_format):
     if data_format.lower() == "chw":
         return -3
@@ -120,7 +118,7 @@ def adjust_hue(img, hue_factor):
     return img_adjusted
 
 
-@with_unsupported_device_and_dtypes(
+@with_unsupported_dtypes(
     {
         "2.5.1 and below": {
             "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
@@ -144,4 +142,3 @@ def vflip(img, data_format="CHW"):
 def hflip(img):
     img = ivy.array(img)
     return ivy.flip(img, axis=-1)
-
