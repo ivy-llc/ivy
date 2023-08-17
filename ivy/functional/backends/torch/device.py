@@ -25,7 +25,11 @@ def dev(
     if as_native:
         if isinstance(dv, torch.device):
             dv = dv.type
-        return torch.device(dv.replace("gpu", "cuda"))
+        if torch.cuda.is_available():
+            return torch.device(dv.replace("gpu", "cuda"))
+        elif hasattr(torch.backends, 'mps'):
+            if torch.backends.mps.is_available():
+                return torch.device(dv.replace("gpu", "mps"))
     return as_ivy_dev(dv)
 
 
@@ -51,10 +55,18 @@ def as_ivy_dev(device: torch.device, /):
     dev_type, dev_idx = (device.type, device.index)
     if dev_type == "cpu":
         return ivy.Device(dev_type)
-    return ivy.Device(
-        dev_type.replace("cuda", "gpu")
-        + (":" + (str(dev_idx) if dev_idx is not None else "0"))
-    )
+    elif dev_type == "cuda":
+        return ivy.Device(
+            dev_type.replace("cuda", "gpu")
+            + (":" + (str(dev_idx) if dev_idx is not None else "0"))
+        )
+    elif dev_type == "mps":
+        return ivy.Device(
+            dev_type.replace("mps", "gpu")
+            + (":" + (str(dev_idx) if dev_idx is not None else "0"))
+        )
+    else:
+        raise Exception(f"Unknown device type {dev_type}")
 
 
 def as_native_dev(
@@ -63,21 +75,31 @@ def as_native_dev(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    return torch.device(ivy.Device(device).replace("gpu", "cuda"))
+    if device == "cuda":     
+        return torch.device(ivy.Device(device).replace("gpu", "cuda"))
+    elif device == "mps":
+        return torch.device(ivy.Device(device).replace("gpu", "mps"))
 
 
 def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:
     torch_dev = as_native_dev(device)
     if torch_dev.type == "cuda":
         torch.cuda.empty_cache()
+    elif torch_dev.type == "mps":
+        torch.mps.empty_cache()
 
 
 def num_gpus() -> int:
     return torch.cuda.device_count()
 
 
-def gpu_is_available() -> bool:
-    return torch.cuda.is_available()
+def device_is_available() -> bool:
+    gpu_available = torch.cuda.is_available()
+    mps_available = False
+    if hasattr(torch.backends, 'mps'):
+        mps_available = torch.backends.mps.is_available()
+    return gpu_available or mps_available
+
 
 
 # noinspection PyUnresolvedReferences
