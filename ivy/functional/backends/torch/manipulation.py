@@ -347,7 +347,6 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     if x_min is None and x_max is None:
         raise ValueError("At least one of the x_min or x_max must be provided")
 
