@@ -54,7 +54,7 @@ def prod(
     initial=None,
     where=True,
 ):
-    if where is not True:
+    if ivy.is_array(where):
         x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
     if initial is not None:
         if axis is not None:
