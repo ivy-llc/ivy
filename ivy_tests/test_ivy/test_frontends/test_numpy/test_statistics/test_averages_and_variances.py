@@ -136,7 +136,7 @@ def test_numpy_std(
         test_flags=test_flags,
     )
     assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         backend_to_test=backend_fw,
@@ -491,7 +491,7 @@ def test_numpy_var(
         test_flags=test_flags,
     )
     assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         backend_to_test=backend_fw,
