@@ -19,7 +19,6 @@ from ivy_tests.test_ivy.helpers import handle_test
     return_indices=st.booleans(),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
-    ground_truth_backend="numpy",
 )
 def test_intersection(
     dtype_and_x,
@@ -29,15 +28,13 @@ def test_intersection(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
-        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],

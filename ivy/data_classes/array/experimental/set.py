@@ -23,7 +23,7 @@ class _ArrayWithSetExperimental(abc.ABC):
         --------
         >>> a = ivy.array([1,2,3,5])
         >>> b = ivy.array([3,4,1,5])
-        >>> a.intersection(x2)
+        >>> a.intersection(b)
         ivy.array([1, 3, 5])
         """
         return ivy.intersection(

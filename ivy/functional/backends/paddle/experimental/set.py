@@ -9,7 +9,19 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex", "int8", "uint8", "int16", "float16")}},
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+                "int8",
+                "uint8",
+                "int16",
+                "float16",
+                "bfloat16",
+            )
+        }
+    },
     backend_version,
 )
 def intersection(
