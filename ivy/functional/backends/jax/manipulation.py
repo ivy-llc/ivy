@@ -203,14 +203,19 @@ def tile(
 
 def clip(
     x: JaxArray,
-    x_min: Union[Number, JaxArray],
-    x_max: Union[Number, JaxArray],
+    x_min: Optional[Union[Number, JaxArray]] = None,
+    x_max: Optional[Union[Number, JaxArray]] = None,
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+
     if (
-        hasattr(x_min, "dtype")
+        x_min is not None
+        and hasattr(x_min, "dtype")
+        and x_max is not None
         and hasattr(x_max, "dtype")
         and (x.dtype != x_min.dtype or x.dtype != x_max.dtype)
     ):
@@ -236,16 +241,20 @@ def clip(
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x = x.astype(promoted_type)
         else:
-            promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
-            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x.astype(promoted_type)
+            promoted_type = jnp.promote_types(
+                x.dtype, x_min.dtype if x_min is not None else x.dtype
+            )
+            promoted_type = jnp.promote_types(
+                promoted_type, x_max.dtype if x_max is not None else x.dtype
+            )
+            x = x.astype(promoted_type)
+
     # jnp.clip isn't used because of inconsistent gradients
-    if x_min is None and x_max is None:
-        raise ValueError("At least one of the x_min or x_max must be provided")
     if x_max is not None:
         x = jnp.where(x > x_max, x_max, x)
     if x_min is not None:
         x = jnp.where(x < x_min, x_min, x)
+
     return x
 
 
