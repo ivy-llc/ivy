@@ -112,13 +112,15 @@ def median(input, dim=None, keepdim=False, *, out=None):
     return result
 
 
+# Implement 'nanmedian' pytorch function?
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-def nanmedian(input, dim=None, keepdim=False):
+def nanmedian(input, dim=None, keepdim=False, out=None):
     if dim is None:
+        input = input[~ivy.isnan(input)]
         input = ivy.reshape(input, (-1,))
         sorted_input = ivy.sort(input)
-        return sorted_input[(sorted_input.shape[0] - 1) // 2]
+        return ivy.median(sorted_input)
 
     median_tuple = namedtuple("median", ["values", "indices"])
 
@@ -138,7 +140,10 @@ def nanmedian(input, dim=None, keepdim=False):
             median_indices = ivy.expand_dims(median_indices, axis=dim)
 
         result = median_tuple(median_values, median_indices)
-
+    if out is not None:
+        ivy.inplace_update(out[0], result.values)
+        ivy.inplace_update(out[1], result.indices)
+        return out
     return result
 
 
