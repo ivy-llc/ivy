@@ -1339,7 +1339,6 @@ def digamma(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @handle_array_function
 def sparsify_tensor(
     x: Union[ivy.Array, ivy.NativeArray],
