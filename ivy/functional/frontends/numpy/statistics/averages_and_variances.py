@@ -35,7 +35,7 @@ def var(x, /, *, axis=None, ddof=0.0, keepdims=False, out=None, dtype=None, wher
             sqr = ivy.multiply(x, x)
         var = ivy.sum(sqr, axis=axis, dtype=dtype, out=out, keepdims=keepdims)
         cnt = ivy.sum(where, axis=axis, keepdims=keepdims, dtype=ivy.int64)
-        dof = cnt - ddof
+        dof = ivy.maximum(cnt - ddof, 0)
         ret = ivy.divide(var, dof).reshape(var.shape)
     else:
         if axis is not None:
