@@ -2335,7 +2335,7 @@ def test_tensorflow_unravel_index(
 @st.composite
 def _sequence_mask_helper(draw):
     max_val = draw(st.integers(min_value=1, max_value=100000))
-    dtype, x = draw(
+    in_dtype, lens = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("integer"),
             num_arrays=1,
@@ -2344,8 +2344,20 @@ def _sequence_mask_helper(draw):
         )
     )
 
-    max_len = draw(st.integers(min_value=int(ivy.max(x)), max_value=max_val))
-    return dtype, x, max_len
+    max_len = draw(st.integers(min_value=int(ivy.max(lens)), max_value=max_val))
+    dtype = draw(st.sampled_from([
+    'float16',
+    'uint8',
+    'complex128',
+    'bool',
+    'float64',
+    'int8',
+    'int16',
+    'complex64',
+    'float32',
+    'int32',
+    'int64']))
+    return in_dtype, lens, max_len, dtype
 
 
 @handle_frontend_test(
@@ -2362,7 +2374,7 @@ def test_tensorflow_sequence_mask(
     on_device,
     backend_fw,
 ):
-    input_dtype, lens, max_len = dtype_lens_maxlen
+    input_dtype, lens, max_len, dtype = dtype_lens_maxlen
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -2372,4 +2384,5 @@ def test_tensorflow_sequence_mask(
         on_device=on_device,
         lengths=lens[0],
         maxlen=max_len,
+        dtype=dtype
     )

@@ -9,6 +9,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     handle_tf_dtype,
     to_ivy_dtype,
 )
+from ivy.functional.frontends.tensorflow.dtypes import cast
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
@@ -651,7 +652,7 @@ def truncatemod(x, y):
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
 
-
+@with_supported_dtypes({"2.13.0 and below": ("int8","int16","int32","int64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
     if maxlen is None:
@@ -671,4 +672,7 @@ def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
     row_vector = ivy.arange(0, int(maxlen), 1)
     matrix = ivy.expand_dims(lengths, axis=-1)
     result = row_vector < matrix
-    return result
+    if dtype == None:
+        return result
+    else:
+        return cast(result, dtype)
