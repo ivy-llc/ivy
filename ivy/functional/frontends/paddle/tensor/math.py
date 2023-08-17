@@ -429,6 +429,7 @@ def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
 def mm(input, mat2, name=None):
     return ivy.matmul(input, mat2)
 
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -478,7 +479,8 @@ def amax(x, axis=None, keepdims=False):
         if i < 0 or i >= x.ndim:
             raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
     return ivy.max(x, axis=axis, keepdims=keepdims)
-  
+
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
