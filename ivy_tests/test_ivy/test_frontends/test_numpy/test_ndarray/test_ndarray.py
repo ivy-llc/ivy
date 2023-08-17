@@ -1400,19 +1400,20 @@ def test_numpy_ndarray_std(
         input_dtypes,
         method_flags,
     ) = np_frontend_helpers.handle_where_and_array_bools(
-        where=[where[0][0]] if isinstance(where, list) else where,
+        where=where[0] if isinstance(where, list) else where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
     )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=["bool"],
         init_all_as_kwargs_np={
-            "data": x[0],
+            "object": x[0],
         },
         method_all_as_kwargs_np={
             "axis": axis,
+            "dtype": None,
             "out": None,
             "ddof": 0,
             "keepdims": keepdims,
