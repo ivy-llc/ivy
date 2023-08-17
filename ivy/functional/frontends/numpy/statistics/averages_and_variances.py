@@ -95,7 +95,6 @@ def nanmean(
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def std(
     x,
     /,
@@ -108,14 +107,46 @@ def std(
     where=True,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype is None:
-        if ivy.is_int_dtype(x.dtype):
-            dtype = ivy.float64
+    if dtype is None and not ivy.is_float_dtype(x.dtype):
+        if ivy.is_complex_dtype(x.dtype) and ivy.dtype_bits(x.dtype) == 64:
+            dtype = ivy.float32
         else:
-            dtype = x.dtype
-    ret = ivy.std(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+            dtype = ivy.float64
+            x = x.astype(dtype, copy=False) if not ivy.is_complex_dtype(x.dtype) else x
+    else:
+        dtype = x.dtype
+    if where is True or not ivy.any(~ivy.array(where)):
+        ret = ivy.std(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    elif ivy.any(where):
+        x = ivy.where(where, x, 0)
+        sum = ivy.sum(x, axis=axis, keepdims=True)
+        cnt = ivy.sum(where, axis=axis, keepdims=True, dtype=ivy.int64)
+        avg = ivy.divide(sum, cnt)
+        x = ivy.subtract(x, avg)
+        x = ivy.where(where, x, 0)
+        if ivy.is_complex_dtype(x.dtype):
+            sqr = ivy.multiply(x, x.conj()).real
+        else:
+            sqr = ivy.multiply(x, x)
+        var = ivy.sum(sqr, axis=axis, dtype=dtype, out=out, keepdims=keepdims)
+        cnt = ivy.sum(where, axis=axis, keepdims=keepdims, dtype=ivy.int64)
+        dof = cnt - ddof
+        var = ivy.divide(var, dof).reshape(var.shape)
+        ret = ivy.sqrt(var, out=out)
+    else:
+        if axis is not None:
+            axis = (axis,) if isinstance(axis, int) else axis
+            axis = tuple(map(lambda i: i if i >= 0 else x.ndim + i, axis))
+            if keepdims:
+                shape = tuple(1 if i in axis else x.shape[i] for i in range(x.ndim))
+            else:
+                shape = tuple(x.shape[i] for i in range(x.ndim) if i not in axis)
+        else:
+            if keepdims:
+                shape = tuple(1 for i in range(x.ndim))
+            else:
+                shape = ()
+        ret = ivy.full(shape, ivy.nan)
     return ret.astype(dtype, copy=False)
 
 
