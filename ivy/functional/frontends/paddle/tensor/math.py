@@ -479,3 +479,9 @@ def amax(x, axis=None, keepdims=False):
         if i < 0 or i >= x.ndim:
             raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
     return ivy.max(x, axis=axis, keepdims=keepdims)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def tanh_(x, name=None):
+    return ivy.tanh(ivy.inplace_update(x, ivy.tanh(x)))
