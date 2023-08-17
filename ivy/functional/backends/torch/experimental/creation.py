@@ -170,6 +170,7 @@ def blackman_window(
 
 blackman_window.support_native_out = False
 
+
 def unsorted_segment_sum(
     data: torch.Tensor,
     segment_ids: torch.Tensor,
@@ -195,3 +196,17 @@ def unsorted_segment_sum(
     return res
 
 
+def trilu(
+    x: torch.Tensor,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if upper:
+        return torch.triu(x, diagonal=k, out=out)
+    return torch.tril(x, diagonal=k, out=out)
+
+
+trilu.support_native_out = True
