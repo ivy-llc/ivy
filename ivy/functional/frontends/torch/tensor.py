@@ -483,6 +483,10 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def erf_(self, *, out=None):
+        self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
+
     def new_zeros(
         self,
         *args,
@@ -1052,6 +1056,17 @@ class Tensor:
 
     def remainder(self, other, *, out=None):
         return torch_frontend.remainder(self, other, out=out)
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
+    )
+    def reciprocal_(self):
+        self.ivy_array = torch_frontend.reciprocal(self).ivy_array
+        return self
+      
+    def remainder_(self, other, *, out=None):
+        self.ivy_array = torch_frontend.remainder(self, other, out=out).ivy_array
+        return self  
 
     def bitwise_not_(self):
         self.ivy_array = self.bitwise_not().ivy_array
@@ -1769,6 +1784,13 @@ class Tensor:
     )
     def sinc(self):
         return torch_frontend.sinc(self)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("uint8",)}, "torch")
+    def index_fill(self, dim, index, value):
+        arr = torch_frontend.moveaxis(self, dim, 0)
+        arr[ivy.to_list(index)] = value
+        arr = torch_frontend.moveaxis(self, 0, dim)
+        return arr
 
 
 class Size(tuple):

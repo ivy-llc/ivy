@@ -136,9 +136,20 @@ def vflip(img, data_format="CHW"):
         axis = -3
     return ivy.flip(img, axis=axis)
 
+
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": ("float16", "float32", "int16", "int8", "uint8")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def crop(img, top, left, height, width):
     return img[top : top + height, left : left + width]
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def hflip(img):
+    img = ivy.array(img)
+    return ivy.flip(img, axis=-1)
+
