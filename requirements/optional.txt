@@ -12,7 +12,7 @@ paddlepaddle # unpinned , mod_name=paddle
 tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
 tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
 torch # unpinned, we test for latest version now
-torch-scatter # unpinned, mod_name=torch_scatter
+# torch-scatter # unpinned, mod_name=torch_scatter
 functorch # unpinned, we test for latest version now
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
