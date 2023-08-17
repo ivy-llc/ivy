@@ -8,6 +8,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_method, update_backend
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
+from ivy_tests.test_ivy.test_frontends.test_jax.test_numpy.test_manipulations import (
+    _get_input_and_reshape,
+)
 
 CLASS_TREE = "ivy.functional.frontends.jax.numpy.ndarray"
 
@@ -53,6 +56,24 @@ def test_jax_array_dtype(
         )
         x = jax_frontend.Array(data[0])
         assert x.dtype == dtype[0]
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
+)
+def test_jax_array_ndim(
+    dtype_x,
+    backend_fw,
+):
+    dtype, data = dtype_x
+    with update_backend(backend_fw) as ivy_backend:
+        jax_frontend = ivy_backend.utils.dynamic_import.import_module(
+            "ivy.functional.frontends.jax"
+        )
+        x = jax_frontend.Array(data[0])
+        assert x.ndim == data[0].ndim
 
 
 @given(
@@ -558,6 +579,48 @@ def test_jax_array_nonzero(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
+    method_name="prod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        valid_axis=True,
+        min_dim_size=2,
+        max_dim_size=10,
+        min_num_dims=2,
+    ),
+)
+def test_jax_prod(
+    dtype_x_axis,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        atol_=1e-04,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
     method_name="ravel",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -639,6 +702,49 @@ def test_jax_array_sort(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="sum",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_jax_sum(
+    dtype_and_x,
+    on_device,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        backend_to_test=backend_fw,
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        atol_=1e-04,
     )
 
 
@@ -2333,6 +2439,49 @@ def test_jax_array_searchsorted(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={"v": xs[0], "side": side, "sorter": sorter},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="reshape",
+    dtype_and_x_shape=_get_input_and_reshape(),
+    order=st.sampled_from(["C", "F"]),
+    input=st.booleans(),
+)
+def test_jax_array_reshape(
+    dtype_and_x_shape,
+    order,
+    input,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, shape = dtype_and_x_shape
+    if input:
+        method_flags.num_positional_args = len(shape)
+        kwargs = {f"{i}": shape[i] for i in range(len(shape))}
+    else:
+        kwargs = {"shape": shape}
+        method_flags.num_positional_args = 1
+    kwargs["order"] = order
+    helpers.test_frontend_method(
+        backend_to_test=backend_fw,
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np=kwargs,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

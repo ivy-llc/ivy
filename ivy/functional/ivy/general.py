@@ -1566,7 +1566,10 @@ def to_native_shape(
      ret
         the input in its native framework form
     """
-    if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
+    native_shape_type = (ivy.NativeShape,)
+    if ivy.current_backend_str() == "torch":
+        native_shape_type += (tuple,)
+    if len(backend_stack) != 0 and isinstance(shape, native_shape_type):
         return shape
     ivy.utils.assertions.check_isinstance(
         shape, (int, list, tuple, ivy.Array, ivy.NativeArray, ivy.Shape)
@@ -2821,8 +2824,6 @@ def set_item(
     else:
         query, target_shape = _parse_query(query, x.shape, scatter=True)
     val = _broadcast_to(val, target_shape).astype(x.dtype)
-    if copy:
-        x = ivy.copy_array(x)
     return ivy.scatter_nd(query, val, reduction="replace", out=x)
 
 
