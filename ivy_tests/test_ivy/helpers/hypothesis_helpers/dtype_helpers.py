@@ -12,6 +12,7 @@ from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
 
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
 _dtype_kind_keys = {
     "valid",
@@ -29,15 +30,18 @@ _dtype_kind_keys = {
 
 
 def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"):
+    print("im here _get_fn_dtypes")
     all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
         framework
     ]
+    print("all_devices_dtypes: ",all_devices_dtypes)
     if mixed_fn_dtypes in all_devices_dtypes:
         all_devices_dtypes = all_devices_dtypes[mixed_fn_dtypes]
     return all_devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind]
 
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
+    print("im here _get_type_dict")
     if is_frontend_test:
         framework_module = get_frontend_config(framework)
     else:
@@ -189,7 +193,7 @@ def get_dtypes(
     """
     mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
     if prune_function:
-        retrieval_fn = _get_fn_dtypes
+        retrieval_fn = _get_fn_dtypes #this causes issue in scipy
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
             valid_dtypes = set(
                 retrieval_fn(
@@ -216,9 +220,9 @@ def get_dtypes(
 
     # If being called from a frontend test
 
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
-        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind, True)
-        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+    # if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+    #     frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind, True) #this will not work since supported_device_dtypes consists of 
+    #     valid_dtypes = valid_dtypes.intersection(frontend_dtypes) # we dont need this bit since supported_device_dtypes already contains an intersection with the backend dtypes
 
     # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
