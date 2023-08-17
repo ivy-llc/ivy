@@ -175,7 +175,7 @@ This is a partial `Sphinx configuration file`_. Which is being imported in the
 `conf.py <https://github.com/unifyai/doc-builder/blob/main/docs/conf.py#L150>`_,
 it's used to customize options that are specific to the project being documented.
 While importing common configuration such as the theme, the extensions, etc in the 
-original ``conf.py``
+original ``conf.py``.
 
 This is a part of ``partial_conf.py``:
 
@@ -343,7 +343,7 @@ This will remove any function that has ``__qualname__`` attribute equal to
 ``ivy_data``
 ~~~~~~~~~~~~
 
-This is a custom documenter for ``autodoc`` that document Ivy data attributes that live
+This is a custom documenter for ``autodoc`` that documents Ivy data attributes that live
 in ``ivy.functional.ivy``, it will replace the module to ``ivy.`` instead of 
 ``ivy.functional.ivy.<submodule>``.
 

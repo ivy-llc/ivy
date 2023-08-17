@@ -183,7 +183,7 @@ Numbers in Operator Functions
 All operator functions (which have a corresponding such as :code:`+`, :code:`-`, :code:`*`, :code:`/`) must also be fully compatible with numbers (float or :code:`int`) passed into any of the array inputs, even in the absence of any arrays.
 For example, :code:`ivy.add(1, 2)`, :code:`ivy.add(1.5, 2)` and :code:`ivy.add(1.5, ivy.array([2]))` should all run without error.
 Therefore, the type hints for :func:`ivy.add` include float as one of the types in the :code:`Union` for the array inputs, and also as one of the types in the :code:`Union` for the output.
-`PEP 484 Type Hints <https://peps.python.org/pep-0484/#the-numeric-tower>`_ state that "when an argument is annotated as having type float, an argument of type int is acceptable".
+`PEP 484 Type Hints <https://peps.python.org/pep-0484/#the-numeric-tower>`_ states that "when an argument is annotated as having type float, an argument of type int is acceptable".
 Therefore, we only include float in the type hints.
 
 Integer Sequences
