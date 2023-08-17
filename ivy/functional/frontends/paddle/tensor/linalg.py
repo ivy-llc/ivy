@@ -8,7 +8,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def cross(x, y, /, *, axis=9, name=None):
@@ -17,7 +17,7 @@ def cross(x, y, /, *, axis=9, name=None):
 
 
 # matmul
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
@@ -25,7 +25,7 @@ def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
 
 
 # norm
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def norm(x, p="fro", axis=None, keepdim=False, name=None):
     if axis is None and p is not None:
@@ -108,7 +108,7 @@ def eigh(x, UPLO="L", name=None):
 
 
 # pinv
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def pinv(x, rcond=1e-15, hermitian=False, name=None):
     # TODO: Add hermitian functionality
@@ -116,21 +116,21 @@ def pinv(x, rcond=1e-15, hermitian=False, name=None):
 
 
 # solve
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def solve(x1, x2, name=None):
     return ivy.solve(x1, x2)
 
 
 # cholesky
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cholesky(x, /, *, upper=False, name=None):
     return ivy.cholesky(x, upper=upper)
 
 
 # bmm
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def bmm(x, y, transpose_x=False, transpose_y=False, name=None):
     if len(ivy.shape(x)) != 3 or len(ivy.shape(y)) != 3:
@@ -140,14 +140,14 @@ def bmm(x, y, transpose_x=False, transpose_y=False, name=None):
 
 
 # matrix_power
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def matrix_power(x, n, name=None):
     return ivy.matrix_power(x, n)
 
 
 # cond
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cond(x, p=None, name=None):
     ret = ivy.cond(x, p=p, out=name)
@@ -157,7 +157,7 @@ def cond(x, p=None, name=None):
 
 
 # dot
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def dot(x, y, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
@@ -166,7 +166,7 @@ def dot(x, y, name=None):
 
 
 # transpose
-@with_unsupported_dtypes({"2.5.0 and below": ("uint8", "int8", "int16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("uint8", "int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back
 def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)
@@ -177,7 +177,8 @@ def transpose(x, perm, name=None):
 def bincount(x, weights=None, minlength=0, name=None):
     return ivy.bincount(x, weights=weights, minlength=minlength)
 
-@with_supported_dtypes({"2.4.1 and above": ("float64","float32")}, "paddle")
+
+@with_supported_dtypes({"2.4.1 and above": ("float64", "float32")}, "paddle")
 @to_ivy_arrays_and_back
 def dist(x, y, p=2):
     ret = ivy.vector_norm(ivy.subtract(x, y), ord=p)

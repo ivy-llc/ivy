@@ -1721,6 +1721,7 @@ def arrays_for_pooling(
     return_dilation=False,
     mixed_fn_compos=True,
     data_format="channel_last",
+    return_data_format=False,
 ):
     in_shape = draw(
         nph.array_shapes(
@@ -1785,15 +1786,29 @@ def arrays_for_pooling(
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
 
-    strides = draw(st.tuples(st.integers(1, min(kernel))))
+    # We do this to avoid this error in the tf backend
+    # ValueError: `strides > 1` not supported in conjunction with `dilation_rate > 1`
+    # TODO: Explore fully compositional implementation for pooling to bypass this in tf.
+    if return_dilation:
+        strides = (
+            draw(st.tuples(st.integers(1, min(kernel))))
+            if max(dilations) <= 1
+            else (1,)
+        )
+    else:
+        strides = draw(st.tuples(st.integers(1, min(kernel))))
 
     if data_format == "channel_first":
         dim = len(in_shape)
         x[0] = np.transpose(x[0], (0, dim - 1, *range(1, dim - 1)))
 
+    out = [dtype, x, kernel, strides, padding]
     if return_dilation:
-        return dtype, x, kernel, strides, padding, dilations
-    return dtype, x, kernel, strides, padding
+        out.append(dilations)
+    if return_data_format:
+        out.append(data_format)
+
+    return tuple(out)
 
 
 @st.composite
@@ -2043,18 +2058,9 @@ def get_second_solve_matrix(draw):
 @st.composite
 def einsum_helper(draw):
     # Todo: generalize to n equations and arrays
-
-    # generate shapes as lists initially to allow updates in the loop ahead
-    shape_1 = draw(
-        st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=5)
-    )
-    shape_2 = draw(
-        st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=5)
-    )
-    dims_1 = len(shape_1)
-    dims_2 = len(shape_2)
-
-    # generate equations as lists to allow updates and use unique=True
+    # Generate unique dimensions for both arrays
+    dims_1 = draw(st.integers(min_value=1, max_value=5))
+    dims_2 = draw(st.integers(min_value=1, max_value=5))
     eq_1 = draw(
         st.lists(
             st.sampled_from(string.ascii_lowercase),
@@ -2072,47 +2078,51 @@ def einsum_helper(draw):
         )
     )
 
-    # randomly change some of the dimensions and equations to match
-    for i in range(min(dims_1, dims_2)):
+    # Decide which dimensions are common and update eq_2 accordingly
+    common_dims = min(dims_1, dims_2)
+    for i in range(common_dims):
         change = draw(st.booleans())
         if change:
-            shape_2[i] = shape_1[i]
             eq_2[i] = eq_1[i]
 
-    shape_1 = tuple(shape_1)
-    shape_2 = tuple(shape_2)
+    # Generate shapes according to the dimensions
+    shape_1 = [draw(st.integers(min_value=1, max_value=5)) for _ in eq_1]
+    shape_2 = [
+        (
+            draw(st.integers(min_value=1, max_value=5))
+            if eq_2[i] not in eq_1
+            else shape_1[eq_1.index(eq_2[i])]
+        )
+        for i in range(len(eq_2))
+    ]
 
-    # join the lists to strings
-    eq_1 = "".join(eq_1)
-    eq_2 = "".join(eq_2)
-
-    # generate arrays and dtypes
+    # Generate arrays and dtypes
     dtype_1, value_1 = draw(
         dtype_and_values(
-            available_dtypes=["float32"],
-            shape=shape_1,
+            available_dtypes=["float64"], shape=shape_1, min_value=-10, max_value=50
         )
     )
-
     dtype_2, value_2 = draw(
         dtype_and_values(
-            available_dtypes=["float32"],
-            shape=shape_2,
+            available_dtypes=["float64"], shape=shape_2, min_value=-10, max_value=50
         )
     )
 
-    output_length = min(dims_1, dims_2)
-    output_eq = draw(
-        st.lists(
-            st.sampled_from(eq_1 + eq_2),
-            min_size=output_length,
-            max_size=output_length,
-            unique=True,
+    # Determine output equation
+    common_symbols = set(eq_1).intersection(set(eq_2))
+    output_eq = []
+    if common_symbols:
+        output_length = draw(st.integers(min_value=1, max_value=len(common_symbols)))
+        output_eq = draw(
+            st.lists(
+                st.sampled_from(list(common_symbols)),
+                min_size=output_length,
+                max_size=output_length,
+                unique=True,
+            )
         )
-    )
     output_eq = "".join(output_eq)
 
-    # explict einsum equation
-    eq = eq_1 + "," + eq_2 + "->" + output_eq
+    eq = "".join(eq_1) + "," + "".join(eq_2) + "->" + output_eq
 
     return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]

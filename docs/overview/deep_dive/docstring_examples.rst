@@ -4,7 +4,6 @@ Docstring Examples
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
-.. _`docstring examples forum`: https://discord.com/channels/799879767196958751/1028297703089774705
 
 After writing the general docstrings, the final step is to add helpful examples to the docstrings.
 
@@ -722,7 +721,7 @@ It basically checks if the output upon execution of the examples that are docume
 Therefore each time you make a commit, you must ensure that the :code:`test-docstrings / run-docstring-tests` are working correctly at least for the function you are making changes to.
 To check whether the docstring tests are passing you need to check the logs for :code:`test-docstrings / run-docstring-tests`:
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true
            :width: 420
 
 You will need to go through the logs and see if the list of functions for which the docstring tests are failing also has the function you are working with.
@@ -732,7 +731,7 @@ If the docstring tests are failing the  logs show a list of functions having iss
 :code:`output in docs: ........`
 as shown below:
 
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
            :width: 420
 
 It can be quite tedious to go through the output diffs and spot the exact error, so you can take help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.
@@ -748,7 +747,7 @@ Passing docstring tests is a necessary but not sufficient condition for the comp
 
 These three examples should give you a good understanding of what is required when adding docstring examples.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_ or in the `docstring examples forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_!
 
 
 **Video**

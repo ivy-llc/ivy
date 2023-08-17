@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -20,8 +21,9 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -125,6 +127,7 @@ def abs(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -234,6 +237,7 @@ def acos(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -344,6 +348,7 @@ def acosh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -493,6 +498,7 @@ def add(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -581,6 +587,7 @@ def asin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -689,6 +696,7 @@ def asinh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -773,6 +781,7 @@ def atan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -947,6 +956,7 @@ def atan2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1050,6 +1060,7 @@ def atanh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1143,6 +1154,7 @@ def bitwise_and(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1219,6 +1231,7 @@ def bitwise_invert(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1269,6 +1282,7 @@ def bitwise_left_shift(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1357,6 +1371,7 @@ def bitwise_or(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1472,6 +1487,7 @@ def bitwise_right_shift(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1540,6 +1556,7 @@ def bitwise_xor(
 
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([3, 2, 1])
+    >>> y = ivy.zeros(3)
     >>> ivy.bitwise_xor(a, b, out = a)
     >>> print(a)
     ivy.array([2, 0, 2])
@@ -1547,10 +1564,10 @@ def bitwise_xor(
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> a = ivy.array([0, 1, 3, 67, 91])
-    >>> a = ivy.native_array([4, 7, 90, 89, 98])
+    >>> b = ivy.native_array([4, 7, 90, 89, 98])
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
-    ivy.array([0,0,0,0,0])
+    ivy.array([ 4,  6, 89, 26, 57])
 
     With :class:`ivy.Container` input:
 
@@ -1577,6 +1594,7 @@ def bitwise_xor(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1666,6 +1684,7 @@ def ceil(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1751,6 +1770,7 @@ def cos(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1869,6 +1889,7 @@ def cosh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2060,6 +2081,7 @@ def divide(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2176,6 +2198,7 @@ def equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2314,6 +2337,7 @@ def exp(
     return ivy.current_backend(x).exp(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2366,6 +2390,7 @@ def imag(
     return ivy.current_backend(val).imag(val, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2410,6 +2435,7 @@ def angle(
     return ivy.current_backend(z).angle(z, deg=deg, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2451,6 +2477,7 @@ def gcd(
     return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2490,6 +2517,7 @@ def exp2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2615,6 +2643,7 @@ def expm1(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2706,6 +2735,7 @@ def floor(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2890,6 +2920,7 @@ def floor_divide(
     return ivy.current_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2936,6 +2967,7 @@ def fmin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2991,7 +3023,9 @@ def greater(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater(x, y, out=x)
     >>> print(x)
-    ivy.array([[[False],[True],[False]]])
+    ivy.array([[[0.],
+            [1.],
+            [0.]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2999,7 +3033,7 @@ def greater(
     >>> y = ivy.native_array([4, 5, 0])
     >>> z = ivy.greater(x, y)
     >>> print(z)
-    ivy.array([False,False,True])
+    ivy.array([False, False,  True])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -3034,6 +3068,7 @@ def greater(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -3085,7 +3120,7 @@ def greater_equal(
 
     >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
-    ivy.array([False,True,True])
+    ivy.array([False, True, True])
 
     >>> x = ivy.array([[10.1, 2.3, -3.6]])
     >>> y = ivy.array([[4.8], [5.2], [6.1]])
@@ -3094,13 +3129,17 @@ def greater_equal(
     >>> z = ivy.full(shape, fill_value)
     >>> ivy.greater_equal(x, y, out=z)
     >>> print(z)
-    ivy.array([[True,False,False],[True,False,False],[True,False,False]])
+    ivy.array([[ True, False, False],
+           [ True, False, False],
+           [ True, False, False]])
 
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater_equal(x, y, out=x)
     >>> print(x)
-    ivy.array([[[False],[True],[False]]])
+    ivy.array([[[0.],
+            [1.],
+            [0.]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -3108,17 +3147,22 @@ def greater_equal(
     >>> y = ivy.native_array([4, 5, 0])
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
-    ivy.array([False,False,True])
+    ivy.array([False, False,  True])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]), b=ivy.array([[5.], [6.], [7.]])) # noqa
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
     {
-        a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),
-        b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
     }
 
     With :class:`ivy.Container` input:
@@ -3136,6 +3180,7 @@ def greater_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -3195,15 +3240,17 @@ def less_equal(
     >>> z = ivy.full(shape, fill_value)
     >>> ivy.less_equal(x, y, out=z)
     >>> print(z)
-    ivy.array([[False, True, True],
-       [ False, True, True],
-       [ False, True, True]])
+    ivy.array([[False,  True,  True],
+           [False,  True,  True],
+           [False,  True,  True]])
 
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.less_equal(x, y, out=x)
     >>> print(x)
-    ivy.array([[[True],[False],[True]]])
+    ivy.array([[[1.],
+            [0.],
+            [1.]]])
 
     With :class:`ivy.Container` input:
 
@@ -3220,6 +3267,7 @@ def less_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -3405,6 +3453,7 @@ def multiply(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3479,13 +3528,13 @@ def isfinite(
     >>> y = ivy.zeros(3)
     >>> ivy.isfinite(x, out=y)
     >>> print(y)
-    ivy.array([ True, False, False])
+    ivy.array([1., 0., 0.])
 
     >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
     >>> ivy.isfinite(x, out=x)
     >>> print(x)
-    ivy.array([[ True,  True],
-        [False, False]])
+    ivy.array([[1., 1.],
+           [0., 0.]])
 
     With :class:`ivy.Container` input:
 
@@ -3502,6 +3551,7 @@ def isfinite(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3626,6 +3676,7 @@ def isinf(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3734,6 +3785,7 @@ def isnan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -3779,7 +3831,9 @@ def less(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.less(x, y, out=x)
     >>> print(x)
-    ivy.array([[[True],[False],[True]]])
+    ivy.array([[[1.],
+            [0.],
+            [1.]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -3821,6 +3875,7 @@ def less(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3920,6 +3975,7 @@ def log(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -4013,6 +4069,7 @@ def log10(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -4101,12 +4158,12 @@ def log1p(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1 , 2 ,3 ])
-    >>> y = ivy.log1p(x)
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = x.log1p()
     >>> print(y)
     ivy.array([0.693, 1.1  , 1.39 ])
 
-    >>> x = ivy.array([0 , 1 ])
+    >>> x = ivy.array([0. , 1.])
     >>> y = ivy.zeros(2)
     >>> ivy.log1p(x , out = y)
     >>> print(y)
@@ -4131,6 +4188,7 @@ def log1p(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -4197,6 +4255,7 @@ def log2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -4298,6 +4357,7 @@ def logaddexp(
     return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -4340,6 +4400,7 @@ def logaddexp2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -4440,6 +4501,7 @@ def logical_and(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -4536,6 +4598,7 @@ def logical_not(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -4601,13 +4664,13 @@ def logical_or(
     >>> ivy.logical_or(x, y, out=z)
     >>> print(z)
     ivy.array([[False,  True,  True],
-       [ True,  True,  True]])
+           [ True,  True,  True]])
 
     >>> x = ivy.array([False, 3, 0])
     >>> y = ivy.array([2, True, False])
     >>> ivy.logical_or(x, y, out=x)
     >>> print(x)
-    ivy.array([ True,  True, False])
+    ivy.array([1, 1, 0])
 
     With :class:`ivy.Container` input:
 
@@ -4626,6 +4689,7 @@ def logical_or(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -4723,6 +4787,7 @@ def logical_xor(
     return ivy.current_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -4784,6 +4849,7 @@ def nan_to_num(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -4870,6 +4936,7 @@ def negative(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -4958,13 +5025,13 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([True, False, False, True])
+    ivy.array([1., 0., 0., 1.])
 
     >>> x1 = ivy.array([1, -1, 1, -1])
     >>> x2 = ivy.array([0, -1, 1, 0])
     >>> y = ivy.not_equal(x1, x2, out=x1)
     >>> print(y)
-    ivy.array([True, False, False, True])
+    ivy.array([1, 0, 0, 1])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -4985,14 +5052,14 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([True, False, False, True])
+    ivy.array([1., 0., 0., 1.])
 
     >>> x1 = ivy.native_array([1, 2, 3, 4])
     >>> x2 = ivy.native_array([0, 2, 3, 4])
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([True, False, False, False])
+    ivy.array([1., 0., 0., 0.])
 
     With :class:`ivy.Container` input:
 
@@ -5052,6 +5119,7 @@ def not_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -5129,6 +5197,7 @@ def positive(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -5274,6 +5343,7 @@ pow.unsupported_gradients = {"torch": ["float16"]}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -5344,6 +5414,7 @@ def real(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -5472,6 +5543,7 @@ def remainder(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -5592,6 +5664,7 @@ def round(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -5700,6 +5773,7 @@ def sign(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -5793,6 +5867,7 @@ def sin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -5915,6 +5990,7 @@ def sinh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6045,6 +6121,7 @@ def sqrt(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6117,6 +6194,7 @@ def square(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -6181,6 +6259,7 @@ def subtract(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6284,6 +6363,7 @@ def tan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6421,6 +6501,7 @@ def tanh(
     return ivy.current_backend(x).tanh(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6480,6 +6561,7 @@ def trapz(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6572,6 +6654,7 @@ def trunc(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6609,6 +6692,7 @@ def erf(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -6658,9 +6742,9 @@ def maximum(
     >>> z = ivy.zeros((3, 6))
     >>> ivy.maximum(x, y, out=z)
     >>> print(z)
-    ivy.array([[9.,9.,9.,9.,9.,9.],
-               [3.,5.,9.,8.,3.,7.],
-               [2.,5.,9.,8.,3.,7.]])
+    ivy.array([[9., 9., 9., 9., 9., 9.],
+           [3., 5., 9., 8., 3., 7.],
+           [2., 5., 9., 8., 3., 7.]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])
@@ -6699,6 +6783,7 @@ def maximum(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -6789,6 +6874,7 @@ def minimum(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6826,6 +6912,7 @@ def reciprocal(
     return ivy.current_backend(x).reciprocal(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6861,36 +6948,35 @@ def deg2rad(
     >>> x=ivy.array([0,90,180,270,360])
     >>> y=ivy.deg2rad(x)
     >>> print(y)
-    ivy.array([0.  , 1.57, 3.14, 4.71, 6.28])
+    ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
 
     >>> x=ivy.array([0,-1.5,-50,ivy.nan])
-    >>> y=ivy.zeros(5)
+    >>> y=ivy.zeros(4)
     >>> ivy.deg2rad(x,out=y)
     >>> print(y)
-    ivy.array([ 0.    , -0.0262, -0.873 ,     nan])
+    ivy.array([ 0., -0.02617994, -0.87266463, nan])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
     >>> ivy.deg2rad(x, out=x)
     >>> print(x)
-    ivy.array([[ 0.0192,  0.0384,  0.0576],
-        [-0.0768, -0.096 , -0.115 ]])
-
+    ivy.array([[ 0.01919862,  0.03839725,  0.05759586],
+           [-0.07679449, -0.09599311, -0.11519173]])
 
     >>> x=ivy.native_array([-0,20.1,ivy.nan])
     >>> y=ivy.zeros(3)
     >>> ivy.deg2rad(x,out=y)
     >>> print(y)
-    ivy.array([0.   , 0.351,   nan])
+    ivy.array([0., 0.35081118, nan])
 
     With :class:`ivy.Container` input:
 
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-                        b=ivy.array([0,90,180,270,360]))
+    ...                 b=ivy.array([0,90,180,270,360]))
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     {
-        a: ivy.array([0., 0.351, -0.881, nan]),
-        b: ivy.array([0., 1.57, 3.14, 4.71, 6.28])
+        a: ivy.array([0., 0.35081118, -0.88139129, nan]),
+        b: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
     }
 
     >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
@@ -6898,13 +6984,14 @@ def deg2rad(
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     {
-        a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
-        b: ivy.array([0., -0.0262, -0.873, nan])
+        a: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531]),
+        b: ivy.array([0., -0.02617994, -0.87266463, nan])
     }
     """
     return ivy.current_backend(x).deg2rad(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -6943,7 +7030,7 @@ def rad2deg(
     ivy.array([  0.,  90., 180., 270., 360.])
 
     >>> x=ivy.array([0.,-0.0262,-0.873,ivy.nan])
-    >>> y=ivy.zeros(5)
+    >>> y=ivy.zeros(4)
     >>> ivy.rad2deg(x,out=y)
     >>> print(y)
     ivy.array([  0. ,  -1.5, -50. ,   nan])
@@ -6962,8 +7049,8 @@ def rad2deg(
 
     With :class:`ivy.Container` input:
 
-    >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-    ...                 b=ivy.array([0,1,2,3,4]))
+    >>> x=ivy.Container(a=ivy.array([-0., 20.1, -50.5, -ivy.nan]),
+    ...                 b=ivy.array([0., 1., 2., 3., 4.]))
     >>> y=ivy.rad2deg(x)
     >>> print(y)
     {
@@ -6983,8 +7070,8 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -7031,16 +7118,19 @@ def trunc_divide(
 
 trunc_divide.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
+        "handle_backend_invalid",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -7107,6 +7197,7 @@ def isreal(
     return ivy.current_backend(x).isreal(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -7150,6 +7241,7 @@ def fmod(
     return ivy.current_backend(x1, x2).fmod(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
