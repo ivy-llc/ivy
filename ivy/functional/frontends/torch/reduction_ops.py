@@ -112,7 +112,6 @@ def median(input, dim=None, keepdim=False, *, out=None):
     return result
 
 
-# Implement 'nanmedian' pytorch function?
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def nanmedian(input, dim=None, keepdim=False, out=None):
