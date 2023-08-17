@@ -881,6 +881,37 @@ def test_tensorflow_Square(  # NOQA
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.SquaredDifference",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_SquaredDifference(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
 @st.composite
 def _squeeze_helper(draw):
     shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
@@ -4283,6 +4314,7 @@ def test_tensorflow_Svd(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -4290,6 +4322,7 @@ def test_tensorflow_Svd(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -4311,4 +4344,44 @@ def test_tensorflow_Svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Igamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        abs_smallest_val=1e-5,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=2,
+        max_value=100,
+        allow_nan=False,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Igamma(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        a=xs[0],
+        x=xs[1],
     )

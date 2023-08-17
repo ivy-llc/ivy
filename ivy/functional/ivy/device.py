@@ -35,6 +35,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -339,6 +340,7 @@ def unset_soft_device_mode() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 def dev(
@@ -398,9 +400,9 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
 
     Examples
     --------
-    >>> y = ivy.as_ivy_dev('cuda:0')
+    >>> y = ivy.as_ivy_dev('cpu')
     >>> print(y)
-    cuda:0
+    cpu
     """
     return ivy.current_backend().as_ivy_dev(device)
 
@@ -888,6 +890,7 @@ def unset_default_device() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -994,6 +997,7 @@ def set_split_factor(
     --------
     >>> print(ivy.default_device())
     cpu
+
     >>> ivy.set_split_factor(0.5)
     >>> print(ivy.split_factors)
     {'cpu': 0.5}
@@ -1001,11 +1005,11 @@ def set_split_factor(
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
-    >>> ivy.set_split_factor(0.3,device)
+    >>> ivy.set_split_factor(0.3, device=device)
     >>> print(ivy.split_factors)
     {device(type='cuda'): 0.3}
 
-    >>> ivy.set_split_factor(0.4,"tpu")
+    >>> ivy.set_split_factor(0.4, device="tpu")
     >>> print(ivy.split_factors)
     {'tpu': 0.4}
 
@@ -1289,9 +1293,8 @@ def function_unsupported_devices(
 
     Examples
     --------
-    >>> import ivy
     >>> print(ivy.function_unsupported_devices(ivy.ones))
-    ()
+    ('tpu',)
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),

@@ -23,7 +23,6 @@ Function Wrapping
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function wrapping channel`: https://discord.com/channels/799879767196958751/982737993028755496
-.. _`function wrapping forum`: https://discord.com/channels/799879767196958751/1028297461611122809
 .. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L944
 .. _`stored as an attribute`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L1054
 .. _`ivy.linear`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/layers.py#L81
@@ -95,9 +94,7 @@ Out Argument Support
 Nestable Support
 ^^^^^^^^^^^^^^^^
 
-#.  `handle_nestable`_ : This wrapping function enables the use of :class:`ivy.Container` arguments in functions and directly calling them through the :code:`ivy` namespace, just like calling a function with :class:`ivy.Array` arguments instead.
-    Whenever there's a :class:`ivy.Container` argument, this wrapping function defers to the corresponding :ref:`Containers` static method to facilitate the same.
-    As a result, the function can be called by passing an :class:`ivy.Container` to any or all of its arguments.
+#.  `handle_nestable`_ : This wrapping function enables the use of :class:`ivy.Container` arguments in functions and directly calling them through the :code:`ivy` namespace, just like calling a function with :class:`ivy.Array` arguments instead. Thus, the function can be called by passing an :class:`ivy.Container` to any or all of its arguments.
 
 Partial Mixed Function Support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -141,7 +138,7 @@ For now, suffice it to say that they do quite a lot.
 
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function wrapping channel`_ or in the `function wrapping forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function wrapping channel`_!
 
 
 **Video**
