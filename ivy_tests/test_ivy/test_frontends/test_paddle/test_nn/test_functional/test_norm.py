@@ -62,12 +62,14 @@ def test_paddle_normalize(
     p,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
     dtype, x, _ = dtype_and_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         on_device=on_device,
