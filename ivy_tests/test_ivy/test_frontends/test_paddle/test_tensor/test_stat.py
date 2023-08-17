@@ -131,3 +131,65 @@ def test_paddle_median(
         axis=axis,
         keepdim=keepdim,
     )
+
+
+# var
+@handle_frontend_test(
+    fn_tree="paddle.var",
+    dtype_and_x=_statistical_dtype_values(function="var"),
+    unbiased=st.booleans(),
+    keepdim=st.booleans(),
+)
+def test_paddle_var(
+    *,
+    unbiased,
+    dtype_and_x,
+    keepdim,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis, _ = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        axis=axis,
+        unbiased=unbiased,
+        keepdim=keepdim,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nanmedian",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_value=-1e10,
+        max_value=1e10,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdim=st.booleans(),
+)
+def test_paddle_nanmedian(
+    dtype_x_and_axis,
+    keepdim,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtypes, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        axis=axis,
+        keepdim=keepdim,
+    )
