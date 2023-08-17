@@ -75,6 +75,10 @@ class Array:
     pass
 
 
+class TuckerTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -181,6 +185,10 @@ class Dtype(str):
     @property
     def as_native_dtype(self):
         return as_native_dtype(self)
+
+    @property
+    def name(self) -> str:
+        return str(self)
 
     @property
     def info(self):
@@ -746,6 +754,7 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
+from .data_classes.FactorizedTensor import TuckerTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -1412,6 +1421,12 @@ GLOBAL_PROPS = [
     "dynamic_backend",
     "precise_mode",
     "soft_device_mode",
+    "logging_mode",
+    "default_dtype",
+    "default_float_dtype",
+    "default_int_dtype",
+    "default_complex_dtype",
+    "default_uint_dtype",
 ]
 
 

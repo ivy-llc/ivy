@@ -1557,11 +1557,36 @@ def test_tensorflow_linspace(
     )
 
 
+# no_op
+@handle_frontend_test(
+    fn_tree="tensorflow.no_op",
+    dtype=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_no_op(
+    *,
+    dtype,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+    )
+
+
 # realdiv
 @handle_frontend_test(
     fn_tree="tensorflow.realdiv",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=2,
         min_value=-20,
         max_value=20,
@@ -1578,7 +1603,6 @@ def test_tensorflow_realdiv(
     fn_tree,
     on_device,
 ):
-    # todo: test for complex numbers
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -2387,3 +2411,36 @@ def test_tensorflow_sequence_mask(
         maxlen=max_len,
         dtype=dtype
     )
+
+# @handle_frontend_test(
+#     fn_tree="tensorflow.zeros_initializer",
+#     shape=helpers.get_shape(
+#         allow_none=False,
+#         min_num_dims=1,
+#         max_num_dims=5,
+#         min_dim_size=1,
+#         max_dim_size=10,
+#     ),
+#     dtype=helpers.get_dtypes("valid", full=False),
+#     test_with_out=st.just(False),
+# )
+# def test_tensorflow_zeros_initializer(
+#     shape,
+#     dtype,
+#     frontend,
+#     backend_fw,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         backend_to_test=backend_fw,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         shape=shape,
+#         dtype=dtype[0],
+#     )
+

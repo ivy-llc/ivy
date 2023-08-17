@@ -108,6 +108,10 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
+    def numel(self):
+        return paddle_frontend.numel(self)
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16",)}, "paddle")
     def asinh(self, name=None):
         return paddle_frontend.Tensor(ivy.asinh(self._ivy_array))
@@ -573,6 +577,14 @@ class Tensor:
     def sign(self, name=None):
         return ivy.sign(self._ivy_array)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def var(self, axis=None, unbiased=True, keepdim=False, name=None):
+        return paddle_frontend.Tensor(
+            ivy.var(
+                self._ivy_array, axis=axis, correction=int(unbiased), keepdims=keepdim
+            )
+        )
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def sgn(self, name=None):
         return paddle_frontend.Tensor(ivy.sign(self._ivy_array, np_variant=True))
@@ -586,6 +598,10 @@ class Tensor:
     )
     def min(self, axis=None, keepdim=False, name=None):
         return ivy.min(self._ivy_array, axis=axis, keepdims=keepdim)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def atan(self, name=None):
+        return ivy.atan(self._ivy_array)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def atanh(self, name=None):

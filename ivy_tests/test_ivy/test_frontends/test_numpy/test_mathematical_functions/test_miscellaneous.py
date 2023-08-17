@@ -591,6 +591,7 @@ def test_numpy_interp(
     x_dtype, x = x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes + x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -239,7 +239,7 @@ def to_ivy_shape(fn: Callable) -> Callable:
     def to_ivy_shape_torch(*args, **kwargs):
         new_kwargs = {
             key: (
-                ivy.to_ivy_shape(tuple(value))
+                value.ivy_shape
                 if key in ["shape", "size"]
                 and isinstance(value, ivy.functional.frontends.torch.Size)
                 else value
@@ -251,9 +251,7 @@ def to_ivy_shape(fn: Callable) -> Callable:
         new_args = ivy.nested_map(
             args,
             lambda x: (
-                ivy.to_ivy_shape(tuple(x))
-                if isinstance(x, ivy.functional.frontends.torch.Size)
-                else x
+                x.ivy_shape if isinstance(x, ivy.functional.frontends.torch.Size) else x
             ),
             shallow=False,
         )
