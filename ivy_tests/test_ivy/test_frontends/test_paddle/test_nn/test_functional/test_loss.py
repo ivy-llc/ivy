@@ -491,3 +491,41 @@ def test_paddle_nll_loss(
         ignore_index=ignore_index,
         reduction=reduction,
     )
+
+@handle_frontend_test(
+    fn_tree="dice_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=2,
+    ),
+    epsilon=st.floats(
+        min_value=1e-6,
+        max_value=1e-2,
+    ),
+)
+def test_dice_loss(
+    dtype_and_x,
+    epsilon,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[
+            x_dtype[0],
+            x_dtype[1],
+        ],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        epsilon=epsilon,
+    )
