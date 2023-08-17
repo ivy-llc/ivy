@@ -1385,4 +1385,3 @@ def sparsify_tensor(
     tensor = ivy.concat([ivy.zeros(len(x) - card, dtype=x.dtype), x[-card:]], axis=0)
 
    return ivy.reshape(tensor, _shape, out=out)
-    return ivy.inplace_update(out, ret) if out is not None else ret
