@@ -4385,3 +4385,32 @@ def test_tensorflow_Igamma(
         a=xs[0],
         x=xs[1],
     )
+
+
+# Conj
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conj",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Conj(  # NOQA
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )

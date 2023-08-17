@@ -971,3 +971,17 @@ Igamma = to_ivy_arrays_and_back(
         "tensorflow",
     )(map_raw_ops_alias(tf_frontend.math.igamma))
 )
+
+
+Conj = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "complex64",
+                "complex128",
+                " variant",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.conj))
+)
