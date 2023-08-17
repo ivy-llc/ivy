@@ -230,3 +230,9 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     out = ivy.atleast_1d(out)
 
     return out
+
+
+@with_supported_dtypes({"2.5.1 and below": "float32"}, "paddle")
+@to_ivy_arrays_and_back
+def square_error_cost(input, label):
+    return ivy.square(ivy.subtract(input, label))

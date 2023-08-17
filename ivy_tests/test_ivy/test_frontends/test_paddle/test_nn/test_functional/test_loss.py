@@ -390,3 +390,30 @@ def test_paddle_margin_ranking_loss(
         margin=margin,
         reduction=reduction,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.loss.square_error_cost",
+    dtype_and_input_and_label=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+    ),
+)
+def test_paddle_square_error_cost(
+    *,
+    dtype_and_input_and_label,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes, input_and_label = dtype_and_input_and_label
+    input, label = input_and_label
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        input=input,
+        label=label,
+    )
