@@ -315,21 +315,3 @@ def nll_loss(
     if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
         output = output - loss[ignore_index] / den
     return output
-
-def softmax_cross_entropy(logits, labels):
-    # Apply softmax to logits
-    softmax_logits = F.softmax(logits, axis=1)
-    
-    # Compute cross-entropy loss
-    cross_entropy_loss = F.cross_entropy(logits, labels)
-    
-    return softmax_logits, cross_entropy_loss
-
-# Simulated logits and labels
-logits = paddle.to_tensor([[2.0, 1.0, 0.1], [1.0, 2.0, 0.1]])
-labels = paddle.to_tensor([0, 1])  # Index of the true class for each example
-
-softmax_probs, loss = softmax_cross_entropy(logits, labels)
-
-print("Softmax Probabilities:\n", softmax_probs.numpy())
-print("Cross-Entropy Loss:", loss.numpy())

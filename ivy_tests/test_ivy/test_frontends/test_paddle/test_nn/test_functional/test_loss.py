@@ -8,7 +8,6 @@ import ivy
 import ivy.functional.frontends.paddle as paddle
 
 
-
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.binary_cross_entropy_with_logits",
     dtype_and_x=helpers.dtype_and_values(
