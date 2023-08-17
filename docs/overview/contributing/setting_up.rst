@@ -244,6 +244,15 @@ This is a builtin package and doesn't require explicit installation.
 Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_ OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
 For VSCode, you can follow the instructions `virtual environments <https://code.visualstudio.com/docs/python/environments#_creating-environments>`_.
 
+**Installing Ivy from source**
+
+You can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure everything will work as expected. All the steps will remain the same for miniconda and venv as described above, only the command for point 4 for venv and point 5 for miniconda will change, everything else will remain the same. You have to run the following instead:
+
+   .. code-block:: none
+
+      pip install git+https://github.com/unifyai/ivy.git
+
+
 Docker Interpreter with PyCharm
 -------------------------------
 
