@@ -810,7 +810,7 @@ class ModuleConverters:
             **i_kwargs,
         )
 
-    def to_torch_module(module, lazy):
+    def to_torch_module(self, lazy):
         import torch
 
         class TranspiledTorchModule(torch.nn.Module):
@@ -871,7 +871,7 @@ class ModuleConverters:
                         lambda _, kc: self._parameters[kc]
                     )
 
-        torch_module = TranspiledTorchModule(module, lazy=lazy)
+        torch_module = TranspiledTorchModule(self, lazy=lazy)
 
         # set compilation flags
         torch_module._ivy_module._lazy_compiled = lazy
