@@ -1354,6 +1354,7 @@ def sparsify_tensor(
     Parameters
     ----------
     x : Union[ivy.Array, ivy.NativeArray]
+        Tensor to be sparsified
     card : int
         Desired number of non-zero elements in the `tensor`
 
