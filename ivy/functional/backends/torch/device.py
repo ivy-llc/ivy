@@ -90,7 +90,12 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:
 
 
 def num_gpus() -> int:
-    return torch.cuda.device_count()
+    if torch.cuda.is_available():
+        return torch.cuda.device_count()
+    elif hasattr(torch.backends, "mps"):
+        if torch.backends.mps.is_available():
+            return 1
+    return 0
 
 
 def device_is_available() -> bool:
