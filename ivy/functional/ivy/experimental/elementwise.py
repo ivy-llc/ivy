@@ -1363,7 +1363,7 @@ def sparsify_tensor(
     --------
     >>> x = ivy.arange(100)
     >>> x = ivy.reshape(x, (10, 10))
-    >>> x.sparsify_tensor(10)
+    >>> sparsify_tensor(x, 10)
     ivy.array([[ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
     [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
     [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
@@ -1377,10 +1377,10 @@ def sparsify_tensor(
     """
     if card >= ivy.prod(ivy.array(tensor.shape)):
         return tensor
-    bound = ivy.reshape(ivy.abs(tensor), (-1,))[-card]
-
-    return ivy.where(
-        ivy.abs(tensor) < bound,
-        ivy.zeros_like(tensor),
-        tensor,
+    _shape = ivy.shape(tensor)
+    tensor = ivy.reshape(ivy.sort(ivy.abs(tensor)), (-1,))
+    tensor = ivy.concat(
+        [ivy.zeros(len(tensor) - card, dtype=tensor.dtype), tensor[-card:]], axis=0
     )
+
+    return ivy.reshape(tensor, _shape)

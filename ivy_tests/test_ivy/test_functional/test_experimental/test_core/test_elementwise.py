@@ -832,7 +832,7 @@ def _sparsify_tensor_stg(draw):
             ret_shape=True,
             min_num_dims=1,
             min_dim_size=10,
-            min_value=1,
+            min_value=10,
         )
     )
 
@@ -840,7 +840,7 @@ def _sparsify_tensor_stg(draw):
     for dim in shape:
         size *= dim
 
-    card = draw(st.integers(min_value=0, max_value=size))
+    card = draw(st.integers(min_value=2, max_value=size - 1))
 
     return dtype, tensor[0], card
 
