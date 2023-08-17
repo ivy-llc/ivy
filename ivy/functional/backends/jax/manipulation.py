@@ -240,8 +240,13 @@ def clip(
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x.astype(promoted_type)
     # jnp.clip isn't used because of inconsistent gradients
-    x = jnp.where(x > x_max, x_max, x)
-    return jnp.where(x < x_min, x_min, x)
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    if x_max is not None:
+        x = jnp.where(x > x_max, x_max, x)
+    if x_min is not None:
+        x = jnp.where(x < x_min, x_min, x)
+    return x
 
 
 @with_unsupported_dtypes({"0.4.14 and below": ("uint64",)}, backend_version)
