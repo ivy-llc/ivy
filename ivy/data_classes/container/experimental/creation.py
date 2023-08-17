@@ -955,7 +955,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
             num_segments,
         )
 
-
     @staticmethod
     def static_blackman_window(
         window_length: Union[int, ivy.Container],
@@ -1050,8 +1049,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         }
         """
         return self.static_blackman_window(self, periodic, dtype, out=out)
-      
-      
+
     @staticmethod
     def _static_trilu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

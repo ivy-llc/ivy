@@ -9,7 +9,7 @@ class WithBackendContext:
         self.backend = backend
 
     def __enter__(self):
-        return ivy.with_backend(self.backend, cached=True)
+        return ivy.with_backend(self.backend)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         return
