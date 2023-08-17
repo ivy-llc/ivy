@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import numpy as np
@@ -261,14 +261,6 @@ def test_nanprod(
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     x = x[0]
-    if "torch" in backend_fw:
-        assume(
-            not (
-                "torch" in str(backend_fw)
-                and "float16" in castable_dtype
-                and on_device == "cpu"
-            )
-        )
     helpers.test_function(
         input_dtypes=[input_dtype],
         test_flags=test_flags,

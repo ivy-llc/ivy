@@ -200,14 +200,25 @@ def nanprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
+    if a.dtype == torch.float16 and a.device.type == "cpu":
+        a = a.to(torch.float32)
     if axis == ():
         return a.type(dtype)
     if axis is None:
+        if dtype == torch.float16:
+            return torch.prod(input=a, out=out).to(torch.float16)
         return torch.prod(input=a, dtype=dtype, out=out)
     if isinstance(axis, tuple) or isinstance(axis, list):
         for i in axis:
-            a = torch.prod(a, dim=i, keepdim=keepdims, dtype=dtype, out=out)
+            if dtype == torch.float16:
+                a = torch.prod(a, dim=i, keepdim=keepdims, out=out)
+            else:
+                a = torch.prod(a, dim=i, keepdim=keepdims, dtype=dtype, out=out)
+        if dtype == torch.float16:
+            return a.to(torch.float16)
         return a
+    if dtype == torch.float16:
+        return torch.prod(a, dim=axis, keepdim=keepdims, out=out).to(torch.float16)
     return torch.prod(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
 
 
