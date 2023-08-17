@@ -4,6 +4,8 @@ import paddle
 import paddle.nn.functional as F
 
 # local
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
 
 unsupported_dtypes = [
     paddle.int8,
@@ -18,6 +20,9 @@ unsupported_dtypes = [
 ]
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+)
 def l1_loss(
     input: paddle.Tensor,
     target: paddle.Tensor,
