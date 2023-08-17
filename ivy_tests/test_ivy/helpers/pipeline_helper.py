@@ -9,7 +9,7 @@ class WithBackendContext:
         self.backend = backend
 
     def __enter__(self):
-        return ivy.with_backend(self.backend, cached=True)
+        return ivy.with_backend(self.backend)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         return
@@ -20,6 +20,7 @@ update_backend: Callable = WithBackendContext
 
 
 def get_frontend_config(frontend: str):
-    return importlib.import_module(
+    config_module = importlib.import_module(
         f"ivy_tests.test_ivy.test_frontends.config.{frontend}"
     )
+    return config_module.get_config()

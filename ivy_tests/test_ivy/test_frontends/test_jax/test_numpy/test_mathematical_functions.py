@@ -2469,6 +2469,7 @@ def test_jax_hypot(
         atol=1e-2,
         x1=x[0],
         x2=x[1],
+        backend_to_test=backend_fw,
     )
 
 
@@ -3219,33 +3220,6 @@ def test_jax_conjugate(
         frontend=frontend,
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-#cos
-@handle_frontend_test(
-    fn_tree="jax.numpy.cos",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    test_with_out=st.just(False),
-)
-@with_supported_dtypes
-def test_jax_cos(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        backend_to_test=backend_fw,
         on_device=on_device,
         x=x[0],
     )
