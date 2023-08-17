@@ -84,6 +84,14 @@ def subtract(x, y, name=None):
     return ivy.subtract(x, y)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def subtract_(x, y, name=None):
+    ret = ivy.subtract(x, y)
+    ivy.inplace_update(x, ret)
+    return x
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def sqrt(x, name=None):
