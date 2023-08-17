@@ -493,8 +493,6 @@ def test_paddle_nll_loss(
     )
 
 
-
-
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.square_error_cost",
     dtype_and_x=helpers.dtype_and_values(
@@ -536,3 +534,4 @@ def test_paddle_square_error_cost(
         input=x[0],
         label=x[1],
     )
+    
