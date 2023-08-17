@@ -1060,9 +1060,13 @@ class Tensor:
     @with_supported_dtypes(
         {"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
     )
+    def reciprocal_(self):
+        self.ivy_array = torch_frontend.reciprocal(self).ivy_array
+        return self
+      
     def remainder_(self, other, *, out=None):
         self.ivy_array = torch_frontend.remainder(self, other, out=out).ivy_array
-        return self
+        return self  
 
     def bitwise_not_(self):
         self.ivy_array = self.bitwise_not().ivy_array
