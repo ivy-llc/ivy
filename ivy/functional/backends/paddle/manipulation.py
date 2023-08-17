@@ -446,13 +446,20 @@ def swapaxes(
 
 def clip(
     x: paddle.Tensor,
-    x_min: Union[Number, paddle.Tensor],
-    x_max: Union[Number, paddle.Tensor],
+    x_min: Optional[Union[Number, paddle.Tensor]] = None,
+    x_max: Optional[Union[Number, paddle.Tensor]] = None,
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle_backend.minimum(paddle_backend.maximum(x, x_min), x_max)
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+
+    if x_min is not None:
+        x = paddle.maximum(x, x_min)
+    if x_max is not None:
+        x = paddle.minimum(x, x_max)
+    return x
 
 
 def unstack(

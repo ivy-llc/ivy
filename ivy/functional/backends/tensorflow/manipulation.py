@@ -336,20 +336,26 @@ def swapaxes(
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
-    x_min: Union[Number, tf.Tensor, tf.Variable],
-    x_max: Union[Number, tf.Tensor, tf.Variable],
+    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
         promoted_type = ivy.as_native_dtype(
             ivy.promote_types(promoted_type, x_max.dtype)
         )
         x = tf.cast(x, promoted_type)
-        x_min = tf.cast(x_min, promoted_type)
-        x_max = tf.cast(x_max, promoted_type)
+        if x_min is not None:
+            x_min = tf.cast(x_min, promoted_type)
+        if x_max is not None:
+            x_max = tf.cast(x_max, promoted_type)
+
     if tf.size(x) == 0:
         ret = x
     elif x.dtype == tf.bool:
@@ -357,6 +363,7 @@ def clip(
         ret = tf.cast(ret, x.dtype)
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
+
     return ret
 
 
