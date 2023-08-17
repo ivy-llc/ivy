@@ -8,7 +8,6 @@ Array API Tests
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
-.. _`array api tests forum`: https://discord.com/channels/799879767196958751/1028297759738040440
 .. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
@@ -199,7 +198,7 @@ The fact that the skip instruction itself contains the exact input conditions th
 
 This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_ or in the `array api tests forum`_ !
+If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_!
 
 **Video**
 
