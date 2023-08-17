@@ -715,6 +715,3 @@ def product(
 def conjugate(x, /):
     return ivy.conj(x)
 
-@to_ivy_arrays_and_back
-def cos(x, /):
-    return ivy.cos(x)
