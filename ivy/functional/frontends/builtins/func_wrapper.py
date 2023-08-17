@@ -12,29 +12,35 @@ def _to_ivy_array(x):
         return x.ivy_array
 
     # convert native arrays and lists to ivy arrays
-    elif isinstance(x, (ivy.NativeArray, list, tuple)):
+    elif isinstance(x, ivy.NativeArray):
         return ivy.array(x)
 
     return x
 
 
 def _infer_return_array(x: Iterable) -> Callable:
-    # get module's name which is the first element
-    module_str = x.__class__.__module__.split(".")[0]
+    # get module path
+    module_path = x.__class__.__module__.split(".")
 
     # if function's input is a scalar, list, or tuple
     # convert to current backend's frontend array
-    if module_str in ["builtins"]:
-        # get current backend str
+    if "builtins" in module_path:
         cur_backend = ivy.current_backend_str()
-        # assign current backend str unless it's empty, otherwise numpy
         module_str = cur_backend if len(cur_backend) != 0 else "numpy"
 
-    # replace jaxlib with jax to construct a valid path
-    module_str = "jax" if module_str == "jaxlib" else module_str
-    frontend_path = "ivy.functional.frontends." + module_str
+    # in this case we're dealing with frontend array
+    # module's name is always at index 3 on the path
+    elif "ivy" in module_path:
+        module_str = module_path[3]
+
+    # native array, e.g. np.ndarray, torch.Tensor etc.
+    else:
+        module_str = module_path[0]
+        # replace jaxlib with jax to construct a valid path
+        module_str = "jax" if module_str == "jaxlib" else module_str
 
     # import the module and get a corresponding frontend array
+    frontend_path = "ivy.functional.frontends." + module_str
     module = import_module(frontend_path)
     frontend_array = getattr(module, "_frontend_array")
 
@@ -44,12 +50,8 @@ def _infer_return_array(x: Iterable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_builtins(*args, **kwargs):
-        ivy_args = ivy.nested_map(
-            args, _to_ivy_array, shallow=False, to_ignore=(list, tuple)
-        )
-        ivy_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, shallow=False, to_ignore=(list, tuple)
-        )
+        ivy_args = ivy.nested_map(args, _to_ivy_array, shallow=False)
+        ivy_kwargs = ivy.nested_map(kwargs, _to_ivy_array, shallow=False)
 
         # array is the first argument given to a function
         frontend_array = _infer_return_array(args[0])
