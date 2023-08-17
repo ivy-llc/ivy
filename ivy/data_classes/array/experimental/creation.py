@@ -124,7 +124,6 @@ class _ArrayWithCreationExperimental(abc.ABC):
         """
         return ivy.unsorted_segment_sum(self._data, segment_ids, num_segments)
 
-      
     def blackman_window(
         self: ivy.Array,
         /,
@@ -138,7 +137,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.blackman_window. This method simply
         wraps the function, and so the docstring for ivy.blackman_window also applies to
         this method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -171,7 +170,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
         return ivy.blackman_window(
             self._data, periodic=periodic, dtype=dtype, device=device, out=out
         )
-      
+
     def trilu(
         self: ivy.Array,
         /,
@@ -184,7 +183,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.trilu. This method simply wraps the
         function, and so the docstring for ivy.trilu also applies to this method with
         minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -210,4 +209,3 @@ class _ArrayWithCreationExperimental(abc.ABC):
             on the same device as ``self``.
         """
         return ivy.trilu(self._data, k=k, upper=upper, out=out)
-

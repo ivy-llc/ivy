@@ -169,9 +169,9 @@ def test_pandas_series_mean(
     class_tree=CLASS_TREE,
     init_tree="pandas.Series",
     method_name="add",
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"),
-                                     num_arrays=2,
-                                     shared_dtype=True),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
     axis=st.sampled_from(["index", 0]),
 )
 def test_pandas_series_add(
@@ -195,7 +195,8 @@ def test_pandas_series_add(
             "other": x[1],
             "level": None,
             "axis": axis,
-            "fill_value": None},
+            "fill_value": None,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
