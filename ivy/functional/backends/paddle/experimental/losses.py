@@ -7,21 +7,24 @@ import paddle.nn.functional as F
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
-unsupported_dtypes = [
-    paddle.int8,
-    paddle.int16,
-    paddle.int32,
-    paddle.int64,
-    paddle.uint8,
-    paddle.float16,
-    paddle.complex64,
-    paddle.complex128,
-    paddle.bool,
-]
-
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def l1_loss(
     input: paddle.Tensor,
@@ -32,15 +35,4 @@ def l1_loss(
     name: Optional[str] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if input.dtype in unsupported_dtypes:
-        if paddle.is_complex(input):
-            real_loss = F.l1_loss(input.real(), target.real(), reduction=reduction)
-            imag_loss = F.l1_loss(input.imag(), target.imag(), reduction=reduction)
-            return paddle.complex(real_loss, imag_loss)
-        return F.l1_loss(
-            input.cast("float32"),
-            target.cast("float32"),
-            reduction=reduction,
-        ).cast(input.dtype)
-
     return F.l1_loss(input, target, reduction=reduction, name=name)
