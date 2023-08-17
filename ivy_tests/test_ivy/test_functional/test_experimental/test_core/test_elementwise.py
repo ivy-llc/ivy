@@ -828,7 +828,7 @@ def test_digamma(
 def _sparsify_tensor_stg(draw):
     dtype, tensor, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=["float32", "float64", "int32", "int64"],
+            available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
             min_num_dims=1,
             min_dim_size=10,

@@ -2978,7 +2978,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
     @staticmethod
     def static_sparsify_tensor(
-        tensor: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         card: int,
         /,
         *,
@@ -2986,7 +2986,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sparsify_tensor. This method simply
@@ -3011,7 +3011,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
         out
-            Alternate output array in which to place the result.
+            Alternate output container in which to place the result.
             The default is None.
 
         Returns
@@ -3032,7 +3032,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "sparsify_tensor",
-            tensor,
+            x,
             card,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3046,6 +3046,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         card: Union[int, ivy.Container],
         /,
         *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3058,5 +3062,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_sparsify_tensor(
             self,
             card,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
