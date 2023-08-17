@@ -392,6 +392,76 @@ def test_torch_baddbmm(
     )
 
 
+@st.composite
+def _generate_chain_matmul_dtype_and_arrays(draw):
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    input_dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
+    )
+    shape_1 = (matrices_dims[0], matrices_dims[1])
+    shape_2 = (matrices_dims[1], matrices_dims[2])
+    shape_3 = (matrices_dims[2], matrices_dims[3])
+
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_3 = draw(
+        helpers.dtype_and_values(
+            shape=shape_3,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
+
+
+# chain_matmul
+@handle_frontend_test(
+    fn_tree="torch.chain_matmul",
+    dtype_and_matrices=_generate_chain_matmul_dtype_and_arrays(),
+)
+def test_torch_chain_matmul(
+    *,
+    dtype_and_matrices,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, matrices = dtype_and_matrices
+    args = {f"x{i}": matrix for i, matrix in enumerate(matrices)}
+    test_flags.num_positional_args = len(matrices)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        **args,
+    )
+
+
 # bmm
 @handle_frontend_test(
     fn_tree="torch.bmm",
@@ -894,5 +964,5 @@ def test_torch_trapezoid(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        **kwargs
+        **kwargs,
     )
