@@ -15,6 +15,17 @@ def reshape(x, shape):
     return ivy.reshape(x, shape)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "uint8", "int16", "float16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def reshape_(x, shape):
+    ret = ivy.reshape(x, shape)
+    ivy.inplace_update(x, ret)
+    return x
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def abs(x, name=None):
