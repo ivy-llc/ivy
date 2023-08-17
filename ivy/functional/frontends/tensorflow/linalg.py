@@ -473,5 +473,5 @@ def tensor_diag_part(input, name=None):
 
 
 @to_ivy_arrays_and_back
-def lu_solve(lower_upper, perm, rhs, validate_args=False, name=None):
-    return ivy.solve(lower_upper, perm, rhs, validate_args=False, name=None)
+def lu_solve(lower_upper, rhs):  # ToDO
+    return ivy.solve(lower_upper, rhs)

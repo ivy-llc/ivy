@@ -1242,7 +1242,7 @@ def test_tensorflow_tensor_diag_part(
 
 
 # Tests for tensorflow.linalg.lu_solve function's frontend
-@handle_frontend_test(
+@handle_frontend_test(  # ToDo
     fn_tree="tensorflow.linalg.lu_solve",
     dtype_and_input=_get_dtype_and_rank_2k_tensors(),
     test_with_out=st.just(False),
@@ -1255,6 +1255,8 @@ def test_tensorflow_linalg_lu_solve(
     fn_tree,
     on_device,
     backend_fw,
+    lower_upper,
+    rhs,
 ):
     dtype, input = dtype_and_input
     helpers.test_frontend_function(
@@ -1264,5 +1266,6 @@ def test_tensorflow_linalg_lu_solve(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input[0],
+        lower_upper=lower_upper,
+        rhs=rhs,
     )
