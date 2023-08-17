@@ -491,3 +491,21 @@ def test_paddle_nll_loss(
         ignore_index=ignore_index,
         reduction=reduction,
     )
+
+def softmax_cross_entropy(logits, labels):
+    # Apply softmax to logits
+    softmax_logits = paddle.nn.functional.softmax(logits, axis=1)
+    
+    # Compute cross-entropy loss
+    cross_entropy_loss = paddle.nn.functional.cross_entropy(logits, labels)
+    
+    return softmax_logits, cross_entropy_loss
+
+# Simulated logits and labels
+logits = ivy.array([[2.0, 1.0, 0.1], [1.0, 2.0, 0.1]])
+labels = ivy.array([0, 1])  # Index of the true class for each example
+
+softmax_probs, loss = softmax_cross_entropy(logits, labels)
+
+print("Softmax Probabilities:\n", softmax_probs)
+print("Cross-Entropy Loss:", loss)
