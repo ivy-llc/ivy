@@ -1,5 +1,6 @@
 # global
 import ast
+import logging
 import inspect
 import math
 from numbers import Number
@@ -18,7 +19,9 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    to_native_shapes_and_back,
+    inputs_to_native_shapes,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -146,8 +149,19 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         if not getattr(fn, "__module__", None):
             continue
         if "backend" in fn.__module__:
-            f_supported = wrapper(get_fn(fn, False))
-            out = merge_fn(f_supported, out)
+            f_supported = get_fn(fn, False)
+            if hasattr(fn, "partial_mixed_handler"):
+                f_supported = merge_fn(
+                    wrapper(f_supported["compositional"]),
+                    wrapper(f_supported["primary"]),
+                )
+                logging.warning(
+                    "This function includes the mixed partial function"
+                    f" 'ivy.{fn.__name__}'. Please note that the returned data types"
+                    " may not be exhaustive. Please check the dtypes of"
+                    f" `ivy.{fn.__name__}` for more details"
+                )
+            out = merge_fn(wrapper(f_supported), out)
             continue
         elif "frontend" in fn.__module__ or (
             hasattr(fn, "__name__") and "einops" in fn.__name__
@@ -177,8 +191,8 @@ def _get_dtypes(fn, complement=True):
     # we can comment out the following condition
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = "einops" in fn.__name__
-    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
+    has_unsupported_dtypes_attr = hasattr(fn, "unsupported_dtypes")
+    if not is_backend_fn and not is_frontend_fn and not has_unsupported_dtypes_attr:
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported
@@ -190,15 +204,32 @@ def _get_dtypes(fn, complement=True):
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
+
+    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
-            v = getattr(fn, key)
+            dtypes = getattr(fn, key)
             # only einops allowed to be a dictionary
-            if isinstance(v, dict):
-                v = v.get(ivy.current_backend_str(), base)
-
-            ivy.utils.assertions.check_isinstance(v, tuple)
-            supported = merge_fn(supported, set(v))
+            if isinstance(dtypes, dict):
+                dtypes = dtypes.get(ivy.current_backend_str(), base)
+            ivy.utils.assertions.check_isinstance(dtypes, tuple)
+            dtypes = list(dtypes)
+            typeset_list = []
+            for i, dtype in reversed(list(enumerate(dtypes))):
+                if dtype in typesets:
+                    typeset_list.extend(typesets[dtype])
+                    dtypes.pop(i)
+            dtypes = dtypes + typeset_list
+            supported = merge_fn(supported, set(dtypes))
 
     if complement:
         supported = set(ivy.all_dtypes).difference(supported)
@@ -214,11 +245,13 @@ Iinfo = None
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -275,9 +308,10 @@ def astype(
     ivy.array([1., 2.])
 
     >>> x = ivy.array([3.141, 2.718, 1.618])
+    >>> y = ivy.zeros_like(x)
     >>> ivy.astype(x, ivy.int32, out=y)
     >>> print(y)
-    ivy.array([3, 2, 1])
+    ivy.array([3., 2., 1.])
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> ivy.astype(x, ivy.float64, out=x)
@@ -300,13 +334,13 @@ def astype(
         b: ivy.array([True, False, False])
     }
 
-    Using :class:`ivy.Array` instance method:
+    With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> print(x.astype(ivy.float64))
     ivy.array([[-1., -2.],  [0.,  2.]])
 
-    Using :class:`ivy.Container` instance method:
+    With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([False,True,True]),
     ...                   b=ivy.array([3.14, 2.718, 1.618]))
@@ -320,9 +354,11 @@ def astype(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """
     Broadcasts one or more arrays against one another.
@@ -397,12 +433,14 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
+@inputs_to_native_shapes
 @to_native_arrays_and_back
-@to_native_shapes_and_back
 @handle_array_function
+@handle_device_shifting
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -473,6 +511,7 @@ def broadcast_to(
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -535,21 +574,23 @@ def can_cast(
     ...                   b=ivy.array([3, 4, 5]))
     >>> print(ivy.can_cast(x, 'int64'))
     {
-        a: false,
-        b: true
+        a: False,
+        b: True
     }
     """
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
     try:
-        ivy.promote_types(from_, to)
-        return True
+        dtype = ivy.promote_types(from_, to)
+        return dtype == to
     except KeyError:
         return False
 
 
 @handle_exceptions
+@handle_backend_invalid
 @inputs_to_native_arrays
+@handle_device_shifting
 def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -635,7 +676,9 @@ def finfo(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @inputs_to_native_arrays
+@handle_device_shifting
 def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -710,8 +753,10 @@ def iinfo(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
+@handle_device_shifting
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
@@ -770,7 +815,7 @@ def result_type(
         a: float64
     }
     """
-    return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+    return current_backend(arrays_and_dtypes[0]).result_type(*arrays_and_dtypes)
 
 
 # Extra #
@@ -1015,7 +1060,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
-    <dtype:'uint16'>
+    uint16
 
     With :code:`str` input:
 
@@ -1312,6 +1357,8 @@ def default_int_dtype(
     if ivy.exists(input):
         if ivy.is_array(input):
             ret = ivy.dtype(input)
+        elif isinstance(input, ivy.Shape):
+            ret = ivy.default_int_dtype()
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
@@ -1477,6 +1524,7 @@ def default_uint_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
+@handle_device_shifting
 def default_complex_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1531,9 +1579,7 @@ def default_complex_dtype(
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
-                input,
-                lambda x: _check_complex128(x),
-                stop_after_n_found=1,
+                input, lambda x: _check_complex128(x), stop_after_n_found=1
             ):
                 ret = ivy.complex128
             else:
@@ -1572,8 +1618,10 @@ def default_complex_dtype(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
+@handle_device_shifting
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
@@ -1621,9 +1669,11 @@ def dtype(
 
 @handle_exceptions
 @handle_nestable
-def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
+def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple, dict]:
     """
-    Return the supported data types of the current backend's function.
+    Return the supported data types of the current backend's function. The function
+    returns a dict containing the supported dtypes for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1635,7 +1685,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        The supported data types of the function
+        Tuple or dict containing the supported dtypes of the function
 
     Examples
     --------
@@ -1650,20 +1700,33 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
             "in a particular backend"
         ),
     )
-    supported_dtypes = set(_get_dtypes(fn, complement=False))
-    if recurse:
-        supported_dtypes = _nested_get(
-            fn, supported_dtypes, set.intersection, function_supported_dtypes
-        )
-
-    return tuple(supported_dtypes)
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_supported_dtypes(fn.compos, recurse=recurse),
+            "primary": _get_dtypes(fn, complement=False),
+        }
+    else:
+        supported_dtypes = set(_get_dtypes(fn, complement=False))
+        if recurse:
+            supported_dtypes = _nested_get(
+                fn, supported_dtypes, set.intersection, function_supported_dtypes
+            )
+    return (
+        supported_dtypes
+        if isinstance(supported_dtypes, dict)
+        else tuple(supported_dtypes)
+    )
 
 
 @handle_exceptions
 @handle_nestable
-def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
+def function_unsupported_dtypes(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
-    Return the unsupported data types of the current backend's function.
+    Return the unsupported data types of the current backend's function. The function
+    returns a dict containing the unsupported dtypes for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1675,7 +1738,7 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        The unsupported data types of the function
+        Tuple or dict containing the unsupported dtypes of the function
 
     Examples
     --------
@@ -1690,13 +1753,23 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
             "in a particular backend"
         ),
     )
-    unsupported_dtypes = set(_get_dtypes(fn, complement=True))
-    if recurse:
-        unsupported_dtypes = _nested_get(
-            fn, unsupported_dtypes, set.union, function_unsupported_dtypes
-        )
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_unsupported_dtypes(fn.compos, recurse=recurse),
+            "primary": _get_dtypes(fn, complement=True),
+        }
+    else:
+        unsupported_dtypes = set(_get_dtypes(fn, complement=True))
+        if recurse:
+            unsupported_dtypes = _nested_get(
+                fn, unsupported_dtypes, set.union, function_unsupported_dtypes
+            )
 
-    return tuple(unsupported_dtypes)
+    return (
+        unsupported_dtypes
+        if isinstance(unsupported_dtypes, dict)
+        else tuple(unsupported_dtypes)
+    )
 
 
 @handle_exceptions
@@ -1814,10 +1887,8 @@ def is_int_dtype(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1., 2., 3.])
-    >>> x.dtype
-    float32
-    >>> print(ivy.is_int_dtype(x))
-    False
+    >>> print(ivy.is_int_dtype(x), x.dtype)
+    False float32
 
     With :class:`ivy.NativeArray` input:
 
@@ -1834,18 +1905,16 @@ def is_int_dtype(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
-    >>> x.a.dtype
-    float32
-    >>> x.b.dtype
-    int32
     >>> print(ivy.is_int_dtype(x))
     {
-        a: false,
-        b: true
+        a: False,
+        b: True
     }
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "int" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -1921,6 +1990,8 @@ def is_float_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "float" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -1971,6 +2042,8 @@ def is_uint_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "uint" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -2017,6 +2090,8 @@ def is_complex_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "complex" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -2420,34 +2495,24 @@ def promote_types_of_inputs(
         # check for float number and integer array case
         return isinstance(a1, float) and "int" in str(a2.dtype)
 
+    def _get_target_dtype(scalar, arr):
+        # identify a good dtype to give the scalar value,
+        # based on it's own type and that of the arr value
+        if _special_case(scalar, arr):
+            return "float64"
+        elif arr.dtype == bool and not isinstance(scalar, bool):
+            return None  # let ivy infer a dtype
+        elif isinstance(scalar, complex) and not ivy.is_complex_dtype(arr):
+            return "complex128"
+        else:
+            return arr.dtype
+
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
         device = ivy.default_device(item=x1, as_native=True)
-        if x1.dtype == bool and not isinstance(x2, bool):
-            x2 = (
-                ivy.asarray(x2, device=device)
-                if not _special_case(x2, x1)
-                else ivy.asarray(x2, dtype="float64", device=device)
-            )
-        else:
-            x2 = (
-                ivy.asarray(x2, dtype=x1.dtype, device=device)
-                if not _special_case(x2, x1)
-                else ivy.asarray(x2, dtype="float64", device=device)
-            )
+        x2 = ivy.asarray(x2, dtype=_get_target_dtype(x2, x1), device=device)
     elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
         device = ivy.default_device(item=x2, as_native=True)
-        if x2.dtype == bool and not isinstance(x1, bool):
-            x1 = (
-                ivy.asarray(x1, device=device)
-                if not _special_case(x1, x2)
-                else ivy.asarray(x1, dtype="float64", device=device)
-            )
-        else:
-            x1 = (
-                ivy.asarray(x1, dtype=x2.dtype, device=device)
-                if not _special_case(x1, x2)
-                else ivy.asarray(x1, dtype="float64", device=device)
-            )
+        x1 = ivy.asarray(x1, dtype=_get_target_dtype(x1, x2), device=device)
     elif not (hasattr(x1, "dtype") or hasattr(x2, "dtype")):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)

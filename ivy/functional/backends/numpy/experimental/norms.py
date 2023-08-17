@@ -4,7 +4,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
 def l1_normalize(
     x: np.ndarray,
     /,

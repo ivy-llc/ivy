@@ -1,12 +1,12 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://unify.ai/docs/ivy/deep_dive/inplace_updates.html#out-argument
+.. _`out argument`: https://unify.ai/docs/ivy/overview/deep_dive/inplace_updates.html#out-argument
  
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
@@ -101,7 +101,7 @@ Ivy Functional API ✅
 
 Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend.
 Instead, we allow these backends to be bound to the single shared namespace ivy.
-The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
+The backend can then be changed by calling :code:`ivy.set_backend('torch')` for example.
 
 :mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
 For example, the function :func:`prod`  is shown below:
@@ -200,12 +200,12 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 ------------------
 
-All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :func:`ivy.current_backend`.
+All code for setting and unsetting backend resides in the submodule at :mod:`ivy/utils/backend/handler.py`, and the front facing function is :func:`ivy.current_backend`.
 The contents of this function are as follows:
 
 .. code-block:: python
 
-   # ivy/backend_handler.py
+   # ivy/utils/backend/handler.py
     def current_backend(*args, **kwargs):
         global implicit_backend
         # if a global backend has been set with set_backend then this will be returned
@@ -224,7 +224,7 @@ The contents of this function are as follows:
             verbosity.cprint("Using backend from type: {}".format(f))
         return importlib.import_module(_backend_dict[implicit_backend])
 
-If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned.
+If a global backend framework has been previously set using for example :code:`ivy.set_backend('tensorflow')`, then this globally set backend is returned.
 Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
 
 The functions in this returned module are populated by iterating through the global :attr:`ivy.__dict__` (or a non-global copy of :attr:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace.
@@ -232,7 +232,7 @@ The following is a slightly simplified version of this code for illustration, wh
 
 .. code-block:: python
 
-   # ivy/backend_handler.py
+   # ivy/utils/backend/handler.py
    def set_backend(backend: str):
 
        # un-modified ivy.__dict__
@@ -368,7 +368,7 @@ One reason we created the graph compiler was to address this issue.
 The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only.
 The dependency graph for this process looks like this:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiler_dependency_graph.png?raw=true
    :align: center
    :width: 75%
 
@@ -401,7 +401,7 @@ has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 | ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_a.png?raw=true
    :align: center
    :width: 75%
 
@@ -436,7 +436,7 @@ For example, the following 3 pieces of code all compile to the exact same comput
 | net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_b.png?raw=true
    :align: center
    :width: 75%
 
@@ -466,7 +466,7 @@ Converting this code to a graph, we get a slightly different graph for each back
 
 Tensorflow:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_tf.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_tf.png?raw=true
    :align: center
    :width: 75%
 
@@ -474,7 +474,7 @@ Tensorflow:
 
 Numpy:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_numpy.png?raw=true
    :align: center
    :width: 75%
 
@@ -482,7 +482,7 @@ Numpy:
 
 Jax:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_jax.png?raw=true
    :align: center
    :width: 75%
 |

@@ -12,7 +12,6 @@ class _ArrayWithElementwise(abc.ABC):
         self: Union[float, ivy.Array, ivy.NativeArray],
         /,
         *,
-        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:  # noqa
         """
@@ -24,8 +23,6 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
-        where
-            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -43,7 +40,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ 2.6, 6.6, 1.6, 0.])
         """
-        return ivy.abs(self, where=where, out=out)
+        return ivy.abs(self, out=out)
 
     def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -1409,7 +1406,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1 , 2 ,3 ])
+        >>> x = ivy.array([1., 2., 3.])
         >>> y = x.log1p()
         >>> print(y)
         ivy.array([0.693, 1.1  , 1.39 ])
@@ -2932,7 +2929,7 @@ class _ArrayWithElementwise(abc.ABC):
         --------
         With :class:`ivy.Array` input:
 
-        >>> x=ivy.array([1,5,8,10])
+        >>> x=ivy.array([1., 5., 8., 10.])
         >>> y=x.rad2deg()
         >>> print(y)
         ivy.array([ 57.3, 286. , 458. , 573. ])

@@ -9,8 +9,9 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -34,11 +35,13 @@ def _get_promoted_type_of_operands(operands):
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
+@handle_backend_invalid
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -139,12 +142,14 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -215,7 +220,7 @@ def max(
     ivy.array(3)
 
     >>> x = ivy.array([0, 1, 2])
-    >>> z = ivy.array([0])
+    >>> z = ivy.array(0)
     >>> y = ivy.max(x, out=z)
     >>> print(z)
     ivy.array(2)
@@ -247,13 +252,14 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -346,8 +352,9 @@ def mean(
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
     ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
-    >>> ivy.mean(x, axis=0, out=x)
-    >>> print(x)
+    >>> y = ivy.Container(a = ivy.zeros(3), b = ivy.zeros(3))
+    >>> ivy.mean(x, axis=0, out=y)
+    >>> print(y)
     {
         a: ivy.array([1.5, 2.5, 3.5]),
         b: ivy.array([4.5, 5.5, 6.5])
@@ -356,12 +363,14 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -373,6 +382,16 @@ def prod(
 ) -> ivy.Array:
     """
     Calculate the product of input array x elements.
+
+    **Special Cases**
+
+    Let ``N`` equal the number of elements over which to compute the product.
+
+    -  If ``N`` is ``0``, the product is ``1`` (i.e., the empty product).
+
+    For both both real-valued and complex floating-point operands, special
+    cases must be handled as the operation is implemented by successive application
+    of :func:`ivy.multiply`:
 
     Parameters
     ----------
@@ -480,12 +499,14 @@ def prod(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -567,7 +588,7 @@ def std(
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.std(x)
     >>> print(y)
-    ivy.array(0.8164966)
+    ivy.array(0.81649661)
 
     >>> x = ivy.array([-1., 0., 1.])
     >>> z = ivy.std(x, correction=1)
@@ -588,21 +609,21 @@ def std(
     >>> x = ivy.array([[-1., -2.], [3., 3.]])
     >>> y = ivy.std(x, axis=1)
     >>> print(y)
-    ivy.array([1.5, 1. ])
+    ivy.array([0.5, 0. ])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
-    >>> y = ivy.std(x)
+    >>> y = x.std()
     >>> print(y)
     {
-        a: ivy.array(0.8164966),
+        a: ivy.array(0.81649661),
         b: ivy.array(0.509902)
     }
 
     >>> x = ivy.Container(a=ivy.array([[1., 3.], [3., 6.]]),
     ...                   b=ivy.array([[ 4., 2.], [2., 1.]]))
-    >>> y = ivy.std(x, axis=1, keepdims=True)
+    >>> y = x.std(axis=1, keepdims=True)
     >>> print(y)
     {
         a: ivy.array([[1.],
@@ -617,12 +638,14 @@ def std(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -642,6 +665,10 @@ def sum(
 
     For floating-point operands,
     -   If ``x_i`` is ``NaN``, the sum is ``NaN`` (i.e., ``NaN`` values propagate).
+
+    For both real-valued and complex floating-point operands, special cases must
+    be handled as if the operation is implemented by successive application of
+    :func:`ivy.add`:
 
     Parameters
     ----------
@@ -734,7 +761,7 @@ def sum(
     ivy.array(1.9)
 
     >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
-    >>> y = ivy.array([0.0,0.0,0.0])
+    >>> y = ivy.array(0.0)
     >>> ivy.sum(x, out=y)
     >>> print(y)
     ivy.array(8.)
@@ -752,12 +779,14 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -833,7 +862,7 @@ def var(
     ivy.array(0.07472222)
 
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
-    >>> y = ivy.zeros(6)
+    >>> y = ivy.array(0.0)
     >>> ivy.var(x, out=y)
     >>> print(y)
     ivy.array(0.07472222)
@@ -867,12 +896,14 @@ def var(
 # ------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1010,12 +1041,14 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1147,16 +1180,13 @@ def cumprod(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
-@handle_exceptions
+@handle_device_shifting
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

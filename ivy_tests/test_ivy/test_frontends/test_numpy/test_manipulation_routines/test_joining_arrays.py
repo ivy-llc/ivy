@@ -43,11 +43,13 @@ def test_numpy_concatenate(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     xs, input_dtypes, unique_idx, casting, dtype = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -72,11 +74,13 @@ def test_numpy_stack(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     xs, input_dtypes, unique_idx, _, _ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -103,11 +107,13 @@ def test_numpy_vstack(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -133,11 +139,13 @@ def test_numpy_hstack(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -3,7 +3,7 @@ from typing import Optional, Tuple, Union
 import math
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
-from paddle.fluid.libpaddle import Place
+from paddle.device import core
 from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
@@ -86,11 +86,13 @@ def tril_indices(
     k: Optional[int] = 0,
     /,
     *,
-    device: Place,
+    device: core.Place,
 ) -> Tuple[paddle.Tensor, ...]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
     if not (n_cols and n_rows):
-        return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
+        return paddle.to_tensor([], place=device, dtype="int64"), paddle.to_tensor(
+            [], place=device, dtype="int64"
+        )
     return tuple(
         to_device(
             paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
@@ -127,5 +129,59 @@ def unsorted_segment_min(
         mask_index = segment_ids == i
         if paddle.any(mask_index):
             res[i] = paddle.min(data[mask_index], 0)
+
+    return res
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: Optional[bool] = True,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if size < 2:
+        return paddle.ones([size], dtype=dtype)
+    if periodic:
+        count = paddle.arange(size) / size
+    else:
+        count = paddle.linspace(start=0, stop=size, num=size)
+    return (
+        (0.42 - 0.5 * paddle.cos(2 * math.pi * count))
+        + (0.08 * paddle.cos(2 * math.pi * 2 * count))
+    ).cast(dtype)
+
+
+def unsorted_segment_sum(
+    data: paddle.Tensor,
+    segment_ids: paddle.Tensor,
+    num_segments: Union[int, paddle.Tensor],
+) -> paddle.Tensor:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    # Sum computation in paddle does not support int32, so needs to
+    # be converted to float32
+    needs_conv = False
+    if data.dtype == paddle.int32:
+        data = paddle.cast(data, "float32")
+        needs_conv = True
+
+    res = paddle.zeros((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if paddle.any(mask_index):
+            res[i] = paddle.sum(data[mask_index], axis=0)
+
+    # condition for converting float32 back to int32
+    if needs_conv is True:
+        res = paddle.cast(res, "int32")
 
     return res

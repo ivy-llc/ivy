@@ -76,16 +76,16 @@ jobs:
           mkdir -p examples
         continue-on-error: true
 
-       - name: Run Functional-Core Tests
-         id: tests
-         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
-         run: |
-           cd ivy
-           mkdir .ivy
-           touch .ivy/key.pem
-           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-           ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
-         continue-on-error: true
+      - name: Run Functional-Core Tests
+        id: tests
+        if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+        continue-on-error: true
 
       - name: Zip Hypothesis Examples
         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') &&  github.event_name == 'pull_request'
@@ -104,14 +104,14 @@ jobs:
         continue-on-error: true
 
       - name: Install Mongo Python Client
-        if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push' && github.ref == 'refs/heads/master')
+        if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push' && github.ref == 'refs/heads/main')
         uses: BSFishy/pip-action@v1
         with:
           packages: |
             pymongo[srv]
 
       - name: Update Database
-        if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push' && github.ref == 'refs/heads/master')
+        if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push' && github.ref == 'refs/heads/main')
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         run: |

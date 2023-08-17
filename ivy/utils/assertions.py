@@ -170,7 +170,7 @@ def check_shape(x1, x2, message=""):
             x1, x2, ivy.shape(x1), ivy.shape(x2)
         )
     )
-    if ivy.shape(x1) != ivy.shape(x2):
+    if ivy.shape(x1)[:] != ivy.shape(x2)[:]:
         raise ivy.utils.exceptions.IvyException(message)
 
 
@@ -194,7 +194,7 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
     if (
         not (
             (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and isinstance(fill_value, int)
+            and (isinstance(fill_value, int) or ivy.isinf(fill_value))
         )
         and not (
             ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))

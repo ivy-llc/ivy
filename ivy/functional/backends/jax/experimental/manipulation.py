@@ -395,3 +395,24 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: JaxArray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> JaxArray:
+    shape = jnp.array(a.shape)
+    end = None
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (jnp.cumprod(shape[:-1])).sum()
+    a = jnp.reshape(a, (-1,))
+    a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
+    a = jnp.reshape(a, shape)
+    return a
