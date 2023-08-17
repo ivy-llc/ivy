@@ -5,7 +5,6 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 
-
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):
@@ -13,6 +12,13 @@ def mean(input, axis=None, keepdim=False, out=None):
     ret = ivy.expand_dims(ret, axis=-1) if ret.ndim == 0 else ret
     return ret
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def var(x, axis=None, keepdim=False, name=None):
+    return ivy.variance(x, axis=axis, keepdims=keepdim)
 
 @with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
 @to_ivy_arrays_and_back
@@ -69,3 +75,5 @@ def nanmedian(x, axis=None, keepdim=True, name=None):
         else ivy.astype(x, ivy.float32)
     )
     return ivy.median(x, axis=axis, keepdims=keepdim)
+
+
