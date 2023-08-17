@@ -2334,9 +2334,7 @@ def test_tensorflow_unravel_index(
 # sequence_mask
 @st.composite
 def _sequence_mask_helper(draw):
-    max_val= draw(
-        st.integers(min_value=1, max_value=100000)
-    )
+    max_val = draw(st.integers(min_value=1, max_value=100000))
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("integer"),
@@ -2346,10 +2344,9 @@ def _sequence_mask_helper(draw):
         )
     )
 
-    max_len = draw(
-        st.integers(min_value=int(ivy.max(x)), max_value=max_val)
-    )
+    max_len = draw(st.integers(min_value=int(ivy.max(x)), max_value=max_val))
     return dtype, x, max_len
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.sequence_mask",
