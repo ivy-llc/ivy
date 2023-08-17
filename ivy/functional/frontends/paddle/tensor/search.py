@@ -88,7 +88,7 @@ def topk(x, k, axis=None, largest=True, sorted=True, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    {"2.5.1 and below": ("bfloat16", "float16", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
