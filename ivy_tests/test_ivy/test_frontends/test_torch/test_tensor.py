@@ -12132,7 +12132,7 @@ def test_torch_index_fill(
     init_tree="torch.tensor",
     method_name="triu_",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,

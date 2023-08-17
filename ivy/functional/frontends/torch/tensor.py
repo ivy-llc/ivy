@@ -1769,12 +1769,13 @@ class Tensor:
                 "int16",
                 "complex128",
                 "complex64",
+                "bool",
             )
         },
         "torch",
     )
     def triu_(self, diagonal=0):
-        self.ivy_array = self.triu(diagonal).ivy_array
+        self.ivy_array = torch_frontend.triu(self, diagonal).ivy_array
         return self
 
     @with_unsupported_dtypes(
