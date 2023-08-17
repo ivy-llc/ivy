@@ -3567,3 +3567,60 @@ def test_numpy___invert__(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="var",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_value=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+    where=np_frontend_helpers.where(),
+)
+def test_numpy_ndarray_var(
+    dtype_x_axis,
+    keepdims,
+    where,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
+        where=where[0] if isinstance(where, list) else where,
+        input_dtype=input_dtypes,
+        test_flags=method_flags,
+    )
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        method_input_dtypes=["bool"],
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "dtype": None,
+            "out": None,
+            "ddof": 0,
+            "keepdims": keepdims,
+            "where": where,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
