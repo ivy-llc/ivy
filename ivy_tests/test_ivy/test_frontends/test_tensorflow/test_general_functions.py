@@ -2338,7 +2338,7 @@ def _sequence_mask_helper(draw):
     max_val = draw(st.integers(min_value=1, max_value=100000))
     in_dtype, lens = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("integer"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=1,
             min_value=1,
             max_value=max_val,
