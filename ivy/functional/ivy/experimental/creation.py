@@ -850,5 +850,4 @@ def trilu(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend(x).trilu(x, k=k, upper=upper, out=out)      
-      
+    return current_backend(x).trilu(x, k=k, upper=upper, out=out)
