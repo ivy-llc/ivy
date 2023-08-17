@@ -433,8 +433,25 @@ class ndarray:
     def std(
         self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
     ):
+        if dtype is None and not ivy.is_float_dtype(self.ivy_array.dtype):
+            if (
+                ivy.is_complex_dtype(self.ivy_array.dtype)
+                and ivy.dtype_bits(self.ivy_array.dtype) == 64
+            ):
+                dtype = ivy.float32
+                x = self
+            else:
+                dtype = ivy.float64
+                x = (
+                    self.astype(dtype, copy=False)
+                    if not ivy.is_complex_dtype(self.ivy_array.dtype)
+                    else self.ivy_array
+                )
+        else:
+            x = self
+            dtype = self.dtype
         return np_frontend.std(
-            self,
+            x,
             axis=axis,
             dtype=dtype,
             out=out,
