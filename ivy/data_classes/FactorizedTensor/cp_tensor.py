@@ -220,7 +220,7 @@ class CPTensor(FactorizedTensor):
                 )
             shape.append(current_mode_size)
 
-        if weights is not None and ivy.shape(weights) != (rank,):
+        if weights is not None and len(weights) != rank:
             raise ValueError(
                 f"Given factors for a rank-{rank} CP tensor but"
                 f" len(weights)={ivy.shape(weights)}."
@@ -452,7 +452,7 @@ class CPTensor(FactorizedTensor):
             diff = diff * mask
 
         grad_fac = [
-            -ivy.unfolding_dot_khatri_rao(diff, cp_tensor, ii)
+            -ivy.CPTensor.unfolding_dot_khatri_rao(diff, cp_tensor, ii)
             for ii in range(len(factors))
         ]
 
@@ -583,7 +583,7 @@ class CPTensor(FactorizedTensor):
         ndarray
             vectorised tensor
         """
-        return ivy.tensor_to_vec(ivy.CPTensor.cp_to_tensor(cp_tensor))
+        return ivy.reshape(ivy.CPTensor.cp_to_tensor(cp_tensor), (-1))
 
     @staticmethod
     def cp_mode_dot(cp_tensor, matrix_or_vector, mode, keep_dim=False, copy=False):
@@ -679,7 +679,9 @@ class CPTensor(FactorizedTensor):
         _ = ivy.CPTensor.validate_cp_tensor(cp_tensor)
         weights, factors = cp_tensor
 
-        norm = ivy.ones((factors[0].shape[1], factors[0].shape[1]), dtype=factors.dtype)
+        norm = ivy.ones(
+            (factors[0].shape[1], factors[0].shape[1]), dtype=factors[0].dtype
+        )
         for f in factors:
             norm = norm * ivy.dot(ivy.permute_dims(f, (1, 0)), ivy.conj(f))
 
