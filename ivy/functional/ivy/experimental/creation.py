@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_device_shifting,
     handle_backend_invalid,
+    handle_array_function,
 )
 
 
@@ -689,6 +690,52 @@ def unsorted_segment_sum(
 
 @handle_exceptions
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
+def blackman_window(
+    size: int,
+    *,
+    periodic: bool = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Generate a Blackman window. The Blackman window is a taper formed by using the first
+    three terms of a summation of cosines. It was designed to have close to the minimal
+    leakage possible. It is close to optimal, only slightly worse than a Kaiser window.
+
+    Parameters
+    ----------
+    window_length
+        the window_length of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function.
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        The array containing the window.
+    Functional Examples
+    -------------------
+    >>> ivy.blackman_window(4, periodic = True)
+    ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
+    >>> ivy.blackman_window(7, periodic = False)
+    ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
+        6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
+    """
+    return ivy.current_backend().blackman_window(
+        size, periodic=periodic, dtype=dtype, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
 @infer_dtype
 def random_tucker(
     shape: Sequence[int],
@@ -755,3 +802,52 @@ def random_tucker(
         return ivy.TuckerTensor.tucker_to_tensor((core, factors))
     else:
         return ivy.TuckerTensor((core, factors))
+
+
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def trilu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the upper or lower triangular part of a matrix (or a stack of matrices) ``x``
+    .. note::
+        The upper triangular part of the matrix is defined as the elements
+        on and above the specified diagonal ``k``. The lower triangular part
+        of the matrix is defined as the elements on and below the specified
+        diagonal ``k``.
+    Parameters
+    ----------
+    x
+        input array having shape (..., M, N) and whose innermost two dimensions form MxN
+        matrices.    *,
+    k
+        diagonal below or above which to zero elements. If k = 0, the diagonal is the
+        main diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
+        diagonal is above the main diagonal. Default: ``0``.
+    upper
+        indicates whether upper or lower part of matrix is retained. Default: ``True``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    Returns
+    -------
+    ret
+        an array containing the upper or lower triangular part(s). The returned array
+        must have the same shape and data type as x. All elements below or above the
+        specified diagonal k must be zeroed. The returned array should be allocated on
+        the same device as x.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    return current_backend(x).trilu(x, k=k, upper=upper, out=out)
