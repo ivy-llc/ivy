@@ -607,8 +607,10 @@ class Tensor:
     def atanh(self, name=None):
         return ivy.atanh(self._ivy_array)
 
-    @with_unsupported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def std(self, axis=None, unbiased=True, keepdim=False, name=None):
         return paddle_frontend.Tensor(
-            ivy.std(self._ivy_array, axis=axis, keepdims=keepdim)
+            ivy.std(
+                self._ivy_array, axis=axis, correction=int(unbiased), keepdims=keepdim
+            )
         )
