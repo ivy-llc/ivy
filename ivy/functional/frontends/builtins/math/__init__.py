@@ -6,3 +6,5 @@ from . import special_functions
 from .special_functions import *
 from . import hyperbolic_functions
 from .hyperbolic_functions import *
+from . import trigonometric_functions
+from .trigonometric_functions import *
