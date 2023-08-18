@@ -157,6 +157,16 @@ class CPTensor(FactorizedTensor):
         """
         self.weights, self.factors = ivy.CPTensor.cp_normalize(self)
 
+    # Properties #
+    # ---------------#
+    @property
+    def n_param(self):
+        factors_params = self.rank * ivy.sum(self.shape)
+        if self.weights:
+            return factors_params + self.rank
+        else:
+            return factors_params
+
     # Class Methods #
     # ---------------#
     @staticmethod
