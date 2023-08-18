@@ -22,7 +22,6 @@ Inplace Updates
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
-.. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
 .. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 
 
@@ -452,7 +451,7 @@ When :code:`copy` is not specified explicitly, then an inplace update is perform
 Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
 If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
 If both are specified, then priority is given to the more general :code:`out` argument.
-As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html#function-wrapping>`_.
 
 
 Views
@@ -515,7 +514,7 @@ Here's a brief description of what happens during an inplace operation with a Py
 
 This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_ or in the `inplace updates forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_!
 
 
 **Video**

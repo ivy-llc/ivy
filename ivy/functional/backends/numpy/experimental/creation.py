@@ -158,3 +158,16 @@ def unsorted_segment_sum(
             res[i] = np.sum(data[mask_index], axis=0)
 
     return res
+
+
+def trilu(
+    x: np.ndarray,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if upper:
+        return np.triu(x, k)
+    return np.tril(x, k)
