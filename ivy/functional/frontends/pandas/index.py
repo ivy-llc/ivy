@@ -14,6 +14,9 @@ class Index:
     def __repr__(self):
         return f"Index {self.index_array.to_list()}"
 
+    def __len__(self):
+        return len(self.index_array)
+
     @property
     def ndim(self):
         return self.index_array.ndim
