@@ -54,7 +54,7 @@ def _get_seed(key):
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
 
 def remove_axis(shape, axis):
-    return shape[:axis] + shape[axis+1:]
+    return shape[:axis] + shape[axis + 1 :]
 
 
 @handle_jax_dtype
@@ -403,7 +403,7 @@ def categorical(key, logits, axis, shape=None):
     logits_arr = ivy.asarray(logits)
 
     if axis >= 0:
-        axis-=len(logits_arr.shape)
+        axis -= len(logits_arr.shape)
     batch_shape = tuple(remove_axis(logits_arr.shape, axis))
 
     if shape is None:
@@ -411,10 +411,12 @@ def categorical(key, logits, axis, shape=None):
     else:
         shape = tuple(shape)
         if shape != batch_shape:
-            raise ValueError(f"Shape {shape} is not compatible with reference shape {batch_shape}")
+            raise ValueError(
++                f"Shape {shape} is not compatible with reference shape {batch_shape}"
+                )
 
-    shape_prefix = shape[:len(shape)-len(batch_shape)]
-    logits_shape = list(shape[len(shape) - len(batch_shape):])
+    shape_prefix = shape[: len(shape) - len(batch_shape)]
+    logits_shape = list(shape[len(shape) - len(batch_shape) :])
     logits_shape.insert(axis % len(logits_arr.shape), logits_arr.shape[axis])
 
     gumbel_noise = gumbel(key, ivy.array(logits_shape), logits_arr.dtype)
