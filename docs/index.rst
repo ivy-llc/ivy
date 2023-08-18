@@ -1,6 +1,7 @@
 .. title:: Home
 
-.. include:: ../README.rst
+.. include:: ../README.md
+  :parser: myst_parser.sphinx_
 
 .. toctree::
   :hidden:
@@ -8,15 +9,29 @@
   :caption: Overview
 
   overview/get_started.rst
+  Examples <https://unify.ai/demos/>
+  overview/glossary.rst
+  overview/faq.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Users
+
   overview/background.rst
   overview/design.rst
   overview/related_work.rst
   overview/extensions.rst
-  overview/contributing.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Contributors
+
   overview/deep_dive.rst
-  Examples <https://unify.ai/demos/>
-  overview/faq.rst
-  overview/glossary.rst
+  overview/contributing.rst
 
 
 .. toctree::

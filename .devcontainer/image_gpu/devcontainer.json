@@ -6,7 +6,10 @@
 		"vscode": {
 			"extensions": [
 				"ms-python.vscode-pylance"
-			]
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/opt/miniconda/envs/multienv/bin/python3"
+			}
 		}
 	},
 

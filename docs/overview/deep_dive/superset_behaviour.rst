@@ -4,7 +4,6 @@ Superset Behaviour
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
-.. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
 .. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
 .. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 
@@ -38,7 +37,7 @@ It would be easy to assume that implementing the superset simply means adding al
 However, this is **not** the case for a few reasons.
 Firstly, different functions might have different argument names for the same behaviour.
 Looking at the functions `numpy.concatenate <https://numpy.org/doc/stable/reference/generated/numpy.concatenate.html>`_ and `torch.cat <https://pytorch.org/docs/stable/generated/torch.cat.html>`_, we of course do not want to add both of the arguments :code:`axis` and :code:`dim` to :func:`ivy.concat`, as these both represent exactly the same thing: the dimemsion/axis along which to concatenate.
-In this case, the argument is `covered <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_ in the `Array API Standard`_ and so we opt for :code:`axis`.
+In this case, the argument is `covered <https://data-apis.org/array-api/latest/API_specification/generated/array_api.concat.html#array_api.concat>`_ in the `Array API Standard`_ and so we opt for :code:`axis`.
 In cases where there are differences between the backend argument names, and the function or argument is not in the standard, then it is up to us to determine which argument name to use.
 
 What is not the Superset?
@@ -74,7 +73,7 @@ We explore this through the examples of :func:`softplus`.
 
 **ivy.softplus**
 
-When looking at the :func:`softplus` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/functional/ivy/activations/softplus/softplus_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.nn.softplus.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/softplus>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.nn.functional.softplus.html>`_, we can see that torch is the only framework which supports the inclusion of the :code:`beta` and :code:`threshold` arguments, which are added for improved numerical stability.
+When looking at the :func:`softplus` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/docs/functional/ivy/activations/ivy.functional.ivy.activations.softplus.html#softplus>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.nn.softplus.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/softplus>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.nn.functional.softplus.html>`_, we can see that torch is the only framework which supports the inclusion of the :code:`beta` and :code:`threshold` arguments, which are added for improved numerical stability.
 We can also see that numpy does not support a :func:`softplus` function at all.
 Ivy should also support the :code:`beta` and :code:`threshold` arguments, in order to provide the generalized superset implementation among the backend frameworks.
 
@@ -144,25 +143,25 @@ The first three examples are more-or-less superset examples, while the last exam
 
 **ivy.linspace**
 
-When looking at the :func:`linspace` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/functional/ivy/creation/linspace/linspace_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.linspace.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/linspace>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.linspace.html>`_, we can see that torch does not support arrays for the :code:`start` and :code:`end` arguments, while JAX, numpy and tensorflow all do.
+When looking at the :func:`linspace` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/docs/functional/ivy/creation/ivy.functional.ivy.creation.linspace.html#linspace>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.linspace.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/linspace>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.linspace.html>`_, we can see that torch does not support arrays for the :code:`start` and :code:`end` arguments, while JAX, numpy and tensorflow all do.
 Likewise, Ivy also supports arrays for the :code:`start` and :code:`stop` arguments, and in doing so provides the generalized superset implementation among the backend frameworks.
 
 
 **ivy.eye**
 
-When looking at the :func:`eye` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/functional/ivy/creation/eye/eye_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html>`_, `NumPy <https://numpy.org/devdocs/reference/generated/numpy.eye.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/eye>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.eye.html>`_, we can see that tensorflow is the only framework which supports a :code:`batch_shape` argument.
+When looking at the :func:`eye` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/docs/functional/ivy/creation/ivy.functional.ivy.creation.eye.html#eye>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html>`_, `NumPy <https://numpy.org/devdocs/reference/generated/numpy.eye.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/eye>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.eye.html>`_, we can see that tensorflow is the only framework which supports a :code:`batch_shape` argument.
 Likewise, Ivy also supports a :code:`batch_shape` argument, and in doing so provides the generalized superset implementation among the backend frameworks.
 
 
 **ivy.scatter_nd**
 
-When looking at the :func:`scatter_nd` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/functional/ivy/general/scatter_nd/scatter_nd_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/scatter_nd>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.scatter.html>`_, we can see that torch only supports scattering along a single dimension, while all other frameworks support scattering across multiple dimensions at once.
+When looking at the :func:`scatter_nd` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/docs/functional/ivy/general/ivy.functional.ivy.general.scatter_nd.html#scatter-nd>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/scatter_nd>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.scatter.html>`_, we can see that torch only supports scattering along a single dimension, while all other frameworks support scattering across multiple dimensions at once.
 Likewise, Ivy also supports scattering across multiple dimensions at once, and in doing so provides the generalized superset implementation among the backend frameworks.
 
 
 **ivy.logical_and**
 
-When looking at the :func:`logical_and` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/functional/ivy/elementwise/logical_and/logical_and_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.logical_and.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/logical_and>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.logical_and.html>`_, we can see that numpy and torch support the :code:`out` argument for performing inplace updates, while JAX and tensorflow do not.
+When looking at the :func:`logical_and` (or closest equivalent) implementations for `Ivy <https://unify.ai/docs/ivy/docs/functional/ivy/elementwise/ivy.functional.ivy.elementwise.logical_and.html#logical-and>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.logical_and.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/logical_and>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.logical_and.html>`_, we can see that numpy and torch support the :code:`out` argument for performing inplace updates, while JAX and tensorflow do not.
 With regards to the supported data types, JAX, numpy and torch support numeric arrays, while tensorflow supports only boolean arrays.
 With regards to both of these points, Ivy provides the generalized superset implementation among the backend frameworks, with support for the :code:`out` argument and also support for both numeric and boolean arrays in the input.
 
@@ -267,7 +266,7 @@ This should have hopefully given you a good feel what should and should not be i
 In many cases, there is not a clear right and wrong answer, and we arrive at the final decision via open discussion.
 If you find yourself proposing the addition of a new function in Ivy, then we will most likely have this discussion on your Pull Request!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior channel`_ or in the `superset behavior forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior channel`_!
 
 
 **Video**

@@ -170,6 +170,26 @@ def tril(m, k=0):
 
 
 @to_ivy_arrays_and_back
+def trim_zeros(flit, trim="fb"):
+    start_index = 0
+    end_index = ivy.shape(flit)[0]
+    trim = trim.lower()
+    if "f" in trim:
+        for item in flit:
+            if item == 0:
+                start_index += 1
+            else:
+                break
+    if "b" in trim:
+        for item in flit[::-1]:
+            if item == 0:
+                end_index -= 1
+            else:
+                break
+    return flit[start_index:end_index]
+
+
+@to_ivy_arrays_and_back
 def block(arr):
     # TODO: reimplement block
     raise ivy.utils.exceptions.IvyNotImplementedError()
@@ -268,6 +288,16 @@ def row_stack(tup):
             xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
         return ivy.concat(xs, axis=0)
     return ivy.concat(tup, axis=0)
+
+
+@to_ivy_arrays_and_back
+def column_stack(tup):
+    if len(ivy.shape(tup[0])) == 1:
+        ys = []
+        for t in tup:
+            ys += [ivy.reshape(t, (ivy.shape(t)[0], 1))]
+        return ivy.concat(ys, axis=1)
+    return ivy.concat(tup, axis=1)
 
 
 @to_ivy_arrays_and_back

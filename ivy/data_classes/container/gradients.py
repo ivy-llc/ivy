@@ -12,11 +12,11 @@ class _ContainerWithGradients(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        preserve_type: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        preserve_type: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -90,11 +90,11 @@ class _ContainerWithGradients(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        preserve_type: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        preserve_type: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -167,12 +167,12 @@ class _ContainerWithGradients(ContainerBase):
         self: ivy.Container,
         mw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         vw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        step: Union[int, float],
+        step: Union[int, float, ivy.Container],
         /,
         *,
-        beta1: float = 0.9,
-        beta2: float = 0.999,
-        epsilon: float = 1e-7,
+        beta1: Union[float, ivy.Container] = 0.9,
+        beta2: Union[float, ivy.Container] = 0.999,
+        epsilon: Union[float, ivy.Container] = 1e-7,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -268,7 +268,7 @@ class _ContainerWithGradients(ContainerBase):
         lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        stop_gradients: bool = True,
+        stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -348,7 +348,7 @@ class _ContainerWithGradients(ContainerBase):
         lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        stop_gradients: bool = True,
+        stop_gradients: Union[bool, ivy.Container] = True,
         out: ivy.Container = None,
     ) -> ivy.Container:
         """
@@ -431,8 +431,8 @@ class _ContainerWithGradients(ContainerBase):
         lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        decay_lambda: float = 0,
-        stop_gradients: bool = True,
+        decay_lambda: Union[float, ivy.Container] = 0,
+        stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ):
         """
@@ -478,13 +478,13 @@ class _ContainerWithGradients(ContainerBase):
         lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         mw_tm1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         vw_tm1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        step: int,
+        step: Union[int, ivy.Container],
         /,
         *,
-        beta1: float = 0.9,
-        beta2: float = 0.999,
-        epsilon: float = 1e-7,
-        stop_gradients: bool = True,
+        beta1: Union[float, ivy.Container] = 0.9,
+        beta2: Union[float, ivy.Container] = 0.999,
+        epsilon: Union[float, ivy.Container] = 1e-7,
+        stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -597,15 +597,15 @@ class _ContainerWithGradients(ContainerBase):
         lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
         mw_tm1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         vw_tm1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        step: int,
+        step: Union[int, ivy.Container],
         /,
         *,
-        beta1: float = 0.9,
-        beta2: float = 0.999,
-        epsilon: float = 1e-7,
-        max_trust_ratio: Union[int, float] = 10,
-        decay_lambda: float = 0,
-        stop_gradients: bool = True,
+        beta1: Union[float, ivy.Container] = 0.9,
+        beta2: Union[float, ivy.Container] = 0.999,
+        epsilon: Union[float, ivy.Container] = 1e-7,
+        max_trust_ratio: Union[int, float, ivy.Container] = 10,
+        decay_lambda: Union[float, ivy.Container] = 0,
+        stop_gradients: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

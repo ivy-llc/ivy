@@ -74,12 +74,13 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     (
         xs,
+        xs_grad_idxs,
         xs_required,
         required_duplicate_index_chains,
         duplicate_index_chains,
@@ -88,7 +89,7 @@ def execute_with_gradients(
     func_ret = func(xs)
 
     # Getting the relevant outputs from the function return for gradient calculation
-    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
+    ret_grad_idxs, y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
@@ -144,10 +145,15 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
+    grad_fn = lambda x_in: ivy.to_native(
+        func(ivy.to_ivy(x_in, nested=True)),
+        nested=True,
+        include_derived=True,
+    )
     callback_fn = lambda x_in: ivy.to_ivy(
         jax.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
         nested=True,
+        include_derived=True,
     )
     return callback_fn
 

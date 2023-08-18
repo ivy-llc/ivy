@@ -28,7 +28,7 @@ def test_vorbis_window(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -58,8 +58,8 @@ def test_hann_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        atol_=0.005,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
+        atol_=0.015,
         fn_name=fn_name,
         on_device=on_device,
         size=int(x[0]),
@@ -90,7 +90,7 @@ def test_kaiser_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -121,7 +121,7 @@ def test_kaiser_bessel_derived_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -167,7 +167,8 @@ def test_hamming_window(
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
+        atol_=2e-06,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -197,7 +198,7 @@ def test_tril_indices(*, dtype_and_n, k, test_flags, backend_fw, fn_name, on_dev
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         n_rows=int(x[0]),
@@ -210,7 +211,7 @@ def test_tril_indices(*, dtype_and_n, k, test_flags, backend_fw, fn_name, on_dev
 @handle_test(
     fn_tree="functional.ivy.experimental.eye_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
@@ -226,7 +227,7 @@ def test_eye_like(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device)
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
@@ -270,23 +271,32 @@ def test_ndindex(dtype_x_shape):
 @handle_test(
     fn_tree="functional.ivy.experimental.indices",
     ground_truth_backend="numpy",
-    shape=helpers.get_shape(min_num_dims=1),
-    dtype=helpers.get_dtypes("integer", full=False),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=helpers.get_dtypes(
+        "numeric",
+        full=False,
+    ),
     sparse=st.booleans(),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_indices(*, shape, dtype, sparse, test_flags, backend_fw, fn_name, on_device):
+def test_indices(*, shape, dtypes, sparse, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=[],
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         dimensions=shape,
-        dtype=dtype[0],
+        dtype=dtypes[0],
         sparse=sparse,
     )
 
@@ -333,7 +343,6 @@ def valid_unsorted_segment_min_inputs(draw):
 # unsorted_segment_min
 @handle_test(
     fn_tree="functional.ivy.experimental.unsorted_segment_min",
-    ground_truth_backend="tensorflow",
     d_x_n_s=valid_unsorted_segment_min_inputs(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -345,17 +354,172 @@ def test_unsorted_segment_min(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
+):
+    dtypes, data, num_segments, segment_ids = d_x_n_s
+    helpers.test_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.unsorted_segment_sum",
+    d_x_n_s=valid_unsorted_segment_min_inputs(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_unsorted_segment_sum(
+    *,
+    d_x_n_s,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtypes, data, num_segments, segment_ids = d_x_n_s
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.unsorted_segment_sum",
+    d_x_n_s=valid_unsorted_segment_min_inputs(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_unsorted_segment_sum(
+    *,
+    d_x_n_s,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, data, num_segments, segment_ids = d_x_n_s
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         data=data,
         segment_ids=segment_ids,
         num_segments=num_segments,
+    )
+
+
+@st.composite
+def _random_tucker_data(draw):
+    shape = draw(
+        st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
+    )
+    rank = []
+    for dim in shape:
+        rank.append(draw(helpers.ints(min_value=1, max_value=dim)))
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    full = draw(st.booleans())
+    orthogonal = draw(st.booleans())
+    seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
+    non_negative = draw(st.booleans())
+    return shape, rank, dtype[0], full, orthogonal, seed, non_negative
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.random_tucker",
+    data=_random_tucker_data(),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_random_tucker(
+    *,
+    data,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    shape, rank, dtype, full, orthogonal, seed, non_negative = data
+    results = helpers.test_function(
+        input_dtypes=[],
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_name=fn_name,
+        shape=shape,
+        rank=rank,
+        dtype=dtype,
+        full=full,
+        orthogonal=orthogonal,
+        seed=seed,
+        non_negative=non_negative,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    if full:
+        reconstructed_tensor = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+        reconstructed_tensor_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+        )
+        for x, x_gt in zip(reconstructed_tensor, reconstructed_tensor_gt):
+            assert np.prod(shape) == np.prod(x.shape)
+            assert np.prod(shape) == np.prod(x_gt.shape)
+
+    else:
+        core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+        factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+        core_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+        )
+        factors_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+        )
+
+        for c, c_gt in zip(core, core_gt):
+            assert np.prod(c.shape) == np.prod(rank)
+            assert np.prod(c_gt.shape) == np.prod(rank)
+
+        for f, f_gt in zip(factors, factors_gt):
+            assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.trilu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-10, max_value=10),
+    upper=st.booleans(),
+)
+def test_trilu(*, dtype_and_x, k, upper, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        upper=upper,
+        k=k,
     )

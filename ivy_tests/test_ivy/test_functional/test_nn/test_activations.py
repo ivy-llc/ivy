@@ -22,7 +22,7 @@ def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -34,7 +34,9 @@ def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        available_dtypes=helpers.get_dtypes(
+            "float_and_complex", full=False, key="leaky_relu"
+        ),
         large_abs_safety_factor=16,
         small_abs_safety_factor=16,
         safety_factor_scale="log",
@@ -45,7 +47,7 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -60,18 +62,22 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
 @handle_test(
     fn_tree="functional.ivy.gelu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=1,
+        small_abs_safety_factor=1,
+        safety_factor_scale="linear",
+        min_value=-1e4,
+        max_value=1e4,
     ),
     approximate=st.booleans(),
 )
 def test_gelu(*, dtype_and_x, approximate, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
+    if "complex" in str(x[0].dtype):
+        approximate = True
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -96,7 +102,7 @@ def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -125,7 +131,7 @@ def test_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_devic
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -157,7 +163,7 @@ def test_softplus(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -185,7 +191,7 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -210,7 +216,7 @@ def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -237,13 +243,11 @@ def test_hardswish(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

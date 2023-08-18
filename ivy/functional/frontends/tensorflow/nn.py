@@ -225,7 +225,7 @@ def silu(features, beta: float = 1.0):
 
 @with_unsupported_dtypes(
     {
-        "2.13.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -248,7 +248,7 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.13.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -551,7 +551,7 @@ def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
 # log_poisson_loss
 @to_ivy_arrays_and_back
 def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
-    return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss=compute_full_loss)
 
 
 # ctc_unique_labels
