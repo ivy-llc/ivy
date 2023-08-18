@@ -64,6 +64,30 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
     )
+@to_ivy_arrays_and_back
+def grid_sample(x, grid, mode='bilinear', padding_mode='zeros', align_corners=True, name=None):
+    _modes = ['bilinear', 'nearest']
+    _padding_modes = ['zeros', 'reflection', 'border']
+    if mode not in _modes:
+        raise ValueError(
+            "The mode of grid sample function should be in {}, but got: {}".format(
+                _modes, mode
+            )
+        )
+    if padding_mode not in _padding_modes:
+        raise ValueError(
+            "The padding mode of grid sample function should be in {}, but got: {}".format(
+                _padding_modes, padding_mode
+            )
+        )
+
+    if not isinstance(align_corners, bool):
+        raise ValueError(
+            "The align corners should be bool, but got: {}".format(
+                align_corners
+            )
+        )
+    return
 
 
 @to_ivy_arrays_and_back
