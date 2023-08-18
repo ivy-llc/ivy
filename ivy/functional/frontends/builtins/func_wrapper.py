@@ -64,9 +64,15 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays(*args, **kwargs):
+        # update config for jax backend
+        if ivy.current_backend_str() == "jax":
+            import jax
+
+            jax.config.update("jax_enable_x64", True)
+
         ret, frontend_array = fn(*args, **kwargs)
 
-        if isinstance(ret, ivy.Array) or ivy.is_native_array(ret):
+        if isinstance(ret, (ivy.Array, ivy.NativeArray)):
             return frontend_array(ret)
         return ret
 
