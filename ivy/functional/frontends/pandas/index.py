@@ -14,6 +14,14 @@ class Index:
     def __repr__(self):
         return f"Index {self.index_array.to_list()}"
 
+    @property
+    def ndim(self):
+        return self.index_array.ndim
+
+    @property
+    def size(self):
+        return self.index_array.size
+
     def unique(self, level=None):
         # todo handle level with mutliindexer
         self.index_array = ivy.unique_values(self)
@@ -37,6 +45,11 @@ class Index:
         return Series(index, index=index, name=name)
 
     def min(self, axis=None, skipna=True, *args, **kwargs):
-        if skipna:
-            return ivy.nanmin(self.index_array)
         return self.index_array.min()
+
+    def max(self, axis=None, skipna=True, *args, **kwargs):
+        return self.index_array.max()
+
+    def isin(self, values, level=None):
+        # todo handle level with mutliindexer
+        return ivy.isin(self.index_array, values)
