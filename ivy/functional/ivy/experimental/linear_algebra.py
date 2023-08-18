@@ -1666,3 +1666,52 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a, b, out=out)
+
+
+#returns machine epsilon for a dtype: https://en.wikipedia.org/wiki/Machine_epsilon (source)
+def _eps(dtype:float):
+    match dtype:
+        case "float16":
+            return 9.77e-04
+        case "float32":
+            return 1.19e-07
+        case "float64":
+            return 2.22e-16
+    return 0
+
+#von_entropy
+@handle_nestable
+@to_native_arrays_and_back
+@handle_exceptions
+def vonneumann_entropy(
+    tensor: Union[ivy.Array, ivy.NativeArray],
+    ):
+    """Returns the von Neumann entropy of a density matrix (2-mode, square) tensor (matrix).
+
+    Parameters
+    ----------
+    tensor : Non-decomposed tensor with indices whose shapes are all a factor of two (represent one or more qubits)
+
+    Returns
+    -------
+    von_neumann_entropy : order-0 tensor
+
+    Notes
+    -----
+    The von Neumann entropy is :math:`- \\sum_i p_i ln(p_i)`,
+    where p_i are the probabilities that each state is occupied
+    (the eigenvalues of the density matrix).
+    """
+
+    square_dim = int(ivy.sqrt(ivy.prod(tensor.shape)))
+    tensor = ivy.reshape(tensor, (square_dim, square_dim))
+    try:
+        eig_vals = ivy.eigh(tensor)[0]
+    except:
+        # All density matrices are Hermitian, here real. Hermitianize matrix if rounding/transformation
+        # errors have occured.
+        tensor = (tensor + ivy.matrix_transpose(tensor)) / 2
+        eig_vals = ivy.eigh(tensor)[0]
+    eps = _eps(eig_vals.dtype)
+    eig_vals = eig_vals[eig_vals > eps]
+    return -ivy.sum(ivy.log2(eig_vals) * eig_vals)
