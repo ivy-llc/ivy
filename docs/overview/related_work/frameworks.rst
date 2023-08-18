@@ -49,8 +49,6 @@ Frameworks
 .. _`Dex language`: https://github.com/google-research/dex-lang
 .. _`Haskell`: https://www.haskell.org/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 .. |matlab| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/matlab.png
     :height: 20pt
@@ -271,7 +269,3 @@ They propose an explicit nested indexing style that mirrors application of funct
 The goal of the project is to explore: type systems for array programming, mathematical program transformations like differentiation and integration, user-directed compilation to parallel hardware, and interactive and incremental numerical programming and visualization.
 It is quite early and still in an experimental phase, but this framework would provide hugely significant fundamental improvements over all existing frameworks if it reaches a mature stage of development.
 The language is built on top of `Haskell`_.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!

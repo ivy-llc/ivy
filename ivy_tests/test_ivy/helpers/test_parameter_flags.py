@@ -1,7 +1,7 @@
 import abc
 from hypothesis import strategies as st
 from . import globals as test_globals
-from .pipeline_helper import update_backend
+from .pipeline_helper import BackendHandler
 
 
 @st.composite
@@ -104,7 +104,7 @@ class FunctionTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -187,7 +187,7 @@ class FrontendFunctionTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -253,7 +253,7 @@ class InitMethodTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -312,7 +312,7 @@ class MethodTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -374,7 +374,7 @@ class FrontendMethodTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with update_backend(backend) as backend:
+        with BackendHandler.update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
