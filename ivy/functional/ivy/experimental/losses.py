@@ -150,4 +150,4 @@ def l1_loss(
     elif reduction == "mean":
         return ivy.mean(loss, out=out)
     else:
-        return loss
+        return ivy.inplace_update(out, loss) if out is not None else loss
