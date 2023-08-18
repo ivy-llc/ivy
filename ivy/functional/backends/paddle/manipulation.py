@@ -235,7 +235,9 @@ def stack(
     if not all(arr.shape == first_shape for arr in arrays):
         raise Exception("Shapes of all inputs must match")
     if 0 in first_shape:
-        return ivy.empty(first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype)
+        return ivy.empty(
+            first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype
+        )
 
     if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.bool]:
         arrays = list(map(lambda x: x.cast("float32"), arrays))
