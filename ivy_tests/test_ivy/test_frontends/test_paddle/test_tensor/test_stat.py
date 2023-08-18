@@ -199,27 +199,28 @@ def test_paddle_nanmedian(
 @handle_frontend_test(
     fn_tree="paddle.std",
     dtype_and_x=_statistical_dtype_values(function="std"),
-    keepdims=st.booleans(),
+    unbiased=st.booleans(),
+    keepdim=st.booleans(),
 )
 def test_paddle_std(
     *,
+    unbiased,
     dtype_and_x,
-    keepdims,
-    on_device,
+    keepdim,
     fn_tree,
     frontend,
-    test_flags,
     backend_fw,
+    test_flags,
 ):
-    input_dtype, x, axis, correction = dtype_and_x
+    input_dtype, x, axis, _ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         x=x[0],
         axis=axis,
-        keepdim=keepdims,
+        unbiased=unbiased,
+        keepdim=keepdim,
     )
