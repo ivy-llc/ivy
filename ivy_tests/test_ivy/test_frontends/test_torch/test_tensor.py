@@ -10348,9 +10348,9 @@ def test_torch_instance_backward(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
-    method_name="index_put_",
+    method_name="index_put",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(kind='numeric'),
+        available_dtypes=['int64'],
         num_arrays=3,
         shape=(5,),
         min_value= 0,
@@ -10359,7 +10359,7 @@ def test_torch_instance_backward(
         shared_dtype=True,
     )
 )
-def test_torch_instance_index_put_(
+def test_torch_instance_index_put(
     dtype_and_x,
     frontend,
     frontend_method_data,

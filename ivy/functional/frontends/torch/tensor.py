@@ -1571,7 +1571,7 @@ class Tensor:
                 next_function(_grad_list[idx])
 
     @with_supported_dtypes({"2.0.1 and below": ("int32", "int64")}, "torch")
-    def index_put_(self, indices, values, accumulate=False):
+    def index_put(self, indices, values, accumulate=False):
         num_indices = None
         for index in indices:
             if num_indices == None:
@@ -1581,7 +1581,7 @@ class Tensor:
                     raise ValueError(f"All index Tensors must have same size,but found {num_indices} and {len(index)}")
         if len(values) != num_indices:
             raise ValueError(f"Number of values {len(values)} does not match the number of indices {num_indices}")
-        self._ivy_array = torch_frontend.index_put(indices, values, self, accumulate)
+        self._ivy_array = torch_frontend.index_put(input=self, indices=indices, values=values, accumulate=accumulate)
         return self.ivy_array
 
 
