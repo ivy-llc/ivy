@@ -29,3 +29,23 @@ def log2(x):
 @from_zero_dim_arrays_to_scalar
 def exp(x):
     return ivy.exp(x)
+
+
+@from_zero_dim_arrays_to_scalar
+def exp2(x):
+    return ivy.exp2(x)
+
+
+@from_zero_dim_arrays_to_scalar
+def expm1(x):
+    return ivy.expm1(x)
+
+
+@from_zero_dim_arrays_to_scalar
+def log1p(x):
+    return ivy.log1p(x)
+
+
+@from_zero_dim_arrays_to_scalar
+def log10(x):
+    return ivy.log10(x)
