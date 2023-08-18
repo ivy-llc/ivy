@@ -116,7 +116,7 @@ def astype(
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
-        return x.clone() if copy else x
+        return paddle_backend.copy_array(x).data if copy else x
     return x.cast(dtype)
 
 

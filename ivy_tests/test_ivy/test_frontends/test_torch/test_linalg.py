@@ -621,7 +621,7 @@ def test_torch_vecdot(
     fn_tree="torch.linalg.matrix_rank",
     dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
 )
-def test_matrix_rank(
+def test_torch_matrix_rank(
     dtype_x_hermitian_atol_rtol,
     on_device,
     fn_tree,

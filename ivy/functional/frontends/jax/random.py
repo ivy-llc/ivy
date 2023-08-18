@@ -29,6 +29,26 @@ def normal(key, shape=(), dtype=None):
     return ivy.random_normal(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def orthogonal(key, n, shape=(), dtype=None):
+    flat_shape = (n, n)
+    if shape:
+        flat_shape = shape + flat_shape
+
+    # Generate a random matrix with the given shape and dtype
+    random_matrix = ivy.random_uniform(key, shape=flat_shape, dtype=dtype)
+
+    # Compute the QR decomposition of the random matrix
+    q, _ = ivy.linalg.qr(random_matrix)
+
+    # Reshape the resulting orthogonal matrix to the desired shape
+    if shape:
+        q = ivy.reshape(q, shape + (n, n))
+
+    return q
+
+
 def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
@@ -38,7 +58,7 @@ def _get_seed(key):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -54,7 +74,7 @@ def beta(key, a, b, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -78,7 +98,7 @@ def cauchy(key, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def poisson(key, lam, shape=None, dtype=None):
@@ -90,7 +110,7 @@ def poisson(key, lam, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -106,7 +126,7 @@ def gamma(key, a, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -128,7 +148,7 @@ def gumbel(key, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def rademacher(key, shape, dtype="int64"):
@@ -142,7 +162,7 @@ def rademacher(key, shape, dtype="int64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -168,7 +188,7 @@ def t(key, df, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def randint(key, shape, minval, maxval, dtype="int64"):
@@ -210,7 +230,7 @@ def permutation(key, x, axis=0, independent=False):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -233,7 +253,7 @@ def shuffle(key, x, axis=0):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -251,7 +271,7 @@ def exponential(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -270,7 +290,7 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -312,7 +332,7 @@ def maxwell(key, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float32",
             "float64",
         )
@@ -332,3 +352,32 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
     exp = -ivy.log(1 - uniform)
 
     return gn / (((ivy.abs(gn) ** p).sum(axis=-1) + exp) ** (1 / p))[..., None]
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):
+    if shape is None:
+        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
+    if method == "cholesky":
+        cov_factor = ivy.cholesky(cov)
+    elif method == "eigh":
+        (w, v) = ivy.eigh(cov)
+        cov_factor = v * ivy.sqrt(w[..., None, :])
+    elif method == "svd":
+        (u, s, _) = ivy.svd(cov)
+        cov_factor = u * ivy.sqrt(s[..., None, :])
+
+    rand_normal = normal(key=key, shape=shape + mean.shape[-1:], dtype=dtype)
+    result = mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal.ivy_array)
+
+    return result

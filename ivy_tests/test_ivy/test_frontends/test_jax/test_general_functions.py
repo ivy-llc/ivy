@@ -1,7 +1,7 @@
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ivy.functional.frontends.jax import vmap
 from hypothesis import strategies as st
 import jax
@@ -34,7 +34,7 @@ def _fn3(x, y):
     ),
     in_axes_as_cont=st.booleans(),
 )
-def test_vmap(
+def test_jax_vmap(
     func,
     dtype_and_arrays_and_axes,
     in_axes_as_cont,
@@ -111,7 +111,7 @@ def test_jax_device_put(
     backend_fw,
     on_device,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype, x = dtype_and_x
         dtype = dtype[0]
         x = x[0]
@@ -146,7 +146,7 @@ def test_jax_device_get(
     backend_fw,
     on_device,
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype, x = dtype_and_x
         dtype = dtype[0]
         x = x[0]

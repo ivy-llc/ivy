@@ -134,8 +134,8 @@ def test_jax_argsort(
 #         fn_tree=fn_tree,
 #         a=x[0],
 #     )
-# TODO : deprecated since jax 0.4.1. Uncomment with multiversion testing pipeline
-# enabled.
+# TODO : deprecated since jax 0.4.1. \
+#           Uncomment with multiversion testing pipeline enabled.
 
 
 # nonzero
@@ -394,7 +394,7 @@ def _searchsorted(draw):
     dtype_x_v_side_sorter=_searchsorted(),
     test_with_out=st.just(False),
 )
-def test_numpy_searchsorted(
+def test_jax_searchsorted(
     dtype_x_v_side_sorter,
     frontend,
     backend_fw,

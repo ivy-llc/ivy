@@ -1014,8 +1014,9 @@ def test_jax_nanmedian(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    # TODO: overwrite as a boolean when there's a way around jax.numpy.nanquantile does
-    # not support overwrite_input=True.
+    # TODO: overwrite as a boolean when \
+    #           there's a way around jax.numpy.nanquantile does not
+    #  support overwrite_input=True.
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1183,4 +1184,82 @@ def test_jax_cov(
         ddof=ddof,
         fweights=fweights,
         aweights=aweights,
+    )
+
+
+@st.composite
+def _get_array_axes_probs(draw):
+    array_dtypes = draw(helpers.get_dtypes(kind="float"))
+    array_dtype, array, axes = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=array_dtypes,
+            small_abs_safety_factor=5,
+            large_abs_safety_factor=5,
+            min_num_dims=1,
+            max_num_dims=5,
+            max_dim_size=7,
+            max_axes_size=5,
+            valid_axis=True,
+            force_int_axis=True,
+            min_value=1,
+            max_value=300,
+        )
+    )
+    q = np.round(
+        np.array(
+            draw(
+                helpers.lists(
+                    x=helpers.floats(
+                        min_value=0,
+                        max_value=1,
+                        small_abs_safety_factor=50,
+                        large_abs_safety_factor=50,
+                        safety_factor_scale="log",
+                        abs_smallest_val=1e-1,
+                        mixed_fn_compos=False,
+                    ),
+                    min_size=1,
+                    max_size=10,
+                )
+            )
+        ),
+        decimals=3,
+    )
+
+    return array_dtype, array, axes, q
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.quantile",
+    dtype_array_axes_q=_get_array_axes_probs(),
+    overwrite_input=st.just(False),
+    keepdims=st.booleans(),
+    method=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
+)
+def test_jax_quantile(
+    *,
+    dtype_array_axes_q,
+    overwrite_input,
+    keepdims,
+    method,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, array, axes, q = dtype_array_axes_q
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=array[0],
+        q=q,
+        axis=axes,
+        overwrite_input=overwrite_input,
+        method=method,
+        keepdims=keepdims,
     )

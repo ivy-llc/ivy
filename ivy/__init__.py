@@ -75,6 +75,10 @@ class Array:
     pass
 
 
+class TuckerTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -181,6 +185,10 @@ class Dtype(str):
     @property
     def as_native_dtype(self):
         return as_native_dtype(self)
+
+    @property
+    def name(self) -> str:
+        return str(self)
 
     @property
     def info(self):
@@ -746,6 +754,7 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
+from .data_classes.FactorizedTensor import TuckerTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -958,8 +967,8 @@ def del_global_attr(attr_name):
     delattr(globals_vars, attr_name)
 
 
-backend = "none"
-backend_version = "none"
+backend = ""
+backend_version = {}
 
 native_inplace_support = None
 
@@ -1412,6 +1421,12 @@ GLOBAL_PROPS = [
     "dynamic_backend",
     "precise_mode",
     "soft_device_mode",
+    "logging_mode",
+    "default_dtype",
+    "default_float_dtype",
+    "default_int_dtype",
+    "default_complex_dtype",
+    "default_uint_dtype",
 ]
 
 
@@ -1429,6 +1444,39 @@ INTERNAL_FILENAMES = [
 
 def _is_from_internal(filename):
     return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
+
+
+class LoggingMode:
+    logging_modes = ["DEBUG", "INFO", "WARNING", "ERROR"]
+    logging_mode_stack = []
+
+    def __init__(self):
+        # Set up the initial logging mode
+        logging.basicConfig(level=logging.WARNING)
+        self.logging_mode_stack.append(logging.WARNING)
+
+    def set_logging_mode(self, mode):
+        """
+        Set the current logging mode for Ivy.
+
+        Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
+        """
+        assert (
+            mode in self.logging_modes
+        ), "Invalid logging mode. Choose from: " + ", ".join(self.logging_modes)
+
+        # Update the logging level
+        logging.getLogger().setLevel(mode)
+        self.logging_mode_stack.append(mode)
+
+    def unset_logging_mode(self):
+        """Remove the most recently set logging mode, returning to the previous one."""
+        if len(self.logging_mode_stack) > 1:
+            # Remove the current mode
+            self.logging_mode_stack.pop()
+
+            # Set the previous mode
+            logging.getLogger().setLevel(self.logging_mode_stack[-1])
 
 
 class IvyWithGlobalProps(sys.modules[__name__].__class__):
