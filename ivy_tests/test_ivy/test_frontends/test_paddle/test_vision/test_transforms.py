@@ -87,6 +87,7 @@ def test_paddle_vflip(
     test_flags,
     backend_fw,
 ):
+
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -119,7 +120,26 @@ def test_paddle_crop(
     left,
     height,
     width,
-=======
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        img=x[0],
+        top=top,
+        left=left,
+        height=height,
+        width=width,
+        backend_to_test=backend_fw,
+
 
 # hflip
 @handle_frontend_test(
