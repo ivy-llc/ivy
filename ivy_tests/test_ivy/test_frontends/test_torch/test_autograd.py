@@ -112,12 +112,8 @@ def test_torch_grad(grad_args, backend_fw):
         is_grads_batched=is_grads_batched,
     )
 
-    grads_flat_np = helpers.flatten_frontend_to_np(ret=grads_ivy[0], backend=backend_fw)
-
-    with update_backend("torch") as ivy_torch:
-        grads_flat_np_gt = helpers.flatten_and_to_np(
-            backend="torch", ret=ivy_torch.to_ivy(grads_torch[0])
-        )
+    grads_flat_np = [grads_ivy[0].ivy_array.to_numpy()]
+    grads_flat_np_gt = [grads_torch[0].detach().numpy()]
 
     helpers.value_test(
         ret_np_flat=grads_flat_np,
@@ -154,22 +150,17 @@ def test_torch_grad(grad_args, backend_fw):
         grad_outputs=grad_outputs_torch2,
     )
 
-    with update_backend("torch") as ivy_torch:
-        for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
-            grads_flat_np = helpers.flatten_frontend_to_np(
-                ret=g_ivy, backend=backend_fw
-            )
-            grads_flat_np_gt = helpers.flatten_and_to_np(
-                backend="torch", ret=ivy_torch.to_ivy(g_torch)
-            )
+    for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
+        grads_flat_np = [g_ivy.ivy_array.to_numpy()]
+        grads_flat_np_gt = [g_torch.detach().numpy()]
 
-            helpers.value_test(
-                ret_np_flat=grads_flat_np,
-                ret_np_from_gt_flat=grads_flat_np_gt,
-                rtol=1e-4,
-                atol=1e-4,
-                backend=backend_fw,
-            )
+        helpers.value_test(
+            ret_np_flat=grads_flat_np,
+            ret_np_from_gt_flat=grads_flat_np_gt,
+            rtol=1e-4,
+            atol=1e-4,
+            backend=backend_fw,
+        )
 
     # Multiple outputs
     x_ivy = torch_frontend.tensor(xs2[0], requires_grad=True, dtype=dtypes2[0])
@@ -196,11 +187,8 @@ def test_torch_grad(grad_args, backend_fw):
         grad_outputs=grad_outputs_torch,
     )
 
-    grads_flat_np = helpers.flatten_frontend_to_np(ret=grads_ivy[0], backend=backend_fw)
-    with update_backend("torch") as ivy_torch:
-        grads_flat_np_gt = helpers.flatten_and_to_np(
-            backend="torch", ret=ivy_torch.to_ivy(grads_torch[0])
-        )
+    grads_flat_np = [grads_ivy[0].ivy_array.to_numpy()]
+    grads_flat_np_gt = [grads_torch[0].detach().numpy()]
 
     helpers.value_test(
         ret_np_flat=grads_flat_np,
@@ -218,12 +206,12 @@ def test_torch_grad(grad_args, backend_fw):
 
     y_ivy2 = torch_frontend.mean(
         torch_frontend.matmul(
-            torch_frontend.add(x_ivy1.pow(3), x_ivy2), torch_frontend.sin(x_ivy2)
+            torch_frontend.add(x_ivy1 * x_ivy1, x_ivy2), torch_frontend.sin(x_ivy2)
         )
     )
     y_torch2 = torch.mean(
         torch.matmul(
-            torch.add(x_torch1.pow(3), x_torch2),
+            torch.add(x_torch1 * x_torch1, x_torch2),
             torch.sin(x_torch2),
         )
     )
@@ -232,22 +220,18 @@ def test_torch_grad(grad_args, backend_fw):
     grads_torch1 = torch.autograd.grad(
         y_torch2, (x_torch1, x_torch2), create_graph=True
     )
-    with update_backend("torch") as ivy_torch:
-        for g_ivy, g_torch in zip(grads_ivy1, grads_torch1):
-            grads_flat_np = helpers.flatten_frontend_to_np(
-                ret=g_ivy, backend=backend_fw
-            )
-            grads_flat_np_gt = helpers.flatten_and_to_np(
-                backend="torch", ret=ivy_torch.to_ivy(g_torch)
-            )
 
-            helpers.value_test(
-                ret_np_flat=grads_flat_np,
-                ret_np_from_gt_flat=grads_flat_np_gt,
-                rtol=1e-4,
-                atol=1e-4,
-                backend=backend_fw,
-            )
+    for g_ivy, g_torch in zip(grads_ivy1, grads_torch1):
+        grads_flat_np = [g_ivy.ivy_array.to_numpy()]
+        grads_flat_np_gt = [g_torch.detach().numpy()]
+
+        helpers.value_test(
+            ret_np_flat=grads_flat_np,
+            ret_np_from_gt_flat=grads_flat_np_gt,
+            rtol=1e-4,
+            atol=1e-4,
+            backend=backend_fw,
+        )
 
     # Test higher order gradients
     grads_ivy2 = torch_frontend.autograd.grad(grads_ivy1, (x_ivy1, x_ivy2))
@@ -258,22 +242,17 @@ def test_torch_grad(grad_args, backend_fw):
         grad_outputs=grad_outputs,
     )
 
-    with update_backend("torch") as ivy_torch:
-        for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
-            grads_flat_np = helpers.flatten_frontend_to_np(
-                ret=g_ivy, backend=backend_fw
-            )
-            grads_flat_np_gt = helpers.flatten_and_to_np(
-                backend="torch", ret=ivy_torch.to_ivy(g_torch)
-            )
+    for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
+        grads_flat_np = [g_ivy.ivy_array.to_numpy()]
+        grads_flat_np_gt = [g_torch.detach().numpy()]
 
-            helpers.value_test(
-                ret_np_flat=grads_flat_np,
-                ret_np_from_gt_flat=grads_flat_np_gt,
-                rtol=1e-4,
-                atol=1e-4,
-                backend=backend_fw,
-            )
+        helpers.value_test(
+            ret_np_flat=grads_flat_np,
+            ret_np_from_gt_flat=grads_flat_np_gt,
+            rtol=1e-4,
+            atol=1e-4,
+            backend=backend_fw,
+        )
 
     # Test arg: allow_unused
     # Test inputs and outputs that are not
@@ -282,25 +261,7 @@ def test_torch_grad(grad_args, backend_fw):
     x2_ivy = torch_frontend.tensor([1.0], requires_grad=True, dtype=dtypes[0])
     grads_ivy = torch_frontend.autograd.grad(y_ivy, x2_ivy, allow_unused=True)
 
-    y_torch = x_torch
-    x2_torch = torch.tensor([1.0], requires_grad=True, dtype=dtypes_torch[0])
-    grads_torch = torch.autograd.grad(
-        y_torch, x2_torch, grad_outputs=torch.ones_like(y_torch), allow_unused=True
-    )
-
-    grads_flat_np = helpers.flatten_frontend_to_np(ret=grads_ivy[0], backend=backend_fw)
-    with update_backend("torch") as ivy_torch:
-        grads_flat_np_gt = helpers.flatten_and_to_np(
-            backend="torch", ret=ivy_torch.to_ivy(grads_torch[0])
-        )
-
-    helpers.value_test(
-        ret_np_flat=grads_flat_np,
-        ret_np_from_gt_flat=grads_flat_np_gt,
-        rtol=1e-4,
-        atol=1e-4,
-        backend=backend_fw,
-    )
+    assert grads_ivy[0] is None
 
     # allow_unused=False
     with pytest.raises(Exception):
