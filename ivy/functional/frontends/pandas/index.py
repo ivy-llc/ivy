@@ -1,11 +1,13 @@
-from series import Series
 import ivy
-
+import ivy.functional.frontends.pandas.series as series
 
 class Index:
     def __init__(self, data, dtype=None, copy=False, name=None, tupleize_cols=True):
         self.index = data
-        self.index_array = ivy.array(self.index, dtype=dtype)
+        if not isinstance(data, ivy.Array):
+            self.index_array = ivy.array(data, dtype=dtype)
+        else:
+            self.index_array = data
         self.dtype = dtype
         self.name = name
         self.copy = copy
@@ -58,7 +60,7 @@ class Index:
     def to_series(self, index=None, name=None):
         if index is None:
             index = self.index_array
-        return Series(index, index=index, name=name)
+        return series.Series(index, index=index, name=name)
 
     def min(self, axis=None, skipna=True, *args, **kwargs):
         return self.index_array.min()
