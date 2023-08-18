@@ -70,8 +70,8 @@ class CPTensor(FactorizedTensor):
     def cp_copy(self):
         return CPTensor(
             (
-                ivy.copy(self.weights),
-                [ivy.copy(self.factors[i]) for i in range(len(self.factors))],
+                ivy.copy_array(self.weights),
+                [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
             )
         )
 
@@ -629,8 +629,8 @@ class CPTensor(FactorizedTensor):
             raise ValueError("Can only take n_mode_product with a vector or a matrix.")
 
         if copy:
-            factors = [ivy.copy(f) for f in factors]
-            weights = ivy.copy(weights)
+            factors = [ivy.copy_array(f) for f in factors]
+            weights = ivy.copy_array(weights)
 
         if contract:
             factor = factors.pop(mode)
