@@ -156,7 +156,6 @@ def test_paddle_crop(
 def test_paddle_hflip(
     *,
     dtype_and_x,
-
     on_device,
     fn_tree,
     frontend,
@@ -170,13 +169,6 @@ def test_paddle_hflip(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        img=x[0],
-        top=top,
-        left=left,
-        height=height,
-        width=width,
-        backend_to_test=backend_fw,
-
         backend_to_test=backend_fw,
         img=x[0],
     )
