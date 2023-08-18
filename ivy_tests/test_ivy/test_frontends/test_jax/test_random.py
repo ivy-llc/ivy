@@ -1548,8 +1548,8 @@ def test_jax_categorical(
     test_flags,
     backend_fw,
 ):
-     input_dtype,key = dtype_key
-     def call():
+    input_dtype,key = dtype_key
+    def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
@@ -1562,12 +1562,12 @@ def test_jax_categorical(
             shape=shape,
             dtype=dtype[0],
         )
-     ret = call()
-     if not ivy.exists(ret):
+    ret = call()
+    if not ivy.exists(ret):
         return
-     ret_np, ret_from_np = ret
-     ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
-     for u, v in zip(ret_np, ret_from_np):
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape

@@ -399,7 +399,7 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
 )
 
 def categorical(key, logits, axis, shape=None):
-    seed = _get_seed(key)
+    _get_seed(key)
     logits_arr = ivy.asarray(logits)
 
     if axis >= 0:
