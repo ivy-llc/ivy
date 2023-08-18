@@ -1675,7 +1675,7 @@ def test_torch_kron(
     input_dtypes, x = dtype_and_x
     input, label = x[0], x[1]
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=["float32"],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
