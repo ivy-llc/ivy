@@ -81,7 +81,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if len(ret) > 1:
+        if len(ret) > 0:
             return ret
         return ivy.to_scalar(ret)
 
