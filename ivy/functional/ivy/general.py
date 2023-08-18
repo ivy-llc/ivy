@@ -2829,7 +2829,7 @@ def set_item(
                 *[i for i in range(len(x.shape)) if i not in vector_inds],
             ]
             x = ivy.permute_dims(x, axes=perm)
-            inv_perm = ivy.invert_permutation(perm)
+            inv_perm = ivy.invert_permutation(perm).to_list()
     val = _broadcast_to(val, target_shape).astype(x.dtype)
     ret = ivy.scatter_nd(query, val, reduction="replace", out=x)
     if inv_perm is not None:
