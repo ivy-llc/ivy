@@ -703,6 +703,7 @@ def square(
         return paddle.square(x)
     return paddle_backend.pow(x, 2).astype(x.dtype)
 
+
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )

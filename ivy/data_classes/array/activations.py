@@ -114,6 +114,7 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+
         Returns
         -------
         ret
@@ -244,7 +245,13 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(x)
         ivy.array([1.55, 2.13, 2.13])
         """
-        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out, complex_mode=complex_mode)
+        return ivy.softplus(
+            self._data,
+            beta=beta,
+            threshold=threshold,
+            out=out,
+            complex_mode=complex_mode,
+        )
 
     def log_softmax(
         self: ivy.Array,

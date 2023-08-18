@@ -499,7 +499,7 @@ def softmax(
 
 
 def _wrap_between(y, a):
-    """wrap y between [-a, a]"""
+    """Wrap y between [-a, a]"""
     a = ivy.array(a, dtype=y.dtype)
     a2 = ivy.array(2 * a, dtype=y.dtype)
     zero = ivy.array(0, dtype=y.dtype)
@@ -524,7 +524,9 @@ def _softplus_jax_like(
     amax = ivy.relu(x_beta)
     res = ivy.subtract(x_beta, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
     res = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(res))))
-    res = ivy.real(res) + _wrap_between(ivy.imag(res), ivy.pi).astype(x.dtype) * ivy.astype(1j, x.dtype)
+    res = ivy.real(res) + _wrap_between(ivy.imag(res), ivy.pi).astype(
+        x.dtype
+    ) * ivy.astype(1j, x.dtype)
     if beta is not None:
         res = ivy.divide(res, ivy.array(beta, dtype=x.dtype))
     if threshold is not None:
@@ -532,13 +534,16 @@ def _softplus_jax_like(
             (
                 ivy.logical_or(
                     ivy.real(x_beta) < threshold,
-                    ivy.logical_and(ivy.real(x_beta) == threshold, ivy.imag(x_beta) < threshold)
+                    ivy.logical_and(
+                        ivy.real(x_beta) == threshold, ivy.imag(x_beta) < threshold
+                    ),
                 )
             ),
             res,
             x,
         ).astype(x.dtype)
     return res
+
 
 @handle_exceptions
 @handle_backend_invalid
