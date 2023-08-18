@@ -4,3 +4,5 @@ from . import angular_conversion
 from .angular_conversion import *
 from . import special_functions
 from .special_functions import *
+from . import hyperbolic_functions
+from .hyperbolic_functions import *
