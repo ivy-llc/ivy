@@ -72,7 +72,7 @@ After creating your Pull Request on github, you should then produce the checklis
 1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
    An example of this is shown below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
    :width: 420
 
 Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist.
@@ -80,18 +80,18 @@ These updates might take a few moments to take effect, so please be patient 🙂
 
 2. After adding the checklist to your PR, you should then modify this checklist with the status of each item according to the symbols(emojis) within the LEGEND section.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
    :width: 420
 
 3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for your PR and we will start checking your implementation and marking the items as complete using the checkboxes next to them.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
    :width: 420
 
 4. In case you are stuck or need help with one of the checklist items, please add the 🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating on your point of struggle with this item.
 The PR assignee will then see this comment and address your issues.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
    :width: 420
 
 **Notes**: 
@@ -244,7 +244,18 @@ A few points to keep in mind while doing this:
 #. Make sure all the positional arguments are positional-only and optional arguments are keyword-only.
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
-If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function 
+
+Extending the Ivy API
+~~~~~~~~~~~~~~~~~~~~~~~
+
+We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
+
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
+
+In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
+
+We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
 
 Where to place a backend function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

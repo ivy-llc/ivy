@@ -22,7 +22,7 @@ def numel(x, name=None):
         length = len(x)
     except (ValueError, TypeError):
         length = 1  # if 0 dimensional tensor with 1 element
-    return ivy.array([prod if prod > 0 else ivy.array(length, dtype=ivy.int64)])
+    return ivy.array(prod if prod > 0 else ivy.array(length, dtype=ivy.int64))
 
 
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
@@ -39,6 +39,30 @@ def nanquantile(a, q, axis=None, keepdims=False, interpolation="linear", out=Non
 )
 @to_ivy_arrays_and_back
 def median(x, axis=None, keepdim=False, name=None):
+    x = (
+        ivy.astype(x, ivy.float64)
+        if ivy.dtype(x) == "float64"
+        else ivy.astype(x, ivy.float32)
+    )
+    return ivy.median(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def var(x, axis=None, unbiased=True, keepdim=False, name=None):
+    if unbiased:
+        correction = 1
+    else:
+        correction = 0
+    return ivy.var(x, axis=axis, correction=correction, keepdims=keepdim)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "uint16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def nanmedian(x, axis=None, keepdim=True, name=None):
     x = (
         ivy.astype(x, ivy.float64)
         if ivy.dtype(x) == "float64"

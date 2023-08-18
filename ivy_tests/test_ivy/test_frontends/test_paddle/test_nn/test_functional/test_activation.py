@@ -655,6 +655,7 @@ def test_paddle_softplus(
     beta,
     threshold,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -662,6 +663,7 @@ def test_paddle_softplus(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -691,6 +693,7 @@ def test_paddle_softmax_(
     dtype_x_and_axis,
     dtypes,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -698,6 +701,7 @@ def test_paddle_softmax_(
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -719,6 +723,7 @@ def test_paddle_tanh_(
     *,
     dtype_and_x,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -726,6 +731,7 @@ def test_paddle_tanh_(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -757,6 +763,7 @@ def test_paddle_gumbel_softmax(
     temperature,
     hard,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -764,6 +771,7 @@ def test_paddle_gumbel_softmax(
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

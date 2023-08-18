@@ -3,6 +3,7 @@ from typing import Optional, Union, Tuple, Sequence
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
+from copy import deepcopy
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
@@ -95,92 +96,90 @@ def nanmean(
     return ret.astype(ret_dtype)
 
 
-def _compute_quantile(
-    x, q, axis=None, keepdim=False, ignore_nan=False, interpolation="linear"
-):
-    # Validate x
-    if not isinstance(x, paddle.Tensor):
-        raise TypeError("input x should be a Tensor.")
-    ret_dtype = x.dtype
-    # Validate q
-    if isinstance(q, (int, float)):
-        q = [q]
-    elif isinstance(q, (list, tuple)):
-        if len(q) <= 0:
-            raise ValueError("q should not be empty")
-    elif isinstance(q, paddle.Tensor):
-        q = q.tolist()
+def _validate_quantile(q):
+    if q.ndim == 1 and q.size < 10:
+        for i in range(q.size):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
     else:
-        raise TypeError("Type of q should be int, float, list or tuple.")
+        if not (paddle.all(0 <= q) and paddle.all(q <= 1)):
+            return False
+    return True
 
-    # Validate axis
-    dims = len(x.shape)
-    out_shape = list(x.shape)
-    if axis is None:
-        x = paddle_backend.flatten(x)
-        axis = 0
-        out_shape = [1] * dims
-    else:
-        if isinstance(axis, (list, tuple)):
-            if len(axis) <= 0:
-                raise ValueError("axis should not be empty")
-            axis_src, axis_dst = [], []
-            for axis_single in axis:
-                if not isinstance(axis_single, int) or not (
-                    axis_single < dims and axis_single >= -dims
-                ):
-                    raise ValueError(
-                        "Axis should be None, int, or a list, element should in "
-                        "range [-rank(x), rank(x))."
-                    )
-                if axis_single < 0:
-                    axis_single = axis_single + dims
-                axis_src.append(axis_single)
-                out_shape[axis_single] = 1
-            axis_dst = list(range(-len(axis), 0))
-            x = paddle_backend.moveaxis(x, axis_src, axis_dst)
-            x = paddle_backend.flatten(x, axis_dst[0], axis_dst[-1])
-            axis = axis_dst[0]
+
+def _to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
+
+
+def _handle_axis(a, q, fn, keepdims=False, axis=None, interpolation="nearest"):
+    nd = a.ndim
+    axis_arg = deepcopy(axis)
+    if axis is not None:
+        axis = _to_positive_axis(axis, nd)
+
+        if len(axis) == 1:
+            axis_arg = axis[0]
         else:
-            if not isinstance(axis, int) or not (axis < dims and axis >= -dims):
-                raise ValueError(
-                    "Axis should be None, int, or a list, element should in "
-                    "range [-rank(x), rank(x))."
-                )
-            if axis < 0:
-                axis += dims
-            out_shape[axis] = 1
+            keep = set(range(nd)) - set(axis)
+            nkeep = len(keep)
 
-    mask = paddle_backend.isnan(x)
-    valid_counts = paddle_backend.sum(
-        mask.logical_not(), axis=axis, keepdims=True, dtype="float64"
-    )
+            for i, s in enumerate(sorted(keep)):
+                a = a.moveaxis(s, i)
+            a = a.reshape(
+                a.shape[:nkeep]
+                + [
+                    -1,
+                ]
+            )
+            axis_arg = -1
+
+    ret = fn(a, q, axis=axis_arg, interpolation=interpolation)
+
+    if keepdims:
+        if axis is None:
+            index_ret = (None,) * nd
+        else:
+            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
+        ret = ret[(Ellipsis,) + index_ret]
+
+    return ret
+
+
+def _quantile(a, q, axis=None, interpolation="nearest"):
+    ret_dtype = a.dtype
+    if q.ndim > 2:
+        raise ValueError("q argument must be a scalar or 1-dimensional!")
+    if axis is None:
+        axis = 0
+        a = paddle.flatten(a)
+
+    n = a.shape[axis]
+    if axis != 0:
+        a = paddle.moveaxis(a, axis, 0)
 
     indices = []
-
     for q_num in q:
-        if q_num < 0 or q_num > 1:
-            raise ValueError("q should be in range [0, 1]")
-        if paddle.in_dynamic_mode():
-            q_num = paddle.to_tensor(q_num, dtype="float64")
-        if ignore_nan:
-            indices.append(q_num * (valid_counts - 1))
-        else:
-            index = q_num * (valid_counts - 1)
-            last_index = x.shape[axis] - 1
-            nums = paddle.full_like(index, fill_value=last_index)
-            index = paddle_backend.where(mask.any(axis=axis, keepdim=True), nums, index)
-            indices.append(index)
-    sorted_tensor = paddle.sort(x, axis)
+        index = q_num * (n - 1)
+        indices.append(index)
 
+    a = paddle.sort(a, 0)
     outputs = []
 
     for index in indices:
-        if interpolation not in ["linear", "lower", "higher", "midpoint", "nearest"]:
-            raise ValueError(
-                "interpolation must be 'linear', 'lower', 'higher', 'midpoint', "
-                "or 'nearest'"
-            )
         if interpolation == "lower":
             index = paddle.floor(index)
         elif interpolation == "higher":
@@ -190,30 +189,62 @@ def _compute_quantile(
         elif interpolation == "midpoint":
             index_floor = paddle.floor(index)
             index_ceil = paddle.ceil(index)
-            index = (index_floor + index_ceil) / 2
+            index = (index_ceil + index_floor) / 2
 
         indices_below = paddle.floor(index).astype(paddle.int32)
         indices_upper = paddle.ceil(index).astype(paddle.int32)
-        tensor_upper = paddle.take_along_axis(sorted_tensor, indices_upper, axis=axis)
-        tensor_below = paddle.take_along_axis(sorted_tensor, indices_below, axis=axis)
-        weights = index - indices_below.astype("float64")
-        out = paddle.lerp(
-            tensor_below.astype("float64"),
-            tensor_upper.astype("float64"),
-            weights,
+
+        if interpolation == "nearest_jax":
+            weights = index - indices_below.astype(paddle.float64)
+
+            indices_below = paddle.clip(indices_below, 0, n - 1)
+            indices_upper = paddle.clip(indices_upper, 0, n - 1)
+            tensor_upper = paddle.gather(a, indices_upper, axis=0)
+            tensor_below = paddle.gather(a, indices_below, axis=0)
+
+            pred = weights <= 0.5
+            out = paddle.where(pred, tensor_below, tensor_upper)
+        else:
+            tensor_upper = paddle.gather(a, indices_upper, axis=0)
+            tensor_below = paddle.gather(a, indices_below, axis=0)
+            weights = index - indices_below.astype(paddle.float64)
+            out = paddle.lerp(
+                tensor_below.astype(paddle.float64),
+                tensor_upper.astype(paddle.float64),
+                weights.astype(paddle.float64),
+            )
+        outputs.append(out)
+    return paddle.concat(outputs, axis=0).astype(ret_dtype)
+
+
+def _compute_quantile_wrapper(
+    x,
+    q,
+    axis=None,
+    keepdims=False,
+    interpolation="linear",
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation not in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
         )
-    if not keepdim:
-        out = paddle.squeeze(out, axis=axis)
-    else:
-        out = out.reshape(out_shape)
-    outputs.append(out)
-
-    if len(q) > 1:
-        outputs = paddle.stack(outputs, 0)
-    else:
-        outputs = outputs[0]
-
-    return outputs.astype(ret_dtype)
+    return _handle_axis(
+        x,
+        q,
+        _quantile,
+        keepdims=keepdims,
+        axis=axis,
+        interpolation=interpolation,
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -224,6 +255,7 @@ def _compute_quantile(
                 "int16",
                 "uint8",
                 "float16",
+                "bfloat16",
                 "complex64",
                 "complex128",
             )
@@ -241,13 +273,13 @@ def quantile(
     interpolation: Optional[str] = "linear",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return _compute_quantile(
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
         x=a,
         q=q,
         axis=axis,
-        keepdim=keepdims,
+        keepdims=keepdims,
         interpolation=interpolation,
-        ignore_nan=False,
     )
 
 
@@ -374,6 +406,11 @@ def igamma(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     results = []
+    ret_dtype = a.dtype if out is None else out.dtype
+    if paddle.float16 in [a.dtype, x.dtype]:
+        a = a.astype("float32")
+        x = x.astype("float32")
+
     for ai, xi in zip(a.flatten(), x.flatten()):
         ai = ai.astype("float64")
         xi = xi.astype("float64")
@@ -388,7 +425,7 @@ def igamma(
         result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
         results.append(result)
 
-    return paddle.to_tensor(results, dtype=a.dtype).reshape(a.shape)
+    return paddle.to_tensor(results, dtype=ret_dtype).reshape(a.shape)
 
 
 def cov(

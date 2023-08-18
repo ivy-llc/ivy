@@ -34,9 +34,10 @@ class _ArrayWithNormsExperimental(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[1., 2.], [3., 4.]])
-        >>> x.l1_normalize(axis=1)
-        ivy.array([[0.3333, 0.6667],
-                   [0.4286, 0.5714]])
+        >>> y = x.l1_normalize(axis=1)
+        >>> print(y)
+        ivy.array([[0.33333334, 1.33333337],
+               [1.28571439, 2.28571439]])
         """
         return ivy.l1_normalize(self, axis=axis, out=out)
 
@@ -67,9 +68,10 @@ class _ArrayWithNormsExperimental(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[1., 2.], [3., 4.]])
-        >>> x.l2_normalize(axis=1)
-        ivy.array([[0.4472, 0.8944],
-                   [0.6, 0.8]])
+        >>> y = x.l2_normalize(axis=1)
+        >>> print(y)
+        ivy.array([[0.44721359, 0.89442718],
+               [0.60000002, 0.80000001]])
         """
         return ivy.l2_normalize(self, axis=axis, out=out)
 
@@ -299,8 +301,9 @@ class _ArrayWithNormsExperimental(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[1., 2.], [3., 4.]])
-        >>> x.lp_normalize(p=2, axis=1)
-        ivy.array([[0.4472, 0.8944],
-               [0.6, 0.8]])
+        >>> y = x.lp_normalize(p=2, axis=1)
+        >>> print(y)
+        ivy.array([[0.44721359, 0.89442718],
+               [0.60000002, 0.80000001]])
         """
         return ivy.lp_normalize(self, p=p, axis=axis, out=out)

@@ -681,13 +681,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         ...                [6, 7, 8]])
         >>> b = ivy.array([[-1., -2., -3.],
         ...                 [-3., 4., 5.],
-        ...                 [5., 6., 7.]])],
+        ...                 [5., 6., 7.]]),
         >>> x = ivy.Container(a=a, b=b)
-        >>> d = x.diagonal(offset=-1, axis1=0)
+        >>> d = x.diagonal(offset=-1)
         >>> print(d)
         {
-            a:ivy.array([3., 7.]),
-            b:ivy.array([-3., 6.])
+            a: ivy.array([3, 7]),
+            b: ivy.array([[-3., 6.]])
         }
         """
         return self._static_diagonal(
@@ -841,8 +841,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.eigh()
         >>> print(y)
         {
-            'a': ivy.array([[-1., 3.]]),
-            'b': ivy.array([[-2., 6.]])
+            a: ivy.array([[-1., 3.]]),
+            b: ivy.array([[-2., 6.]])
         }
         """
         return self._static_eigh(
@@ -1005,6 +1005,57 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.inner. This method simply wraps the
+        function, and so the docstring for ivy.inner also applies to this method with
+        minimal changes.
+
+        Return the inner product of two vectors ``x1`` and ``x2``.
+
+        Parameters
+        ----------
+        x1
+            first one-dimensional input array of size N.
+            Should have a numeric data type.
+            a(N,) array_like
+            First input vector. Input is flattened if not already 1-dimensional.
+        x2
+            second one-dimensional input array of size M.
+            Should have a numeric data type.
+            b(M,) array_like
+            Second input vector. Input is flattened if not already 1-dimensional.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a two-dimensional array containing the inner product and whose
+            shape is (N, M).
+            The returned array must have a data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([[1, 2], [3, 4]]))
+        >>> x2 = ivy.Container(a=ivy.array([5, 6]))
+        >>> y = ivy.Container.static_inner(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([17, 39])
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "inner",
             x1,
@@ -1027,6 +1078,55 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.inner. This method simply wraps the
+        function, and so the docstring for ivy.inner also applies to this method with
+        minimal changes.
+
+        Return the inner product of two vectors ``self`` and ``x2``.
+
+        Parameters
+        ----------
+        self
+            input container of size N. Should have a numeric data type.
+            a(N,) array_like
+            First input vector. Input is flattened if not already 1-dimensional.
+        x2
+            one-dimensional input array of size M. Should have a numeric data type.
+            b(M,) array_like
+            Second input vector. Input is flattened if not already 1-dimensional.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a new container representing the inner product and whose
+            shape is (N, M).
+            The returned array must have a data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([[1, 2], [3, 4]]))
+        >>> x2 = ivy.Container(a=ivy.array([5, 6]))
+        >>> y = ivy.Container.inner(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([17, 39])
+        }
+        """
         return self._static_inner(
             self,
             x2,
@@ -1275,13 +1375,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.pinv()
         >>> print(y)
         {
-            a: ivy.array([[-2., 1.],
+            a: ivy.array([[-1.99999988, 1.],
                           [1.5, -0.5]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
-        >>> out = ivy.Container(a=ivy.zeros_like(x[a]))
-        >>> x.pinv(0., out=out)
+        >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]))
+        >>> out = ivy.Container(a = ivy.zeros(x["a"].shape))
+        >>> x.pinv(out=out)
         >>> print(out)
         {
             a: ivy.array([[-1.99999988, 1.],
@@ -2240,16 +2340,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         ...                                [2.0, 1.0]]))
         >>> y = x.slogdet()
         >>> print(y)
-        {
-            a: [
-                sign = ivy.array(-1.),
-                logabsdet = ivy.array(0.6931472)
-            ],
-            b: [
-                sign = ivy.array(-1.),
-                logabsdet = ivy.array(1.0986123)
-            ]
-        }
+        [{
+            a: ivy.array(-1.),
+            b: ivy.array(-1.)
+        }, {
+            a: ivy.array(0.69314718),
+            b: ivy.array(1.09861231)
+        }]
         """
         return self._static_slogdet(
             self,
@@ -2436,10 +2533,19 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.random_normal(shape = (2, 4))
         >>> z = ivy.Container(a=x, b=y)
         >>> ret = z.svd()
-        >>> aU, aS, aVh = ret.a
-        >>> bU, bS, bVh = ret.b
-        >>> print(aU.shape, aS.shape, aVh.shape, bU.shape, bS.shape, bVh.shape)
-        (9, 9) (6,) (6, 6) (2, 2) (2,) (4, 4)
+        >>> print(ret[0], ret[1], ret[2])
+        {
+            a: (<class ivy.data_classes.array.array.Array> shape=[9, 9]),
+            b: ivy.array([[-0.3475602, -0.93765765],
+                          [-0.93765765, 0.3475602]])
+        } {
+            a: ivy.array([3.58776021, 3.10416126, 2.80644298, 1.87024701, 1.48127627,
+                          0.79101127]),
+            b: ivy.array([1.98288572, 0.68917423])
+        } {
+            a: (<class ivy.data_classes.array.array.Array> shape=[6, 6]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[4, 4])
+        }
         """
         return self._static_svd(
             self,

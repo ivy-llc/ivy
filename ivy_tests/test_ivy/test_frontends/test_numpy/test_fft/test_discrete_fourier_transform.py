@@ -238,10 +238,11 @@ def test_numpy_ifftn(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_
     fn_tree="numpy.fft.rfftn",
     dtype_and_x=x_and_rfftn(),
 )
-def test_numpy_rfftn(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+def test_numpy_rfftn(dtype_and_x, frontend, backend_fw, test_flags, fn_tree, on_device):
     dtype, x, s, axes, norm = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
