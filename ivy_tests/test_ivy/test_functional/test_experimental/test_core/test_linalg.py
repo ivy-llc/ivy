@@ -1610,3 +1610,38 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
         ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
         "abs norm of difference between svd and random init too high",
     )
+
+
+# higher_order_moment
+@st.composite
+def _higher_order_moment_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
+    order = draw(helpers.ints(min_value=0, max_value=10))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, x[0], order
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.higher_order_moment",
+    data=_higher_order_moment_data(),
+)
+def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, tensor, order = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        tensor=tensor,
+        order=order,
+        test_values=False,
+    )

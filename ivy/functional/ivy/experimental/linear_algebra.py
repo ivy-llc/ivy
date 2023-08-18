@@ -1666,3 +1666,41 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a, b, out=out)
+
+
+# This function has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/moments.py#L5
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def higher_order_moment(
+    tensor: Union[ivy.Array, ivy.NativeArray], order: Optional[int]
+) -> ivy.Array:
+    """
+    Compute the Higher-Order Moment.
+
+    Parameters
+    ----------
+    tensor : 2D-tensor -- or ND-tensor
+        matrix of size (n_samples, n_features)
+        or tensor of size(n_samples, D1, ..., DN)
+
+    order : int
+        order of the higher-order moment to compute
+
+    Returns
+    -------
+    tensor : moment
+        if tensor is a matrix of size (n_samples, n_features),
+        tensor of size (n_features, )*order
+    """
+    if order > 1:
+        moment = ivy.multi_dot([tensor.T for _ in range(order)])
+    else:
+        moment = tensor
+    return ivy.mean(moment, axis=0)
