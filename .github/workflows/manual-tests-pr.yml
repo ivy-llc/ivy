@@ -35,7 +35,7 @@ jobs:
            touch .ivy/key.pem
            echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python setup_tests.py ${{ github.event.inputs.test }} 
-           python run_tests_pr.py
+           python run_tests_pr.py new_failures.txt
          continue-on-error: true
 
        - name: Check on failures

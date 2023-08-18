@@ -95,19 +95,20 @@ def sum(
     where=None,
     promote_integers=True,
 ):
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
-
     # TODO: promote_integers is only supported from JAX v0.4.10
     if dtype is None and promote_integers:
-        if ivy.is_bool_dtype(dtype):
+        if ivy.is_bool_dtype(a.dtype):
             dtype = ivy.default_int_dtype()
-        elif ivy.is_uint_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
-                dtype = ivy.default_uint_dtype()
-        elif ivy.is_int_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
-                dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+            a = ivy.astype(a, dtype)
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
+            a = ivy.astype(a, dtype)
+        else:
+            dtype = a.dtype
+    elif dtype is None and not promote_integers:
+        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
     if initial:
         if axis is None:
@@ -373,7 +374,7 @@ def nancumprod(a, axis=None, dtype=None, out=None):
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -445,7 +446,7 @@ def nanmedian(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, "jax")
 def correlate(a, v, mode="valid", precision=None):
     if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
         raise ValueError("correlate() only support 1-dimensional inputs.")
@@ -485,4 +486,30 @@ def correlate(a, v, mode="valid", precision=None):
 def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None):
     return ivy.cov(
         m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
+    )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def quantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    if method == "nearest":
+        return ivy.quantile(
+            a, q, axis=axis, keepdims=keepdims, interpolation="nearest_jax", out=out
+        )
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )

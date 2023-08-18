@@ -7,6 +7,7 @@ import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.utils.einsum_parser import legalise_einsum_expr
 
 # Array API Standard #
 # -------------------#
@@ -203,4 +204,5 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
+    equation = legalise_einsum_expr(*[equation, *operands])
     return tf.cast(tf.einsum(equation, *operands), dtype)

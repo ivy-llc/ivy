@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -33,11 +34,13 @@ def test_numpy_outer(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -64,11 +67,13 @@ def test_numpy_inner(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -162,11 +167,13 @@ def test_numpy_cross(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtypes, x1, x2, axis = dtype_x1_x2_axis
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -194,11 +201,13 @@ def test_numpy_matmul(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtypes, x, casting, dtype = dtypes_values_casting
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -232,11 +241,13 @@ def test_numpy_matrix_power(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -259,10 +270,12 @@ def test_numpy_tensordot(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     dtype, a, b, axes = dtype_values_and_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -289,10 +302,12 @@ def test_numpy_kron(
     fn_tree,
     on_device,
     test_flags,
+    backend_fw,
 ):
     dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -312,11 +327,13 @@ def test_numpy_multi_dot(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtypes, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -335,6 +352,7 @@ def test_numpy_multi_dot(
 def test_numpy_dot(
     dtype_a_b,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -343,6 +361,7 @@ def test_numpy_dot(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
@@ -350,4 +369,52 @@ def test_numpy_dot(
         atol=1e-01,
         a=a,
         b=b,
+    )
+
+
+# einsum
+@handle_frontend_test(
+    fn_tree="numpy.einsum",
+    args=st.sampled_from(
+        [
+            (
+                "ii",
+                np.arange(25).reshape(5, 5),
+            ),
+            (
+                "ii->i",
+                np.arange(25).reshape(5, 5),
+            ),
+            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
+        ]
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_numpy_einsum(
+    *,
+    args,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    kw = {}
+    i = 0
+    for arg in args:
+        kw[f"x{i}"] = arg
+        i += 1
+    test_flags.num_positional_args = i
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        **kw,
+        optimize=False,
+        order="K",
+        casting="safe",
     )

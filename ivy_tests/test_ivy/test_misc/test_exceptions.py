@@ -2,15 +2,13 @@ import sys
 import os
 import contextlib
 import pytest
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 import ivy
-
-available_frameworks = available_frameworks()
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
 @pytest.mark.parametrize("show_func_wrapper", [True, False])
 def test_trace_modes(backend_fw, trace_mode, show_func_wrapper):
+    ivy.set_backend(backend_fw)
     filename = "excep_out.txt"
     orig_stdout = sys.stdout
     f = open(filename, "w")
@@ -56,18 +54,22 @@ def test_trace_modes(backend_fw, trace_mode, show_func_wrapper):
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
+    ivy.previous_backend()
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
-def test_set_trace_mode(trace_mode):
+def test_set_trace_mode(trace_mode, backend_fw):
+    ivy.set_backend(backend_fw)
     ivy.set_exception_trace_mode(trace_mode)
     ivy.utils.assertions.check_equal(
         ivy.exception_trace_mode, trace_mode, as_array=False
     )
+    ivy.previous_backend()
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
-def test_unset_trace_mode(trace_mode):
+def test_unset_trace_mode(trace_mode, backend_fw):
+    ivy.set_backend(backend_fw)
     ivy.set_exception_trace_mode(trace_mode)
     ivy.set_exception_trace_mode("ivy")
     ivy.utils.assertions.check_equal(ivy.exception_trace_mode, "ivy", as_array=False)
@@ -75,10 +77,13 @@ def test_unset_trace_mode(trace_mode):
     ivy.utils.assertions.check_equal(
         ivy.exception_trace_mode, trace_mode, as_array=False
     )
+    ivy.previous_backend()
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
-def test_get_trace_mode(trace_mode):
+def test_get_trace_mode(trace_mode, backend_fw):
+    ivy.set_backend(backend_fw)
     ivy.set_exception_trace_mode(trace_mode)
     ivy.set_exception_trace_mode("ivy")
     ivy.utils.assertions.check_equal(ivy.exception_trace_mode, "ivy", as_array=False)
+    ivy.previous_backend()
