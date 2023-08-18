@@ -987,9 +987,9 @@ def conj(
 
     .. math::
         a + bj
-    
+
     the complex conjugate is defined as
-    
+
     .. math::
         a - bj
 
@@ -1176,7 +1176,6 @@ def lerp(
         a: ivy.array([7.55000019, 8.05000019]),
         b: ivy.array([5., 5.5])
     }
-
     """
     input_end_allowed_types = [
         "int8",

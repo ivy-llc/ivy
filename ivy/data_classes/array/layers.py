@@ -353,7 +353,7 @@ class _ArrayWithLayers(abc.ABC):
         >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
         >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True)
         >>> print(result)
-        
+
         ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
         >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
@@ -372,7 +372,6 @@ class _ArrayWithLayers(abc.ABC):
         >>> print(out)
 
         ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
-
         """
         return ivy.scaled_dot_product_attention(
             self._data,

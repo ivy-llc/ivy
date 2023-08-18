@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
     assert_all_close,
-    update_backend,
+    BackendHandler,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
@@ -44,7 +44,7 @@ def test_numpy_ndarray_ivy_array(
     backend_fw,
 ):
     dtype, data, shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
@@ -65,7 +65,7 @@ def test_numpy_ndarray_ivy_array(
 )
 def test_numpy_ndarray_dtype(dtype_x, backend_fw, frontend):
     dtype, data, shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(
@@ -84,7 +84,7 @@ def test_numpy_ndarray_shape(
     backend_fw,
 ):
     dtype, data, shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(
@@ -100,7 +100,7 @@ def test_numpy_ndarray_shape(
 )
 def test_numpy_ndarray_property_ndim(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
@@ -133,7 +133,7 @@ def test_numpy_T(
     frontend,
 ):
     dtype, data, shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ret = helpers.flatten_and_to_np(ret=x.T.ivy_array, backend=backend_fw)
@@ -161,7 +161,7 @@ def test_numpy_T(
 def test_numpy_ndarray_flat(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
 
@@ -446,26 +446,27 @@ def test_numpy_ndarray_any(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    init_input_dtypes, x, axis = dtype_x_axis
     (
         where,
-        input_dtypes,
+        method_input_dtypes,
         method_flags,
     ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
-        input_dtype=input_dtypes,
+        input_dtype=init_input_dtypes,
         test_flags=method_flags,
     )
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
+        init_input_dtypes=init_input_dtypes,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=method_input_dtypes[1:],
         method_all_as_kwargs_np={
             "axis": axis,
+            "dtype": bool,
             "out": None,
             "keepdims": keepdims,
             "where": where,
@@ -505,26 +506,27 @@ def test_numpy_ndarray_all(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    init_input_dtypes, x, axis = dtype_x_axis
     (
         where,
-        input_dtypes,
+        method_input_dtypes,
         method_flags,
     ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
-        input_dtype=input_dtypes,
+        input_dtype=init_input_dtypes,
         test_flags=method_flags,
     )
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
+        init_input_dtypes=init_input_dtypes,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=method_input_dtypes[1:],
         method_all_as_kwargs_np={
             "axis": axis,
+            "dtype": bool,
             "out": None,
             "keepdims": keepdims,
             "where": where,
@@ -3083,7 +3085,7 @@ def test_numpy_ndarray_tobytes(
     backend_fw,
 ):
     dtype, data, shape = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(

@@ -1331,7 +1331,6 @@ def eye(
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
-
     """
     return current_backend().eye(
         n_rows,
@@ -1582,8 +1581,8 @@ def meshgrid(
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_shapes
-@outputs_to_ivy_arrays
 @inputs_to_native_arrays
+@outputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
 @infer_device
