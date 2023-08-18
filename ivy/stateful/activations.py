@@ -432,7 +432,7 @@ class SeLU(Module):
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -447,7 +447,7 @@ class SeLU(Module):
          ret
             The outputs following the SELU activation *[batch_shape, d]*
         """
-        return ivy.selu(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
+        return ivy.selu(x, complex_mode=self._complex_mode)
 
 
 class ELU(Module):

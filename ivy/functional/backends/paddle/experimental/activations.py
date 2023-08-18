@@ -69,6 +69,10 @@ def logsigmoid(
     return F.log_sigmoid(input.cast("float32")).cast(input.dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
 def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.selu(x)
