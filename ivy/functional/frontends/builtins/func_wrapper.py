@@ -87,8 +87,15 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if len(ret) > 0:
+
+        if isinstance(ret, tuple):
+            return ivy.nested_map(
+                ret, lambda x: ivy.to_scalar(x) if len(x) == 0 else x, shallow=False
+            )
+
+        elif len(ret) > 0:
             return ret
+
         return ivy.to_scalar(ret)
 
     return _from_zero_dim_arrays_to_scalar
