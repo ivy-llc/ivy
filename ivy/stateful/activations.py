@@ -147,11 +147,12 @@ class LeakyReLU(Module):
 
 
 class LogSoftmax(Module):
-    def __init__(self):
+    def __init__(self, axis: int = -1):
         """Apply the LOG SOFTMAX activation function."""
         Module.__init__(self)
+        self._axis = axis
 
-    def _forward(self, x, *, axis=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -165,15 +166,16 @@ class LogSoftmax(Module):
          ret
             The outputs following the LOG SOFTMAX activation *[batch_shape, d]*
         """
-        return ivy.log_softmax(x, axis=axis)
+        return ivy.log_softmax(x, axis=self._axis)
 
 
 class Softmax(Module):
-    def __init__(self):
+    def __init__(self, axis: int = -1):
         """Apply the SOFTMAX activation function."""
         Module.__init__(self)
+        self._axis = axis
 
-    def _forward(self, x, *, axis=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -189,15 +191,17 @@ class Softmax(Module):
             The outputs following the SOFTMAX activation *[batch_shape, d]*
 
         """
-        return ivy.softmax(x, axis=axis)
+        return ivy.softmax(x, axis=self._axis)
 
 
 class Softplus(Module):
-    def __init__(self):
+    def __init__(self, beta=1.0, threshold=None):
         """Apply the SOFTPLUS activation function."""
         Module.__init__(self)
+        self._beta = beta
+        self._threshold = threshold
 
-    def _forward(self, x, *, beta=None, threshold=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -216,7 +220,7 @@ class Softplus(Module):
             The outputs following the SOFTPLUS activation *[batch_shape, d]*
 
         """
-        return ivy.softplus(x, beta=beta, threshold=threshold)
+        return ivy.softplus(x, beta=self._beta, threshold=self._threshold)
 
 
 class Mish(Module):
@@ -355,11 +359,12 @@ class Hardswish(Module):
 
 
 class Logit(Module):
-    def __init__(self):
+    def __init__(self, eps=None):
         """Apply the LOGIT activation function."""
         Module.__init__(self)
+        self._eps = eps
 
-    def _forward(self, x, eps=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -374,15 +379,16 @@ class Logit(Module):
         ret
             The outputs following the LOGIT activation *[batch_shape, d]*
         """
-        return ivy.logit(x, eps=eps)
+        return ivy.logit(x, eps=self._eps)
 
 
 class PReLU(Module):
-    def __init__(self):
+    def __init__(self, slope):
         """Apply the PRELU activation function."""
         Module.__init__(self)
+        self._slope = slope
 
-    def _forward(self, x, slope):
+    def _forward(self, x):
         """
 
         Parameters
@@ -397,7 +403,7 @@ class PReLU(Module):
         ret
             The outputs following the PRELU activation *[batch_shape, d]*
         """
-        return ivy.prelu(x, slope)
+        return ivy.prelu(x, self._slope)
 
 
 class SeLU(Module):
@@ -422,11 +428,12 @@ class SeLU(Module):
 
 
 class ELU(Module):
-    def __init__(self):
+    def __init__(self, alpha=1.0):
         """Apply the ELU activation function."""
         Module.__init__(self)
+        self._alpha = alpha
 
-    def _forward(self, x, alpha=1.0):
+    def _forward(self, x):
         """
         Parameters
         ----------
@@ -439,7 +446,7 @@ class ELU(Module):
         ret
             The outputs following the ELU activation *[batch_shape, d]*
         """
-        return ivy.elu(x, alpha=alpha)
+        return ivy.elu(x, alpha=self._alpha)
 
 
 class LogSigmoid(Module):
