@@ -233,6 +233,7 @@ def test_paddle_adaptive_max_pool2d(
         output_size=output_size,
     )
 
+
 # adaptive_avg_pool3d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.adaptive_avg_pool3d",
@@ -271,7 +272,7 @@ def test_paddle_adaptive_avg_pool3d(
         x=x[0],
         output_size=output_size,
     )
-    
+
 
 # max_unpool1d
 @handle_frontend_test(
