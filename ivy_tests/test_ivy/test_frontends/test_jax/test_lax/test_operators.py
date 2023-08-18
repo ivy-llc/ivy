@@ -83,6 +83,15 @@ def test_jax_add(
         x=x[0],
         y=x[1],
     )
+@handle_frontend_test(
+    fn_tree="jax.lax.approx_max_k",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
 
 
 # tan
