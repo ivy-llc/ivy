@@ -249,15 +249,15 @@ def hyper_helper(ngood, nbad, nsample):
             ngood -= 1
         elif nbad > 0:
             nbad -= 1
-    return sum(u)  # ivy.array(sum(u))
+    return ivy.array(sum(u))  # ivy.array(sum(u))
 
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def hypergeometric(ngood, nbad, nsample, size=None):
     if size is None:
-        return ivy.array(hyper_helper(ngood, nbad, nsample))
-    u = ivy.empty(size, dtype=int)
+        return hyper_helper(ngood, nbad, nsample)
+    u = ivy.empty(size)
     for index, s in ivy.ndenumerate(u):
         u[index] = hyper_helper(ngood, nbad, nsample)
     return u
