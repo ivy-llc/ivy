@@ -274,6 +274,11 @@ def max_pool2d(
         out=out,
     )
 
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def max_unpool2d(
     x: ivy.Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -407,6 +412,11 @@ def max_pool3d(
         out=out,
     )
 
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def max_unpool3d(
     x: ivy.Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],

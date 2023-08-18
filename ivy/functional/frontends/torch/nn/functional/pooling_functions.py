@@ -118,6 +118,8 @@ def max_pool1d(input, kernel_size, stride=None, padding=0):
     )
 
 # max_unpool1d
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def max_unpool1d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
     
     if stride is None:
@@ -161,6 +163,8 @@ def max_pool2d(
         return ret.squeeze(0)
     return ret
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def max_unpool2d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
     
     if stride is None:
@@ -172,6 +176,8 @@ def max_unpool2d(input, indices, kernel_size, stride=None, padding=0, output_siz
         input, indices, kernel_size, stride, padding, data_format, output_size
     )
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def max_unpool3d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
     
     if stride is None:
