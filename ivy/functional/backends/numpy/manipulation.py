@@ -285,8 +285,8 @@ def unstack(
 
 def clip(
     x: np.ndarray,
-    x_min: Union[Number, np.ndarray],
-    x_max: Union[Number, np.ndarray],
+    x_min: Union[float, int, np.ndarray] = None,
+    x_max: Union[float, int, np.ndarray] = None,
     /,
     *,
     out: Optional[np.ndarray] = None,
