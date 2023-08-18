@@ -77,3 +77,8 @@ class Series(NDFrame):
         # todo handle data alignment
         new_array = ivy.add(self.array, other.array)
         return Series(new_array)
+
+    def get(self, key, default=None):
+        if key in self.index:
+            return self[key]
+        return default
