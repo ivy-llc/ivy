@@ -22,6 +22,18 @@ class Index:
     def size(self):
         return self.index_array.size
 
+    @property
+    def array(self):
+        return self.index_array
+
+    @property
+    def shape(self):
+        return tuple(self.index_array.shape)
+
+    @property
+    def has_duplicates(self):
+        return not self.is_unique()
+
     def unique(self, level=None):
         # todo handle level with mutliindexer
         self.index_array = ivy.unique_values(self)
@@ -30,6 +42,7 @@ class Index:
     def is_unique(self):
         uniques = ivy.unique_values(self)
         return len(uniques) == len(self.index_array)
+
 
     def to_list(self):
         return self.index_array.to_list()
