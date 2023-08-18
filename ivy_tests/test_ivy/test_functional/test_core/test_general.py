@@ -47,7 +47,7 @@ except ImportError:
     ivy.functional.backends.torch = SimpleNamespace()
 
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
@@ -817,7 +817,7 @@ def test_exists(x):
     ),
 )
 def test_default(x, default_val, test_flags, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         with_callable = False
         if x is not None:
             if hasattr(x, "__call__"):
@@ -1185,7 +1185,7 @@ def test_container_types():
 
 
 def test_inplace_arrays_supported(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         if backend_fw in ["numpy", "torch"]:
             assert ivy_backend.inplace_arrays_supported()
         elif backend_fw in ["jax", "tensorflow", "paddle"]:
@@ -1195,7 +1195,7 @@ def test_inplace_arrays_supported(backend_fw):
 
 
 def test_inplace_variables_supported(backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         if backend_fw in ["numpy", "torch", "tensorflow"]:
             assert ivy_backend.inplace_variables_supported()
         elif backend_fw in ["jax", "paddle"]:
@@ -1217,7 +1217,7 @@ def test_inplace_variables_supported(backend_fw):
 def test_inplace_update(
     x_val_and_dtypes, keep_x_dtype, test_flags, on_device, backend_fw
 ):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype = x_val_and_dtypes[0][0]
         if dtype in ivy_backend.function_unsupported_dtypes(ivy_backend.inplace_update):
             return
@@ -1259,7 +1259,7 @@ def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device, backend_fw):
     dtype = x_val_and_dtypes[0][0]
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.array(x, dtype=dtype, device=on_device)
         val = ivy_backend.array(val, dtype=dtype, device=on_device)
         new_val = x - val
@@ -1290,7 +1290,7 @@ def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device, backend_fw):
 )
 def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
     dtype = x_val_and_dtypes[0][0]
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         if dtype in ivy_backend.function_unsupported_dtypes(
             ivy_backend.inplace_increment
         ):
@@ -1653,7 +1653,7 @@ _composition_2.test_unsupported_devices_and_dtypes = {
     [_composition_1, _composition_2],
 )
 def test_function_supported_device_and_dtype(func, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.function_supported_devices_and_dtypes(func, recurse=True)
         exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
         for dev in exp:
@@ -1674,7 +1674,7 @@ def test_function_supported_device_and_dtype(func, backend_fw):
     [_composition_1, _composition_2],
 )
 def test_function_unsupported_devices(func, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         res = ivy_backend.function_unsupported_devices_and_dtypes(func)
         exp = func.test_unsupported_devices_and_dtypes.copy()
         for dev in exp:
@@ -1916,7 +1916,7 @@ def _fn3(x, y):
     in_axes_as_cont=st.booleans(),
 )
 def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
         arrays = [ivy_backend.native_array(array) for array in generated_arrays]
         assume(
@@ -1939,7 +1939,7 @@ def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont, backend_fw):
         except Exception:
             fw_res = None
 
-    with update_backend("jax") as gt_backend:
+    with BackendHandler.update_backend("jax") as gt_backend:
         arrays = [gt_backend.native_array(array) for array in generated_arrays]
         if in_axes_as_cont:
             jax_vmapped_func = gt_backend.vmap(func, in_axes=in_axes, out_axes=0)

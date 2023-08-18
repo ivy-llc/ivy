@@ -1,7 +1,12 @@
 # TODO rename file
+from enum import Enum
 import ivy
 import importlib
-from typing import Callable
+
+
+class BackendHandlerMode(Enum):
+    WithBackend = 0
+    SetBackend = 1
 
 
 class WithBackendContext:
@@ -15,8 +20,21 @@ class WithBackendContext:
         return
 
 
-# update_backend: Callable = ivy.utils.backend.ContextManager
-update_backend: Callable = WithBackendContext
+class BackendHandler:
+    _context = WithBackendContext
+
+    @classmethod
+    def _update_context(cls, mode: BackendHandlerMode):
+        if mode == BackendHandlerMode.WithBackend:
+            cls._context = WithBackendContext
+        elif mode == BackendHandlerMode.SetBackend:
+            cls._context = ivy.utils.backend.ContextManager
+        else:
+            raise ValueError(f"Unknown backend handler mode! {mode}")
+
+    @classmethod
+    def update_backend(cls, backend):
+        return cls._context(backend)
 
 
 def get_frontend_config(frontend: str):

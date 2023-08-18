@@ -4,7 +4,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import update_backend
+from ivy_tests.test_ivy.helpers import BackendHandler
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
@@ -29,7 +29,7 @@ def _fn(x=None, dtype=None):
 def test_tensorflow_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         _import_fn = ivy_backend.utils.dynamic_import.import_module
         _import_fn("ivy.functional.frontends.tensorflow.func_wrapper")
         _tensor_module = _import_fn("ivy.functional.frontends.tensorflow.tensor")

@@ -4,7 +4,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
@@ -25,7 +25,7 @@ def test_jax_ivy_array(
     backend_fw,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -50,7 +50,7 @@ def test_jax_array_dtype(
     backend_fw,
 ):
     dtype, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -68,7 +68,7 @@ def test_jax_array_ndim(
     backend_fw,
 ):
     dtype, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -87,7 +87,7 @@ def test_jax_array_shape(
     backend_fw,
 ):
     _, data, shape = dtype_x_shape
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -114,7 +114,7 @@ def _transpose_helper(draw):
 
 @given(x_transpose=_transpose_helper())
 def test_jax_array_property_T(x_transpose, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x, xT = x_transpose
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
@@ -145,7 +145,7 @@ def _at_helper(draw):
     x_y_index=_at_helper(),
 )
 def test_jax_array_at(x_y_index, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )

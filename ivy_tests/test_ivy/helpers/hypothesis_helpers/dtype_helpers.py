@@ -7,7 +7,7 @@ from typing import Optional
 
 # local
 import ivy
-from ..pipeline_helper import update_backend, get_frontend_config
+from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -369,7 +369,7 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         bound_dtype_bits = lambda d: (
             ivy_backend.dtype_bits(d) / 2
             if ivy_backend.is_complex_dtype(d)

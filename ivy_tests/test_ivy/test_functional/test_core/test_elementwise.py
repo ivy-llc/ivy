@@ -9,7 +9,7 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
+from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
 import ivy_tests.test_ivy.helpers.globals as test_globals
 
 _zero = np.asarray(0, dtype="uint8")
@@ -1187,7 +1187,7 @@ def pow_helper(draw, available_dtypes=None):
 
     def cast_filter(dtype1_x1_dtype2):
         dtype1, _, dtype2 = dtype1_x1_dtype2
-        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
             if ivy_backend.can_cast(dtype1, dtype2):
                 return True
         return False
@@ -1197,7 +1197,7 @@ def pow_helper(draw, available_dtypes=None):
             cast_filter
         )
     )
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_int_dtype(dtype2):
             max_val = ivy_backend.iinfo(dtype2).max
         else:
