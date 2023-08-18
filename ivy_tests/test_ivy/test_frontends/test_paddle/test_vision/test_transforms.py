@@ -139,7 +139,7 @@ def test_paddle_crop(
         height=height,
         width=width,
         backend_to_test=backend_fw,
-
+    )
 
 # hflip
 @handle_frontend_test(
