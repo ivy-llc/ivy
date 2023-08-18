@@ -2048,3 +2048,39 @@ def test_paddle_amax(
         on_device=on_device,
         x=x[0],
     )
+
+
+#scale
+@st.composite
+def _scale_helper(draw):
+    print("logic to be added in further commits")
+
+@handle_frontend_test(
+    fn_tree="paddle.scale",
+    dtypes_and_params = _scale_helper(
+        available_dtypes = helpers.get_dtypes("float"),
+        min_num_dims=0,
+        min_dim_size=0,
+    ),
+)
+def test_paddle_scale(
+    *,
+    dtypes_and_params,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype , x , bias , bias_after_scale = dtypes_and_params
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        x = x[0],
+        bias = bias,
+        fn_tree=fn_tree,
+        bias_after_scale = bias_after_scale,
+        frontend=frontend,
+        backend_fw=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+    )
