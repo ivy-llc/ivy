@@ -1575,7 +1575,6 @@ def test_torch_index_put(
     input_dtype, arrays = dtype_and_x
     indices, values, array_to_fill = arrays
     accumulate = False
-    print( input_dtype,indices, values, array_to_fill)
     helpers.test_frontend_function(
         input_dtypes= input_dtype,
         frontend=frontend,
