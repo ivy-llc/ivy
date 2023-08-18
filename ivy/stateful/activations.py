@@ -13,18 +13,7 @@ class GELU(Module):
         approximate: bool = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """
-        Apply the RELU activation function.
-
-        Parameters
-        ----------
-        approximate
-           specifies whether to apply the approximate gelu function or
-           the exact one which is not valid for complex dtype
-        complex_mode
-          Specifies how to handle complex input. See
-           ``ivy.func_wrapper.handle_complex_input`` for more detail.
-        """
+        """Apply the GELU activation function."""
         self._approximate = approximate
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -32,10 +21,6 @@ class GELU(Module):
     def _forward(
         self,
         x,
-        /,
-        *,
-        approximate=None,
-        complex_mode=None,
     ):
         """
         Perform forward pass of the GELU activation.
@@ -44,12 +29,6 @@ class GELU(Module):
         ----------
         x
             Inputs to process *[batch_shape, d]*.
-        approximate
-           specifies whether to apply the approximate gelu function or
-           the exact one which is not valid for complex dtype.
-        complex_mode
-          Specifies how to handle complex input. See
-           ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -58,8 +37,8 @@ class GELU(Module):
         """
         return ivy.gelu(
             x,
-            approximate=ivy.default(approximate, self._approximate),
-            complex_mode=ivy.default(complex_mode, self._complex_mode),
+            approximate=self._approximate,
+            complex_mode=self._complex_mode,
         )
 
 
@@ -91,35 +70,24 @@ class ReLU(Module):
         self,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """
-        Apply the RELU activation function.
-
-        Parameters
-        ----------
-        complex_mode
-           Specifies how to handle complex input. See
-            ``ivy.func_wrapper.handle_complex_input`` for more detail.
-        """
+        """Apply the RELU activation function."""
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
             Inputs to process *[batch_shape, d]*.
-        complex_mode
-          Specifies how to handle complex input. See
-           ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
         ret
             The outputs following the RELU activation *[batch_shape, d]*
         """
-        return ivy.relu(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
+        return ivy.relu(x, complex_mode=self._complex_mode)
 
 
 class LeakyReLU(Module):
@@ -136,14 +104,13 @@ class LeakyReLU(Module):
         alpha
              Negative slope for ReLU.
         complex_mode
-              Specifies how to handle complex input. See
-            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+             Specifies how to handle complex input.
         """
         self._alpha = alpha
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, *, alpha=None, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -152,9 +119,8 @@ class LeakyReLU(Module):
               Inputs to process *[batch_shape, d]*.
         alpha
               Negative slope for ReLU.
-       complex_mode
-          Specifies how to handle complex input. See
-           ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        complex_mode
+              Specifies how to handle complex input.
 
         Returns
         -------
@@ -163,17 +129,18 @@ class LeakyReLU(Module):
         """
         return ivy.leaky_relu(
             x,
-            alpha=ivy.default(alpha, self._alpha),
-            complex_mode=ivy.default(complex_mode, self._complex_mode),
+            alpha=self._alpha,
+            complex_mode=self._complex_mode,
         )
 
 
 class LogSoftmax(Module):
-    def __init__(self):
+    def __init__(self, axis: int = -1):
         """Apply the LOG SOFTMAX activation function."""
         Module.__init__(self)
+        self._axis = axis
 
-    def _forward(self, x, *, axis=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -187,15 +154,16 @@ class LogSoftmax(Module):
          ret
             The outputs following the LOG SOFTMAX activation *[batch_shape, d]*
         """
-        return ivy.log_softmax(x, axis=axis)
+        return ivy.log_softmax(x, axis=self._axis)
 
 
 class Softmax(Module):
-    def __init__(self):
+    def __init__(self, axis: int = -1):
         """Apply the SOFTMAX activation function."""
         Module.__init__(self)
+        self._axis = axis
 
-    def _forward(self, x, *, axis=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -211,34 +179,17 @@ class Softmax(Module):
             The outputs following the SOFTMAX activation *[batch_shape, d]*
 
         """
-        return ivy.softmax(x, axis=axis)
+        return ivy.softmax(x, axis=self._axis)
 
 
 class Softplus(Module):
-    def __init__(
-        self,
-        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    ):
-        """
-        Apply the SOFTPLUS activation function.
-
-        Parameters
-        ----------
-        complex_mode
-            Specifies how to handle complex input. See
-            ``ivy.func_wrapper.handle_complex_input`` for more detail.
-        """
+    def __init__(self, beta=1.0, threshold=None):
+        """Apply the SOFTPLUS activation function."""
         Module.__init__(self)
-        self._complex_mode = complex_mode
+        self._beta = beta
+        self._threshold = threshold
 
-    def _forward(
-        self,
-        x,
-        *,
-        beta=None,
-        threshold=None,
-        complex_mode=None,
-    ):
+    def _forward(self, x):
         """
 
         Parameters
@@ -250,8 +201,6 @@ class Softplus(Module):
 
         threshold
              values above this revert to a linear function. Default: ``None``.
-        complex_mode
-             optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -259,12 +208,7 @@ class Softplus(Module):
             The outputs following the SOFTPLUS activation *[batch_shape, d]*
 
         """
-        return ivy.softplus(
-            x,
-            beta=beta,
-            threshold=threshold,
-            complex_mode=ivy.default(complex_mode, self._complex_mode)
-        )
+        return ivy.softplus(x, beta=self._beta, threshold=self._threshold)
 
 
 class Mish(Module):
@@ -394,11 +338,12 @@ class Hardswish(Module):
 
 
 class Logit(Module):
-    def __init__(self):
+    def __init__(self, eps=None):
         """Apply the LOGIT activation function."""
         Module.__init__(self)
+        self._eps = eps
 
-    def _forward(self, x, eps=None):
+    def _forward(self, x):
         """
 
         Parameters
@@ -413,15 +358,16 @@ class Logit(Module):
         ret
             The outputs following the LOGIT activation *[batch_shape, d]*
         """
-        return ivy.logit(x, eps=eps)
+        return ivy.logit(x, eps=self._eps)
 
 
 class PReLU(Module):
-    def __init__(self):
+    def __init__(self, slope):
         """Apply the PRELU activation function."""
         Module.__init__(self)
+        self._slope = slope
 
-    def _forward(self, x, slope):
+    def _forward(self, x):
         """
 
         Parameters
@@ -436,7 +382,7 @@ class PReLU(Module):
         ret
             The outputs following the PRELU activation *[batch_shape, d]*
         """
-        return ivy.prelu(x, slope)
+        return ivy.prelu(x, self._slope)
 
 
 class SeLU(Module):
@@ -461,11 +407,12 @@ class SeLU(Module):
 
 
 class ELU(Module):
-    def __init__(self):
+    def __init__(self, alpha=1.0):
         """Apply the ELU activation function."""
         Module.__init__(self)
+        self._alpha = alpha
 
-    def _forward(self, x, alpha=1.0):
+    def _forward(self, x):
         """
         Parameters
         ----------
@@ -478,7 +425,7 @@ class ELU(Module):
         ret
             The outputs following the ELU activation *[batch_shape, d]*
         """
-        return ivy.elu(x, alpha=alpha)
+        return ivy.elu(x, alpha=self._alpha)
 
 
 class LogSigmoid(Module):
