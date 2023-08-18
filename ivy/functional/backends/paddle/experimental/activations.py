@@ -57,6 +57,9 @@ def relu6(
     return F.relu6(x.cast("float32")).cast(x.dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def logsigmoid(
     input: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
 ) -> paddle.Tensor:
@@ -65,7 +68,7 @@ def logsigmoid(
     if paddle.is_complex(input):
         return paddle_backend.log(
             paddle_backend.divide(
-                1.0, (paddle_backend.add(1.0, paddle_backend.exp(input)))
+                1.0, (paddle_backend.add(1.0, paddle_backend.exp(-input)))
             )
         )
     return F.log_sigmoid(input.cast("float32")).cast(input.dtype)
