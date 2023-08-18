@@ -6,7 +6,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
@@ -200,7 +200,7 @@ def _asarray_helper(draw):
             shared_dtype=True,
         )
     )
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         x_list = ivy_backend.nested_map(x, lambda x: x.tolist(), shallow=False)
         sh = draw(helpers.get_shape(min_num_dims=1))
         sh = ivy_backend.Shape(sh)
@@ -376,7 +376,7 @@ def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 @st.composite
 def _fill_value(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
         if ivy_backend.is_int_dtype(dtype):
@@ -656,7 +656,7 @@ def test_copy_array(
     if test_flags.as_variable[0]:
         assume("float" in dtype[0])
     # smoke test
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x = test_flags.apply_flags(
             x, dtype, 0, backend=backend_fw, on_device=on_device
         )[0]
