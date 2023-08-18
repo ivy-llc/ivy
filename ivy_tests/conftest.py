@@ -103,7 +103,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--set-backend",
         action="store_true",
-        default=True,
+        default=False,
         help="Force the testing pipeline to use ivy.set_backend for backend setting",
     )
 
