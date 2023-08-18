@@ -1632,6 +1632,7 @@ def _higher_order_moment_data(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.higher_order_moment",
     data=_higher_order_moment_data(),
+    test_with_out=st.just(False),
 )
 def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, tensor, order = data

@@ -1889,3 +1889,83 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_higher_order_moment(
+        tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        order: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.higher_order_moment. This method
+        simply wraps the function, and so the docstring for ivy.higher_order_moment also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        tensor : 2D-tensor -- or ND-tensor
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order : int
+            order of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor : moment
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "higher_order_moment",
+            tensor,
+            order,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def higher_order_moment(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        order: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.higher_order_moment. This method
+        simply wraps the function, and so the docstring for ivy.higher_order_moment also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        tensor : 2D-tensor -- or ND-tensor
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order : int
+            order of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor : moment
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+        """
+        return self.static_higher_order_moment(
+            self,
+            order,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

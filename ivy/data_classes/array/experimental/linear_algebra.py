@@ -675,3 +675,29 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             tol=tol,
             verbose=verbose,
         )
+
+    def higher_order_moment(
+        self: Union[ivy.Array, ivy.NativeArray],
+        order: Optional[int],
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.higher_order_moment. This method simply
+        wraps the function, and so the docstring for ivy.higher_order_moment also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        tensor : 2D-tensor -- or ND-tensor
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order : int
+            order of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor : moment
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+        """
+        return ivy.higher_order_moment(self._data, order)

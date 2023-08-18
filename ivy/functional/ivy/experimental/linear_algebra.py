@@ -1679,7 +1679,7 @@ def dot(
 @handle_array_function
 @handle_device_shifting
 def higher_order_moment(
-    tensor: Union[ivy.Array, ivy.NativeArray], order: Optional[int]
+    tensor: Union[ivy.Array, ivy.NativeArray], order: Optional[int], /
 ) -> ivy.Array:
     """
     Compute the Higher-Order Moment.
@@ -1699,8 +1699,11 @@ def higher_order_moment(
         if tensor is a matrix of size (n_samples, n_features),
         tensor of size (n_features, )*order
     """
-    if order > 1:
-        moment = ivy.multi_dot([tensor.T for _ in range(order)])
-    else:
-        moment = tensor
+    print(f"{tensor:}, {order:}")
+    moment = ivy.copy_array(tensor)
+    for _ in range(order - 1):
+        moment = ivy.tensordot(moment, tensor, axes=0)
+
+    print(f"{moment:}")
+
     return ivy.mean(moment, axis=0)
