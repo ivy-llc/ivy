@@ -414,6 +414,11 @@ class Tensor:
     def logical_and(self, other):
         return torch_frontend.logical_and(self, other)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def logical_and_(self, other):
+        self.ivy_array = ivy.astype(self.logical_and(other=other).ivy_array, self.dtype)
+        return self
+
     def logical_not(self, *, out=None):
         return torch_frontend.logical_not(self, out=out)
 
