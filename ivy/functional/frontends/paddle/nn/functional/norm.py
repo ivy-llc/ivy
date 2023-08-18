@@ -25,7 +25,7 @@ def instance_norm(
     data_format="NCHW",
     name=None,
 ):
-    r"""
+    """
     Compute the instance normalization of layer.
 
     Parameters
@@ -51,7 +51,7 @@ def instance_norm(
     momentum
         The optional value used for the moving_mean and
         moving_var computation. Default: 0.9.
-    eps
+    epsilon
         An optional value added to the denominator
         for numerical stability. Default is 1e-5.
     data_format
@@ -75,4 +75,35 @@ def instance_norm(
         momentum,
         epsilon,
         data_format,
+    )
+
+
+# batch_norm
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def batch_norm(
+    x,
+    running_mean,
+    running_var,
+    weight,
+    bias,
+    training=False,
+    momentum=0.9,
+    epsilon=1e-05,
+    data_format="NCHW",
+    use_global_stats=None,
+    name=None,
+):
+    return ivy.batch_norm(
+        x,
+        running_mean,
+        running_var,
+        weight,
+        bias,
+        training,
+        momentum,
+        epsilon,
+        data_format,
+        use_global_stats,
+        name,
     )
