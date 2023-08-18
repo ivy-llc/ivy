@@ -1192,7 +1192,7 @@ def test_ifftn(
     fn_name,
     on_device,
 ):
-    dtype, x, axes, norm, s = d_x_d_s_n
+    dtype, x, s, axes, norm = d_x_d_s_n
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
