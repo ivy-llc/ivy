@@ -203,6 +203,3 @@ def test_sparse_cross_entropy(
         epsilon=epsilon,
         reduction=reduction,
     )
-
-
-
