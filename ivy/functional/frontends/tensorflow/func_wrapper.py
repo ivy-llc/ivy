@@ -74,7 +74,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     def _inputs_to_ivy_arrays_tf(*args, **kwargs):
         """
         Convert all `TensorFlow.Tensor` instances in both the positional and keyword
-        arguments into `ivy.Array` instances, and then calls the function with the
+        arguments into `ivy.Array` instances, and then call the function with the
         updated arguments.
 
         Parameters
@@ -115,7 +115,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_tf(*args, **kwargs):
         """
-        Call the function, and then converts all `tensorflow.Tensor` instances in the
+        Call the function, and then convert all `tensorflow.Tensor` instances in the
         function return into `ivy.Array` instances.
 
         Parameters

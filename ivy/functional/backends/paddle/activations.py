@@ -38,6 +38,9 @@ def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.relu(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def leaky_relu(
     x: paddle.Tensor,
     /,
@@ -89,7 +92,7 @@ def sigmoid(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def softmax(
     x: paddle.Tensor,
@@ -136,7 +139,7 @@ def softplus(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def log_softmax(
     x: paddle.Tensor,
@@ -170,7 +173,7 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def hardswish(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None

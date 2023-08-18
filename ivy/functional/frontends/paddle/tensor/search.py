@@ -7,7 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -16,7 +16,7 @@ def argmax(x, /, *, axis=None, keepdim=False, dtype="int64", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -34,6 +34,15 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sort(x, /, *, axis=-1, descending=False, name=None):
+    return ivy.sort(x, axis=axis, descending=descending)
+
+
+@with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     "paddle",
 )
@@ -46,7 +55,7 @@ def nonzero(input, /, *, as_tuple=False):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back

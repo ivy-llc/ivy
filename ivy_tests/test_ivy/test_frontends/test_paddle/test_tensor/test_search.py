@@ -21,6 +21,7 @@ def test_paddle_argmax(
     dtype_x_and_axis,
     keepdim,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
 ):
@@ -30,6 +31,7 @@ def test_paddle_argmax(
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
@@ -52,6 +54,7 @@ def test_paddle_argmin(
     dtype_x_and_axis,
     keepdim,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
 ):
@@ -59,6 +62,7 @@ def test_paddle_argmin(
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
@@ -79,6 +83,41 @@ def test_paddle_argmin(
     descending=st.booleans(),
 )
 def test_paddle_argsort(
+    dtype_input_axis,
+    descending,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        descending=descending,
+    )
+
+
+# sort
+@handle_frontend_test(
+    fn_tree="paddle.tensor.search.sort",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    descending=st.booleans(),
+)
+def test_paddle_sort(
+    *,
     dtype_input_axis,
     descending,
     on_device,
@@ -114,12 +153,14 @@ def test_paddle_nonzero(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, input = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -148,6 +189,7 @@ def test_paddle_searchsorted(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, input = dtype_and_values
@@ -155,6 +197,7 @@ def test_paddle_searchsorted(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
