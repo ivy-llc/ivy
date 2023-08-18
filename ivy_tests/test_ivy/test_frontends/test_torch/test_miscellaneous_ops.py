@@ -1563,7 +1563,7 @@ def test_torch_cov(
     fn_tree="torch.block_diag",
     dtype_and_tensors=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=st.integers(min_value=1, max_value=2),
+        num_arrays=st.integers(min_value=1, max_value=10),
         min_num_dims=0,
         max_num_dims=2,
         allow_inf=True,

@@ -414,8 +414,7 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
-
-#TODO: Add Ivy function for block_diag but only scipy.linalg and \
+# TODO: Add Ivy function for block_diag but only scipy.linalg and \
 # and torch supports block_diag currently
 @to_ivy_arrays_and_back
 def block_diag(*tensors):
@@ -424,7 +423,7 @@ def block_diag(*tensors):
     promoted_dtype = ivy.as_ivy_dtype(tensors[0].dtype)
     for idx in range(1, len(tensors)):
         promoted_dtype = torch_frontend.promote_types_torch(
-           tensors[idx - 1].dtype, tensors[idx].dtype
+            tensors[idx - 1].dtype, tensors[idx].dtype
         )
 
     inp_tensors = [ivy.asarray(t, dtype=promoted_dtype) for t in tensors]
@@ -455,7 +454,9 @@ def block_diag(*tensors):
     ret_dim_1 = 0
     for idx, t_shape in enumerate(shapes_list):
         dim_0, dim_1 = t_shape
-        ret[ret_dim_0: ret_dim_0 + dim_0, ret_dim_1: ret_dim_1 + dim_1] = ivy.copy_array(tensors_2d[idx])
+        ret[
+            ret_dim_0 : ret_dim_0 + dim_0, ret_dim_1 : ret_dim_1 + dim_1
+        ] = ivy.copy_array(tensors_2d[idx])
         ret_dim_0 += dim_0
         ret_dim_1 += dim_1
 
