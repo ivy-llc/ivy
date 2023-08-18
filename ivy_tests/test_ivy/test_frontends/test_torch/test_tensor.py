@@ -12012,7 +12012,6 @@ def test_torch_tensor_random_(
     )
 
 
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
