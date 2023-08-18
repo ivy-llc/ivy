@@ -458,7 +458,7 @@ def clip(
     if x_min is not None:
         x = paddle_backend.maximum(x, x_min)
     if x_max is not None:
-        x = paddle.minimum(x, x_max)
+        x = paddle_backend.minimum(x, x_max)
     return x
 
 
