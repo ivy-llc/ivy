@@ -140,6 +140,10 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
+    #@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def divide(self, other, *, out=None):
+        return torch_frontend.divide(self, other, out=out)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def sub(self, other, *, alpha=1):
         return torch_frontend.sub(self, other, alpha=alpha)
@@ -247,6 +251,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arcsinh(self):
         return torch_frontend.arcsinh(self)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def arcsinh_(self):
+        self.ivy_array = torch_frontend.arcsinh(self).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arcsin(self):
@@ -477,6 +486,10 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def erf_(self, *, out=None):
+        self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
 
     def new_zeros(
         self,
@@ -1048,6 +1061,17 @@ class Tensor:
     def remainder(self, other, *, out=None):
         return torch_frontend.remainder(self, other, out=out)
 
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
+    )
+    def reciprocal_(self):
+        self.ivy_array = torch_frontend.reciprocal(self).ivy_array
+        return self
+      
+    def remainder_(self, other, *, out=None):
+        self.ivy_array = torch_frontend.remainder(self, other, out=out).ivy_array
+        return self  
+
     def bitwise_not_(self):
         self.ivy_array = self.bitwise_not().ivy_array
         return self
@@ -1406,6 +1430,11 @@ class Tensor:
         self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
         return self
 
+    @with_supported_dtypes({"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch")
+    def true_divide_(self, other):
+        self.ivy_array = self.div(other, rounding_mode=None).ivy_array
+        return self
+
     def normal_(self, mean=0, std=1, *, generator=None):
         self.ivy_array = ivy.random_normal(
             mean=mean,
@@ -1584,6 +1613,12 @@ class Tensor:
     def log1p(self):
         return torch_frontend.log1p(self)
 
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    def log1p_(self):
+        promoted_type = ivy.promote_types(self.dtype, "float32")
+        self.ivy_array = torch_frontend.log1p(self).to(promoted_type).ivy_array
+        return self
+
     def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.baddbmm(
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
@@ -1747,6 +1782,25 @@ class Tensor:
             self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
         )
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def sinc(self):
+        return torch_frontend.sinc(self)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("uint8",)}, "torch")
+    def index_fill(self, dim, index, value):
+        arr = torch_frontend.moveaxis(self, dim, 0)
+        arr[ivy.to_list(index)] = value
+        arr = torch_frontend.moveaxis(self, 0, dim)
+        return arr
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1759,7 +1813,16 @@ class Size(tuple):
                 new_iterable.append(int(item))
             except Exception:
                 raise TypeError(f"Expected int, but got {type(item)} at index {i}")
-        return super().__new__(cls, new_iterable)
+        return super(Size, cls).__new__(cls, tuple(new_iterable))
+
+    def __init__(self, shape) -> None:
+        self._ivy_shape = (
+            ivy.shape(shape) if not isinstance(shape, ivy.Shape) else shape
+        )
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+    @property
+    def ivy_shape(self):
+        return self._ivy_shape

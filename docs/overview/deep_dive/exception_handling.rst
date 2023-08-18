@@ -2,7 +2,6 @@ Exception Handling
 ==================
 
 .. _`exception handling channel`: https://discord.com/channels/799879767196958751/1028267924043092068
-.. _`exception handling forum`: https://discord.com/channels/799879767196958751/1028297940168626257
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 As Ivy is unifying multiple backends, various issues are seen during exception handling:
@@ -321,8 +320,7 @@ exception messages only.
 
     IvyIndexError: jax: all: axis 2 is out of bounds for array of dimension 1
 
-
-@handle_exceptions Decorator
+:code:`@handle_exceptions` Decorator
 ----------------------------
 
 To ensure that all backend exceptions are caught properly, a decorator is used to handle functions in the :code:`try/except` block.
@@ -510,18 +508,18 @@ Let's look at an example!
 
     # in ivy/utils/assertions.py
     def check_less(x1, x2, allow_equal=False, message=""):
-    # less_equal
-    if allow_equal and ivy.any(x1 > x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be lesser than or equal to {}".format(x1, x2)
-            if message == ""
-            else message
-        )
-    # less
-    elif not allow_equal and ivy.any(x1 >= x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be lesser than {}".format(x1, x2) if message == "" else message
-        )
+      # less_equal
+      if allow_equal and ivy.any(x1 > x2):
+          raise ivy.exceptions.IvyException(
+              "{} must be lesser than or equal to {}".format(x1, x2)
+              if message == ""
+              else message
+          )
+      # less
+      elif not allow_equal and ivy.any(x1 >= x2):
+          raise ivy.exceptions.IvyException(
+              "{} must be lesser than {}".format(x1, x2) if message == "" else message
+          )
 
 **ivy.set_split_factor**
 
@@ -545,7 +543,7 @@ Instead of coding a conditional block and raising an exception if the conditions
 
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_ or in the `exception handling forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_!
 
 **Video**
 
