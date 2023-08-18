@@ -11965,12 +11965,13 @@ def test_torch_tensor_quantile(
     )
 
 
+# random_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="random_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=['float16', 'float32', 'float64', 'int32', 'int64'],
+        available_dtypes=["float16", "float32", "float64", "int32", "int64"],
         min_value=1,
         max_value=5,
         min_num_dims=1,
@@ -12001,7 +12002,7 @@ def test_torch_tensor_random_(
         },
         method_all_as_kwargs_np={
             "to": maxval,
-            #"from":minval,
+            # "from":minval,
         },
         init_flags=init_flags,
         method_flags=method_flags,
