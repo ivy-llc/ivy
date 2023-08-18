@@ -114,6 +114,8 @@ def max_pool1d(
     )
 
 
+
+
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
@@ -272,6 +274,53 @@ def max_pool2d(
         out=out,
     )
 
+def max_unpool2d(
+    x: ivy.Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int, int]],
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute a 2-D max unpooling given the 2-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    x
+        Pooled input image *[batch_size, h, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[h, w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        "SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NHWC" or "NCHW". Defaults to "NHWC".
+    out
+        Optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+
+    Both the description and the type hints above assume an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+    """
+    return ivy.current_backend(x).max_unpool2d(
+        x, indices, kernel, strides, padding, data_format=data_format, out=out
+    )
+
 
 @handle_backend_invalid
 @handle_nestable
@@ -356,6 +405,80 @@ def max_pool3d(
         dilation=dilation,
         ceil_mode=ceil_mode,
         out=out,
+    )
+
+def max_unpool3d(
+    x: ivy.Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int, int, int]],
+    strides: Union[int, Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute a 3-D max unpooling given the 3-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    x
+        Pooled input tensor *[batch_size, d, h, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[d, h, w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        "SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NDHWC" or "NCDHW". Defaults to "NDHWC".
+    out
+        Optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+
+    Both the description and the type hints above assume an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(0, 64.).reshape((2, 2, 2, 2, 2))
+    >>> pool_result = ivy.max_pool3d(x, 2, 2, 'SAME')
+    >>> indices = ...  # Obtain the indices during max pooling
+    >>> print(pool_result)
+    ivy.array([[[[[ 6.,  7.],
+                [14., 15.]],
+               [[22., 23.],
+                [30., 31.]]],
+
+              [[[38., 39.],
+                [46., 47.]],
+               [[54., 55.],
+                [62., 63.]]]]])
+    >>> unpool_result = ivy.max_unpool3d(pool_result, indices, 2, 2, 'SAME')
+    >>> print(unpool_result)
+    ivy.array([[[[[ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.]],
+               [[ 0.,  0.,  0.,  0.],
+                [ 0.,  6.,  0.,  7.]]],
+
+              [[[ 0.,  0.,  0.,  0.],
+                [ 0.,  0.,  0.,  0.]],
+               [[ 0.,  0.,  0.,  0.],
+                [ 0., 38.,  0., 39.]]]]])
+    """
+    return ivy.current_backend(x).max_unpool3d(
+        x, indices, kernel, strides, padding, data_format=data_format, out=out
     )
 
 
