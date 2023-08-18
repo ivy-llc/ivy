@@ -140,6 +140,10 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
+    #@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def divide(self, other, *, out=None):
+        return torch_frontend.divide(self, other, out=out)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def sub(self, other, *, alpha=1):
         return torch_frontend.sub(self, other, alpha=alpha)
@@ -1424,6 +1428,11 @@ class Tensor:
 
     def div_(self, other, *, rounding_mode=None):
         self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
+        return self
+
+    @with_supported_dtypes({"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch")
+    def true_divide_(self, other):
+        self.ivy_array = self.div(other, rounding_mode=None).ivy_array
         return self
 
     def normal_(self, mean=0, std=1, *, generator=None):
