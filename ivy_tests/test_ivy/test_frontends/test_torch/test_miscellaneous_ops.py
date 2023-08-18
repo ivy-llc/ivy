@@ -1552,6 +1552,7 @@ def test_torch_cov(
 
 
 @handle_frontend_test(
+
     fn_tree='torch.index_put',
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=['int64'],
@@ -1577,10 +1578,40 @@ def test_torch_index_put(
     accumulate = False
     helpers.test_frontend_function(
         input_dtypes= input_dtype,
+=======
+    fn_tree="torch.block_diag",
+    dtype_and_tensors=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=st.integers(min_value=1, max_value=10),
+        min_num_dims=0,
+        max_num_dims=2,
+        allow_inf=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_block_diag(
+    *,
+    dtype_and_tensors,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, tensors = dtype_and_tensors
+    if isinstance(dtypes, list):  # If more than one value was generated
+        args = {f"x{i}": np.array(t, dtype=dtypes[i]) for i, t in enumerate(tensors)}
+    else:  # If exactly one value was generated
+        args = {"x0": np.array(tensors, dtype=dtypes)}
+    test_flags.num_positional_args = len(tensors)
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+
         rtol=1e-2,
         atol=1e-2,
         input = array_to_fill,
@@ -1588,6 +1619,12 @@ def test_torch_index_put(
         values = values,
         accumulate = accumulate
     )
+
+
+        backend_to_test=backend_fw,
+        **args,
+    )
+
 
 # view_as_real
 @handle_frontend_test(
