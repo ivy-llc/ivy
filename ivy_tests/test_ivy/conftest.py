@@ -5,6 +5,8 @@ from typing import Dict
 import sys
 import multiprocessing as mp
 
+# for enabling numpy's bfloat16 behavior
+from packaging import version
 
 mod_frontend = {
     "tensorflow": None,
@@ -56,10 +58,11 @@ def default_framework_mapper(fw, fw_path="/opt/fw/", set_too=False):
     except FileNotFoundError:
         # if no version exists return None
         return None
+    versions = [version.parse(v) for v in versions]
     versions.sort()
     if set_too:
-        sys.path.insert(1, f"{fw_path}{fw}/{versions[-1]}")
-    return versions[-1]
+        sys.path.insert(1, f"{fw_path}{fw}/{str(versions[-1])}")
+    return str(versions[-1])
 
 
 def pytest_report_header(config):
@@ -116,7 +119,7 @@ def pytest_configure(config):
                 fwrk, ver = fw.split("/")
                 mod_backend[fwrk] = (proc, input_queue, output_queue)
                 # set the latest version for the rest of the test code and move on
-                default_framework_mapper(fwrk, set_too=True)
+                default_framework_mapper(fwrk, set_too=False)
                 found_backends.add(fwrk)
 
         if found_backends:
@@ -130,7 +133,7 @@ def pytest_configure(config):
                 # find the latest version of this framework
                 # and set it in the path for rest of the code
                 # to access
-                version = default_framework_mapper(fw, set_too=True)
+                version = default_framework_mapper(fw, set_too=False)
                 # spin up process only if a version was found else don't
                 if version:
                     input_queue = mp.Queue()
@@ -351,4 +354,8 @@ def pytest_collection_finish(session):
         for item in session.items:
             item_path = os.path.relpath(item.path)
             print("{}::{}".format(item_path, item.name))
+
+        for backend in mod_backend:
+            proc = mod_backend[backend]
+            proc.terminate()
         pytest.exit("Done!")

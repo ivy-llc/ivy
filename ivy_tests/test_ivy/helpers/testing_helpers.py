@@ -107,11 +107,27 @@ def num_positional_args(draw, *, fn_name: str = None):
         num_positional_args=num_positional_args(fn_name="add")
     )
     """
+    if mod_backend[t_globals.CURRENT_BACKEND]:
+        proc, input_queue, output_queue = mod_backend[t_globals.CURRENT_BACKEND]
+        input_queue.put(
+            ("num_positional_args_helper", fn_name, t_globals.CURRENT_BACKEND)
+        )
+        num_positional_only, total, num_keyword_only = output_queue.get()
+    else:
+        num_positional_only, total, num_keyword_only = num_positional_args_helper(
+            fn_name, t_globals.CURRENT_BACKEND
+        )
+    return draw(
+        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
+    )
+
+
+def num_positional_args_helper(fn_name, backend):
     num_positional_only = 0
     num_keyword_only = 0
     total = 0
     fn = None
-    with update_backend(t_globals.CURRENT_BACKEND) as ivy_backend:
+    with update_backend(backend) as ivy_backend:
         ivy_backend.utils.dynamic_import.import_module(fn_name.rpartition(".")[0])
         for i, fn_name_key in enumerate(fn_name.split(".")):
             if i == 0:
@@ -128,9 +144,8 @@ def num_positional_args(draw, *, fn_name: str = None):
             num_keyword_only += 1
         elif param.kind == param.VAR_KEYWORD:
             num_keyword_only += 1
-    return draw(
-        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
-    )
+
+    return num_positional_only, total, num_keyword_only
 
 
 # Decorators helpers

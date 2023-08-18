@@ -11,6 +11,7 @@ from ..pipeline_helper import update_backend, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
+from ...conftest import mod_backend
 
 
 _dtype_kind_keys = {
@@ -38,10 +39,19 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
+    if mod_backend[framework]:
+        proc, input_queue, output_queue = mod_backend[framework]
+        input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
+        return output_queue.get()
+    else:
+        return _get_type_dict_helper(framework, kind, is_frontend_test)
+
+
+def _get_type_dict_helper(framework, kind, is_frontend_test):
     if is_frontend_test:
         framework_module = get_frontend_config(framework)
     else:
-        framework_module = ivy.with_backend(framework, cached=True)
+        framework_module = ivy
 
     if kind == "valid":
         return framework_module.valid_dtypes

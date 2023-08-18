@@ -5,11 +5,15 @@ import importlib
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import (
     array_helpers_dtype_info_helper,
 )
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
+    _get_type_dict_helper,
+)
 
 # local
 from .testing_helpers import (
     _get_supported_devices_dtypes_helper,
     _get_method_supported_devices_dtypes_helper,
+    num_positional_args_helper,
 )
 from .function_testing import (
     test_function_backend_computation,
@@ -30,10 +34,10 @@ def backend_proc(input_queue, output_queue):
     sys.path.insert(1, path)
     framework = framework.split("/")[0]
     framework = importlib.import_module(framework)
+    print(framework.__version__)
     # if jax, do more stuff
     if framework.__name__ == "jax":
         framework.config.update("jax_enable_x64", True)
-
     while True:
         # subsequent arguments will be passed
         data = input_queue.get()
@@ -61,6 +65,16 @@ def backend_proc(input_queue, output_queue):
             dtype_info = array_helpers_dtype_info_helper(backend, kind_dtype, dtype)
             output_queue.put(dtype_info)
 
+        elif data[0] == "_get_type_dict_helper":
+            _, framework, kind, is_frontend_test = data
+            dtype_ret = _get_type_dict_helper(framework, kind, is_frontend_test)
+            output_queue.put((dtype_ret))
+
+        elif data[0] == "num_positional_args_helper":
+            _, fn_name, framework = data
+            dtype_ret = num_positional_args_helper(fn_name, framework)
+            output_queue.put((dtype_ret))
+
         elif data[0] == "function_backend_computation":
             # it's the backend return computation
             _, fw, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name = data
@@ -78,9 +92,11 @@ def backend_proc(input_queue, output_queue):
             ) = test_function_backend_computation(
                 fw, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name
             )
+            # ret_from_target to be none, because main process has
+            # framework imports blocked
             output_queue.put(
                 (
-                    ret_from_target,
+                    None,
                     ret_np_flat_from_target,
                     ret_device,
                     args_np,
@@ -127,9 +143,10 @@ def backend_proc(input_queue, output_queue):
                 test_flags,
                 fn_name,
             )
+            # ret_from gt is none because main process has frameworks is None
             output_queue.put(
                 (
-                    ret_from_gt,
+                    None,
                     ret_np_from_gt_flat,
                     ret_from_gt_device,
                     test_flags,
