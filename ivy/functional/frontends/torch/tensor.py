@@ -140,6 +140,10 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
+    #@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def divide(self, other, *, out=None):
+        return torch_frontend.divide(self, other, out=out)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def sub(self, other, *, alpha=1):
         return torch_frontend.sub(self, other, alpha=alpha)
@@ -482,6 +486,10 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def erf_(self, *, out=None):
+        self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
 
     def new_zeros(
         self,
@@ -1053,6 +1061,17 @@ class Tensor:
     def remainder(self, other, *, out=None):
         return torch_frontend.remainder(self, other, out=out)
 
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
+    )
+    def reciprocal_(self):
+        self.ivy_array = torch_frontend.reciprocal(self).ivy_array
+        return self
+      
+    def remainder_(self, other, *, out=None):
+        self.ivy_array = torch_frontend.remainder(self, other, out=out).ivy_array
+        return self  
+
     def bitwise_not_(self):
         self.ivy_array = self.bitwise_not().ivy_array
         return self
@@ -1409,6 +1428,11 @@ class Tensor:
 
     def div_(self, other, *, rounding_mode=None):
         self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
+        return self
+
+    @with_supported_dtypes({"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch")
+    def true_divide_(self, other):
+        self.ivy_array = self.div(other, rounding_mode=None).ivy_array
         return self
 
     def normal_(self, mean=0, std=1, *, generator=None):
@@ -1769,6 +1793,13 @@ class Tensor:
     )
     def sinc(self):
         return torch_frontend.sinc(self)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("uint8",)}, "torch")
+    def index_fill(self, dim, index, value):
+        arr = torch_frontend.moveaxis(self, dim, 0)
+        arr[ivy.to_list(index)] = value
+        arr = torch_frontend.moveaxis(self, 0, dim)
+        return arr
 
 
 class Size(tuple):

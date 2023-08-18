@@ -34,7 +34,6 @@ Function Types
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function types channel`: https://discord.com/channels/799879767196958751/982737839861145630
-.. _`function types forum`: https://discord.com/channels/799879767196958751/1028296516030451823
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**, and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
@@ -250,7 +249,7 @@ Feel free to have a look through all of the `submodules`_, you should be able to
 
 This should have hopefully given you a good feel for the different function types.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_  or in the `function types forum`_ !
+If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_!
 
 **Video**
 

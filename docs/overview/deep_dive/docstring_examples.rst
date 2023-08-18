@@ -4,7 +4,6 @@ Docstring Examples
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
-.. _`docstring examples forum`: https://discord.com/channels/799879767196958751/1028297703089774705
 
 After writing the general docstrings, the final step is to add helpful examples to the docstrings.
 
@@ -748,7 +747,7 @@ Passing docstring tests is a necessary but not sufficient condition for the comp
 
 These three examples should give you a good understanding of what is required when adding docstring examples.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_ or in the `docstring examples forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_!
 
 
 **Video**

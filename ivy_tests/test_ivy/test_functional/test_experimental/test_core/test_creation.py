@@ -387,6 +387,33 @@ def test_unsorted_segment_sum(
         input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.unsorted_segment_sum",
+    d_x_n_s=valid_unsorted_segment_min_inputs(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_unsorted_segment_sum(
+    *,
+    d_x_n_s,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, data, num_segments, segment_ids = d_x_n_s
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         data=data,
@@ -470,7 +497,6 @@ def test_random_tucker(
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
 
-
 @st.composite
 def _random_cp_data(draw):
     shape = draw(
@@ -545,3 +571,29 @@ def test_random_cp(
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.trilu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-10, max_value=10),
+    upper=st.booleans(),
+)
+def test_trilu(*, dtype_and_x, k, upper, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        upper=upper,
+        k=k,
+    )

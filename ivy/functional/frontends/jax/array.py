@@ -127,6 +127,27 @@ class Array:
             fill_value=fill_value,
         )
 
+    def prod(
+        self,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+        out=None,
+    ):
+        return jax_frontend.numpy.product(
+            self,
+            axis=axis,
+            dtype=self.dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+            out=out,
+        )
+
     def ravel(self, order="C"):
         return jax_frontend.numpy.ravel(
             self,
@@ -140,6 +161,27 @@ class Array:
             self,
             axis=axis,
             order=order,
+        )
+
+    def sum(
+        self,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+    ):
+        return jax_frontend.numpy.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
         )
 
     def argsort(self, axis=-1, kind="stable", order=None):
