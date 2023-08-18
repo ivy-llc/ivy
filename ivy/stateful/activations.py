@@ -13,7 +13,18 @@ class GELU(Module):
         approximate: bool = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the GELU activation function."""
+        """
+        Apply the RELU activation function.
+
+        Parameters
+        ----------
+        approximate
+           specifies whether to apply the approximate gelu function or
+           the exact one which is not valid for complex dtype
+        complex_mode
+          Specifies how to handle complex input. See
+           ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         self._approximate = approximate
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -33,6 +44,12 @@ class GELU(Module):
         ----------
         x
             Inputs to process *[batch_shape, d]*.
+        approximate
+           specifies whether to apply the approximate gelu function or
+           the exact one which is not valid for complex dtype.
+        complex_mode
+          Specifies how to handle complex input. See
+           ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -74,7 +91,15 @@ class ReLU(Module):
         self,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the RELU activation function."""
+        """
+        Apply the RELU activation function.
+
+        Parameters
+        ----------
+        complex_mode
+           Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
@@ -85,6 +110,9 @@ class ReLU(Module):
         ----------
         x
             Inputs to process *[batch_shape, d]*.
+        complex_mode
+          Specifies how to handle complex input. See
+           ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -108,7 +136,8 @@ class LeakyReLU(Module):
         alpha
              Negative slope for ReLU.
         complex_mode
-             Specifies how to handle complex input.
+              Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._alpha = alpha
         self._complex_mode = complex_mode
@@ -123,8 +152,9 @@ class LeakyReLU(Module):
               Inputs to process *[batch_shape, d]*.
         alpha
               Negative slope for ReLU.
-        complex_mode
-              Specifies how to handle complex input.
+       complex_mode
+          Specifies how to handle complex input. See
+           ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -189,7 +219,15 @@ class Softplus(Module):
         self,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the SOFTPLUS activation function."""
+        """
+        Apply the SOFTPLUS activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         Module.__init__(self)
         self._complex_mode = complex_mode
 

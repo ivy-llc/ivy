@@ -531,7 +531,8 @@ def _softplus_jax_like(
         res = ivy.where(
             (
                 ivy.logical_or(
-                    ivy.real(x_beta) < 0, ivy.logical_and(ivy.real(x_beta) == 0, ivy.imag(x_beta) < 0)
+                    ivy.real(x_beta) < threshold,
+                    ivy.logical_and(ivy.real(x_beta) == threshold, ivy.imag(x_beta) < threshold)
                 )
             ),
             res,
@@ -562,6 +563,9 @@ def softplus(
 
     If the input is complex, then by default we apply the softplus operation
     `log(1+ exp(x))` to  each element
+    If threshold is set we check if either its real part is strictly negative or
+    if its real part is zero and its imaginary part is negative then we apply
+    `input×β > threshold`.
 
     Parameters
     ----------
