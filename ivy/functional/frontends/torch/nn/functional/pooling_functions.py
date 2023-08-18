@@ -117,7 +117,6 @@ def max_pool1d(input, kernel_size, stride=None, padding=0):
         input, kernel_size, stride, padding_str, data_format=data_format
     )
 
-# max_unpool1d
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_unpool1d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
