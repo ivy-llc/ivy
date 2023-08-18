@@ -439,6 +439,22 @@ def silu(
     return current_backend(x).silu(x, out=out)
 
 
+def _elu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    alpha: float = 1.0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    safe_x = ivy.where(
+        (x > 0),
+        0.0,
+        x,
+    )
+    return ivy.where((x > 0), x, ivy.astype(alpha * ivy.expm1(safe_x), x.dtype))
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -504,6 +520,9 @@ def elu(
     }
     """
     return current_backend(x).elu(x, alpha=alpha, out=out)
+
+
+elu.jax_like = _elu_jax_like
 
 
 def sequence_length(

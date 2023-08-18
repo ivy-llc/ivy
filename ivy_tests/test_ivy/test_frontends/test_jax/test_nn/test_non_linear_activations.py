@@ -589,18 +589,20 @@ def test_jax_celu(
 @handle_frontend_test(
     fn_tree="jax.nn.elu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-5,
         max_value=5,
         safety_factor_scale="linear",
-        num_arrays=2,
+        num_arrays=1,
         shared_dtype=True,
     ),
+    alpha=st.floats(min_value=0, max_value=1, allow_infinity=False),
     test_with_out=st.just(False),
 )
 def test_jax_elu(
     *,
     dtype_and_x,
+    alpha,
     test_flags,
     on_device,
     fn_tree,
@@ -616,7 +618,7 @@ def test_jax_elu(
         fn_tree=fn_tree,
         on_device=on_device,
         x=xs[0],
-        alpha=xs[1],
+        alpha=alpha,
         rtol=1e-03,
         atol=1e-03,
     )

@@ -91,15 +91,6 @@ def silu(
 silu.support_native_out = True
 
 
-@with_unsupported_dtypes(
-    {
-        "1.25.2 and below": (
-            "complex64",
-            "complex128",
-        )
-    },
-    backend_version,
-)
 @_scalar_output_to_0d_array
 def elu(
     x: np.ndarray,

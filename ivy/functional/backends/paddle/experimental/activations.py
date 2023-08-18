@@ -108,6 +108,10 @@ def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.silu(x.cast("float32")).cast(x.dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
 def elu(
     x: paddle.Tensor,
     /,
