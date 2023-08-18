@@ -53,6 +53,9 @@ def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
 
+def remove_axis(shape, axis):
+    return shape[:axis] + shape[axis+1:]
+
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
@@ -381,3 +384,44 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
     result = mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal.ivy_array)
 
     return result
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+
+def categorical(key, logits, axis, shape=None):
+    seed = _get_seed(key)
+    logits_arr = ivy.asarray(logits)
+
+    if axis >= 0:
+        axis-=len(logits_arr.shape)
+    batch_shape = tuple(remove_axis(logits_arr.shape, axis))
+
+    if shape is None:
+        shape = batch_shape
+    else:
+        shape = tuple(shape)
+        if shape != batch_shape:
+            raise ValueError(f"Shape {shape} is not compatible with reference shape {batch_shape}")
+
+    shape_prefix = shape[:len(shape)-len(batch_shape)]
+    logits_shape = list(shape[len(shape) - len(batch_shape):])
+    logits_shape.insert(axis % len(logits_arr.shape), logits_arr.shape[axis])
+
+    gumbel_noise = gumbel(key, ivy.array(logits_shape), logits_arr.dtype)
+    expanded_logits = ivy.expand_dims(logits_arr, axis=axis)
+    noisy_logits = gumbel_noise + expanded_logits
+
+    # Use Ivy's argmax to get indices
+    indices = ivy.argmax(noisy_logits, axis=axis)
+
+    return indices
