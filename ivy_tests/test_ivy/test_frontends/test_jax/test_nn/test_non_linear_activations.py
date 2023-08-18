@@ -327,7 +327,7 @@ def test_jax_softmax(
 @handle_frontend_test(
     fn_tree="jax.nn.softplus",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
         safety_factor_scale="log",

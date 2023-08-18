@@ -560,8 +560,8 @@ def softplus(
     """
     Apply the softplus function element-wise.
 
-    If the input is complex, then by default we apply the `log(1+ exp(x))` to  each element0
-    This behaviour can be changed by specifying a different `complex_mode`.
+    If the input is complex, then by default we apply the softplus operation
+    `log(1+ exp(x))` to  each element
 
     Parameters
     ----------
