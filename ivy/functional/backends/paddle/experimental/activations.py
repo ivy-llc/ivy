@@ -71,9 +71,11 @@ def logsigmoid(
     return F.log_sigmoid(input.cast("float32")).cast(input.dtype)
 
 
-def selu(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
-) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
+def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.selu(x)
     if paddle.is_complex(x):
@@ -91,9 +93,11 @@ def selu(
     return F.selu(x.cast("float32")).cast(x.dtype)
 
 
-def silu(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
-) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
+def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.silu(x)
     if paddle.is_complex(x):

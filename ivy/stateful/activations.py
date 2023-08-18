@@ -285,7 +285,7 @@ class Sigmoid(Module):
          ret
             The outputs following the SIGMOID activation *[batch_shape, d]*
         """
-        return ivy.sigmoid(x)
+        return ivy.sigmoid(x, complex_mode=self._complex_mode)
 
 
 class Tanh(Module):

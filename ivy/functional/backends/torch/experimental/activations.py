@@ -46,20 +46,16 @@ def logsigmoid(
     return torch.nn.functional.logsigmoid(input)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def selu(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
-) -> torch.Tensor:
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = torch.nn.functional.selu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def silu(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
-) -> torch.Tensor:
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.silu(x)
 
 
