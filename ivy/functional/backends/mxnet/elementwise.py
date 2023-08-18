@@ -599,6 +599,7 @@ def tanh(
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    complex_mode="jax",
 ) -> Union[(None, mx.ndarray.NDArray)]:
     return mx.nd.tanh(x)
 

@@ -11,7 +11,14 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Union
 
 
-def gelu(x: None, /, *, approximate: bool = False, out: Optional[None] = None) -> None:
+def gelu(
+    x: None,
+    /,
+    *,
+    approximate: bool = False,
+    out: Optional[None] = None,
+    complex_mode="jax",
+) -> None:
     if approximate:
         return (
             0.5 * x * (1 + mx.nd.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
@@ -19,11 +26,13 @@ def gelu(x: None, /, *, approximate: bool = False, out: Optional[None] = None) -
     return mx.nd.LeakyReLU(x, act_type="gelu")
 
 
-def leaky_relu(x: None, /, *, alpha: float = 0.2, out: Optional[None] = None) -> None:
+def leaky_relu(
+    x: None, /, *, alpha: float = 0.2, out: Optional[None] = None, complex_mode="jax"
+) -> None:
     return mx.nd.LeakyReLU(x, slope=alpha)
 
 
-def relu(x: None, /, *, out: Optional[None] = None) -> None:
+def relu(x: None, /, *, out: Optional[None] = None, complex_mode="jax") -> None:
     return mx.nd.relu(x)
 
 

@@ -677,7 +677,9 @@ def not_equal(
     {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
-def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def tanh(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,

@@ -18,7 +18,12 @@ from . import backend_version
 
 
 def gelu(
-    x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
+    x: Tensor,
+    /,
+    *,
+    approximate: bool = False,
+    out: Optional[Tensor] = None,
+    complex_mode="jax",
 ) -> Tensor:
     if x.dtype in [tf.complex64, tf.complex128]:
         return 0.5 * x * (1 + tf.math.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
@@ -26,12 +31,17 @@ def gelu(
 
 
 def leaky_relu(
-    x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 0.2,
+    out: Optional[Tensor] = None,
+    complex_mode="jax",
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def relu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> Tensor:
     return tf.nn.relu(x)
 
 
