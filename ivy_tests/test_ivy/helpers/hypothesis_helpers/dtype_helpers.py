@@ -39,9 +39,9 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
     if is_frontend_test:
-        framework_module = get_frontend_config(framework)
+        framework_module = get_frontend_config(framework).supported_dtypes
     else:
-        framework_module = ivy.with_backend(framework, cached=True)
+        framework_module = ivy.with_backend(framework)
 
     if kind == "valid":
         return framework_module.valid_dtypes
