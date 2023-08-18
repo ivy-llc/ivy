@@ -114,6 +114,12 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def ceil_(x, name=None):
+    return ivy.ceil(x, out=x)
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
