@@ -1759,12 +1759,12 @@ class Tensor:
         )
 
     def random_(
-            self,
-            to=None,
-            *,
-            generator=None,
-            **kwargs,
-        ):
+        self,
+        to=None,
+        *,
+        generator=None,
+        **kwargs,
+    ):
         if not to:
             if ivy.is_float_dtype(self.ivy_array):
                 to = ivy.finfo(self.dtype).max
