@@ -49,3 +49,8 @@ def log1p(x):
 @from_zero_dim_arrays_to_scalar
 def log10(x):
     return ivy.log10(x)
+
+
+@from_zero_dim_arrays_to_scalar
+def cbrt(x):
+    return ivy.multiply(ivy.sign(x), ivy.pow(ivy.abs(x), ivy.divide(1, 3)))
