@@ -31,9 +31,12 @@ def _get_image_num_channels(img, data_format):
 
 
 def _blend_images(img1, img2, ratio):
-    # TODO: when int supported, use max_value = 1.0 if ivy.check_float(img1) else 255.0
-    # remove / 255.0 until paddle fixes the issue of cv2 vs np input
-    max_value = 1.0
+    # TODO: ivy.check_flaot(img1) returns False for ivy array
+    # TODO: when lerp supports int type and when the above issue is fixed,
+    # replace this with ivy.check_float(img1)
+    max_value = (
+        1.0 if ivy.dtype(img1) == "float32" or ivy.dtype(img1) == "float64" else 255.0
+    )
     return ivy.astype(
         ivy.lerp(img2, img1, float(ratio)).clip(0, max_value), ivy.dtype(img1)
     )
