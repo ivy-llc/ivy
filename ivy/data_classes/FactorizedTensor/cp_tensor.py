@@ -81,12 +81,13 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : tl.CPTensor or (core, factors)
+        cp_tensor
 
-        matrix_or_vector : ndarray
+        matrix_or_vector
             1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
             matrix or vectors to which to n-mode multiply the tensor
-        mode : int
+        mode
+            int
 
         Returns
         -------
@@ -111,11 +112,13 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : tl.CPTensor or (core, factors)
+        cp_tensor
+            ivy.CPTensor or (core, factors)
 
         Returns
         -------
-        l2-norm : int
+        l2-norm
+            int
 
         Notes
         -----
@@ -138,7 +141,8 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor = (weight, factors)
+        cp_tensor
+            CPTensor = (weight, factors)
             factors is list of matrices, all with the same number of columns
             i.e.::
                 for u in U:
@@ -146,16 +150,20 @@ class CPTensor(FactorizedTensor):
 
             where `R` is fixed while `s_i` can vary with `i`
 
-        inplace : bool, default is True
+        inplace
             if False, returns a normalized Copy
             otherwise the tensor modifies itself and returns itself
 
         Returns
         -------
         CPTensor = (normalisation_weights, normalised_factors)
-            returns itself if inplace is False, a normalized copy otherwise
+            returns itself if inplace is True, a normalized copy otherwise
         """
-        self.weights, self.factors = ivy.CPTensor.cp_normalize(self)
+        weights, factors = ivy.CPTensor.cp_normalize(self)
+        if inplace:
+            self.weights, self.factors = weights, factors
+            return self
+        return ivy.CPTensor((weights, factors))
 
     # Properties #
     # ---------------#
@@ -178,11 +186,12 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor or (weights, factors)
+        cp_tensor
+            CPTensor or (weights, factors)
 
         Returns
         -------
-        (shape, rank) : (int tuple, int)
+        (shape, rank)
             size of the full tensor and rank of the CP tensor
         """
         if isinstance(cp_tensor, CPTensor):
@@ -238,13 +247,12 @@ class CPTensor(FactorizedTensor):
         ----------
         tensor_shape
             shape of the full tensor to decompose (or approximate)
-
         rank
             rank of the CP decomposition
 
         Returns
         -------
-        n_params : int
+        n_params
             Number of parameters of a CP decomposition of rank `rank`
               of a full tensor of shape `tensor_shape`
         """
@@ -263,18 +271,19 @@ class CPTensor(FactorizedTensor):
         ----------
         tensor_shape
             shape of the tensor to decompose
-        rank : {'same', float, int}, default is same
+        rank
             way to determine the rank, by default 'same'
             if 'same': rank is computed to keep the number
             of parameters (at most) the same
             if float, computes a rank so as to keep rank
             percent of the original number of parameters
             if int, just returns rank
-        rounding = {'round', 'floor', 'ceil'}
+        rounding
+            {'round', 'floor', 'ceil'}
 
         Returns
         -------
-        rank : int
+        rank
             rank of the decomposition
         """
         if rounding == "ceil":
@@ -311,7 +320,7 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor = (weight, factors)
+        cp_tensor
             factors is list of matrices,
               all with the same number of columns
             i.e.::
@@ -355,7 +364,8 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor = (weight, factors)
+        cp_tensor
+            CPTensor = (weight, factors)
             factors is list of matrices, all with the same number of columns
             i.e.::
 
@@ -364,10 +374,10 @@ class CPTensor(FactorizedTensor):
 
             where `R` is fixed while `s_i` can vary with `i`
 
-        mode: int
+        mode
             mode that should receive negative signs
 
-        func: tensorly function
+        func
             a function that should summarize the sign of a column
             it must be able to take an axis argument
 
@@ -417,18 +427,19 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor = (weight, factors)
+        cp_tensor
+            CPTensor = (weight, factors)
             factors is a list of factor matrices,
             all with the same number of columns
             i.e. for all matrix U in factor_matrices:
             U has shape ``(s_i, R)``, where R is fixed and s_i varies with i
 
-        mask : ndarray
+        mask
             A mask to be applied to the final tensor. It should be
             broadcastable to the shape of the final tensor, that is
             ``(U[1].shape[0], ... U[-1].shape[0])``.
 
-        return_loss : bool
+        return_loss
             Optionally return the scalar loss function along with the gradient.
 
         Returns
@@ -471,19 +482,20 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor = (weight, factors)
+        cp_tensor
             factors is a list of factor matrices,
             all with the same number of columns
             i.e. for all matrix U in factor_matrices:
             U has shape ``(s_i, R)``, where R is fixed and s_i varies with i
 
-        mask : ndarray a mask to be applied to the final tensor. It should be
+        mask
+            mask to be applied to the final tensor. It should be
             broadcastable to the shape of the final tensor, that is
             ``(U[1].shape[0], ... U[-1].shape[0])``.
 
         Returns
         -------
-        ndarray
+        ivy.Array
             full tensor of shape ``(U[1].shape[0], ... U[-1].shape[0])``
 
         Notes
@@ -528,16 +540,16 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor = (weight, factors)
+        cp_tensor
             factors is a list of matrices, all with the same number of columns
             ie for all u in factor_matrices:
             u[i] has shape (s_u_i, R), where R is fixed
-        mode: int
+        mode
             mode of the desired unfolding
 
         Returns
         -------
-        ndarray
+        ivy.Array
             unfolded tensor of shape (tensor_shape[mode], -1)
 
         Notes
@@ -569,7 +581,7 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : CPTensor = (weight, factors)
+        cp_tensor
             factors is a list of matrices, all with the same number of columns
             i.e.::
 
@@ -580,7 +592,7 @@ class CPTensor(FactorizedTensor):
 
         Returns
         -------
-        ndarray
+        ivy.Array
             vectorised tensor
         """
         return ivy.reshape(ivy.CPTensor.cp_to_tensor(cp_tensor), (-1))
@@ -592,9 +604,10 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : tl.CPTensor or (core, factors)
+        cp_tensor
+            ivy.CPTensor or (core, factors)
 
-        matrix_or_vector : ndarray
+        matrix_or_vector
             1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
             matrix or vectors to which to n-mode multiply the tensor
         mode : int
@@ -663,11 +676,12 @@ class CPTensor(FactorizedTensor):
 
         Parameters
         ----------
-        cp_tensor : tl.CPTensor or (core, factors)
+        cp_tensor
+            ivy.CPTensor or (core, factors)
 
         Returns
         -------
-        l2-norm : int
+        l2-norm
 
         Notes
         -----
@@ -749,30 +763,30 @@ class CPTensor(FactorizedTensor):
     #    return permuted_tensors, permutation
 
     @staticmethod
-    def unfolding_dot_khatri_rao(tensor, cp_tensor, mode):
+    def unfolding_dot_khatri_rao(x, cp_tensor, mode):
         """
         Mode-n unfolding times khatri-rao product of factors.
 
         Parameters
         ----------
-        tensor : tl.tensor
+        x
             tensor to unfold
-        factors : tl.tensor list
+        factors
             list of matrices of which to the khatri-rao product
-        mode : int
+        mode
             mode on which to unfold `tensor`
 
         Returns
         -------
         mttkrp
-            dot(unfold(tensor, mode), khatri-rao(factors))
+            dot(unfold(x, mode), khatri-rao(factors))
         """
         mttkrp_parts = []
         weights, factors = cp_tensor
         rank = ivy.shape(factors[0])[1]
         for r in range(rank):
             component = ivy.multi_mode_dot(
-                tensor, [ivy.conj(f[:, r]) for f in factors], skip=mode
+                x, [ivy.conj(f[:, r]) for f in factors], skip=mode
             )
             mttkrp_parts.append(component)
 
