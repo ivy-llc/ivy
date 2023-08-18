@@ -35,4 +35,4 @@ def l1_loss(
     name: Optional[str] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return F.l1_loss(input, target, reduction=reduction, name=name)
+    return F.l1_loss(input, target, reduction=reduction, name=name, out=out)

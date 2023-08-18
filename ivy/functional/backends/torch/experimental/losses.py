@@ -18,5 +18,10 @@ def l1_loss(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.l1_loss(
-        x, target, size_average=size_average, reduce=reduce, reduction=reduction
+        x,
+        target,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+        out=out,
     )
