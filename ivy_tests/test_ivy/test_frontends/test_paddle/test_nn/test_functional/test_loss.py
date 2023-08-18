@@ -509,9 +509,8 @@ def test_paddle_nll_loss(
     ),
     dtype_and_weight=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
         min_num_dims=2,
-        min_value=-2,
-        max_value=2,
     ),
     reduction=st.sampled_from(["mean", "none", "sum"]),
 )
