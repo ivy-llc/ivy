@@ -2825,9 +2825,9 @@ def set_item(
         query, target_shape, vector_inds = _parse_query(query, x.shape, scatter=True)
         if vector_inds is not None:
             perm = [
-                    *vector_inds,
-                    *[i for i in range(len(x.shape)) if i not in vector_inds],
-                ]
+                *vector_inds,
+                *[i for i in range(len(x.shape)) if i not in vector_inds],
+            ]
             x = ivy.permute_dims(x, axes=perm)
             inv_perm = ivy.invert_permutation(perm)
     val = _broadcast_to(val, target_shape).astype(x.dtype)
@@ -2951,11 +2951,7 @@ def _parse_query(query, x_shape, scatter=False):
             else ivy.empty((1, 0))
         )
         indices = ivy.array(
-            [
-                (*arr, *post)
-                for arr in zip(*new_arrays)
-                for post in post_arrays
-            ]
+            [(*arr, *post) for arr in zip(*new_arrays) for post in post_arrays]
         ).reshape((*target_shape, len(x_shape)))
     elif len(array_inds):
         pre_arrays = (

@@ -95,7 +95,7 @@ def set_item(
     return x.at[query].set(val)
 
 
-set_item.partial_mixed_handler = (lambda *args, copy=False: copy)
+set_item.partial_mixed_handler = lambda *args, copy=False: copy
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
