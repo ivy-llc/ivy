@@ -117,6 +117,18 @@ def max_pool1d(input, kernel_size, stride=None, padding=0):
         input, kernel_size, stride, padding_str, data_format=data_format
     )
 
+# max_unpool1d
+def max_unpool1d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
+    
+    if stride is None:
+        stride = kernel_size
+
+    data_format = "NCW"
+
+    return ivy.max_unpool1d(
+        input, indices, kernel_size, stride, padding, data_format, output_size
+    )
+
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
@@ -149,6 +161,27 @@ def max_pool2d(
         return ret.squeeze(0)
     return ret
 
+def max_unpool2d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
+    
+    if stride is None:
+        stride = kernel_size
+
+    data_format = "NCHW"
+
+    return ivy.max_unpool2d(
+        input, indices, kernel_size, stride, padding, data_format, output_size
+    )
+
+def max_unpool3d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
+    
+    if stride is None:
+        stride = kernel_size
+
+    data_format = "NCDHW"
+
+    return ivy.max_unpool3d(
+        input, indices, kernel_size, stride, padding, data_format, output_size
+    )
 
 @to_ivy_arrays_and_back
 def adaptive_max_pool2d(
