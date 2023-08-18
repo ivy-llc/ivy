@@ -518,14 +518,26 @@ def _softplus_jax_like(
     out: Optional[ivy.Array] = None,
 ):
     if beta is not None:
-        x = ivy.multiply(x, ivy.array(beta, dtype=x.dtype))
-    amax = ivy.relu(x)
-    x = ivy.subtract(x, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
-    x = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(x))))
-    x = ivy.real(x) + _wrap_between(ivy.imag(x), ivy.pi).astype(x.dtype) * ivy.astype(1j, x.dtype)
+        x_beta = ivy.multiply(x, ivy.array(beta, dtype=x.dtype))
+    else:
+        x_beta = x
+    amax = ivy.relu(x_beta)
+    res = ivy.subtract(x_beta, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
+    res = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(res))))
+    res = ivy.real(res) + _wrap_between(ivy.imag(res), ivy.pi).astype(x.dtype) * ivy.astype(1j, x.dtype)
     if beta is not None:
-        x = ivy.divide(x, ivy.array(beta, dtype=x.dtype))
-    return x
+        res = ivy.divide(res, ivy.array(beta, dtype=x.dtype))
+    if threshold is not None:
+        res = ivy.where(
+            (
+                ivy.logical_or(
+                    ivy.real(x_beta) < 0, ivy.logical_and(ivy.real(x_beta) == 0, ivy.imag(x_beta) < 0)
+                )
+            ),
+            res,
+            x,
+        ).astype(x.dtype)
+    return res
 
 @handle_exceptions
 @handle_backend_invalid
