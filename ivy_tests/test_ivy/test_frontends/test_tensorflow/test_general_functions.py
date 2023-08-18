@@ -331,6 +331,7 @@ def test_tensorflow_foldl(
     )
 
 
+#foldr
 @handle_frontend_test(
     fn_tree="tensorflow.foldr",
     fn=st.sampled_from(
