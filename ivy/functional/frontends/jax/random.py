@@ -381,3 +381,24 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
     result = mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal.ivy_array)
 
     return result
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def logistic(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+
+    x = uniform(key = key, shape=shape, dtype=dtype, minval=ivy.finfo(dtype).eps)
+    subVal = ivy.subtract(ivy.array([x,1]), x)
+    divVal = ivy.divide(x, subVal)
+    result = ivy.log(divVal)
+    return result
