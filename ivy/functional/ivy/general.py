@@ -2887,7 +2887,7 @@ def _parse_query(query, x_shape, scatter=False):
     for i, idx in enumerate(query):
         s = x_shape[i]
         if isinstance(idx, slice):
-            q_i = _parse_slice(idx, s, scatter=scatter)
+            q_i = _parse_slice(idx, s)
         elif ivy.is_array(idx):
             q_i = ivy.where(idx < 0, idx + s, idx)
         else:
@@ -3015,7 +3015,7 @@ def _parse_ellipsis(so, ndims):
     return ret, (len(pre), ndims - len(post))
 
 
-def _parse_slice(idx, s, scatter=False):
+def _parse_slice(idx, s):
     step = 1 if idx.step is None else idx.step
     if step > 0:
         start = 0 if idx.start is None else idx.start
@@ -3048,10 +3048,10 @@ def _parse_slice(idx, s, scatter=False):
                 stop = idx.stop
                 if stop > s:
                     stop = s
-                elif stop <= -s:
+                elif stop < -s:
+                    stop = -1
+                elif stop == -s:
                     stop = 0
-                    if start == 0 and not scatter:
-                        stop = -1
                 elif stop < 0:
                     stop = stop + s
     q_i = ivy.arange(start, stop, step).to_list()
