@@ -364,6 +364,12 @@ def broadcast_shapes(*shapes):
     return ivy.broadcast_shapes(*shapes)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@to_ivy_arrays_and_back
+def broadcast_to(tensor, shape):
+    return ivy.broadcast_to(tensor, shape)
+
+
 @to_ivy_arrays_and_back
 def atleast_2d(*tensors):
     return ivy.atleast_2d(*tensors)
