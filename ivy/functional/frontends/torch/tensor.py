@@ -1758,12 +1758,13 @@ class Tensor:
             self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
         )
 
-    def random_(self,
-                to=None,
-                *,
-                generator=None,
-                **kwargs,
-                ):
+    def random_(
+            self,
+            to=None,
+            *,
+            generator=None,
+            **kwargs,
+        ):
         if not to:
             if ivy.is_float_dtype(self.ivy_array):
                 to = ivy.finfo(self.dtype).max
