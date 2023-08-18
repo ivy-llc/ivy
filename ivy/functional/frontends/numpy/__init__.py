@@ -629,6 +629,10 @@ from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
     einsum,
 )
 
+from ivy.functional.frontends.numpy.ma import (
+    roots,
+)
+
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _maximum,
     _minimum,

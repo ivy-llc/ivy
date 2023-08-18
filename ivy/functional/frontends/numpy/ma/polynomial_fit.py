@@ -17,10 +17,15 @@ def roots(p):
         ftype = "complex64"
 
     if p.size < 2:
-        return ivy.array([], dtype=ftype)
+        return ivy.array([], dtype=ivy.float64)
     A = ivy.diag(
         ivy.ones((p.size - 2), dtype=p.dtype),
         k=-1,
     )
+
     A[0, :] = -p[1:] / p[0]
-    return ivy.eigvals(A)
+    ret = ivy.eigvals(A)
+    if p.size < 3:
+        return ret.astype(p.dtype)
+    else:
+        return ret.astype(ftype)
