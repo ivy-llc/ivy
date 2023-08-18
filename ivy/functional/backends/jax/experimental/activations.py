@@ -22,7 +22,9 @@ def logit(
     return jnp.log(x / (1 - x))
 
 
-def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def relu6(
+    x: JaxArray, /, *, out: Optional[JaxArray] = None, complex_mode="jax"
+) -> JaxArray:
     relu6_func = jax.nn.relu6
 
     # sets gradient at 0 and 6 to 0 instead of 0.5
@@ -48,18 +50,24 @@ def thresholded_relu(
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
-def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def logsigmoid(
+    input: JaxArray, /, *, out: Optional[JaxArray] = None, complex_mode="jax"
+) -> JaxArray:
     return jax.nn.log_sigmoid(input)
 
 
-def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def selu(
+    x: JaxArray, /, *, out: Optional[JaxArray] = None, complex_mode="jax"
+) -> JaxArray:
     ret = jax.nn.selu(x).astype(x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
 
 
-def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def silu(
+    x: JaxArray, /, *, out: Optional[JaxArray] = None, complex_mode="jax"
+) -> JaxArray:
     ret = jax.nn.silu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
@@ -67,7 +75,12 @@ def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def elu(
-    x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[JaxArray] = None,
+    complex_mode="jax",
 ) -> JaxArray:
     ret = jax.nn.elu(x, alpha)
     if ivy.exists(out):

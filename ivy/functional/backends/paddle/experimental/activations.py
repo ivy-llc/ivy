@@ -47,7 +47,9 @@ def thresholded_relu(
     )
 
 
-def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def relu6(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.relu6(x)
     if paddle.is_complex(x):
@@ -56,7 +58,7 @@ def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 def logsigmoid(
-    input: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    input: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
 ) -> paddle.Tensor:
     if input.dtype in [paddle.float32, paddle.float64]:
         return F.log_sigmoid(input)
@@ -69,7 +71,9 @@ def logsigmoid(
     return F.log_sigmoid(input.cast("float32")).cast(input.dtype)
 
 
-def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def selu(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.selu(x)
     if paddle.is_complex(x):
@@ -87,7 +91,9 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.selu(x.cast("float32")).cast(x.dtype)
 
 
-def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def silu(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.silu(x)
     if paddle.is_complex(x):
@@ -96,7 +102,12 @@ def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 def elu(
-    x: paddle.Tensor, /, *, alpha: float = 1.0, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[paddle.Tensor] = None,
+    complex_mode="jax",
 ) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.elu(x, alpha=alpha)

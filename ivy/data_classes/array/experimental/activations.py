@@ -119,8 +119,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         self,
         /,
         *,
-        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         Apply the rectified linear unit 6 function element-wise.
@@ -129,11 +129,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             input array
-        complex_mode
-            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -169,7 +170,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
         }
         """
-        return ivy.relu6(self._data, complex_mode=complex_mode, out=out)
+        return ivy.relu6(self._data, out=out, complex_mode=complex_mode)
 
     def logsigmoid(
         self: ivy.Array,
@@ -185,7 +186,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         self
             Input array.
         complex_mode
-            optional specifier for how to handle complex data types.
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -209,8 +211,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         self,
         /,
         *,
-        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         Apply the scaled exponential linear unit function element-wise.
@@ -219,11 +221,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             input array
-        complex_mode
-            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -248,14 +251,14 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
                     4.20280409,  5.25350523,  6.30420589,  7.35490704])
         """
-        return ivy.selu(self._data, complex_mode=complex_mode, out=out)
+        return ivy.selu(self._data, out=out, complex_mode=complex_mode)
 
     def silu(
         self: ivy.Array,
         /,
         *,
-        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.silu. This method simply wraps the
@@ -266,11 +269,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             input array.
-        complex_mode
-            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Examples
         --------
@@ -279,15 +283,15 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(y)
         ivy.array([-0.26894143,  0.        ,  0.73105854])
         """
-        return ivy.silu(self._data, complex_mode=complex_mode, out=out)
+        return ivy.silu(self._data, out=out, complex_mode=complex_mode)
 
     def elu(
         self,
         /,
         *,
         alpha: float = 1.0,
-        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         Ivy.Array instance method variant of ivy.elu. This method simply wraps the
@@ -300,11 +304,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
             input array.
         alpha
             scaler for controlling the slope of the function for x <= 0 Default: 1.0
-        complex_mode
-            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -318,4 +323,4 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(y)
         ivy.array([ 0.39, -0.57])
         """
-        return ivy.elu(self._data, alpha=alpha, complex_mode=complex_mode, out=out)
+        return ivy.elu(self._data, alpha=alpha, out=out, complex_mode=complex_mode)

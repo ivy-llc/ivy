@@ -35,7 +35,9 @@ def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def sigmoid(
+    x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
+) -> Tensor:
     if not ivy.is_array(x):
         x = float(x)
     return tf.nn.sigmoid(x)
@@ -88,5 +90,7 @@ def mish(
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def hardswish(
+    x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
+) -> Tensor:
     return x * tf.nn.relu6(x + 3) / 6

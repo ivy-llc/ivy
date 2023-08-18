@@ -27,7 +27,7 @@ def relu(x: None, /, *, out: Optional[None] = None) -> None:
     return mx.nd.relu(x)
 
 
-def sigmoid(x: None, /, *, out: Optional[None] = None) -> None:
+def sigmoid(x: None, /, *, out: Optional[None] = None, complex_mode="jax") -> None:
     return mx.nd.sigmoid(x)
 
 

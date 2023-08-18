@@ -34,7 +34,9 @@ def gelu(
     return ivy.astype(ret, x.dtype, copy=False)
 
 
-def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def sigmoid(
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+) -> np.ndarray:
     if not ivy.is_array(x):
         return np.asarray(1 / (1 + np.exp(-x)))
     return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)
@@ -117,7 +119,9 @@ mish.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def hardswish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def hardswish(
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+) -> np.ndarray:
     max_x_3 = np.maximum(x + 3, 0, dtype=x.dtype)
     return (x * np.minimum(max_x_3, 6, out=out, dtype=x.dtype) / 6).astype(x.dtype)
 

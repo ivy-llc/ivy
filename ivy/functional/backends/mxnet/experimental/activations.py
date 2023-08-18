@@ -20,17 +20,17 @@ def thresholded_relu(
     raise IvyNotImplementedException()
 
 
-def relu6(x: None, /, *, out: Optional[None] = None) -> None:
+def relu6(x: None, /, *, out: Optional[None] = None, complex_mode="jax") -> None:
     raise IvyNotImplementedException()
 
 
-def logsigmoid(input: None) -> None:
+def logsigmoid(input: None, complex_mode="jax") -> None:
     raise IvyNotImplementedException()
 
 
-def selu(x: None, /, *, out: Optional[None] = None) -> None:
+def selu(x: None, /, *, out: Optional[None] = None, complex_mode="jax") -> None:
     raise IvyNotImplementedException()
 
 
-def silu(x: None, /, *, out: Optional[None] = None) -> None:
+def silu(x: None, /, *, out: Optional[None] = None, complex_mode="jax") -> None:
     raise IvyNotImplementedException()

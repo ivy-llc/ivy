@@ -236,27 +236,26 @@ class SiLU(Module):
         Parameter
         ----------
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            `ivy.func_wrapper.handle_complex_input` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
              Inputs to process *[batch_shape, d]*.
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
          ret
             The outputs following the SiLU activation *[batch_shape, d]*
         """
-        return ivy.silu(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
+        return ivy.silu(x, complex_mode=self._complex_mode)
 
 
 class Sigmoid(Module):
@@ -267,7 +266,8 @@ class Sigmoid(Module):
         Parameter
         ----------
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            `ivy.func_wrapper.handle_complex_input` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -317,27 +317,26 @@ class ReLU6(Module):
         Parameter
         ----------
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            `ivy.func_wrapper.handle_complex_input` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
              Inputs to process *[batch_shape, d]*.
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
          ret
             The outputs following the RELU6 activation *[batch_shape, d]*
         """
-        return ivy.relu6(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
+        return ivy.relu6(x, complex_mode=self._complex_mode)
 
 
 class Hardswish(Module):
@@ -348,29 +347,26 @@ class Hardswish(Module):
         Parameter
         ----------
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            `ivy.func_wrapper.handle_complex_input` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
              Inputs to process *[batch_shape, d]*.
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
          ret
             The outputs following the HARDSWISH activation *[batch_shape, d]*
         """
-        return ivy.hardswish(
-            x, complex_mode=ivy.default(complex_mode, self._complex_mode)
-        )
+        return ivy.hardswish(x, complex_mode=self._complex_mode)
 
 
 class Logit(Module):
@@ -427,27 +423,26 @@ class SeLU(Module):
         Parameter
         ----------
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            `ivy.func_wrapper.handle_complex_input` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
              Inputs to process *[batch_shape, d]*.
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
          ret
             The outputs following the SELU activation *[batch_shape, d]*
         """
-        return ivy.selu(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
+        return ivy.selu(x, complex_mode=self._complex_mode)
 
 
 class ELU(Module):
@@ -458,12 +453,13 @@ class ELU(Module):
         Parameter
         ----------
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            `ivy.func_wrapper.handle_complex_input` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, alpha=1.0, complex_mode=None):
+    def _forward(self, x, alpha=1.0):
         """
         Parameters
         ----------
@@ -471,17 +467,13 @@ class ELU(Module):
             Inputs to process *[batch_shape, d]*.
         alpha
             scaler for controlling the slope of the function for x <= 0 Default: 1.0
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
         ret
             The outputs following the ELU activation *[batch_shape, d]*
         """
-        return ivy.elu(
-            x, alpha=alpha, complex_mode=ivy.default(complex_mode, self._complex_mode)
-        )
+        return ivy.elu(x, alpha=alpha, complex_mode=self._complex_mode)
 
 
 class LogSigmoid(Module):
@@ -492,26 +484,23 @@ class LogSigmoid(Module):
         Parameter
         ----------
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            `ivy.func_wrapper.handle_complex_input` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, complex_mode=None):
+    def _forward(self, x):
         """
 
         Parameters
         ----------
         x
             Inputs to process *[batch_shape, d]*.
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
         ret
             The outputs following the LogSigmoid activation *[batch_shape, d]*
         """
-        return ivy.logsigmoid(
-            x, complex_mode=ivy.default(complex_mode, self._complex_mode)
-        )
+        return ivy.logsigmoid(x, complex_mode=self._complex_mode)

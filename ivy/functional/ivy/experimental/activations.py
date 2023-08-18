@@ -200,8 +200,8 @@ def relu6(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the rectified linear unit 6 function element-wise.
@@ -210,12 +210,12 @@ def relu6(
     ----------
     x
         input array
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -266,8 +266,8 @@ def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
     /,
     *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply element-wise Log-sigmoid of x.
@@ -326,8 +326,8 @@ def selu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the scaled exponential linear unit function element-wise.
@@ -336,12 +336,12 @@ def selu(
     ----------
     x
         input array
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -394,8 +394,8 @@ def silu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the silu function element-wise.
@@ -404,12 +404,12 @@ def silu(
     ----------
     x
         input array.
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -452,8 +452,8 @@ def elu(
     /,
     *,
     alpha: float = 1.0,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the elu unit function element-wise.
@@ -464,12 +464,12 @@ def elu(
         Input array.
     alpha
         scaler for controlling the slope of the function for x <= 0 Default: 1.0
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------

@@ -89,7 +89,7 @@ def gelu(
     backend_version,
 )
 def sigmoid(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
@@ -183,6 +183,6 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def hardswish(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
 ) -> paddle.Tensor:
     return F.hardswish(x)
