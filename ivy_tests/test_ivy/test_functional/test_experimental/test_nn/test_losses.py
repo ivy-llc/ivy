@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         min_dim_size=3,
     ),
     dtype_and_log_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("int"),
         small_abs_safety_factor=4,
         safety_factor_scale="log",
         min_value=0,
@@ -72,7 +72,7 @@ def test_log_poisson_loss(
         min_dim_size=3,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("int"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-1,
         max_value=1,
         allow_inf=False,
