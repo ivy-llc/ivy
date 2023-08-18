@@ -805,7 +805,6 @@ def random_tucker(
         return ivy.TuckerTensor((core, factors))
 
 
-
 @handle_exceptions
 @handle_nestable
 @infer_dtype
@@ -861,6 +860,7 @@ def random_cp(
         return ivy.CPTensor.cp_normalize((weights, factors))
     else:
         return ivy.CPTensor((weights, factors))
+
 
 @handle_nestable
 @handle_array_like_without_promotion

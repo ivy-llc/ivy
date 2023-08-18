@@ -497,6 +497,7 @@ def test_random_tucker(
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
 
+
 @st.composite
 def _random_cp_data(draw):
     shape = draw(
@@ -571,6 +572,7 @@ def test_random_cp(
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
+
 
 @handle_test(
     fn_tree="functional.ivy.experimental.trilu",
