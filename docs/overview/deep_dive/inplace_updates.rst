@@ -451,7 +451,7 @@ When :code:`copy` is not specified explicitly, then an inplace update is perform
 Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
 If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
 If both are specified, then priority is given to the more general :code:`out` argument.
-As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html#function-wrapping>`_.
 
 
 Views
