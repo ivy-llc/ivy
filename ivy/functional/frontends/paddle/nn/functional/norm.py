@@ -26,7 +26,7 @@ def instance_norm(
     name=None,
 ):
     r"""
-    Compute the 2-D inverse discrete Fourier Transform.
+    Compute the instance normalization of layer.
 
     Parameters
     ----------
