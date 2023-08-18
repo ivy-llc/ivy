@@ -93,3 +93,70 @@ def log_poisson_loss(
         return ivy.mean(loss, axis=axis, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
+def gaussian_nll_loss(
+    target: Union[ivy.Array, ivy.NativeArray],
+    expectation: Union[ivy.Array, ivy.NativeArray],
+    variance: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    epsilon: float = 1e-7,
+    full: bool = False,
+    reduction: str = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute Gaussian Negative Log Likelihood (NLL) loss between predicted and true
+    distributions.
+
+    Parameters
+    ----------
+    target
+        The true values.
+    expectation
+        The predicted expectations (means).
+    variance
+        The predicted variances.
+    eps
+        A small constant for numerical stability. Default: 1e-7.
+    full
+        Whether to include the constant term in the loss. Default: False.
+    out
+        Optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The Gaussian Negative Log Likelihood (NLL) loss between the given distributions.
+
+    Examples
+    --------
+    >>> target = ivy.array([1.0, 2.0, 3.0])
+    >>> expectation = ivy.array([1.5, 2.2, 3.1])
+    >>> variance = ivy.array([0.1, 0.2, 0.3])
+    >>> loss = ivy.gaussian_nll_loss(target, expectation, variance)
+    >>> print(loss)
+    ivy.array(0.9162908)
+    """
+    squared_diff = (expectation - target) ** 2
+    ret = 0.5 * (
+        ivy.log(ivy.maximum(variance, epsilon))
+        + squared_diff / ivy.maximum(variance, epsilon)
+    )
+    if full:
+        ret += 0.5 * ivy.log(2 * ivy.pi)
+        loss = ret
+    else:
+        loss = ret
+
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss
