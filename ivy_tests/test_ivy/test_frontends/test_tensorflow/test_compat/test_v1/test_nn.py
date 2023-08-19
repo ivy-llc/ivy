@@ -132,7 +132,9 @@ def test_tensorflow_separable_conv2d(
     backend_fw,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype, x, filters, dilation, data_format, stride, padding = (
+        x_f_d_df
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -188,7 +190,7 @@ def test_tensorflow_max_pool(
 @handle_frontend_test(
     fn_tree="tensorflow.compat.v1.nn.depthwise_conv2d_backprop_input",
     x_f_d_df=_x_and_filters(
-        input_dtypes=helpers.get_dtypes("float", full=False),
+        input_dtypes=helpers.get_dtypes("float","bfloat16", full=False),
         x=helpers.get_dtypes("integer", full=False),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
@@ -199,7 +201,9 @@ def test_tensorflow_max_pool(
 def test_tensorflow_depthwise_conv2d_backprop_input(
     *, x_f_d_df, frontend, test_flags, fn_tree, backend_fw, on_device
 ):
-    input_dtypes, x, out_backprop, filters, dilations, data_format, stride, padding = x_f_d_df
+    input_dtypes, x, out_backprop, filters, dilations, data_format, stride, padding = (
+        x_f_d_df
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
