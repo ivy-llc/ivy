@@ -8,12 +8,12 @@ import hypothesis.strategies as st
 import hypothesis.extra.numpy as hnp
 
 
-for _ in range(5):
+for _ in range(20):
     data_type = st.sampled_from([np.float32, np.float64, np.int32, np.int64]).example()
 
     arr = hnp.arrays(
         dtype=data_type,
-        shape=hnp.array_shapes(min_dims=2, max_dims=3, min_side=3, max_side=5),
+        shape=hnp.array_shapes(min_dims=1, max_dims=3, min_side=3, max_side=5),
         elements=st.integers(0, 100),
     ).example()
 
@@ -33,6 +33,11 @@ for _ in range(5):
         elements=st.integers(0, 100),
     ).example()
 
+    print(f"arr: \n{arr}")
+    print(f"idx: \n{idx}")
+    print(f"vals: \n{vals}")
+    print(f"axis: \n{axis}")
+
     ivy_out = ivy.put_along_axis(arr, idx, vals, axis)
 
     paddle_arr = paddle.to_tensor(arr)
@@ -45,11 +50,6 @@ for _ in range(5):
 
     # paddle_out = paddle.put_along_axis(paddle_arr, paddle_idx, paddle_vals, axis)
     torch_out = torch.scatter(torch_arr, axis, torch_idx, torch_vals)
-
-    print(f"arr: \n{arr}")
-    print(f"idx: \n{idx}")
-    print(f"vals: \n{vals}")
-    print(f"axis: \n{axis}")
 
     print(ivy_out)
     print(torch_out)
