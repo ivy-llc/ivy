@@ -29,9 +29,7 @@ def _as_varaible_strategy(draw):
 
 @st.composite
 def _compile_strategy(draw):  # TODO remove later when paddle is supported
-    if test_globals.CURRENT_BACKEND == "paddle":
-        draw(st.just(False))
-    draw(st.booleans())
+    return draw(st.booleans())
 
 
 BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
