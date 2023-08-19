@@ -113,3 +113,6 @@ class DataFrame(NDFrame):
         if key in self.columns:
             return self[key]
         return default
+
+    def keys(self):
+        return self.columns

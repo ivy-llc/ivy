@@ -82,3 +82,6 @@ class Series(NDFrame):
         if key in self.index:
             return self[key]
         return default
+
+    def keys(self):
+        return self.index
