@@ -8,7 +8,6 @@ import pytest
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_tr_tensor.py
 
 
-@pytest.mark.skip(reason="ivy.random_tr not implemented")
 @pytest.mark.parametrize(
     "true_shape, true_rank",
     [
