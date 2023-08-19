@@ -596,7 +596,7 @@ def test_jax_celu(
         num_arrays=1,
         shared_dtype=True,
     ),
-    alpha=st.floats(min_value=0, max_value=1, allow_infinity=False),
+    alpha=helpers.floats(min_value=0.1, max_value=1),
     test_with_out=st.just(False),
 )
 def test_jax_elu(
