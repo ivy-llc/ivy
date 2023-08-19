@@ -1612,6 +1612,7 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     )
 
 
+# test values from tensorly.tt_matrix_to_tensor
 @pytest.mark.parametrize(
     "factor1, factor2, res_true",
     [
