@@ -559,7 +559,7 @@ an assertion, the examples given below will make it clearer.
 Alias functions
 ^^^^^^^^^^^^^^^
 Let's take a quick walkthrough on testing the function alias as we know that such functions have the same behavior as original functions.
-Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
+For example :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working the same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
 
 Code example for alias function:
 

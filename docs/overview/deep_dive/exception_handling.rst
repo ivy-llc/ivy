@@ -320,8 +320,7 @@ exception messages only.
 
     IvyIndexError: jax: all: axis 2 is out of bounds for array of dimension 1
 
-
-@handle_exceptions Decorator
+:code:`@handle_exceptions` Decorator
 ----------------------------
 
 To ensure that all backend exceptions are caught properly, a decorator is used to handle functions in the :code:`try/except` block.
@@ -509,18 +508,18 @@ Let's look at an example!
 
     # in ivy/utils/assertions.py
     def check_less(x1, x2, allow_equal=False, message=""):
-    # less_equal
-    if allow_equal and ivy.any(x1 > x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be lesser than or equal to {}".format(x1, x2)
-            if message == ""
-            else message
-        )
-    # less
-    elif not allow_equal and ivy.any(x1 >= x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be lesser than {}".format(x1, x2) if message == "" else message
-        )
+      # less_equal
+      if allow_equal and ivy.any(x1 > x2):
+          raise ivy.exceptions.IvyException(
+              "{} must be lesser than or equal to {}".format(x1, x2)
+              if message == ""
+              else message
+          )
+      # less
+      elif not allow_equal and ivy.any(x1 >= x2):
+          raise ivy.exceptions.IvyException(
+              "{} must be lesser than {}".format(x1, x2) if message == "" else message
+          )
 
 **ivy.set_split_factor**
 
