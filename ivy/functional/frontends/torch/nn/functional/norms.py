@@ -39,7 +39,6 @@ def batch_norm(
     return normalized
 
 
-# TODO torch inplace updates running_mean and running_var
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
@@ -60,7 +59,7 @@ def instance_norm(
     momentum=0.1,
     eps=1e-5,
 ):
-    normalized, running_mean, running_var = ivy.instance_norm(
+    normalized, mean, var = ivy.instance_norm(
         input,
         running_mean,
         running_var,
@@ -71,6 +70,8 @@ def instance_norm(
         momentum=momentum,
         data_format="NCS",
     )
+    ivy.inplace_update(running_mean, mean)
+    ivy.inplace_update(running_var, var)
     return normalized
 
 
