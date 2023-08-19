@@ -95,7 +95,7 @@ def test_numpy_pad(
     dtype, x, pad_width, kwargs, mode = args
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
+        backend_to_test="numpy",
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
