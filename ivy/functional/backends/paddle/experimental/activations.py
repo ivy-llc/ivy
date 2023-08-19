@@ -47,6 +47,9 @@ def thresholded_relu(
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def relu6(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
 ) -> paddle.Tensor:
