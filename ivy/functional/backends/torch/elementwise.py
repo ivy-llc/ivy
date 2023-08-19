@@ -248,10 +248,11 @@ sign.support_native_out = True
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def sqrt(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def sqrt(
+    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sqrt(x, out=out)
-
 
 sqrt.support_native_out = True
 
