@@ -48,7 +48,7 @@ def _cpercentile(N, percent, key=lambda x: x):
     d0 = key(N[int(f)]) * (c - k)
     d1 = key(N[int(c)]) * (k - f)
     return d0 + d1
-import ivy
+
 
 
 @ivy.to_ivy_arrays_and_back
