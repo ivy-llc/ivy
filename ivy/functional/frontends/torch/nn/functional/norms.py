@@ -12,7 +12,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
     },
     "torch",
 )
-# TODO torch inplace updates running_mean and running_var
 @to_ivy_arrays_and_back
 def batch_norm(
     input,
@@ -24,7 +23,7 @@ def batch_norm(
     momentum=0.1,
     eps=1e-5,
 ):
-    normalized, running_mean, running_var = ivy.batch_norm(
+    normalized, mean, var = ivy.batch_norm(
         input,
         running_mean,
         running_var,
@@ -35,6 +34,8 @@ def batch_norm(
         momentum=momentum,
         data_format="NCS",
     )
+    ivy.inplace_update(running_mean, mean)
+    ivy.inplace_update(running_var, var)
     return normalized
 
 
