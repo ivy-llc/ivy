@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
     assert_all_close,
-    BackendHandler,
+    update_backend,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
@@ -44,7 +44,7 @@ def test_numpy_ndarray_ivy_array(
     backend_fw,
 ):
     dtype, data, shape = dtype_x
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+    with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
@@ -65,7 +65,7 @@ def test_numpy_ndarray_ivy_array(
 )
 def test_numpy_ndarray_dtype(dtype_x, backend_fw, frontend):
     dtype, data, shape = dtype_x
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+    with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(
@@ -84,7 +84,7 @@ def test_numpy_ndarray_shape(
     backend_fw,
 ):
     dtype, data, shape = dtype_x
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+    with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(
@@ -100,7 +100,7 @@ def test_numpy_ndarray_shape(
 )
 def test_numpy_ndarray_property_ndim(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+    with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
@@ -133,7 +133,7 @@ def test_numpy_T(
     frontend,
 ):
     dtype, data, shape = dtype_x
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+    with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ret = helpers.flatten_and_to_np(ret=x.T.ivy_array, backend=backend_fw)
@@ -161,7 +161,7 @@ def test_numpy_T(
 def test_numpy_ndarray_flat(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
 
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+    with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
 
@@ -3085,7 +3085,7 @@ def test_numpy_ndarray_tobytes(
     backend_fw,
 ):
     dtype, data, shape = dtype_x
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+    with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(
@@ -3563,6 +3563,43 @@ def test_numpy___invert__(
         backend_to_test=backend_fw,
         method_all_as_kwargs_np={},
         frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+#round
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="round",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        max_value=50,
+        min_value=-50,
+    ),
+)
+def test_numpy_ndarray_round(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        init_all_as_kwargs_np={
+            "object": x,
+        },
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
