@@ -1015,9 +1015,9 @@ def rfftn(
 def sliding_window(
     input: torch.Tensor,
     kernel_size: Union[int, Tuple[int, int]],
-    dilation: Union[int, Tuple[int, int]],
-    padding: Union[str, int, Tuple[int, int]],
-    stride: Union[int, Tuple[int, int]],
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
     /,
     *,
     data_format: str = "NHWC",
