@@ -61,13 +61,13 @@ def test_log_poisson_loss(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_loss",
-    dtype_true=helpers.dtype_and_values(
+    dtype_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
         max_value=100,
         allow_inf=False,
     ),
-    dtype_pred=helpers.dtype_and_values(
+    dtype_target=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
         max_value=100,
@@ -77,26 +77,26 @@ def test_log_poisson_loss(
 )
 def test_l1_loss(
     *,
-    dtype_true,
-    dtype_pred,
+    dtype_input,
+    dtype_target,
     reduction,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype_true, true = dtype_true
-    dtype_pred, pred = dtype_pred
+    dtype_input, input = dtype_input
+    dtype_target, target = dtype_target
 
     helpers.test_function(
-        input_dtypes=dtype_true + dtype_pred,
+        input_dtypes=dtype_input + dtype_target,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        true=true[0],
-        pred=pred[0],
+        input=input[0],
+        target=target[0],
         reduction=reduction,
     )

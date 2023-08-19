@@ -9,13 +9,13 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithLossesExperimental(ContainerBase):
     @staticmethod
     def _static_l1_loss(
-        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
+        to_apply: Union[bool, ivy.Container] = input,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
@@ -27,10 +27,10 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Parameters
         ----------
-        true
+        input
             input array or container.
-        pred
-            input array or container containing the predicted values.
+        target
+            input array or container containing the targeticted values.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -38,8 +38,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
@@ -53,7 +53,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The L1 loss between the input array and the predicted values.
+            The L1 loss between the input array and the targeticted values.
 
         Examples
         --------
@@ -81,8 +81,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "l1_loss",
-            true,
-            pred,
+            input,
+            target,
             reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -93,12 +93,12 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
     def l1_loss(
         self: ivy.Container,
-        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
+        to_apply: Union[bool, ivy.Container] = input,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
@@ -112,8 +112,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         ----------
         self
             input container.
-        pred
-            input array or container containing the predicted values.
+        target
+            input array or container containing the targeticted values.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -121,8 +121,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
@@ -136,7 +136,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The L1 loss between the input array and the predicted values.
+            The L1 loss between the input array and the targeticted values.
 
         Examples
         --------
@@ -151,7 +151,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         """
         return self._static_l1_loss(
             self,
-            pred,
+            target,
             reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,

@@ -9,7 +9,7 @@ import ivy
 class _ArrayWithLossesExperimental(abc.ABC):
     def l1_loss(
         self: Union[ivy.Array, ivy.NativeArray],
-        pred: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         reduction: str = "mean",
@@ -24,8 +24,8 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ----------
         self
             input array.
-        pred
-            input array containing the predicted values.
+        target
+            input array containing the targeticted values.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -37,7 +37,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         Returns
         -------
         ret
-            The L1 loss between the input array and the predicted values.
+            The L1 loss between the input array and the targeticted values.
 
         Examples
         --------
@@ -47,4 +47,4 @@ class _ArrayWithLossesExperimental(abc.ABC):
         >>> print(z)
         ivy.array(0.20000000000000004)
         """
-        return ivy.l1_loss(self._data, pred, reduction=reduction, out=out)
+        return ivy.l1_loss(self._data, target, reduction=reduction, out=out)

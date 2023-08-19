@@ -102,22 +102,22 @@ def log_poisson_loss(
 @inputs_to_ivy_arrays
 @handle_array_function
 def l1_loss(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute L1 loss (Mean Absolute Error - MAE) between predicted and true values.
+    Compute L1 loss (Mean Absolute Error - MAE) between targeticted and input values.
 
     Parameters
     ----------
-    true : Union[ivy.Array, ivy.NativeArray]
-        Input array containing true values.
-    pred : Union[ivy.Array, ivy.NativeArray]
-        Input array containing predicted values.
+    input : Union[ivy.Array, ivy.NativeArray]
+        Input array containing input values.
+    target : Union[ivy.Array, ivy.NativeArray]
+        Input array containing targeticted values.
     reduction : str, optional
         Reduction method for the output loss. Options:
         "none" (no reduction), "mean" (mean of losses),
@@ -129,7 +129,7 @@ def l1_loss(
     Returns
     -------
     ivy.Array
-        The L1 loss (MAE) between the given true and predicted values.
+        The L1 loss (MAE) between the given input and targeticted values.
 
     Examples
     --------
@@ -143,7 +143,7 @@ def l1_loss(
     >>> print(ivy.l1_loss(a, b))
     ivy.array(0.5)
     """
-    loss = ivy.abs(pred - true)
+    loss = ivy.abs(target - input)
 
     if reduction == "sum":
         return ivy.sum(loss, out=out)
