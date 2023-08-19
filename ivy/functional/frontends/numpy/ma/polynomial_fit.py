@@ -25,7 +25,4 @@ def roots(p):
 
     A[0, :] = -p[1:] / p[0]
     ret = ivy.eigvals(A)
-    if p.size < 3:
-        return ret.astype(p.dtype)
-    else:
-        return ret.astype(ftype)
+    return ret
