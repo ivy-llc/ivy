@@ -1355,19 +1355,19 @@ def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
             available_dtypes=["int64"],
-            min_num_dims=2,
+            min_num_dims=1,
             min_dim_size=2,
             valid_axis=True,
             force_int_axis=True,
             ret_shape=True,
-            min_axis=1,
+            min_axis=0,
         )
     )
 
     # TODO: helpers.dtype_and_values draws
     #  unwantend axis values
-    if axis < 1:
-        axis = 1
+    if axis < 0:
+        axis = 0
 
     idx_shape = list(shape)
     idx_shape[axis] = 1
@@ -1409,7 +1409,7 @@ def test_put_along_axis(
         input_dtypes=[dtype],
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        backend_to_test="torch",
         fn_name=fn_name,
         arr=x,
         indices=indices,

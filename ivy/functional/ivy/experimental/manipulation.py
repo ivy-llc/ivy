@@ -1840,18 +1840,11 @@ def put_along_axis(
     for ii in _ndindex(Ni):
         for kk in _ndindex(Nk):
             arr_1d = arr[ii + (slice(None),) + kk]
-            # print(f"Arr 1D: {arr_1d}")
             indices_1d = indices[ii + (slice(None),) + kk]
-            # print(f"Indices 1D: {indices_1d}")
             values_1d = values[ii + (slice(None),) + kk]
-            # print(f"Values 1D: {values_1d}", end="\n")
             ret[ii + (slice(None),) + kk] = _handle_reduction_op(
                 mode, arr_1d, indices_1d, values_1d
             )
-            # arr[ii + (slice(None),) + kk] = _handle_reduction_op(mode, arr_1d, indices_1d, values_1d) # noqa: E501
-            # print(f"Ret slice: {ret[ii + (slice(None),) + kk]}", end="\n\n")
-            # print(f"Ret slice shape: {ret[ii + (slice(None),) + kk].shape}")
-            print("=========================================")
 
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
