@@ -313,6 +313,18 @@ def logsigmoid(
     return ivy.current_backend(input).logsigmoid(input, out=out)
 
 
+def _selu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    return scale * elu(x, alpha=alpha)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -379,6 +391,9 @@ def selu(
     }
     """
     return current_backend(x).selu(x, out=out)
+
+
+selu.jax_like = _selu_jax_like
 
 
 @handle_exceptions
