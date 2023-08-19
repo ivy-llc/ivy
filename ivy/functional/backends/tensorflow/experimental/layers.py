@@ -1394,3 +1394,48 @@ def rfftn(
     else:
         # return result
         return tf.cast(result, tf.complex128)
+
+
+def sliding_window(
+    input: Union[tf.Tensor, tf.Variable],
+    kernel_size: Union[int, Tuple[int, int]],
+    dilation: Union[int, Tuple[int, int]],
+    padding: Union[str, int, Tuple[int, int]],
+    stride: Union[int, Tuple[int, int]],
+    /,
+    *,
+    data_format="NHWC",
+):
+    if data_format == "NCHW":
+        # transpose input to "NHWC" acceptable to tensorflow
+        input = tf.transpose(input, (0, 2, 3, 1))
+
+    kernel_size = (
+        [1] + ([kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size) + [1]
+    )
+
+    stride = [1] + ([stride] * 2 if isinstance(stride, int) else stride) + [1]
+
+    dilation = [1] + ([dilation] * 2 if isinstance(dilation, int) else dilation) + [1]
+
+    padding = [padding] * 2 if isinstance(padding, int) else padding
+
+    if isinstance(padding, str) and padding.upper() in ["VALID", "SAME"]:
+        padding = padding
+
+    else:
+        if padding[0] == padding[1] == 0:
+            padding = "VALID"
+        elif padding[0] == padding[1] != 0:
+            padding = "SAME"
+        else:
+            raise ivy.utils.exceptions.IvyError(
+                f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
+            )
+
+    res = tf.image.extract_patches(input, kernel_size, stride, dilation, padding)
+
+    if data_format == "NCHW":
+        return tf.transpose(res, (0, 3, 1, 2))
+
+    return res
