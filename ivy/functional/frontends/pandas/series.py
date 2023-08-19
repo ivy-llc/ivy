@@ -31,7 +31,7 @@ class Series(NDFrame):
         series_name = f"{self.name} " if self.name is not None else ""
         return (
             f"frontends.pandas.Series {series_name}({self.array.to_list()},"
-            f" index={self.index})"
+            f" index={self.index.array.to_list()})"
         )
 
     def __getitem__(self, index_val):
@@ -71,3 +71,14 @@ class Series(NDFrame):
         if skipna:
             return ivy.nanmean(self.array)
         return self.array.mean()
+
+    def add(self, other, level=None, fill_value=None, axis=0):
+        # todo add level (with multiindex) and fill_value (with wrapper)
+        # todo handle data alignment
+        new_array = ivy.add(self.array, other.array)
+        return Series(new_array)
+
+    def get(self, key, default=None):
+        if key in self.index:
+            return self[key]
+        return default
