@@ -15,8 +15,8 @@ class _ArrayWithLossesExperimental(abc.ABC):
         /,
         *,
         full: Union[bool, ivy.Container] = False,
-        reduction: Union[str, ivy.Array] = "mean",
-        epsilon: Union[float, ivy.Array] = 1e-7,
+        reduction: Optional[Union[str, ivy.Array]] = "mean",
+        epsilon: Optional[Union[float, ivy.Array]] = 1e-7,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

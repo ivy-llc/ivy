@@ -105,9 +105,9 @@ def gaussian_nll_loss(
     variance: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    epsilon: float = 1e-7,
+    epsilon: Optional[float] = 1e-7,
     full: bool = False,
-    reduction: str = "mean",
+    reduction: Optional[str] = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """

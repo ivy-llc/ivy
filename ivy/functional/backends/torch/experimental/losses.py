@@ -15,7 +15,7 @@ def gaussian_nll_loss(
     *,
     full: Optional[bool] = False,
     eps: Optional[float] = 1e-06,
-    reduction: str = "mean",
+    reduction: Optional[str] = "mean",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.gaussian_nll_loss(
