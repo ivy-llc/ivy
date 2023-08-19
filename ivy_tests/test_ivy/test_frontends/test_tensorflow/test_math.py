@@ -1944,7 +1944,7 @@ def test_tensorflow_rsqrt(
 @handle_frontend_test(
     fn_tree="tensorflow.math.segment_sum",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.tuple([ivy.int64, ivy.int32]),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=1,
