@@ -1,7 +1,7 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.array import Array
-
+import ivy.functional.frontends.jax.numpy as jnp_frontend
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
@@ -267,3 +267,46 @@ def size(a, axis=None):
 @to_ivy_arrays_and_back
 def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
+
+
+@to_ivy_arrays_and_back
+def in1d(ar1, ar2, invert=False):
+    ar1_flat = ivy.flatten(ar1)
+    ar2_flat = ivy.flatten(ar2)
+    if invert:
+        return (ar1_flat[:, None] != ar2_flat[None, :]).all(axis=-1)
+    else:
+        return (ar1_flat[:, None] == ar2_flat[None, :]).any(axis=-1)
+
+
+@to_ivy_arrays_and_back
+def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
+    fill_value = ivy.array(0 if fill_value is None else fill_value, dtype=ar1.dtype)
+    print(f"{fill_value=}")
+    if ar1.size == 0:
+        return ivy.full(size or 0, fill_value, dtype=ar1.dtype)
+    if not assume_unique:
+        ar1 = jnp_frontend.unique(ar1, size=size and ar1.size, fill_value=0).ivy_array
+        print(f"{ar1=}")
+    mask = in1d(ar1, ar2, invert=True).ivy_array
+    print(f"{mask=}")
+    if size is None:
+        print(f"{ar1=}              {mask=}")
+        return ar1[mask]
+    else:
+        if not (assume_unique):
+            # Set mask to zero at locations corresponding to unique() padding.
+            n_unique = ar1.size + 1 - (ar1 == ar1[0]).sum(dtype=ivy.int64)
+            print(f"{n_unique=}")
+            mask = ivy.where(ivy.arange(ar1.size) < n_unique, mask, False)
+            print(f"{mask=}")
+        print(f"{size=}")
+        print(
+            f"{(ivy.arange(size) < mask.sum(dtype=ivy.int64))=}        "
+            f" {ar1[jnp_frontend.where(mask, size=size).ivy_array]=}"
+        )
+        return ivy.where(
+            ivy.arange(size) < mask.sum(dtype=ivy.int64),
+            ar1[jnp_frontend.where(mask, size=size).ivy_array],
+            fill_value,
+        )
