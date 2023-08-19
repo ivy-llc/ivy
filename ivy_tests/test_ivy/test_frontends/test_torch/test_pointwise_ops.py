@@ -23,7 +23,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
         safety_factor_scale="log",
     ),
     alpha=st.integers(min_value=1, max_value=5),
-    test_compile=st.just(True),
 )
 def test_torch_add(
     *,
