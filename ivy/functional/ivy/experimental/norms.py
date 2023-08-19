@@ -52,9 +52,10 @@ def l1_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.l1_normalize(x, axis=1)
-    ivy.array([[0.3333, 0.6667],
-               [0.4286, 0.5714]])
+    >>> y = ivy.l1_normalize(x, axis=1)
+    >>> print(y)
+    ivy.array([[0.33333334, 1.33333337],
+           [1.28571439, 2.28571439]])
     """
     return current_backend(x).l1_normalize(x, axis=axis, out=out)
 
@@ -93,9 +94,10 @@ def l2_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.l2_normalize(x, axis=1)
-    ivy.array([[0.4472, 0.8944],
-               [0.6, 0.8]])
+    >>> y = ivy.l2_normalize(x, axis=1)
+    >>> print(y)
+    ivy.array([[0.44721359, 0.89442718],
+           [0.60000002, 0.80000001]])
     """
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
@@ -476,8 +478,9 @@ def lp_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.lp_normalize(x, p=1, axis=1)
-    ivy.array([[0.3333, 0.6666],
-               [0.75, 1.]])
+    >>> y = ivy.lp_normalize(x, p=1, axis=1)
+    >>> print(y)
+    ivy.array([[0.33333334, 0.66666669],
+           [0.42857143, 0.5714286 ]])
     """
     return current_backend(x).lp_normalize(x, p=p, axis=axis, out=out)

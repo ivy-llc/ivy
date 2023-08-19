@@ -25,7 +25,6 @@ Data Types
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
-.. _`data types forum`: https://discord.com/channels/799879767196958751/1028297299799060490
 
 
 The data types supported by Ivy are as follows:
@@ -524,9 +523,9 @@ There are currently four modes that accomplish this.
 
 :code:`upcast_data_types` mode casts the unsupported dtype encountered to the next highest supported dtype in the same
 dtype group, i.e, if the unsupported dtype encountered is :code:`uint8` , then this mode will try to upcast it to the next available supported :code:`uint` dtype. If no
-higher `uint` dtype is avaiable, then there won't be any upcasting performed. You can set this mode by calling :code:`ivy.upcast_data_types()` with an optional :code:`val` keyword argument that defaults to :code:`True`.
+higher `uint` dtype is available, then there won't be any upcasting performed. You can set this mode by calling :code:`ivy.upcast_data_types()` with an optional :code:`val` keyword argument that defaults to :code:`True`.
 
-Similarly, :code:`downcast_data_dtypes` tries to downcast to the next lower supported dtype in the same dtype group. No casting is performed is no lower dtype is found in the same group.
+Similarly, :code:`downcast_data_dtypes` tries to downcast to the next lower supported dtype in the same dtype group. No casting is performed if no lower dtype is found in the same group.
 It can also be set by calling :code:`ivy.downcast_data_types()` with the optional :code:`val` keyword that defaults to boolean value :code:`True`.
 
 :code:`crosscast_data_types` is for cases when a function doesn't support :code:`int` dtypes, but supports :code:`float` and vice-versa. In such cases,
@@ -642,7 +641,7 @@ As with all superset design decisions, this behavior makes it much easier to sup
 
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_ or in the `data types forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_!
 
 
 **Video**

@@ -403,7 +403,7 @@ class Array(
         else:
             # Requirerd in the case that backend is different
             # from the currently set backend
-            backend = ivy.with_backend(self.backend, cached=True)
+            backend = ivy.with_backend(self.backend)
         arr_np = backend.to_numpy(self._data)
         rep = (
             np.array(ivy.vec_sig_fig(arr_np, sig_fig))
