@@ -11,11 +11,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     
 )
 
-from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-    handle_numpy_out,
-)
-
 
 def _quantile_is_valid(q):
     # avoid expensive reductions, relevant for arrays with < O(1000) elements
