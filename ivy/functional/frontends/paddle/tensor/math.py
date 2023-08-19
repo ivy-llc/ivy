@@ -90,6 +90,7 @@ def sqrt(x, name=None):
     return ivy.sqrt(x)
 
 
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def atanh(x, name=None):
@@ -138,6 +139,13 @@ def conj(x, name=None):
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("bfloat16", "float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_(x, name=None):
+    x = ivy.floor(x)
+    return x
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
