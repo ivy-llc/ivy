@@ -6,7 +6,20 @@ from . import backend_version
 # Assuming ivy and backend_version are imported and defined properly
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def hinge_embedding_loss(
     input: torch.Tensor,
     target: torch.Tensor,
