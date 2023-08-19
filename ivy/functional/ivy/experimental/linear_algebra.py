@@ -1705,42 +1705,41 @@ def higher_order_moment(
 
     return ivy.mean(moment, axis=0)
 
+
 def _batched_outer(tensors):
-    """Returns a generalized outer product of the two tensors
+    """
+    Return a generalized outer product of the tensors.
 
     Parameters
     ----------
-    tensor1 : tensor
-        of shape (n_samples, J1, ..., JN)
-    tensor2 : tensor
-        of shape (n_samples, K1, ..., KM)
+    tensors : list of tensors
+        list of tensors of shape (n_samples, J1, ..., JN) ,
+        (n_samples, K1, ..., KM) ...
 
     Returns
     -------
-    outer product of tensor1 and tensor2
-        of shape (n_samples, J1, ..., JN, K1, ..., KM)
+    outer product of tensors
+        of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
     """
+    result = tensors[0]
     for i, tensor in enumerate(tensors):
-        if i:
-            shape = ivy.shape(tensor)
-            size = len(shape) - 1
+        result_shape = ivy.shape(result)
+        result_size = len(result_shape) - 1
 
-            n_samples = shape[0]
+        current_shape = ivy.shape(tensor)
 
-            if n_samples != shape_res[0]:
-                raise ValueError(
-                    f"Tensor {i} has a batch-size of {n_samples} but those before had a batch-size of {shape_res[0]}, "
-                    "all tensors should have the same batch-size."
-                )
+        n_samples = current_shape[0]
+        if n_samples != result_shape[0]:
+            raise ValueError(
+                f"Tensor {i} has a batch-size of {n_samples} but those before had a"
+                f" batch-size of {result_shape[0]}, all tensors should have the same"
+                " batch-size."
+            )
 
-            shape_1 = shape_res + (1,) * size
-            shape_2 = (n_samples,) + (1,) * size_res + shape[1:]
+        current_size = len(current_shape) - 1
+        shape_1 = result_shape + (1,) * current_size
+        shape_2 = (n_samples,) + (1,) * result_size + current_shape[1:]
 
-            res = ivy.reshape(res, shape_1) * ivy.reshape(tensor, shape_2)
-        else:
-            res = tensor
+        result = ivy.reshape(result, shape_1) * ivy.reshape(tensor, shape_2)
 
-        shape_res = ivy.shape(res)
-        size_res = len(shape_res) - 1
-
-    return res
+    return result
