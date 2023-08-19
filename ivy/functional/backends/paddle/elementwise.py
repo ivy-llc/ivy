@@ -256,7 +256,9 @@ def sign(
     return paddle.sgn(x)
 
 
-def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def sqrt(
+    x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
