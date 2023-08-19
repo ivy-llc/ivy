@@ -7,8 +7,8 @@ from .pipeline_helper import BackendHandler
 @st.composite
 def _gradient_strategy(draw):
     if test_globals.CURRENT_BACKEND == "numpy":
-        draw(st.just(False))
-    draw(st.booleans())
+        return draw(st.just(False))
+    return draw(st.booleans())
 
 
 @st.composite
@@ -28,7 +28,7 @@ def _as_varaible_strategy(draw):
 
 
 @st.composite
-def _compile_strategy(draw):  # TODO remove later when paddle is supported
+def _compile_strategy(draw):
     return draw(st.booleans())
 
 

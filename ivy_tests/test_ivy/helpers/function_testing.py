@@ -29,12 +29,19 @@ from .assertions import (
 )
 
 
+def _switch_backend_context(context):
+    if BackendHandler._current_mode != context:
+        BackendHandler._update_context(context)
+
+
 # Temporary (.so) configuration
 def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs=None):
-    with BackendHandler.update_backend(backend) as ivy_backend:
-        if test_compile:
+    if test_compile:
+        _switch_backend_context(BackendHandlerMode.SetBackend)
+        with BackendHandler.update_backend(backend) as ivy_backend:
             fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
-        return fn
+        _switch_backend_context(BackendHandlerMode.WithBackend)
+    return fn
 
 
 # Ivy Function testing ##########################
@@ -172,7 +179,10 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
-    _handle_backend_context(test_flags.test_compile)
+    print(
+        f"Compilation : {test_flags.test_compile} , current backend mode -:"
+        f" {BackendHandler._current_mode}"
+    )
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -528,7 +538,6 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
-    _handle_backend_context(test_flags.test_compile)
     assert (
         not test_flags.with_out or not test_flags.inplace
     ), "only one of with_out or with_inplace can be set as True"
@@ -2034,14 +2043,3 @@ def arrays_to_frontend(backend: str, frontend_array_fn=None):
             return x
 
     return _new_fn
-
-
-def _handle_backend_context(compile: bool):
-    if compile:
-        BackendHandler._update_context(BackendHandlerMode.SetBackend)
-    else:
-        (
-            BackendHandler._update_context(BackendHandlerMode.WithBackend)
-            if BackendHandler._ctx_flag
-            else None
-        )

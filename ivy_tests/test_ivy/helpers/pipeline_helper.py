@@ -22,16 +22,16 @@ class WithBackendContext:
 
 class BackendHandler:
     _context = WithBackendContext
-    _ctx_flag = 0
+    _current_mode = BackendHandlerMode.WithBackend
 
     @classmethod
     def _update_context(cls, mode: BackendHandlerMode):
         if mode == BackendHandlerMode.WithBackend:
             cls._context = WithBackendContext
-            cls._ctx_flag = 0
+            cls._current_mode = BackendHandlerMode.WithBackend
         elif mode == BackendHandlerMode.SetBackend:
             cls._context = ivy.utils.backend.ContextManager
-            cls._ctx_flag = 1
+            cls._current_mode = BackendHandlerMode.SetBackend
         else:
             raise ValueError(f"Unknown backend handler mode! {mode}")
 
