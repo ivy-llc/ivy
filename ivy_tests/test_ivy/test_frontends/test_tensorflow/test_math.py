@@ -1943,34 +1943,40 @@ def test_tensorflow_rsqrt(
 #segment_sum
 @handle_frontend_test(
     fn_tree="tensorflow.math.segment_sum",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.tuple([ivy.int64, ivy.int32]),
-        num_arrays=2,
-        shared_dtype=True,
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        
+    ),
+    dtype_and_segment=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=3,
+        max_num_dims=1,
     ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_segment_sum(
     *,
-    dtype_and_x
+    dtype_and_data,
+    dtype_and_segment,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    data_dtype, data = dtype_and_data
+    segment_dtype, segment_ids = dtype_and_segment
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=data_dtype + segment_dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        data=x[0],
-        segment_ids=x[1],
+        data=data,
+        segment_ids=segment_ids,
     )
 
 # nextafter
