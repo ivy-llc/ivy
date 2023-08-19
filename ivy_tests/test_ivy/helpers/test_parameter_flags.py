@@ -7,8 +7,8 @@ from .pipeline_helper import BackendHandler
 @st.composite
 def _gradient_strategy(draw):
     if test_globals.CURRENT_BACKEND == "numpy":
-        return draw(st.just(False))
-    return draw(st.booleans())
+        draw(st.just(False))
+    draw(st.booleans())
 
 
 @st.composite
