@@ -877,12 +877,14 @@ def trilu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the upper or lower triangular part of a matrix (or a stack of matrices) ``x``
-    .. note::
+    Return the upper or lower triangular part of a matrix
+    (or a stack of matrices) ``x``.
+     note::
         The upper triangular part of the matrix is defined as the elements
         on and above the specified diagonal ``k``. The lower triangular part
         of the matrix is defined as the elements on and below the specified
         diagonal ``k``.
+
     Parameters
     ----------
     x
@@ -897,6 +899,7 @@ def trilu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
