@@ -15,7 +15,7 @@ except ImportError:
     tf.TensorShape = None
 
 # local
-from .pipeline_helper import BackendHandler, get_frontend_config
+from .pipeline_helper import BackendHandler, BackendHandlerMode, get_frontend_config
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
@@ -29,12 +29,19 @@ from .assertions import (
 )
 
 
+def _switch_backend_context(context):
+    if BackendHandler._current_mode != context:
+        BackendHandler._update_context(context)
+
+
 # Temporary (.so) configuration
 def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs=None):
-    with BackendHandler.update_backend(backend) as ivy_backend:
-        if test_compile:
+    if test_compile:
+        _switch_backend_context(BackendHandlerMode.SetBackend)
+        with BackendHandler.update_backend(backend) as ivy_backend:
             fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
-        return fn
+        _switch_backend_context(BackendHandlerMode.WithBackend)
+    return fn
 
 
 # Ivy Function testing ##########################
