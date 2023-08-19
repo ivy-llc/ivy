@@ -1606,6 +1606,10 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     np.testing.assert_(
         error < tol_norm_2, "norm 2 of difference between svd and random init too high"
     )
+    np.testing.assert_(
+        ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
+        "abs norm of difference between svd and random init too high",
+    )
 
 
 @pytest.mark.parametrize(
