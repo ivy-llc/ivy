@@ -1699,11 +1699,48 @@ def higher_order_moment(
         if tensor is a matrix of size (n_samples, n_features),
         tensor of size (n_features, )*order
     """
-    print(f"{tensor:}, {order:}")
     moment = ivy.copy_array(tensor)
     for _ in range(order - 1):
-        moment = ivy.tensordot(moment, tensor, axes=0)
-
-    print(f"{moment:}")
+        moment = _batched_outer([moment, tensor])
 
     return ivy.mean(moment, axis=0)
+
+def _batched_outer(tensors):
+    """Returns a generalized outer product of the two tensors
+
+    Parameters
+    ----------
+    tensor1 : tensor
+        of shape (n_samples, J1, ..., JN)
+    tensor2 : tensor
+        of shape (n_samples, K1, ..., KM)
+
+    Returns
+    -------
+    outer product of tensor1 and tensor2
+        of shape (n_samples, J1, ..., JN, K1, ..., KM)
+    """
+    for i, tensor in enumerate(tensors):
+        if i:
+            shape = ivy.shape(tensor)
+            size = len(shape) - 1
+
+            n_samples = shape[0]
+
+            if n_samples != shape_res[0]:
+                raise ValueError(
+                    f"Tensor {i} has a batch-size of {n_samples} but those before had a batch-size of {shape_res[0]}, "
+                    "all tensors should have the same batch-size."
+                )
+
+            shape_1 = shape_res + (1,) * size
+            shape_2 = (n_samples,) + (1,) * size_res + shape[1:]
+
+            res = ivy.reshape(res, shape_1) * ivy.reshape(tensor, shape_2)
+        else:
+            res = tensor
+
+        shape_res = ivy.shape(res)
+        size_res = len(shape_res) - 1
+
+    return res
