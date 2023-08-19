@@ -2053,15 +2053,27 @@ def test_paddle_amax(
 #scale
 @st.composite
 def _scale_helper(draw):
-    print("logic to be added in further commits")
+    num_dims = draw(st.integers(min_value = 1 , max_value = 4))
+
+    shape = draw(st.lists(st.integers(min_value=1 , max_value=10) , min_size = num_dims , max_size = num_dims))
+
+    dtype_x = draw(st.sampled_from([
+        'float32' , 'float64' , 'int8' , 'int16' , 'int32' , 'int64' , 'uint8'
+    ]))
+
+    x = draw(st.arrays(dtype = dtype_x, shape = shape , elements = st.floats()))
+
+    scale = draw(st.floats(min_value = 0.0 , allow_nan = False , allow_infinity = False))
+
+    bias = draw(st.floats(min_value=-1000.0 , max_value=1000.0 , allow_nan=False , allow_infinity=False))
+
+    bias_after_scale = draw(st.booleans())
+
+    return dtype_x , x , scale , bias , bias_after_scale
 
 @handle_frontend_test(
     fn_tree="paddle.scale",
-    dtypes_and_params = _scale_helper(
-        available_dtypes = helpers.get_dtypes("float"),
-        min_num_dims=0,
-        min_dim_size=0,
-    ),
+    dtypes_and_params = _scale_helper(),
 )
 def test_paddle_scale(
     *,
@@ -2072,13 +2084,14 @@ def test_paddle_scale(
     backend_fw,
     on_device,
 ):
-    input_dtype , x , bias , bias_after_scale = dtypes_and_params
+    input_dtype , x , scale , bias , bias_after_scale = dtypes_and_params
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         x = x[0],
         bias = bias,
         fn_tree=fn_tree,
         bias_after_scale = bias_after_scale,
+        scale = scale,
         frontend=frontend,
         backend_fw=backend_fw,
         test_flags=test_flags,
