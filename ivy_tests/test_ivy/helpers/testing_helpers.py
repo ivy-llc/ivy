@@ -741,7 +741,6 @@ def handle_frontend_method(
             possible_arguments = {
                 "init_flags": init_flags,
                 "method_flags": method_flags,
-                "test_compile": test_compile,
                 "frontend_method_data": st.just(frontend_helper_data),
             }
 

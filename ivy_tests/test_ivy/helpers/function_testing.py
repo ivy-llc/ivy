@@ -40,6 +40,7 @@ def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs
         _switch_backend_context(BackendHandlerMode.SetBackend)
         with BackendHandler.update_backend(backend) as ivy_backend:
             fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
+            print("Successful")
         _switch_backend_context(BackendHandlerMode.WithBackend)
     return fn
 
@@ -1432,7 +1433,6 @@ def test_frontend_method(
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
-    test_compile: bool = False,
 ):
     """
     Test a class-method that consumes (or returns) arrays for the current backend by
@@ -1626,7 +1626,7 @@ def test_frontend_method(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
             *args_method,
-            test_compile=test_compile,
+            test_compile=method_flags.test_compile,
             **kwargs_method,
         )
 
