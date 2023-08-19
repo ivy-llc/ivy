@@ -128,6 +128,7 @@ def nanprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
+    a = a.cast(dtype)
     if a.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
         a = paddle.nan_to_num(a.cast("float64"), nan=1.0)
         ret = paddle.prod(a, axis=axis, keepdim=keepdims)
