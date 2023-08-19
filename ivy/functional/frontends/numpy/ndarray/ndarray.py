@@ -482,7 +482,6 @@ class ndarray:
             out=out,
         )
 
-
     def sum(
         self,
         *,
@@ -502,7 +501,6 @@ class ndarray:
             where=where,
             out=out,
         )
-
 
     def tofile(self, fid, /, sep="", format_="%s"):
         if self.ndim == 0:
