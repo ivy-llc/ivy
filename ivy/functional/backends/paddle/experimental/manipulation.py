@@ -287,7 +287,7 @@ def flatten(
     if copy:
         x = x.clone()
     if x.ndim == 0:
-        return x
+        return x.reshape((-1,))
 
     def _flatten(x, start_dim, end_dim):
         if x.dtype in [
