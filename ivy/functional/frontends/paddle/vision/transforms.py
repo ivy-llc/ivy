@@ -26,8 +26,24 @@ def _get_image_c_axis(data_format):
         return -1
 
 
+def _is_channel_first(data_format):
+    return _get_image_c_axis(data_format) == -3
+
+
 def _get_image_num_channels(img, data_format):
     return ivy.shape(img)[_get_image_c_axis(data_format)]
+
+
+def _blend_images(img1, img2, ratio):
+    # TODO: ivy.check_float(img1) returns False for ivy array
+    # TODO: when lerp supports int type and when the above issue is fixed,
+    # replace this with ivy.check_float(img1)
+    max_value = (
+        1.0 if ivy.dtype(img1) == "float32" or ivy.dtype(img1) == "float64" else 255.0
+    )
+    return ivy.astype(
+        ivy.lerp(img2, img1, float(ratio)).clip(0, max_value), ivy.dtype(img1)
+    )
 
 
 def _rgb_to_hsv(img):
@@ -118,6 +134,20 @@ def adjust_hue(img, hue_factor):
         raise ValueError("channels of input should be either 1 or 3.")
 
     return img_adjusted
+
+
+@to_ivy_arrays_and_back
+def to_grayscale(img, num_output_channels=1):
+    if num_output_channels not in (1, 3):
+        raise ValueError("num_output_channels should be either 1 or 3")
+
+    rgb_weights = ivy.array([0.2989, 0.5870, 0.1140], dtype=ivy.dtype(img))
+    if _is_channel_first(data_format="CHW"):
+        rgb_weights = ivy.reshape(rgb_weights, (-1, 1, 1))
+    _c_index = _get_image_c_axis(data_format="CHW")
+    img = ivy.sum(img * rgb_weights, axis=_c_index, keepdims=True)
+
+    return ivy.repeat(img, num_output_channels, axis=_c_index)
 
 
 @with_unsupported_device_and_dtypes(
