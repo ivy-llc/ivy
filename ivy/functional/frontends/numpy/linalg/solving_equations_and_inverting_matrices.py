@@ -49,6 +49,37 @@ def tensorinv(a, ind=2):
     return ivy.reshape(ia, shape=new_shape)
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
+def tensorsolve(a, b, axes=None):
+    a = ivy.asarray(a)
+    b = ivy.asarray(b)
+    an = a.ndim
+
+    if axes is not None:
+        allaxes = list(range(0, an))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(an, k)
+        a = a.transpose((allaxes))
+
+    oldshape = a.shape[-(an - b.ndim) :]
+    prod = 1
+    for k in oldshape:
+        prod *= k
+
+    if a.size != prod**2:
+        raise ValueError(
+            "Input arrays must satisfy the requirement prod(a.shape[b.ndim:]) =="
+            " prod(a.shape[:b.ndim])"
+        )
+
+    a = a.reshape((prod, prod))
+    b = b.ravel()
+    res = solve(a, b)
+    return res.reshape(oldshape)
+
+
 # TODO: replace this with function from API
 # As the compositon provides unstable results
 @to_ivy_arrays_and_back

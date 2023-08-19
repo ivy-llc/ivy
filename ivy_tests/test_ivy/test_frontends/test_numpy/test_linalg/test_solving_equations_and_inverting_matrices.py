@@ -175,6 +175,36 @@ def test_numpy_tensorinv(
     )
 
 
+# tensorsolve
+@handle_frontend_test(
+    fn_tree="numpy.linalg.tensorsolve",
+    x=helpers.get_first_solve_matrix(adjoint=True),
+    y=helpers.get_second_solve_matrix(),
+    test_with_out=st.just(False),
+)
+def test_numpy_tensorsolve(
+    x,
+    y,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype1, x1, _ = x
+    dtype2, x2 = y
+    helpers.test_frontend_function(
+        input_dtypes=[dtype1, dtype2],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x1,
+        b=x2,
+    )
+
+
 # lstsq
 @handle_frontend_test(
     fn_tree="numpy.linalg.lstsq",
