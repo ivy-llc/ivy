@@ -41,7 +41,7 @@ def relu6(
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def logsigmoid(
-    input: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    input: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
 ) -> torch.Tensor:
     if torch.is_complex(input):
         return torch.log(torch.sigmoid(input))
