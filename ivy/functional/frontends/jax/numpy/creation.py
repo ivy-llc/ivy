@@ -282,31 +282,25 @@ def in1d(ar1, ar2, invert=False):
 @to_ivy_arrays_and_back
 def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
     fill_value = ivy.array(0 if fill_value is None else fill_value, dtype=ar1.dtype)
-    print(f"{fill_value=}")
     if ar1.size == 0:
         return ivy.full(size or 0, fill_value, dtype=ar1.dtype)
     if not assume_unique:
-        ar1 = jnp_frontend.unique(ar1, size=size and ar1.size, fill_value=0).ivy_array
-        print(f"{ar1=}")
+        val = (
+            ivy.to_scalar(ivy.all(ar1))
+            if ivy.is_bool_dtype(ar1.dtype)
+            else ivy.to_scalar(ivy.min(ar1))
+        )
+        ar1 = jnp_frontend.unique(ar1, size=size and ar1.size, fill_value=val).ivy_array
     mask = in1d(ar1, ar2, invert=True).ivy_array
-    print(f"{mask=}")
     if size is None:
-        print(f"{ar1=}              {mask=}")
         return ar1[mask]
     else:
         if not (assume_unique):
             # Set mask to zero at locations corresponding to unique() padding.
             n_unique = ar1.size + 1 - (ar1 == ar1[0]).sum(dtype=ivy.int64)
-            print(f"{n_unique=}")
             mask = ivy.where(ivy.arange(ar1.size) < n_unique, mask, False)
-            print(f"{mask=}")
-        print(f"{size=}")
-        print(
-            f"{(ivy.arange(size) < mask.sum(dtype=ivy.int64))=}        "
-            f" {ar1[jnp_frontend.where(mask, size=size).ivy_array]=}"
-        )
         return ivy.where(
             ivy.arange(size) < mask.sum(dtype=ivy.int64),
-            ar1[jnp_frontend.where(mask, size=size).ivy_array],
+            ar1[jnp_frontend.where(mask, size=size)[0].ivy_array],
             fill_value,
         )

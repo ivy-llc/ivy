@@ -1091,7 +1091,6 @@ def test_jax_numpy_frombuffer(
     ),
     use_size=st.booleans(),
     size=st.integers(min_value=1, max_value=100),
-    fill_value=st.one_of(st.integers(), st.floats(), st.booleans()),
     assume_unique=st.booleans(),
 )
 def test_jax_numpy_setdiff1d(
@@ -1100,7 +1099,6 @@ def test_jax_numpy_setdiff1d(
     dtype_and_b,
     use_size,
     size,
-    fill_value,
     assume_unique,
     on_device,
     fn_tree,
@@ -1111,7 +1109,7 @@ def test_jax_numpy_setdiff1d(
     input_dtype_a, a = dtype_and_a
     input_dtype_b, b = dtype_and_b
     if not use_size:
-        size, fill_value = None, None
+        size = None
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype_a + input_dtype_b,
@@ -1124,7 +1122,6 @@ def test_jax_numpy_setdiff1d(
         ar2=b[0],
         assume_unique=assume_unique,
         size=size,
-        fill_value=fill_value,
     )
 
 
