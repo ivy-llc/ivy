@@ -1425,6 +1425,7 @@ def test_frontend_method(
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
+    test_compile: bool = False,
 ):
     """
     Test a class-method that consumes (or returns) arrays for the current backend by
@@ -1618,6 +1619,7 @@ def test_frontend_method(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
             *args_method,
+            test_compile=test_compile,
             **kwargs_method,
         )
 
