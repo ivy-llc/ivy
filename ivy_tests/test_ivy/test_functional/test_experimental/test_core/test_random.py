@@ -3,7 +3,7 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 
 
 # Helpers #
@@ -48,7 +48,7 @@ def test_dirichlet(
         )
 
     ret, ret_gt = call()
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         if seed:
             ret1, ret_gt1 = call()
             assert ivy_backend.any(ret == ret1)
@@ -108,7 +108,7 @@ def test_beta(
     ret_gt = helpers.flatten_and_to_np(
         ret=ret_gt, backend=test_flags.ground_truth_backend
     )
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for u, v in zip(ret, ret_gt):
             assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
             assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
@@ -151,7 +151,7 @@ def test_gamma(
     ret_gt = helpers.flatten_and_to_np(
         ret=ret_gt, backend=test_flags.ground_truth_backend
     )
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for u, v in zip(ret, ret_gt):
             assert ivy_backend.all(u >= 0)
             assert ivy_backend.all(v >= 0)
@@ -204,7 +204,7 @@ def test_poisson(
     ret, ret_gt = call()
     if seed:
         ret1, ret_gt1 = call()
-        with update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
             assert ivy_backend.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     ret_gt = helpers.flatten_and_to_np(
