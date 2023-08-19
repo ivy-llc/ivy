@@ -1721,25 +1721,31 @@ def _batched_outer(tensors):
     outer product of tensors
         of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
     """
-    result = tensors[0]
+    result = None
+    result_size = None
+    result_shape = None
     for i, tensor in enumerate(tensors):
+        if i:
+            current_shape = ivy.shape(tensor)
+            current_size = len(current_shape) - 1
+
+            n_samples = current_shape[0]
+
+            if n_samples != result_shape[0]:
+                raise ValueError(
+                    f"Tensor {i} has a batch-size of {n_samples} but those before had a"
+                    f" batch-size of {result_shape[0]}, all tensors should have the"
+                    " same batch-size."
+                )
+
+            shape_1 = result_shape + (1,) * current_size
+            shape_2 = (n_samples,) + (1,) * result_size + current_shape[1:]
+
+            result = ivy.reshape(result, shape_1) * ivy.reshape(tensor, shape_2)
+        else:
+            result = tensor
+
         result_shape = ivy.shape(result)
         result_size = len(result_shape) - 1
-
-        current_shape = ivy.shape(tensor)
-
-        n_samples = current_shape[0]
-        if n_samples != result_shape[0]:
-            raise ValueError(
-                f"Tensor {i} has a batch-size of {n_samples} but those before had a"
-                f" batch-size of {result_shape[0]}, all tensors should have the same"
-                " batch-size."
-            )
-
-        current_size = len(current_shape) - 1
-        shape_1 = result_shape + (1,) * current_size
-        shape_2 = (n_samples,) + (1,) * result_size + current_shape[1:]
-
-        result = ivy.reshape(result, shape_1) * ivy.reshape(tensor, shape_2)
 
     return result
