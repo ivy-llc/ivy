@@ -1355,8 +1355,12 @@ def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
             available_dtypes=["int64"],
-            min_num_dims=1,
+            min_num_dims=2,
+            max_num_dims=3,
             min_dim_size=2,
+            max_dim_size=5,
+            min_value=-1e2,
+            max_value=1e2,
             valid_axis=True,
             force_int_axis=True,
             ret_shape=True,
@@ -1373,12 +1377,12 @@ def put_along_axis_helper(draw):
     idx_shape[axis] = 1
 
     idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 1)
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
     )
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=(), elements=st.integers(1, 1e3)
+        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(1, 1e3)
     )
     values = draw(values_strategy)
 
