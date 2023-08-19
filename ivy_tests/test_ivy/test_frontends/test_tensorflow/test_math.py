@@ -1948,8 +1948,10 @@ def test_tensorflow_rsqrt(
         shape = (5, 6),        
     ),
     dtype_and_segment=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=["int32", "int64"],
         shape = (5, ),
+        min_value = 0, 
+        max_value = 4,
     ),
     test_with_out=st.just(False),
 )
