@@ -12,10 +12,10 @@ def hinge_embedding_loss(
     target: torch.Tensor,
     /,
     *,
-    margin: float = 1.0,
+    margin: Optional[float] = 1.0,
     size_average: Optional[bool] = None,
     reduce: Optional[bool] = None,
-    reduction: str = "mean",
+    reduction: Optional[str] = "mean",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.hinge_embedding_loss(

@@ -30,8 +30,8 @@ def hinge_embedding_loss(
     target: paddle.Tensor,
     /,
     *,
-    margin: float = 1.0,
-    reduction: str = "mean",
+    margin: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
     name: Optional[str] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:

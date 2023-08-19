@@ -107,8 +107,8 @@ def hinge_embedding_loss(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    margin: float = 1.0,
-    reduction: str = "mean",
+    margin: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """

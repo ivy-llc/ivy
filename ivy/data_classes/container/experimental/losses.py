@@ -9,12 +9,12 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithLossesExperimental(ContainerBase):
     @staticmethod
     def _static_hinge_embedding_loss(
-        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        margin: Union[float, ivy.Container] = 1.0,
-        reduction: Union[str, ivy.Container] = "mean",  # Added parameter
+        margin: Optional[Union[float, ivy.Container]] = 1.0,
+        reduction: Optional[Union[str, ivy.Container]] = "mean",  # Added parameter
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -28,8 +28,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Parameters
         ----------
-        true
-            input array or container containing true labels.
+        input
+            input array or container containing input labels.
         target
             input array or container containing targeticted scores or logits.
         margin
@@ -39,8 +39,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
@@ -54,7 +54,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The hinge embedding loss between the given targetictions and true labels.
+            The hinge embedding loss between the given targetictions and input labels.
 
         Examples
         --------
@@ -62,7 +62,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "hinge_embedding_loss",
-            true,
+            input,
             target,
             margin=margin,
             reduction=reduction,
@@ -78,8 +78,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        margin: Union[float, ivy.Container] = 1.0,
-        reduction: Union[str, ivy.Container] = "mean",  # Added parameter
+        margin: Optional[Union[float, ivy.Container]] = 1.0,
+        reduction: Optional[Union[str, ivy.Container]] = "mean",  # Added parameter
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -94,7 +94,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Parameters
         ----------
         self
-            input container containing true labels.
+            input container containing input labels.
         target
             input array or container containing targeticted scores or logits.
         margin
@@ -104,8 +104,8 @@ class _ContainerWithLossesExperimental(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
@@ -119,7 +119,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The hinge embedding loss between the given targetictions and true labels.
+            The hinge embedding loss between the given targetictions and input labels.
 
         Examples
         --------
