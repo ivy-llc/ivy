@@ -462,9 +462,14 @@ def sinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinh(x)
 
 
-def sqrt(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def sqrt(
+    x: Union[float, JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.sqrt(x)
-
+    
 
 def square(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.square(x)
