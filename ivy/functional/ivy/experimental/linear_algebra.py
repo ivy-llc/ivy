@@ -1666,3 +1666,43 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a, b, out=out)
+
+
+@handle_exceptions
+@to_native_arrays_and_back
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_array_function
+def tt_matrix_to_tensor(
+    tt_matrix: List[Union[ivy.Array, ivy.NativeArray]],
+    /,
+) -> ivy.Array:
+    """
+    Return the full tensor whose TT-Matrix decomposition is given by 'factors' Re-
+    assembles 'factors', which represent a tensor in TT-Matrix format into the
+    corresponding full tensor.
+
+    Parameters
+    ----------
+    tt_matrix
+        list of 4D-arrays
+        TT-Matrix factors (known as core) of shape
+        (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+    Returns
+    -------
+    output_tensor: array
+                   tensor whose TT-Matrix decomposition was given by 'factors'
+    """
+    _, in_shape, out_shape, _ = zip(*(f.shape for f in tt_matrix))
+    ndim = len(in_shape)
+    full_shape = sum(zip(*(in_shape, out_shape)), ())
+    order = list(range(0, ndim * 2, 2)) + list(range(1, ndim * 2, 2))
+
+    for i, factor in enumerate(tt_matrix):
+        if not i:
+            res = factor
+        else:
+            res = ivy.tensordot(res, factor, axes=([-1], [0]))
+
+    return ivy.permute_dims(ivy.reshape(res, full_shape), axes=order)

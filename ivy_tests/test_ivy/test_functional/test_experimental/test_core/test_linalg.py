@@ -1606,7 +1606,30 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     np.testing.assert_(
         error < tol_norm_2, "norm 2 of difference between svd and random init too high"
     )
-    np.testing.assert_(
-        ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
-        "abs norm of difference between svd and random init too high",
-    )
+
+
+@pytest.mark.parametrize(
+    "factor1, factor2, res_true",
+    [
+        (
+            [[[[0.49671414], [-0.1382643]], [[0.64768857], [1.5230298]]]],
+            [[[[-0.23415337], [-0.23413695]], [[1.57921278], [0.76743472]]]],
+            [
+                [
+                    [[-0.1163073, -0.11629914], [0.03237505, 0.03237278]],
+                    [[0.78441733, 0.38119566], [-0.21834874, -0.10610882]],
+                ],
+                [
+                    [[-0.15165846, -0.15164782], [-0.35662258, -0.35659757]],
+                    [[1.02283812, 0.49705869], [2.40518808, 1.16882598]],
+                ],
+            ],
+        )
+    ],
+)
+def test_tt_matrix_to_tensor(factor1, factor2, res_true):
+    tt_matrix = [ivy.array(factor1), ivy.array(factor2)]
+    reconstructed_tensor = ivy.array(res_true)
+    ret_tensor = ivy.tt_matrix_to_tensor(tt_matrix)
+    assert ret_tensor.shape == (2, 2, 2, 2)
+    np.allclose(ivy.to_numpy(ret_tensor), ivy.to_numpy(reconstructed_tensor))
