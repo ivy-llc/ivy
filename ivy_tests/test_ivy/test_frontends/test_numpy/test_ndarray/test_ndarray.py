@@ -743,6 +743,7 @@ def test_numpy_ndarray_sum(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
     if ivy.current_backend_str() == "torch":
@@ -774,6 +775,7 @@ def test_numpy_ndarray_sum(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+        backend_to_test=backend_fw,
     )
 
 
