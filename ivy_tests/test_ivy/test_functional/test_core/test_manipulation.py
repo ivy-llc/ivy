@@ -2,9 +2,9 @@
 """Collection of tests for manipulation functions."""
 
 # global
-
 import numpy as np
 from hypothesis import strategies as st, assume
+import random
 
 # local
 import ivy
@@ -340,12 +340,13 @@ def _basic_min_x_max(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
         )
     )
-    min_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
-    max_val = draw(
-        helpers.array_values(dtype=dtype[0], shape=()).filter(lambda x: x > min_val)
-    )
+    if random.choice([True, False]):
+        min_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
+        max_val = None
+    else:
+        min_val = None
+        max_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
     return [dtype], (value[0], min_val, max_val)
-
 
 # clip
 @handle_test(
@@ -364,6 +365,7 @@ def test_clip(*, dtype_x_min_max, test_flags, backend_fw, fn_name, on_device):
         x_min=min_val,
         x_max=max_val,
     )
+
 
 
 @st.composite
