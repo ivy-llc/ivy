@@ -46,8 +46,8 @@ def _cpercentile(N, percent, key=lambda x: x):
 
 
 
-@ivy.to_ivy_arrays_and_back
-@ivy.handle_numpy_out
+@to_ivy_arrays_and_back
+@handle_numpy_out
 def percentile(a, q, axis=None, out=None, overwrite_input=False, interpolation='linear', keepdims=False):
     a = ivy.array(a)
     q = ivy.divide(q, 100.0)
