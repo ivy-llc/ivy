@@ -2979,13 +2979,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     @staticmethod
     def static_sparsify_tensor(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        card: int,
+        card: Union[int, ivy.Container],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3047,9 +3047,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

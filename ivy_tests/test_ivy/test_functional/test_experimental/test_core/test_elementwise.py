@@ -849,7 +849,6 @@ def _sparsify_tensor_stg(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.sparsify_tensor",
     tensor_data=_sparsify_tensor_stg(),
-    test_with_out=st.just(False),
 )
 def test_sparsify_tensor(
     tensor_data,
