@@ -1945,14 +1945,11 @@ def test_tensorflow_rsqrt(
     fn_tree="tensorflow.math.segment_sum",
     dtype_and_data=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=2,
-        
+        shape = (5, 6),        
     ),
     dtype_and_segment=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=1,
+        shape = (5, ),
     ),
     test_with_out=st.just(False),
 )
@@ -1975,8 +1972,8 @@ def test_tensorflow_segment_sum(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        data=data,
-        segment_ids=segment_ids,
+        data=data[0],
+        segment_ids=segment_ids[0],
     )
 
 # nextafter
