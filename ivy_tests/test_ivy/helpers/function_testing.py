@@ -179,10 +179,6 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
-    print(
-        f"Compilation : {test_flags.test_compile} , current backend mode -:"
-        f" {BackendHandler._current_mode}"
-    )
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
