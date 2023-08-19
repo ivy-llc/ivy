@@ -106,7 +106,7 @@ def l1_loss(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    reduction: str = "mean",
+    reduction: Optional[str] = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
