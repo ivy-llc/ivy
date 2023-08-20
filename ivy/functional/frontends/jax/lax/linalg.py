@@ -38,3 +38,10 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
         x = symmetrize(x)
 
     return ivy.eigh(x, UPLO=UPLO)
+
+@to_ivy_arrays_and_back
+def lu(x):
+    if x:
+        LU, pivots = ivy.lu_factor(x)
+        return (LU, pivots)
+    return ivy.lu(x)
