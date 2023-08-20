@@ -20,6 +20,9 @@ class Index:
     def __len__(self):
         return len(self.index_array)
 
+    def __iter__(self):
+        return iter(self.index_array.to_list())
+
     @property
     def ndim(self):
         return self.index_array.ndim
