@@ -443,7 +443,7 @@ def nanmedian(
 ):
     return ivy.nanmedian(
         a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
-    )
+    ).astype(a.dtype)
 
 
 @to_ivy_arrays_and_back
