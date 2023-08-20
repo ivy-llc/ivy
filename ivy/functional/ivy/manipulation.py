@@ -14,6 +14,8 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -36,10 +38,12 @@ def _calculate_out_shape(axis, array_shape):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -94,12 +98,14 @@ def concat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -156,29 +162,30 @@ def expand_dims(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2]) #x.shape->(3,)
-    >>> y = ivy.expand_dims(x) #y.shape->(1, 3)
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.expand_dims(x)
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
     >>> x = ivy.array([[0.5, -0.7, 2.4],
-    ...                [  1,    2,   3]]) #x.shape->(2, 3)
+    ...                [  1,    2,   3]])
     >>> y = ivy.zeros((2, 1, 3))
-    >>> ivy.expand_dims(x, axis=1, out=y) #y.shape->(2, 1, 3)
+    >>> ivy.expand_dims(x, axis=1, out=y)
     >>> print(y)
     ivy.array([[[0.5, -0.7, 2.4]],
                [[ 1.,   2.,  3.]]])
 
     >>> x = ivy.array([[-1, -2],
-    ...                [ 3,  4]]) #x.shape->(2, 2)
-    >>> ivy.expand_dims(x, axis=0, out=x) #x.shape->(1, 2, 2)
-    >>> print(x)
+    ...                [ 3,  4]])
+    >>> y = ivy.zeros((1, 2, 2))
+    >>> ivy.expand_dims(x, axis=0, out=y)
+    >>> print(y)
     ivy.array([[[-1, -2],
                 [3,  4]]])
 
     >>> x = ivy.array([[-1.1, -2.2, 3.3],
-    ...                [ 4.4,  5.5, 6.6]]) #x.shape->(2, 3)
-    >>> y = ivy.expand_dims(x, axis=(0, -1)) #y.shape->(1, 2, 3, 1)
+    ...                [ 4.4,  5.5, 6.6]])
+    >>> y = ivy.expand_dims(x, axis=(0, -1))
     >>> print(y)
     ivy.array([[[[-1.1],
                  [-2.2],
@@ -188,8 +195,8 @@ def expand_dims(
                  [ 6.6]]]])
 
     >>> x = ivy.array([[-1.7, -3.2, 2.3],
-    ...                [ 6.3,  1.4, 5.7]]) #x.shape->(2, 3)
-    >>> y = ivy.expand_dims(x, axis=[0, 1, -1]) ##y.shape->(1, 1, 2, 3, 1)
+    ...                [ 6.3,  1.4, 5.7]])
+    >>> y = ivy.expand_dims(x, axis=[0, 1, -1])
     >>> print(y)
     ivy.array([[[[[-1.7],
                   [-3.2],
@@ -231,12 +238,14 @@ def expand_dims(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -296,14 +305,14 @@ def flip(
     ivy.array([5, 4, 3])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
+    >>> y = ivy.zeros((2, 3))
     >>> ivy.flip(x, out=y)
     >>> print(y)
     ivy.array([[6, 5, 4],
                [3, 2, 1]])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
+    >>> y = ivy.zeros((2, 3))
     >>> ivy.flip(x, axis=0, out=y)
     >>> print(y)
     ivy.array([[4, 5, 6],
@@ -326,12 +335,14 @@ def flip(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -411,7 +422,8 @@ def permute_dims(
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b = ivy.array([[3., 4., 5.]]))
-    >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
+    >>> y = ivy.Container(a=ivy.zeros((3, 1)), b= ivy.zeros((3, 1)))
+    >>> ivy.permute_dims(x, axes=(1, 0), out=y)
     >>> print(y)
     {
         a: ivy.array([[0.],
@@ -426,12 +438,14 @@ def permute_dims(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -463,14 +477,14 @@ def reshape(
     order
         Read the elements of x using this index order, and place the elements into
         the reshaped array using this index order.
-        ‘C’ means to read / write the elements using C-like index order,
+        ``C`` means to read / write the elements using C-like index order,
         with the last axis index changing fastest, back to the first axis index
         changing slowest.
-        ‘F’ means to read / write the elements using Fortran-like index order, with
+        ``F`` means to read / write the elements using Fortran-like index order, with
         the first index changing fastest, and the last index changing slowest.
-        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        Note that the ``C`` and ``F`` options take no account of the memory layout
         of the underlying array, and only refer to the order of indexing.
-        Default order is 'C'
+        Default order is ``C``
     allowzero
         When ``allowzero=True``, any value in the ``shape`` argument that is equal to
         zero, the zero value is honored. When ``allowzero=False``, any value in the
@@ -553,11 +567,13 @@ def reshape(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -664,12 +680,14 @@ def roll(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -758,10 +776,12 @@ def squeeze(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -846,10 +866,12 @@ def stack(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -971,11 +993,13 @@ def clip(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1021,10 +1045,15 @@ def constant_pad(
     ivy.array([0, 0, 1, 2, 3, 4, 5, 0, 0, 0])
 
     >>> x = ivy.array([[1, 2], [3, 4]])
-    >>> y = ivy.constant_pad(x, pad_width = [[2, 3]])
+    >>> y = ivy.constant_pad(x, pad_width=[(2, 3), (2, 3)])
     >>> print(y)
-    ivy.array([[0, 0, 1, 2, 0, 0, 0],
-                [0, 0, 3, 4, 0, 0, 0]])
+    ivy.array([[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 2, 0, 0, 0],
+            [0, 0, 3, 4, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]])
 
     >>> x = ivy.array([[1, 2], [3, 4]])
     >>> y = ivy.constant_pad(x, pad_width = [[3, 2], [2, 3]])
@@ -1037,11 +1066,14 @@ def constant_pad(
                 [0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0]])
 
-    >>> x = ivy.array([[2], [3]])
-    >>> y = ivy.zeros((2, 3))
-    >>> ivy.constant_pad(x, pad_width = [[1, 1]], value = 5.0, out = y)
-    ivy.array([[5, 2, 5],
-       [5, 3, 5]])
+    >>> x = ivy.array([[2.], [3.]])
+    >>> y = ivy.zeros((4, 3))
+    >>> ivy.constant_pad(x, pad_width = [(1, 1), (1, 1)], value = 5.0, out= y)
+    >>> print(y)
+    ivy.array([[5., 5., 5.],
+           [5., 2., 5.],
+           [5., 3., 5.],
+           [5., 5., 5.]])
 
     With :class:`ivy.Container` input:
 
@@ -1050,19 +1082,21 @@ def constant_pad(
     >>> y = ivy.constant_pad(x, pad_width = [[2, 3]], value = 5.0)
     >>> print(y)
     {
-            a: ivy.array([5, 5, 1, 2, 3, 5, 5, 5]),
-            b: ivy.array([5, 5, 4, 5, 6, 5, 5, 5])
+        a: ivy.array([5., 5., 1., 2., 3., 5., 5., 5.]),
+        b: ivy.array([5., 5., 3., 4., 5., 5., 5., 5.])
     }
     """
     return current_backend(x).constant_pad(x, pad_width=pad_width, value=value, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1129,11 +1163,13 @@ def repeat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1216,12 +1252,14 @@ def split(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1320,7 +1358,7 @@ def swapaxes(
                       [5.]])
     }
 
-    Both the description and the type hints above assumes an array input for simplicity,
+    # Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
@@ -1328,10 +1366,12 @@ def swapaxes(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1399,7 +1439,7 @@ def tile(
     }
 
 
-    Both the description and the type hints above assumes an array input for simplicity,
+    # Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
@@ -1407,11 +1447,13 @@ def tile(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1503,11 +1545,13 @@ def unstack(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1554,7 +1598,7 @@ def zero_pad(
     ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
 
     >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
-    >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+    >>> y = ivy.zero_pad(x, pad_width = [[2, 3], [2, 3]])
     >>> print(y)
     ivy.array([[0., 0., 0., 0., 0., 0., 0., 0.],
        [0., 0., 0., 0., 0., 0., 0., 0.],

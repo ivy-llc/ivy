@@ -1011,6 +1011,7 @@ def test_module_track_submod_call_order(
         ]
     )
 
+
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -1018,9 +1019,10 @@ def test_module_track_submod_call_order(
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_save_and_load_as_pickled(batch_shape, input_channels, output_channels, on_device):
+def test_module_save_and_load_as_pickled(
+    batch_shape, input_channels, output_channels, on_device
+):
     save_filepath = "module.pickled"
-
 
     # smoke test
     if ivy.current_backend_str() == "numpy":
@@ -1057,3 +1059,33 @@ def test_module_save_and_load_as_pickled(batch_shape, input_channels, output_cha
     assert ivy.Container.all(loaded_module.v == module.v).cont_all_true()
 
     os.remove(save_filepath)
+
+
+class ModuleWithBuffer(ivy.Module):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def _forward(*args, **kwargs):
+        pass
+
+
+@given(
+    buffer=st.just(
+        [
+            {
+                "var1": [
+                    ivy.ones((1, 2)),
+                ]
+            }
+        ]
+    )
+)
+def test_get_buffers(buffer):
+    module = ModuleWithBuffer()
+    buffers = {}
+    for item in buffer:
+        buffers.update(item)
+        for key in item:
+            module.register_buffer(key, item[key])
+
+    assert module.buffers == buffers

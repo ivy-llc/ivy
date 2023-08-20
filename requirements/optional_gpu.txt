@@ -9,7 +9,6 @@ opencv-python # unpinned , mod_name=cv2
 jax # unpinned, we test for latest version now
 jaxlib # unpinned, we test for latest version now
 tensorflow  # unpinned, we test for latest version now
-tensorflow-addons # unpinned, we test for latest version now, mod_name=tensorflow_addons
 tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
 torch # unpinned, we test for latest version now
 torch-scatter # unpinned, mod_name=torch_scatter

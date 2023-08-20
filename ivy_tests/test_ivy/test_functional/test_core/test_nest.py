@@ -380,21 +380,19 @@ def test_prune_nest_at_index(nest, index):
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
 )
-@pytest.mark.parametrize("indices", [(("a", 0, 0), ("b", "c", 0))])
+@pytest.mark.parametrize("indices", [(("a", 0), ("a", 0, 0), ("a", 1), ("b", "c", 0))])
 def test_prune_nest_at_indices(nest, indices):
     nest_copy = copy.deepcopy(nest)
-
-    def pnais(n, idxs):
-        [_pnai(n, index) for index in idxs]
-
-    # handling cases where there is nothing to prune
-    try:
-        ivy.prune_nest_at_indices(nest, indices)
-        pnais(nest_copy, indices)
-    except Exception:
-        warnings.warn("Nothing to delete.")
-
-    assert nest == nest_copy
+    ivy.prune_nest_at_indices(nest_copy, indices)
+    print(nest_copy)
+    for idx in indices:
+        try:
+            ele_org = ivy.index_nest(nest, idx)
+            ele_new = ivy.index_nest(nest_copy, idx)
+        except ivy.utils.exceptions.IvyIndexError:
+            return
+        else:
+            assert ele_org != ele_new
 
 
 # insert_into_nest_at_index

@@ -18,24 +18,15 @@ from ivy_tests.test_ivy.helpers import handle_test
     ),
     test_gradients=st.just(False),
 )
-def test_unique_values(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_unique_values(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -58,25 +49,16 @@ def test_unique_values(
     ground_truth_backend="numpy",
 )
 def test_unique_all(
-    *,
-    dtype_x_axis,
-    none_axis,
-    by_value,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_x_axis, none_axis, by_value, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, axis = dtype_x_axis
     if none_axis:
         axis = None
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         axis=axis,
@@ -95,24 +77,15 @@ def test_unique_all(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_unique_counts(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_unique_counts(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -129,24 +102,15 @@ def test_unique_counts(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_unique_inverse(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_unique_inverse(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )

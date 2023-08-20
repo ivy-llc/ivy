@@ -36,16 +36,14 @@ def test_cross_entropy(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true, axis = dtype_true_axis
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -112,7 +110,6 @@ def test_binary_cross_entropy(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype_true, true = dtype_and_true
     dtype_pred, pred = dtype_and_pred
@@ -120,10 +117,9 @@ def test_binary_cross_entropy(
 
     if from_logits:
         helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype_true + dtype_pred + dtype_pos_weight,
             test_flags=test_flags,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
             rtol_=1e-02,
@@ -138,10 +134,9 @@ def test_binary_cross_entropy(
         )
     else:
         helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype_true + dtype_pred,
             test_flags=test_flags,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
             rtol_=1e-02,
@@ -193,15 +188,13 @@ def test_sparse_cross_entropy(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         true=true[0],

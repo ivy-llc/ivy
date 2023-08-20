@@ -45,9 +45,12 @@ class Sequential(Module):
         self._submodules = list(sub_modules)
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
+    def __iter__(self):
+        return iter(self._submodules)
+
     def _forward(self, inputs):
         """
-        Perform forward pass of the Linear layer.
+        Perform forward pass of the Sequential container.
 
         Parameters
         ----------
@@ -57,7 +60,7 @@ class Sequential(Module):
         Returns
         -------
         ret
-            The outputs following the linear operation and bias addition.
+            The output after each of the layers in the Sequential has been applied.
         """
         x = inputs
         for i, submod in enumerate(self._submodules):

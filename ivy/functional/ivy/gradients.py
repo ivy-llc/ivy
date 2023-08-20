@@ -16,6 +16,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -51,7 +53,9 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         x, fn=inner_fn, include_derived=True, shallow=False
     )
     if xs_grad_idxs is not None:
-        ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
+        xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
+        ivy.nested_map(xs_required, map_fn, include_derived=True)
+        ivy.set_nest_at_indices(xs, xs_grad_idxs, xs_required)
         return xs
     return ivy.nested_map(xs, map_fn, include_derived=True, shallow=False)
 
@@ -63,6 +67,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     if xs_grad_idxs is not None:
         xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
         ivy.nested_map(xs_required, ivy.to_native, include_derived=True)
+        ivy.set_nest_at_indices(xs, xs_grad_idxs, xs_required)
     else:
         xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
 
@@ -104,13 +109,21 @@ def _get_required_float_variables(xs, xs_grad_idxs):
     Also, returns a list of duplicate index chains for the nested
     structure.
     """
+    if (ivy.is_ivy_container(xs) or ivy.is_array(xs)) and xs_grad_idxs == [[0]]:
+        xs_grad_idxs = None
     duplicate_index_chains = _get_duplicate_index_chains(xs)
     xs = _to_ivy(xs)
     xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     xs = _set_duplicates(xs, duplicate_index_chains)
     xs_required = _get_required_native_variables(xs, xs_grad_idxs)
     required_duplicate_index_chains = _get_duplicate_index_chains(xs_required)
-    return xs, xs_required, required_duplicate_index_chains, duplicate_index_chains
+    return (
+        xs,
+        xs_grad_idxs,
+        xs_required,
+        required_duplicate_index_chains,
+        duplicate_index_chains,
+    )
 
 
 def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=False):
@@ -181,6 +194,10 @@ def _set_duplicates(xs, duplicate_index_chains):
 
 def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True):
     """Get the relevant outputs from the function return value."""
+    if (ivy.is_ivy_container(func_ret) or ivy.is_array(func_ret)) and ret_grad_idxs == [
+        [0]
+    ]:
+        ret_grad_idxs = None
     ret_idxs, ret_values = _get_native_variables_and_indices(
         func_ret, idxs=ret_grad_idxs, create_var=create_var, reshape=reshape
     )
@@ -190,7 +207,7 @@ def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True)
         y = ret_values[0]
     else:
         y = ret_values
-    return y, ret_idxs
+    return ret_grad_idxs, y, ret_idxs
 
 
 def _get_native_y(y):
@@ -302,11 +319,13 @@ def _variable_data(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -381,14 +400,15 @@ def stop_gradient(
 
 
 @handle_exceptions
+@handle_device_shifting
 def execute_with_gradients(
     func,
     xs: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Call function func with input of xs variables, and return the function result
@@ -406,10 +426,14 @@ def execute_with_gradients(
         Whether to retain the gradients of the returned values. (Default value = False)
     xs_grad_idxs
         Indices of the input arrays to compute gradients with respect to. If None,
-        gradients are returned with respect to all input arrays. (Default value = None)
+        gradients are returned with respect to all input arrays. If ``xs`` is an
+        ``ivy.Array`` or ``ivy.Container``, the default value is ``None``, otherwise the
+        default value is ``[[0]]``.
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
-        gradients are returned for all returned arrays. (Default value = None)
+        gradients are returned for all returned arrays. If the returned object from the
+        ``func`` is an ``ivy.Array`` or ``ivy.Container``, the default value is ``None``
+        otherwise the default value is ``[[0]]``.
 
     Returns
     -------
@@ -487,7 +511,8 @@ def value_and_grad(func: Callable) -> Callable:
     >>> grad_fn = ivy.value_and_grad(func)
     >>> value_grad = grad_fn(x)
     >>> print(value_grad)
-    (ivy.array(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))
+    (ivy.array(16.42333412), ivy.array([[1.5333333 , 0.69999999, 1.66666675],
+           [0.93333334, 0.43333334, 2.0666666 ]]))
     """
     return current_backend(None).value_and_grad(func)
 
@@ -623,9 +648,9 @@ def adam_step(
     >>> step = ivy.array(3)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)
     >>> print(adam_step_delta)
-    (ivy.array([0.2020105,0.22187898,0.24144873]),
-        ivy.array([1.,1.10000002,1.20000005]),
-        ivy.array([1.,1.00300002,1.00800002]))
+    (ivy.array([0.2020105 , 0.22187898, 0.24144873]),
+    ivy.array([0.99999998, 1.09999998, 1.19999998]),
+    ivy.array([1.00000001, 1.00300001, 1.00800001]))
 
     >>> dcdw = ivy.array([[1., 4., -3.], [2., 3., 0.5]])
     >>> mw = ivy.zeros((2,3))
@@ -638,20 +663,20 @@ def adam_step(
     ...                                 epsilon=epsilon)
     >>> print(adam_step_delta)
     (ivy.array([[ 1.,  1., -1.],
-    ...         [ 1.,  1.,  1.]]),
-    ... ivy.array([[ 0.14,  0.56, -0.42],
-    ...            [ 0.28,  0.42,  0.07]]),
+                [ 1.,  1.,  1.]]),
+        ivy.array([[ 0.14,  0.56, -0.42],
+                   [ 0.28,  0.42,  0.07]]),
      ivy.array([[0.05  , 0.8   , 0.45  ],
                 [0.2   , 0.45  , 0.0125]]))
 
-    >>> dcdw = ivy.array([1, -2, 3])
+    >>> dcdw = ivy.array([0.1, -0.7, 2])
     >>> mw = ivy.ones(1)
     >>> vw = ivy.ones(1)
     >>> step = ivy.array(3.6)
     >>> out = ivy.zeros_like(dcdw)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, out=out)
     >>> print(out)
-        ivy.array([0.171, 0.171, 0.171])
+    ivy.array([0.17294501, 0.15770318, 0.20863818])
 
     With one :class:`ivy.Container` input:
 

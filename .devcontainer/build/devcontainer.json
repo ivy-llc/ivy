@@ -5,14 +5,20 @@
 
 	"build": {
 		"dockerfile": "../../docker/Dockerfile",
-		"context": "../.."
+		"context": "../..",
+		"args": {
+      "pycon": ["3.10"]
+    }
 	},
 
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-python.python"
-			]
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/opt/miniconda/envs/multienv/bin/python3"
+			}
 		}
 	},
 

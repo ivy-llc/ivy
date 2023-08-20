@@ -334,7 +334,7 @@ def _lcm(
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 @with_supported_dtypes(
-    {"1.25.0 and below": ("int8", "int16", "int32", "int64")}, "numpy"
+    {"1.25.2 and below": ("int8", "int16", "int32", "int64")}, "numpy"
 )  # Add
 def _gcd(
     x1,

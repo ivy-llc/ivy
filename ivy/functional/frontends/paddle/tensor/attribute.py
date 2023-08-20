@@ -21,6 +21,11 @@ def is_floating_point(x):
 
 
 @to_ivy_arrays_and_back
+def rank(input):
+    return ivy.get_num_dims(input)
+
+
+@to_ivy_arrays_and_back
 def real(x):
     return ivy.real(x)
 

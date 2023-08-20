@@ -510,7 +510,7 @@ class ModuleHelpers(abc.ABC):
             else:
                 max_key = key + "_0"
                 sco[max_key] = ivy.Container(
-                    alphabetical_keys=False, ivyh=ivy.with_backend("numpy", cached=True)
+                    alphabetical_keys=False, ivyh=ivy.with_backend("numpy")
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
@@ -539,7 +539,7 @@ class ModuleHelpers(abc.ABC):
             ).to_numpy()
         else:
             sco[new_key] = ivy.Container(
-                alphabetical_keys=False, ivyh=ivy.with_backend("numpy", cached=True)
+                alphabetical_keys=False, ivyh=ivy.with_backend("numpy")
             )
 
     def show_structure(self):
@@ -559,8 +559,8 @@ class ModuleHelpers(abc.ABC):
 
     def _convert_tensors_to_numpy(self):
         """
-        Recursively traverses the _sub_mods attribute of a Module object and converts every container containing tensors to numpy
-        using the to_numpy() method.
+        Recursively traverses the _sub_mods attribute of a Module object and converts
+        every container containing tensors to numpy using the to_numpy() method.
 
         Returns
         -------
@@ -569,15 +569,15 @@ class ModuleHelpers(abc.ABC):
         """
         if len(self._sub_mods) > 0:
             for sub_mod in self._sub_mods:
-                    sub_mod._convert_tensors_to_numpy()
+                sub_mod._convert_tensors_to_numpy()
             self.v = self.v.to_numpy()
         else:
             self.v = self.v.to_numpy()
-        
+
     def _convert_numpy_to_tensors(self):
         """
-        Recursively traverses the _sub_mods attribute of a Module object and converts every container containing tensors to numpy
-        using the to_numpy() method.
+        Recursively traverses the _sub_mods attribute of a Module object and converts
+        every container containing tensors to numpy using the to_numpy() method.
 
         Returns
         -------
@@ -586,7 +586,7 @@ class ModuleHelpers(abc.ABC):
         """
         if len(self._sub_mods) > 0:
             for sub_mod in self._sub_mods:
-                    sub_mod._convert_numpy_to_tensors()
-                    self.v = self.v.to_ivy()
+                sub_mod._convert_numpy_to_tensors()
+                self.v = self.v.to_ivy()
         else:
-            self.v = self.v.to_ivy()    
+            self.v = self.v.to_ivy()
