@@ -68,16 +68,16 @@ jobs:
           mkdir -p examples
         continue-on-error: true
 
-       - name: Run Experimental Test
-         if: steps.check_file_changed.outputs.changed == 'True'
-         id: tests
-         run: |
-           cd ivy
-           mkdir .ivy
-           touch .ivy/key.pem
-           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-           ./run_tests_CLI/test_experimental_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
-         continue-on-error: true
+      - name: Run Experimental Test
+        if: steps.check_file_changed.outputs.changed == 'True'
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          ./run_tests_CLI/test_experimental_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+        continue-on-error: true
 
       - name: Zip Hypothesis Examples
         if: github.event_name == 'pull_request' && steps.check_file_changed.outputs.changed == 'True'
@@ -96,13 +96,13 @@ jobs:
         continue-on-error: true
 
       - name: Install Mongo Python Client
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.check_file_changed.outputs.changed == 'True'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_file_changed.outputs.changed == 'True'
         uses: BSFishy/pip-action@v1
         with:
           packages: |
             pymongo[srv]
       - name: Update Database
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.check_file_changed.outputs.changed == 'True'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_file_changed.outputs.changed == 'True'
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         run: |

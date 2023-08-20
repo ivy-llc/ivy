@@ -13,12 +13,12 @@ class _ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -96,12 +96,12 @@ class _ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -176,12 +176,12 @@ class _ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -248,15 +248,15 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([1.10000002])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0.1, 1.1]]), b=ivy.array([[2, 3]]))
+        >>> x = ivy.Container(a=ivy.array([[0.1, 1.1]]), b=ivy.array([[2., 4.]]))
         >>> y = x.mean(axis=1, keepdims=True)
         >>> print(y)
         {
             a: ivy.array([[0.60000002]]),
-            b: ivy.array([[2.5]])
+            b: ivy.array([[3.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+        >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
         >>> x.mean(out=x)
         >>> print(x)
         {
@@ -310,13 +310,13 @@ class _ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        correction: Union[int, float] = 0.0,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        correction: Union[int, float, ivy.Container] = 0.0,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -428,13 +428,13 @@ class _ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        correction: Union[int, float] = 0.0,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        correction: Union[int, float, ivy.Container] = 0.0,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -500,13 +500,13 @@ class _ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
         """
@@ -639,13 +639,13 @@ class _ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -727,8 +727,9 @@ class _ContainerWithStatistical(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
-        >>> x.prod(out=x)
-        >>> print(x)
+        >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
+        >>> x.prod(out=y)
+        >>> print(y)
         {
             a: ivy.array(0),
             b: ivy.array(0.30800003)
@@ -745,8 +746,9 @@ class _ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
         ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
-        >>> x.prod(axis=0, out=x)
-        >>> print(x)
+        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
+        >>> x.prod(axis=0, out=y)
+        >>> print(y)
         {
             a: ivy.array([0., 4., 10.]),
             b: ivy.array([18., 28., 40.])
@@ -778,13 +780,13 @@ class _ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
@@ -804,13 +806,13 @@ class _ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self._static_sum(
@@ -829,13 +831,13 @@ class _ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        correction: Union[int, float] = 0.0,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        correction: Union[int, float, ivy.Container] = 0.0,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -922,7 +924,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([0.81649649])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[2, 1]]), b=ivy.array([[2, -2]]))
+        >>> x = ivy.Container(a=ivy.array([[2., 1.]]), b=ivy.array([[2., -2.]]))
         >>> y = x.std(axis=1, keepdims=True)
         >>> print(y)
         {
@@ -930,7 +932,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([[2.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-1, 1, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+        >>> x = ivy.Container(a=ivy.array([-1., 1., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
         >>> x.std(out=x)
         >>> print(x)
         {
@@ -949,11 +951,11 @@ class _ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[-1., 1., 2.], [2., 2., 2.]]),
         ...                   b=ivy.array([[3., 0., -3.], [4., 1., 4.]]))
-        >>> y = ivy.std(x, axis=1)
+        >>> y = x.std(axis=1)
         >>> print(y)
         {
-        a: ivy.array([1.2472192, 0.]),
-        b: ivy.array([2.44948983, 1.41421354])
+            a: ivy.array([1.2472192, 0.]),
+            b: ivy.array([2.44948983, 1.41421354])
         }
         """
         return self.cont_handle_inplace(
@@ -977,15 +979,15 @@ class _ContainerWithStatistical(ContainerBase):
     @staticmethod
     def _static_cumsum(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1119,15 +1121,15 @@ class _ContainerWithStatistical(ContainerBase):
 
     def cumsum(
         self: ivy.Container,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1277,14 +1279,14 @@ class _ContainerWithStatistical(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1365,196 +1367,18 @@ class _ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
-    @staticmethod
-    def _static_cummax(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cummax. This method simply wraps the
-        function, and so the docstring for ivy.cummax also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        x
-            Input array or container to cummax.
-        axis
-            Axis to cummax along. Default is ``0``.
-        exclusive
-            Whether to exclude the first element of the input array.
-            Default is ``False``.
-        reverse
-            Whether to perform the cummax from last to first element in the selected
-            axis. Default is ``False`` (from first to last element)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            Optional output container. Default is ``None``.
-
-        Returns
-        -------
-        ret
-            Containers with arrays cummax at leaves along specified axis.
-
-        --------
-        With one :class:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = ivy.Container.static_cummax(x, axis=0)
-        >>> print(y)
-        {
-            a: ivy.array([1, 2, 3]),
-            b: ivy.array([4, 5, 6])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
-        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> ivy.Container.static_cummax(x, axis=1, out=y)
-        >>> print(y)
-        {
-            a: ivy.array([[2., 3.],
-                          [5., 7.],
-                          [11., 13.]]),
-            b: ivy.array([[3., 4.],
-                          [4., 5.],
-                          [5., 6.]])
-        }
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "cummax",
-            x,
-            axis=axis,
-            exclusive=exclusive,
-            reverse=reverse,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    @staticmethod
-    def _static_cummin(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        axis: int = 0,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cummin. This method simply wraps the
-        function, and so the docstring for ivy.cummin also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        x
-            Input array or container to cummin.
-        axis
-            Axis to cummin along. Default is ``0``.
-        exclusive
-            Whether to exclude the first element of the input array.
-            Default is ``False``.
-        reverse
-            Whether to perform the cummin from last to first element in the selected
-            axis. Default is ``False`` (from first to last element)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        dtype
-            Data type of the returned array. Default is ``None``.
-        out
-            Optional output container. Default is ``None``.
-
-        Returns
-        -------
-        ret
-            Containers with arrays cummin at leaves along specified axis.
-
-        Examples #TODO: fix examples and this doc
-        --------
-        With one :class:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = ivy.Container.static_cummin(x, axis=0)
-        >>> print(y)
-        {
-            a: ivy.array([1, 1, 1]),
-            b: ivy.array([4, 4, 4])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
-        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> x.static_cummin(axis=1, out=y)
-        {
-            a: ivy.array([[2, 2],
-                          [5, 5],
-                          [11, 11]]),
-            b: ivy.array([[3, 3],
-                          [4, 4],
-                          [5, 5]])
-        }
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "cummin",
-            x,
-            axis=axis,
-            reverse=reverse,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            dtype=dtype,
-            out=out,
-        )
-
     def cumprod(
         self: ivy.Container,
         /,
         *,
-        axis: int = 0,
-        exclusive: bool = False,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        axis: Union[int, ivy.Container] = 0,
+        exclusive: Union[bool, ivy.Container] = False,
+        reverse: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1630,183 +1454,13 @@ class _ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
-    def cummax(
-        self: ivy.Container,
-        /,
-        *,
-        axis: int = 0,
-        exclusive: bool = True,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cummax. This method simply wraps
-        the function, and so the docstring for ivy.cummax also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input container to cummax at leaves.
-        axis
-            Axis along which the cumulative product is computed. Default is ``0``.
-        exclusive
-            Whether to exclude the first element of the input array.
-            Default is ``False``.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        dtype
-            Data type of the returned array. Default is ``None``.
-        out
-            Optional output container. Default is ``None``.
-
-        Returns
-        -------
-        ret
-            Containers with arrays cummax at leaves along specified axis.
-
-        --------
-        With one :class:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = x.cummax(axis=0)
-        >>> print(y)
-        {
-            a: ivy.array([1, 2, 3]),
-            b: ivy.array([4, 5, 6])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
-        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> x.cummax(axis=1, exclusive=True, out=y)
-        {
-            a: ivy.array([[2., 3.],
-                          [5., 7.],
-                          [11., 13.]]),
-            b: ivy.array([[3., 4.],
-                          [4., 5.],
-                          [5., 6.]])
-        }
-        """
-        return self._static_cummax(
-            self,
-            axis=axis,
-            exclusive=exclusive,
-            reverse=reverse,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def cummin(
-        self: ivy.Container,
-        /,
-        *,
-        axis: int = 0,
-        reverse: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cummin. This method simply wraps
-        the function, and so the docstring for ivy.cummin also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input container to cummin at leaves.
-        axis
-            Axis along which the cumulative product is computed. Default is ``0``.
-        exclusive
-            Whether to exclude the first element of the input array.
-            Default is ``False``.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        dtype
-            Data type of the returned array. Default is ``None``.
-        out
-            Optional output container. Default is ``None``.
-
-        Returns
-        -------
-        ret
-            Containers with arrays cummin at leaves along specified axis.
-
-        Examples #TODO: change examples and change doc string
-        --------
-        With one :class:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = x.cummin(axis=0)
-        >>> print(y)
-        {
-            a: ivy.array([1, 1, 1]),
-            b: ivy.array([4, 4, 4])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
-        >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-        >>> x.cummin(axis=1, out=y)
-        {
-            a: ivy.array([[2, 2],
-                          [5, 5],
-                          [11, 11]]),
-            b: ivy.array([[3, 3],
-                          [4, 4],
-                          [5, 5]])
-        }
-        """
-        return self._static_cummin(
-            self,
-            axis=axis,
-            reverse=reverse,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            dtype=dtype,
-            out=out,
-        )
-
     def einsum(
         self: ivy.Container,
-        equation: str,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        equation: Union[str, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:

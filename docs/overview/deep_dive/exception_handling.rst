@@ -2,7 +2,6 @@ Exception Handling
 ==================
 
 .. _`exception handling channel`: https://discord.com/channels/799879767196958751/1028267924043092068
-.. _`exception handling forum`: https://discord.com/channels/799879767196958751/1028297940168626257
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 As Ivy is unifying multiple backends, various issues are seen during exception handling:
@@ -58,15 +57,20 @@ For a more general case, the :code:`IvyError` class can be used.
         def __init__(self, *messages, include_backend=False):
             super().__init__(*messages, include_backend=include_backend)
 
+More Custom Exception classes were created to unify sub-categories of errors. We try our best to ensure that the same type of 
+Exception is raised for the same type of Error regardless of the backend.
+This will ensure that the exceptions are truly unified for all the different types of errors.
+The implementations of these custom classes are exactly the same as :code:`IvyError` class.
+Currently there are 5 custom exception classes in ivy.
 
-    class IvyIndexError(IvyException, IndexError):
-        def __init__(self, *messages, include_backend=False):
-            super().__init__(*messages, include_backend=include_backend)
+1. :code:`IvyIndexError`: This Error is raised for anything Indexing related. For Instance, providing out of bound axis in any function.
+2. :code:`IvyValueError`: This is for anything related to providing wrong values. For instance, passing :code:`high` value 
+                          smaller than :code:`low` value in :code:`ivy.random_uniform`.
+3. :code:`IvyAttributeError`: This is raised when an undefined attribute is referenced.
+4. :code:`IvyBroadcastShapeError`: This is raised whenever 2 shapes are expected to be broadcastable but are not.
+5. :code:`IvyDtypePromotionError`: Similar to :code:`IvyBroadcastShapeError`, this is raised when 2 dtypes are expected to be promotable but are not.
 
-
-    class IvyValueError(IvyException, ValueError):
-        def __init__(self, *messages, include_backend=False):
-            super().__init__(*messages, include_backend=include_backend)
+The correct type of Exception class should be used for the corresponding type of error across the backends. This will truly unify all the exceptions raised in Ivy.
 
 Configurable Mode for Stack Trace
 ---------------------------------
@@ -316,8 +320,7 @@ exception messages only.
 
     IvyIndexError: jax: all: axis 2 is out of bounds for array of dimension 1
 
-
-@handle_exceptions Decorator
+:code:`@handle_exceptions` Decorator
 ----------------------------
 
 To ensure that all backend exceptions are caught properly, a decorator is used to handle functions in the :code:`try/except` block.
@@ -505,18 +508,18 @@ Let's look at an example!
 
     # in ivy/utils/assertions.py
     def check_less(x1, x2, allow_equal=False, message=""):
-    # less_equal
-    if allow_equal and ivy.any(x1 > x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be lesser than or equal to {}".format(x1, x2)
-            if message == ""
-            else message
-        )
-    # less
-    elif not allow_equal and ivy.any(x1 >= x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be lesser than {}".format(x1, x2) if message == "" else message
-        )
+      # less_equal
+      if allow_equal and ivy.any(x1 > x2):
+          raise ivy.exceptions.IvyException(
+              "{} must be lesser than or equal to {}".format(x1, x2)
+              if message == ""
+              else message
+          )
+      # less
+      elif not allow_equal and ivy.any(x1 >= x2):
+          raise ivy.exceptions.IvyException(
+              "{} must be lesser than {}".format(x1, x2) if message == "" else message
+          )
 
 **ivy.set_split_factor**
 
@@ -540,12 +543,12 @@ Instead of coding a conditional block and raising an exception if the conditions
 
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_ or in the `exception handling forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_!
 
 **Video**
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/eTc24eG9P_s" class="video">
     </iframe>

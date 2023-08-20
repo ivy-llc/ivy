@@ -94,6 +94,7 @@ class _ArrayWithSet(abc.ABC):
         >>> x = ivy.array([1, 2, 2, 3, 4, 4, 4])
         >>> print(x.unique_values())
         ivy.array([1, 2, 3, 4])
+
         >>> x = ivy.array([[1, 2], [3, 4]])
         >>> print(x.unique_values())
         ivy.array([1, 2, 3, 4])

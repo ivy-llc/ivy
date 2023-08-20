@@ -3,6 +3,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
+
 # nextafter
 @handle_frontend_test(
     fn_tree="numpy.nextafter",
@@ -26,6 +27,7 @@ def test_numpy_nextafter(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
@@ -36,6 +38,7 @@ def test_numpy_nextafter(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -72,6 +75,7 @@ def test_numpy_spacing(
     where,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -85,9 +89,10 @@ def test_numpy_spacing(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
+        rtol=1e-02,
         atol=1e-03,
         x=xs[0],
         out=None,

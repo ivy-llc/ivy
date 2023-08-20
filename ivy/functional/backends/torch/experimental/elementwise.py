@@ -14,6 +14,11 @@ from ivy.func_wrapper import (
 from .. import backend_version
 
 
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
+def lgamma(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.lgamma(x, out=out)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,
@@ -82,28 +87,23 @@ def count_nonzero(
 ) -> torch.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
-
-    def _dtype_count_nonzero(a, axis, dtype):
-        if dtype is None:
-            return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(
-            torch.count_nonzero(a, dim=axis), dtype=ivy.as_native_dtype(dtype)
-        )
-
-    x = _dtype_count_nonzero(a, axis, dtype)
+    if dtype is None:
+        x = torch.count_nonzero(a, dim=axis)
+    else:
+        x = torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
     if not keepdims:
         return x
-    if isinstance(axis, tuple):
-        for d in sorted(axis):
-            x = x.unsqueeze(d - 1)
-        return x
-    elif isinstance(axis, int):
+    if isinstance(axis, int):
         if axis == -1:
             temp = x.dim() - 2
             if temp < -1:
                 temp = 0
             return x.unsqueeze(temp)
         return x.unsqueeze(axis - 1)
+    elif axis is not None:
+        for d in sorted(axis):
+            x = x.unsqueeze(d - 1)
+        return x
     return x
 
 
@@ -349,6 +349,7 @@ def lerp(
 lerp.partial_mixed_handler = lambda input, end, weight, **kwargs: (
     _are_suitable_types_for_torch_lerp(input, end, weight)
 )
+lerp.support_native_out = True
 
 
 def frexp(
@@ -359,3 +360,26 @@ def frexp(
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     mantissa, exponent = torch.frexp(x, out=out)
     return mantissa, exponent
+
+
+def modf(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    modf_x = torch.modf(x)
+    return torch.resolve_modf(input=modf_x)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def digamma(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.digamma(x, out=out)
+
+
+digamma.support_native_out = True

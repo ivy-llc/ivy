@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.exceptions import handle_exceptions
 
+
 # Helpers #
 # ------- #
 
@@ -311,71 +312,71 @@ def sparse_cross_entropy(
 
     With :class:`ivy.Array` input:
 
+    >> x = ivy.array([2])
+    >> y = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array([0.35667494])
+
+    >>> x = ivy.array([3])
+    >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(ivy.cross_entropy(x, y))
+    ivy.array(21.79329094)
+
+    >>> x = ivy.array([2,3])
+    >>> y = ivy.array([0.1, 0.1])
+    >>> print(ivy.cross_entropy(x, y))
+    ivy.array(11.512926)
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([4])
+    >>> y = ivy.native_array([0.1, 0.2, 0.1, 0.1, 0.5])
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array([0.693])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4]))
+    >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.1, 0.1, 0.5]))
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    {
+        a: ivy.array([0.693])
+    }
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([0])
+    >>> y = ivy.native_array([0.1, 0.2, 0.6, 0.1])
+    >>> print(ivy.sparse_cross_entropy(x,y))
+    ivy.array([2.3])
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+    >>> x = ivy.array([0])
+    >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))
+    >>> print(ivy.sparse_cross_entropy(x,y))
+    {
+        a: ivy.array([2.3])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([2])
     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.sparse_cross_entropy(x, y))
+    >>> print(x.sparse_cross_entropy(y))
     ivy.array([0.357])
 
-     >>> x = ivy.array([3])
-     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-     >>> print(ivy.cross_entropy(x, y))
-     ivy.array(21.793291)
+    With :class:`ivy.Container` input:
 
-     >>> x = ivy.array([2,3])
-     >>> y = ivy.array([0.1, 0.1])
-     >>> print(ivy.cross_entropy(x, y))
-     ivy.array(11.512926)
-
-     With :class:`ivy.NativeArray` input:
-
-     >>> x = ivy.native_array([4])
-     >>> y = ivy.native_array([0.1, 0.2, 0.1, 0.1, 0.5])
-     >>> print(ivy.sparse_cross_entropy(x, y))
-     ivy.array([0.693])
-
-     With :class:`ivy.Container` input:
-
-     >>> x = ivy.Container(a=ivy.array([4]))
-     >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.1, 0.1, 0.5]))
-     >>> print(ivy.sparse_cross_entropy(x, y))
-     {
-         a: ivy.array([0.693])
-     }
-
-     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-     >>> x = ivy.array([0])
-     >>> y = ivy.native_array([0.1, 0.2, 0.6, 0.1])
-     >>> print(ivy.sparse_cross_entropy(x,y))
-     ivy.array([2.3])
-
-     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-
-     >>> x = ivy.array([0])
-     >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))
-     >>> print(ivy.sparse_cross_entropy(x,y))
-     {
-         a: ivy.array([2.3])
-     }
-
-     Instance Method Examples
-     ------------------------
-
-     With :class:`ivy.Array` input:
-
-     >>> x = ivy.array([2])
-     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-     >>> print(x.sparse_cross_entropy(y))
-     ivy.array([0.357])
-
-     With :class:`ivy.Container` input:
-
-     >>> x = ivy.Container(a=ivy.array([2]))
-     >>> y = ivy.Container(a=ivy.array([0.1, 0.1, 0.7, 0.1]))
-     >>> print(x.sparse_cross_entropy(y))
-     {
-         a: ivy.array([0.357])
-     }
+    >>> x = ivy.Container(a=ivy.array([2]))
+    >>> y = ivy.Container(a=ivy.array([0.1, 0.1, 0.7, 0.1]))
+    >>> print(x.sparse_cross_entropy(y))
+    {
+        a: ivy.array([0.357])
+    }
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     true = ivy.one_hot(true, pred.shape[axis])

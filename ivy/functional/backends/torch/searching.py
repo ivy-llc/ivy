@@ -104,6 +104,8 @@ def where(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if condition.dtype is not torch.bool:
+        condition = condition == 1.0
     return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 

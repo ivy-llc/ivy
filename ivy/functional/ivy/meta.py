@@ -562,9 +562,9 @@ def reptile_step(
     inner_learning_rate
         The learning rate of the inner loop.
     inner_optimization_step
-        The function used for the inner loop optimization. It takes the learnable weights,
-        the derivative of the cost with respect to the weights, and the learning rate as
-        arguments, and returns the updated variables.
+        The function used for the inner loop optimization. It takes the learnable
+        weights,the derivative of the cost with respect to the weights, and the learning
+        rate as arguments, and returns the updated variables.
         Default is `gradient_descent_update`.
     batched
         Whether to batch along the time dimension and run the meta steps in batch.
@@ -604,7 +604,8 @@ def reptile_step(
     ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
     ... })
 
-    >>> cost, gradients = ivy.reptile_step(batch, inner_cost_fn, variables, 5, 0.01, num_tasks=num_tasks)
+    >>> cost, gradients = ivy.reptile_step(batch, inner_cost_fn, variables, 5, 0.01,
+    ...                                    num_tasks=num_tasks)
     >>> print(cost)
     ivy.array(1.4485182)
     >>> print(gradients)
@@ -617,8 +618,9 @@ def reptile_step(
     ...     "latent": _variable(ivy.array([1.0, 2.0]))
     ... })
 
-    >>> cost, gradients, firsts = ivy.reptile_step(batch, inner_cost_fn, variables, 4, 0.025,
-    ...                                            batched=False, num_tasks=2, return_inner_v='first')
+    >>> cost, gradients, firsts = ivy.reptile_step(batch, inner_cost_fn, variables, 4,
+    ...                                            0.025, batched=False, num_tasks=2,
+    ...                                            return_inner_v='first')
     >>> print(cost)
     ivy.array(0.9880483)
     >>> print(gradients)

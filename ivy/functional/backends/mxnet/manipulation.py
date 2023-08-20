@@ -76,8 +76,8 @@ def roll(
 def squeeze(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
-    axis: Union[(int, Sequence[int])],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:

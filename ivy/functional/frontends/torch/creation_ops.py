@@ -1,7 +1,10 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    to_ivy_shape,
+)
 
 
 @to_ivy_arrays_and_back
@@ -19,7 +22,7 @@ def empty(
     if args and size:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list)) else args
+        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -34,18 +37,18 @@ def full(
     device=None,
     requires_grad=None,
 ):
-    ret = ivy.full(
-        shape=size, fill_value=fill_value, dtype=dtype, device=device, out=out
-    )
+    fill_value = ivy.to_scalar(fill_value)
+    ret = ivy.full(size, fill_value, dtype=dtype, device=device, out=out)
     return ret
 
 
+@to_ivy_shape
 @to_ivy_arrays_and_back
 def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
     if args and size:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list)) else args
+        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
     return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -73,12 +76,13 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
+@to_ivy_shape
 @to_ivy_arrays_and_back
 def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
     if args and size:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list)) else args
+        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -226,6 +230,7 @@ def full_like(
     requires_grad=False,
     memory_format=None,
 ):
+    fill_value = ivy.to_scalar(fill_value)
     return ivy.full_like(input, fill_value, dtype=dtype, device=device)
 
 
@@ -256,6 +261,10 @@ def as_strided(input, size, stride, storage_offset=None):
         ind = ind + ivy.reshape(ivy.arange(size_i), r_size) * stride_i
     if storage_offset:
         ind = ind + storage_offset
+    # in case the input is a non-contiguous native array,
+    # the return will differ from torch.as_strided
+    if ivy.is_ivy_array(input) and input.base is not None:
+        return ivy.gather(ivy.flatten(input.base), ind)
     return ivy.gather(ivy.flatten(input), ind)
 
 

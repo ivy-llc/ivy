@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Sequence
+from typing import Optional, Union, Tuple, List, Sequence, Literal
 
 # local
 import ivy
@@ -259,88 +259,419 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.cond(self._data, p=p)
 
-    def cov(
-        self: ivy.Array,
-        x2: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    def mode_dot(
+        self: Union[ivy.Array, ivy.NativeArray],
         /,
+        matrix_or_vector: Union[ivy.Array, ivy.NativeArray],
+        mode: int,
+        transpose: Optional[bool] = False,
         *,
-        rowVar: bool = True,
-        bias: bool = False,
-        ddof: Optional[int] = None,
-        fweights: Optional[ivy.Array] = None,
-        aweights: Optional[ivy.Array] = None,
-        dtype: Optional[type] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.cov. This method simply wraps the
-        function, and so the docstring for ivy.cov also applies to this method with
+        ivy.Array instance method variant of ivy.mode_dot. This method simply wraps the
+        function, and so the docstring for ivy.mode_dot also applies to this method with
         minimal changes.
 
         Parameters
         ----------
         self
-            a 1D or 2D input array, with a numeric data type.
-        x2
-            optional second 1D or 2D input array, with a numeric data type.
-            Must have the same shape as ``self``.
-        rowVar
-            optional variable where each row of input is interpreted as a variable
-            (default = True). If set to False, each column is instead interpreted as a
-            variable.
-        bias
-            optional variable for normalizing input (default = False) by (N - 1) where
-            N is the number of given observations. If set to True, then normalization
-            is instead by N. Can be overridden by keyword ``ddof``.
-        ddof
-            optional variable to override ``bias`` (default = None). ddof=1 will return
-            the unbiased estimate, even with fweights and aweights given. ddof=0 will
-            return the simple average.
-        fweights
-            optional 1D array of integer frequency weights; the number of times each
-            observation vector should be repeated.
-        aweights
-            optional 1D array of observation vector weights. These relative weights are
-            typically large for observations considered "important" and smaller for
-            observations considered less "important". If ddof=0 is specified, the array
-            of weights can be used to assign probabilities to observation vectors.
-        dtype
-            optional variable to set data-type of the result. By default, data-type
-            will have at least ``float64`` precision.
+            tensor of shape ``(i_1, ..., i_k, ..., i_N)``
+        matrix_or_vector
+            1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
+            matrix or vectors to which to n-mode multiply the tensor
+        mode
+            int in the range(1, N)
+        transpose
+            If True, the matrix is transposed.
+            For complex tensors, the conjugate transpose is used.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the result can broadcast to.
+
+        Returns
+        -------
+        ivy.Array
+            `mode`-mode product of `tensor` by `matrix_or_vector`
+            * of shape :math:`(i_1, ..., i_{k-1}, J, i_{k+1}, ..., i_N)`
+            if matrix_or_vector is a matrix
+            * of shape :math:`(i_1, ..., i_{k-1}, i_{k+1}, ..., i_N)`
+            if matrix_or_vector is a vector
+        """
+        return ivy.mode_dot(self._data, matrix_or_vector, mode, transpose, out=out)
+
+    def multi_mode_dot(
+        self: Union[ivy.Array, ivy.NativeArray],
+        mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        modes: Optional[Sequence[int]] = None,
+        skip: Optional[Sequence[int]] = None,
+        transpose: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        r"""
+        ivy.Array instance method variant of ivy.multi_mode_dot. This method simply
+        wraps the function, and so the docstring for ivy.multi_mode_dot also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the input tensor
+
+        mat_or_vec_list
+            sequence of matrices or vectors of length ``tensor.ndim``
+
+        skip
+            None or int, optional, default is None
+            If not None, index of a matrix to skip.
+
+        modes
+            None or int list, optional, default is None
+
+        transpose
+            If True, the matrices or vectors in in the list are transposed.
+            For complex tensors, the conjugate transpose is used.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            result can broadcast to.
+
+        Returns
+        -------
+        ivy.Array
+            tensor times each matrix or vector in the list at mode `mode`
+
+        Notes
+        -----
+        If no modes are specified, just assumes there is one matrix or vector per mode and returns:
+        :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
+        """
+        return ivy.multi_mode_dot(
+            self._data, mat_or_vec_list, modes, skip, transpose, out=out
+        )
+
+    def svd_flip(
+        self: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        u_based_decision: Optional[bool] = True,
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.svd_flip. This method simply wraps the
+        function, and so the docstring for ivy.svd_flip also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            left singular matrix output of SVD
+        V
+            right singular matrix output of SVD
+        u_based_decision
+            If True, use the columns of u as the basis for sign flipping.
+            Otherwise, use the rows of v. The choice of which variable to base the
+            decision on is generally algorithm dependent.
+
+        Returns
+        -------
+        u_adjusted, v_adjusted : arrays with the same dimensions as the input.
+        """
+        return ivy.svd_flip(self._data, V, u_based_decision)
+
+    def make_svd_non_negative(
+        self: Union[ivy.Array, ivy.NativeArray],
+        U: Union[ivy.Array, ivy.NativeArray],
+        S: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            tensor being decomposed.
+        U
+            left singular matrix from SVD.
+        S
+            diagonal matrix from SVD.
+        V
+            right singular matrix from SVD.
+        nntype
+            whether to fill small values with 0.0 (nndsvd),
+            or the tensor mean (nndsvda, default).
+
+        [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
+        """
+        return ivy.make_svd_non_negative(self._data, U, S, V, nntype=nntype)
+
+    def truncated_svd(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        compute_uv: bool = True,
+        n_eigenvecs: Optional[int] = None,
+    ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
+        """
+        ivy.Array instance method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            2D-array
+        compute_uv
+            If ``True`` then left and right singular vectors will
+            be computed and returnedv in ``U`` and ``Vh``
+            respectively. Otherwise, only the singular values will
+            be computed, which can be significantly faster.
+        n_eigenvecs
+            if specified, number of eigen[vectors-values] to return
+            else full matrices will be returned
 
         Returns
         -------
         ret
-            an array containing the covariance matrix of an input matrix, or the
-            covariance matrix of two variables. The returned array must have a
-            floating-point data type determined by Type Promotion Rules and must be
-            a square matrix of shape (N, N), where N is the number of variables in the
-            input(s).
-
-        Examples
-        --------
-        >>> x = ivy.array([[1,2,3],
-        ...                [4,5,6]])
-        >>> y = x.cov()
-        >>> print(y)
-        ivy.array([[ 1.,  1.  ],
-        ...        [ 1.,  1.  ],
-        >>> x = ivy.array([1,2,3])
-        >>> y = ivy.array([4,5,6])
-        >>> z = x.cov(y)
-        >>> print(z)
-        ivy.array([[ 1.,  1.  ],
-        ...        [ 1.,  1.  ])
+            a namedtuple ``(U, S, Vh)``
+            Each returned array must have the same floating-point data type as ``x``.
         """
-        return ivy.cov(
+        return ivy.truncated_svd(self._data, compute_uv, n_eigenvecs)
+
+    def initialize_tucker(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Sequence[int],
+        modes: Sequence[int],
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        seed: Optional[int] = None,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+    ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
+        """
+        ivy.Array instance method variant of ivy.initialize_tucker. This method simply
+        wraps the function, and so the docstring for ivy.initialize_tucker also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            number of components
+        modes
+            modes to consider in the input tensor
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        init
+            initialization scheme for tucker decomposition.
+        svd
+            function to use to compute the SVD
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+
+        Returns
+        -------
+        core
+            initialized core tensor
+        factors
+            list of factors
+        """
+        return ivy.initialize_tucker(
             self._data,
-            x2,
-            rowVar=rowVar,
-            bias=bias,
-            ddof=ddof,
-            fweights=fweights,
-            aweights=aweights,
-            dtype=dtype,
+            rank,
+            modes,
+            seed=seed,
+            init=init,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+        )
+
+    def partial_tucker(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        modes: Optional[Sequence[int]] = None,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        seed: Optional[int] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        tol: Optional[float] = 10e-5,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+    ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
+        """
+        ivy.Array instance method variant of ivy.partial_tucker. This method simply
+        wraps the function, and so the docstring for ivy.partial_tucker also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the  input tensor
+        rank
+            size of the core tensor, ``(len(ranks) == tensor.ndim)``
+            if int, the same rank is used for all modes
+            if None, original tensors size will be preserved.
+        modes
+            list of the modes on which to perform the decomposition
+        n_iter_max
+            maximum number of iteration
+        init
+            {'svd', 'random'}, or TuckerTensor optional
+            if a TuckerTensor is provided, this is used for initialization
+        svd
+            str, default is 'truncated_svd'
+            function to use to compute the SVD,
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance.
+        verbose
+            if True, different in reconstruction errors are returned at each
+            iteration.
+        return_erros
+            if True, list of reconstruction errors are returned.
+
+        Returns
+        -------
+        core : ndarray
+                core tensor of the Tucker decomposition
+        factors : ndarray list
+                list of factors of the Tucker decomposition.
+                with ``core.shape[i] == (tensor.shape[i], ranks[i]) for i in modes``
+        """
+        return ivy.partial_tucker(
+            self._data,
+            rank,
+            modes,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            seed=seed,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+            tol=tol,
+            verbose=verbose,
+            return_errors=return_errors,
+        )
+
+    def tucker(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        /,
+        *,
+        fixed_factors: Optional[Sequence[int]] = None,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        seed: Optional[int] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        tol: Optional[float] = 10e-5,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+    ):
+        """
+        ivy.Array instance method variant of ivy.tucker. This method simply wraps the
+        function, and so the docstring for ivy.tucker also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            size of the core tensor, ``(len(ranks) == tensor.ndim)``
+            if int, the same rank is used for all modes
+        fixed_factors
+            if not None, list of modes for which to keep the factors fixed.
+            Only valid if a Tucker tensor is provided as init.
+        n_iter_max
+            maximum number of iteration
+        init
+            {'svd', 'random'}, or TuckerTensor optional
+            if a TuckerTensor is provided, this is used for initialization
+        svd
+            str, default is 'truncated_svd'
+            function to use to compute the SVD,
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+        verbose
+            if True, different in reconstruction errors are returned at each
+            iteration.
+
+        return_errors
+            Indicates whether the algorithm should return all reconstruction errors
+            and computation time of each iteration or not
+            Default: False
+
+
+        Returns
+        -------
+            ivy.TuckerTensor or ivy.TuckerTensor and
+            list of reconstruction errors if return_erros is True.
+
+        References
+        ----------
+        .. [1] tl.G.Kolda and B.W.Bader, "Tensor Decompositions and Applications",
+        SIAM REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
+        """
+        return ivy.tucker(
+            self._data,
+            rank,
+            fixed_factors=fixed_factors,
+            n_iter_max=n_iter_max,
+            init=init,
+            return_errors=return_errors,
+            seed=seed,
+            mask=mask,
+            svd=svd,
+            svd_mask_repeats=svd_mask_repeats,
+            tol=tol,
+            verbose=verbose,
         )

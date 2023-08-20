@@ -67,7 +67,7 @@ def gamma(
 def poisson(
     lam: Union[float, np.ndarray],
     *,
-    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: Optional[str] = None,
     dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
@@ -93,7 +93,7 @@ def bernoulli(
     probs: Union[float, np.ndarray],
     *,
     logits: Optional[Union[float, np.ndarray]] = None,
-    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: Optional[str] = None,
     dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
