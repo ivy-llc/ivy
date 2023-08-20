@@ -491,3 +491,21 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
     denominator = ivy.add(exp_ax, exp_minus_ax)
     ret = ivy.multiply(scale_b, ivy.divide(numerator, denominator))
     return ret
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amin(x, axis=None, keepdims=False, name=None):
+    if axis is None:
+        return ivy.min(x)
+    if isinstance(axis, int):
+        axis = [axis]
+    for i in range(len(axis)):
+        if axis[i] < 0:
+            axis[i] += x.ndim
+    for i in axis:
+        if i < 0 or i >= x.ndim:
+            raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
+    return ivy.min(x, axis=axis, keepdims=keepdims)
