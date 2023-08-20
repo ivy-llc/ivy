@@ -1695,10 +1695,8 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1748,10 +1746,8 @@ def function_unsupported_dtypes(
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {

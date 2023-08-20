@@ -1245,10 +1245,8 @@ def function_supported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        (
-            "supported_devices and unsupported_devices attributes cannot both "
-            "exist in a particular backend"
-        ),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1298,10 +1296,8 @@ def function_unsupported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        (
-            "supported_devices and unsupported_devices attributes cannot both "
-            "exist in a particular backend"
-        ),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
