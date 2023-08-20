@@ -1552,6 +1552,33 @@ def test_torch_cov(
 
 
 @handle_frontend_test(
+
+    fn_tree='torch.index_put',
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=['int64'],
+        num_arrays=3,
+        shape=(5,),
+        min_value= 0,
+        max_value= 4,
+        allow_inf=False,
+        shared_dtype=True,
+    )
+)
+
+def test_torch_index_put(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+
+    input_dtype, arrays = dtype_and_x
+    indices, values, array_to_fill = arrays
+    accumulate = False
+    helpers.test_frontend_function(
+        input_dtypes= input_dtype,
+=======
     fn_tree="torch.block_diag",
     dtype_and_tensors=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -1579,10 +1606,21 @@ def test_torch_block_diag(
     test_flags.num_positional_args = len(tensors)
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+
+        rtol=1e-2,
+        atol=1e-2,
+        input = array_to_fill,
+        indices = (indices,),
+        values = values,
+        accumulate = accumulate
+    )
+
+
         backend_to_test=backend_fw,
         **args,
     )
@@ -1692,3 +1730,4 @@ def test_torch_corrcoef(
         backend_to_test=backend_fw,
         input=x[0],
     )
+

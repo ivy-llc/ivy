@@ -414,6 +414,33 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
+
+@to_ivy_arrays_and_back
+def index_put(input,indices,values,accumulate=False):
+    number_indices = len(indices[0])
+    dimensions = len(indices)
+    if dimensions > 1:
+        for e in range(0,dimensions):
+            #indexing_tuple = [0] * dimensions
+            indexing_arr = []
+
+            for i in range(0,number_indices):
+                indexing_arr.append(int(indices[i][e].item()))
+
+            if accumulate:
+                input[tuple(indexing_arr)] += values[e]
+            else:
+                input[tuple(indexing_arr)] = values[e]
+    else:
+        for i in range(0,number_indices):
+            index = indices[0][i]
+            value = values[i]
+            if accumulate:
+                input[index] += value
+            else:
+                input[index] = value
+    return input
+
 # TODO: Add Ivy function for block_diag but only scipy.linalg and \
 # and torch supports block_diag currently
 @to_ivy_arrays_and_back
@@ -463,6 +490,7 @@ def block_diag(*tensors):
     return ret
 
 
+
 @with_supported_dtypes(
     {"2.0.1 and below": ("complex64", "complex128")},
     "torch",
@@ -504,3 +532,4 @@ def corrcoef(input):
             f" input with {ivy.shape(input)} dimansions"
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
+
