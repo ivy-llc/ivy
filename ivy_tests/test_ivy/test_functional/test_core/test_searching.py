@@ -73,7 +73,7 @@ def test_argmax(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -106,7 +106,7 @@ def test_argmin(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -144,7 +144,7 @@ def test_nonzero(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -164,7 +164,7 @@ def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=["bool"] + dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         condition=cond,
@@ -184,7 +184,7 @@ def test_argwhere(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],

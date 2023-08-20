@@ -10,16 +10,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_max_pool1d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int]],
-        strides: Union[int, Tuple[int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...], ivy.Container],
+        strides: Union[int, Tuple[int, ...], ivy.Container],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]], ivy.Container],
         /,
         *,
-        data_format: str = "NWC",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NWC",
+        dilation: Union[int, Tuple[int], ivy.Container] = 1,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -37,10 +39,15 @@ class _ContainerWithLayersExperimental(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list
+            "SAME" or "VALID" indicating the algorithm, or list
             indicating the per-dimension paddings.
         data_format
-            NWC" or "NCW". Defaults to "NWC".
+            "NWC" or "NCW". Defaults to "NWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to.
 
@@ -69,6 +76,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -78,16 +87,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def max_pool1d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int]],
-        strides: Union[int, Tuple[int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...], ivy.Container],
+        strides: Union[int, Tuple[int, ...], ivy.Container],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]], ivy.Container],
         /,
         *,
-        data_format: str = "NWC",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NWC",
+        dilation: Union[int, Tuple[int], ivy.Container] = 1,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -108,7 +119,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             SAME" or "VALID" indicating the algorithm, or list
             indicating the per-dimension paddings.
         data_format
-            NWC" or "NCW". Defaults to "NWC".
+            "NWC" or "NCW". Defaults to "NWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to.
 
@@ -136,6 +152,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -146,18 +164,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_max_pool2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...], ivy.Container],
+        strides: Union[int, Tuple[int, ...], ivy.Container],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]], ivy.Container],
         /,
         *,
-        data_format: str = "NHWC",
-        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
-        ceil_mode: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NHWC",
+        dilation: Union[int, Tuple[int, ...], ivy.Container] = 1,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -178,6 +196,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -216,18 +239,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def max_pool2d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...], ivy.Container],
+        strides: Union[int, Tuple[int, ...], ivy.Container],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]], ivy.Container],
         /,
         *,
-        data_format: str = "NHWC",
-        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
-        ceil_mode: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NHWC",
+        dilation: Union[int, Tuple[int, ...], ivy.Container] = 1,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -248,8 +271,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
-        dilations
-            The dilation factor for each dimension of input. (Default value = 1)
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -261,13 +287,17 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d((2, 2), (1, 1), "SAME"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> y = x.max_pool2d(3, 1, "VALID")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([], shape=(1, 0, 1, 4)),
+            b: ivy.array([[[[16., 17.]],
+                           [[22., 23.]]],
+                         [[[40., 41.]],
+                           [[46., 47.]]]])
         }
         """
         return self.static_max_pool2d(
@@ -288,16 +318,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_max_pool3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...], ivy.Container],
+        strides: Union[int, Tuple[int, ...], ivy.Container],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]], ivy.Container],
         /,
         *,
-        data_format: str = "NDHWC",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NDHWC",
+        dilation: Union[int, Tuple[int, ...], ivy.Container] = 1,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -317,7 +349,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             SAME" or "VALID" indicating the algorithm, or list indicating
             the per-dimension paddings.
         data_format
-            NDHWC" or "NCDHW". Defaults to "NDHWC".
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -348,6 +385,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -357,16 +396,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def max_pool3d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...], ivy.Container],
+        strides: Union[int, Tuple[int, ...], ivy.Container],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]], ivy.Container],
         /,
         *,
-        data_format: str = "NDHWC",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NDHWC",
+        dilation: Union[int, Tuple[int, ...], ivy.Container] = 1,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -386,7 +427,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             SAME" or "VALID" indicating the algorithm, or list indicating
             the per-dimension paddings.
         data_format
-            NDHWC" or "NCDHW". Defaults to "NDHWC".
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -398,16 +444,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool3d(2, 1, "VALID"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> print(x.max_pool3d(3, 1, "VALID"))
         {
-            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            a: ivy.array([], shape=(1, 0, 1, 2, 1)),
+            b: ivy.array([], shape=(2, 2, 1, 0, 1))
         }
         """
         return self.static_max_pool3d(
@@ -416,6 +459,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -426,18 +471,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_avg_pool1d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int]],
-        strides: Union[int, Tuple[int]],
-        padding: str,
+        kernel: Union[int, Tuple[int], ivy.Container],
+        strides: Union[int, Tuple[int], ivy.Container],
+        padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: str = "NWC",
-        count_include_pad: bool = False,
-        ceil_mode: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NWC",
+        count_include_pad: Union[bool, ivy.Container] = False,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -502,18 +547,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def avg_pool1d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int]],
-        strides: Union[int, Tuple[int]],
-        padding: str,
+        kernel: Union[int, Tuple[int], ivy.Container],
+        strides: Union[int, Tuple[int], ivy.Container],
+        padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: str = "NWC",
-        count_include_pad: bool = False,
-        ceil_mode: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NWC",
+        count_include_pad: Union[bool, ivy.Container] = False,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -578,19 +623,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_avg_pool2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int], Tuple[int, int], ivy.Container],
+        strides: Union[int, Tuple[int], Tuple[int, int], ivy.Container],
+        padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: str = "NHWC",
-        count_include_pad: bool = False,
-        ceil_mode: bool = False,
-        divisor_override: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NHWC",
+        count_include_pad: Union[bool, ivy.Container] = False,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        divisor_override: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -632,10 +677,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME"))
+        >>> y = ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME")
+        >>> print(y)
         {
-            a: ivy.array([], shape=(2, 0, 2, 2)),
-            b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -657,19 +703,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def avg_pool2d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int], Tuple[int, int], ivy.Container],
+        strides: Union[int, Tuple[int], Tuple[int, int], ivy.Container],
+        padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: str = "NHWC",
-        count_include_pad: bool = False,
-        ceil_mode: bool = False,
-        divisor_override: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NHWC",
+        count_include_pad: Union[bool, ivy.Container] = False,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        divisor_override: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -711,10 +757,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.avg_pool2d((2, 2), (1, 1), "SAME"))
+        >>> y = x.avg_pool2d(2, 1, "SAME")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return self.static_avg_pool2d(
@@ -736,19 +783,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_avg_pool3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int], Tuple[int, int, int], ivy.Container],
+        strides: Union[int, Tuple[int], Tuple[int, int, int], ivy.Container],
+        padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: str = "NDHWC",
-        count_include_pad: bool = False,
-        ceil_mode: bool = False,
-        divisor_override: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NDHWC",
+        count_include_pad: Union[bool, ivy.Container] = False,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        divisor_override: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -817,19 +864,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def avg_pool3d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int], Tuple[int, int, int], ivy.Container],
+        strides: Union[int, Tuple[int], Tuple[int, int, int], ivy.Container],
+        padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: str = "NDHWC",
-        count_include_pad: bool = False,
-        ceil_mode: bool = False,
-        divisor_override: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        data_format: Union[str, ivy.Container] = "NDHWC",
+        count_include_pad: Union[bool, ivy.Container] = False,
+        ceil_mode: Union[bool, ivy.Container] = False,
+        divisor_override: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -867,16 +914,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool3d(2, 1, "VALID"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> print(x.avg_pool3d(2, 1, "VALID"))
         {
-            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            a: ivy.array([[[[[8.5],
+                             [9.5],
+                             [10.5]],
+                            [[12.5],
+                             [13.5],
+                             [14.5]]]]]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 3, 2, 1, 1])
         }
         """
         return self.static_avg_pool3d(
@@ -900,14 +949,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        type: Literal[1, 2, 3, 4] = 2,
-        n: Optional[int] = None,
-        axis: int = -1,
-        norm: Optional[Literal["ortho"]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        type: Union[Literal[1, 2, 3, 4], ivy.Container] = 2,
+        n: Optional[Union[int, ivy.Container]] = None,
+        axis: Union[int, ivy.Container] = -1,
+        norm: Optional[Union[Literal["ortho"], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -980,10 +1029,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        type: Literal[1, 2, 3, 4] = 2,
-        n: Optional[int] = None,
-        axis: int = -1,
-        norm: Optional[Literal["ortho"]] = None,
+        type: Union[Literal[1, 2, 3, 4], ivy.Container] = 2,
+        n: Optional[Union[int, ivy.Container]] = None,
+        axis: Union[int, ivy.Container] = -1,
+        norm: Optional[Union[Literal["ortho"], ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1036,14 +1085,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        type: Literal[1, 2, 3, 4] = 2,
-        n: Optional[int] = None,
-        axis: int = -1,
-        norm: Optional[Literal["ortho"]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        type: Union[Literal[1, 2, 3, 4], ivy.Container] = 2,
+        n: Optional[Union[int, ivy.Container]] = None,
+        axis: Union[int, ivy.Container] = -1,
+        norm: Optional[Union[Literal["ortho"], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1118,10 +1167,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        type: Literal[1, 2, 3, 4] = 2,
-        n: Optional[int] = None,
-        axis: int = -1,
-        norm: Optional[Literal["ortho"]] = None,
+        type: Union[Literal[1, 2, 3, 4], ivy.Container] = 2,
+        n: Optional[Union[int, ivy.Container]] = None,
+        axis: Union[int, ivy.Container] = -1,
+        norm: Optional[Union[Literal["ortho"], ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1172,16 +1221,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def _static_fft(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        dim: int,
+        dim: Union[int, ivy.Container],
         /,
         *,
-        norm: str = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
+        norm: Union[str, ivy.Container] = "backward",
+        n: Optional[Union[int, Tuple[int], ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.fft. This method simply wraps the
@@ -1244,16 +1293,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def fft(
         self: ivy.Container,
-        dim: int,
+        dim: Union[int, ivy.Container],
         /,
         *,
-        norm: str = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
-        out: Optional[ivy.Array] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        norm: Union[str, ivy.Container] = "backward",
+        n: Optional[Union[int, Tuple[int], ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.fft. This method simply wraps the
@@ -1316,14 +1365,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_ifft(
         x: ivy.Container,
-        dim: int,
+        dim: Union[int, ivy.Container],
         *,
-        norm: str = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        norm: Union[str, ivy.Container] = "backward",
+        n: Optional[Union[int, Tuple[int], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
         """
@@ -1387,11 +1436,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def ifft(
         self: ivy.Container,
-        dim: int,
+        dim: Union[int, ivy.Container],
         *,
-        norm: str = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
-        out: Optional[ivy.Array] = None,
+        norm: Union[str, ivy.Container] = "backward",
+        n: Optional[Union[int, Tuple[int], ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ):
         """
         ivy.Container instance method variant of ivy.ifft. This method simply wraps the
@@ -1453,11 +1502,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        max_norm: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        max_norm: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
@@ -1477,11 +1526,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        max_norm: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        max_norm: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_embedding(
@@ -1500,16 +1549,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: int = 1,
-        inverse: bool = False,
-        onesided: bool = False,
-        dft_length: Optional[Union[int, Tuple[int]]] = None,
-        norm: str = "backward",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        axis: Union[int, ivy.Container] = 1,
+        inverse: Union[bool, ivy.Container] = False,
+        onesided: Union[bool, ivy.Container] = False,
+        dft_length: Optional[Union[int, Tuple[int], ivy.Container]] = None,
+        norm: Union[str, ivy.Container] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
 
@@ -1547,16 +1596,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: int = 1,
-        inverse: bool = False,
-        onesided: bool = False,
-        dft_length: Optional[Union[int, Tuple[int]]] = None,
-        norm: str = "backward",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        axis: Union[int, ivy.Container] = 1,
+        inverse: Union[bool, ivy.Container] = False,
+        onesided: Union[bool, ivy.Container] = False,
+        dft_length: Optional[Union[int, Tuple[int], ivy.Container]] = None,
+        norm: Union[str, ivy.Container] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
 
@@ -1591,27 +1640,30 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_interpolate(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        size: Union[Sequence[int], int],
+        size: Union[Sequence[int], int, ivy.Container],
         /,
         *,
-        mode: Literal[
-            "linear",
-            "bilinear",
-            "trilinear",
-            "nearest",
-            "area",
-            "nearest_exact",
-            "tf_area",
-            "bicubic",
+        mode: Union[
+            Literal[
+                "linear",
+                "bilinear",
+                "trilinear",
+                "nearest",
+                "area",
+                "nearest_exact",
+                "tf_area",
+                "bicubic",
+            ],
+            ivy.Container,
         ] = "linear",
-        scale_factor: Optional[Union[Sequence[int], int]] = None,
-        recompute_scale_factor: Optional[bool] = None,
-        align_corners: Optional[bool] = None,
-        antialias: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        scale_factor: Optional[Union[Sequence[int], int, ivy.Container]] = None,
+        recompute_scale_factor: Optional[Union[bool, ivy.Container]] = None,
+        align_corners: Optional[Union[bool, ivy.Container]] = None,
+        antialias: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1677,27 +1729,30 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def interpolate(
         self: ivy.Container,
-        size: Union[Sequence[int], int],
+        size: Union[Sequence[int], int, ivy.Container],
         /,
         *,
-        mode: Literal[
-            "linear",
-            "bilinear",
-            "trilinear",
-            "nearest",
-            "area",
-            "nearest_exact",
-            "tf_area",
-            "bicubic",
+        mode: Union[
+            Literal[
+                "linear",
+                "bilinear",
+                "trilinear",
+                "nearest",
+                "area",
+                "nearest_exact",
+                "tf_area",
+                "bicubic",
+            ],
+            ivy.Container,
         ] = "linear",
-        scale_factor: Optional[Union[Sequence[int], int]] = None,
-        recompute_scale_factor: Optional[bool] = None,
-        align_corners: Optional[bool] = None,
-        antialias: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        scale_factor: Optional[Union[Sequence[int], int, ivy.Container]] = None,
+        recompute_scale_factor: Optional[Union[bool, ivy.Container]] = None,
+        align_corners: Optional[Union[bool, ivy.Container]] = None,
+        antialias: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1763,12 +1818,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_adaptive_avg_pool1d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        output_size: int,
+        output_size: Union[int, ivy.Container],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.adaptive_avg_pool1d. This method
@@ -1801,12 +1856,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def adaptive_avg_pool1d(
         self: ivy.Container,
-        output_size: int,
+        output_size: Union[int, ivy.Container],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         Apply a 1D adaptive average pooling over an input signal composed of several
@@ -1835,12 +1890,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_adaptive_avg_pool2d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        output_size: Union[Sequence[int], int],
+        output_size: Union[Sequence[int], int, ivy.Container],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.adaptive_avg_pool2d. This method
@@ -1873,12 +1928,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def adaptive_avg_pool2d(
         self: ivy.Container,
-        output_size: int,
+        output_size: Union[int, ivy.Container],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         Apply a 2D adaptive average pooling over an input signal composed of several
@@ -1905,16 +1960,88 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_adaptive_max_pool2d(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        output_size: Union[Sequence[int], int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.adaptive_max_pool2d. This method
+        simply wraps the function, and so the docstring for ivy.adaptive_max_pool2d also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
+            is the batch dimension, C is the feature dimension, and H_in and W_in are
+            the 2 spatial dimensions.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
+            (C, S_0, S_1), where S = `output_size`
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "adaptive_max_pool2d",
+            input,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def adaptive_max_pool2d(
+        self: ivy.Container,
+        output_size: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        Apply a 2D adaptive maximum pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation.
+        """
+        return self.static_adaptive_max_pool2d(
+            self,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_ifftn(
         x: ivy.Container,
-        s: Optional[Union[int, Tuple[int, ...]]] = None,
-        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        axes: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         *,
-        norm: str = "backward",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        norm: Union[str, ivy.Container] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
         """
@@ -1970,11 +2097,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def ifftn(
         self: ivy.Container,
-        s: Optional[Union[int, Tuple[int, ...]]] = None,
-        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        axes: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         *,
-        norm: str = "backward",
-        out: Optional[ivy.Array] = None,
+        norm: Union[str, ivy.Container] = "backward",
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ):
         """
         ivy.Container static method variant of ivy.ifftn.
@@ -2011,6 +2138,29 @@ class _ContainerWithLayersExperimental(ContainerBase):
         -------
         ret
             Container containing the transformed inputs
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0.247306+0.908323j, 0.494955+0.90395j,
+        ...                                 0.98193269+0.49560517j],
+        ...                                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+        ...                                 0.2343787 +0.83528011j],
+        ...                                 [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+        ...                                 0.44719226+0.72654048j]]),
+        ...                   b= ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+        ...                                 0.98193269+0.49560517j],
+        ...                                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+        ...                                 0.2343787 +0.83528011j],
+        ...                                 [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+        ...                                 0.44719226+0.72654048j]]))
+        >>> y = x.ifftn(s=[2, 1], axes=[0, 1], norm='ortho')
+        >>> print(y)
+        {
+            a: ivy.array([[0.8344667+0.98222595j],
+                          [-0.48472244+0.30233797j]]),
+            b: ivy.array([[0.8344667+0.98222595j],
+                          [-0.48472244+0.30233797j]])
+        }
         """
         return self.static_ifftn(
             self,
@@ -2023,14 +2173,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_rfftn(
         x: ivy.Container,
-        s: Optional[Union[int, Tuple[int, ...]]] = None,
-        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        axes: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         *,
-        norm: str = "backward",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        norm: Union[str, ivy.Container] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2092,11 +2242,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def rfftn(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        s: Optional[Sequence[int]] = None,
-        axes: Optional[Union[int, Tuple[int]]] = None,
+        s: Optional[Union[Sequence[int], ivy.Container]] = None,
+        axes: Optional[Union[int, Tuple[int], ivy.Container]] = None,
         *,
-        norm: str = "backward",
-        out: Optional[ivy.Array] = None,
+        norm: Union[str, ivy.Container] = "backward",
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         Compute the n-dimensional discrete Fourier Transform for real input.

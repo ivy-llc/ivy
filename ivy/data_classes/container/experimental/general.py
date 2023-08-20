@@ -10,16 +10,16 @@ class _ContainerWithGeneralExperimental(ContainerBase):
     @staticmethod
     def _static_reduce(
         operand: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        init_value: Union[int, float],
-        computation: Callable,
+        init_value: Union[int, float, ivy.Container],
+        computation: Union[Callable, ivy.Container],
         /,
         *,
-        axes: Union[int, Sequence[int]] = 0,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axes: Union[int, Sequence[int], ivy.Container] = 0,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.reduce. This method simply wraps the
@@ -84,16 +84,16 @@ class _ContainerWithGeneralExperimental(ContainerBase):
 
     def reduce(
         self: ivy.Container,
-        init_value: Union[int, float],
-        computation: Callable,
+        init_value: Union[int, float, ivy.Container],
+        computation: Union[Callable, ivy.Container],
         /,
         *,
-        axes: Union[int, Sequence[int]] = 0,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axes: Union[int, Sequence[int], ivy.Container] = 0,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.reduce. This method simply wraps
@@ -133,14 +133,13 @@ class _ContainerWithGeneralExperimental(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(
-        >>>     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
-        >>>     b=ivy.native_array([[7, 8, 9], [10, 5, 1]])
-        >>> )
+        ...     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
+        ...     b=ivy.native_array([[7, 8, 9], [10, 5, 1]]))
         >>> y = x.reduce(0, ivy.add)
         >>> print(y)
         {
-            a: ivy.array([6, 15]),
-            b: ivy.array([24, 16])
+            a: ivy.array([5, 7, 9]),
+            b: ivy.array([17, 13, 10])
         }
         """
         return self._static_reduce(

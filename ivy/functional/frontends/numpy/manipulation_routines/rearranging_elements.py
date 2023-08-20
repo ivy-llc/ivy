@@ -26,8 +26,3 @@ def flipud(m):
 @to_ivy_arrays_and_back
 def rot90(m, k=1, axes=(0, 1)):
     return ivy.rot90(m, k=k, axes=axes)
-
-
-@to_ivy_arrays_and_back
-def fill(num):
-    return ivy.fill(num)

@@ -43,7 +43,7 @@ def test_cross_entropy(
     helpers.test_function(
         input_dtypes=true_dtype + pred_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -119,7 +119,7 @@ def test_binary_cross_entropy(
         helpers.test_function(
             input_dtypes=dtype_true + dtype_pred + dtype_pos_weight,
             test_flags=test_flags,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
             rtol_=1e-02,
@@ -136,7 +136,7 @@ def test_binary_cross_entropy(
         helpers.test_function(
             input_dtypes=dtype_true + dtype_pred,
             test_flags=test_flags,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
             rtol_=1e-02,
@@ -194,7 +194,7 @@ def test_sparse_cross_entropy(
     helpers.test_function(
         input_dtypes=true_dtype + pred_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         true=true[0],

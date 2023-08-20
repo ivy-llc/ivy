@@ -48,10 +48,12 @@ def test_torch_linear(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
