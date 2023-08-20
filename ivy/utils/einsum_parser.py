@@ -164,7 +164,6 @@ def possibly_convert_to_numpy(x: Any) -> Any:  # possibly convert to native
     >>> oe.parser.possibly_convert_to_numpy(myshape)
     <__main__.Shape object at 0x10f850710>
     """
-
     if not hasattr(x, "shape"):
         return np.asanyarray(x)
     else:
@@ -260,7 +259,6 @@ def legalise_einsum_expr(*operands: Any) -> str:
     >>> parse_einsum_input((a, [Ellipsis, 0], b, [Ellipsis, 0]))
     'za,xza->xz'
     """
-
     if len(operands) == 0:
         raise ValueError("No input operands")
 
