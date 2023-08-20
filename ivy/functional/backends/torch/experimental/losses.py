@@ -26,8 +26,6 @@ def hinge_embedding_loss(
     /,
     *,
     margin: Optional[float] = 1.0,
-    size_average: Optional[bool] = None,
-    reduce: Optional[bool] = None,
     reduction: Optional[str] = "mean",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -35,8 +33,6 @@ def hinge_embedding_loss(
         input,
         target,
         margin=margin,
-        size_average=size_average,
-        reduce=reduce,
         reduction=reduction,
         out=out,
     )

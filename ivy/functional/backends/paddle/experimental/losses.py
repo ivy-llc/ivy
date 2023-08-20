@@ -32,7 +32,6 @@ def hinge_embedding_loss(
     *,
     margin: Optional[float] = 1.0,
     reduction: Optional[str] = "mean",
-    name: Optional[str] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return F.hinge_embedding_loss(
@@ -40,6 +39,5 @@ def hinge_embedding_loss(
         target,
         margin=margin,
         reduction=reduction,
-        name=name,
         out=out,
     )
