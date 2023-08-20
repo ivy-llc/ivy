@@ -50,7 +50,7 @@ def test_paddle_adjust_hue(
     dtype_and_x,
     hue_factor,
     on_device,
-    fn_tree,          
+    fn_tree,
     frontend,
     test_flags,
     backend_fw,
@@ -135,4 +135,3 @@ def test_paddle_adjust_contrast(
         img=x[0],
         contrast_factor=contrast_factor,
     )
-      

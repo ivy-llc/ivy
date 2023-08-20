@@ -1,7 +1,7 @@
 import ivy
 from ivy.func_wrapper import (
     with_supported_dtypes,
-    with_unsupported_device_and_dtypes, 
+    with_unsupported_device_and_dtypes,
 )
 from ..tensor.tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
@@ -103,7 +103,7 @@ def adjust_hue(img, hue_factor):
     if channels == 1:
         return img
     elif channels == 3:
-        if ivy.dtype(img) == "uint8":                                      
+        if ivy.dtype(img) == "uint8":
             img = ivy.astype(img, "float32") / 255.0
 
         img_hsv = _rgb_to_hsv(img)
