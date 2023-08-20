@@ -135,3 +135,4 @@ def test_paddle_adjust_contrast(
         img=x[0],
         contrast_factor=contrast_factor,
     )
+      
