@@ -479,3 +479,10 @@ def amax(x, axis=None, keepdims=False):
         if i < 0 or i >= x.ndim:
             raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
     return ivy.max(x, axis=axis, keepdims=keepdims)
+
+
+@to_ivy_arrays_and_back
+def cumsum(x, axis=None, dtype=None, name=None):
+    if dtype is None:
+        dtype = x.dtype
+    return ivy.cumsum(x, axis, dtype=dtype)
