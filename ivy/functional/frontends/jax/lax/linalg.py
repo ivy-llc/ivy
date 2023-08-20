@@ -44,4 +44,6 @@ def lu(x):
     if x is not None and x.shape[-2:] == (x.shape[-1], x.shape[-1]):
         LU, pivots = ivy.lu_factor(x)
         return (LU, pivots)
+    else:
+        return None
     return ivy.lu(x)
