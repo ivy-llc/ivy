@@ -492,6 +492,7 @@ def test_paddle_nll_loss(
         reduction=reduction,
     )
 
+
 @handle_frontend_test(
     fn_tree="dice_loss",
     dtype_and_x=helpers.dtype_and_values(
