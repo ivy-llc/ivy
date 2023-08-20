@@ -255,7 +255,36 @@ def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
     if num_segments <= 0:
         raise ValueError("num_segments must be positive")
 
+def check_segment_sum_valid_params(data, segment_ids):
 
+    valid_dtypes = [
+        ivy.int32,
+        ivy.int64,
+    ]
+
+    if ivy.backend == "torch":
+        import torch
+
+        valid_dtypes = [
+            torch.int32,
+            torch.int64,
+        ]
+    elif ivy.backend == "paddle":
+        import paddle
+
+        valid_dtypes = [
+            paddle.int32,
+            paddle.int64,
+        ]
+
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an integer dtype")
+
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+    for x in range(1, len(segment_ids)):
+        if segment_ids[x] < segment_ids[x-1]:
+            raise InvalidArgumentError("Segment_ids must be sorted")
 # General #
 # ------- #
 
