@@ -41,9 +41,4 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
 @to_ivy_arrays_and_back
 def lu(x):
-    if x is not None and x.shape[-2:] == (x.shape[-1], x.shape[-1]):
-        LU, pivots = ivy.lu_factor(x)
-        return (LU, pivots)
-    else:
-        return None
-    return ivy.lu(x)
+    return ivy.lu(ivy.lu_factor(x))
