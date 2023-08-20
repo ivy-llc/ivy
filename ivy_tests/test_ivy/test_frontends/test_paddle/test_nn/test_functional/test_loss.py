@@ -491,3 +491,37 @@ def test_paddle_nll_loss(
         ignore_index=ignore_index,
         reduction=reduction,
     )
+@handle_frontend_test(
+    fn_tree="ivy.paddle.nn.functional.softmax_cross_entropy",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+    ),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+)
+def test_ivy_paddle_softmax_cross_entropy(
+    dtype_and_x,
+    reduction,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[
+            input_dtype[0],
+            input_dtype[1],
+        ],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logit=x[0],
+        label=x[1],
+        reduction=reduction,
+    )
