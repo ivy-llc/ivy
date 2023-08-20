@@ -7,7 +7,7 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.frontends.numpy as np_frontend
 from ivy_tests.test_ivy.helpers.pipeline_helper import (
-    update_backend,
+    BackendHandler,
     get_frontend_config,
 )
 import ivy_tests.test_ivy.helpers.globals as test_globals
@@ -154,7 +154,7 @@ def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
 
 
 def _flatten_fw_return(ret, backend):
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         if not isinstance(ret, tuple):
             ret = (ret,)
         ret_idxs = ivy_backend.nested_argwhere(
@@ -179,7 +179,7 @@ def _flatten_fw_return(ret, backend):
 
 def _flatten_frontend_return(*, ret, backend):
     """Flattening the returned frontend value to a list of numpy arrays."""
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         if not isinstance(ret, tuple):
             if not ivy_backend.is_ivy_array(ret):
                 ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
@@ -224,7 +224,7 @@ def _get_safe_casting_dtype(draw, *, dtypes):
     for dtype in dtypes[1:]:
         if np_frontend.can_cast(target_dtype, dtype, casting="safe"):
             target_dtype = dtype
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_float_dtype(target_dtype):
             dtype = draw(st.sampled_from(["float64", None]))
         elif ivy_backend.is_uint_dtype(target_dtype):
