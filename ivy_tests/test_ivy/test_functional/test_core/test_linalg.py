@@ -757,6 +757,7 @@ def test_vector_norm(
         keepdims=kd,
         ord=ord,
         dtype=dtype[0],
+        atol_=1e-08,
     )
 
     # Specific value test to handle cases when ord is one of {inf, -inf}

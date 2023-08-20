@@ -28,7 +28,7 @@ Since Ivy aims to unify machine learning frameworks, it makes sense that we valu
 The test suite is included in the ivy repository as a submodule in the folder `test_array_api`_, which we keep updated with the upstream test suite.
 The array-api tests repository is maintained by a group of developers unconnected to Ivy.
 We have made the decision to import the test suite directly from this repository rather than having our own fork.
-This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy master branch.
+This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy main branch.
 Instead, the change must be made to the array-api repository directly and then our submodule must be updated with the commands:
 
 .. code-block:: none
@@ -39,7 +39,7 @@ Instead, the change must be made to the array-api repository directly and then o
         # pulls changes from upstream remote repo and merges them
         git submodule update --recursive --remote --merge
 
-and only *then* can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the source array-api repository.
+and only *then* can changes to the submodule be pushed to ivy-main, i.e. only when these changes exist in the source array-api repository.
 See the `git website`_ for further information on working with submodules.
 
 Running the Tests
@@ -153,7 +153,7 @@ You may also need to include the hypothesis import of `reproduce_failure` as sho
 
 The test should then include the inputs which led to the previous failure and recreate it.
 If you are taking the :code:`@reproduce_failure` decorator from a CI stack trace and trying to reproduce it locally, you may find that sometimes the local test unexpectedly passes.
-This is usually caused by a discrepancy in your local source code and ivy-master, so try pulling from master to sync the behaviour.
+This is usually caused by a discrepancy in your local source code and ivy-main, so try pulling from main to sync the behaviour.
 
 Test Skipping
 -------------

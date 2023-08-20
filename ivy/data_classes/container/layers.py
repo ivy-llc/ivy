@@ -157,21 +157,22 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
-                                           [11., 22., 33.]]), \
-                              b=ivy.array([[1.245, 0.278, 4.105], \
-                                           [7., 13., 17.]]))
-        >>> w = ivy.array([[1., 2., 3.], \
-                           [4., 5., 6.], \
-                           [7., 8., 9.]])
-        >>> b = ivy.array([1, 0, -1])
-        >>> y = x.linear(w, bias=b)
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3],
+        ...                                [11., 22., 33.]]),
+        ...                   b=ivy.array([[1.245, 0.278, 4.105],
+        ...                                [7., 13., 17.]]))
+        >>> w = ivy.array([[1., 2., 3.],
+        ...                [4., 5., 6.],
+        ...                [7., 8., 9.]])
+        >>> b = ivy.Container(a=ivy.array([1., 0., -1.]),
+        ...                   b=ivy.array([1., 1., 0.]))
+        >>> y = x.linear(w, bias=b, out=x)
         >>> print(y)
         {
-            a: ivy.array([[16.4, 35.2, 54.], \
-                          [155., 352., 549.]]), \
-            b: ivy.array([[15.1, 31., 46.9], \
-                          [85., 195., 305.]])
+            a: ivy.array([[16.39999962, 35.19999695, 54.],
+                          [155., 352., 549.]]),
+            b: ivy.array([[15.11600018, 32., 47.88399887],
+                          [85., 196., 306.]])
         }
         """
         return self._static_linear(
@@ -614,6 +615,17 @@ class _ContainerWithLayers(ContainerBase):
         -------
         ret
             Result container of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
+        ...                   b=ivy.array([[400, 500, 600]]))
+        >>> y = x.dropout2d(0.5)
+        >>> print(y)
+        {
+            a: ivy.array([[200., 0., 600.]]),
+            b: ivy.array([[0., 0., 0.]])
+        }
         """
         return self._static_dropout2d(
             self,
@@ -751,13 +763,16 @@ class _ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def _static_scaled_dot_product_attention(
-        q: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        k: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        scale: Union[float, ivy.Container],
+        query: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        value: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        scale: Union[float, ivy.Container],
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        dropout_p: Optional[float] = 0.0,
+        is_causal: Optional[bool] = False,
+        training: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -772,15 +787,15 @@ class _ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        q
+        query
             The queries input container. The shape of queries input array leaves should
             be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
             should have the same size as keys and values.
-        k
+        key
             The keys input array container. The shape of keys input array leaves
             should be in *[batch_shape,num_keys,feat_dim]*. The keys input array
             leaves should have the same size as queries and values.
-        v
+        value
             The values input array container. The shape of values input array
             leaves should be in *[batch_shape,num_keys,feat_dim]*. The values
             input array leaves should have the same size as queries and keys.
@@ -791,6 +806,12 @@ class _ContainerWithLayers(ContainerBase):
             The mask input array/container. The mask to apply to the query-key values.
             Default is None. The shape of mask input array leaves should be in
             *[batch_shape,num_queries,num_keys]*.
+        dropout_p
+            Specifies the dropout probablity, if greater than 0.0, dropout is applied
+        is_causal
+            If true, assumes causal attention masking and errors if both `mask` and `is_causal` are set.
+        training
+            If True, dropout is used, otherwise dropout is not activated.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -832,10 +853,10 @@ class _ContainerWithLayers(ContainerBase):
         ...                             [1.0, 1.0, 1.0],
         ...                             [1.0, 1.0,1.0]]]))
         >>> result = ivy.Container.static_scaled_dot_product_attention(q,
-                                                                       k,
-                                                                       v,
-                                                                       1,
-                                                                       mask=mask)
+        ...                                                            k,
+        ...                                                            v,
+        ...                                                            1,
+        ...                                                            mask=mask)
         >>> print(result)
         {
             a: ivy.array([[[4.27, 5.4],
@@ -848,11 +869,14 @@ class _ContainerWithLayers(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "scaled_dot_product_attention",
-            q,
-            k,
-            v,
-            scale,
+            query,
+            key,
+            value,
+            scale=scale,
             mask=mask,
+            dropout_p=dropout_p,
+            is_causal=is_causal,
+            training=training,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -862,12 +886,15 @@ class _ContainerWithLayers(ContainerBase):
 
     def scaled_dot_product_attention(
         self: ivy.Container,
-        k: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        scale: Union[float, ivy.Container],
+        key: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        value: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        scale: Union[float, ivy.Container],
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        dropout_p: Optional[float] = 0.0,
+        is_causal: Optional[bool] = False,
+        training: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -886,11 +913,11 @@ class _ContainerWithLayers(ContainerBase):
             The queries input container. The shape of queries input array leaves should
             be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
             should have the same size as keys and values.
-        k
+        key
             The keys input array container. The shape of keys input array leaves
             should be in *[batch_shape,num_keys,feat_dim]*. The keys input array
             leaves should have the same size as queries and values.
-        v
+        value
             The values input array container. The shape of values input array
             leaves should be in *[batch_shape,num_keys,feat_dim]*. The values
             input array leaves should have the same size as queries and keys.
@@ -901,6 +928,12 @@ class _ContainerWithLayers(ContainerBase):
             The mask input array/container. The mask to apply to the query-key values.
             Default is None. The shape of mask input array leaves should be in
             *[batch_shape,num_queries,num_keys]*.
+        dropout_p
+            Specifies the dropout probablity, if greater than 0.0, dropout is applied
+        is_causal
+            If true, assumes causal attention masking and errors if both `mask` and `is_causal` are set.
+        training
+            If True, dropout is used, otherwise dropout is not activated.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -930,37 +963,44 @@ class _ContainerWithLayers(ContainerBase):
 
         >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
         ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-        >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
+        >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
         ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
-        >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),
-        ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-        >>> mask =
-        ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],
-        ...                             [1.0, 1.0, 1.0],
-        ...                             [1.0, 1.0,1.0]]]),
-        ...               b=ivy.array([[[1.0, 1.0, 1.0],
-        ...                             [1.0, 1.0, 1.0],
-        ...                             [1.0, 1.0,1.0]]]))
-        >>> result = q.scaled_dot_product_attention(k,
-                                                    v,
-                                                    1,
-                                                    mask=mask)
+
+        >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
+        ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True)
         >>> print(result)
         {
-            a: ivy.array([[[4.27, 5.4],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]]),
-            b: ivy.array([[[4.35, 5.54],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]])
+            a: ivy.array([[[5.19999981, 1.], [2.59249449, 2.68226194], [4.4000001, 5.5999999]]]),
+            b: ivy.array([[[0.2, 1.], [2.19603825, 2.9960382], [4.4000001, 5.5999999]]])
+        }
+
+        >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
+        ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+        >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
+        ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+        >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
+        ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+        >>> mask =
+        ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
+        ...               b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]]))
+        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,mask=mask)
+        >>> print(result)
+        {
+            a: ivy.array([[[4.26894283, 5.40236187], [4.39999437, 5.59999037], [4.4000001, 5.5999999]]]),
+            b: ivy.array([[[4.35046196, 5.54282808], [4.39989519, 5.5998764], [4.4000001, 5.5999999]]])
+
         }
         """
         return self._static_scaled_dot_product_attention(
             self,
-            k,
-            v,
-            scale,
+            key,
+            value,
+            scale=scale,
             mask=mask,
+            dropout_p=dropout_p,
+            is_causal=is_causal,
+            training=training,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1642,8 +1682,8 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = x.conv1d_transpose(filters, 2, 'SAME')
         >>> print(y.shape)
         {
-            a: [1,56,6],
-            b: [1,112,6]
+            a: ivy.Shape(1, 56, 6),
+            b: ivy.Shape(1, 112, 6)
         }
         """
         return self._static_conv1d_transpose(
@@ -1827,20 +1867,28 @@ class _ContainerWithLayers(ContainerBase):
         --------
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
         >>> x = ivy.Container(a=a, b=b)
         >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv2d_transpose(x,filters,2,'SAME')
+        >>> y = x.conv2d_transpose(filters,2,'SAME')
         >>> print(y.shape)
         {
             a: {
-                c: [1,28,28,6],
-                d: [1,28,28,6]
+                c: ivy.Shape(1, 28, 28, 3),
+                d: ivy.Shape(1, 28, 28, 3)
             },
             b: {
-                c: [1,56,56,6],
-                d: [1,56,56,6]
+                c: ivy.Shape(1, 56, 56, 3),
+                d: ivy.Shape(1, 56, 56, 3)
+            },
+            c: {
+                c: ivy.Shape(6, 6, 6, 3),
+                d: ivy.Shape(6, 6, 6, 3)
+            },
+            d: {
+                c: ivy.Shape(6, 6, 6, 3),
+                d: ivy.Shape(6, 6, 6, 3)
             }
         }
         """
@@ -2323,23 +2371,21 @@ class _ContainerWithLayers(ContainerBase):
         ret
             The result of the transpose convolution operation in a container.
 
-        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
-        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
-        >>> x = ivy.Container(a=a, b=b)
-        >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv3d_transpose(filters, 2, 'SAME')
-        >>> print(y.shape)
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32) )
+        >>> filters = ivy.ones((3, 3, 3, 1, 1)).astype(ivy.float32)
+        >>> result = x.conv3d(filters, 2, 'SAME')
+        >>> print(result)
         {
-            a: {
-                c: [1, 6, 28, 28, 6],
-                d: [1, 6, 28, 28, 6]
-            },
-            b: {
-                c: [1, 6, 56, 56, 6],
-                d: [1, 6, 56, 56, 6]
-            }
+            a: ivy.array([[[[[8.],
+                             [8.]],
+                            [[8.],
+                             [8.]]],
+                          [[[8.],
+                             [8.]],
+                            [[8.],
+                             [8.]]]]])
         }
         """
         return self._static_conv3d_transpose(

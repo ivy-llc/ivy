@@ -771,6 +771,11 @@ def fft2(
     norm: str = "backward",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_elem_in_list(
+        norm,
+        ["backward", "ortho", "forward"],
+        message=f"Unrecognized normalization mode {norm}",
+    )
     if not all(isinstance(j, int) for j in dim):
         raise ivy.utils.exceptions.IvyError(
             f"Expecting {dim} to be a sequence of integers <class integer>"
@@ -790,8 +795,6 @@ def fft2(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
 
 
@@ -817,6 +820,10 @@ def embedding(
     max_norm: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
+
     embeddings = jnp.take(weights, indices, axis=0)
     if max_norm is not None:
         norms = jnp.linalg.norm(embeddings, axis=-1, keepdims=True)

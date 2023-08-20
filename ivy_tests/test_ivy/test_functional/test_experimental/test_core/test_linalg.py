@@ -2,10 +2,12 @@
 import math
 from hypothesis import strategies as st
 import numpy as np
+import pytest
+import itertools
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
 import ivy
 
 
@@ -641,4 +643,970 @@ def test_cov(*, dtype_x1_x2_cov, test_flags, backend_fw, fn_name, on_device):
         return_flat_np_arrays=True,
         rtol_=1e-2,
         atol_=1e-2,
+    )
+
+
+@st.composite
+def _kronecker_data(draw):
+    num_arrays = draw(helpers.ints(min_value=2, max_value=5))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=num_arrays,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+            shared_dtype=True,
+            min_num_dims=2,
+            max_num_dims=2,
+        )
+    )
+    skip_matrix = draw(
+        st.lists(st.integers(min_value=0, max_value=num_arrays - 1), unique=True)
+    )
+    reverse = draw(st.booleans())
+    return x_dtype, x, skip_matrix, reverse
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.kronecker",
+    data=_kronecker_data(),
+    test_instance_method=st.just(False),
+)
+def test_kronecker(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, input, skip_matrix, reverse = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=input,
+        skip_matrix=skip_matrix,
+        reverse=reverse,
+    )
+
+
+@st.composite
+def _khatri_rao_data(draw):
+    num_matrices = draw(helpers.ints(min_value=2, max_value=4))
+    m = draw(helpers.ints(min_value=1, max_value=5))
+    input_dtypes, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=num_matrices,
+            min_dim_size=m,
+            max_dim_size=m,
+            min_num_dims=2,
+            max_num_dims=2,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    skip_matrix = draw(helpers.ints(min_value=0, max_value=len(input) - 1))
+    weight_dtype, weights = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"), shape=(m,)
+        )
+    )
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            min_value=0,
+            max_value=1,
+            shape=(m,),
+        )
+    )
+    return (
+        input_dtypes + weight_dtype + mask_dtype,
+        input,
+        skip_matrix,
+        weights[0],
+        mask[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.khatri_rao",
+    data=_khatri_rao_data(),
+    test_instance_method=st.just(False),
+)
+def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, input, skip_matrix, weights, mask = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_values=False,
+        input_dtypes=input_dtypes,
+        x=input,
+        weights=weights,
+        skip_matrix=skip_matrix,
+        mask=mask,
+    )
+
+
+# The following two tests have been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_khatri_rao.py
+@pytest.mark.parametrize("columns, rows", [(4, [3, 4, 2])])
+def test_khatri_rao_tensorly_1(columns, rows):
+    columns = columns
+    rows = rows
+    matrices = [ivy.arange(k * columns).reshape((k, columns)) for k in rows]
+    res = ivy.khatri_rao(matrices)
+    # resulting matrix must be of shape (prod(n_rows), n_columns)
+    n_rows = 3 * 4 * 2
+    n_columns = 4
+    assert res.shape[0] == n_rows
+    assert res.shape[1] == n_columns
+
+
+@pytest.mark.parametrize(
+    "t1, t2, true_res",
+    [
+        (
+            [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+            [[1, 4, 7], [2, 5, 8], [3, 6, 9]],
+            [
+                [1.0, 8.0, 21.0],
+                [2.0, 10.0, 24.0],
+                [3.0, 12.0, 27.0],
+                [4.0, 20.0, 42.0],
+                [8.0, 25.0, 48.0],
+                [12.0, 30.0, 54.0],
+                [7.0, 32.0, 63.0],
+                [14.0, 40.0, 72.0],
+                [21.0, 48.0, 81.0],
+            ],
+        )
+    ],
+)
+def test_khatri_rao_tensorly_2(t1, t2, true_res):
+    t1 = ivy.array(t1)
+    t2 = ivy.array(t2)
+    true_res = ivy.array(true_res)
+    res = ivy.khatri_rao([t1, t2])
+    assert np.allclose(res, true_res)
+
+
+@st.composite
+def _mode_dot_data(draw):
+    shape_t1 = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
+    mode = draw(helpers.ints(min_value=0, max_value=len(shape_t1) - 1))
+    mode_dimsize = shape_t1[mode]
+    t1_dtype, t1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape_t1,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    t2_rows = draw(helpers.ints(min_value=1, max_value=4))
+    shape_t2 = draw(st.sampled_from([(mode_dimsize,), (t2_rows, mode_dimsize)]))
+    t2_dtype, t2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape_t2,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return t1_dtype + t2_dtype, t1[0], t2[0], mode
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.mode_dot",
+    data=_mode_dot_data(),
+)
+def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, t1, t2, mode = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=t1,
+        matrix_or_vector=t2,
+        mode=mode,
+    )
+
+
+@pytest.mark.parametrize(
+    "X, U, true_res",
+    [
+        (
+            [
+                [[1, 13], [4, 16], [7, 19], [10, 22]],
+                [[2, 14], [5, 17], [8, 20], [11, 23]],
+                [[3, 15], [6, 18], [9, 21], [12, 24]],
+            ],
+            [[1, 3, 5], [2, 4, 6]],
+            [
+                [[22, 130], [49, 157], [76, 184], [103, 211]],
+                [[28, 172], [64, 208], [100, 244], [136, 280]],
+            ],
+        )
+    ],
+)
+def test_mode_dot_tensorly(X, U, true_res):
+    X = ivy.array(X)
+    U = ivy.array(U)
+    true_res = ivy.array(true_res)
+    res = ivy.mode_dot(X, U, 0)
+    assert np.allclose(true_res, res, atol=1e-1, rtol=1e-1)
+
+
+@st.composite
+def _multi_mode_dot_data(draw):
+    t1_dtype, t1, shape_t1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            ret_shape=True,
+            min_num_dims=2,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    modes = [*range(len(shape_t1))]
+    skip = draw(st.lists(helpers.ints(min_value=0, max_value=len(shape_t1) - 1)))
+    t2 = []
+    t2_dtype = []
+    for i in modes:
+        mode_dimsize = shape_t1[i]
+        rows = draw(helpers.ints(min_value=1, max_value=4))
+        shape = draw(st.sampled_from([(mode_dimsize,), (rows, mode_dimsize)]))
+        mat_or_vec_dtype, mat_or_vec = draw(
+            helpers.dtype_and_values(
+                dtype=t1_dtype,
+                shape=shape,
+                large_abs_safety_factor=20,
+                small_abs_safety_factor=20,
+                safety_factor_scale="log",
+            )
+        )
+        t2.append(mat_or_vec[0])
+        t2_dtype.append(mat_or_vec_dtype[0])
+
+    return t1_dtype + t2_dtype, t1[0], t2, modes, skip
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.multi_mode_dot",
+    data=_multi_mode_dot_data(),
+)
+def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, t1, t2, modes, skip = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=t1,
+        mat_or_vec_list=t2,
+        modes=modes,
+        skip=skip,
+    )
+
+
+# The following 2 tests have been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_n_mode_product.py#L81
+@pytest.mark.parametrize(
+    "X, U, true_res",
+    [
+        ([[1, 2], [0, -1]], [[2, 1], [-1, 1]], [1]),
+    ],
+)
+def test_multi_mode_dot_tensorly_1(X, U, true_res):
+    X, U, true_res = ivy.array(X), ivy.array(U), ivy.array(true_res)
+    res = ivy.multi_mode_dot(X, U, [0, 1])
+    assert np.allclose(true_res, res)
+
+
+@pytest.mark.parametrize("shape", ((3, 5, 4, 2),))
+def test_multi_mode_dot_tensorly_2(shape):
+    print(shape)
+    X = ivy.ones(shape)
+    vecs = [ivy.ones(s) for s in shape]
+    res = ivy.multi_mode_dot(X, vecs)
+    # result should be a scalar
+    assert ivy.shape(res) == ()
+    assert np.allclose(res, np.prod(shape))
+
+    # Average pooling each mode
+    # Order should not matter
+    vecs = [vecs[i] / s for i, s in enumerate(shape)]
+    for modes in itertools.permutations(range(len(shape))):
+        res = ivy.multi_mode_dot(X, [vecs[i] for i in modes], modes=modes)
+        assert ivy.shape(res) == ()
+        assert np.allclose(res, 1)
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.svd_flip",
+    uv=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    u_based_decision=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, input = uv
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        U=input[0],
+        V=input[1],
+        u_based_decision=u_based_decision,
+    )
+
+
+# truncated svd
+@st.composite
+def _make_svd_nn_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=1.0,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    n, m = shape
+    _, U = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=(n, m),
+            min_value=1.0,
+            max_value=10.0,
+        )
+    )
+    _, S = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(m,),
+            min_value=1.0,
+            max_value=10.0,
+        )
+    )
+    _, V = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=(m, m),
+            min_value=1.0,
+            max_value=10.0,
+        )
+    )
+    nntype = draw(st.sampled_from(["nndsvd", "nndsvda"]))
+    return x_dtype, x[0], U[0], S[0], V[0], nntype
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.make_svd_non_negative",
+    data=_make_svd_nn_data(),
+    test_with_out=st.just(False),
+)
+def test_make_svd_non_negative(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, U, S, V, nntype = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        x=x,
+        U=U,
+        S=S,
+        V=V,
+        nntype=nntype,
+        test_values=False,
+        return_flat_np_arrays=True,
+    )
+    if results is None:
+        return
+
+    # returned values should be non negative
+    ret_flat_np, ret_from_gt_flat_np = results
+    W_flat_np, H_flat_np = ret_flat_np[0], ret_flat_np[1]
+    W_flat_np_gt, H_flat_np_gt = ret_from_gt_flat_np[0], ret_from_gt_flat_np[1]
+    assert np.all(W_flat_np >= 0)
+    assert np.all(H_flat_np >= 0)
+    assert np.all(W_flat_np_gt >= 0)
+    assert np.all(H_flat_np_gt >= 0)
+    helpers.assert_all_close(
+        W_flat_np,
+        W_flat_np_gt,
+        atol=1e-02,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
+    )
+    helpers.assert_all_close(
+        H_flat_np,
+        H_flat_np_gt,
+        atol=1e-02,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
+    )
+
+
+# truncated svd
+@st.composite
+def _truncated_svd_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    uv = draw(st.booleans())
+    n_eigen = draw(helpers.ints(min_value=1, max_value=max(shape[-2:])))
+    return x_dtype, x[0], uv, n_eigen
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.truncated_svd",
+    data=_truncated_svd_data(),
+    test_with_out=st.just(False),
+)
+def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, uv, n_eigenvecs = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        x=x,
+        compute_uv=uv,
+        n_eigenvecs=n_eigenvecs,
+        test_values=False,
+        return_flat_np_arrays=True,
+    )
+
+    if results is None:
+        return
+
+    # value test based on recreating the original matrix and testing the consistency
+    ret_flat_np, ret_from_gt_flat_np = results
+
+    if uv:
+        for i in range(len(ret_flat_np) // 3):
+            U = ret_flat_np[i]
+            S = ret_flat_np[len(ret_flat_np) // 3 + i]
+            Vh = ret_flat_np[2 * len(ret_flat_np) // 3 + i]
+        m = U.shape[-1]
+        n = Vh.shape[-1]
+        S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+
+        for i in range(len(ret_from_gt_flat_np) // 3):
+            U_gt = ret_from_gt_flat_np[i]
+            S_gt = ret_from_gt_flat_np[len(ret_from_gt_flat_np) // 3 + i]
+            Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
+        S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
+
+        with update_backend("numpy") as ivy_backend:
+            S_mat = (
+                S
+                * ivy_backend.eye(
+                    U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]
+                ).data
+            )
+            S_mat_gt = (
+                S_gt
+                * ivy_backend.eye(
+                    U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]
+                ).data
+            )
+        reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+        reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+
+        # value test
+        helpers.assert_all_close(
+            reconstructed,
+            reconstructed_gt,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
+    else:
+        S = ret_flat_np
+        S_gt = ret_from_gt_flat_np
+        helpers.assert_all_close(
+            S[0],
+            S_gt[0],
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
+
+
+# intialize tucker
+@st.composite
+def _initialize_tucker_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    dims = len(shape)
+    rank = []
+    for i in range(dims):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    n_modes = draw(helpers.ints(min_value=2, max_value=dims))
+    modes = [*range(dims)][:n_modes]
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=3))
+    non_negative = draw(st.booleans())
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        modes,
+        non_negative,
+        mask[0],
+        svd_mask_repeats,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.initialize_tucker",
+    data=_initialize_tucker_data(),
+    test_with_out=st.just(False),
+)
+def test_initialize_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, rank, modes, non_negative, mask, svd_mask_repeats = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        modes=modes,
+        non_negative=non_negative,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    core_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+
+    with update_backend(backend_fw) as ivy_backend:
+        n_elem = int(ivy_backend.prod(rank[: len(modes)])) * int(
+            ivy_backend.prod(x.shape[len(modes) :])
+        )
+    for c, c_gt in zip(core, core_gt):
+        assert np.prod(c.shape) == n_elem
+        assert np.prod(c_gt.shape) == n_elem
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# partial tucker
+@st.composite
+def _partial_tucker_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    dims = len(shape)
+    rank = []
+    for i in range(dims):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    n_modes = draw(helpers.ints(min_value=2, max_value=dims))
+    modes = [*range(dims)][:n_modes]
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=3))
+    n_iter_max = draw(helpers.ints(min_value=1, max_value=7))
+    tol = draw(helpers.floats(min_value=1e-5, max_value=1e-1))
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        modes,
+        n_iter_max,
+        mask[0],
+        svd_mask_repeats,
+        tol,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_tucker",
+    data=_partial_tucker_data(),
+    test_with_out=st.just(False),
+)
+def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, rank, modes, n_iter_max, mask, svd_mask_repeats, tol = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        modes=modes,
+        n_iter_max=n_iter_max,
+        tol=tol,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    core_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+
+    with update_backend(backend_fw) as ivy_backend:
+        n_elem = int(ivy_backend.prod(rank[: len(modes)])) * int(
+            ivy_backend.prod(x.shape[len(modes) :])
+        )
+    for c, c_gt in zip(core, core_gt):
+        assert np.prod(c.shape) == n_elem
+        assert np.prod(c_gt.shape) == n_elem
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# test adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L24
+@pytest.mark.parametrize(
+    "tol_norm_2, tol_max_abs, modes, shape",
+    [
+        (
+            10e-3,
+            10e-1,
+            [1, 2],
+            (3, 4, 3),
+        )
+    ],
+)
+def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
+    tensor = ivy.random_uniform(shape=shape)
+    (core, factors) = ivy.partial_tucker(
+        tensor, None, modes, n_iter_max=200, verbose=True
+    )
+    reconstructed_tensor = ivy.multi_mode_dot(core, factors, modes=modes)
+    norm_rec = ivy.sqrt(ivy.sum(reconstructed_tensor**2))
+    norm_tensor = ivy.sqrt(ivy.sum(tensor**2))
+    assert (norm_rec - norm_tensor) / norm_rec < tol_norm_2
+
+    # Test the max abs difference between the reconstruction and the tensor
+    assert ivy.max(ivy.abs(norm_rec - norm_tensor)) < tol_max_abs
+
+    # Test the shape of the core and factors
+    ranks = [3, 1]
+    (core, factors) = ivy.partial_tucker(
+        tensor, ranks, modes, n_iter_max=100, verbose=True
+    )
+    for i, rank in enumerate(ranks):
+        np.testing.assert_equal(
+            factors[i].shape,
+            (tensor.shape[i + 1], rank),
+            err_msg=(
+                f"factors[i].shape = {factors[i].shape}, expected"
+                f" {(tensor.shape[i + 1], rank)}"
+            ),
+        )
+    np.testing.assert_equal(
+        core.shape,
+        [tensor.shape[0]] + ranks,
+        err_msg=f"core.shape = {core.shape}, expected {[tensor.shape[0]] + ranks}",
+    )
+
+    # Test random_state fixes the core and the factor matrices
+    (core1, factors1) = ivy.partial_tucker(
+        tensor,
+        ranks,
+        modes,
+        seed=0,
+        init="random",
+    )
+    (core2, factors2) = ivy.partial_tucker(
+        tensor,
+        ranks,
+        modes,
+        seed=0,
+        init="random",
+    )
+    np.allclose(core1, core2)
+    for factor1, factor2 in zip(factors1, factors2):
+        np.allclose(factor1, factor2)
+
+
+# tucker
+@st.composite
+def _tucker_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=3,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    dims = len(shape)
+    rank = []
+    for i in range(dims):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=1))
+    n_iter_max = draw(helpers.ints(min_value=0, max_value=2))
+    tol = draw(helpers.floats(min_value=1e-5, max_value=1e-1))
+    init = draw(st.sampled_from(["svd", "random"]))
+    fixed_factors = draw(st.booleans())
+    if fixed_factors:
+        _, core = draw(
+            helpers.dtype_and_values(
+                dtype=x_dtype,
+                min_value=0.1,
+                max_value=10.0,
+                shape=rank,
+            )
+        )
+        factors = []
+        for i in range(dims):
+            _, factor = draw(
+                helpers.dtype_and_values(
+                    dtype=x_dtype,
+                    min_value=0.1,
+                    max_value=10.0,
+                    shape=(shape[i], rank[i]),
+                )
+            )
+            factors.append(factor[0])
+        fixed_factors = draw(
+            st.lists(
+                helpers.ints(min_value=0, max_value=dims - 1), unique=True, min_size=1
+            )
+        )
+        rank = [rank[i] for i in range(dims) if i not in fixed_factors]
+        init = ivy.TuckerTensor((core[0], factors))
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        fixed_factors,
+        init,
+        n_iter_max,
+        mask[0],
+        svd_mask_repeats,
+        tol,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tucker",
+    data=_tucker_data(),
+    test_with_out=st.just(False),
+)
+def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
+    (
+        input_dtypes,
+        x,
+        rank,
+        fixed_factors,
+        init,
+        n_iter_max,
+        mask,
+        svd_mask_repeats,
+        tol,
+    ) = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        fixed_factors=fixed_factors,
+        n_iter_max=n_iter_max,
+        init=init,
+        tol=tol,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    core_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+
+    n_elem = 1
+    if isinstance(init, ivy.TuckerTensor):
+        for index in fixed_factors:
+            n_elem *= init[0].shape[index]
+    n_elem *= np.prod(rank)
+
+    for c, c_gt in zip(core, core_gt):
+        assert np.prod(c.shape) == n_elem
+        assert np.prod(c_gt.shape) == n_elem
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# test adapted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L71
+@pytest.mark.parametrize(
+    "tol_norm_2, tol_max_abs, shape, ranks", [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])]
+)
+def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
+    tensor = ivy.random_uniform(shape=shape)
+    tucker = ivy.tucker(tensor, None, n_iter_max=200, verbose=True)
+    reconstructed_tensor = tucker.to_tensor()
+    norm_rec = ivy.sqrt(ivy.sum(reconstructed_tensor**2))
+    norm_tensor = ivy.sqrt(ivy.sum(tensor**2))
+    assert (norm_rec - norm_tensor) / norm_rec < tol_norm_2
+
+    # Test the max abs difference between the reconstruction and the tensor
+    assert ivy.max(ivy.abs(reconstructed_tensor - tensor)) < tol_max_abs
+
+    # Test the shape of the core and factors
+    core, factors = ivy.tucker(tensor, ranks, n_iter_max=100)
+    for i, rank in enumerate(ranks):
+        np.testing.assert_equal(
+            factors[i].shape,
+            (tensor.shape[i], ranks[i]),
+            err_msg=(
+                f"factors[i].shape = {factors[i].shape}, expected"
+                f" {(tensor.shape[i], ranks[i])}"
+            ),
+        )
+        np.testing.assert_equal(
+            core.shape[i],
+            rank,
+            err_msg=f"core.shape[i] = {core.shape[i]}, expected {rank}",
+        )
+
+    # try fixing the core
+    factors_init = [ivy.copy_array(f) for f in factors]
+    _, factors = ivy.tucker(
+        tensor,
+        ranks,
+        init=(core, factors),
+        fixed_factors=[1],
+        n_iter_max=100,
+        verbose=1,
+    )
+    assert np.allclose(factors[1], factors_init[1])
+
+    # Random and SVD init should converge to a similar solution
+    rank = shape
+    tucker_svd = ivy.tucker(tensor, rank, n_iter_max=200, init="svd")
+    tucker_random = ivy.tucker(tensor, rank, n_iter_max=200, init="random", seed=1234)
+    rec_svd = tucker_svd.to_tensor()
+    rec_random = tucker_random.to_tensor()
+    error = ivy.sqrt(ivy.sum((rec_svd - rec_random) ** 2))
+    error /= ivy.sqrt(ivy.sum(rec_svd**2))
+
+    tol_norm_2 = 1e-1
+    np.testing.assert_(
+        error < tol_norm_2, "norm 2 of difference between svd and random init too high"
+    )
+    np.testing.assert_(
+        ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
+        "abs norm of difference between svd and random init too high",
     )

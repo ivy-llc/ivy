@@ -159,3 +159,16 @@ def lu_factor(
     out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray]:
     raise IvyNotImplementedException()
+
+
+def dot(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dot(a, b, out=out)
+
+
+dot.support_native_out = True

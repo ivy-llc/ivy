@@ -415,7 +415,7 @@ def set_backend(backend: str, dynamic: bool = False):
     >>> ivy.set_backend("jax")
     >>> native = ivy.native_array([1])
     >>> print(type(native))
-    <class 'jaxlib.xla_extension.DeviceArray'>
+    <class 'jaxlib.xla_extension.ArrayImpl'>
     """  # noqa
     ivy.utils.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
