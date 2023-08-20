@@ -1666,7 +1666,7 @@ def transformer_data(draw):
         num_heads,
         ff_dim,
         dropout_rate,
-        max_sequence_length
+        max_sequence_length,
     )
 
 
@@ -1701,7 +1701,7 @@ def test_transformer_layer(
         num_heads,
         ff_dim,
         dropout_rate,
-        max_sequence_length
+        max_sequence_length,
     ) = transformer_data
     ret_np_flat, ret_np_from_gt_flat = helpers.test_method(
         backend_to_test=backend_fw,
@@ -1721,8 +1721,10 @@ def test_transformer_layer(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "inputs": np.random.randn(batch_size = 32, max_sequence_length = 1000, input_dim = (224, 224, 3)).astype(input_dtype[0]),
-            "training": True
+            "inputs": np.random.randn(
+                batch_size=32, max_sequence_length=1000, input_dim=(224, 224, 3)
+            ).astype(input_dtype[0]),
+            "training": True,
         },
         class_name=class_name,
         method_name=method_name,
