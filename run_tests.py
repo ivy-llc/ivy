@@ -36,9 +36,10 @@ result_config = {
 
 
 def make_clickable(url, name):
-    return '<a href="{}" rel="noopener noreferrer" '.format(
-        url
-    ) + 'target="_blank"><img src={}></a>'.format(name)
+    return (
+        f'<a href="{url}" rel="noopener noreferrer" '
+        + f'target="_blank"><img src={name}></a>'
+    )
 
 
 def get_submodule(test_path):
@@ -210,13 +211,7 @@ if __name__ == "__main__":
             else:
                 res = make_clickable(run_id, result_config["success"])
             frontend_version = None
-            if (
-                coll[0] == "numpy"
-                or coll[0] == "jax"
-                or coll[0] == "tensorflow"
-                or coll[0] == "torch"
-                or coll[0] == "paddle"
-            ):
+            if coll[0] in ["numpy", "jax", "tensorflow", "torch", "paddle"]:
                 frontend_version = "latest-stable"
             if priority_flag:
                 print("Updating Priority DB")

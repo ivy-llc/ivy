@@ -44,7 +44,7 @@ def main():
         modified_files = commit._parse_diff(diff_index)
         for file in modified_files:
             try:
-                file_name = file.new_path + ",cover"
+                file_name = f"{file.new_path},cover"
             except:  # noqa
                 continue
             if file_name not in tests.keys():
