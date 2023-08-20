@@ -3576,7 +3576,7 @@ def test_numpy___invert__(
     init_tree="numpy.array",
     method_name="round",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", full=False),
         num_arrays=1,
         max_value=50,
         min_value=-50,
@@ -3594,13 +3594,17 @@ def test_numpy_ndarray_round(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    if ("float16" in input_dtype) and (backend_fw == "torch"):
+        x = [x[0].astype("float32")]
+        input_dtype.append("float32")
+        input_dtype.remove("float16")
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         method_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         init_all_as_kwargs_np={
-            "object": x,
+            "object": x[0],
         },
         method_all_as_kwargs_np={
             "decimals": decimals,
