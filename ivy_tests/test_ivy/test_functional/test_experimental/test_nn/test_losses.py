@@ -69,7 +69,7 @@ def test_log_poisson_loss(
         allow_inf=False,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("int"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-1,
         max_value=1,
         allow_inf=False,
