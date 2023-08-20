@@ -325,18 +325,18 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
         message="The rank of input should be greater than or equal to 2.",
     )
     ivy.assertions.check_true(
-        len(input.shape) == len(label.shape), 
+        len(input.shape) == len(label.shape),
         message=str(
             "The rank of input and label should be equal, "
             "but received input: %d, label: %d." % (len(input.shape), len(label.shape))
-       ),
+        ),
     )
     ivy.assertions.check_true(
-        label.shape[-1] == 1, 
+        label.shape[-1] == 1,
         message=str(
             "The last dimension of label should be 1, but received %d."
             % label.shape[-1]
-       ),
+        ),
     )
     ivy.assertions.check_true(
         input.shape[:-1] == label.shape[:-1],
