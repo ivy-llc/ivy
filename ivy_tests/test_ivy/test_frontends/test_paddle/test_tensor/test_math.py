@@ -2080,3 +2080,37 @@ def test_paddle_stanh(
         scale_a=scale_a,
         scale_b=scale_b,
     )
+
+
+# cumsum
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.cumsum",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+)
+def test_paddle_cumsum(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        dim=axis,
+    )

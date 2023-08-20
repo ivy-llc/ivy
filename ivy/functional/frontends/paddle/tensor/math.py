@@ -491,3 +491,10 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
     denominator = ivy.add(exp_ax, exp_minus_ax)
     ret = ivy.multiply(scale_b, ivy.divide(numerator, denominator))
     return ret
+
+
+@to_ivy_arrays_and_back
+def cumsum(x, axis=None, dtype=None, name=None):
+    if dtype is None:
+        dtype = x.dtype
+    return ivy.cumsum(x, axis, dtype=dtype)
