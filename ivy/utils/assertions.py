@@ -262,23 +262,23 @@ def check_segment_sum_valid_params(data, segment_ids):
         ivy.int64,
     ]
 
-    if ivy.backend == "torch":
-        import torch
+    # if ivy.backend == "torch":
+    #     import torch
 
-        valid_dtypes = [
-            torch.int32,
-            torch.int64,
-        ]
-    elif ivy.backend == "paddle":
-        import paddle
+    #     valid_dtypes = [
+    #         torch.int32,
+    #         torch.int64,
+    #     ]
+    # elif ivy.backend == "paddle":
+    #     import paddle
 
-        valid_dtypes = [
-            paddle.int32,
-            paddle.int64,
-        ]
+    #     valid_dtypes = [
+    #         paddle.int32,
+    #         paddle.int64,
+    #     ]
 
-    if segment_ids.dtype not in valid_dtypes:
-        raise ValueError("segment_ids must have an integer dtype")
+    # if segment_ids.dtype not in valid_dtypes:
+    #     raise ValueError("segment_ids must have an integer dtype")
 
     if data.shape[0] != segment_ids.shape[0]:
         raise ValueError("The length of segment_ids should be equal to data.shape[0].")
