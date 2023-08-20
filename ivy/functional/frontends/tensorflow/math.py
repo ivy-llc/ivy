@@ -551,10 +551,10 @@ def rsqrt(x, name=None):
 
 @to_ivy_arrays_and_back
 def segment_sum(data, segment_ids, name="segment_sum"):
-    segment_ids = ivy.sort(segment_ids)
-    ivy.utils.assertions.check_equal(
-        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
-    )
+    # ivy.utils.assertions.check_equal(
+    #     list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    # )
+    ivy.utils.assertions.check_segment_sum_valid_params(data, segment_ids)
     sum_array = ivy.zeros(
         tuple([segment_ids[-1] + 1] + (list(data.shape))[1:]), dtype=ivy.dtype(data))
     for i in range((segment_ids).shape[0]):
