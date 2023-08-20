@@ -700,6 +700,7 @@ def test_jax_isin(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_and_dtype = assume_unique_and_dtype_and_x
     dtypes, values = x_and_dtype
@@ -713,6 +714,7 @@ def test_jax_isin(
         element=elements,
         test_elements=test_elements,
         invert=invert,
+        backend_to_test=backend_fw,
     )
 
 
@@ -832,6 +834,7 @@ def test_jax_logical_or(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        backend_to_test=backend_fw,
     )
 
 
