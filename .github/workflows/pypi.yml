@@ -21,10 +21,10 @@ jobs:
       - name: Add Tag to Version
         run: |
           cd ivy
-          echo "__version__ = 'v0.0.2.0'" > ivy/_version.py
+          echo "__version__ = 'v0.0.2.1'" > ivy/_version.py
 
       - name: Upload to PyPI
-      #  if: startsWith(github.ref, 'refs/tags')
+        #if: startsWith(github.ref, 'refs/tags')
         env:
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
