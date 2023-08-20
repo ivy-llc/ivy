@@ -703,3 +703,6 @@ class ndarray:
 
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
+
+    def __divmod__(self, value, /):
+        return np_frontend.divmod(self, value, out=self)
