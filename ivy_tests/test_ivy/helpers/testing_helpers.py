@@ -483,6 +483,7 @@ def handle_frontend_test(
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
             generate_frontend_arrays=generate_frontend_arrays,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
