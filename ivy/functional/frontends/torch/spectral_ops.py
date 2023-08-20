@@ -4,10 +4,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"2.0.1 and below": "bfloat16"},
-    "torch",
-)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def hamming_window(
     window_length,
     alpha=0.54,
