@@ -902,6 +902,43 @@ def test_jax_arcsin(
     )
 
 
+# gradient
+@handle_frontend_test(
+    fn_tree="jax.numpy.gradient",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        num_arrays=1,
+        min_dim_size=2,
+        min_num_dims=1,
+    ),
+    varargs=helpers.array_values(
+        dtype=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_dim_size=1,
+            min_num_dims=1,
+        ),
+    ),
+    edge_order=helpers.ints(min_value=1, max_value=2),
+)
+def test_jax_gradient(
+    *, dtype_input_axis, varargs, edge_order, test_flags, on_device, fn_tree, frontend
+):
+    input_dtype, x, axis = dtype_input_axis
+    test_flags.num_positional_args = len(varargs) + 1
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        f=x[0],
+        varargs=varargs,
+        axis=axis,
+        edge_order=edge_order,
+    )
+
+
 # log1p
 @handle_frontend_test(
     fn_tree="jax.numpy.log1p",
