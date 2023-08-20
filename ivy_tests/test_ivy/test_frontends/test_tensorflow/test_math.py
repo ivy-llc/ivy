@@ -1968,7 +1968,7 @@ def test_tensorflow_segment_sum(
     data_dtype, data = dtype_and_data
     segment_dtype, segment_ids = dtype_and_segment
     helpers.test_frontend_function(
-        input_dtypes=data_dtype + segment_dtype,
+        input_dtypes=data_dtype + segment_dtype
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
