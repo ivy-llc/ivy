@@ -2049,7 +2049,7 @@ def test_paddle_amax(
         x=x[0],
     )
 
-
+#cumprod
 # stanh
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.stanh",
