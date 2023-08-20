@@ -518,8 +518,8 @@ def can_cast(
     /,
 ) -> bool:
     """
-    Determine if one data type can be cast to another data type according to
-    :ref:`type-promotion` rules.
+    Determine if one data type can be cast to another data type according to :ref:`type-
+    promotion` rules.
 
     Parameters
     ----------

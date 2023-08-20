@@ -3763,7 +3763,6 @@ def shape(
 
     >>> print(z)
     ivy.array([2, 3])
-
     """
     return current_backend(x).shape(x, as_array=as_array)
 

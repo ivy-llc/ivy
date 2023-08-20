@@ -13,8 +13,7 @@ _einsum_symbols_base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 def is_valid_einsum_char(x: str) -> bool:
     """
-    Check if the character ``x`` is valid for numpy einsum.
-    **Examples:**
+    Check if the character ``x`` is valid for numpy einsum. **Examples:**
 
     ```python
     is_valid_einsum_char("a")
@@ -92,9 +91,8 @@ def gen_unused_symbols(used: str, n: int) -> Iterator[str]:
 
 def find_output_str(subscripts: str) -> str:
     """
-    Find the output string for the inputs ``subscripts`` under
-    canonical einstein summation rules.That is, repeated
-    indices are summed over by default.
+    Find the output string for the inputs ``subscripts`` under canonical einstein
+    summation rules.That is, repeated indices are summed over by default.
 
     Examples
     --------
@@ -234,9 +232,9 @@ def convert_interleaved_input(
 
 def legalise_einsum_expr(*operands: Any) -> str:
     """
-    Reproduction of einsum c side einsum parsing in python.
-    **Parameters:**
-    Intakes the same inputs as `contract_path`, but NOT the keyword args. The only
+    Reproduction of einsum c side einsum parsing in python. **Parameters:** Intakes the
+    same inputs as `contract_path`, but NOT the keyword args. The only.
+
     supported keyword argument is:
     - **shapes** - *(bool, optional)* Whether
         ``parse_einsum_input`` should assume

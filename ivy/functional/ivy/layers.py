@@ -1548,7 +1548,6 @@ def depthwise_conv2d(
                        [[0.],
                         [-6.]]]])
     }
-
     """
     return current_backend(x).depthwise_conv2d(
         x,
