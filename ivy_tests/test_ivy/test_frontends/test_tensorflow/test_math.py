@@ -1975,7 +1975,7 @@ def test_tensorflow_segment_sum(
         fn_tree=fn_tree,
         on_device=on_device,
         data=data[0],
-        segment_ids=segment_ids[0],
+        segment_ids=ivy.sort(segment_ids[0]),
     )
 
 # nextafter
