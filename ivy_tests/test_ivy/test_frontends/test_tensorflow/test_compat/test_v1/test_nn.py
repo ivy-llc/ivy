@@ -132,8 +132,7 @@ def test_tensorflow_separable_conv2d(
     backend_fw,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
-    
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
