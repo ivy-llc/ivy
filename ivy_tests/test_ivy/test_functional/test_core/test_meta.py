@@ -8,7 +8,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
+from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
 
 
 # ToDo: replace dict checks for verifying costs with analytic calculations
@@ -45,7 +45,7 @@ def test_fomaml_step_unique_vars(
     if backend_fw == "numpy":
         return
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -211,7 +211,7 @@ def test_fomaml_step_shared_vars(
     if backend_fw == "numpy":
         return
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -395,7 +395,7 @@ def test_fomaml_step_overlapping_vars(
     if backend_fw == "numpy":
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -561,7 +561,7 @@ def test_reptile_step(
         # nested classes,
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -696,7 +696,7 @@ def test_maml_step_unique_vars(
         # nested classes
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -864,7 +864,7 @@ def test_maml_step_shared_vars(
         # nested classes
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
@@ -1093,7 +1093,7 @@ def test_maml_step_overlapping_vars(
         # nested classes
         pytest.skip()
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         # config
         inner_learning_rate = 1e-2
         variable_fn = ivy_backend.functional.ivy._variable
