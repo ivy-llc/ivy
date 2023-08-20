@@ -3569,6 +3569,7 @@ def test_numpy___invert__(
         on_device=on_device,
     )
 
+
 #round
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3580,9 +3581,11 @@ def test_numpy___invert__(
         max_value=50,
         min_value=-50,
     ),
+    decimals=st.integers(min_value=0, max_value=3),
 )
 def test_numpy_ndarray_round(
     dtype_and_x,
+    decimals,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -3599,7 +3602,9 @@ def test_numpy_ndarray_round(
         init_all_as_kwargs_np={
             "object": x,
         },
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "decimals": decimals,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
