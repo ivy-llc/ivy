@@ -883,6 +883,11 @@ class Tensor:
     def neg(self):
         return torch_frontend.negative(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
+    def neg_(self):
+        self.ivy_array = torch_frontend.negative(self).ivy_array
+        return self
+
     __neg__ = neg
 
     def int(self, memory_format=None):
