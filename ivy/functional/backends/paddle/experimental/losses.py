@@ -32,7 +32,6 @@ def l1_loss(
     /,
     *,
     reduction: Optional[str] = "mean",
-    name: Optional[str] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return F.l1_loss(input, target, reduction=reduction, name=name, out=out)
+    return F.l1_loss(input, target, reduction=reduction, out=out)
