@@ -74,7 +74,7 @@ def test_paddle_avg_pool2d(
         max_dims=3,
         min_side=2,
         max_side=4,
-        data_format="channel_first"
+        data_format="channel_first",
     ),
     exclusive=st.booleans(),
     ceil_mode=st.just(False),
