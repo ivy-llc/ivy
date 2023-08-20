@@ -1131,6 +1131,7 @@ def test_jax_numpy_packbits(
     *,
     fn_tree,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -1142,4 +1143,5 @@ def test_jax_numpy_packbits(
         x=x[0],
         axis=axis,
         bitorder=bitorder,
+        backend_to_test=backend_fw,
     )
