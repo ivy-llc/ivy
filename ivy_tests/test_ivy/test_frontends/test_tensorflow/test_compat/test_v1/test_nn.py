@@ -191,7 +191,7 @@ def test_tensorflow_max_pool(
     fn_tree="tensorflow.compat.v1.nn.depthwise_conv2d_backprop_input",
     x_f_d_df=_x_and_filters(
         input_dtypes=helpers.get_dtypes("float","bfloat16", full=False),
-        x=helpers.get_dtypes("integer", full=False),
+        dtypes=helpers.get_dtypes("integer", full=False),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         type="depthwise",
