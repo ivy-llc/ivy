@@ -51,6 +51,6 @@ def test_torch_hamming_window(
         frontend=frontend,
         test_flags=test_flags,
         backend_to_test=backend_fw,
-        rtol=1e-1,
-        atol=1e-1,
+        rtol=1e-2,
+        atol=1e-2,
     )
