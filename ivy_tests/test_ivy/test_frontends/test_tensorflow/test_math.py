@@ -1945,11 +1945,11 @@ def test_tensorflow_rsqrt(
     fn_tree="tensorflow.math.segment_sum",
     dtype_and_data=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        shape = (5, 6),        
+        shape = ivy.array((5, 6)),        
     ),
     dtype_and_segment=helpers.dtype_and_values(
         available_dtypes=["int32", "int64"],
-        shape = (5, ),
+        shape = ivy.array((5, )),
         min_value = 0, 
         max_value = 4,
     ),
