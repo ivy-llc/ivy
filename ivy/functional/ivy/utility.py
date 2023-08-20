@@ -188,6 +188,15 @@ def any(
         the returned array must be a non-zero-dimensional array containing the test
         results. The returned array must have a data type of ``bool``.
 
+    .. note::
+       The return type can be specified as ``ivy.Array``.
+
+
+    Raises
+    ------
+    IvyIndexError
+        If the provided axis is invalid.
+
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -233,6 +242,13 @@ def any(
         a: ivy.array(True),
         b: ivy.array(True)
     }
+
+    >>> x = ivy.array([])
+    >>> result = any(x)
+    >>> print(result)
+    ivy.array(False)
+     Explanation: The function performs a logical OR reduction over an empty array,
+       resulting in ivy.array(False).
     """
     return ivy.current_backend(x).any(x, axis=axis, keepdims=keepdims, out=out)
 

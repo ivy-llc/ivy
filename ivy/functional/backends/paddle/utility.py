@@ -2,6 +2,7 @@
 import paddle
 from typing import Union, Optional, Sequence
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.utils.exceptions import IvyIndexError
 
 
 def all(
@@ -59,4 +60,7 @@ def any(
             axis = None
     if (x.ndim == 1 or axis is None) and not keepdims:
         ret = paddle_backend.squeeze(ret, axis=-1)
-    return ret
+    try:
+        return ret
+    except Exception as e:
+        raise IvyIndexError(str(e))

@@ -31,7 +31,10 @@ def any(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.any(x, axis=axis, keepdims=keepdims, out=out))
+    try:
+        return np.asarray(np.any(x, axis=axis, keepdims=keepdims, out=out))
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 any.support_native_out = True

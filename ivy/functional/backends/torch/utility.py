@@ -1,6 +1,7 @@
 # global
 import torch
 from typing import Union, Optional, Sequence
+from ivy.utils.exceptions import IvyIndexError
 
 
 def all(
@@ -47,7 +48,10 @@ def any(
     axis.sort()
     for i, a in enumerate(axis):
         x = torch.any(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
-    return x
+    try:
+        return x
+    except Exception as e:
+        raise IvyIndexError(str(e))
 
 
 any.support_native_out = True
