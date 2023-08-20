@@ -5,6 +5,8 @@ import ivy
 from ivy.func_wrapper import handle_nestable
 from ivy.stateful.initializers import GlorotUniform, Zeros
 from ivy.stateful.module import Module
+from ivy.stateful.norms import LayerNorm
+import numpy as np
 
 # ToDo: update docstrings and typehints according to ivy\layers
 
@@ -2224,3 +2226,47 @@ class Identity(Module):
             The input array as it is.
         """
         return x
+
+
+# Transformer #
+# ----------#
+
+
+class Transformer(Module):
+    def __init__(self, d_model, num_heads, dff, rate=0.1, max_sequence_length=1000):
+        super(Transformer, self).__init__()
+        self.multihead_attention = MultiHeadAttention(d_model, num_heads)
+        self.feedforward = Linear(d_model, dff)
+        self.layernorm1 = LayerNorm()
+        self.layernorm2 = LayerNorm()
+        self.dropout1 = Dropout(rate)
+        self.dropout2 = Dropout(rate)
+        self.positional_encoding = self._get_positional_encoding(
+            max_sequence_length, d_model
+        )
+
+    def _get_positional_encoding(self, max_sequence_length, d_model):
+        pos_enc = np.zeros((1, max_sequence_length, d_model))
+        position = np.arange(0, max_sequence_length, dtype=np.float32)[:, np.newaxis]
+        div_term = np.exp(
+            np.arange(0, d_model, 2).astype(np.float32) * -(np.log(10000.0) / d_model)
+        )
+        pos_enc[:, :, 0::2] = np.sin(position * div_term)
+        pos_enc[:, :, 1::2] = np.cos(position * div_term)
+        return pos_enc
+
+    def call(self, inputs, training):
+        inputs_with_pos = inputs + self.positional_encoding[:, : inputs.shape[1], :]
+
+        attn_output = self.multihead_attention(
+            inputs_with_pos, inputs_with_pos, inputs_with_pos
+        )
+        attn_output = self.dropout1(attn_output, training=training)
+        out1 = self.layernorm1(inputs + attn_output)
+
+        ffn_output = self.feedforward(out1)
+        ffn_output = ivy.gelu(ffn_output)
+        ffn_output = self.dropout2(ffn_output, training=training)
+        out2 = self.layernorm2(out1 + ffn_output)
+
+        return out2
