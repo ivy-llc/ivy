@@ -68,7 +68,7 @@ def test_torch_avg_pool1d(
     # TODO: remove the processing of padding attribute when ivy.avg_pool
     #   support explicit padding
     x_shape = [x[0].shape[2]]
-    padding = (pad[i] for i, pad in enumerate(padding))
+    padding = [pad[i] for i, pad in enumerate(padding)]
     # figuring out the exact kernel_size for SAME and VALID padding
     # As ivy.avg_pool1d doesn't support explicit padding scheme
     if not sum(padding) == 0:
@@ -118,7 +118,7 @@ def test_torch_avg_pool2d(
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
     # TODO: remove the processing of padding attribute when ivy.avg_pool
     #   support explicit padding
-    padding = (pad[i] for i, pad in enumerate(padding))
+    padding = [pad[i] for i, pad in enumerate(padding)]
     x_shape = x[0].shape[2:]
     if not sum(padding) == 0:
         padding = calculate_same_padding(kernel_size, [stride[0]] * 2, x_shape)
