@@ -491,3 +491,20 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
     denominator = ivy.add(exp_ax, exp_minus_ax)
     ret = ivy.multiply(scale_b, ivy.divide(numerator, denominator))
     return ret
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def cumsum(x, axis=None, dtype=None, name=None):
+    return ivy.cumsum(x, axis=axis, dtype=dtype)
