@@ -34,7 +34,6 @@ def backend_proc(input_queue, output_queue):
     sys.path.insert(1, path)
     framework = framework.split("/")[0]
     framework = importlib.import_module(framework)
-    print(framework.__version__)
     # if jax, do more stuff
     if framework.__name__ == "jax":
         framework.config.update("jax_enable_x64", True)
