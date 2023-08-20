@@ -199,7 +199,7 @@ def get_all_ivy_arrays_on_dev(
     all_arrays = list()
     for obj in gc.get_objects():
         if (
-            type(obj) == ivy.data_classes.array.array.Array
+            obj is ivy.data_classes.array.array.Array
             and ivy.is_ivy_array(obj)
             and ivy.dev(obj) == device
         ):
