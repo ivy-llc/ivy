@@ -284,7 +284,7 @@ def check_segment_sum_valid_params(data, segment_ids):
         raise ValueError("The length of segment_ids should be equal to data.shape[0].")
     for x in range(1, len(segment_ids)):
         if segment_ids[x] < segment_ids[x-1]:
-            raise InvalidArgumentError("Segment_ids must be sorted")
+            raise ivy.utils.exceptions.IvyException("Segment_ids must be sorted")
 # General #
 # ------- #
 
