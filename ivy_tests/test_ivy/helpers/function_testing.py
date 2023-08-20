@@ -34,7 +34,7 @@ def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_compile:
             fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
-        return fn
+    return fn
 
 
 # Ivy Function testing ##########################
