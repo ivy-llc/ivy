@@ -270,7 +270,7 @@ def frombuffer(buffer, dtype="float", count=-1, offset=0):
 
 
 @to_ivy_arrays_and_back
-def in1d(ar1, ar2, invert=False):
+def in1d(ar1, ar2, assume_unique=False, invert=False):
     ar1_flat = ivy.flatten(ar1)
     ar2_flat = ivy.flatten(ar2)
     if invert:

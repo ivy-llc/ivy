@@ -1127,14 +1127,16 @@ def test_jax_numpy_setdiff1d(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.in1d",
-    dtype_and_a=helpers.dtype_and_values(),
-    dtype_and_b=helpers.dtype_and_values(),
+    dtype_and_a=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
+    dtype_and_b=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
+    assume_unique=st.booleans(),
     invert=st.booleans(),
 )
 def test_jax_numpy_in1d(
     *,
     dtype_and_a,
     dtype_and_b,
+    assume_unique,
     invert,
     on_device,
     fn_tree,
@@ -1154,5 +1156,13 @@ def test_jax_numpy_in1d(
         on_device=on_device,
         ar1=a[0],
         ar2=b[0],
+        assume_unique=assume_unique,
         invert=invert,
     )
+
+
+#
+# ivy.set_backend('jax')
+# jnpo.in1d(jnpo.array([-1.]),
+# jnpo.array([False]),
+# invert=True,)
