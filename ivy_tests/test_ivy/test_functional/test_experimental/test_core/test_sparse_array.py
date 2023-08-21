@@ -365,3 +365,51 @@ def test_sparse_bsr(
         class_name=class_name,
         method_name=method_name,
     )
+
+
+# adding sparse array to dense array
+@handle_method(
+    init_tree="ivy.array",
+    method_tree="Array.__add__",
+    sparse_data=_sparse_coo_indices_values_shape(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_array_add_sparse(
+    sparse_data,
+    dtype_and_x,
+    method_name,
+    class_name,
+    ground_truth_backend,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    coo_ind, val_dtype, val, shp = sparse_data
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        method_input_dtypes=["int64", val_dtype],
+        method_all_as_kwargs_np={
+            "other": {
+                "coo_indices": coo_ind,
+                "values": val,
+                "dense_shape": shp,
+                "format": "coo",
+            }
+        },
+        class_name=class_name,
+        method_name=method_name,
+    )
