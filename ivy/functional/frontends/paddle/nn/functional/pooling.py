@@ -33,7 +33,7 @@ def avg_pool2d(
     else:
         padding = "VALID"
 
-    count_include_pad = (not exclusive)
+    count_include_pad = not exclusive
     return ivy.avg_pool2d(
         x,
         kernel_size,
@@ -59,7 +59,7 @@ def avg_pool1d(
     padding = _broadcast_pooling_helper(padding, "1d", name="padding")
     # Figure out padding string
     if all(
-            [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
     ):
         padding = "SAME"
     else:
