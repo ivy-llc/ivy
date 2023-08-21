@@ -138,29 +138,9 @@ def affine_grid(theta, out_shape, align_corners=True):
             return grid.view((N, D, H, W, 3))
 
 
-# grid_sample
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def grid_sample(input, grid, mode, padding_mode):
-    """
-    grid_sample is used to perfome various spatial transformations.
-
-    The function is used to resample the pixel values.
-    i.e from the original image to new positions defined by the grid of sampling points.
-
-    Basically, it's used to transform data from
-    one coordinate system to another.
-
-    Parameters:
-    - input: image to be transformed.
-    - grid: defines the transformation to be applied to the input tensor.
-    - mode: determines the interpolation method.
-    - padding_mode: controls how to handle out-of-bound values.
-
-    Returns:
-    Transformed tensor.
-    """
-
     if mode not in ["nearest", "bilinear"]:
         raise ValueError("Invalid mode. Supported modes are 'nearest' and 'bilinear'. ")
 
@@ -182,21 +162,6 @@ def grid_sample(input, grid, mode, padding_mode):
 
 
 def grid_sample_nearest(input, grid, padding_mode):
-    """
-    Assigns the pixel value at non-integer grid coordinates to be the value of the
-    nearest pixel of the input data. The transformation process involves normalising the
-    grid & rounding them to the nearest pixel value.
-
-    parameters:
-    - input: image that needs to be transformed.
-    - grid: the transformation grid.
-    - padding_mode: controls how to handle out-of-bound values.
-
-    Returns:
-    transformed values for each point in the output grid.
-    These transformed values represent the result of applying spatial transformation.
-    """
-
     # get the spatial dims of the input & grid
     input_shape = ivy.shape(input)
     ivy.shape(grid)
@@ -226,22 +191,6 @@ def grid_sample_nearest(input, grid, padding_mode):
 
 
 def grid_sample_bilinear(input, grid, padding_mode):
-    """
-    The bilinear interpolation calculates the pixel value at a non-integer grid
-    coordinate as a weighted average of the pixel values of the four nearest
-    neighbouring pixels. The interpolation is performed based on the relative distances
-    of the grid coordinates to these neighbouring pixels. Pixels closer to the grid
-    coordinate have higher weights, while pixels farther away have lower weights.
-
-    Parameters:
-    - input: data that needs to be transformed.
-    - grid: defines the transformation to be applied to the input tensor.
-    - padding_mode: controls how to handle out-of-bounds values.
-
-    Returns:
-    The transformed values for each point in the output grid.
-    These values represent the result of applying spatial transformation.
-    """
     # Get the spatial dimensions of the input and grid
     input_shape = ivy.shape(input)
     ivy.shape(grid)
