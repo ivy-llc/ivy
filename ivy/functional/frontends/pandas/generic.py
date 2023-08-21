@@ -58,7 +58,9 @@ class NDFrame:
                 "Data must be one of array, dict, iterables, scalar value or Series."
                 f" Got {type(data)}"
             )
-        self.index = Index(self.index) if not isinstance(self.index, Index) else self.index
+        self.index = (
+            Index(self.index) if not isinstance(self.index, Index) else self.index
+        )
 
     @property
     def data(self):
