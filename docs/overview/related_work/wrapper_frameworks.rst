@@ -20,8 +20,6 @@ Wrapper Frameworks
 .. _`SciPy`: https://scipy.org/
 .. _`TorchScript`: https://pytorch.org/docs/stable/jit.html
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 .. |eagerpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/wrapper_frameworks/eagerpy.png
     :height: 15pt
@@ -71,7 +69,3 @@ Compared to other wrapper frameworks, NeuroPod is very high level.
 It wraps entire models which have already been trained, in a manner where the interface to these models is unified.
 It excels in a setting where multiple networks, which may have been trained in a variety of frameworks, must all act as subsystems performing specific tasks as part of a larger complex system, and the network interfaces in this larger system should be unified.
 This abstraction enables subsystem networks to be quickly replaced by other networks performing the same role, irrespective of which framework the subsystem is running under the hood.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!
