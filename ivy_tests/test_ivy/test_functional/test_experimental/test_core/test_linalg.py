@@ -1610,3 +1610,107 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
         ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
         "abs norm of difference between svd and random init too high",
     )
+
+
+# intialize cp
+@st.composite
+def _initialize_cp_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    rank = draw(helpers.ints(min_value=1, max_value=7))
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=3))
+    non_negative = draw(st.booleans())
+    normalize_factors = draw(st.booleans())
+    init = draw(st.sampled_from(["svd", "random", "cp_tensor"]))
+    if init == "cp_tensor":
+        dims = len(shape)
+        _, weight = draw(helpers.dtype_and_values(dtype=x_dtype, shape=(rank,)))
+        factors = []
+        for i in range(dims):
+            factors.append(
+                draw(helpers.dtype_and_values(dtype=x_dtype, shape=(shape[i], rank)))[
+                    1
+                ][0]
+            )
+        init = [weight[0], factors]
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        normalize_factors,
+        non_negative,
+        mask[0],
+        svd_mask_repeats,
+        init,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.initialize_cp",
+    data=_initialize_cp_data(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_initialize_cp(*, data, test_flags, backend_fw, fn_name, on_device):
+    (
+        input_dtypes,
+        x,
+        rank,
+        normalize_factors,
+        non_negative,
+        mask,
+        svd_mask_repeats,
+        init,
+    ) = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        init=init,
+        normalize_factors=normalize_factors,
+        non_negative=non_negative,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    weights_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+    if init == "random":
+        for w, w_gt in zip(weights, weights_gt):
+            assert np.prod(w.shape) == rank
+            assert np.prod(w_gt.shape) == rank
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)

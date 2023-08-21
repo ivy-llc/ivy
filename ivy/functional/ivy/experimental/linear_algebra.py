@@ -1228,9 +1228,10 @@ def initialize_tucker(
 ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
     """
     Initialize core and factors used in `tucker`. The type of initialization is set
-    using `init`. If `init == 'random'` then initialize factor matrices using
-    `random_state`. If `init == 'svd'` then initialize the `m`th factor matrix using the
-    `rank` left singular vectors of the `m`th unfolding of the input tensor.
+    using `init`. If `init == 'random'` then initialize factor matrices using from
+    uniform distribution using the given seed. If `init == 'svd'` then initialize the
+    `m`th factor matrix using the `rank` left singular vectors of the `m`th unfolding of
+    the input tensor.
 
     Parameters
     ----------
@@ -1673,3 +1674,142 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a, b, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def initialize_cp(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: int,
+    /,
+    *,
+    init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+    seed: Optional[int] = None,
+    normalize_factors: Optional[bool] = False,
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    non_negative: Optional[bool] = False,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    svd_mask_repeats: Optional[int] = 5,
+) -> ivy.CPTensor:
+    r"""
+    Initialize factors used in `parafac`.
+
+    The type of initialization is set using `init`. If `init == 'random'` then
+    initialize factor matrices with uniform distribution with the given seed.
+    If `init == 'svd'` then initialize the `m`th factor matrix using the
+    `rank` left singular vectors of the `m`th unfolding of the input
+    tensor. If init is a previously initialized `cp tensor`, all
+    the weights are pulled in the last factor and then the weights
+    are set to "1" for the output tensor.
+
+    Parameters
+    ----------
+    x
+        input tensor
+    rank
+        number of components
+    init
+        initialization scheme for CP decomposition.
+    seed
+        Used to create a random seed distribution
+        when init == 'random'
+    normalize_factors
+        if True, the factors are normalized.
+    svd
+        function to use to compute the SVD
+    non_negative
+        if True, non-negative factors are returned
+    mask
+        array of booleans with the same shape as ``x`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True).
+    svd_mask_repeats
+        number of iterations for imputing the values in the SVD matrix when
+        mask is not None
+    Returns
+    -------
+    factors : CPTensor
+        An initial cp tensor.
+    """
+    if init == "random":
+        kt = ivy.random_cp(
+            x.shape,
+            rank,
+            normalise_factors=False,
+            seed=seed,
+            dtype=x.dtype,
+        )
+
+    elif init == "svd":
+        factors = []
+        for mode in range(len(x.shape)):
+            mask_unfold = None if mask is None else ivy.unfold(mask, mode)
+            U, S, _ = _svd_interface(
+                ivy.unfold(x, mode),
+                n_eigenvecs=rank,
+                method=svd,
+                non_negative=non_negative,
+                mask=mask_unfold,
+                n_iter_mask_imputation=svd_mask_repeats,
+            )
+
+            # Put SVD initialization on the same scaling
+            # as the tensor in case normalize_factors=False
+            if mode == 0:
+                idx = min(rank, ivy.shape(S)[0])
+                U[:, :idx] = U[:, :idx] * S[:idx]
+
+            if x.shape[mode] < rank:
+                # TODO: this is a hack but it
+                # seems to do the job for now
+                random_part = ivy.random_uniform(
+                    shape=(U.shape[0], rank - ivy.shape(x)[mode]), dtype=x.dtype
+                )
+                U = ivy.concat([U, random_part], axis=1)
+
+            factors.append(U[:, :rank])
+
+        kt = ivy.CPTensor((None, factors))
+
+    elif isinstance(init, (tuple, list, ivy.CPTensor)):
+        try:
+            if normalize_factors:
+                logging.warn(
+                    "It is not recommended to initialize a tensor with normalizing."
+                    " Consider normalizing the tensor before using this function"
+                )
+
+            kt = ivy.CPTensor(init)
+            weights, factors = kt
+
+            if ivy.all(weights == 1):
+                kt = ivy.CPTensor((None, factors))
+            else:
+                weights_avg = ivy.prod(weights) ** (1.0 / ivy.shape(weights)[0])
+                for i in range(len(factors)):
+                    factors[i] = factors[i] * weights_avg
+                kt = ivy.CPTensor((None, factors))
+
+            return kt
+        except ValueError:
+            raise ValueError(
+                "If initialization method is a mapping, then it must "
+                "be possible to convert it to a CPTensor instance"
+            )
+    else:
+        raise ValueError(f'Initialization method "{init}" not recognized')
+
+    if non_negative:
+        # Make decomposition feasible by taking
+        # the absolute value of all factor matrices
+        kt.factors = [ivy.abs(f) for f in kt[1]]
+
+    if normalize_factors:
+        kt = ivy.CPTensor.cp_normalize(kt)
+
+    return kt
