@@ -883,6 +883,11 @@ class Tensor:
     def neg(self):
         return torch_frontend.negative(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
+    def neg_(self):
+        self.ivy_array = torch_frontend.negative(self).ivy_array
+        return self
+
     __neg__ = neg
 
     def int(self, memory_format=None):
@@ -1774,6 +1779,24 @@ class Tensor:
     )
     def lcm(self, other, *, out=None):
         return torch_frontend.lcm(self, other, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "int16",
+                "complex128",
+                "complex64",
+                "bool",
+            )
+        },
+        "torch",
+    )
+    def triu_(self, diagonal=0):
+        self.ivy_array = torch_frontend.triu(self, diagonal).ivy_array
+        return self
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16")},
