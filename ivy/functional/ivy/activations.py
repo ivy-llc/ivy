@@ -531,14 +531,7 @@ def _softplus_jax_like(
         res = ivy.divide(res, ivy.array(beta, dtype=x.dtype))
     if threshold is not None:
         res = ivy.where(
-            (
-                ivy.logical_or(
-                    ivy.real(x_beta) < threshold,
-                    ivy.logical_and(
-                        ivy.real(x_beta) == threshold, ivy.imag(x_beta) < threshold
-                    ),
-                )
-            ),
+            ivy.real(x_beta) < threshold,
             res,
             x,
         ).astype(x.dtype)
@@ -579,7 +572,8 @@ def softplus(
     beta
         The beta value for the softplus formation. Default: ``None``.
     threshold
-        values above this revert to a linear function. Default: ``None``.
+        values above this revert to a linear function
+        If the input is complex, only its real part is considered. Default: ``None``
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
