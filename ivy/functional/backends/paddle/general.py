@@ -332,6 +332,7 @@ def inplace_update(
     ensure_in_backend: bool = False,
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
+    _check_inplace_mode()
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
@@ -350,6 +351,16 @@ def inplace_update(
         return x
     else:
         return val
+
+
+def _check_inplace_mode():
+    if hasattr(ivy, "inplace_mode"):
+        if ivy.inplace_mode == "strict":
+            raise ivy.utils.exceptions.IvyBackendException(
+                "Inplace update is not supported in 'strict' mode for paddle"
+                " backend.\nTo enable inplace update, use"
+                " ivy.set_inplace_mode('lenient')\n"
+            )
 
 
 def inplace_variables_supported():

@@ -1213,9 +1213,10 @@ def test_inplace_variables_supported(backend_fw):
         shared_dtype=True,
     ),
     keep_x_dtype=st.booleans(),
+    inplace_mode=st.sampled_from(["lenient", "strict"]),
 )
 def test_inplace_update(
-    x_val_and_dtypes, keep_x_dtype, test_flags, on_device, backend_fw
+    x_val_and_dtypes, keep_x_dtype, inplace_mode, test_flags, on_device, backend_fw
 ):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         dtype = x_val_and_dtypes[0][0]
@@ -1224,9 +1225,10 @@ def test_inplace_update(
         x, val = x_val_and_dtypes[1]
         x = ivy_backend.array(x.tolist(), dtype=dtype, device=on_device)
         val = ivy_backend.array(val.tolist(), dtype=dtype, device=on_device)
-        if (not test_flags.as_variable and ivy_backend.inplace_arrays_supported()) or (
-            test_flags.as_variable and ivy_backend.inplace_variables_supported()
-        ):
+
+        ivy_backend.set_inplace_mode(inplace_mode)
+        supports_update = _supports_inplace_update(ivy_backend, test_flags)
+        if supports_update or ivy_backend.inplace_mode == "lenient":
             if keep_x_dtype:
                 x_dtype = x.dtype
                 x_inplace = ivy_backend.inplace_update(x, val, keep_input_dtype=True)
@@ -1239,9 +1241,22 @@ def test_inplace_update(
             helpers.value_test(
                 backend=backend_fw, ret_np_flat=x, ret_np_from_gt_flat=val
             )
+        elif not supports_update and ivy_backend.inplace_mode == "strict":
+            with pytest.raises(Exception):
+                ivy_backend.inplace_update(x, val)
 
 
-@given(mode=st.sampled_from(["lenient", "strict"]))
+def _supports_inplace_update(ivy_backend, test_flags) -> bool:
+    supports_array_inplace_update = (
+        not test_flags.as_variable and ivy_backend.inplace_arrays_supported()
+    )
+    supports_variable_inplace_update = (
+        test_flags.as_variable and ivy_backend.inplace_variables_supported()
+    )
+    return supports_array_inplace_update or supports_variable_inplace_update
+
+
+@pytest.mark.parametrize("mode", ["lenient", "strict"])
 def test_set_inplace_mode(mode):
     ivy.set_inplace_mode(mode)
     assert ivy.inplace_mode == mode

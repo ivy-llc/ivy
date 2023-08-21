@@ -252,6 +252,7 @@ def inplace_update(
     ensure_in_backend: bool = False,
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
+    _check_inplace_mode()
     if ivy.is_array(x) and ivy.is_array(val):
         if ensure_in_backend or ivy.is_native_array(x):
             raise ivy.utils.exceptions.IvyException(
@@ -290,6 +291,15 @@ def inplace_update(
         return x
     else:
         return val
+
+
+def _check_inplace_mode():
+    if hasattr(ivy, "inplace_mode"):
+        if ivy.inplace_mode == "strict":
+            raise ivy.utils.exceptions.IvyBackendException(
+                "Inplace update is not supported in 'strict' mode for jax backend.\n"
+                "To enable inplace update, use ivy.set_inplace_mode('lenient')\n"
+            )
 
 
 def _update_view(view, base):
