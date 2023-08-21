@@ -173,7 +173,7 @@ def test_function(
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
     # ToDo add with_backend refactor in GC
-    _handle_backend_context(test_flags.test_compile)
+    _switch_backend_context(test_flags.test_compile)
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
@@ -531,7 +531,7 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     # ToDo add with_backend refactor in GC
-    _handle_backend_context(test_flags.test_compile)
+    _switch_backend_context(test_flags.test_compile)
 
     assert (
         not test_flags.with_out or not test_flags.inplace
@@ -1089,7 +1089,7 @@ def test_method(
         optional, return value from the Ground Truth function
     """
     # ToDo add with_backend refactor in GC
-    _handle_backend_context(test_compile)
+    _switch_backend_context(test_compile)
 
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
@@ -1461,7 +1461,7 @@ def test_frontend_method(
         optional, return value from the Ground Truth function
     """
     # ToDo add with_backend refactor in GC
-    _handle_backend_context(method_flags.test_compile)
+    _switch_backend_context(method_flags.test_compile)
 
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
@@ -2045,7 +2045,7 @@ def arrays_to_frontend(backend: str, frontend_array_fn=None):
     return _new_fn
 
 
-def _handle_backend_context(compile: bool):
+def _switch_backend_context(compile: bool):
     if compile:
         BackendHandler._update_context(BackendHandlerMode.SetBackend)
     else:
