@@ -2049,6 +2049,7 @@ def test_paddle_amax(
         x=x[0],
     )
 
+
 # cumsum
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cumsum",
@@ -2080,4 +2081,36 @@ def test_paddle_cumsum(
         on_device=on_device,
         x=x[0],
         dim=axis,
+    )
+
+
+# stanh
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.stanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    scale_a=st.floats(1e-5, 1e5),
+    scale_b=st.floats(1e-5, 1e5),
+)
+def test_paddle_stanh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    scale_a,
+    scale_b,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        scale_a=scale_a,
+        scale_b=scale_b,
     )
