@@ -2369,7 +2369,7 @@ def _sequence_mask_helper(draw):
         )
     )
 
-    max_len = draw(st.integers(min_value=int(ivy.max(lens)), max_value=max_val))
+    max_len = draw(st.integers(min_value=max_val, max_value=max_val))
     dtype = draw(st.sampled_from([
     'float16',
     'uint8',

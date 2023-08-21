@@ -681,7 +681,7 @@ def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
     if dtype == None:
         return result
     else:
-        return cast(result, dtype)
+        return ivy.astype(result, dtype)
       
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
