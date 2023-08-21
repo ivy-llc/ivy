@@ -415,6 +415,7 @@ def handle_frontend_test(
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
+    test_compile=BuiltCompileStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
@@ -448,6 +449,10 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
 
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
     generate_frontend_arrays
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
@@ -469,6 +474,7 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
+            test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
         )
 
@@ -655,6 +661,7 @@ def handle_frontend_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
+    test_compile=BuiltCompileStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
@@ -713,12 +720,14 @@ def handle_frontend_method(
                 num_positional_args=init_num_positional_args,
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
+                test_compile=test_compile,
             )
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
+                test_compile=test_compile,
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
