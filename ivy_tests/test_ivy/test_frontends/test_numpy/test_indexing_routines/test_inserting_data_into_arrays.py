@@ -147,7 +147,6 @@ def test_numpy_fill_diagonal(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="numpy.putmask",
     dtype_and_x=helpers.dtype_and_values(
@@ -162,24 +161,30 @@ def test_numpy_fill_diagonal(
 def test_numpy_putmask(
     *,
     dtype_and_x,
-    on_device,
-    fn_tree,
     frontend,
     backend_fw,
-    test_flags,
 ):
     dtypes, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        mask=x[1],
-        values=x[2],
+    y = list(map(np.array, x))
+    np.putmask(
+        y[0],
+        y[1],
+        y[2],
     )
+    with BackendHandler.update_backend(backend_fw):
+        x = list(map(np_frontend.array, x))
+        np_frontend.putmask(
+            x[0],
+            x[1],
+            x[2],
+        )
+    helpers.value_test(
+        ret_np_flat=np.array(x[0].ivy_array),
+        ret_np_from_gt_flat=y[0],
+        backend=backend_fw,
+        ground_truth_backend=frontend,
+    )
+
 
 @handle_frontend_test(fn_tree="numpy.add", inputs=_helper_r_())  # dummy fn_tree
 def test_numpy_r_(inputs, backend_fw):
@@ -204,4 +209,3 @@ def test_numpy_c_(inputs, backend_fw):
     else:
         ret = ret.ivy_array
     assert np.allclose(ret, ret_gt)
-
