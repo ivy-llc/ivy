@@ -8,3 +8,5 @@ from . import hyperbolic_functions
 from .hyperbolic_functions import *
 from . import trigonometric_functions
 from .trigonometric_functions import *
+from . import number_theoretic_and_representation_functions
+from .number_theoretic_and_representation_functions import *
