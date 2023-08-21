@@ -257,7 +257,6 @@ def inplace_update(
             else:
                 x = ivy.Array(x_native)
         elif ivy.is_ivy_array(x):
-            _check_inplace_mode()
             x.data = val_native
             # Handle view updates
             if ivy.exists(x._base):
@@ -289,16 +288,6 @@ def inplace_update(
         return x
     else:
         return val
-
-
-def _check_inplace_mode():
-    if hasattr(ivy, "inplace_mode"):
-        if ivy.inplace_mode == "strict":
-            raise ivy.utils.exceptions.IvyBackendException(
-                "Inplace update for arrays is not supported in 'strict' mode for"
-                " tensorflow backend.\nTo enable inplace update, use"
-                " ivy.set_inplace_mode('lenient')\n"
-            )
 
 
 def _update_view(view, base):
