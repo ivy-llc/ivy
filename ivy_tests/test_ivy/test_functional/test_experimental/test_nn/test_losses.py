@@ -101,5 +101,4 @@ def test_hinge_embedding_loss(
         margin=margin,
         reduction=reduction,
         atol_=1e-2,
-        rtol_=1e-2,
     )
