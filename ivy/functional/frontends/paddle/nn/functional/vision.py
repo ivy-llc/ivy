@@ -66,6 +66,9 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     )
 @to_ivy_arrays_and_back
 def grid_sample(x, grid, mode='bilinear', padding_mode='zeros', align_corners=True, name=None):
+
+    input_shape = ivy.shape(x)
+    # while len(input_shape) == 4 or len(input_shape) == 5:
     _modes = ['bilinear', 'nearest']
     _padding_modes = ['zeros', 'reflection', 'border']
     if mode not in _modes:
@@ -87,6 +90,7 @@ def grid_sample(x, grid, mode='bilinear', padding_mode='zeros', align_corners=Tr
                 align_corners
             )
         )
+
     return
 
 
