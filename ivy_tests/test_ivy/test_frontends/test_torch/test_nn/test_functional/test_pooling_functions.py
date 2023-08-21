@@ -498,3 +498,96 @@ def test_torch_lp_pool2d(
         stride=stride[0],
         ceil_mode=False,
     )
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.max_unpool1d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
+)
+def test_torch_max_unpool1d(
+    *,
+    x_k_s_p,
+    indices,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+):
+    (input_dtype, x, kernel_size, stride, padding) = x_k_s_p
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        indices=indices,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.max_unpool2d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=2, max_side=4),
+    indices=st.lists(st.integers(0, 1), min_size=1, max_size=16),
+)
+def test_torch_max_unpool2d(
+    *,
+    x_k_s_p,
+    indices,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+):
+    (input_dtype, x, kernel_size, stride, padding) = x_k_s_p
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        indices=indices,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+    )
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.max_unpool3d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=2, max_side=4),
+    indices=st.lists(st.integers(0, 1), min_size=1, max_size=64),
+)
+def test_torch_max_unpool3d(
+    *,
+    x_k_s_p,
+    indices,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+):
+    (input_dtype, x, kernel_size, stride, padding) = x_k_s_p
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        indices=indices,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+    )
+
+# pytest ivy_tests/test_ivy/test_frontends/test_torch/test_nn/test_functional/test_pooling_functions.py::test_torch_max_unpool1d -s --disable-pytest-warnings --backend all --hypothesis-verbosity verbose
