@@ -3,7 +3,6 @@ Gradients
 
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
-.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
 
 Overview
 --------
@@ -150,16 +149,17 @@ Gradient APIs of frameworks
 General Structure of Backend-specific implementations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here's a high-level description of the steps followed backend-specific implementation of :func:`ivy.execute_with_gradients`
-1. Get Duplicate Index Chains : indices of arrays that share the same :code:`id`
-2. Convert integer arrays to floats : only for ease of use. it's *not* recommended to pass integer arrays to gradient functions
-3. Get relevant inputs : based on the :code:`xs_grad_idxs`, we collect the relevant inputs for gradient computation
-4. Enable gradient support : we implicitly make use of framework-specific APIs to enable gradients in arrays. Ivy doesn't need to have an explicit variable class as the gradient API is fully functional
-5. Compute Results : we do the forward pass by passing the input as it is to the function
-6. Get relevant outputs : based on the :code:`ret_grad_idxs`, we collect the relevant outputs for gradient computation
-7. Compute gradients : we make use of the framework-specific APIs to compute the gradients for the relevant outputs with respect to the relevant inputs
-8. Handle duplicates : we explicitly handle duplicate instances using the index chains captured above as different frameworks treat duplicates differently
-9. Post process and detach : finally, all computed gradients are updated to deal with :code:`NaN` and :code:`inf` and the input arrays are detached (i.e. gradient propagation is stopped)
+Here's a high-level description of the steps followed backend-specific implementation of :func:`ivy.execute_with_gradients`:
+
+#. Get Duplicate Index Chains : indices of arrays that share the same :code:`id`
+#. Convert integer arrays to floats : only for ease of use. it's *not* recommended to pass integer arrays to gradient functions
+#. Get relevant inputs : based on the :code:`xs_grad_idxs`, we collect the relevant inputs for gradient computation
+#. Enable gradient support : we implicitly make use of framework-specific APIs to enable gradients in arrays. Ivy doesn't need to have an explicit variable class as the gradient API is fully functional
+#. Compute Results : we do the forward pass by passing the input as it is to the function
+#. Get relevant outputs : based on the :code:`ret_grad_idxs`, we collect the relevant outputs for gradient computation
+#. Compute gradients : we make use of the framework-specific APIs to compute the gradients for the relevant outputs with respect to the relevant inputs
+#. Handle duplicates : we explicitly handle duplicate instances using the index chains captured above as different frameworks treat duplicates differently
+#. Post process and detach : finally, all computed gradients are updated to deal with :code:`NaN` and :code:`inf` and the input arrays are detached (i.e. gradient propagation is stopped)
 
 Framework-specific Considerations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -172,7 +172,7 @@ Framework-specific Considerations
 
 This should have hopefully given you a good feel for how the gradient API is implemented in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_ or in the `gradients forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_!
 
 
 **Video**
