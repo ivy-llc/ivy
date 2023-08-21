@@ -1,7 +1,5 @@
 import ivy
-from ivy import composition
 import ivy.numpy as np
-from ivy.framework_handler import current_framework as _cur_framework
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
