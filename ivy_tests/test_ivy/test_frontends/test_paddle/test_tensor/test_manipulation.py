@@ -711,3 +711,32 @@ def test_paddle_rot90(
         k=k,
         axes=tuple(axes),
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tensordot",
+    dtype_arrays_and_axes=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+    ),
+)
+def test_paddle_tensordot(
+    dtype_arrays_and_axes,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axes = dtype_arrays_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
+        axes=axes,
+    )
