@@ -7,6 +7,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import (
 )
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _get_type_dict_helper,
+    cast_filter_helper,
 )
 
 # local
@@ -72,6 +73,11 @@ def backend_proc(input_queue, output_queue):
         elif data[0] == "num_positional_args_helper":
             _, fn_name, framework = data
             dtype_ret = num_positional_args_helper(fn_name, framework)
+            output_queue.put((dtype_ret))
+
+        elif data[0] == "cast_filter_helper":
+            _, d, dtype, x, current_backend = data
+            dtype_ret = cast_filter_helper(d, dtype, x, current_backend)
             output_queue.put((dtype_ret))
 
         elif data[0] == "function_backend_computation":
