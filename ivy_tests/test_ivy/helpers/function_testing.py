@@ -944,7 +944,7 @@ def gradient_test(
             args, kwargs, i = all_args
             call_fn = gt_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
             ret = compiled_if_required(
-                backend_to_test,
+                ground_truth_backend,
                 call_fn,
                 test_compile=test_compile,
                 args=args,
@@ -959,7 +959,7 @@ def gradient_test(
             ret_grad_idxs=ret_grad_idxs,
         )
         grads_np_from_gt_flat = flatten_and_to_np(
-            backend=backend_to_test, ret=grads_from_gt
+            backend=ground_truth_backend, ret=grads_from_gt
         )
 
     assert len(grads_np_flat) == len(
@@ -971,15 +971,14 @@ def gradient_test(
         len(grads_np_from_gt_flat),
     )
 
-    for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
-        value_test(
-            ret_np_flat=grad_np_flat,
-            ret_np_from_gt_flat=grad_np_from_gt_flat,
-            rtol=rtol_,
-            atol=atol_,
-            backend=backend_to_test,
-            ground_truth_backend=ground_truth_backend,
-        )
+    value_test(
+        ret_np_flat=grads_np_flat,
+        ret_np_from_gt_flat=grads_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+        backend=backend_to_test,
+        ground_truth_backend=ground_truth_backend,
+    )
 
 
 def test_method(
