@@ -10,6 +10,6 @@ permissions:
 jobs:
   fix-linting:
     name: PR Lint Bot
-    if: '!contains(github.event.head_commit.message, ''[AUTOMATED] Lint Fixes'')'
+    if: '!contains(github.event.head_commit.message, "🤖 Lint code")'
     uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@main
     secrets: inherit
