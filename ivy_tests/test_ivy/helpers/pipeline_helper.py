@@ -22,7 +22,7 @@ class WithBackendContext:
 
 class BackendHandler:
     _context = WithBackendContext
-    _ctx_flag = 0
+    _ctx_flag = 0  # BackendHandlerMode configs
 
     @classmethod
     def _update_context(cls, mode: BackendHandlerMode):
