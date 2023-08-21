@@ -1,6 +1,7 @@
 from .generic import NDFrame
 import ivy
 from .series import Series
+from ivy.functional.frontends.pandas.index import Index
 
 
 class DataFrame(NDFrame):
@@ -104,4 +105,14 @@ class DataFrame(NDFrame):
             ret = _array.mean(axis=axis)
         if axis is None:
             return ret  # scalar case
-        return Series(ret, index=self.columns if axis in (0, "index") else self.index)
+        return Series(
+            ret, index=Index(self.columns) if axis in (0, "index") else self.index
+        )
+
+    def get(self, key, default=None):
+        if key in self.columns:
+            return self[key]
+        return default
+
+    def keys(self):
+        return self.columns
