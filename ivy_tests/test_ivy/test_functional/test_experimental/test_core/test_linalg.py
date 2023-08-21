@@ -1713,3 +1713,17 @@ def test_initialize_cp(*, data, test_flags, backend_fw, fn_name, on_device):
 
     for f, f_gt in zip(factors, factors_gt):
         assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# The following test has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_cp.py#L386C1-L393C65
+@pytest.mark.parametrize("f1_shape, f2_shape, f3_shape", [((30, 3), (20, 3), (10, 3))])
+def test_initialize_nn_cp(f1_shape, f2_shape, f3_shape):
+    init = ivy.CPTensor(
+        [None, [-ivy.ones(f1_shape), -ivy.ones(f2_shape), -ivy.ones(f3_shape)]]
+    )
+    tensor = ivy.CPTensor.cp_to_tensor(init)
+    initialised_tensor = ivy.initialize_cp(tensor, 3, init=init, non_negative=True)
+    for factor_matrix, init_factor_matrix in zip(init[1], initialised_tensor[1]):
+        assert np.allclose(factor_matrix, init_factor_matrix)
+    assert np.allclose(tensor, ivy.CPTensor.cp_to_tensor(initialised_tensor))
