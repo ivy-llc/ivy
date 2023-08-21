@@ -13,7 +13,7 @@ from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
 from . import test_globals as t_globals
-from .pipeline_helper import update_backend
+from .pipeline_helper import BackendHandler
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInstanceStrategy,
     BuiltAsVariableStrategy,
@@ -111,7 +111,7 @@ def num_positional_args(draw, *, fn_name: str = None):
     num_keyword_only = 0
     total = 0
     fn = None
-    with update_backend(t_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(t_globals.CURRENT_BACKEND) as ivy_backend:
         ivy_backend.utils.dynamic_import.import_module(fn_name.rpartition(".")[0])
         for i, fn_name_key in enumerate(fn_name.split(".")):
             if i == 0:
@@ -182,7 +182,7 @@ def _get_method_supported_devices_dtypes(
     """
     supported_device_dtypes = {}
     for backend_str in available_frameworks:
-        with update_backend(backend_str) as backend:
+        with BackendHandler.update_backend(backend_str) as backend:
             _fn = getattr(class_module.__dict__[class_name], method_name)
             devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
             organized_dtypes = {}
@@ -221,7 +221,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = "_" + fn_name
 
     for backend_str in available_frameworks:
-        with update_backend(backend_str) as ivy_backend:
+        with BackendHandler.update_backend(backend_str) as ivy_backend:
             _tmp_mod = ivy_backend.utils.dynamic_import.import_module(fn_module)
             _fn = _tmp_mod.__dict__[fn_name]
             # for partial mixed functions we should pass the backend function
@@ -415,6 +415,7 @@ def handle_frontend_test(
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
+    test_compile=BuiltCompileStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
@@ -448,6 +449,10 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
 
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
     generate_frontend_arrays
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
@@ -469,6 +474,7 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
+            test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
         )
 
@@ -655,6 +661,7 @@ def handle_frontend_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
+    test_compile=BuiltCompileStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
@@ -713,12 +720,14 @@ def handle_frontend_method(
                 num_positional_args=init_num_positional_args,
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
+                test_compile=test_compile,
             )
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
+                test_compile=test_compile,
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)

@@ -8,7 +8,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_test,
     assert_all_close,
-    update_backend,
+    BackendHandler,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
@@ -86,7 +86,7 @@ def test_numpy_eig(
         a=x,
     )
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         ret = [ivy_backend.to_numpy(x).astype(np.float64) for x in ret]
         frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
@@ -145,7 +145,7 @@ def test_numpy_eigh(
         a=x,
         UPLO=UPLO,
     )
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         ret = [ivy_backend.to_numpy(x) for x in ret]
         frontend_ret = [np.asarray(x) for x in frontend_ret]
         L, Q = ret
