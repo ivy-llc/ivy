@@ -2302,6 +2302,64 @@ def stable_pow(
     -------
     ret
         The new item following the numerically stable power.
+
+    Examples
+    --------
+    With :code:`int` input:
+
+    >>> x = ivy.stable_pow(2, 2)
+    >>> print(x)
+    ivy.array(4.00004)
+
+    >>> x = ivy.stable_pow(2, 2, min_base=2)
+    >>> print(x)
+    ivy.array(16)
+
+    With float input:
+
+    >>> x = ivy.stable_pow(4.0, .5)
+    >>> print(x)
+    ivy.array(2.00000262)
+
+    With :code:`complex` input:
+
+    >>> x = ivy.stable_pow(3+4j, 2j)
+    >>> print(x)
+    ivy.array(-0.15605032-0.01208451j)
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.asarray([[2, 4],
+    ...                  [6, 8]])
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    ivy.array([[ 4.00004, 16.00008],
+           [36.00012, 64.00016]])
+
+    >>> x = ivy.asarray([2, 4, 6])
+    >>> y = ivy.asarray([2, 3, 4])
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    ivy.array([   4.00004,   64.00048, 1296.00864])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+    >>> y = ivy.stable_pow(x, 2)
+    >>> print(y)
+    {
+        a: ivy.array([4.00004, 16.00008]),
+        b: ivy.array([36.00012, 64.00016])
+    }
+
+    >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+    >>> y = ivy.Container(a=ivy.asarray([1, 3]), b=ivy.asarray([4, 5]))
+    >>> z = ivy.stable_pow(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([2.00001, 64.00048]),
+        b: ivy.array([1296.00864, 32768.2048])
+    }
     """
     return_dtype = ivy.promote_types(
         ivy.default_dtype(item=base),
@@ -2825,11 +2883,11 @@ def set_item(
         query, target_shape, vector_inds = _parse_query(query, x.shape, scatter=True)
         if vector_inds is not None:
             perm = [
-                    *vector_inds,
-                    *[i for i in range(len(x.shape)) if i not in vector_inds],
-                ]
+                *vector_inds,
+                *[i for i in range(len(x.shape)) if i not in vector_inds],
+            ]
             x = ivy.permute_dims(x, axes=perm)
-            inv_perm = ivy.invert_permutation(perm)
+            inv_perm = ivy.invert_permutation(perm).to_list()
     val = _broadcast_to(val, target_shape).astype(x.dtype)
     ret = ivy.scatter_nd(query, val, reduction="replace", out=x)
     if inv_perm is not None:
@@ -2951,11 +3009,7 @@ def _parse_query(query, x_shape, scatter=False):
             else ivy.empty((1, 0))
         )
         indices = ivy.array(
-            [
-                (*arr, *post)
-                for arr in zip(*new_arrays)
-                for post in post_arrays
-            ]
+            [(*arr, *post) for arr in zip(*new_arrays) for post in post_arrays]
         ).reshape((*target_shape, len(x_shape)))
     elif len(array_inds):
         pre_arrays = (
@@ -3052,10 +3106,10 @@ def _parse_slice(idx, s):
                 stop = idx.stop
                 if stop > s:
                     stop = s
-                elif stop <= -s:
+                elif stop < -s:
+                    stop = -1
+                elif stop == -s:
                     stop = 0
-                    if start == 0:
-                        stop = -1
                 elif stop < 0:
                     stop = stop + s
     q_i = ivy.arange(start, stop, step).to_list()
