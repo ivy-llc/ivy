@@ -913,13 +913,7 @@ def test_jax_cond(
     test_with_out=st.just(False),
 )
 def test_jax_multi_dot(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw
+    *, dtype_and_x, on_device, fn_tree, frontend, test_flags, backend_fw
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -928,6 +922,6 @@ def test_jax_multi_dot(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arrays=(x[0],x[1]),
+        arrays=(x[0], x[1]),
         backend_to_test=backend_fw,
     )
