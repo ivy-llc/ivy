@@ -699,6 +699,8 @@ def test_numpy_ndarray_prod(
             test_flags=method_flags,
         )
     )
+    if ivy.is_uint_dtype(dtype):
+        initial = initial if initial > 0 else -initial
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
