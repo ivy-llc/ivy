@@ -1093,6 +1093,9 @@ class Tensor:
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
+    def msort(self):
+        return torch_frontend.msort(self)
+
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16", "complex")}, "torch"
     )
