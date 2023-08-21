@@ -172,11 +172,8 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
+    # ToDo add with_backend refactor in GC
     _handle_backend_context(test_flags.test_compile)
-    print(
-        f"Compilation Testing -: {test_flags.test_compile}, Backend Context -:"
-        f" {BackendHandler._context}"
-    )
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -532,6 +529,9 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
+    # ToDo add with_backend refactor in GC
+    _handle_backend_context(test_flags.test_compile)
+
     assert (
         not test_flags.with_out or not test_flags.inplace
     ), "only one of with_out or with_inplace can be set as True"
@@ -1088,6 +1088,9 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    # ToDo add with_backend refactor in GC
+    _handle_backend_context(test_compile)
+
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
@@ -1457,6 +1460,9 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    # ToDo add with_backend refactor in GC
+    _handle_backend_context(method_flags.test_compile)
+
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
