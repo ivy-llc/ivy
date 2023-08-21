@@ -10,7 +10,7 @@ from ivy.functional.ivy.gradients import _get_required_float_variables
 def bind_custom_gradient_function(func, custom_grad_fn):
     @tf.custom_gradient
     def custom_module(x):
-        x, _, _, _ = _get_required_float_variables(x, xs_grad_idxs=None)
+        x, _, _, _, _ = _get_required_float_variables(x, xs_grad_idxs=None)
         ret = func(x)
 
         def grad(upstream):

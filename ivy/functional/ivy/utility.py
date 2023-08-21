@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,6 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -131,6 +133,7 @@ def all(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -232,3 +235,32 @@ def any(
     }
     """
     return ivy.current_backend(x).any(x, axis=axis, keepdims=keepdims, out=out)
+
+
+# Extra #
+# ----- #
+
+
+def save(item, filepath, format=None):
+    if isinstance(item, ivy.Container):
+        if format is not None:
+            item.cont_save(filepath, format=format)
+        else:
+            item.cont_save(filepath)
+    elif isinstance(item, ivy.Module):
+        item.save(filepath)
+    else:
+        raise ivy.utils.exceptions.IvyException("Unsupported item type for saving.")
+
+
+@staticmethod
+def load(filepath, format=None, type="module"):
+    if type == "module":
+        return ivy.Module.load(filepath)
+    elif type == "container":
+        if format is not None:
+            return ivy.Container.cont_load(filepath, format=format)
+        else:
+            return ivy.Container.cont_load(filepath)
+    else:
+        raise ivy.utils.exceptions.IvyException("Unsupported item type for loading.")

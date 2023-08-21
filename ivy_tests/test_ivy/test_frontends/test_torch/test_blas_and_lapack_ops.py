@@ -187,10 +187,12 @@ def test_torch_addbmm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -231,10 +233,12 @@ def test_torch_addmm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -275,10 +279,12 @@ def test_torch_addmv(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, input, mat, vec = dtype_and_matrices
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -319,11 +325,13 @@ def test_torch_addr(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, input, vec1, vec2 = dtype_and_vecs
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -364,11 +372,13 @@ def test_torch_baddbmm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, input, batch1, batch2 = dtype_and_matrices
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -393,10 +403,12 @@ def test_torch_bmm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -428,6 +440,7 @@ def test_torch_cholesky(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = x[0]
@@ -436,6 +449,7 @@ def test_torch_cholesky(
     )  # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -457,10 +471,12 @@ def test_torch_ger(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -481,10 +497,12 @@ def test_torch_inner(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, input_mat, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -506,10 +524,12 @@ def test_torch_logdet(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -529,10 +549,12 @@ def test_torch_matmul(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -546,7 +568,9 @@ def test_torch_matmul(
 
 # matrix_rank
 @handle_frontend_test(
-    fn_tree="torch.matrix_rank",
+    fn_tree="torch.linalg.matrix_rank",
+    # aliases=["torch.matrix_rank",], deprecated since 1.9. uncomment with multi-version
+    # testing pipeline
     dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
 )
 def test_torch_matrix_rank(
@@ -555,18 +579,21 @@ def test_torch_matrix_rank(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
     assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
-        tol=atol,
-        symmetric=hermitian,
+        A=x,
+        atol=atol,
+        rtol=rtol,
+        hermitian=hermitian,
     )
 
 
@@ -581,10 +608,12 @@ def test_torch_mm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -607,10 +636,12 @@ def test_torch_mv(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, mat, vec = dtype_mat_vec
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -633,10 +664,12 @@ def test_torch_outer(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -665,10 +698,12 @@ def test_torch_pinverse(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -700,10 +735,12 @@ def test_torch_qr(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -735,10 +772,12 @@ def test_torch_svd(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -760,10 +799,12 @@ def test_torch_vdot(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -784,11 +825,13 @@ def test_torch_dot(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     test_flags.num_positional_args = len(dtype_and_vecs) - 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -835,6 +878,7 @@ def test_torch_trapezoid(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, y, x = dtype_y_x
     if use_x:
@@ -845,6 +889,7 @@ def test_torch_trapezoid(
         kwargs = {"y": y, "dx": dx, "dim": dim}
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -55,4 +55,4 @@ class _IndexUpdateRef:
             ret[self.index] = values.ivy_array
         else:
             ret[self.index] = values
-        return jax_frontend.DeviceArray(ret)
+        return jax_frontend.Array(ret)

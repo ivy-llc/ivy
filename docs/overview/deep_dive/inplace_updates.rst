@@ -22,7 +22,6 @@ Inplace Updates
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
-.. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
 .. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 
 
@@ -452,7 +451,7 @@ When :code:`copy` is not specified explicitly, then an inplace update is perform
 Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
 If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
 If both are specified, then priority is given to the more general :code:`out` argument.
-As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html#function-wrapping>`_.
 
 
 Views
@@ -485,6 +484,10 @@ Here's a brief description of the additional attributes added to :class:`ivy.Arr
 #. PyTorch reference stack (:code:`._torch_view_refs`): Functional views referencing this array in its PyTorch base, only populated for original arrays or functional views.
 #. PyTorch manipulation cache (:code:`._torch_manipulation`): Tuple storing array or view and function which made the functional view, only populated for functional views
 
+.. note:: 
+    Parts of an arrays metadata like :code:`stride` are attributed to the low-level memory layout of arrays while views in :code:`ivy` operate at a higher level of abstraction.
+    As a result, :func:`ivy.strides` isn't guaranteed to produce an output reflective of the underlying memory layout if the :class:`ivy.Array` passed in is a view (or in other words has a :code:`_base`).
+
 Here's a brief description of how the :code:`@handle_view` wrapper populates these attributes:
 
 #. When an array is made using a function decorated by this wrapper its base becomes the array that made it, or if the array that made it is also a view, its base.
@@ -511,7 +514,7 @@ Here's a brief description of what happens during an inplace operation with a Py
 
 This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_ or in the `inplace updates forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_!
 
 
 **Video**

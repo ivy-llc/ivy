@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     numpy_to_torch_style_args,
+    to_ivy_shape,
 )
 
 
@@ -84,10 +85,9 @@ def permute(input, dims):
     return ivy.permute_dims(input, axes=dims)
 
 
+@to_ivy_shape
 @to_ivy_arrays_and_back
 def reshape(input, shape):
-    if isinstance(shape, ivy.functional.frontends.torch.Size):
-        shape = tuple(shape)
     return ivy.reshape(input, shape)
 
 
@@ -357,4 +357,12 @@ def narrow(input, dim, start, length):
     num_dims = ivy.get_num_dims(input)
     slices = [slice(None)] * num_dims
     slices[dim] = slice(start, start + length)
+    return input[tuple(slices)]
+
+
+@to_ivy_arrays_and_back
+def select(input, dim, index):
+    num_dims = ivy.get_num_dims(input)
+    slices = [slice(None)] * num_dims
+    slices[dim] = index
     return input[tuple(slices)]

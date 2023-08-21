@@ -1,11 +1,10 @@
 """Collection of Ivy neural network layers as stateful classes."""
-
+# flake8: noqa
 # local
 import ivy
-from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
 from ivy.func_wrapper import handle_nestable
-
+from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
 
@@ -1933,6 +1932,61 @@ class AdaptiveAvgPool1d(Module):
         )
 
 
+class FFT(Module):
+    def __init__(
+        self,
+        dim,
+        /,
+        *,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying FFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the FFT.
+        norm : str
+            Normalization mode. Default: 'backward'
+        n : int
+            Size of the FFT. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the FFT of.
+
+        Returns
+        -------
+        array
+            The output array of the layer.
+        """
+        return ivy.fft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )
+
+
 class AvgPool1D(Module):
     def __init__(
         self,
@@ -1983,3 +2037,190 @@ class AvgPool1D(Module):
             self._padding,
             data_format=self._data_format,
         )
+
+
+class Dct(Module):
+    def __init__(
+        self,
+        *,
+        type=2,
+        n=None,
+        axis=-1,
+        norm=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+
+        Parameters
+        ----------
+        x
+            The input signal.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger then x is zero-padded.
+        axis
+            The axis to compute the DCT along.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self.type = type
+        self.n = n
+        self.axis = axis
+        self.norm = norm
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.dct(
+            x,
+            type=self.type,
+            n=self.n,
+            axis=self.axis,
+            norm=self.norm,
+        )
+
+
+# EMBEDDING #
+# ----------#
+
+
+class Embedding(Module):
+    def __init__(
+        self,
+        num_embeddings: int,
+        embedding_dim: int,
+        padding_idx=None,
+        max_norm=None,
+        /,
+        *,
+        weight_initializer=GlorotUniform(),
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for embedding indices into a dense representation. The Embedding layer is
+        a simple lookup table for dense vectors. It's typically used to store word
+        embeddings and query them using indices.
+
+        Parameters
+        ----------
+        num_embeddingss : int
+            Number of embeddings.
+        embedding_dim : int
+            Dimension of the embeddings.
+        padding_idx : int
+            If given, pads the output with zeros whenever it encounters the index.
+        max_norm : float
+            If given, each embedding vector with L2 norm larger than max_norm is renormalized to have norm max_norm.
+        weight_initializer : Initializer
+            Initializer for the weights.
+        device : str
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        v : dict
+            the variables for the embedding layer, as a container, constructed internally
+            by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
+        """
+        self._num_embeddings = num_embeddings
+        self._embedding_dim = embedding_dim
+        self._padding_idx = padding_idx
+        self._max_norm = max_norm
+        self._weight_initializer = weight_initializer
+        Module.__init__(self, device=device, v=v, dtype=dtype)
+
+    def _create_variables(self, device, dtype=None):
+        """
+        Create internal variables for the layer.
+
+        Parameters
+        ----------
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
+        """
+        v = {
+            "w": self._weight_initializer.create_variables(
+                (self._num_embeddings, self._embedding_dim),
+                device,
+                self._embedding_dim,
+                self._num_embeddings,
+                dtype=dtype,
+            )
+        }
+        return v
+
+    def _pad_embd(self, indices, embd):
+        mask = ivy.expand_dims(indices == self._padding_idx, axis=-1)
+        mask_val = ivy.array(0.0, dtype=embd.dtype)
+        return ivy.where(mask, mask_val, embd)
+
+    def _forward(self, indices):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        indices
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        emb = ivy.embedding(self.v.w, indices, max_norm=self._max_norm)
+        if self._padding_idx is not None:
+            emb = self._pad_embd(indices, emb)
+        return emb
+
+
+class Identity(Module):
+    def __init__(self):
+        """
+        Identity layer. The layer is argument insensitive and returns the input argument
+        as output when called.
+
+        It's typically used as a placeholder when no operation is to be
+        performed. It doesn't have any learnable parameter.
+        """
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array.
+        dtype
+            The desired data type of the internal variables to be created if not
+            provided. Default is ``None``.
+
+        Returns
+        -------
+            The input array as it is.
+        """
+        return x
