@@ -297,6 +297,7 @@ def test_paddle_topk(
     )
 
 
+# where
 @handle_frontend_test(
     fn_tree="paddle.where",
     dtype_x_and_axis=helpers.dtype_values_axis(
