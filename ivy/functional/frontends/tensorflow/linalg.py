@@ -470,8 +470,3 @@ def tensor_diag_part(input, name=None):
     reshaped = ivy.reshape(input, (prod, prod))
     diagonal = ivy.diagonal(reshaped)
     return ivy.reshape(diagonal, tuple(half_shape))
-
-
-@to_ivy_arrays_and_back
-def lu_solve(lower_upper, rhs):  # ToDO
-    return ivy.solve(lower_upper=lower_upper, rhs=rhs)
