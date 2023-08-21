@@ -1763,17 +1763,12 @@ class Tensor:
         to=None,
         *,
         generator=None,
-        **kwargs,
     ):
         if not to:
             if ivy.is_float_dtype(self.ivy_array):
                 to = ivy.finfo(self.dtype).max
             else:
                 to = ivy.iinfo(self.dtype).max
-        """if not kwargs:
-            low = 0
-        else:
-            low = list(kwargs.values())[0]"""
         low = 0
         self.ivy_array = ivy.random_uniform(
             low=low, high=to, shape=self.size(), dtype=self.dtype

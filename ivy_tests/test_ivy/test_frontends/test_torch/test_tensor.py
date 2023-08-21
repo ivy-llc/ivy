@@ -11977,12 +11977,10 @@ def test_torch_tensor_quantile(
         min_num_dims=1,
         max_num_dims=5,
     ),
-    minval=helpers.ints(min_value=0, max_value=3),
     maxval=helpers.ints(min_value=4, max_value=10),
 )
 def test_torch_tensor_random_(
     dtype_and_x,
-    minval,
     maxval,
     frontend,
     frontend_method_data,
@@ -12002,7 +12000,6 @@ def test_torch_tensor_random_(
         },
         method_all_as_kwargs_np={
             "to": maxval,
-            # "from":minval,
         },
         init_flags=init_flags,
         method_flags=method_flags,
