@@ -174,6 +174,7 @@ def test_function(
     """
     # ToDo add with_backend refactor in GC
     _handle_backend_context(test_flags.test_compile)
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
