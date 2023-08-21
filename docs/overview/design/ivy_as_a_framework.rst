@@ -13,7 +13,7 @@ Ivy builds on these primitives to create a fully-fledged ML framework with state
 Specifically, here we consider the :class:`ivy.Container` class, the :class:`ivy.Array` class and the stateful API.
 These parts are labeled as (c) in the image below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 

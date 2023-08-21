@@ -6,7 +6,6 @@ Function Arguments
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
-.. _`function arguments forum`: https://discord.com/channels/799879767196958751/1028297557178331187
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Here, we explain how the function arguments differ between the placeholder implementation at :mod:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at :mod:`ivy/functional/backends/backend_name/category_name.py`.
@@ -184,7 +183,7 @@ Numbers in Operator Functions
 All operator functions (which have a corresponding such as :code:`+`, :code:`-`, :code:`*`, :code:`/`) must also be fully compatible with numbers (float or :code:`int`) passed into any of the array inputs, even in the absence of any arrays.
 For example, :code:`ivy.add(1, 2)`, :code:`ivy.add(1.5, 2)` and :code:`ivy.add(1.5, ivy.array([2]))` should all run without error.
 Therefore, the type hints for :func:`ivy.add` include float as one of the types in the :code:`Union` for the array inputs, and also as one of the types in the :code:`Union` for the output.
-`PEP 484 Type Hints <https://peps.python.org/pep-0484/#the-numeric-tower>`_ state that "when an argument is annotated as having type float, an argument of type int is acceptable".
+`PEP 484 Type Hints <https://peps.python.org/pep-0484/#the-numeric-tower>`_ states that "when an argument is annotated as having type float, an argument of type int is acceptable".
 Therefore, we only include float in the type hints.
 
 Integer Sequences
@@ -211,7 +210,7 @@ Therefore, we simply omit these :class:`ivy.Container` type hints from *nestable
 
 These examples should hopefully give you a good understanding of what is required when adding function arguments.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function arguments channel`_ or in the `function arguments forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function arguments channel`_!
 
 
 **Video**
