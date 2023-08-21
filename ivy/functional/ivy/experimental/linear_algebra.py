@@ -1181,7 +1181,14 @@ def _svd_interface(
     U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
     if mask is not None and n_eigenvecs is not None:
         for _ in range(n_iter_mask_imputation):
-            S = S * ivy.eye(U.shape[-1], V.shape[-2])
+            # replace with the commented code bewlo when ivy.fill_digonal
+            # has been updated to support fill value as an array
+            # S = ivy.fill_diagonal(ivy.eye(U.shape[-1], V.shape[-2]), S)
+            max_index = min(U.shape[-1], V.shape[-2])
+            indices = ivy.arange(max_index)
+            identity = ivy.eye(U.shape[-1], V.shape[-2])
+            identity[indices, indices] = S
+            S = identity
             matrix = matrix * mask + (U @ S @ V) * (1 - mask)
             U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
 
