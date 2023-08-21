@@ -583,3 +583,19 @@ def lgamma(input, *, out=None):
 @to_ivy_arrays_and_back
 def gradient(input, *, spacing=1, dim=None, edge_order=1):
     return ivy.gradient(input, spacing=spacing, edge_order=edge_order, axis=dim)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def mvlgamma(input, p, *, out=None):
+    ivy.assertions.check_greater(
+        p, 1, allow_equal=True, message="p has to be greater than or equal to 1"
+    )
+    c = 0.25 * p * (p - 1) * ivy.log(ivy.pi, out=out)
+    b = 0.5 * ivy.arange((1 - p), 1, 1, dtype=input.dtype, device=input.device, out=out)
+    return (
+        ivy.sum(
+            ivy.lgamma(ivy.expand_dims(input, axis=-1) + b, out=out), axis=-1, out=out
+        )
+        + c
+    )
