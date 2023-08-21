@@ -840,7 +840,7 @@ def _sparsify_tensor_stg(draw):
     for dim in shape:
         size *= dim
 
-    card = draw(st.integers(min_value=2, max_value=size - 1))
+    card = draw(st.integers(min_value=1, max_value=size))
 
     return dtype, tensor[0], card
 
