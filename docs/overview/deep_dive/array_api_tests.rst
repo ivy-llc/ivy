@@ -8,7 +8,6 @@ Array API Tests
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
-.. _`array api tests forum`: https://discord.com/channels/799879767196958751/1028297759738040440
 .. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
@@ -38,6 +37,14 @@ Instead, the change must be made to the array-api repository directly and then o
 
         # pulls changes from upstream remote repo and merges them
         git submodule update --recursive --remote --merge
+
+Sometimes you will face strange behaviour when staging changes from Ivy main repo which includes submodule updates.
+And this is being caused by your submodule being out of date because we update the submodule iteratively. You can get around this by running the following command:
+
+.. code-block:: none
+
+        # Updating your submodule to the latest commit
+        git submodule update --remote
 
 and only *then* can changes to the submodule be pushed to ivy-main, i.e. only when these changes exist in the source array-api repository.
 See the `git website`_ for further information on working with submodules.
@@ -199,7 +206,7 @@ The fact that the skip instruction itself contains the exact input conditions th
 
 This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_ or in the `array api tests forum`_ !
+If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_!
 
 **Video**
 
