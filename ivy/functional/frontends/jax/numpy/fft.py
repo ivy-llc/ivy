@@ -27,3 +27,10 @@ def fft(a, n=None, axis=-1, norm=None):
     if norm is None:
         norm = "backward"
     return ivy.fft(a, axis, norm=norm, n=n)
+
+
+def fft2(a, s=None, axes=(-2, -1), norm=None):
+    if norm is None:
+        norm = "backward"
+    a = ivy.array(a)
+    return ivy.fft2(a, s=s, dim=axes, norm=norm)
