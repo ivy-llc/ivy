@@ -27,11 +27,6 @@ def _as_varaible_strategy(draw):
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
 
-@st.composite
-def _compile_strategy(draw):
-    return draw(st.booleans())
-
-
 BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltAsVariableStrategy = _as_varaible_strategy()
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
@@ -39,7 +34,7 @@ BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
-BuiltCompileStrategy = _compile_strategy()
+BuiltCompileStrategy = st.booleans()
 BuiltFrontendArrayStrategy = st.booleans()
 
 
