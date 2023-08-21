@@ -1814,24 +1814,7 @@ class Tensor:
         return torch_frontend.quantile(
             self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
         )
-
-    def random_(
-        self,
-        to=None,
-        *,
-        generator=None,
-    ):
-        if not to:
-            if ivy.is_float_dtype(self.ivy_array):
-                to = ivy.finfo(self.dtype).max
-            else:
-                to = ivy.iinfo(self.dtype).max
-        low = 0
-        self.ivy_array = ivy.random_uniform(
-            low=low, high=to, shape=self.size(), dtype=self.dtype
-        )
-        return self.ivy_array
-
+        
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
