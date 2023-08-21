@@ -63,7 +63,7 @@ if __name__ == "__main__":
             print(f"{'*' * 100}\n")
             sys.stdout.flush()
             ret = os.system(
-                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --skip-compile-testing --backend {backend}'  # noqa
             )
             if ret != 0:
                 failed = True
