@@ -39,6 +39,7 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
     return ivy.eigh(x, UPLO=UPLO)
 
+
 @to_ivy_arrays_and_back
 def lu(x):
     return ivy.lu(ivy.lu_factor(x))
