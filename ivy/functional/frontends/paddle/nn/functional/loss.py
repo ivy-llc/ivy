@@ -343,7 +343,7 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
         message="All dimensions should be equal except the last one.",
     )
     ivy.assertions.check_true(
-        input.numel() > 0 and label.numel() > 0,
+        input.size > 0 and label.size > 0,
         message="Any dimension of input and label cannot be equal to 0.",
     )
     label = ivy.squeeze(label, axis=-1)
