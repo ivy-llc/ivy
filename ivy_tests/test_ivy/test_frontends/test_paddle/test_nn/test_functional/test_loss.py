@@ -494,7 +494,7 @@ def test_paddle_nll_loss(
 
 
 @handle_frontend_test(
-    fn_tree="dice_loss",
+    fn_tree="paddle.nn.functional.dice_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -506,7 +506,7 @@ def test_paddle_nll_loss(
         max_value=1e-2,
     ),
 )
-def test_dice_loss(
+def test_paddle_dice_loss(
     dtype_and_x,
     epsilon,
     on_device,
