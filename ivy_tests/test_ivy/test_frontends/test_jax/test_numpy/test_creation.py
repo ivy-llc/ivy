@@ -1159,10 +1159,3 @@ def test_jax_numpy_in1d(
         assume_unique=assume_unique,
         invert=invert,
     )
-
-
-#
-# ivy.set_backend('jax')
-# jnpo.in1d(jnpo.array([-1.]),
-# jnpo.array([False]),
-# invert=True,)
