@@ -499,7 +499,6 @@ def test_paddle_round(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
     ),
-    
 )
 def test_paddle_round_(
     *,
@@ -1784,7 +1783,6 @@ def test_paddle_rsqrt(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    
 )
 def test_paddle_rsqrt_(
     *,
