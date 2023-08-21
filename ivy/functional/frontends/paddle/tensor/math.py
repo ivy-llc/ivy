@@ -144,8 +144,8 @@ def floor(x, name=None):
     {"2.5.1 and below": ("bfloat16", "float32", "float64")}, "paddle"
 )
 @to_ivy_arrays_and_back
-def floor_(x, name=None) :
-    x = ivy.floor()
+def floor_(x, name=None):
+    x = ivy.floor(x)
     return x
 
 
