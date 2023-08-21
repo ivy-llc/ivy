@@ -1241,6 +1241,12 @@ def test_inplace_update(
             )
 
 
+@given(mode=st.sampled_from(["lenient", "strict"]))
+def test_set_inplace_mode(mode):
+    ivy.set_inplace_mode(mode)
+    assert ivy.inplace_mode == mode
+
+
 # inplace_decrement
 @handle_test(
     fn_tree="functional.ivy.inplace_decrement",
