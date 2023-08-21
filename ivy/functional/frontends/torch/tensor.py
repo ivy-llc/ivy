@@ -1814,7 +1814,7 @@ class Tensor:
         return torch_frontend.quantile(
             self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
         )
-        
+
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
