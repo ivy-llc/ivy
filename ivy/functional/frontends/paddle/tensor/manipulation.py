@@ -176,7 +176,7 @@ def rot90(x, k=1, axes=(0, 1), name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64")},
+    {"2.5.1 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
