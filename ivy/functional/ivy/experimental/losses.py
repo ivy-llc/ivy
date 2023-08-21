@@ -117,7 +117,7 @@ def l1_loss(
     input : Union[ivy.Array, ivy.NativeArray]
         Input array containing input values.
     target : Union[ivy.Array, ivy.NativeArray]
-        Input array containing targeticted values.
+        Input array containing targeted values.
     reduction : str, optional
         Reduction method for the output loss. Options:
         "none" (no reduction), "mean" (mean of losses),

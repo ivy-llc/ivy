@@ -94,7 +94,6 @@ def test_l1_loss(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-02,
         atol_=1e-02,
         input=input[0],
         target=target[0],

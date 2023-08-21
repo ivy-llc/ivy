@@ -25,7 +25,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         self
             input array.
         target
-            input array containing the targeticted values.
+            input array containing the targeted values.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
