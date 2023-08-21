@@ -518,26 +518,6 @@ def igamma(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-def nanquantile(
-    a: ivy.Array,
-    q: Union[ivy.Array, float],
-    /,
-    *,
-    axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    return ivy.current_backend(a).nanquantile(
-        a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
-    )
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 def cov(
