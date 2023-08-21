@@ -52,8 +52,10 @@ def batch_norm(
         x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
     mean.requires_grad = False
     variance.requires_grad = False
-    scale.requires_grad = False
-    offset.requires_grad = False
+    if scale:
+        scale.requires_grad = False
+    if offset:
+        offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
     xnormalized = torch.nn.functional.batch_norm(
@@ -97,8 +99,10 @@ def instance_norm(
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
     variance.requires_grad = False
-    scale.requires_grad = False
-    offset.requires_grad = False
+    if scale:
+        scale.requires_grad = False
+    if offset:
+        offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
     # reshape  from  N, *S, C to N, C, *S
