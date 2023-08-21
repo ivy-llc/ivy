@@ -159,7 +159,7 @@ def gather_nd(
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     try:
         return tf.gather_nd(params, indices, batch_dims=batch_dims)
-    except:  # fall back to compositional implementation
+    except:  # fall back to compositional implementation # noqa: E722
         batch_dims = batch_dims % len(params.shape)
         result = []
         if batch_dims == 0:

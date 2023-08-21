@@ -1358,9 +1358,9 @@ def swapaxes(
                       [5.]])
     }
 
-    # Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    # Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
@@ -1439,9 +1439,9 @@ def tile(
     }
 
 
-    # Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    # Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).tile(x, repeats, out=out)
 
