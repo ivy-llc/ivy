@@ -831,7 +831,7 @@ def _sparsify_tensor_stg(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
             min_num_dims=1,
-            min_dim_size=10,
+            min_dim_size=1,
             min_value=10,
         )
     )
