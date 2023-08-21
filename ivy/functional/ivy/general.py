@@ -2996,7 +2996,9 @@ def _parse_query(query, x_shape, scatter=False):
             )
             for arr in new_arrays
         ]
-    if len(array_inds) and to_front:
+    if len(array_inds) == len(query):
+        indices = ivy.stack(new_arrays, axis=1).reshape((*target_shape, len(x_shape)))
+    elif len(array_inds) and to_front:
         post_arrays = (
             ivy.stack(
                 ivy.meshgrid(
