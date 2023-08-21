@@ -280,7 +280,6 @@ def _partition_dtypes_into_kinds(framework: str, dtypes):
 def handle_test(
     *,
     fn_tree: str = None,
-    gt_fn_tree: str = None,
     ground_truth_backend: str = "tensorflow",
     number_positional_args=None,
     test_instance_method=BuiltInstanceStrategy,
@@ -301,10 +300,6 @@ def handle_test(
     ----------
     fn_tree
         Full function import path
-
-    gt_fn_tree
-        Full function import path for the ground truth function, by default will be
-        the same as fn_tree
 
     ground_truth_backend
         The framework to assert test results are equal to
@@ -343,7 +338,6 @@ def handle_test(
     is_fn_tree_provided = fn_tree is not None
     if is_fn_tree_provided:
         fn_tree = "ivy." + fn_tree
-        gt_fn_tree = fn_tree if gt_fn_tree is None else gt_fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
     possible_arguments = {}
@@ -401,7 +395,6 @@ def handle_test(
             wrapped_test.test_data = TestData(
                 test_fn=wrapped_test,
                 fn_tree=fn_tree,
-                gt_fn_tree=gt_fn_tree,
                 fn_name=fn_name,
                 supported_device_dtypes=supported_device_dtypes,
             )
@@ -468,7 +461,6 @@ def handle_frontend_test(
         be frontend array
     """
     fn_tree = "ivy.functional.frontends." + fn_tree
-    gt_fn_tree = fn_tree if gt_fn_tree is None else gt_fn_tree
     if aliases is not None:
         for i in range(len(aliases)):
             aliases[i] = "ivy.functional.frontends." + aliases[i]
@@ -504,6 +496,7 @@ def handle_frontend_test(
                     if aliases is not None
                     else st.just(fn_tree)
                 ),
+                "gt_fn_tree": st.just(gt_fn_tree),
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
@@ -530,7 +523,6 @@ def handle_frontend_test(
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
             fn_tree=fn_tree,
-            gt_fn_tree=gt_fn_tree,
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
