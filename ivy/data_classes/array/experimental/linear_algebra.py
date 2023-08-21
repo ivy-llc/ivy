@@ -603,7 +603,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         tol: Optional[float] = 10e-5,
         verbose: Optional[bool] = False,
         return_errors: Optional[bool] = False,
-    ):
+    ) -> Union[ivy.TuckerTensor, Tuple[ivy.TuckerTensor, List]]:
         """
         ivy.Array instance method variant of ivy.tucker. This method simply wraps the
         function, and so the docstring for ivy.tucker also applies to this method with
@@ -674,4 +674,64 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             svd_mask_repeats=svd_mask_repeats,
             tol=tol,
             verbose=verbose,
+        )
+
+    def initialize_cp(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: int,
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+        seed: Optional[int] = None,
+        normalize_factors: Optional[bool] = False,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+    ) -> ivy.CPTensor:
+        r"""
+        ivy.Array instance method variant of ivy.initialize_cp. This method simply wraps
+        the function, and so the docstring for ivy.tucker also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            number of components
+        init
+            initialization scheme for CP decomposition.
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        normalize_factors
+            if True, the factors are normalized.
+        svd
+            function to use to compute the SVD
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``x`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+        Returns
+        -------
+        factors : CPTensor
+            An initial cp tensor.
+        """
+        return ivy.initialize_cp(
+            self._data,
+            rank,
+            init=init,
+            seed=seed,
+            normalize_factors=normalize_factors,
+            non_negative=non_negative,
+            svd=svd,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
         )

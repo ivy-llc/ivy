@@ -1889,3 +1889,151 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_initialize_cp(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        ivy.Container static method variant of ivy.cp_initialize. This method simply
+        wraps the function, and so the docstring for ivy.cp_initialize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            size of the core tensor, ``(len(ranks) == tensor.ndim)``
+            if int, the same rank is used for all modes
+        init
+            {'svd', 'random'}, or TuckerTensor optional
+            if a TuckerTensor is provided, this is used for initialization
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        normalize_factors
+            if True, the factors are normalized.
+        svd
+            str, default is 'truncated_svd'
+            function to use to compute the SVD,
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+        Returns
+        -------
+        factors : CPTensor
+            An initial cp tensor.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "initialize_cp",
+            x,
+            rank,
+            init=init,
+            seed=seed,
+            normalize_factors=normalize_factors,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def initialize_cp(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.cp_initialize. This method simply
+        wraps the function, and so the docstring for ivy.cp_initialize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            size of the core tensor, ``(len(ranks) == tensor.ndim)``
+            if int, the same rank is used for all modes
+        init
+            {'svd', 'random'}, or TuckerTensor optional
+            if a TuckerTensor is provided, this is used for initialization
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        normalize_factors
+            if True, the factors are normalized.
+        svd
+            str, default is 'truncated_svd'
+            function to use to compute the SVD,
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+        Returns
+        -------
+        factors : CPTensor
+            An initial cp tensor.
+        """
+        return self.static_initialize_cp(
+            self,
+            rank,
+            init=init,
+            seed=seed,
+            normalize_factors=normalize_factors,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

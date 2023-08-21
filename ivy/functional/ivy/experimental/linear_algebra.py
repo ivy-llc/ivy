@@ -1491,7 +1491,7 @@ def tucker(
     tol: Optional[float] = 10e-5,
     verbose: Optional[bool] = False,
     return_errors: Optional[bool] = False,
-):
+) -> Union[ivy.TuckerTensor, Tuple[ivy.TuckerTensor, List]]:
     """
     Tucker decomposition via Higher Order Orthogonal Iteration (HOI)
 

@@ -1666,7 +1666,6 @@ def _initialize_cp_data(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.initialize_cp",
     data=_initialize_cp_data(),
-    test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
