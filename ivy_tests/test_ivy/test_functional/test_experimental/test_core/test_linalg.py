@@ -483,11 +483,12 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     dtype_x=_generate_multi_dot_dtype_and_arrays(),
     test_gradients=st.just(False),
 )
-def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name):
+def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
+        on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         test_values=True,
