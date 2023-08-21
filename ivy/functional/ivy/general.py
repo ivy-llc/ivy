@@ -3,6 +3,7 @@
 # global
 import gc
 import inspect
+import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -3004,7 +3005,11 @@ def _parse_query(query, x_shape, scatter=False):
             else ivy.empty((1, 0))
         )
         indices = ivy.array(
-            [(*arr, *post) for arr in array_queries for post in post_array_queries]
+            [
+                (*arr, *post)
+                for arr, post
+                in itertools.product(array_queries, post_array_queries)
+            ]
         ).reshape((*target_shape, len(x_shape)))
     elif len(array_inds):
         pre_array_queries = (
@@ -3032,9 +3037,8 @@ def _parse_query(query, x_shape, scatter=False):
         indices = ivy.array(
             [
                 (*pre, *arr, *post)
-                for pre in pre_array_queries
-                for arr in array_queries
-                for post in post_array_queries
+                for pre, arr, post
+                in itertools.product(pre_array_queries, array_queries, post_array_queries)
             ]
         ).reshape((*target_shape, len(x_shape)))
     else:
