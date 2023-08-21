@@ -15,6 +15,8 @@ def dropout(input, p=0.5, training=True, inplace=False):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def alpha_dropout(input, p=0.5, training=False, inplace=False):
+    if p == 0.0 or not training or input.shape == () or input.shape == (0,):
+        return input
     neg_saturation = ivy.log1p(ivy.exp(-ivy.square(input)))
     mask = ivy.where(
         ivy.random_uniform(shape=input.shape, device=ivy.dev(input)) < p,
