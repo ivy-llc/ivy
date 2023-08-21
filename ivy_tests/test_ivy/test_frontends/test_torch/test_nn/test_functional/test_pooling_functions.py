@@ -292,6 +292,48 @@ def test_torch_max_pool2d(
     )
 
 
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.max_pool3d",
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=1,
+        max_side=5,
+        explicit_or_str_padding=True,
+        return_dilation=True,
+    ).filter(lambda x: x[4] != "VALID" and x[4] != "SAME"),
+    test_with_out=st.just(False),
+    ceil_mode=st.booleans(),
+)
+def test_torch_max_pool3d(
+    x_k_s_p,
+    ceil_mode,
+    *,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    padding = (pad[0][0], pad[1][0], pad[2][0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        kernel_size=kernel,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
 # adaptive_avg_pool1d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.adaptive_avg_pool1d",
