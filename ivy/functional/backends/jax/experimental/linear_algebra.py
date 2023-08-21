@@ -168,7 +168,7 @@ def dot(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.dot(a, b)
+    return jnp.dot(a, b, out=out)
 
 
 dot.support_native_out = True

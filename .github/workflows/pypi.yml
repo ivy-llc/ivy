@@ -1,5 +1,6 @@
 name: pypi
 on:
+  push:
   workflow_call:
 jobs:
   upload-if-tagged-commit:
@@ -18,12 +19,7 @@ jobs:
           python3 -m pip install --upgrade build
           python3 -m pip install --upgrade twine
 
-      - name: Add Tag to Version
-        run: |
-          cd ivy
-          echo "__version__ = '${{ github.ref_name }}'" > ivy/_version.py
-
-      - name: Upload to PyPI
+      - name: Upload to Pypi
         if: startsWith(github.ref, 'refs/tags')
         env:
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}

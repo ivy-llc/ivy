@@ -8,7 +8,7 @@ def invert_permutation(
     x: Union[tf.Tensor, tf.Variable, list, tuple],
     /,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cast(tf.math.invert_permutation(x), tf.int64)
+    return tf.math.invert_permutation(x)
 
 
 # lexsort

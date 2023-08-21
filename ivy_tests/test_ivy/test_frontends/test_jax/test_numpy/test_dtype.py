@@ -70,7 +70,8 @@ def test_jax_promote_types(
         type2=type2[0],
         test_values=False,
     )
-    assert str(ret._ivy_dtype) == str(frontend_ret[0])
+    assert str(ret._ivy_dtype) == str(frontend_ret)
+    print(frontend_ret)
 
 
 @handle_frontend_test(

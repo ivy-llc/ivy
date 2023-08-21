@@ -1,14 +1,14 @@
 import abc
 from hypothesis import strategies as st
 from . import globals as test_globals
-from .pipeline_helper import BackendHandler
+from .pipeline_helper import update_backend
 
 
 @st.composite
 def _gradient_strategy(draw):
     if test_globals.CURRENT_BACKEND == "numpy":
-        return draw(st.just(False))
-    return draw(st.booleans())
+        draw(st.just(False))
+    draw(st.booleans())
 
 
 @st.composite
@@ -28,7 +28,9 @@ def _as_varaible_strategy(draw):
 
 
 @st.composite
-def _compile_strategy(draw):
+def _compile_strategy(draw):  # TODO remove later when paddle is supported
+    if test_globals.CURRENT_BACKEND == "paddle":
+        draw(st.just(False))
     draw(st.booleans())
 
 
@@ -98,7 +100,7 @@ class FunctionTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with BackendHandler.update_backend(backend) as backend:
+        with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -176,7 +178,7 @@ class FrontendFunctionTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with BackendHandler.update_backend(backend) as backend:
+        with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -237,7 +239,7 @@ class InitMethodTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with BackendHandler.update_backend(backend) as backend:
+        with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -291,7 +293,7 @@ class MethodTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with BackendHandler.update_backend(backend) as backend:
+        with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:
@@ -348,7 +350,7 @@ class FrontendMethodTestFlags(TestFlags):
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        with BackendHandler.update_backend(backend) as backend:
+        with update_backend(backend) as backend:
             for i, entry in enumerate(args_to_iterate, start=offset):
                 x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
                 if self.as_variable[i]:

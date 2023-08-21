@@ -943,7 +943,7 @@ def test_torch_unique(
 
 
 @st.composite
-def _get_axis_and_p(draw, kind="valid"):
+def _get_axis_and_p(draw):
     p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
     if p == "fro" or p == "nuc":
         max_axes_size = 2
@@ -951,9 +951,9 @@ def _get_axis_and_p(draw, kind="valid"):
     else:
         min_axes_size = 1
         max_axes_size = 5
-    dtype_x_axis = draw(
+    x_dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes(kind),
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
             valid_axis=True,
             min_value=-1e04,
@@ -962,30 +962,17 @@ def _get_axis_and_p(draw, kind="valid"):
             max_axes_size=max_axes_size,
             large_abs_safety_factor=2,
             safety_factor_scale="log",
-            force_int_axis=True,
         )
     )
-
-    input_dtype, x, axis = dtype_x_axis
-    if type(input_dtype[0]) == str:
-        if "complex" in input_dtype[0]:
-            kind = "complex"
-        if "float" in input_dtype[0]:
-            kind = "float"
-    else:
-        if input_dtype[0].is_complex_dtype:
-            kind = "complex"
-        if input_dtype[0].is_float_dtype:
-            kind = "float"
-
-    dtype = draw(helpers.get_dtypes(kind, full=False))
-    dtype = dtype[0]
-    if ivy.can_cast(input_dtype[0], dtype):
-        dtype = ivy.promote_types(input_dtype[0], dtype)
-    else:
-        dtype = input_dtype[0]
-
-    return p, dtype_x_axis, dtype
+    axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
+    # ToDo: fix the castable dtype helper. Right now using `dtype` causes errors
+    #  dtype should be real for real inputs, but got ComplexDouble
+    x_dtype, values, dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("valid")), x_dtype[0], values[0]
+        )
+    )
+    return p, x_dtype, values, axis, x_dtype
 
 
 # norm
@@ -1005,7 +992,6 @@ def test_torch_norm(
     on_device,
 ):
     p, x_dtype, x, axis, dtype = p_dtype_x_axis
-
     helpers.test_frontend_function(
         backend_to_test=backend_fw,
         input_dtypes=[x_dtype],

@@ -1,4 +1,4 @@
-name: Build Dockerfile
+name: Build DockerfileGPU
 
 on:
   push:
@@ -15,6 +15,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build Dockerfile
+    - name: Build DockerfileGPU
       run: |
-        docker build . --file docker/Dockerfile --tag unifyai/ivy:$(date +%s)
+        docker build . --file docker/DockerfileGPU --tag unifyai/ivy:gpu$(date +%s)
