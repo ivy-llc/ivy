@@ -2988,8 +2988,9 @@ def _parse_query(query, x_shape, scatter=False):
             )
             for arr in array_queries
         ]
+        array_queries = ivy.stack(array_queries, axis=1)
     if len(array_inds) == len(query):
-        indices = ivy.stack(array_queries, axis=1).reshape((*target_shape, len(x_shape)))
+        indices = array_queries.reshape((*target_shape, len(x_shape)))
     elif len(array_inds) and to_front:
         post_array_queries = (
             ivy.stack(
@@ -3003,7 +3004,7 @@ def _parse_query(query, x_shape, scatter=False):
             else ivy.empty((1, 0))
         )
         indices = ivy.array(
-            [(*arr, *post) for arr in zip(*array_queries) for post in post_array_queries]
+            [(*arr, *post) for arr in array_queries for post in post_array_queries]
         ).reshape((*target_shape, len(x_shape)))
     elif len(array_inds):
         pre_array_queries = (
@@ -3032,7 +3033,7 @@ def _parse_query(query, x_shape, scatter=False):
             [
                 (*pre, *arr, *post)
                 for pre in pre_array_queries
-                for arr in zip(*array_queries)
+                for arr in array_queries
                 for post in post_array_queries
             ]
         ).reshape((*target_shape, len(x_shape)))
