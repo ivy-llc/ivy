@@ -155,6 +155,7 @@ def adjoint(
     return torch.adjoint(x).resolve_conj()
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def multi_dot(
     x: Sequence[torch.Tensor],
     /,
@@ -198,7 +199,7 @@ def dot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.dot(a, b, out=out)
+    return torch.matmul(a, b)
 
 
 dot.support_native_out = True

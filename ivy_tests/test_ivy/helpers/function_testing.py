@@ -15,7 +15,7 @@ except ImportError:
     tf.TensorShape = None
 
 # local
-from .pipeline_helper import update_backend, get_frontend_config
+from .pipeline_helper import BackendHandler, BackendHandlerMode, get_frontend_config
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
@@ -31,10 +31,10 @@ from .assertions import (
 
 # Temporary (.so) configuration
 def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs=None):
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         if test_compile:
             fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
-        return fn
+    return fn
 
 
 # Ivy Function testing ##########################
@@ -68,7 +68,7 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
         if a:
             break
     instance_idx = array_indices[i]
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         instance = ivy_backend.index_nest(args, instance_idx)
         new_args = ivy_backend.copy_nest(args, to_mutable=False)
         ivy_backend.prune_nest_at_index(new_args, instance_idx)
@@ -172,6 +172,9 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
+    # ToDo add with_backend refactor in GC
+    _switch_backend_context(test_flags.test_compile)
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -200,7 +203,7 @@ def test_function(
             test_flags.container[0] for _ in range(total_num_arrays)
         ]
 
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
@@ -226,7 +229,7 @@ def test_function(
         on_device=on_device,
     )
 
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         # If function doesn't have an out argument but an out argument is given
         # or a test with out flag is True
         if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
@@ -366,7 +369,7 @@ def test_function(
             ret_device = ivy_backend.dev(ret_from_target)
 
     # compute the return with a Ground Truth backend
-    with update_backend(test_flags.ground_truth_backend) as gt_backend:
+    with BackendHandler.update_backend(test_flags.ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
         args, kwargs = create_args_kwargs(
             backend=test_flags.ground_truth_backend,
@@ -527,6 +530,9 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
+    # ToDo add with_backend refactor in GC
+    _switch_backend_context(test_flags.test_compile)
+
     assert (
         not test_flags.with_out or not test_flags.inplace
     ), "only one of with_out or with_inplace can be set as True"
@@ -550,7 +556,7 @@ def test_frontend_function(
             test_flags.native_arrays[0] for _ in range(num_arrays)
         ]
 
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         # update var flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
@@ -616,6 +622,10 @@ def test_frontend_function(
             backend_to_test,
             frontend_fn,
             *args_for_test,
+            test_compile=test_flags.test_compile,
+            frontend_array_function=(
+                create_frontend_array if test_flags.test_compile else None
+            ),
             as_ivy_arrays=(not test_flags.generate_frontend_arrays),
             **kwargs_for_test,
         )
@@ -707,7 +717,7 @@ def test_frontend_function(
         elif test_flags.inplace:
             assert not isinstance(ret, tuple)
 
-            if test_flags.generate_frontend_arrays:
+            if test_flags.generate_frontend_arrays and not test_flags.test_compile:
                 assert _is_frontend_array(ret)
                 array_fn = _is_frontend_array
             else:
@@ -727,6 +737,10 @@ def test_frontend_function(
                 ret_ = get_frontend_ret(
                     frontend_fn=frontend_fn,
                     backend=backend_to_test,
+                    test_compile=test_flags.test_compile,
+                    frontend_array_function=(
+                        create_frontend_array if test_flags.test_compile else None
+                    ),
                     *copy_args,
                     **copy_kwargs,
                 )
@@ -739,7 +753,14 @@ def test_frontend_function(
                     *args, array_fn=array_fn, **kwargs
                 )
                 ret_ = get_frontend_ret(
-                    frontend_fn=frontend_fn, backend=backend_to_test, *args, **kwargs
+                    frontend_fn=frontend_fn,
+                    backend=backend_to_test,
+                    test_compile=test_flags.test_compile,
+                    frontend_array_function=(
+                        create_frontend_array if test_flags.test_compile else None
+                    ),
+                    *args,
+                    **kwargs,
                 )
                 assert (
                     first_array is ret_
@@ -835,7 +856,6 @@ def test_frontend_function(
         )
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
         frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
-
     # assuming value test will be handled manually in the test function
     if not test_values:
         return (
@@ -895,7 +915,7 @@ def gradient_test(
         on_device=on_device,
     )
 
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
 
         def _grad_fn(all_args):
             args, kwargs, i = all_args
@@ -917,7 +937,7 @@ def gradient_test(
         )
     grads_np_flat = flatten_and_to_np(backend=backend_to_test, ret=grads)
 
-    with update_backend(ground_truth_backend) as gt_backend:
+    with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
 
         if check_unsupported_dtype(
@@ -944,7 +964,7 @@ def gradient_test(
             args, kwargs, i = all_args
             call_fn = gt_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
             ret = compiled_if_required(
-                backend_to_test,
+                ground_truth_backend,
                 call_fn,
                 test_compile=test_compile,
                 args=args,
@@ -959,7 +979,7 @@ def gradient_test(
             ret_grad_idxs=ret_grad_idxs,
         )
         grads_np_from_gt_flat = flatten_and_to_np(
-            backend=backend_to_test, ret=grads_from_gt
+            backend=ground_truth_backend, ret=grads_from_gt
         )
 
     assert len(grads_np_flat) == len(
@@ -971,15 +991,14 @@ def gradient_test(
         len(grads_np_from_gt_flat),
     )
 
-    for grad_np_flat, grad_np_from_gt_flat in zip(grads_np_flat, grads_np_from_gt_flat):
-        value_test(
-            ret_np_flat=grad_np_flat,
-            ret_np_from_gt_flat=grad_np_from_gt_flat,
-            rtol=rtol_,
-            atol=atol_,
-            backend=backend_to_test,
-            ground_truth_backend=ground_truth_backend,
-        )
+    value_test(
+        ret_np_flat=grads_np_flat,
+        ret_np_from_gt_flat=grads_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+        backend=backend_to_test,
+        ground_truth_backend=ground_truth_backend,
+    )
 
 
 def test_method(
@@ -1083,6 +1102,9 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    # ToDo add with_backend refactor in GC
+    _switch_backend_context(test_compile)
+
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
@@ -1117,7 +1139,7 @@ def test_method(
         ]
 
     # update variable flags to be compatible with float dtype
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         init_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) else False
             for v, d in zip(init_flags.as_variable, init_input_dtypes)
@@ -1175,7 +1197,7 @@ def test_method(
             method_flags.container[0] for _ in range(num_arrays_method)
         ]
 
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         method_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) else False
             for v, d in zip(method_flags.as_variable, method_input_dtypes)
@@ -1197,7 +1219,7 @@ def test_method(
     # End Method #
 
     # Run testing
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         ins = ivy_backend.__dict__[class_name](*args_constructor, **kwargs_constructor)
         # TODO remove when the handle_method can properly compute unsupported dtypes
         if any(
@@ -1244,7 +1266,7 @@ def test_method(
 
     # Compute the return with a Ground Truth backend
 
-    with update_backend(ground_truth_backend) as gt_backend:
+    with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)
         args_gt_constructor, kwargs_gt_constructor = create_args_kwargs(
             backend=ground_truth_backend, **org_con_data
@@ -1452,6 +1474,9 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    # ToDo add with_backend refactor in GC
+    _switch_backend_context(method_flags.test_compile)
+
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
@@ -1482,7 +1507,7 @@ def test_frontend_method(
         ]
 
     # update variable flags to be compatible with float dtype
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         init_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) else False
             for v, d in zip(init_flags.as_variable, init_input_dtypes)
@@ -1530,7 +1555,7 @@ def test_frontend_method(
             method_flags.native_arrays[0] for _ in range(num_arrays_method)
         ]
 
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         if frontend == "jax":
             importlib.import_module("ivy.functional.frontends.jax").config.update(
                 "jax_enable_x64", True
@@ -1604,6 +1629,7 @@ def test_frontend_method(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
             *args_method,
+            test_compile=method_flags.test_compile,
             **kwargs_method,
         )
 
@@ -1770,7 +1796,7 @@ def create_args_kwargs(
     Backend specific arguments, keyword-arguments
     """
     # create args
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         args = ivy_backend.copy_nest(args_np, to_mutable=False)
         ivy_backend.set_nest_at_indices(
             args,
@@ -1810,7 +1836,7 @@ def convtrue(argument):
 def wrap_frontend_function_args(argument):
     """Wrap frontend function arguments to return native arrays."""
     # TODO pass as an argument and do not rely on global state
-    with update_backend(t_globals.CURRENT_FRONTEND_STR) as ivy_frontend:
+    with BackendHandler.update_backend(t_globals.CURRENT_FRONTEND_STR) as ivy_frontend:
         if ivy_frontend.nested_any(
             argument,
             lambda x: hasattr(x, "__module__")
@@ -1839,10 +1865,8 @@ def flatten(*, backend: str, ret):
     """Return a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
-
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.is_ivy_array)
-
         # no ivy array in the returned values, which means it returned scalar
         if len(ret_idxs) == 0:
             ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
@@ -1863,7 +1887,7 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
     if not isinstance(ret, tuple):
         ret = (ret,)
 
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         ret_idxs = ivy_backend.nested_argwhere(ret, _is_frontend_array)
 
         # handle scalars
@@ -1883,7 +1907,7 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
 def flatten_and_to_np(*, backend: str, ret):
     # flatten the return
     ret_flat = flatten(backend=backend, ret=ret)
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         return [ivy_backend.to_numpy(x) for x in ret_flat]
 
 
@@ -1894,7 +1918,7 @@ def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
         ret=ret, backend=backend, frontend_array_fn=frontend_array_fn
     )
 
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         return [ivy_backend.to_numpy(x.ivy_array) for x in ret_flat]
 
 
@@ -1909,7 +1933,7 @@ def get_ret_and_flattened_np_array(
     fn = compiled_if_required(
         backend_to_test, fn, test_compile=test_compile, args=args, kwargs=kwargs
     )
-    with update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         ret = fn(*args, **kwargs)
 
         def map_fn(x):
@@ -1927,11 +1951,26 @@ def get_frontend_ret(
     backend,
     frontend_fn,
     *args,
+    frontend_array_function=None,
     as_ivy_arrays=True,
+    test_compile: bool = False,
     **kwargs,
 ):
-    with update_backend(backend) as ivy_backend:
+    frontend_fn = compiled_if_required(
+        backend, frontend_fn, test_compile=test_compile, args=args, kwargs=kwargs
+    )
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        if not as_ivy_arrays and test_compile:
+            args, kwargs = ivy_backend.nested_map(
+                (args, kwargs), _frontend_array_to_ivy, include_derived={tuple: True}
+            )
         ret = frontend_fn(*args, **kwargs)
+        if test_compile and frontend_array_function is not None:
+            ret = ivy_backend.nested_map(
+                ret,
+                arrays_to_frontend(backend, frontend_array_function),
+                include_derived={tuple: True},
+            )
         if as_ivy_arrays:
             ret = ivy_backend.nested_map(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
@@ -1996,7 +2035,7 @@ def _frontend_array_to_ivy(x):
 def args_to_frontend(
     backend: str, *args, frontend_array_fn=None, include_derived=None, **kwargs
 ):
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         frontend_args = ivy_backend.nested_map(
             args,
             arrays_to_frontend(backend=backend, frontend_array_fn=frontend_array_fn),
@@ -2013,7 +2052,7 @@ def args_to_frontend(
 
 
 def arrays_to_frontend(backend: str, frontend_array_fn=None):
-    with update_backend(backend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
 
         def _new_fn(x, *args, **kwargs):
             if _is_frontend_array(x):
@@ -2032,3 +2071,14 @@ def arrays_to_frontend(backend: str, frontend_array_fn=None):
             return x
 
     return _new_fn
+
+
+def _switch_backend_context(compile: bool):
+    if compile:
+        BackendHandler._update_context(BackendHandlerMode.SetBackend)
+    else:
+        (
+            BackendHandler._update_context(BackendHandlerMode.WithBackend)
+            if BackendHandler._ctx_flag
+            else None
+        )
