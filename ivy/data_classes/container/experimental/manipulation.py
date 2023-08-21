@@ -2989,3 +2989,692 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             v,
             wrap=wrap,
         )
+
+    @staticmethod
+    def static_unfold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Optional[Union[int, ivy.Container]] = 0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            input tensor to be unfolded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container of unfolded tensors
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unfold",
+            x,
+            mode,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def unfold(
+        self: ivy.Container,
+        /,
+        mode: Optional[Union[int, ivy.Container]] = 0,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input tensor to be unfolded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container of unfolded tensors
+        """
+        return self.static_unfold(self, mode, out=out)
+
+    @staticmethod
+    def static_fold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Union[int, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            input tensor to be unfolded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container of folded tensors
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fold",
+            x,
+            mode,
+            shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fold(
+        self: ivy.Container,
+        /,
+        mode: Union[int, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.fold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input tensor to be folded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        shape
+            shape of the original tensor before unfolding
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        -------
+        ret
+            Container of folded tensors
+        """
+        return self.static_fold(self, mode, shape, out=out)
+
+    @staticmethod
+    def static_partial_unfold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Optional[Union[int, ivy.Container]] = 0,
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        skip_end: Optional[Union[int, ivy.Container]] = 0,
+        ravel_tensors: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.partial_unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            tensor of shape n_samples x n_1 x n_2 x ... x n_i
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        ravel_tensors
+            if True, the unfolded tensors are also flattened
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially unfolded tensor
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "partial_unfold",
+            x,
+            mode,
+            skip_begin,
+            skip_end,
+            ravel_tensors,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def partial_unfold(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Optional[Union[int, ivy.Container]] = 0,
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        skip_end: Optional[Union[int, ivy.Container]] = 0,
+        ravel_tensors: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.partial_unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            tensor of shape n_samples x n_1 x n_2 x ... x n_i
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        ravel_tensors
+            if True, the unfolded tensors are also flattened
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially unfolded tensor
+        """
+        return self.static_partial_unfold(
+            self, mode, skip_begin, skip_end, ravel_tensors, out=out
+        )
+
+    @staticmethod
+    def static_partial_fold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Union[int, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.partial_fold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_fold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            a partially unfolded tensor
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions left untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially re-folded tensor
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "partial_fold",
+            x,
+            mode,
+            shape,
+            skip_begin,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def partial_fold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: Union[int, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.partial_fold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_fold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            a partially unfolded tensor
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions left untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially re-folded tensor
+        """
+        return self.static_partial_fold(self, mode, shape, skip_begin, out=out)
+
+    @staticmethod
+    def static_partial_tensor_to_vec(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        skip_end: Optional[Union[int, ivy.Container]] = 0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.partial_tensor_to_vec.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_tensor_to_vec also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            tensor to partially vectorise
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially vectorised tensor with the
+            `skip_begin` first and `skip_end` last dimensions untouched
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "partial_tensor_to_vec",
+            x,
+            skip_begin,
+            skip_end,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def partial_tensor_to_vec(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        skip_end: Optional[Union[int, ivy.Container]] = 0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.partial_tensor_to_vec.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_tensor_to_vec also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            tensor to partially vectorise
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially re-folded tensor
+        """
+        return self.static_partial_tensor_to_vec(self, skip_begin, skip_end, out=out)
+
+    @staticmethod
+    def static_partial_vec_to_tensor(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.partial_vec_to_tensor.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_vec_to_tensor also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            a partially vectorised tensor
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+            full tensor
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "partial_vec_to_tensor",
+            x,
+            shape,
+            skip_begin,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def partial_vec_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.partial_vec_to_tensor.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_vec_to_tensor also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            partially vectorized tensor
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            full tensor
+        """
+        return self.static_partial_vec_to_tensor(self, shape, skip_begin, out=out)
+
+    @staticmethod
+    def static_matricize(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        row_modes: Union[Sequence[int], ivy.Container],
+        column_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.matricize.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.matricize also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            the input tensor
+        row_modes
+            modes to use as row of the matrix (in the desired order)
+        column_modes
+            modes to use as column of the matrix, in the desired order
+            if None, the modes not in `row_modes` will be used in ascending order
+        out
+            optional output array, for writing the result to.
+
+        ret
+        -------
+            ivy.Container
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "matricize",
+            x,
+            row_modes,
+            column_modes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def matricize(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        row_modes: Union[Sequence[int], ivy.Container],
+        column_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.matricize.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.matricize also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            the input tensor
+        row_modes
+            modes to use as row of the matrix (in the desired order)
+        column_modes
+            modes to use as column of the matrix, in the desired order
+            if None, the modes not in `row_modes` will be used in ascending order
+        out
+            optional output array, for writing the result to.
+        ret
+        -------
+            ivy.Container
+        """
+        return self.static_matricize(self, row_modes, column_modes, out=out)
+
+    @staticmethod
+    def static_soft_thresholding(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        threshold: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.soft_thresholding.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.soft_thresholding also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            the input tensor
+        threshold
+            float or array with shape tensor.shape
+            * If float the threshold is applied to the whole tensor
+            * If array, one threshold is applied per elements, 0 values are ignored
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ivy.Container
+            thresholded tensor on which the operator has been applied
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "soft_thresholding",
+            x,
+            threshold,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def soft_thresholding(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        threshold: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.soft_thresholding.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.soft_thresholding also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            the input tensor
+        threshold
+            float or array with shape tensor.shape
+            * If float the threshold is applied to the whole tensor
+            * If array, one threshold is applied per elements, 0 values are ignored
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ivy.Container
+            thresholded tensor on which the operator has been applied
+        """
+        return self.static_soft_thresholding(self, threshold, out=out)

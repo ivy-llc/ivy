@@ -957,3 +957,17 @@ Einsum = to_ivy_arrays_and_back(
         "tensorflow",
     )(map_raw_ops_alias(tf_frontend.general_functions.einsum))
 )
+
+
+Igamma = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "float64",
+                "float32",
+                "half",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.igamma))
+)
