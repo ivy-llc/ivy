@@ -93,7 +93,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                 ret, lambda x: ivy.to_scalar(x) if len(x) == 0 else x, shallow=False
             )
 
-        elif len(ret) > 0:
+        elif isinstance(ret, (int, float, bool, complex)) or len(ret) > 0:
             return ret
 
         return ivy.to_scalar(ret)
