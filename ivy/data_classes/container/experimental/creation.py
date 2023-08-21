@@ -864,7 +864,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         )
 
 
-@staticmethod
+    @staticmethod
     def static_unsorted_segment_max(
         data: ivy.Container,
         segment_ids: ivy.Container,
