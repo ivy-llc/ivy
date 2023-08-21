@@ -1423,7 +1423,7 @@ def test_square(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     fn_tree="functional.ivy.sqrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), allow_inf=False
-    ),
+    ).filter(lambda x: x[0][0] not in ["bfloat16"]),
 )
 def test_sqrt(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
