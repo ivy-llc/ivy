@@ -12,6 +12,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
     },
     "torch",
 )
+# TODO torch inplace updates running_mean and running_var
 @to_ivy_arrays_and_back
 def batch_norm(
     input,
@@ -23,7 +24,10 @@ def batch_norm(
     momentum=0.1,
     eps=1e-5,
 ):
-    normalized, mean, var = ivy.batch_norm(
+    # tranpose the input from N,C,*S to N,*S, C
+    ndims = len(input.shape)
+    input = ivy.permute_dims(input, axes=(0, *range(2, ndims), 1))
+    normalized, running_mean, running_var = ivy.batch_norm(
         input,
         running_mean,
         running_var,
@@ -32,13 +36,12 @@ def batch_norm(
         training=training,
         eps=eps,
         momentum=momentum,
-        data_format="NCS",
     )
-    ivy.inplace_update(running_mean, mean)
-    ivy.inplace_update(running_var, var)
+    normalized = ivy.permute_dims(normalized, axes=(0, ndims - 1, *range(1, ndims - 1)))
     return normalized
 
 
+# TODO torch inplace updates running_mean and running_var
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
@@ -59,7 +62,10 @@ def instance_norm(
     momentum=0.1,
     eps=1e-5,
 ):
-    normalized, mean, var = ivy.instance_norm(
+    # tranpose the input from N,C,*S to N,*S, C
+    ndims = len(input.shape)
+    input = ivy.permute_dims(input, axes=(0, *range(2, ndims), 1))
+    normalized, running_mean, running_var = ivy.instance_norm(
         input,
         running_mean,
         running_var,
@@ -68,10 +74,8 @@ def instance_norm(
         training=use_input_stats,
         eps=eps,
         momentum=momentum,
-        data_format="NCS",
     )
-    ivy.inplace_update(running_mean, mean)
-    ivy.inplace_update(running_var, var)
+    normalized = ivy.permute_dims(normalized, axes=(0, ndims - 1, *range(1, ndims - 1)))
     return normalized
 
 
