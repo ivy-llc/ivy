@@ -30,7 +30,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         input
             input array or container.
         target
-            input array or container containing the targeted values.
+            input array or container containing the targeticted values.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -53,7 +53,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The L1 loss between the input array and the targeted values.
+            The L1 loss between the input array and the targeticted values.
 
         Examples
         --------
