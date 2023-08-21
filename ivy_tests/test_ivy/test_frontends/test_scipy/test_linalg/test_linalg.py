@@ -4,6 +4,7 @@ import ivy
 import sys
 from hypothesis import strategies as st
 import numpy as np
+import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -118,6 +119,7 @@ def _norm_helper(draw):
 
 
 # tril
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.tril",
     dtype_and_x=helpers.dtype_and_values(
@@ -154,8 +156,9 @@ def test_scipy_tril(
 
 
 # triu
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="jax.scipy.triu",
+    fn_tree="scipy.linalg.triu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
@@ -190,8 +193,9 @@ def test_scipy_triu(
 
 
 # inv
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="jax.scipy.inv",
+    fn_tree="scipy.linalg.inv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,
@@ -221,6 +225,7 @@ def test_scipy_inv(
 
 
 # pinv
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.pinv",
     dtype_and_x=helpers.dtype_and_values(
@@ -251,6 +256,7 @@ def test_scipy_pinv(
 
 
 # kron
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.kron",
     dtype_and_x=helpers.dtype_and_values(
@@ -279,6 +285,7 @@ def test_scipy_kron(dtype_and_x, frontend, test_flags, fn_tree, on_device, backe
 
 
 # eigh_tridiagonal
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.eigh_tridiagonal",
     all_args=_generate_eigh_tridiagonal_args(),
@@ -310,6 +317,7 @@ def test_scipy_eigh_tridiagonal(
 
 
 # norm
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.norm",
     dtype_values=_norm_helper(),
@@ -341,6 +349,7 @@ def test_scipy_norm(
 
 
 # svd
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
@@ -386,6 +395,7 @@ def test_scipy_svd(
 
 
 # svdvals
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.svdvals",
     dtype_x=helpers.dtype_and_values(
@@ -417,6 +427,7 @@ def test_scipy_svdvals(
 
 
 # lu_factor
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.lu_factor",
     dtype_and_x=helpers.dtype_and_values(
