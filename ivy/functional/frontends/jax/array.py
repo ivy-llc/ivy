@@ -334,6 +334,19 @@ class Array:
     def searchsorted(self, v, side="left", sorter=None, *, method="scan"):
         return jax_frontend.numpy.searchsorted(self, v, side=side, sorter=sorter)
 
+    def max(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+        where=None,
+    ):
+        return jax_frontend.numpy.max(
+            self, axis=axis, out=out, keepdims=keepdims, where=where
+        )
+
     def ptp(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.ptp(self, axis=axis, keepdims=keepdims)
 
