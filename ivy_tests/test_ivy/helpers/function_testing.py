@@ -75,6 +75,22 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
     return instance, new_args
 
 
+def _get_frontend_submodules(fn_tree: str, gt_fn_tree: str):
+    split_index = fn_tree.rfind(".")
+    frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
+
+    # if gt_fn_tree and gt_fn_name are different from our frontend structure
+    if gt_fn_tree is not None:
+        split_index = gt_fn_tree.rfind(".")
+        gt_frontend_submods, gt_fn_name = (
+            gt_fn_tree[:split_index],
+            gt_fn_tree[split_index + 1 :],
+        )
+    else:
+        gt_frontend_submods, gt_fn_name = fn_tree[25 : fn_tree.rfind(".")], fn_name
+    return frontend_submods, fn_name, gt_frontend_submods, gt_fn_name
+
+
 def test_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
@@ -494,6 +510,7 @@ def test_frontend_function(
     on_device="cpu",
     frontend: str,
     fn_tree: str,
+    gt_fn_tree: str = None,
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
@@ -514,6 +531,8 @@ def test_frontend_function(
         current frontend (framework).
     fn_tree
         Path to function in frontend framework namespace.
+    gt_fn_tree
+        Path to function in ground truth framework namespace.
     rtol
         relative tolerance value.
     atol
@@ -572,8 +591,9 @@ def test_frontend_function(
                 "jax_enable_x64", True
             )
 
-        split_index = fn_tree.rfind(".")
-        frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
+        frontend_submods, fn_name, gt_frontend_submods, gt_fn_name = (
+            _get_frontend_submodules(fn_tree, gt_fn_tree)
+        )
         function_module = local_importer.import_module(frontend_submods)
         frontend_fn = getattr(function_module, fn_name)
 
@@ -832,18 +852,9 @@ def test_frontend_function(
             kwargs_frontend["device"]
         )
 
-    # wrap the frontend function objects in arguments to return native arrays
-    # args_frontend = ivy.nested_map(
-    #     args_frontend, fn=wrap_frontend_function_args, max_depth=10
-    # )
-    # kwargs_frontend = ivy.nested_map(
-    #     kwargs_frontend, fn=wrap_frontend_function_args, max_depth=10
-    # )
-
     # compute the return via the frontend framework
-    module_name = fn_tree[25 : fn_tree.rfind(".")]
-    frontend_fw = importlib.import_module(module_name)
-    frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
+    frontend_fw = importlib.import_module(gt_frontend_submods)
+    frontend_ret = frontend_fw.__dict__[gt_fn_name](*args_frontend, **kwargs_frontend)
 
     if frontend_config.isscalar(frontend_ret):
         frontend_ret_np_flat = [frontend_config.to_numpy(frontend_ret)]
