@@ -1,6 +1,5 @@
 # global
 from hypothesis import strategies as st
-from hypothesis import draw
 
 import math
 
