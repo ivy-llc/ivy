@@ -267,3 +267,14 @@ def size(a, axis=None):
 @to_ivy_arrays_and_back
 def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
+
+
+@to_ivy_arrays_and_back
+def in1d(ar1, ar2, assume_unique=False, invert=False):
+    del assume_unique
+    ar1_flat = ivy.flatten(ar1)
+    ar2_flat = ivy.flatten(ar2)
+    if invert:
+        return (ar1_flat[:, None] != ar2_flat[None, :]).all(axis=-1)
+    else:
+        return (ar1_flat[:, None] == ar2_flat[None, :]).any(axis=-1)
