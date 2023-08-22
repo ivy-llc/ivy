@@ -718,6 +718,7 @@ def test_paddle_rot90(
     dtype_arrays_and_axes=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_paddle_tensordot(
