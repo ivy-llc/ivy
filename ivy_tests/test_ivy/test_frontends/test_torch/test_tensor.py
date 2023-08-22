@@ -8196,6 +8196,7 @@ def test_torch_tensor_fmin(
         on_device=on_device,
     )
 
+
 # msort
 @handle_frontend_method(
     class_tree=CLASS_TREE,

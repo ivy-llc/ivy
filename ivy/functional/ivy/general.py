@@ -2943,7 +2943,11 @@ def _parse_query(query, x_shape, scatter=False):
             query[idx] = arr
 
     # convert slices to range arrays
-    query = [_parse_slice(q, x_shape[i]).astype(ivy.int64) for i, q in enumerate(query) if isinstance(q, slice)]
+    query = [
+        _parse_slice(q, x_shape[i]).astype(ivy.int64)
+        for i, q in enumerate(query)
+        if isinstance(q, slice)
+    ]
 
     # fill in missing queries
     if len(query) < len(x_shape):
@@ -3007,8 +3011,7 @@ def _parse_query(query, x_shape, scatter=False):
         indices = ivy.array(
             [
                 (*arr, *post)
-                for arr, post
-                in itertools.product(array_queries, post_array_queries)
+                for arr, post in itertools.product(array_queries, post_array_queries)
             ]
         ).reshape((*target_shape, len(x_shape)))
     elif len(array_inds):
@@ -3037,8 +3040,9 @@ def _parse_query(query, x_shape, scatter=False):
         indices = ivy.array(
             [
                 (*pre, *arr, *post)
-                for pre, arr, post
-                in itertools.product(pre_array_queries, array_queries, post_array_queries)
+                for pre, arr, post in itertools.product(
+                    pre_array_queries, array_queries, post_array_queries
+                )
             ]
         ).reshape((*target_shape, len(x_shape)))
     else:
