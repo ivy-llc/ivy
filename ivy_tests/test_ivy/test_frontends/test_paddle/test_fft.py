@@ -138,10 +138,12 @@ def test_paddle_irfft(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -165,10 +167,18 @@ def test_paddle_irfft(
         force_int_axis=True,
     ),
 )
-def test_paddle_ifftshift(dtype_x_axis, frontend, test_flags, fn_tree, on_device):
+def test_paddle_ifftshift(
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
     input_dtype, x, axes = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

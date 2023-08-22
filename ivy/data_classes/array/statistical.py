@@ -123,7 +123,7 @@ class _ArrayWithStatistical(abc.ABC):
         ivy.array(3)
 
         >>> x = ivy.array([0, 1, 2])
-        >>> z = ivy.array([0])
+        >>> z = ivy.array(0)
         >>> y = x.max(out=z)
         >>> print(z)
         ivy.array(2)
@@ -191,7 +191,7 @@ class _ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array(4.)
 
-        >>> x = ivy.array([-1, 0, 1])
+        >>> x = ivy.array([-1., 0., 1.])
         >>> y = ivy.mean(x)
         >>> print(y)
         ivy.array(0.)
@@ -209,7 +209,7 @@ class _ArrayWithStatistical(abc.ABC):
         ivy.array(1.)
 
         >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
-        >>> y = ivy.array([0., 0., 0.])
+        >>> y = ivy.zeros((1, 3))
         >>> x.mean(axis=0, keepdims=True, out=y)
         >>> print(y)
         ivy.array([[-0.25      ,  1.04999995,  2.0999999 ]])
@@ -459,7 +459,7 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.std()
         >>> print(y)
-        ivy.array(0.8164966)
+        ivy.array(0.81649661)
 
         >>> x = ivy.array([-1., 0., 1.])
         >>> z = x.std(correction=1)
@@ -480,7 +480,7 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x = ivy.array([[-1., -2.], [3., 3.]])
         >>> y = x.std(axis=1)
         >>> print(y)
-        ivy.array([1.5, 1. ])
+        ivy.array([0.5, 0. ])
         """
         return ivy.std(
             self, axis=axis, correction=correction, keepdims=keepdims, out=out

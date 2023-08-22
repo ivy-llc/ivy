@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 import ivy
@@ -10,7 +10,13 @@ import ivy
 
 
 class _ArrayWithActivations(abc.ABC):
-    def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def relu(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
         function, and so the docstring for ivy.relu also applies to this method with
@@ -23,6 +29,8 @@ class _ArrayWithActivations(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -36,7 +44,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0., 0., 1.])
         """
-        return ivy.relu(self._data, out=out)
+        return ivy.relu(self._data, out=out, complex_mode=complex_mode)
 
     def leaky_relu(
         self: ivy.Array,
@@ -44,6 +52,7 @@ class _ArrayWithActivations(abc.ABC):
         *,
         alpha: float = 0.2,
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
@@ -59,6 +68,8 @@ class _ArrayWithActivations(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -72,7 +83,9 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([ 0.39, -0.17])
         """
-        return ivy.leaky_relu(self._data, alpha=alpha, out=out)
+        return ivy.leaky_relu(
+            self._data, alpha=alpha, out=out, complex_mode=complex_mode
+        )
 
     def gelu(
         self: ivy.Array,

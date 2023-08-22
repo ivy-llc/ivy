@@ -7,6 +7,7 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def _packbits_nested_list_padding(arr, pad_length):
@@ -139,14 +140,13 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 alltrue = all
 
 sometrue = any
-from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
 # known issue in jnp's documentation of arguments
 # https://github.com/google/jax/issues/9119
 def logical_and(x1, x2, /):
-    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    x1, x2 = promote_jax_arrays(x1, x2)
     if x1.dtype == "complex128" or x2.dtype == "complex128":
         x1 = ivy.astype(x1, ivy.complex128)
         x2 = ivy.astype(x2, ivy.complex128)
@@ -232,6 +232,32 @@ def iscomplex(x: any):
 @to_ivy_arrays_and_back
 def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16", "bool")}, "jax")
+def setxor1d(ar1, ar2, assume_unique=False):
+    common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
+    ar1 = ivy.asarray(ar1, dtype=common_dtype)
+    ar2 = ivy.asarray(ar2, dtype=common_dtype)
+    if not assume_unique:
+        ar1 = ivy.unique_values(ar1)
+        ar2 = ivy.unique_values(ar2)
+    ar1 = ivy.reshape(ar1, (-1,))
+    ar2 = ivy.reshape(ar2, (-1,))
+    aux = ivy.concat([ar1, ar2], axis=0)
+    if aux.size == 0:
+        return aux
+    aux = ivy.sort(aux)
+    flag = ivy.concat(
+        (ivy.array([True]), ivy.not_equal(aux[1:], aux[:-1]), ivy.array([True])), axis=0
+    )
+    mask = flag[1:] & flag[:-1]
+    if ivy.all(ivy.logical_not(mask)):
+        ret = ivy.asarray([], dtype=common_dtype)
+    else:
+        ret = aux[mask]
+    return ret
 
 
 @to_ivy_arrays_and_back

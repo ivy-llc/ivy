@@ -49,71 +49,69 @@ Frameworks
 .. _`Dex language`: https://github.com/google-research/dex-lang
 .. _`Haskell`: https://www.haskell.org/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
-.. |matlab| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/matlab.png
+.. |matlab| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/matlab.png
     :height: 20pt
     :class: dark-light
-.. |scipy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/scipy.png
+.. |scipy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/scipy.png
     :height: 20pt
     :class: dark-light
-.. |torch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/torch.png
+.. |torch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/torch.png
     :height: 20pt
     :class: dark-light
-.. |numpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/numpy.png
+.. |numpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/numpy.png
     :height: 20pt
     :class: dark-light
-.. |scikit-learn| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/scikit-learn.png
+.. |scikit-learn| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/scikit-learn.png
     :height: 15pt
     :class: dark-light
-.. |theano| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/theano.png
+.. |theano| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/theano.png
     :height: 10pt
     :class: dark-light
-.. |pandas| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/pandas.png
+.. |pandas| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/pandas.png
     :height: 22pt
     :class: dark-light
-.. |julia| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/julia.png
+.. |julia| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/julia.png
     :height: 20pt
     :class: dark-light
-.. |apache-spark-mllib| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/apache-spark-mllib.png
+.. |apache-spark-mllib| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/apache-spark-mllib.png
     :height: 20pt
     :class: dark-light
-.. |caffe| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/caffe.png
+.. |caffe| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/caffe.png
     :height: 10pt
     :class: dark-light
-.. |chainer| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/chainer.png
+.. |chainer| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/chainer.png
     :height: 20pt
     :class: dark-light
-.. |tensorflow-1| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/tensorflow-1.png
+.. |tensorflow-1| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/tensorflow-1.png
     :height: 20pt
     :class: dark-light
-.. |mxnet| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/mxnet.png
+.. |mxnet| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/mxnet.png
     :height: 20pt
     :class: dark-light
-.. |cntk| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/cntk.png
+.. |cntk| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/cntk.png
     :height: 20pt
     :class: dark-light
-.. |pytorch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/pytorch.png
+.. |pytorch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/pytorch.png
     :height: 22pt
     :class: dark-light
-.. |flux| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/flux.png
+.. |flux| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/flux.png
     :height: 22pt
     :class: dark-light
-.. |jax| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/jax.png
+.. |jax| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/jax.png
     :height: 20pt
     :class: dark-light
-.. |tensorflow-2| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/tensorflow-2.png
+.. |tensorflow-2| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/tensorflow-2.png
     :height: 20pt
     :class: dark-light
-.. |dex-language| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/dex-language.png
+.. |dex-language| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/dex-language.png
     :height: 20pt
     :class: dark-light
 
 Here we list some of the most prominent frameworks for array computation.
 These are the individual frameworks which the wrapper frameworks mentioned above generally wrap around and abstract.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/related_work/frameworks/ml_framework_timeline.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/related_work/frameworks/ml_framework_timeline.png?raw=true
    :width: 100%
 
 MATLAB |matlab|
@@ -271,7 +269,3 @@ They propose an explicit nested indexing style that mirrors application of funct
 The goal of the project is to explore: type systems for array programming, mathematical program transformations like differentiation and integration, user-directed compilation to parallel hardware, and interactive and incremental numerical programming and visualization.
 It is quite early and still in an experimental phase, but this framework would provide hugely significant fundamental improvements over all existing frameworks if it reaches a mature stage of development.
 The language is built on top of `Haskell`_.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!

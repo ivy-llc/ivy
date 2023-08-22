@@ -341,6 +341,7 @@ def test_torch_affine_grid(
     *,
     dtype_and_input_and_other,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -349,6 +350,7 @@ def test_torch_affine_grid(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

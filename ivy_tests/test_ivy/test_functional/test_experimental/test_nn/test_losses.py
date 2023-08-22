@@ -35,6 +35,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     test_with_out=st.just(False),
 )
 def test_log_poisson_loss(
+    *,
     dtype_and_targets,
     dtype_and_log_input,
     compute_full_loss,
@@ -48,7 +49,7 @@ def test_log_poisson_loss(
     helpers.test_function(
         input_dtypes=targets_dtype + log_input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_fix=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         targets=targets[0],
