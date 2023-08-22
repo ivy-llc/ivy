@@ -991,7 +991,7 @@ def _good_bad_sample(draw: st.DrawFn):
 
 @handle_frontend_test(
     fn_tree="numpy.random.hypergeometric",
-    input_dtypes=helpers.get_dtypes("float", full=False),
+    input_dtypes=helpers.get_dtypes("integer", full=False),
     good_bad_sample=_good_bad_sample(),
     size=helpers.get_shape(allow_none=True),
     test_with_out=st.just(False),
