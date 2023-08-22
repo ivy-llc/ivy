@@ -25,6 +25,8 @@ def dev(
     if as_native:
         if isinstance(dv, torch.device):
             dv = dv.type
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            return torch.device(dv.replace("gpu", "mps"))
         return torch.device(dv.replace("gpu", "cuda"))
     return as_ivy_dev(dv)
 
@@ -51,6 +53,11 @@ def as_ivy_dev(device: torch.device, /):
     dev_type, dev_idx = (device.type, device.index)
     if dev_type == "cpu":
         return ivy.Device(dev_type)
+    elif dev_type == "mps":
+        return ivy.Device(
+            dev_type.replace("mps", "gpu")
+            + (":" + (str(dev_idx) if dev_idx is not None else "0"))
+        )
     return ivy.Device(
         dev_type.replace("cuda", "gpu")
         + (":" + (str(dev_idx) if dev_idx is not None else "0"))
@@ -63,6 +70,8 @@ def as_native_dev(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
+    if device == "mps":
+        return torch.device(ivy.Device(device).replace("gpu", "mps"))
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
 
@@ -70,13 +79,21 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:
     torch_dev = as_native_dev(device)
     if torch_dev.type == "cuda":
         torch.cuda.empty_cache()
+    elif torch_dev.type == "mps":
+        from torch import mps
+
+        mps.empty_cache()
 
 
 def num_gpus() -> int:
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        return 1
     return torch.cuda.device_count()
 
 
 def gpu_is_available() -> bool:
+    if hasattr(torch.backends, "mps"):
+        return torch.backends.mps.is_available()
     return torch.cuda.is_available()
 
 
