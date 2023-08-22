@@ -35,12 +35,18 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
+
 # stft
 @to_ivy_arrays_and_back
 def stft(signals, frame_length, frame_step, fft_length=None,
-         window_fn=ivy.hann_window, pad_end=False, name=None):
+        window_fn=ivy.hann_window, pad_end=False, name=None):
 
     def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
+
+        if fft_length == None:
+            fft_length = 1
+            while fft_length < frame_length:
+                fft_length *= 2
 
         num_samples = signals.shape[-1]
 
@@ -55,7 +61,10 @@ def stft(signals, frame_length, frame_step, fft_length=None,
 
         stft_result = []
 
-        window = window_fn(frame_length, dtype=ivy.float32)
+        if window_fn == None:
+            window = 1
+        else:
+            window = window_fn(frame_length)
 
         for i in range(num_frames):
 
@@ -66,7 +75,7 @@ def stft(signals, frame_length, frame_step, fft_length=None,
             pad_length = fft_length - frame_length
             windowed_frame = ivy.pad(windowed_frame, [(0, pad_length)])
 
-            fft_frame = ivy.fft(ivy.astype(windowed_frame, ivy.complex64), -1)
+            fft_frame = ivy.fft(windowed_frame, -1)
             slit = int((fft_length // 2 + 1))
             stft_result.append(fft_frame[..., 0:slit])
 
@@ -82,4 +91,12 @@ def stft(signals, frame_length, frame_step, fft_length=None,
         else:
             return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
 
-    return ivy.asarray(stft_helper(signals, frame_length, frame_step, fft_length))
+    input_dtype = ivy.dtype(signals)
+    if input_dtype == ivy.float32:
+        dtype = ivy.complex64
+    elif input_dtype == ivy.float64:
+        dtype = ivy.complex128
+
+    to_return = ivy.asarray(stft_helper(signals, frame_length, frame_step, fft_length))
+    return ivy.astype(to_return, dtype)
+
