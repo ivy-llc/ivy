@@ -21,7 +21,7 @@ CLASS_TREE = "ivy.functional.frontends.numpy.random.Generator"
         st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)
     ),
 )
-def test_numpy_Generator_multinomial(
+def test_numpy_multinomial(
     n,
     dtype,
     on_device,

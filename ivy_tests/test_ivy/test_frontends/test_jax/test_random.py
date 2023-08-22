@@ -2,6 +2,8 @@
 import pytest
 from hypothesis import strategies as st
 import ivy
+import numpy as np
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -78,6 +80,66 @@ def test_jax_uniform(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.orthogonal",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    n=helpers.get_shape(),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_orthogonal(
+    *,
+    dtype_key,
+    n,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            n=n,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+        # Check if the output matrices are orthogonal
+        assert ivy.allclose(ivy.eye(n), ivy.matmul(u.T, u))
 
 
 @pytest.mark.xfail
@@ -1344,6 +1406,105 @@ def test_jax_ball(
             p=p,
             shape=shape,
             dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@st.composite
+def get_mean_cov_vector(draw):
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+
+    # Generate shape for mean vector (..., n)
+    dtype_mean = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size]),
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    # Generate shape for covariance matrix (..., n, n)
+    dtype_cov = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
+    )
+
+    batch_shape = dtype_cov.shape[:-2]
+
+    return input_dtype, dtype_mean, dtype_cov, batch_shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.multivariate_normal",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    mean_cov_vector=get_mean_cov_vector(),
+    method=st.sampled_from(["cholesky", "eigh", "svd"]),
+    test_with_out=st.just(False),
+)
+def test_jax_multivariate_normal(
+    *,
+    dtype_key,
+    mean_cov_vector,
+    dtype,
+    method,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, key = dtype_key
+    shared_dtype, mean, cov, shape = mean_cov_vector
+
+    spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
+
+    def call():
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype + [shared_dtype],
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            test_values=False,
+            key=key[0],
+            mean=mean,
+            cov=spd,
+            shape=shape,
+            dtype=dtype[0],
+            method=method,
         )
 
     ret = call()

@@ -124,7 +124,7 @@ def floor(x, /):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.13 and below": ("complex",)}, "jax")
+@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, "jax")
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
@@ -389,7 +389,7 @@ def fmin(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("uint16",)},
+    {"0.4.14 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -443,7 +443,7 @@ def sinc(x, /):
 
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "bfloat16",
             "float16",
         )
@@ -478,7 +478,7 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("bfloat16",)},
+    {"0.4.14 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -588,7 +588,7 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("float16",)},
+    {"0.4.14 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -608,7 +608,7 @@ def polyder(p, m=1):
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("float16",)},
+    {"0.4.14 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -698,8 +698,10 @@ def product(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
     if promote_integers:
-        if dtype is None:
-            dtype = a.dtype
+        if ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
     if initial is not None:
         if axis is not None:
             s = ivy.to_list(ivy.shape(a, as_array=True))

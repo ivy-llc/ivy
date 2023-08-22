@@ -116,8 +116,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_native_array()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
         """
         return self._static_is_native_array(
@@ -230,8 +230,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_ivy_array()
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
         """
         return self._static_is_ivy_array(
@@ -351,8 +351,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_array()
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: True,
+            b: True
         }
         """
         return self._static_is_array(
@@ -1018,22 +1018,14 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :class:`ivy.Container` input and default backend set as `numpy`:
 
+        >>> ivy.set_backend("numpy")
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
         {
             a: True,
             b: True
         }
-
-        With :class:`ivy.Container` input and default backend set as `jax`:
-
-        >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
-        >>> print(x.assert_supports_inplace())
-        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
-        with jax backend
         """
         return self._static_assert_supports_inplace(
             self,
@@ -1374,8 +1366,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y)
         >>> print(z)
         {
-            a: (<classivy.array.array.Array>shape=[2,9]),
-            b: (<classivy.array.array.Array>shape=[2,9])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 9]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 9])
         }
 
         >>> x = ivy.Container(a = ivy.array([3,10]),
@@ -1384,14 +1376,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y,num_bands=3)
         >>> print(z)
         {
-            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
-                    3.6739404e-16,-1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
-                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15,
-                    -1.2246468e-15, 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
-            b: ivy.array([[4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
-                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
-                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
-                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 7]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 7])
         }
         """
         return self._static_fourier_encode(
@@ -1667,11 +1653,11 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
-        >>> y = x.has_nans(x)
+        >>> y = x.has_nans()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
         """
         return self._static_has_nans(
@@ -1991,15 +1977,15 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
-        >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]), \
-                            b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
-        >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \
-                            b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
+        >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]),
+        ...                 b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
+        >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]),
+        ...                 b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
         >>> size = 8
         >>> print(ivy.scatter_flat(indices, updates, size=size))
         {
-            a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
-            b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+            a: ivy.array([2, 0, 2, 8, 0, 0, 0, 0]),
+            b: ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
         }
         """
         return self._static_scatter_flat(
@@ -3427,14 +3413,15 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.einops_rearrange("c h w -> c (h w)")
         >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 6])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 6])
         }
 
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
         ...               [7, 8, 9, 10, 11, 12]]))
         >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[4, 3])
+            a: (<class ivy.data_classes.array.array.Array> shape=[4, 3])
         }
         """
         return self._static_einops_rearrange(
@@ -3975,8 +3962,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = a0.array_equal(a1)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
         """
         return _ContainerWithGeneral._static_array_equal(

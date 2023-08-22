@@ -123,7 +123,7 @@ def test_numpy_diag_indices(
     k=st.integers(min_value=-10, max_value=10),
     test_with_out=st.just(False),
 )
-def test_tril_indices(
+def test_numpy_tril_indices(
     *,
     n,
     m,
