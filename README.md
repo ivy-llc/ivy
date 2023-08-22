@@ -431,7 +431,7 @@ docker pull unifyai/ivy:latest-gpu
 
 ### Installing from source
 
-You can also install Ivy from the source if you want to take advantage of
+You can also install Ivy from source if you want to take advantage of
 the latest changes, but we can\'t ensure everything will work as
 expected. :sweat_smile:
 

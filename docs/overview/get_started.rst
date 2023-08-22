@@ -40,7 +40,7 @@ If you are working on a GPU device, you can pull from:
 Installing from source
 ----------------------
 
-You can also install Ivy from the source if you want to take advantage of the latest 
+You can also install Ivy from source if you want to take advantage of the latest 
 changes, but we can't ensure everything will work as expected!
 
 .. code-block:: bash

@@ -246,7 +246,7 @@ For VSCode, you can follow the instructions `virtual environments <https://code.
 
 **Installing Ivy from source**
 
-You can also install Ivy from the source if you want to take advantage of the latest changes, but we can't ensure everything will work as expected. All the steps will remain the same for miniconda and venv as described above, only the command for point 4 for venv and point 5 for miniconda will change, everything else will remain the same. You have to run the following instead:
+You can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure everything will work as expected. All the steps will remain the same for miniconda and venv as described above, only the command for point 4 for venv and point 5 for miniconda will change, everything else will remain the same. You have to run the following instead:
 
    .. code-block:: none
 
