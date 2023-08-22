@@ -54,7 +54,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         ivy_kwargs = ivy.nested_map(kwargs, _to_ivy_array, shallow=False)
 
         # array is the first argument given to a function
-        frontend_array = _infer_return_array(args[0])
+        frontend_array = _infer_return_array(args[0]) if len(args) != 0 else None
 
         return fn(*ivy_args, **ivy_kwargs), frontend_array
 

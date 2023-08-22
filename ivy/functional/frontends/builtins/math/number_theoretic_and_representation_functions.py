@@ -44,6 +44,8 @@ def fsum(x):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def gcd(*integers):
+    if len(integers) == 0:
+        return 0
     return ivy.gcd(*integers)
 
 
@@ -75,6 +77,8 @@ def isqrt(x):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def lcm(*integers):
+    if len(integers) == 0:
+        return 1
     return ivy.lcm(*integers)
 
 
