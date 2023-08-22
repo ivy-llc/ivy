@@ -482,6 +482,26 @@ class ndarray:
             out=out,
         )
 
+    def sum(
+        self,
+        *,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+    ):
+        return np_frontend.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            out=out,
+        )
+
     def tofile(self, fid, /, sep="", format_="%s"):
         if self.ndim == 0:
             string = str(self)

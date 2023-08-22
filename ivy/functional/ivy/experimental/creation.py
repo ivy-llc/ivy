@@ -717,6 +717,7 @@ def blackman_window(
         The data type to produce. Must be a floating point type.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
@@ -747,7 +748,7 @@ def random_tucker(
     orthogonal: Optional[bool] = False,
     seed: Optional[int] = None,
     non_negative: Optional[bool] = False,
-) -> ivy.TuckerTensor:
+) -> Union[ivy.TuckerTensor, ivy.Array]:
     """
     Generate a random Tucker tensor.
 
@@ -802,6 +803,63 @@ def random_tucker(
         return ivy.TuckerTensor.tucker_to_tensor((core, factors))
     else:
         return ivy.TuckerTensor((core, factors))
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_cp(
+    shape: Sequence[int],
+    rank: int,
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    orthogonal: Optional[bool] = False,
+    seed: Optional[int] = None,
+    normalise_factors: Optional[bool] = True,
+) -> Union[ivy.CPTensor, ivy.Array]:
+    """
+    Generate a random CP tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the CP decomposition
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    orthogonal
+        if True, creates a tensor with orthogonal components
+    seed
+        seed for generating random numbers
+
+    Returns
+    -------
+        ivy.CPTensor
+    """
+    rank = ivy.CPTensor.validate_cp_rank(shape, rank)
+    if (rank > min(shape)) and orthogonal:
+        warnings.warn(
+            "Can only construct orthogonal tensors when rank <= min(shape) but got "
+            f"a tensor with min(shape)={min(shape)} < rank={rank}"
+        )
+
+    factors = [
+        (ivy.random_uniform(shape=(s, rank), dtype=dtype, seed=seed)) for s in shape
+    ]
+    weights = ivy.ones((rank,), dtype=dtype)
+    if orthogonal:
+        factors = [ivy.qr(factor)[0] for factor in factors]
+
+    if full:
+        return ivy.CPTensor.cp_to_tensor((weights, factors))
+    elif normalise_factors:
+        return ivy.CPTensor.cp_normalize((weights, factors))
+    else:
+        return ivy.CPTensor((weights, factors))
 
 
 @handle_nestable
