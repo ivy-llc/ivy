@@ -3,7 +3,6 @@
 # global
 import gc
 import inspect
-import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -3014,10 +3013,17 @@ def _parse_query(query, x_shape, scatter=False):
                 if len(array_inds) < len(query)
                 else ivy.empty((1, 0))
             )
+            combo_idx = ivy.stack(ivy.meshgrid(
+                ivy.arange(0, array_queries.shape[0]),
+                ivy.arange(0, post_array_queries.shape[0])
+            ), axis=-1).reshape((-1, 2))
             indices = ivy.array(
                 [
-                    (*arr, *post)
-                    for arr, post in itertools.product(array_queries, post_array_queries)
+                    ivy.concat([
+                        ivy.array(array_queries.to_numpy()[j]),
+                        ivy.array(post_array_queries.to_numpy()[k])
+                    ])
+                    for i, j, k in combo_idx
                 ]
             ).reshape((*target_shape, len(x_shape)))
         else:
@@ -3043,12 +3049,19 @@ def _parse_query(query, x_shape, scatter=False):
                 if array_inds[-1] < len(query) - 1
                 else ivy.empty((1, 0))
             )
+            combo_idx = ivy.stack(ivy.meshgrid(
+                ivy.arange(0, pre_array_queries.shape[0]),
+                ivy.arange(0, array_queries.shape[0]),
+                ivy.arange(0, post_array_queries.shape[0])
+            ), axis=-1).reshape((-1, 3))
             indices = ivy.array(
                 [
-                    (*pre, *arr, *post)
-                    for pre, arr, post in itertools.product(
-                        pre_array_queries, array_queries, post_array_queries
-                    )
+                    ivy.concat([
+                        ivy.array(pre_array_queries.to_numpy()[i]),
+                        ivy.array(array_queries.to_numpy()[j]),
+                        ivy.array(post_array_queries.to_numpy()[k])
+                    ])
+                    for i, j, k in combo_idx
                 ]
             ).reshape((*target_shape, len(x_shape)))
 
