@@ -34,7 +34,7 @@ BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
-BuiltCompileStrategy = st.booleans(False)
+BuiltCompileStrategy = st.just(False)
 BuiltFrontendArrayStrategy = st.booleans()
 
 
