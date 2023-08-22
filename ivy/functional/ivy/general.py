@@ -2995,61 +2995,62 @@ def _parse_query(query, x_shape, scatter=False):
             for arr in array_queries
         ]
         array_queries = ivy.stack(array_queries, axis=1)
-    if len(array_inds) == len(query):
+    if len(array_inds) == len(query):   # advanced indexing
         indices = array_queries.reshape((*target_shape, len(x_shape)))
-    elif len(array_inds) and to_front:
-        post_array_queries = (
-            ivy.stack(
-                ivy.meshgrid(
-                    *[v for i, v in enumerate(query) if i not in array_inds],
-                    indexing="ij",
-                ),
-                axis=-1,
-            ).reshape((-1, len(query) - len(array_inds)))
-            if len(array_inds) < len(query)
-            else ivy.empty((1, 0))
-        )
-        indices = ivy.array(
-            [
-                (*arr, *post)
-                for arr, post in itertools.product(array_queries, post_array_queries)
-            ]
-        ).reshape((*target_shape, len(x_shape)))
-    elif len(array_inds):
-        pre_array_queries = (
-            ivy.stack(
-                ivy.meshgrid(
-                    *[v for i, v in enumerate(query) if i < array_inds[0]],
-                    indexing="ij",
-                ),
-                axis=-1,
-            ).reshape((-1, array_inds[0]))
-            if array_inds[0] > 0
-            else ivy.empty((1, 0))
-        )
-        post_array_queries = (
-            ivy.stack(
-                ivy.meshgrid(
-                    *[v for i, v in enumerate(query) if i > array_inds[-1]],
-                    indexing="ij",
-                ),
-                axis=-1,
-            ).reshape((-1, len(query) - 1 - array_inds[-1]))
-            if array_inds[-1] < len(query) - 1
-            else ivy.empty((1, 0))
-        )
-        indices = ivy.array(
-            [
-                (*pre, *arr, *post)
-                for pre, arr, post in itertools.product(
-                    pre_array_queries, array_queries, post_array_queries
-                )
-            ]
-        ).reshape((*target_shape, len(x_shape)))
-    else:
+    elif len(array_inds) == 0:   # basic indexing
         indices = ivy.stack(ivy.meshgrid(*query, indexing="ij"), axis=-1).reshape(
             (*target_shape, len(x_shape))
         )
+    else:   # mixed indexing
+        if to_front:
+            post_array_queries = (
+                ivy.stack(
+                    ivy.meshgrid(
+                        *[v for i, v in enumerate(query) if i not in array_inds],
+                        indexing="ij",
+                    ),
+                    axis=-1,
+                ).reshape((-1, len(query) - len(array_inds)))
+                if len(array_inds) < len(query)
+                else ivy.empty((1, 0))
+            )
+            indices = ivy.array(
+                [
+                    (*arr, *post)
+                    for arr, post in itertools.product(array_queries, post_array_queries)
+                ]
+            ).reshape((*target_shape, len(x_shape)))
+        else:
+            pre_array_queries = (
+                ivy.stack(
+                    ivy.meshgrid(
+                        *[v for i, v in enumerate(query) if i < array_inds[0]],
+                        indexing="ij",
+                    ),
+                    axis=-1,
+                ).reshape((-1, array_inds[0]))
+                if array_inds[0] > 0
+                else ivy.empty((1, 0))
+            )
+            post_array_queries = (
+                ivy.stack(
+                    ivy.meshgrid(
+                        *[v for i, v in enumerate(query) if i > array_inds[-1]],
+                        indexing="ij",
+                    ),
+                    axis=-1,
+                ).reshape((-1, len(query) - 1 - array_inds[-1]))
+                if array_inds[-1] < len(query) - 1
+                else ivy.empty((1, 0))
+            )
+            indices = ivy.array(
+                [
+                    (*pre, *arr, *post)
+                    for pre, arr, post in itertools.product(
+                        pre_array_queries, array_queries, post_array_queries
+                    )
+                ]
+            ).reshape((*target_shape, len(x_shape)))
 
     return (
         indices.astype(ivy.int64),
