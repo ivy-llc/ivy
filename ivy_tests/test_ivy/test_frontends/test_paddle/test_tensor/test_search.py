@@ -314,16 +314,11 @@ def test_paddle_where(
     frontend,
     backend_fw,
     test_flags,
+    condition,
+    x,
+    y,
 ):
-    input_dtype, x = dtype_and_x
-    x = x[0]
-    condition = x > 0.5
-    x1 = x * 2
-    x2 = x * -2
-
-    # Convert input_dtype from list to string
-    input_dtype = input_dtype[0]
-
+    input_dtype = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=["bool", input_dtype, input_dtype],
         frontend=frontend,
@@ -332,6 +327,6 @@ def test_paddle_where(
         fn_tree=fn_tree,
         on_device=on_device,
         condition=condition,
-        x=x1,
-        y=x2,
+        x=x,
+        y=y,
     )
