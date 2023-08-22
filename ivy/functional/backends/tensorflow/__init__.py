@@ -186,7 +186,8 @@ def _handle_inplace_mode():
     )
 
 
-_handle_inplace_mode()
+if not native_inplace_support:
+    _handle_inplace_mode()
 
 supports_gradients = True
 
