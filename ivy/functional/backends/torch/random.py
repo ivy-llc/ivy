@@ -2,6 +2,7 @@
 
 # global
 import torch
+import torch.mps
 from typing import Optional, Union, Sequence
 
 # local
