@@ -140,6 +140,10 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
+    # @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def divide(self, other, *, out=None):
+        return torch_frontend.divide(self, other, out=out)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def sub(self, other, *, alpha=1):
         return torch_frontend.sub(self, other, alpha=alpha)
@@ -483,9 +487,7 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
-    @with_unsupported_dtypes(
-        {"2.0.1 and below": ("float16", "complex")}, "torch"
-    )
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def erf_(self, *, out=None):
         self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
 
@@ -543,6 +545,7 @@ class Tensor:
                         [
                             "cpu",
                             "cuda",
+                            "mps",
                             "xpu",
                             "mkldnn",
                             "opengl",
@@ -881,6 +884,11 @@ class Tensor:
     def neg(self):
         return torch_frontend.negative(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
+    def neg_(self):
+        self.ivy_array = torch_frontend.negative(self).ivy_array
+        return self
+
     __neg__ = neg
 
     def int(self, memory_format=None):
@@ -1062,6 +1070,10 @@ class Tensor:
     @with_supported_dtypes(
         {"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
     )
+    def reciprocal_(self):
+        self.ivy_array = torch_frontend.reciprocal(self).ivy_array
+        return self
+
     def remainder_(self, other, *, out=None):
         self.ivy_array = torch_frontend.remainder(self, other, out=out).ivy_array
         return self
@@ -1081,6 +1093,9 @@ class Tensor:
 
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
+
+    def msort(self):
+        return torch_frontend.msort(self)
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16", "complex")}, "torch"
@@ -1366,6 +1381,11 @@ class Tensor:
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def round_(self, *, decimals=0):
+        self.ivy_array = self.round(decimals=decimals).ivy_array
+        return self
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def cross(self, other, dim=-1):
@@ -1422,6 +1442,13 @@ class Tensor:
 
     def div_(self, other, *, rounding_mode=None):
         self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
+        return self
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float16", "float32", "float64", "bfloat16")}, "torch"
+    )
+    def true_divide_(self, other):
+        self.ivy_array = self.div(other, rounding_mode=None).ivy_array
         return self
 
     def normal_(self, mean=0, std=1, *, generator=None):
@@ -1598,9 +1625,10 @@ class Tensor:
             return strides[dim]
         return strides
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "bfloat16")}, "torch")
     def log1p(self):
-        return torch_frontend.log1p(self)
+        promoted_type = ivy.promote_types(self.dtype, "float32")
+        return torch_frontend.log1p(self).to(promoted_type)
 
     @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
     def log1p_(self):
@@ -1761,6 +1789,24 @@ class Tensor:
     )
     def lcm(self, other, *, out=None):
         return torch_frontend.lcm(self, other, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "int16",
+                "complex128",
+                "complex64",
+                "bool",
+            )
+        },
+        "torch",
+    )
+    def triu_(self, diagonal=0):
+        self.ivy_array = torch_frontend.triu(self, diagonal).ivy_array
+        return self
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16")},

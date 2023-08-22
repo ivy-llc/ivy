@@ -4,7 +4,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
@@ -25,7 +25,7 @@ def test_jax_ivy_array(
     backend_fw,
 ):
     _, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -50,7 +50,7 @@ def test_jax_array_dtype(
     backend_fw,
 ):
     dtype, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -68,7 +68,7 @@ def test_jax_array_ndim(
     backend_fw,
 ):
     dtype, data = dtype_x
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -87,7 +87,7 @@ def test_jax_array_shape(
     backend_fw,
 ):
     _, data, shape = dtype_x_shape
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -114,7 +114,7 @@ def _transpose_helper(draw):
 
 @given(x_transpose=_transpose_helper())
 def test_jax_array_property_T(x_transpose, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         x, xT = x_transpose
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
@@ -145,7 +145,7 @@ def _at_helper(draw):
     x_y_index=_at_helper(),
 )
 def test_jax_array_at(x_y_index, backend_fw):
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
@@ -2380,6 +2380,49 @@ def test_jax_array_ptp(
         },
         frontend=frontend,
         backend_to_test=backend_fw,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# max
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="max",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        min_num_dims=1,
+        valid_axis=True,
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_array_max(
+    dtype_and_x,
+    keepdims,
+    on_device,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdims": keepdims,
+        },
+        frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
