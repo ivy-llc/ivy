@@ -8,6 +8,26 @@ from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
 
+# Identity #
+# -------#
+class Identity(Module):
+    r"""A placeholder identity operator that is argument-insensitive.
+        Args:
+            args: any argument (unused)
+            kwargs: any keyword argument (unused)
+        Examples::
+            >>> m = ivy.Identity(54, unused_argument1=0.1, unused_argument2=False)
+            >>> input = ivy.randint(128, 20)
+            >>> output = m(input)
+            >>> print(output.size())
+            ivy.Size([128, 20])
+        """
+
+    def __init__(self, *args, **kwargs):
+        super(Identity, self).__init__()
+
+    def forward(self, input: ivy.Array) -> ivy.Array:
+        return input
 
 # Linear #
 # -------#
