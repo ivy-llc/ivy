@@ -302,7 +302,7 @@ def test_paddle_topk(
     fn_tree="paddle.where",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_dim_size=1,
+        min_num_dims=1,
     ),
     test_with_out=st.just(False),
 )
