@@ -2674,7 +2674,7 @@ class ContainerBase(dict, abc.ABC):
             if sub_str in kc
         ]
 
-    def cont_set_at_keys(self, target_dict):
+    def cont_set_at_keys(self, target_dict, inplace=False):
         """
         Set values of container object at specified keys.
 
