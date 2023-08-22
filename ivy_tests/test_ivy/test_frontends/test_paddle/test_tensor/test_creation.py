@@ -726,3 +726,37 @@ def test_paddle_complex(
         real=real,
         imag=imag,
     )
+
+
+# linspace
+@handle_frontend_test(
+    fn_tree="paddle.linspace",
+    start=helpers.floats(min_value=-10, max_value=10),
+    stop=helpers.floats(min_value=-10, max_value=10),
+    num=helpers.ints(min_value=1, max_value=5),
+    dtype=helpers.get_dtypes("float"),
+    test_with_out=st.just(False),
+)
+def test_paddle_linspace(
+    start,
+    stop,
+    num,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        stop=stop,
+        num=num,
+        dtype=dtype[0],
+    )
