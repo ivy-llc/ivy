@@ -71,7 +71,7 @@ def test_paddle_cos(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_broadcast_shape  (
+def test_paddle_broadcast_shape(
     *,
     dtype_and_x,
     on_device,
