@@ -22,7 +22,7 @@ def abs(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if "bool" in str(x.dtype):
+    if (hasattr(x, "dtype") and "bool" in str(x.dtype)) or type(x) == bool:
         return x
     # jnp.where is used for consistent gradients
     return jnp.where(x != 0, jnp.absolute(x), 0)
