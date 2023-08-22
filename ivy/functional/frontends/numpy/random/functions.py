@@ -255,11 +255,13 @@ def hyper_helper(ngood, nbad, nsample):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def hypergeometric(ngood, nbad, nsample, size=None):
-    if size == (1,):
-        return ivy.array([hyper_helper(ngood, nbad, nsample)])
     if size is None or size == tuple():
         return ivy.array(hyper_helper(ngood, nbad, nsample))
     u = ivy.empty(size, dtype=int)
+    if size is not int and len(size) == 1:
+        for index in range(size[0]):
+            u[index] = hyper_helper(ngood, nbad, nsample)
+        return u
     for index, s in ivy.ndenumerate(u):
         u[index] = hyper_helper(ngood, nbad, nsample)
     return u
