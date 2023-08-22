@@ -13,7 +13,7 @@ import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_test,
     assert_all_close,
-    update_backend,
+    BackendHandler,
 )
 
 
@@ -484,7 +484,7 @@ def test_tensorflow_Div(  # NOQA
 @st.composite
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
         elif ivy_backend.is_int_dtype(dtype):
@@ -1504,6 +1504,46 @@ def test_tensorflow_FloorMod(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_FFT(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
+# FFT2D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT2D",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    #test_with_out=st.just(False),
+)
+def test_tensorflow_FFT2D(
     *,
     dtype_and_x,
     frontend,
@@ -4344,4 +4384,44 @@ def test_tensorflow_Svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Igamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        abs_smallest_val=1e-5,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=2,
+        max_value=100,
+        allow_nan=False,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Igamma(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        a=xs[0],
+        x=xs[1],
     )
