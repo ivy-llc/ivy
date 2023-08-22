@@ -28,11 +28,11 @@ def log_poisson_loss(
 ) -> ivy.Array:
     """
     Compute the log-likelihood loss between the prediction and the target under the
-    assumption that the target has a Poisson distribution. Caveat: By default,
-    this is not the exact loss, but the loss minus a constant term [log(z!)].
-    That has no effect for optimization, but does not play well with relative loss
-    comparisons. To compute an approximation of the log factorial term, specify
-    ``compute_full_loss=True`` to enable Stirling's Approximation.
+    assumption that the target has a Poisson distribution. Caveat: By default, this is
+    not the exact loss, but the loss minus a constant term [log(z!)]. That has no effect
+    for optimization, but does not play well with relative loss comparisons. To compute
+    an approximation of the log factorial term, specify ``compute_full_loss=True`` to
+    enable Stirling's Approximation.
 
     Parameters
     ----------

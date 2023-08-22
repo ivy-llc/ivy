@@ -947,7 +947,7 @@ def trans_x_to_s(
     s: Sequence[int] = None,
     dim: Sequence[int] = (-2, -1),
 ) -> Union[tf.Tensor, tf.Variable]:
-    """change the shape of the input array x to the desired output shape s."""
+    """Change the shape of the input array x to the desired output shape s."""
     if x.dtype != tf.complex128 or x.dtype != tf.complex64:
         x = tf.cast(x, tf.float32)
     x_shape = x.shape

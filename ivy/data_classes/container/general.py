@@ -1017,7 +1017,6 @@ class _ContainerWithGeneral(ContainerBase):
             support in-place operations, raises IvyBackendException otherwise
         Examples
         --------
-
         >>> ivy.set_backend("numpy")
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())

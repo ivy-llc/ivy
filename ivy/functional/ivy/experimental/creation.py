@@ -293,16 +293,17 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Return the indices of the lower triangular part of a row by col matrix in a
-    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
-    row coordinates of all indices and the second row contains column coordinates.
-    Indices are ordered based on rows and then columns.  The lower triangular part
-    of the matrix is defined as the elements on and below the diagonal.  The argument
-    k controls which diagonal to consider. If k = 0, all elements on and below the main
-    diagonal are retained. A positive value excludes just as many diagonals below the
-    main diagonal, and similarly a negative value includes just as many diagonals
-    above the main diagonal. The main diagonal are the set of indices
-    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
+    """
+    Return the indices of the lower triangular part of a row by col matrix in a 2-by-N
+    shape (tuple of two N dimensional arrays), where the first row contains row
+    coordinates of all indices and the second row contains column coordinates. Indices
+    are ordered based on rows and then columns.  The lower triangular part of the matrix
+    is defined as the elements on and below the diagonal.  The argument k controls which
+    diagonal to consider. If k = 0, all elements on and below the main diagonal are
+    retained. A positive value excludes just as many diagonals below the main diagonal,
+    and similarly a negative value includes just as many diagonals above the main
+    diagonal. The main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
+    n_cols}−1].
 
     Notes
     -----
@@ -371,7 +372,6 @@ def tril_indices(
     >>> x = ivy.tril_indices(2,4,-100)
     >>> print(x)
     (ivy.array([]), ivy.array([]))
-
     """
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
@@ -391,10 +391,10 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
-    the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
+    """
+    Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having the
+    same ``shape`` as the first and last dim of input array ``x``. input array ``x``
     should to be 2D.
-
 
     Parameters
     ----------
@@ -452,7 +452,6 @@ def eye_like(
         b: ivy.array([[1., 0.],
                       [0., 1.]])
     }
-
     """
     shape = ivy.shape(x, as_array=True)
     dim = len(shape)
@@ -883,6 +882,7 @@ def trilu(
         on and above the specified diagonal ``k``. The lower triangular part
         of the matrix is defined as the elements on and below the specified
         diagonal ``k``.
+
     Parameters
     ----------
     x
@@ -897,6 +897,7 @@ def trilu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret

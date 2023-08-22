@@ -444,7 +444,7 @@ def __find_cummax_indices(
     axis: int = 0,
 ) -> np.ndarray:
     indices = []
-    if type(x[0]) == np.ndarray:
+    if x[0] is np.ndarray:
         if axis >= 1:
             for ret1 in x:
                 indice = __find_cummax_indices(ret1, axis=axis - 1)

@@ -50,7 +50,8 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the minimum value of the input array ``x``.
+    """
+    Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -158,7 +159,8 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the maximum value of the input array ``x``.
+    """
+    Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -268,7 +270,8 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the arithmetic mean of the input array ``x``.
+    """
+    Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -516,7 +519,8 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the standard deviation of the input array ``x``.
+    """
+    Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -631,7 +635,6 @@ def std(
         b: ivy.array([[1.],
                       [0.5]])
     }
-
     """
     return current_backend(x).std(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out

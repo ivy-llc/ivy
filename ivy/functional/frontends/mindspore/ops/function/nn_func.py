@@ -215,14 +215,16 @@ def kl_div(logits, labels, reduction="mean"):
     """
     Computes the Kullback-Leibler (KL) Divergence between the logits and the labels.
 
-    Parameters:
+    Parameters
+    ----------
         logits (numpy array): The input logits array.
         labels (numpy array): The label array which has the same shape as logits.
         reduction (str): Specifies the reduction to be applied to the output.
                          Its value must be one of 'none', 'mean', 'batchmean',
                          or 'sum'. Default: 'mean'.
 
-    Returns:
+    Returns
+    -------
         float or numpy array: If reduction is 'none', then output is
         a numpy array and has the same shape as logits.
                               Otherwise, it is a scalar (float).

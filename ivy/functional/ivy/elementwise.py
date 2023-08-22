@@ -35,7 +35,8 @@ def abs(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:  # noqa
-    """Calculate the absolute value for each element ``x_i`` of the input array ``x``
+    """
+    Calculate the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
     ``x`` but has positive sign).
 
@@ -120,7 +121,6 @@ def abs(
         a: ivy.array([0., 2.6, 3.5]),
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
-
     """
 
     return ivy.current_backend(x).abs(x, out=out)
@@ -250,7 +250,8 @@ def acosh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the inverse hyperbolic
+    """
+    Calculate an implementation-dependent approximation to the inverse hyperbolic
     cosine, having domain ``[+1, +infinity]`` and codomain ``[+0, +infinity]``, for each
     element ``x_i`` of the input array ``x``.
 
@@ -341,8 +342,6 @@ def acosh(
         a: ivy.array([0., 1.32, 2.99]),
         b: ivy.array([0., 2.99, 2.48])
     }
-
-
     """
     return ivy.current_backend(x).acosh(x, out=out)
 
@@ -362,7 +361,8 @@ def add(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the sum for each element ``x1_i`` of the input array ``x1`` with the
+    """
+    Calculate the sum for each element ``x1_i`` of the input array ``x1`` with the
     respective element ``x2_i`` of the input array ``x2``.
 
     **Special cases**
@@ -511,8 +511,9 @@ def asin(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation of the principal value of
-    the inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each
+    """
+    Calculate an implementation-dependent approximation of the principal value of the
+    inverse sine, having domain ``[-1, +1]`` and codomain ``[-π/2, +π/2]`` for each
     element ``x_i`` of the input array ``x``. Each element-wise result is expressed in
     radians.
 
@@ -600,9 +601,10 @@ def asinh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the inverse hyperbolic
-    sine, having domain ``[-infinity, +infinity]`` and codomain
-    ``[-infinity, +infinity]``, for each element ``x_i`` in the input array ``x``.
+    """
+    Calculate an implementation-dependent approximation to the inverse hyperbolic sine,
+    having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``,
+    for each element ``x_i`` in the input array ``x``.
 
     **Special cases**
 
@@ -690,7 +692,6 @@ def asinh(
         a: ivy.array([0., 0.881, 1.44]),
         b: ivy.array([2.14, -2.37, 0., -1.57])
     }
-
     """
     return ivy.current_backend(x).asinh(x, out=out)
 
@@ -709,10 +710,11 @@ def atan(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation of the principal value of
-    the inverse tangent, having domain ``[-infinity, +infinity]`` and codomain
-    ``[-π/2, +π/2]``, for each element ``x_i`` of the input array ``x``. Each
-    element-wise result is expressed in radians.
+    """
+    Calculate an implementation-dependent approximation of the principal value of the
+    inverse tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-π/2,
+    +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise result
+    is expressed in radians.
 
     **Special cases**
 
@@ -775,7 +777,6 @@ def atan(
         a: ivy.array([0., -0.785, 0.785]),
         b: ivy.array([0.785, 0., -1.41])
     }
-
     """
     return ivy.current_backend(x).atan(x, out=out)
 
@@ -794,16 +795,17 @@ def atan2(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation of the inverse tangent of
-    the quotient ``x1/x2``, having domain ``[-infinity, +infinity] x.
-    [-infinity, +infinity]`` (where the ``x`` notation denotes the set of ordered pairs
-    of elements ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for each pair of elements
-    ``(x1_i, x2_i)`` of the input arrays ``x1`` and ``x2``, respectively. Each
-    element-wise result is expressed in radians. The mathematical signs of
-    ``x1_i and x2_i`` determine the quadrant of each element-wise result. The quadrant
-    (i.e., branch) is chosen such that each element-wise result is the signed angle in
-    radians between the ray ending at the origin and passing through the point ``(1,0)``
-    and the ray ending at the origin and passing through the point ``(x2_i, x1_i)``.
+    """
+    Calculate an implementation-dependent approximation of the inverse tangent of the
+    quotient ``x1/x2``, having domain ``[-infinity, +infinity] x. [-infinity,
+    +infinity]`` (where the ``x`` notation denotes the set of ordered pairs of elements
+    ``(x1_i, x2_i)``) and codomain ``[-π, +π]``, for each pair of elements ``(x1_i,
+    x2_i)`` of the input arrays ``x1`` and ``x2``, respectively. Each element-wise
+    result is expressed in radians. The mathematical signs of ``x1_i and x2_i``
+    determine the quadrant of each element-wise result. The quadrant (i.e., branch) is
+    chosen such that each element-wise result is the signed angle in radians between the
+    ray ending at the origin and passing through the point ``(1,0)`` and the ray ending
+    at the origin and passing through the point ``(x2_i, x1_i)``.
 
     **Special cases**
 
@@ -969,7 +971,8 @@ def atanh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array with the inverse hyperbolic tangent of the elements of ``x``.
+    """
+    Return a new array with the inverse hyperbolic tangent of the elements of ``x``.
 
     Parameters
     ----------
@@ -1053,8 +1056,6 @@ def atanh(
         a: ivy.array([0., -0.549]),
         b: ivy.array([0., 0.549])
     }
-
-
     """
     return ivy.current_backend(x).atanh(x, out=out)
 
@@ -1073,7 +1074,8 @@ def bitwise_and(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the bitwise AND of the underlying binary representation of each element
+    """
+    Compute the bitwise AND of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
@@ -1167,7 +1169,8 @@ def bitwise_invert(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
+    """
+    Inverts (flips) each bit for each element ``x_i`` of the input array ``x``.
 
     Parameters
     ----------
@@ -1244,7 +1247,8 @@ def bitwise_left_shift(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the left by
     appending ``x2_i`` (i.e., the respective element in the input array ``x2``) zeros to
     the right of ``x1_i``.
 
@@ -1276,7 +1280,6 @@ def bitwise_left_shift(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
-
     """
     return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
@@ -1295,7 +1298,8 @@ def bitwise_or(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the bitwise OR of the underlying binary representation of each element
+    """
+    Compute the bitwise OR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
@@ -1365,7 +1369,6 @@ def bitwise_or(
         a: ivy.array([5,7,7]),
         b: ivy.array([5,6,7])
     }
-
     """
     return ivy.current_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
@@ -1385,8 +1388,8 @@ def bitwise_right_shift(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the
-    right according to the respective element ``x2_i`` of the input array ``x2``.
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right
+    according to the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
        This operation must be an arithmetic shift (i.e., sign-propagating) and thus
@@ -1500,9 +1503,9 @@ def bitwise_xor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the bitwise XOR of the underlying binary representation of each element
-    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the
-    input
+    """
+    Compute the bitwise XOR of the underlying binary representation of each element
+    ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
     **Special cases**
@@ -1607,8 +1610,9 @@ def ceil(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Round each element ``x_i`` of the input array ``x`` to the smallest (i.e.,
-    closest to ``-infinity``) integer-valued number that is not less than ``x_i``.
+    """
+    Round each element ``x_i`` of the input array ``x`` to the smallest (i.e., closest
+    to ``-infinity``) integer-valued number that is not less than ``x_i``.
 
     **Special cases**
 
@@ -1697,7 +1701,8 @@ def cos(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the cosine, having domain
+    """
+    Calculate an implementation-dependent approximation to the cosine, having domain
     ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of
     the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
 
@@ -1783,9 +1788,10 @@ def cosh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the hyperbolic cosine,
-    having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``,
-    for each element ``x_i`` in the input array ``x``.
+    """
+    Calculate an implementation-dependent approximation to the hyperbolic cosine, having
+    domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
+    element ``x_i`` in the input array ``x``.
 
     **Special cases**
 
@@ -2211,7 +2217,8 @@ def exp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the exponential function,
+    """
+    Calculate an implementation-dependent approximation to the exponential function,
     having domain ``[-infinity, +infinity]`` and codomain ``[+0, +infinity]``, for each
     element ``x_i`` of the input array ``x`` (``e`` raised to the power of ``x_i``,
     where ``e`` is the base of the natural logarithm).
@@ -2350,8 +2357,8 @@ def imag(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the imaginary part of a complex number for each element
-    ``x_i`` of the input array ``val``.
+    Return the imaginary part of a complex number for each element ``x_i`` of the input
+    array ``val``.
 
     Parameters
     ----------
@@ -2530,8 +2537,9 @@ def expm1(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to ``exp(x)-1``, having
-    domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element
+    """
+    Calculate an implementation-dependent approximation to ``exp(x)-1``, having domain
+    ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element
     ``x_i`` of the input array ``x``.
 
     .. note::
@@ -2656,8 +2664,9 @@ def floor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Round each element ``x_i`` of the input array ``x`` to the greatest (i.e.,
-    closest to ``+infinity``) integer-valued number that is not greater than ``x_i``.
+    """
+    Round each element ``x_i`` of the input array ``x`` to the greatest (i.e., closest
+    to ``+infinity``) integer-valued number that is not greater than ``x_i``.
 
     **Special cases**
 
@@ -2729,7 +2738,6 @@ def floor(
         a: ivy.array([0., 1., -3.]),
         b: ivy.array([3., -5., 0., -2.])
     }
-
     """
     return ivy.current_backend(x).floor(x, out=out)
 
@@ -3466,8 +3474,9 @@ def isfinite(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to determine if finite (i.e.,
-    not ``NaN`` and not equal to positive or negative infinity).
+    """
+    Test each element ``x_i`` of the input array ``x`` to determine if finite (i.e., not
+    ``NaN`` and not equal to positive or negative infinity).
 
     Parameters
     ----------
@@ -3689,8 +3698,9 @@ def isnan(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to determine whether the
-    element is ``NaN``.
+    """
+    Test each element ``x_i`` of the input array ``x`` to determine whether the element
+    is ``NaN``.
 
     Parameters
     ----------
@@ -3798,8 +3808,9 @@ def less(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the
-    input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """
+    Compute the truth value of ``x1_i < x2_i`` for each element ``x1_i`` of the input
+    array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
 
     Parameters
     ----------
@@ -3869,7 +3880,6 @@ def less(
         a: ivy.array([False, False, False]),
         b: ivy.array([True, True, True])
     }
-
     """
     return ivy.current_backend(x1).less(x1, x2, out=out)
 
@@ -3888,7 +3898,8 @@ def log(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the natural (base ``e``)
+    """
+    Calculate an implementation-dependent approximation to the natural (base ``e``)
     logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
     for each element ``x_i`` of the input array ``x``.
 
@@ -3988,9 +3999,10 @@ def log10(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Calculate an implementation-dependent approximation to the base ``10``
-    logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
-    for each element ``x_i`` of the input array ``x``.
+    r"""
+    Calculate an implementation-dependent approximation to the base ``10`` logarithm,
+    having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
+    element ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -4201,7 +4213,8 @@ def log2(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Calculate an implementation-dependent approximation to the base ``2`` logarithm,
+    r"""
+    Calculate an implementation-dependent approximation to the base ``2`` logarithm,
     having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
     element ``x_i`` of the input array ``x``.
 
@@ -4249,7 +4262,6 @@ def log2(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return ivy.current_backend(x).log2(x, out=out)
 
@@ -4268,9 +4280,10 @@ def logaddexp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))``
-    for each element ``x1_i`` of the input array ``x1`` with the respective element
-    ``x2_i`` of the input array ``x2``.
+    """
+    Calculate the logarithm of the sum of exponentiations ``log(exp(x1) + exp(x2))`` for
+    each element ``x1_i`` of the input array ``x1`` with the respective element ``x2_i``
+    of the input array ``x2``.
 
     **Special cases**
 
@@ -4352,7 +4365,6 @@ def logaddexp(
         a: ivy.array([4.05, 5.05, 6.05]),
         b: ivy.array([5.05, 6.05, 7.05])
     }
-
     """
     return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
@@ -4514,7 +4526,8 @@ def logical_not(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the logical NOT for each element ``x_i`` of the input array ``x``.
+    """
+    Compute the logical NOT for each element ``x_i`` of the input array ``x``.
 
     .. note::
        While this specification recommends that this function only accept input arrays
@@ -4611,8 +4624,9 @@ def logical_or(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the logical OR for each element ``x1_i`` of the input array ``x1`` with
-    the respective element ``x2_i`` of the input array ``x2``.
+    """
+    Compute the logical OR for each element ``x1_i`` of the input array ``x1`` with the
+    respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
        While this specification recommends that this function only accept input arrays
@@ -4702,7 +4716,8 @@ def logical_xor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the bitwise XOR of the underlying binary representation of each element
+    """
+    Compute the bitwise XOR of the underlying binary representation of each element
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
@@ -4862,7 +4877,8 @@ def negative(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array with the negative value of each element in ``x``.
+    """
+    Return a new array with the negative value of each element in ``x``.
 
     .. note::
        For signed integer data types, the numerical negative of
@@ -4930,7 +4946,6 @@ def negative(
         a: ivy.array([-0., -1., -2.]),
         b: ivy.array([-3., -4., 5.])
     }
-
     """
     return ivy.current_backend(x).negative(x, out=out)
 
@@ -4949,8 +4964,9 @@ def not_equal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the
-    input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+    """
+    Compute the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the input
+    array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
 
     **Special Cases**
 
@@ -5132,7 +5148,8 @@ def positive(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array with the positive value of each element in ``x``.
+    """
+    Return a new array with the positive value of each element in ``x``.
 
     Parameters
     ----------
@@ -5191,7 +5208,6 @@ def positive(
     a: ivy.array([0., 1., 2.]),
     b: ivy.array([3., 4., -5.])
     }
-
     """
     return ivy.current_backend(x).positive(x, out=out)
 
@@ -5210,7 +5226,8 @@ def pow(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation of exponentiation by raising
+    """
+    Calculate an implementation-dependent approximation of exponentiation by raising
     each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i``
     (the exponent), where ``x2_i`` is the corresponding element of the input array
     ``x2``.
@@ -5355,11 +5372,11 @@ def real(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to
-    take only real part from it.
-    Returns a float array, where it only contains .
-    If element has complex type with zero complex part, the return value
-    will be that element, else it only returns real part.
+    """
+    Test each element ``x_i`` of the input array ``x`` to take only real part from it.
+    Returns a float array, where it only contains . If element has complex type with
+    zero complex part, the return value will be that element, else it only returns real
+    part.
 
     Parameters
     ----------
@@ -5428,8 +5445,9 @@ def remainder(
     modulus: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the remainder of division for each element ``x1_i`` of the input array
-    ``x1`` and the respective element ``x2_i`` of the input array ``x2``.
+    """
+    Return the remainder of division for each element ``x1_i`` of the input array ``x1``
+    and the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
         This function is equivalent to the Python modulus operator ``x1_i % x2_i``. For
@@ -5557,8 +5575,9 @@ def round(
     decimals: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Round each element ``x_i`` of the input array ``x`` to the nearest
-    integer-valued number.
+    """
+    Round each element ``x_i`` of the input array ``x`` to the nearest integer-valued
+    number.
 
     .. note::
        For complex floating-point operands, real and imaginary components
@@ -5678,8 +5697,9 @@ def sign(
     np_variant: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Return an indication of the sign of a number for each element ``x_i`` of the
-    input array ``x``.
+    r"""
+    Return an indication of the sign of a number for each element ``x_i`` of the input
+    array ``x``.
 
     The sign function (also known as the **signum function**)
     of a number :math:`x_{i}` is defined as
@@ -5786,7 +5806,8 @@ def sin(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Calculate an implementation-dependent approximation to the sine, having domain
+    r"""
+    Calculate an implementation-dependent approximation to the sine, having domain
     ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of
     the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
 
@@ -5880,9 +5901,10 @@ def sinh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Calculate an implementation-dependent approximation to the hyperbolic sine,
-    having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``,
-    for each element ``x_i`` of the input array ``x``.
+    r"""
+    Calculate an implementation-dependent approximation to the hyperbolic sine, having
+    domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
+    element ``x_i`` of the input array ``x``.
 
     .. math::
        \operatorname{sinh}(x) = \frac{e^x - e^{-x}}{2}
@@ -6003,10 +6025,11 @@ def sqrt(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Calculate the square root, having domain ``[0, +infinity]`` and codomain
-    ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
-    rounding, each result must be indistinguishable from the infinitely precise result
-    (as required by IEEE 754).
+    r"""
+    Calculate the square root, having domain ``[0, +infinity]`` and codomain ``[0,
+    +infinity]``, for each element ``x_i`` of the input array ``x``. After rounding,
+    each result must be indistinguishable from the infinitely precise result (as
+    required by IEEE 754).
 
     .. note::
        After rounding, each result must be indistinguishable
@@ -6134,7 +6157,8 @@ def square(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Each element ``x_i`` of the input array ``x``.
+    """
+    Each element ``x_i`` of the input array ``x``.
 
     Parameters
     ----------
@@ -6208,8 +6232,9 @@ def subtract(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the difference for each element ``x1_i`` of the input array ``x1``
-    with the respective element ``x2_i`` of the input array ``x2``.
+    """
+    Calculate the difference for each element ``x1_i`` of the input array ``x1`` with
+    the respective element ``x2_i`` of the input array ``x2``.
 
     Parameters
     ----------
@@ -6253,7 +6278,6 @@ def subtract(
     >>> z = ivy.subtract(x, y, alpha=2)
     >>> print(z)
     ivy.array([-1,  4, -9])
-
     """
     return ivy.current_backend(x1).subtract(x1, x2, alpha=alpha, out=out)
 
@@ -6378,8 +6402,8 @@ def tanh(
 ) -> ivy.Array:
     """
     Calculate an implementation-dependent approximation to the hyperbolic tangent,
-    having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each
-    element ``x_i`` of the input array ``x``.
+    having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each element
+    ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -6667,7 +6691,8 @@ def erf(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the Gauss error function of ``x`` element-wise.
+    """
+    Compute the Gauss error function of ``x`` element-wise.
 
     Parameters
     ----------
@@ -6706,7 +6731,8 @@ def maximum(
     use_where: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
+    """
+    Return the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
@@ -6797,7 +6823,8 @@ def minimum(
     use_where: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
+    """
+    Return the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
     Parameters
     ----------
@@ -6887,7 +6914,8 @@ def reciprocal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array with the reciprocal of each element in ``x``.
+    """
+    Return a new array with the reciprocal of each element in ``x``.
 
     Parameters
     ----------
@@ -7143,11 +7171,11 @@ def isreal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to determine whether the
-    element is real number.
-    Returns a bool array, where True if input element is real.
-    If element has complex type with zero complex part, the return value
-    for that element is True.
+    """
+    Test each element ``x_i`` of the input array ``x`` to determine whether the element
+    is real number. Returns a bool array, where True if input element is real. If
+    element has complex type with zero complex part, the return value for that element
+    is True.
 
     Parameters
     ----------

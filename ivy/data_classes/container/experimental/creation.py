@@ -983,10 +983,12 @@ class _ContainerWithCreationExperimental(ContainerBase):
             The data type to produce. Must be a floating point type.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container that contains the Blackman windows.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -1033,10 +1035,12 @@ class _ContainerWithCreationExperimental(ContainerBase):
             The data type to produce. Must be a floating point type.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container containing the Blackman windows.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
