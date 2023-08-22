@@ -463,7 +463,7 @@ More information about these arrays can be found in `NumPy's documentation <http
 This essentially means that any inplace update on the original array or any of its views will cause all the other views to be updated as well since they reference the same memory buffer.
 
 We want to keep supporting NumPy and PyTorch inplace updates whenever we can and superset backend behaviour, however it is not trivial to replicate this in JAX and TensorFlow.
-The main reason is because these frameworks do not natively support inplace updates so even if multiple native arrays are referencing the same memory buffer, you would ever be able to update it once for all of them.
+The main reason is because these frameworks do not natively support inplace updates so even if multiple native arrays are referencing the same memory buffer, you would never be able to update it once for all of them.
 Therefore views and their updates must be tracked through Ivy and extra logic has been added to update views in the case an inplace update happens to any array which is meant to be referencing the same memory.
 We call views tracked and updated by Ivy functional views as they work with a functional paradigm.
 
