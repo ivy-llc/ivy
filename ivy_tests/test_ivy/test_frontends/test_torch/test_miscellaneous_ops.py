@@ -1722,6 +1722,7 @@ def test_torch_kron(
         other=label,
     )
 
+
 # bincount
 @handle_frontend_test(
     fn_tree="torch.bincount",
@@ -1740,13 +1741,13 @@ def test_torch_kron(
     test_with_out=st.just(False),
 )
 def test_torch_bincount(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        backend_fw,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
