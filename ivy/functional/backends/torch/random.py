@@ -121,6 +121,7 @@ def seed(*, seed_value: int = 0) -> None:
     if hasattr(torch.backends, "mps"):
         if torch.backends.mps.is_available():
             import torch.mps
+
             torch.mps.manual_seed(seed_value)
     return
 
