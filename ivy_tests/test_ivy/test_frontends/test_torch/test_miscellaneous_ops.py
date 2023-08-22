@@ -1298,8 +1298,7 @@ def test_torch_broadcast_to(
     backend_fw,
 ):
     input_dtype, array, shape = array_and_shape
-    kwargs = {"array": array[0], "shape": shape}
-    test_flags.num_positional_args = len(kwargs)
+    test_flags.num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1307,7 +1306,8 @@ def test_torch_broadcast_to(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        **kwargs,
+        array=array[0],
+        shape=shape,
     )
 
 
