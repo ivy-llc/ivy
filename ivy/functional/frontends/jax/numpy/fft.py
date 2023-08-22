@@ -36,3 +36,4 @@ def fft2(a, s=None, axes=(-2, -1), norm=None):
     if ivy.dtype(a) == "complex128":
         return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex128")
     return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex64")
+
