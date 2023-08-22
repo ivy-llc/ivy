@@ -52,7 +52,7 @@ def test_jax_numpy_fft(
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.fft2",
     dtype_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex", mixed_fn_compos=False),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=1,
         min_value=-1e5,
         max_value=1e5,
@@ -66,19 +66,13 @@ def test_jax_numpy_fft(
         safety_factor_scale="log",
     ),
     axes=st.sampled_from([(0, 1), (-1, -2), (1, 0)]),
-    s=st.tuples(st.integers(min_value=2, max_value=256), st.integers(min_value=2, max_value=256)),
+    s=st.tuples(
+        st.integers(min_value=2, max_value=256), st.integers(min_value=2, max_value=256)
+    ),
     norm=st.sampled_from(["backward", "ortho", "forward", None]),
 )
 def test_jax_numpy_fft2(
-    dtype_values,
-    s,
-    axes,
-    norm,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device
+    dtype_values, s, axes, norm, frontend, backend_fw, test_flags, fn_tree, on_device,
 ):
     dtype, values = dtype_values
     helpers.test_frontend_function(
@@ -94,7 +88,6 @@ def test_jax_numpy_fft2(
         norm=norm,
         atol=1e-02,
         rtol=1e-02,
-        test_values=False,
     )
 
 

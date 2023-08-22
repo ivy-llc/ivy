@@ -2,6 +2,7 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
+import numpy as np
 
 
 @to_ivy_arrays_and_back
@@ -32,5 +33,4 @@ def fft(a, n=None, axis=-1, norm=None):
 def fft2(a, s=None, axes=(-2, -1), norm=None):
     if norm is None:
         norm = "backward"
-    a = ivy.array(a)
     return ivy.fft2(a, s=s, dim=axes, norm=norm)
