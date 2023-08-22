@@ -527,4 +527,17 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
 
 
     elif ivy.get_num_dims(input) == 5: # sample from 3D images
+        n, c, d, h, w = input.shape
+        n, to_d, to_h, to_w, gc = grid.shape
+
+        padding = [(0, 0) for i in range(2)] + [
+            (1, 3),
+            (1, 3),
+            (1, 3)
+        ]
         pass
+
+    else:
+        print("Not supported input shape")
+
+
