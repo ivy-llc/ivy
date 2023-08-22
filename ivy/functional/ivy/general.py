@@ -3,6 +3,7 @@
 # global
 import gc
 import inspect
+import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -2931,26 +2932,18 @@ def _parse_query(query, x_shape, scatter=False):
     # broadcast array queries
     array_inds = [i for i, v in enumerate(query) if ivy.is_array(v)]
     if array_inds:
-        new_arrays = ivy.broadcast_arrays(
+        array_queries = ivy.broadcast_arrays(
             *[v for i, v in enumerate(query) if i in array_inds]
         )
-        new_arrays = [
+        array_queries = [
             ivy.where(arr < 0, arr + x_shape[i], arr).astype(ivy.int64)
-            for arr, i in zip(new_arrays, array_inds)
+            for arr, i in zip(array_queries, array_inds)
         ]
-        for idx, arr in zip(array_inds, new_arrays):
+        for idx, arr in zip(array_inds, array_queries):
             query[idx] = arr
 
-    # convert slices to range arrays and replace negative values
-    for i, idx in enumerate(query):
-        s = x_shape[i]
-        if isinstance(idx, slice):
-            q_i = _parse_slice(idx, s)
-        elif ivy.is_array(idx):
-            q_i = ivy.where(idx < 0, idx + s, idx)
-        else:
-            raise ivy.exceptions.IvyException("unsupported query format")
-        query[i] = q_i.astype(ivy.int64)
+    # convert slices to range arrays
+    query = [_parse_slice(q, x_shape[i]).astype(ivy.int64) for i, q in enumerate(query) if isinstance(q, slice)]
 
     # fill in missing queries
     if len(query) < len(x_shape):
@@ -2959,14 +2952,14 @@ def _parse_query(query, x_shape, scatter=False):
     # calculate target_shape, i.e. the shape the gathered/scattered values should have
     if len(array_inds) and to_front:
         target_shape = (
-            [list(new_arrays[0].shape)]
+            [list(array_queries[0].shape)]
             + [list(query[i].shape) for i in range(len(query)) if i not in array_inds]
             + [[] for _ in range(len(array_inds) - 1)]
         )
     elif len(array_inds):
         target_shape = (
             [list(query[i].shape) for i in range(0, array_inds[0])]
-            + [list(new_arrays[0].shape)]
+            + [list(array_queries[0].shape)]
             + [[] for _ in range(len(array_inds) - 1)]
             + [list(query[i].shape) for i in range(array_inds[-1] + 1, len(query))]
         )
@@ -2988,16 +2981,19 @@ def _parse_query(query, x_shape, scatter=False):
     # calculate the indices mesh (indices in gather_nd/scatter_nd format)
     query = [ivy.expand_dims(q) if not len(q.shape) else q for q in query]
     if len(array_inds):
-        new_arrays = [
+        array_queries = [
             (
                 arr.reshape((-1,))
                 if len(arr.shape) > 1
                 else ivy.expand_dims(arr) if not len(arr.shape) else arr
             )
-            for arr in new_arrays
+            for arr in array_queries
         ]
-    if len(array_inds) and to_front:
-        post_arrays = (
+        array_queries = ivy.stack(array_queries, axis=1)
+    if len(array_inds) == len(query):
+        indices = array_queries.reshape((*target_shape, len(x_shape)))
+    elif len(array_inds) and to_front:
+        post_array_queries = (
             ivy.stack(
                 ivy.meshgrid(
                     *[v for i, v in enumerate(query) if i not in array_inds],
@@ -3009,10 +3005,14 @@ def _parse_query(query, x_shape, scatter=False):
             else ivy.empty((1, 0))
         )
         indices = ivy.array(
-            [(*arr, *post) for arr in zip(*new_arrays) for post in post_arrays]
+            [
+                (*arr, *post)
+                for arr, post
+                in itertools.product(array_queries, post_array_queries)
+            ]
         ).reshape((*target_shape, len(x_shape)))
     elif len(array_inds):
-        pre_arrays = (
+        pre_array_queries = (
             ivy.stack(
                 ivy.meshgrid(
                     *[v for i, v in enumerate(query) if i < array_inds[0]],
@@ -3023,7 +3023,7 @@ def _parse_query(query, x_shape, scatter=False):
             if array_inds[0] > 0
             else ivy.empty((1, 0))
         )
-        post_arrays = (
+        post_array_queries = (
             ivy.stack(
                 ivy.meshgrid(
                     *[v for i, v in enumerate(query) if i > array_inds[-1]],
@@ -3037,9 +3037,8 @@ def _parse_query(query, x_shape, scatter=False):
         indices = ivy.array(
             [
                 (*pre, *arr, *post)
-                for pre in pre_arrays
-                for arr in zip(*new_arrays)
-                for post in post_arrays
+                for pre, arr, post
+                in itertools.product(pre_array_queries, array_queries, post_array_queries)
             ]
         ).reshape((*target_shape, len(x_shape)))
     else:
