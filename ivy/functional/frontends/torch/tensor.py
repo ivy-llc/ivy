@@ -545,6 +545,7 @@ class Tensor:
                         [
                             "cpu",
                             "cuda",
+                            "mps",
                             "xpu",
                             "mkldnn",
                             "opengl",
@@ -1380,6 +1381,11 @@ class Tensor:
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def round_(self, *, decimals=0):
+        self.ivy_array = self.round(decimals=decimals).ivy_array
+        return self
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def cross(self, other, dim=-1):
@@ -1619,9 +1625,10 @@ class Tensor:
             return strides[dim]
         return strides
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "bfloat16")}, "torch")
     def log1p(self):
-        return torch_frontend.log1p(self)
+        promoted_type = ivy.promote_types(self.dtype, "float32")
+        return torch_frontend.log1p(self).to(promoted_type)
 
     @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
     def log1p_(self):
