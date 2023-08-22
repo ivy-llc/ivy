@@ -1,4 +1,5 @@
 # global
+import logging
 import os
 import copy
 import types
@@ -502,7 +503,7 @@ def _handle_inplace_mode():
                 "Ivy will throw an error "
                 "whenever an inplace update is attempted."
             )
-        verbosity.cprint(message, color="red")
+        logging.warning(message)
 
 
 def set_numpy_backend():
