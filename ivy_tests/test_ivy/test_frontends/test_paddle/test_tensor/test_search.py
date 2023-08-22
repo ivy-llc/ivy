@@ -301,33 +301,37 @@ def test_paddle_topk(
 @handle_frontend_test(
     fn_tree="paddle.where",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_dim_size=1,
     ),
+    test_with_out=st.just(False),
 )
 def test_paddle_where(
     *,
     dtype_and_x,
-    x1,
-    x2,
-    name,
     on_device,
     fn_tree,
     frontend,
     backend_fw,
     test_flags,
 ):
-    input_dtype, x, x1, x2 = dtype_and_x
+    input_dtype, x = dtype_and_x
+    x = x[0]
+    x > 0.5
+    x1 = x * 2
+    x2 = x * -2
+
+    # Convert input_dtype from list to string
+    input_dtype = input_dtype[0]
+
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=["bool", input_dtype, input_dtype],
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        condition=x,
-        x1=x1,
-        x2=x2,
-        name=name,
         on_device=on_device,
-        test_values=False,
+        condition=x,
+        x=x1,
+        y=x2,
     )

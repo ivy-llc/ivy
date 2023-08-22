@@ -88,19 +88,17 @@ def topk(x, k, axis=None, largest=True, sorted=True, name=None):
 
 
 # where
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bfloat16",
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-        )
-    },
-    "paddle",
-)
 @to_ivy_arrays_and_back
 def where(condition, x=None, y=None, name=None):
-    return ivy.where(condition=condition, x1=x, x2=y)
+    if x is not None and y is not None:
+        return ivy.where(condition, x, y)
+    else:
+        raise ValueError("Both x and y should be given.")
+
+
+# @to_ivy_arrays_and_back
+# def where(condition, x=None, y=None, size=None, fill_value=0):
+#     if x is not None and y is not None:
+#         return ivy.where(condition, x, y)
+#     else:
+#         raise ValueError("Both x and y should be given.")
