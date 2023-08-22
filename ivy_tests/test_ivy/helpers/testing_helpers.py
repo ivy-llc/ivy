@@ -547,7 +547,6 @@ def handle_method(
     *,
     init_tree: str = "",
     method_tree: str = None,
-    gt_method_tree: str = None,
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_compile=BuiltCompileStrategy,
@@ -645,7 +644,6 @@ def handle_method(
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
             fn_tree=method_tree,
-            gt_fn_tree=gt_method_tree,
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
             is_method=True,
