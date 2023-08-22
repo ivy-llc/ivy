@@ -1094,6 +1094,9 @@ class Tensor:
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
+    def msort(self):
+        return torch_frontend.msort(self)
+
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16", "complex")}, "torch"
     )
@@ -1377,6 +1380,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def round_(self, *, decimals=0):
+        self.ivy_array = self.round(decimals=decimals).ivy_array
+        return self
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
