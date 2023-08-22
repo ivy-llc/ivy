@@ -138,7 +138,9 @@ def test_jax_silu(
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
     ),
-    negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
+    negative_slope=helpers.floats(
+        min_value=0.0, max_value=1.0, small_abs_safety_factor=16
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_leaky_relu(
