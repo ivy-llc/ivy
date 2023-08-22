@@ -396,25 +396,9 @@ def bicubic_interp(fx):
     coeff.append(1 - coeff[0] - coeff[1] - coeff[2])
     return coeff
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "float32")}, "torch")
-@to_ivy_arrays_and_back
+# @with_unsupported_dtypes({"2.0.1 and below": ("float16", "float32")}, "torch")
+#@to_ivy_arrays_and_back
 def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corners=None):
-    #Todo: dim checking
-    #Todo: Unnormalize the coordinate base on the align corner
-        # If aligh corner is False(default) compute the coordinate as :((grid + 1) * &w or h - 1) / 2, else ((grid + 1) / 2) * (w - 1)
-        # We might need to perform the reflection, zeros, board clamping at here since we gonna do it in high efficient way
-
-    #Todo: Compute the location base on padding mode
-    #   nearest: pick the rounded coordinate directly
-    #   Bilinear: obtain the four surrounding point's value (affected by outbound and padding mode)
-    #       padding mode (filling the sampling that out of bound):
-    #           zeros: use zeros
-    #           reflect: would be affect by alignmode because aligh mode has larger border to -1
-    #           borders: use border value(clamped value):  min[border[w or h], max[0, values]]
-    #   Bicubic:
-
-
-    #Todo: Apply grid sample, write values to the output
     if ivy.get_num_dims(input) == 4: # sample from 2D images
         n, c, h, w = input.shape
         n, to_h, to_w, gc = grid.shape
