@@ -317,7 +317,7 @@ def test_paddle_where(
 ):
     input_dtype, x = dtype_and_x
     x = x[0]
-    x > 0.5
+    condition = x > 0.5
     x1 = x * 2
     x2 = x * -2
 
@@ -331,7 +331,7 @@ def test_paddle_where(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=x,
+        condition=condition,
         x=x1,
         y=x2,
     )
