@@ -470,3 +470,21 @@ def tensor_diag_part(input, name=None):
     reshaped = ivy.reshape(input, (prod, prod))
     diagonal = ivy.diagonal(reshaped)
     return ivy.reshape(diagonal, tuple(half_shape))
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.13.0 and below": ("complex64", "complex128")},
+    "tensorflow",
+)
+def logm(input, name=None):
+    eigenvalues, eigenvectors = ivy.eig(input)
+    log_eig = ivy.log(eigenvalues)
+    diagonal = ivy.diag(log_eig)
+
+    inverse = ivy.inv(eigenvectors)
+    intermediary = ivy.matmul(diagonal, inverse)
+
+    result = ivy.matmul(eigenvectors, intermediary)
+
+    return result

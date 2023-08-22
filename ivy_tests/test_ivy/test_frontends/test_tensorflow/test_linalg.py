@@ -1239,3 +1239,43 @@ def test_tensorflow_tensor_diag_part(
         on_device=on_device,
         input=input[0],
     )
+
+
+@st.composite
+def _get_dtype_and_complex_matrix(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=["complex64", "complex128"],
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.logm",
+    dtype_and_input=_get_dtype_and_complex_matrix(),
+)
+def test_tensorflow_logm(
+    *,
+    dtype_and_input,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
