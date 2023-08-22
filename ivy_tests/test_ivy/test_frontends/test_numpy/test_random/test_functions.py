@@ -1,5 +1,5 @@
 # global,
-from hypothesis import strategies as st, assume, reproduce_failure
+from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
