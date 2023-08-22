@@ -51,8 +51,6 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> np.ndarray:
-    if copy:
-        x = np.copy(x)
     x.__setitem__(query, val)
     return x
 

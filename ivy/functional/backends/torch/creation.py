@@ -130,7 +130,7 @@ def asarray(
 
     ret = torch.as_tensor(obj, dtype=dtype, device=device)
 
-    return ret.clone().detach() if copy else ret
+    return ret
 
 
 def empty(

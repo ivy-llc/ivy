@@ -2759,12 +2759,10 @@ def get_item(
     query
         array, index array, integer indices or boolean mask.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -2803,8 +2801,6 @@ def get_item(
             )
         ret = ivy.gather_nd(x, query)
         ret = ivy.reshape(ret, target_shape) if target_shape != list(ret.shape) else ret
-    if copy:
-        return ivy.copy_array(ret)
     return ret
 
 
@@ -2843,9 +2839,10 @@ def set_item(
     val
         the array containing the values to be infused into x
     copy
-        boolean indicating whether to copy x.
-        If True, the function will update and return a copy of x.
-        If False, the function will update x inplace.
+        boolean indicating whether or not to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -2870,8 +2867,6 @@ def set_item(
     ivy.array([[ 0, -1, 20],
            [10, 10, 10]])
     """
-    if copy:
-        x = ivy.copy_array(x)
     if 0 in x.shape or 0 in val.shape:
         return x
     inv_perm = None

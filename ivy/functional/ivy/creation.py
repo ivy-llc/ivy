@@ -33,6 +33,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    handle_view,
 )
 
 # Helpers #
@@ -384,6 +385,7 @@ def arange(
 @handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
+@handle_view
 @handle_array_function
 @handle_device_shifting
 def asarray(
@@ -415,7 +417,10 @@ def asarray(
         input data, in any form that can be converted to an array. This includes lists,
         lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
     copy
-        boolean, indicating whether or not to copy the input. Default: ``None``.
+        boolean indicating whether or not to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     dtype
        output array data type. If ``dtype`` is ``None``, the output array data type must
        be the default floating-point data type. Default  ``None``.

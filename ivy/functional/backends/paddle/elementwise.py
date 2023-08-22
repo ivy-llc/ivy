@@ -1346,8 +1346,5 @@ def nan_to_num(
             paddle.to_tensor(neginf, dtype=x.dtype),
             ret,
         )
-        if copy:
-            return ret.clone()
-        else:
-            x = ret
-            return x
+        x = ret
+        return x

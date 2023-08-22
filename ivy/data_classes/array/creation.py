@@ -5,6 +5,7 @@ from typing import Optional, Union, List
 
 # local
 import ivy
+from ivy import handle_view
 
 
 # Array API Standard #
@@ -12,6 +13,7 @@ import ivy
 
 
 class _ArrayWithCreation(abc.ABC):
+    @handle_view
     def asarray(
         self: ivy.Array,
         /,
@@ -35,10 +37,9 @@ class _ArrayWithCreation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a view
+            of the input array.
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device

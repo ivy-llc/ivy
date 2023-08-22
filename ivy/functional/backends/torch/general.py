@@ -110,8 +110,6 @@ def set_item(
 ) -> torch.Tensor:
     if hasattr(x, "dtype") and hasattr(val, "dtype") and x.dtype != val.dtype:
         val = val.to(x.dtype)
-    if copy:
-        x = x.clone()
     x.__setitem__(query, val)
     return x
 
