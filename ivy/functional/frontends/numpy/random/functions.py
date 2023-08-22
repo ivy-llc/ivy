@@ -1,6 +1,4 @@
 # local
-import random
-
 
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
@@ -238,31 +236,11 @@ def triangular(left, mode, right, size=None):
     return ivy.where(condition, values1, values2)
 
 
-def hyper_helper(ngood, nbad, nsample):
-    u = []
-    for i in range(nsample):
-        choice = random.choices(
-            [1, 0], weights=(ngood / (ngood + nbad), nbad / (ngood + nbad)), k=1
-        )
-        u += choice
-        if choice == [1] and ngood > 0:
-            ngood -= 1
-        elif nbad > 0:
-            nbad -= 1
-    return sum(u)  # ivy.array(sum(u))
-
-
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def hypergeometric(ngood, nbad, nsample, size=None):
-    if size is None or size == tuple():
-        return ivy.array(hyper_helper(ngood, nbad, nsample))
-    u = ivy.empty(size, dtype=int)
-    if size is not int and len(size) == 1:
-        for index in range(size[0]):
-            u[index] = hyper_helper(ngood, nbad, nsample)
-        return u
-    for index, s in ivy.ndenumerate(u):
-        u[index] = hyper_helper(ngood, nbad, nsample)
+def laplace(loc=0.0, scale=1.0, size=None):
+    if size is None:
+        size = 1
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    u = loc - scale * ivy.sign(u) * ivy.log(1 - 2 * ivy.abs(u))
     return u
-    # return u.squeeze() if size == 1 else u
