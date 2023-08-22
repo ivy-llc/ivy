@@ -24,6 +24,12 @@ def acos(x, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def acos(x, name=None):
+    return ivy.acos(x)
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
 
@@ -236,12 +242,12 @@ def erf(x, name=None):
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-            "complex64",
-            "complex128",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
         )
     },
     "paddle",
@@ -444,10 +450,10 @@ def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
 )
 @to_ivy_arrays_and_back
 def take(
-    x,
-    index,
-    mode="raise",
-    name=None,
+        x,
+        index,
+        mode="raise",
+        name=None,
 ):
     if mode not in ["raise", "wrap", "clip"]:
         raise ValueError(
