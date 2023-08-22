@@ -52,9 +52,9 @@ def batch_norm(
         x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
     mean.requires_grad = False
     variance.requires_grad = False
-    if scale:
+    if scale is not None:
         scale.requires_grad = False
-    if offset:
+    if offset is not None:
         offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
@@ -99,9 +99,9 @@ def instance_norm(
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
     variance.requires_grad = False
-    if scale:
+    if scale is not None:
         scale.requires_grad = False
-    if offset:
+    if offset is not None:
         offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
