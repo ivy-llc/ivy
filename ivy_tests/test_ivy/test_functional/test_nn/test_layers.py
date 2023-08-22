@@ -68,6 +68,7 @@ def x_and_linear(draw):
 )
 def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_device):
     dtype, x, weight, bias = dtype_x_weight_bias
+    print(dtype_x_weight_bias)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,

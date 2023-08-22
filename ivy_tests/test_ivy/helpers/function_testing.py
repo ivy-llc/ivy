@@ -261,6 +261,7 @@ def test_function_backend_computation(
         arrays_kwargs_indices,
         kwarg_np_arrays,
         test_flags,
+        input_dtypes,
     )
 
 
@@ -450,6 +451,7 @@ def test_function(
             arrays_kwargs_indices,
             kwarg_np_arrays,
             test_flags,
+            input_dtypes,
         ) = output_queue.get()
     else:
         (
@@ -463,6 +465,7 @@ def test_function(
             arrays_kwargs_indices,
             kwarg_np_arrays,
             test_flags,
+            input_dtypes,
         ) = test_function_backend_computation(
             backend_to_test,
             test_flags,

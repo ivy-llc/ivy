@@ -7,7 +7,7 @@ from functools import reduce as _reduce
 from operator import mul
 import sys
 import string
-import paddle_bfloat  # noqa
+import ml_dtypes  # noqa
 
 # local
 import ivy_tests.test_ivy.helpers.globals as test_globals

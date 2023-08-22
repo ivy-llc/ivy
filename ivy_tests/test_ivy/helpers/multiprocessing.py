@@ -94,6 +94,7 @@ def backend_proc(input_queue, output_queue):
                 arrays_kwargs_indices,
                 kwarg_np_arrays,
                 test_flags,
+                input_dtypes,
             ) = test_function_backend_computation(
                 fw, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name
             )
@@ -101,7 +102,7 @@ def backend_proc(input_queue, output_queue):
             # framework imports blocked
             output_queue.put(
                 (
-                    None,
+                    (None),
                     ret_np_flat_from_target,
                     ret_device,
                     args_np,
@@ -111,6 +112,7 @@ def backend_proc(input_queue, output_queue):
                     arrays_kwargs_indices,
                     kwarg_np_arrays,
                     test_flags,
+                    input_dtypes,
                 )
             )
         elif data[0] == "function_ground_truth_computation":
@@ -151,7 +153,7 @@ def backend_proc(input_queue, output_queue):
             # ret_from gt is none because main process has frameworks is None
             output_queue.put(
                 (
-                    None,
+                    (None),
                     ret_np_from_gt_flat,
                     ret_from_gt_device,
                     test_flags,
@@ -193,7 +195,7 @@ def backend_proc(input_queue, output_queue):
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
-            output_queue.put(grads_np_flat)
+            output_queue.put((grads_np_flat))
 
         elif data[0] == "gradient_ground_truth_computation":
             # gradient testing, part where it uses ground truth
@@ -279,9 +281,10 @@ def backend_proc(input_queue, output_queue):
                 test_compile,
                 method_with_v,
             )
+            # ret is none here, because main process doesn't import framework
             output_queue.put(
                 (
-                    ret,
+                    (None),
                     ret_np_flat,
                     ret_device,
                     org_con_data,
@@ -337,8 +340,9 @@ def backend_proc(input_queue, output_queue):
                 test_compile,
                 v_np,
             )
+            # ret from gt None here, because main process doesn't import framework
             output_queue.put(
-                (ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2)
+                ((None), ret_np_from_gt_flat, ret_from_gt_device, fw_list2)
             )
 
         if not data:
