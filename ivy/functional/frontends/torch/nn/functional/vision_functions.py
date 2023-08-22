@@ -367,8 +367,8 @@ def affine_grid(theta, size, align_corners=False):
 
 def border_clamp(grid, w, h):
     ones = ivy.ones_like(grid[:, :, :, 0])
-    grid[:, :, :, 0] = ivy.fmin(w + ones - 1, ivy.fmax(grid[:, :, :, 0], ones))
-    grid[:, :, :, 1] = ivy.fmin(h + ones - 1, ivy.fmax(grid[:, :, :, 1], ones))
+    grid[:, :, :, 0] = ivy.fmin(w + ones, ivy.fmax(grid[:, :, :, 0], ones))
+    grid[:, :, :, 1] = ivy.fmin(h + ones, ivy.fmax(grid[:, :, :, 1], ones))
     return grid
 
 def reflect(x, low2, high2):
@@ -383,22 +383,25 @@ def reflect(x, low2, high2):
     x[flips % 2 != 0] += (span - extra + min)[flips % 2 != 0]
     return x
 
-def bicubic_interp(fx):
-    alpha = -0.75
-    coeff = []
+def bicubic_interp(fx, alpha = -0.75):
+    coeffs = []
 
     fx0 = fx + 1
     fx2 = 1 - fx
 
-    coeff.append(alpha * fx0 * fx0 * fx0 - (5 * alpha * fx0 * fx0) + (8 * alpha * fx0) - (4 * alpha))
-    coeff.append((alpha + 2) * fx * fx * fx - ((alpha + 3) * fx * fx) + 1)
-    coeff.append((alpha + 2) * fx2 * fx2 * fx2 - ((alpha + 3) * fx2 * fx2) + 1)
-    coeff.append(1 - coeff[0] - coeff[1] - coeff[2])
-    return coeff
+    coeffs.append(alpha * fx0 * fx0 * fx0 - (5 * alpha * fx0 * fx0) + (8 * alpha * fx0) - (4 * alpha))
+    coeffs.append((alpha + 2) * fx * fx * fx - ((alpha + 3) * fx * fx) + 1)
+    coeffs.append((alpha + 2) * fx2 * fx2 * fx2 - ((alpha + 3) * fx2 * fx2) + 1)
+    coeffs.append(1 - coeffs[0] - coeffs[1] - coeffs[2])
+    return coeffs
 
-# @with_unsupported_dtypes({"2.0.1 and below": ("float16", "float32")}, "torch")
-#@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "float32")}, "torch")
+@to_ivy_arrays_and_back
 def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corners=None):
+    # Ref:
+    # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cpu/GridSamplerKernel.cpp
+    # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/GridSampler.cu
+    # https://github.com/Tencent/ncnn/blob/cb674ac5eddb32f0709a60c81f71d2cbc6bc89da/src/layer/gridsample.cpp#L21
     if ivy.get_num_dims(input) == 4: # sample from 2D images
         n, c, h, w = input.shape
         n, to_h, to_w, gc = grid.shape
@@ -417,16 +420,19 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
             grid[:, :, :, 0] = ((grid[:, :, :, 0] + 1) * w - 1) / 2
             grid[:, :, :, 1] = ((grid[:, :, :, 1] + 1) * h - 1) / 2
 
+        grid += 1
+        h += 1
+        w += 1
+
 
         # compute all coordinate depends on padding mode. Apply padding(zeros, reflect, border)
-
         if padding_mode == 'reflection':
             if align_corners:
-                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], 0, 2*(w - 1))
-                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], 0, 2*(h - 1))
+                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], 1, 2*(w - 1))
+                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], 1, 2*(h - 1))
             else:
-                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], -0.5, 2*w - 1)
-                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], -0.5, 2*h - 1)
+                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], 0, 2*w - 1)
+                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], 0, 2*h - 1)
 
             grid = border_clamp(grid, w - 1, h - 1)
             input = ivy.pad(input, padding, mode="reflect")
@@ -439,14 +445,14 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
             w_mask = ivy.bitwise_or(grid[:, :, :, 0] < 0, grid[:, :, :, 0] > w)
             h_mask = ivy.bitwise_or(grid[:, :, :, 1] < 0, grid[:, :, :, 1] > h)
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
-            grid[zeros_mask] *= (w * h)
+            grid[zeros_mask] += (w * h)
             grid = border_clamp(grid, w, h)
             input = ivy.pad(input, padding, mode="constant", constant_values=0)
 
         # Shift because we need to perform bicubic
-        grid += 1
-        h += 1
-        w += 1
+        # grid += 1
+        # h += 1
+        # w += 1
 
         # Apply sampling by mode
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
