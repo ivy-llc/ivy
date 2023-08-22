@@ -695,7 +695,6 @@ def _moveaxis_helper(draw):
 
     return dtypes, values, source_axis, destination_axis
 
-
 @handle_frontend_test(
     fn_tree="paddle.moveaxis",
     dt_x_source_destination=_moveaxis_helper(),
@@ -704,6 +703,24 @@ def _moveaxis_helper(draw):
 def test_paddle_moveaxis(
     *,
     dt_x_source_destination,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, x, source_axis, destination_axis = dt_x_source_destination
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        source=source_axis,
+        destination=destination_axis,
+    )
 
 
 
