@@ -1345,6 +1345,7 @@ def sparsify_tensor(
     x: Union[ivy.Array, ivy.NativeArray],
     card: int,
     /,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
