@@ -463,8 +463,8 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
 
 
         if mode == 'bilinear':
-            w0 = ivy.astype(ivy.floor(w_coor), ivy.int64) #.long()
-            h0 = ivy.astype(ivy.floor(h_coor), ivy.int64) #.long()
+            w0 = ivy.astype(ivy.floor(w_coor), ivy.int64)
+            h0 = ivy.astype(ivy.floor(h_coor), ivy.int64)
             w1 = w0 + 1
             h1 = h0 + 1
 
