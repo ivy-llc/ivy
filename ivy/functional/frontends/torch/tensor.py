@@ -392,6 +392,15 @@ class Tensor:
     def relu(self):
         return torch_frontend_nn.relu(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
+    def copy_(self, other, non_blocking=False):
+        ivy.utils.assertions.check_one_way_broadcastable(
+            self.ivy_array.shape,
+            torch_frontend.tensor(other).ivy_array.shape
+            )
+        self._ivy_array = torch_frontend.tensor(other).ivy_array
+        return self
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def amax(self, dim=None, keepdim=False):
