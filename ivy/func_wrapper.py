@@ -602,6 +602,12 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Make `fn` receive `ivy.NativeArray` and return `ivy.Array`.
+    Wrap `fn` so that input arrays are all converted to
+    `ivy.NativeArray` instances and return arrays are all converted to
+    `ivy.Array` instances.
+    """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
 
 
