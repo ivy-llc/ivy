@@ -420,26 +420,18 @@ def _expand_as_helper(draw):
     return dtype, x, shape
 
 
-@handle_frontend_test(
-    fn_tree="paddle.expand_as",
-    dtype_x_and_shape=_expand_as_helper(),
-)
-def test_paddle_expand_as(
-    *,
-    dtype_x_and_shape,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
-):
+@st.composite
+def dtype_x_and_shape(draw):
+    input_dtype = draw(st.sampled_from(["float32", "int32", "float64"]))
+    shape = draw(st.lists(st.integers(min_value=1, max_value=10), min_size=1, max_size=4))
+    x = draw(helpers.array_values(shape=shape, dtype=input_dtype))
+    return input_dtype, x, shape
+
+@given(dtype_x_and_shape())
+def test_paddle_expand_as(dtype_x_and_shape):
     input_dtype, x, shape = dtype_x_and_shape
-    y = draw(
-        helpers.array_values(
-            shape=shape,
-            dtype=input_dtype,
-        )
-    )
+    y = helpers.array_values(shape=shape, dtype=input_dtype).example()
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
