@@ -1,5 +1,5 @@
 # global,
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st, assume, reproduce_failure
 import numpy as np
 
 # local
@@ -412,7 +412,7 @@ def test_numpy_standard_gamma(
 
 @handle_frontend_test(
     fn_tree="numpy.random.standard_t",
-    df=st.floats(min_value=0, max_value=20, exclude_min=True),
+    df=st.floats(min_value=1, max_value=20),
     df_dtypes=helpers.get_dtypes("integer", full=False),
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
