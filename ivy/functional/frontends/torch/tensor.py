@@ -378,8 +378,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     def copy_(self, other, non_blocking=False):
         ivy.utils.assertions.check_one_way_broadcastable(
-            self.ivy_array.shape,
-            torch_frontend.tensor(other).ivy_array.shape
+            self.ivy_array.shape, torch_frontend.tensor(other).ivy_array.shape
         )
         self._ivy_array = torch_frontend.tensor(other).ivy_array
         return self
