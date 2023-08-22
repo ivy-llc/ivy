@@ -1,6 +1,8 @@
 # global
 import sys
 import logging
+import warnings
+
 import tensorflow as tf
 
 for device in tf.config.experimental.list_physical_devices("GPU"):
@@ -148,6 +150,39 @@ invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_ver
 
 native_inplace_support = False
 
+backend = "tensorflow"
+
+
+def _handle_inplace_mode():
+    if not hasattr(ivy, "inplace_mode") or ivy.inplace_mode not in [
+        "lenient",
+        "strict",
+    ]:
+        ivy.set_inplace_mode("lenient")
+
+    if ivy.inplace_mode == "lenient":
+        message = (
+            f"The current backend: '{backend}' does not support "
+            "inplace updates natively for arrays but does for variables. "
+            "And since the current ivy.inplace_mode is set to 'lenient', "
+            "Ivy would quietly create new arrays when using inplace "
+            "updates, but a 'strict' mode is available if you want to "
+            "control your memory management and raise an error "
+            "whenever an inplace update is attempted."
+        )
+    else:
+        message = (
+            f"The current backend: '{backend}' does not support "
+            "inplace updates natively for arrays but does for variables. "
+            "And since the current ivy.inplace_mode is set to 'strict', "
+            "Ivy will throw an error "
+            "whenever an inplace update is attempted."
+        )
+    warnings.warn(message)
+
+
+_handle_inplace_mode()
+
 supports_gradients = True
 
 
@@ -155,9 +190,6 @@ def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
         type = ivy.default_dtype()
     return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
-
-
-backend = "tensorflow"
 
 
 # local sub-modules

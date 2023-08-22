@@ -1,5 +1,4 @@
 # global
-import logging
 import os
 import copy
 import types
@@ -466,44 +465,7 @@ def set_backend(backend: str, dynamic: bool = False):
         if verbosity.level > 0:
             verbosity.cprint("backend stack: {}".format(backend_stack))
 
-    _handle_inplace_mode()
-
     return ivy
-
-
-def _handle_inplace_mode():
-    if not hasattr(ivy, "inplace_mode") or ivy.inplace_mode not in [
-        "lenient",
-        "strict",
-    ]:
-        ivy.set_inplace_mode("lenient")
-
-    variable_support_msg = (
-        "but it can do inplace updates operations on variables"
-        if ivy.inplace_variables_supported()
-        else "and variables."
-    )
-
-    if not ivy.inplace_arrays_supported():
-        if ivy.inplace_mode == "lenient":
-            message = (
-                f"The current backend: '{ivy.current_backend_str()}' does not support "
-                f"inplace updates natively for arrays {variable_support_msg} "
-                "And since the current ivy.inplace_mode is set to 'lenient', "
-                "Ivy would quietly create new arrays when using inplace "
-                "updates, but a 'strict' mode is available if you want to "
-                "control your memory management and raise an error "
-                "whenever an inplace update is attempted."
-            )
-        else:
-            message = (
-                f"The current backend: '{ivy.current_backend_str()}' does not support "
-                f"inplace updates natively for arrays {variable_support_msg} "
-                "And since the current ivy.inplace_mode is set to 'strict', "
-                "Ivy will throw an error "
-                "whenever an inplace update is attempted."
-            )
-        logging.warning(message)
 
 
 def set_numpy_backend():
