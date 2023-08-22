@@ -180,24 +180,29 @@ def _handle_inplace_mode():
         ivy.set_inplace_mode("lenient")
 
     if ivy.inplace_mode == "lenient":
-        message = (
+        inplace_update_msg = (
             f"The current backend: '{backend}' does not support "
             "inplace updates natively for arrays and variables "
             "And since the current ivy.inplace_mode is set to 'lenient', "
             "Ivy would quietly create new arrays when using inplace "
             "updates, but a 'strict' mode is available if you want to "
             "control your memory management and raise an error "
-            "whenever an inplace update is attempted."
+            "whenever an inplace update is attempted.\n"
         )
     else:
-        message = (
+        inplace_update_msg = (
             f"The current backend: '{backend}' does not support "
             "inplace updates natively for arrays and variables "
             "And since the current ivy.inplace_mode is set to 'strict', "
             "Ivy will throw an error "
-            "whenever an inplace update is attempted."
+            "whenever an inplace update is attempted.\n"
         )
-    warnings.warn(message)
+    warnings.warn(inplace_update_msg)
+    warnings.warn(
+        f"The current backend: '{backend}' "
+        "will lead to overhead Creating many views"
+        "when performing inplace updates.\n"
+    )
 
 
 _handle_inplace_mode()

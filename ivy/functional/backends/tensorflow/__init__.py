@@ -179,6 +179,11 @@ def _handle_inplace_mode():
             "whenever an inplace update is attempted."
         )
     warnings.warn(message)
+    warnings.warn(
+        f"The current backend: '{backend}' "
+        "will lead to overhead Creating many views"
+        "when performing inplace updates.\n"
+    )
 
 
 _handle_inplace_mode()
