@@ -300,32 +300,34 @@ def test_paddle_topk(
 # where
 @handle_frontend_test(
     fn_tree="paddle.where",
-    dtype_x_and_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes(
-            "bfloat16", "float16", "float32", "float64", "int32", "int64"
-        ),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_dim_size=1,
     ),
 )
 def test_paddle_where(
     *,
-    dtype_x_and_axis,
+    dtype_and_x,
+    x1,
+    x2,
+    name,
     on_device,
     fn_tree,
     frontend,
     backend_fw,
     test_flags,
 ):
-    input_dtypes, condition, x1, x2 = dtype_x_and_axis
+    input_dtype, x, x1, x2 = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=input_dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        condition=condition,
+        condition=x,
         x1=x1,
         x2=x2,
+        name=name,
         on_device=on_device,
         test_values=False,
     )
