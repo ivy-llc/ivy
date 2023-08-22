@@ -29,8 +29,6 @@ def fft(a, n=None, axis=-1, norm=None):
     return ivy.fft(a, axis, norm=norm, n=n)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("complex128", "complex64")}, "numpy")
-@with_unsupported_dtypes({"2.4.2 and below": ("complex128", "complex64")}, "jax")
 @to_ivy_arrays_and_back
 def fft2(a, s=None, axes=(-2, -1), norm=None):
     if norm is None:
