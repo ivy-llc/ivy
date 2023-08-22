@@ -814,10 +814,7 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 def softsign(features, name=None):
     return ivy.divide(features, ivy.abs(features) + 1)
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("float16", "bfloat16")},
-    "tensorflow"
-)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 
 @to_ivy_arrays_and_back
 def atan(x, name=None):

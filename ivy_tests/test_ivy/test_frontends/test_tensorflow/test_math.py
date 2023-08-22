@@ -3201,6 +3201,7 @@ def test_tensorflow_softsign(
         features=x[0],
     )
 
+
 # atan
 @handle_frontend_test(
     fn_tree="tensorflow.math.atan",
