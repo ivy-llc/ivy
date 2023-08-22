@@ -1488,9 +1488,16 @@ def handle_complex_input(fn: Callable) -> Callable:
         if complex_mode == "split" or (complex_mode == "jax" and jax_like == "split"):
             real_inp = ivy.real(inp).data
             imag_inp = ivy.imag(inp).data
+            if "out" in kwargs and kwargs["out"] is not None:
+                out = kwargs.pop("out")
+                real_ret = fn(real_inp, *args, out=ivy.real(out), **kwargs)
+                imag_ret = fn(imag_inp, *args, out=ivy.imag(out), **kwargs)
+            else:
+                real_ret = fn(real_inp, *args, **kwargs)
+                imag_ret = fn(imag_inp, *args, **kwargs)
             return ivy.add(
-                fn(real_inp, *args, **kwargs),
-                ivy.multiply(1j, fn(imag_inp, *args, **kwargs)),
+                real_ret,
+                ivy.multiply(ivy.array(1j, dtype=inp.dtype), imag_ret),
             )
 
         elif complex_mode == "magnitude" or (
