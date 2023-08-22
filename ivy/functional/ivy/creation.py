@@ -2154,11 +2154,8 @@ def triu_indices(
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
 
 
-@handle_nestable
-@handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_array_function
 @infer_dtype
 @infer_device
 def complex(
