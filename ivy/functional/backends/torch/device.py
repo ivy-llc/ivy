@@ -81,6 +81,7 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:
         torch.cuda.empty_cache()
     elif torch_dev.type == "mps":
         from torch import mps
+
         mps.empty_cache()
 
 
