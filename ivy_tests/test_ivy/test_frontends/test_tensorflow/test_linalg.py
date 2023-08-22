@@ -1198,3 +1198,44 @@ def test_tensorflow_expm(
         atol=1,
         rtol=1e-01,
     )
+
+
+@st.composite
+def _get_dtype_and_rank_2k_tensors(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    shape = arbitrary_dims + arbitrary_dims
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+
+# Tests for tensorflow.linalg.tensor_diag_part function's frontend
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tensor_diag_part",
+    dtype_and_input=_get_dtype_and_rank_2k_tensors(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tensor_diag_part(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+    )
