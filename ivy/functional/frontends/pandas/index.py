@@ -1,6 +1,7 @@
 import ivy
 import ivy.functional.frontends.pandas.series as series
 
+
 class Index:
     def __init__(self, data, dtype=None, copy=False, name=None, tupleize_cols=True):
         self.index = data
@@ -18,6 +19,9 @@ class Index:
 
     def __len__(self):
         return len(self.index_array)
+
+    def __iter__(self):
+        return iter(self.index_array.to_list())
 
     @property
     def ndim(self):
@@ -47,7 +51,6 @@ class Index:
     def is_unique(self):
         uniques = ivy.unique_values(self)
         return len(uniques) == len(self.index_array)
-
 
     def to_list(self):
         return self.index_array.to_list()
