@@ -31,7 +31,6 @@ def fill_diagonal(a, val, wrap=False):
     a = ivy.reshape(temp, shape)
 
 
-
 @to_ivy_arrays_and_back
 def putmask(a, mask, values, /):
     if values.size == 0:
@@ -39,6 +38,7 @@ def putmask(a, mask, values, /):
     if values.size != a.size:
         values = np_frontend.resize(values, a.shape)
     a[mask] = values[mask]
+
 
 class AxisConcatenator:
     # allow ma.mr_ to override this
