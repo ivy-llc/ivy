@@ -142,14 +142,14 @@ There are a few other points to take note of when working on your chosen fronten
 #. You should only implement **one** frontend function.
 #. The frontend function is framework-specific, thus it should be implemented in its respective frontend framework only.
 #. Each frontend function should be tested on all backends to ensure that conversions are working correctly.
-#. Type hints, docstrings and examples are not required for frontend functions.
+#. Type hints, docstrings, and examples are not required for frontend functions.
 #. Some frontend functions shown in the ToDo list issues are aliases of other functions.
    If you detect that this is the case, then you should add all aliases in your PR, with a single implementation and then simple bindings to this implementation, such as :code:`<alias_name> = <function_name>`.
    If you notice that an alias function has already been implemented and pushed, then you can simply add this one-liner binding and get this very simple PR merged.
 
 In the case where your chosen function exists in all frameworks by default, but is not implemented in Ivy's functional API, please convert your existing GitHub issue to request for the function to be added to Ivy.
 Meanwhile, you can select another frontend function to work on from the ToDo list!
-If you're stuck on a function which requires complex compositions, you're allowed to reselect a function too!
+If you're stuck on a function that requires complex compositions, you're allowed to reselect a function too!
 
 Where to place a frontend function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,7 +180,7 @@ Taking :code:`numpy.inner` as an example, we can see that there are a few :code:
     ufunc
 
 There is a :code:`linalg` sub-directory, so we choose this.
-Then we need to choose from the files at this hierarchy:
+Then we need to choose from the files in this hierarchy:
 
 .. code-block:: bash
     :emphasize-lines: 3
@@ -262,26 +262,26 @@ Where to place a backend function
 
 The placement of the backend function should be in the proper location to follow the proper structure as guided below.
 
-There are multiple types of backend functions as discussed above, we will go through 3 of those which you will encounter while adding a backend function in our Funcional API:
+There are multiple types of backend functions as discussed above, we will go through 3 of those which you will encounter while adding a backend function in our Functional API:
 
 **Primary Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation
-(where ivy.current_backend(x).function_name() is called), refer the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
+(where ivy.current_backend(x).function_name() is called), refer to the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
 to get a clearer picture of how this must be done. Then, implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`,
-you can refer the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
+you can refer to the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
 
 **Compositional Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, we will not use the primary function approach in this
-case, the implementaion will be a composition of functions from Ivy's functional API. You can refer to
-`Compostional Functions Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#compositional-functions>`_ for a better understanding of this.
+case, the implementation will be a composition of functions from Ivy's functional API. You can refer to
+`Compositional Functions Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#compositional-functions>`_ for a better understanding of this.
 You don't need to add any implementation in any other file in this case.
 
 **Mixed Functions**
 
 Sometimes, a function may only be provided by some of the supported backends. In this case, we have to take a mixed approach. You can say that this is a mix of both
-primary and a compositional function. For this, you have to implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, where the implementaion
+primary and a compositional function. For this, you have to implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, where the implementation
 will be a composition of functions from Ivy's functional API. After you are done with this, you then have to implement the functions in each of the backend files
 :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`.
 
@@ -301,9 +301,9 @@ Creating an Issue on Ivy's GitHub using a Template
    * Bug Report:
       In case you find a bug in our API, you have to provide details in the form and the issue will be assigned to one of our team members to look into.
    * Feature request:
-      If you want to suggest an idea for our project, our team is always open for suggestions.
+      If you want to suggest an idea for our project, our team is always open to suggestions.
    * Missing Function Suggestion:
-      In case you find a function which the other frameworks have and is missing in our API or we have some functionality missing which the other frameworks support(superset behavior).
+      In case you find a function that the other frameworks have and is missing in our API or we have some functionality missing that the other frameworks support(superset behavior).
    * Sub-Task:
       Reserve a sub-task from a ToDo list issue.
    * Questions:

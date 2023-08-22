@@ -17,7 +17,7 @@ As new future frameworks become available, backend-specific code quickly becomes
    :align: center
    :width: 80%
 
-If our desire is to provide a new framework which simultaneously supports all of the modern frameworks in a simple and scalable manner, then we must determine exactly where the common ground lies between them.
+If our desire is to provide a new framework that simultaneously supports all of the modern frameworks in a simple and scalable manner, then we must determine exactly where the common ground lies between them.
 
 Finding common ground between the existing frameworks is essential in order to design a simple, scalable, and universal abstraction.
 
@@ -31,6 +31,6 @@ The functional APIs of all existing ML frameworks are all cut from the same clot
 
 **Round Up**
 
-Hopefully this has painted a clear picture of how many different ML frameworks have exploded onto the scene 🙂
+Hopefully, this has painted a clear picture of how many different ML frameworks have exploded onto the scene 🙂
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

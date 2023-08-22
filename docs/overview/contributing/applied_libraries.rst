@@ -20,7 +20,7 @@ Helping to contribute towards the ivy libraries requires a slightly more complex
 For instance, `Ivy Robot`_ depends on `Mech`_, `Vision`_ and `Demo Utils`_.
 Thus, the related repositories have to be pulled into the same local folder, and `Ivy`_ must also be pulled into this same folder.
 
-To have a better grasp, let's look at an example for Ivy Robot in the next section!
+To have a better grasp, let's look at an example of Ivy Robot in the next section!
 
 Example - Ivy Robot
 -------------------
@@ -131,7 +131,7 @@ Example - Ivy Robot
 
 2. For **VSCode**, configurations can be found in the :code:`.devcontainer` folder (not part of the ivy repo).
 
-**NOTE:** To use development container in VSCode, the extension "Remote - Containers" needs to be installed.
+**NOTE:** To use the development container in VSCode, the extension "Remote - Containers" needs to be installed.
 
 **NOTE:** When using GitHub Codespaces, the :code:`mounts` config in :code:`.devcontainer/devcontainer.json` is not supported.
 

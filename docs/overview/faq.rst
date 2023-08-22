@@ -27,7 +27,7 @@ This is not entirely surprising, each framework has strong backward compatibilit
 Our CI always tests against the latest version available on PyPI, and this has been the case since we started development.
 We do not lock-in any versions during our continuous testing, and we will continue to always pull the latest version.
 
-In future, we hope to add explicit testing also for previous versions, so we can guarantee backward compatibility for each backend.
+In the future, we hope to add explicit testing also for previous versions, so we can guarantee backward compatibility for each backend.
 We will also add an option to select backend versions for the small minority of cases where changes in the backend functional APIs do cause breaking changes for Ivy.
 
 Dynamic Sizes
@@ -36,7 +36,7 @@ Dynamic Sizes
 **Q:** Assuming a static computation graph, can tensors have sizes that dynamically change?
 XLA does not support dynamic sizes, because it JIT-compiles the graph, and pre-allocates all buffers in memory before the graph runs.
 TensorFlow and PyTorch do allow dynamic sizes, but only on certain backends.
-Dynamic sizes require a dynamic memory memory manager, which CPUs/GPUs have, but XLA currently doesn't.
+Dynamic sizes require a dynamic memory manager, which CPUs/GPUs have, but XLA currently doesn't.
 How does Ivy deal with all of this?
 
 **A:** Ivy assumes dynamic shapes are supported, but an error will be thrown if/when the function is compiled with dynamic shapes enabled, but the backend does not support dynamic shapes in the compiled graph.
@@ -55,8 +55,8 @@ GPU handling
 ------------
 **Q:** How does Ivy handle GPU usage? 
 
-**A:** Ivy handles GPU usage by simply wrapping the backend frameworks, and so Ivy will use GPUs in the same manner as the backend framework does.
-E.g. When using a torch backend, then torch will be a dependency of Ivy, and its handling of GPU functionalities will be inherited and extended upon by Ivy.
+**A:** Ivy handles GPU usage by simply wrapping the backend frameworks, so Ivy will use GPUs in the same manner as the backend framework does.
+E.g. When using a torch backend, torch will be a dependency of Ivy, and its handling of GPU functionalities will be inherited and extended upon by Ivy.
 
 Model Deployment
 ----------------
@@ -72,7 +72,7 @@ Dynamic Control Flow
 Jax also has dynamic control-flow (:code:`lax.scan`, :code:`lax.while`), but support is limited; only :code:`lax.scan` is differentiable in reverse mode.
 
 Branching is also tricky, and is backend-dependent.
-CPUs have branch predictors and can execute tight loops, GPUs don't, but have drivers that can schedule kernels dynamically, some other architectures do static scheduling, which limits the kinds of algorithms that can run effectively.
+CPUs have branch predictors and can execute tight loops, GPUs don't, but have drivers that can schedule kernels dynamically, and some other architectures do static scheduling, which limits the kinds of algorithms that can run effectively.
 
 TensorFlow eager and PyTorch allow you to use full python control flow, (loops, branches, function calls, dynamic dispatch, recursion) but there is no static computation graph.
 How will Ivy handle dynamic control flow?

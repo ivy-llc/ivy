@@ -17,7 +17,7 @@ We're excited for you to get involved! 🦾
 | A quick tour through the codebase
 |
 | (b) :ref:`Function Types` 🧮
-| Primary, compositional, mixed and nestable functions
+| Primary, compositional, mixed, and nestable functions
 |
 | (c) :ref:`Superset Behaviour` ⊃
 | Ivy goes for the superset when unifying the backend functions

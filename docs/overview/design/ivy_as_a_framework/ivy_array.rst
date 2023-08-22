@@ -185,7 +185,7 @@ Similarly, for demonstration purposes, this code can be rewritten as:
     z = x.__add__(y).__mul__(3).__pow__(0.5)
     print(z)
 
-Even if this works fine for all backend frameworks now, what if Ivy is updated to support new backends in future, and one of them behaves a little bit differently?
+Even if this works fine for all backend frameworks now, what if Ivy is updated to support new backends in the future, and one of them behaves a little bit differently?
 For example, maybe one framework makes the strange decision to return rounded integer data types when integer arrays are raised to floating point powers.
 
 Without enforcing the use of the :class:`ivy.Array` class for arrays returned from Ivy methods, we would have no way to control this behaviour and unify the output :code:`z` for all backends.

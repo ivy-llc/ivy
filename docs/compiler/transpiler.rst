@@ -56,7 +56,7 @@ Transpiler API
   :param params_v: Parameters of a haiku model, as when transpiling these, the parameters
                    need to be passed explicitly to the function call.
   :rtype: ``Union[Graph, LazyGraph, ModuleType, ivy.Module, torch.nn.Module, tf.keras.Model, hk.Module]``
-  :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is an native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
+  :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is a native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
 
 .. py:function:: ivy.unify(*objs, source = None, args = None, kwargs = None, **transpile_kwargs,)
 
@@ -74,7 +74,7 @@ Transpiler API
   :param transpile_kwargs: Arbitrary keyword arguments that will be passed to ``ivy.transpile``.
 
   :rtype: ``Union[Graph, LazyGraph, ModuleType, ivy.Module]``
-  :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is an native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
+  :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is a native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
 
 Using the transpiler
 --------------------
@@ -196,7 +196,7 @@ another, at the moment we support ``torch.nn.Module`` when ``to="torch"``,
 Ivy.unify
 ~~~~~~~~~
 
-As mentioned above, ``ivy.unify`` is an alias to transpilation to Ivy, so you can use it
+As mentioned above, ``ivy.unify`` is an alias for transpilation to Ivy, so you can use it
 exactly in the same way to convert framework specific code to Ivy.
 
 .. code-block:: python
@@ -230,7 +230,7 @@ still working on some rough edges. These include:
    model from another framework that only takes ``kwargs`` is transpiled to keras, 
    you'll need to pass a ``None`` argument to the transpiled model before the 
    corresponding ``kwargs``.
-3. **Haiku transform with state**: As of now, we only support transpilation of 
+3. **Haiku transform with state**: As of now, we only support the transpilation of 
    transformed Haiku modules, this means that ``transformed_with_state`` objects will 
    not be correctly transpiled.
 4. **Array format between frameworks**: As the compiler outputs a 1-to-1 mapping of the 
