@@ -296,9 +296,11 @@ def modf(
     x: np.ndarray,
     /,
     *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> np.ndarray:
-    return np.modf(x, out=out)
+    if out:
+        return np.modf(x, out=out)
+    return np.modf(x)
 
 
 # ---digamma---#
