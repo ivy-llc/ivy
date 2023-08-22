@@ -9,7 +9,6 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     handle_tf_dtype,
     to_ivy_dtype,
 )
-from ivy.functional.frontends.tensorflow.dtypes import cast
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
