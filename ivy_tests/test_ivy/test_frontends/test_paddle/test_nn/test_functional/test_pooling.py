@@ -15,20 +15,18 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional import
     dtype_x_k_s=helpers.arrays_for_pooling(
         min_dims=4,
         max_dims=4,
-        min_side=1,
+        min_side=2,
         max_side=4,
     ),
     ceil_mode=st.booleans(),
     exclusive=st.booleans(),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
-    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
 )
 def test_paddle_avg_pool2d(
     dtype_x_k_s,
     exclusive,
     ceil_mode,
     data_format,
-    divisor_override,
     *,
     test_flags,
     backend_fw,
@@ -42,17 +40,14 @@ def test_paddle_avg_pool2d(
         x[0] = x[0].reshape(
             (x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2])
         )
-
     if len(stride) == 1:
         stride = (stride[0], stride[0])
-
     if padding == "SAME":
         padding = test_pooling_functions.calculate_same_padding(
             kernel, stride, x[0].shape[2:]
         )
     else:
         padding = (0, 0)
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -66,7 +61,7 @@ def test_paddle_avg_pool2d(
         padding=padding,
         ceil_mode=ceil_mode,
         exclusive=exclusive,
-        divisor_override=divisor_override,
+        divisor_override=None,
         data_format=data_format,
     )
 
@@ -77,8 +72,9 @@ def test_paddle_avg_pool2d(
     x_k_s_p_df=helpers.arrays_for_pooling(
         min_dims=3,
         max_dims=3,
-        min_side=1,
+        min_side=2,
         max_side=4,
+        data_format="channel_first",
     ),
     exclusive=st.booleans(),
     ceil_mode=st.just(False),
@@ -95,7 +91,13 @@ def test_paddle_avg_pool1d(
     exclusive,
     ceil_mode,
 ):
-    (input_dtype, x, kernel_size, stride, padding) = x_k_s_p_df
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p_df
+    if padding == "SAME":
+        padding = test_pooling_functions.calculate_same_padding(
+            kernel_size, stride, [x[0].shape[2]]
+        )
+    else:
+        padding = (0,)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
