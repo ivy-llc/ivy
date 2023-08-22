@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_out,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
@@ -49,6 +50,8 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 
 @handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def percentile(
     a,
     q,
@@ -67,10 +70,10 @@ def percentile(
     if quantile_arr.ndim == 0:
         quantile_arr = ivy.array([quantile])
 
-    # if not _quantile_is_valid(quantile_arr):
-    #     # raise ValueError("Percentiles must be in the range of [0, 100].")
-    #     ivy.logging.warning("Percentiles must be in the range of [0, 100].")
-    #     return []
+    if not _quantile_is_valid(quantile_arr):
+        # raise ValueError("Percentiles must be in the range of [0, 100].")
+        ivy.logging.warning("Percentiles must be in the range of [0, 100].")
+        return []
 
     output = []
 
@@ -84,6 +87,9 @@ def percentile(
             output = [_cpercentile(reshaped_arr, quantile) for quantile in quantile_arr]
 
     elif axis == 0:
+        if values.shape[1] is None:
+            ivy.logging.warning("axis 1 is out of bounds for array of dimension 0")
+            return
         for quantile in quantile_arr:
             q_row = []
             for col_idx in range(values.shape[1]):
@@ -97,6 +103,9 @@ def percentile(
             output.append(q_row)
 
     elif axis == 1:
+        if values.shape[0] is None:
+            ivy.logging.warning("axis 1 is out of bounds for array of dimension 0")
+            return
         for quantile in quantile_arr:
             q_row = []
             for row_idx in range(values.shape[0]):
@@ -107,8 +116,7 @@ def percentile(
                 q_row.append(val)
 
             output.append(q_row)
-
-    return output[0] if ivy.array(output).shape[0] == 1 else output
+    return ivy.array(output)
 
 
 def nanpercentile(
