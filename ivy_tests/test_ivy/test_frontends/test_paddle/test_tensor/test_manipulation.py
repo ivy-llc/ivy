@@ -31,6 +31,18 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
+@st.composite
+def dtypes_x_reshape_(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    return dtypes, x, shape
+
+
 # Tests #
 # ----- #
 
@@ -65,7 +77,7 @@ def test_paddle_reshape(
 # reshape_
 @handle_frontend_test(
     fn_tree="paddle.reshape_",
-    dtypes_x_reshape=dtypes_x_reshape(),
+    dtypes_x_reshape=dtypes_x_reshape_(),
 )
 def test_paddle_reshape_(
     *,
