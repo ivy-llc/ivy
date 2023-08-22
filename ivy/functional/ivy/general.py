@@ -2945,8 +2945,9 @@ def _parse_query(query, x_shape, scatter=False):
     # convert slices to range arrays
     query = [
         _parse_slice(q, x_shape[i]).astype(ivy.int64)
-        for i, q in enumerate(query)
         if isinstance(q, slice)
+        else q
+        for i, q in enumerate(query)
     ]
 
     # fill in missing queries
