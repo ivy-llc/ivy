@@ -510,6 +510,7 @@ def corrcoef(input):
 def kron(input, other, *, out=None):
     return ivy.kron(input, other, out=out)
 
+
 @with_supported_dtypes({"2.0.1 and above": ("int64",)}, "torch")
 @to_ivy_arrays_and_back
 def bincount(x, weights=None, minlength=0):
