@@ -1562,7 +1562,6 @@ def test_tensorflow_FFT2D(
         input=x[0],
         rtol=1e-02,
         atol=1e-02,
-        # test_values=False,
     )
 
 
