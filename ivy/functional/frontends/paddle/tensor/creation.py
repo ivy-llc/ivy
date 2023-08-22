@@ -204,3 +204,11 @@ def complex(real, imag, name=None):
     imag_cmplx = ivy.astype(imag, complex_dtype) * 1j
     complex_array = real + imag_cmplx
     return complex_array
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def linspace(start, stop, num, dtype=None, name=None):
+    return ivy.linspace(start, stop, num=num, dtype=dtype)
