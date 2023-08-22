@@ -1569,7 +1569,7 @@ class ContainerBase(dict, abc.ABC):
         return return_cont
 
     def _cont_at_key_chains_input_as_dict(
-        self, key_chains, current_chain="", ignore_key_errors=False
+        self, key_chains, current_chain="", ignore_key_errors=False, inplace=False
     ):
         return_dict = dict()
         for k, v in key_chains.items():
@@ -1588,7 +1588,7 @@ class ContainerBase(dict, abc.ABC):
                 if ignore_key_errors and not ivy.exists(val):
                     continue
                 return_dict[k] = val
-        return ivy.Container(return_dict, **self._config)
+        return return_dict if inplace else ivy.Container(return_dict, **self._config)
 
     def _cont_prune_key_chains_input_as_seq(self, key_chains):
         return_cont = self.cont_copy()
@@ -1792,7 +1792,7 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def cont_slice_via_key(self, slice_key):
+    def cont_slice_via_key(self, slice_key, inplace=False):
         """
         Get slice of container, based on key.
 
@@ -1813,7 +1813,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value.cont_slice_via_key(slice_key)
             else:
                 return_dict[key] = value
-        return ivy.Container(return_dict, **self._config)
+        return return_dict if inplace else ivy.Container(return_dict, **self._config)
 
     def cont_as_bools(
         self,
@@ -2696,7 +2696,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = val.cont_set_at_keys(target_dict)
             else:
                 return_dict[key] = val
-        return ivy.Container(return_dict, **self._config)
+        return return_dict if inplace else ivy.Container(return_dict, **self._config)
 
     def cont_set_at_key_chain(self, key_chain, val, inplace=False):
         """
@@ -3247,7 +3247,7 @@ class ContainerBase(dict, abc.ABC):
         -------
             New container following the function mapped to each sub-array.
         """
-        return_dict = self if inplace else dict()
+        return_dict = dict()
         for key, value in self.items():
             this_key_chain = (
                 key if key_chain == "" else (str(key_chain) + "/" + str(key))
@@ -3283,9 +3283,7 @@ class ContainerBase(dict, abc.ABC):
                         return_dict[key] = value
                         continue
                 return_dict[key] = func(value, this_key_chain)
-        if inplace:
-            return self
-        return ivy.Container(return_dict, **self._config)
+        return return_dict if inplace else ivy.Container(return_dict, **self._config)
 
     def cont_map_sub_conts(
         self,
