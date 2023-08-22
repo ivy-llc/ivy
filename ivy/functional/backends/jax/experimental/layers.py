@@ -7,7 +7,7 @@ import math
 
 # local
 import ivy
-from ivy import output_to_native_arrays
+from ivy import outputs_to_native_arrays
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
@@ -741,7 +741,7 @@ def reduce_window(
     window_dilation: Union[int, Sequence[int]] = 1,
 ) -> JaxArray:
     computation = _correct_ivy_callable(computation)
-    computation = output_to_native_arrays(computation)
+    computation = outputs_to_native_arrays(computation)
     window_dimensions, window_strides, padding, base_dilation, window_dilation = map(
         lambda x: tuple([x] * len(operand.shape)) if isinstance(x, int) else x,
         [window_dimensions, window_strides, padding, base_dilation, window_dilation],

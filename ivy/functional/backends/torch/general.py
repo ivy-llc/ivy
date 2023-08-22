@@ -515,7 +515,7 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
-    @ivy.output_to_native_arrays
+    @ivy.outputs_to_native_arrays
     @ivy.inputs_to_native_arrays
     def _vmap(*args):
         new_fun = lambda *args: ivy.to_native(func(*args))

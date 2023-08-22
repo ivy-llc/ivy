@@ -9,6 +9,7 @@ from types import FunctionType
 from typing import Callable, Literal
 import inspect
 import numpy as np
+from typing import Dict, Set, FrozenSet, Callable
 
 from ivy.utils.exceptions import IvyValueError
 
@@ -302,46 +303,6 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 # ---------------#
 
 
-def get_decorators(fn_name, decorator_lookup):
-    """Gets the decorators from the lookup table
-    
-    Parameters
-    ----------
-    fn_name : str
-        The name of the function to get the decorators for
-    
-    decorator_lookup : dict
-        The lookup table of frozen sets of function names to decorators list
-    """
-    for funcs in decorator_lookup.keys():
-        if fn_name in funcs:
-            return decorator_lookup[funcs]
-    return []
-
-
-def decorate(decorator_lookup):
-    """Decorates a function with the decorators from the lookup table
-
-    Parameters
-    ----------
-    decorator_lookup : dict
-        The lookup table of frozen sets of function names to decorators list
-    """
-
-    def _decorate(fn):
-        decorators = get_decorators(fn.__name__, decorator_lookup=decorator_lookup)
-
-        @functools.wraps(fn)
-        def wrap(*args, **kwargs):
-            nonlocal fn
-            for decorator in reversed(decorators):
-                # print("decorating with {}".format(decorator.__name__))
-                fn = decorator(fn)
-            return fn(*args, **kwargs)
-        return wrap
-    return _decorate
-
-
 def handle_array_function(fn):
     """
     Wrap a function `fn` to be passed to array_function method.
@@ -602,7 +563,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return _outputs_to_ivy_arrays
 
 
-def output_to_native_arrays(fn: Callable) -> Callable:
+def outputs_to_native_arrays(fn: Callable) -> Callable:
     """
     Call the function, and then converts all `ivy.Array` instances in the function
     return into `ivy.NativeArray` instances.
@@ -621,12 +582,12 @@ def output_to_native_arrays(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def _output_to_native_arrays(*args, **kwargs):
+    def _outputs_to_native_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
         return ivy.to_native(ret, nested=True, include_derived={tuple: True})
 
-    _output_to_native_arrays.outputs_to_native_arrays = True
-    return _output_to_native_arrays
+    _outputs_to_native_arrays.outputs_to_native_arrays = True
+    return _outputs_to_native_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -637,17 +598,10 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     instances and return arrays are all converted to `ivy.NativeArray`
     instances.
     """
-    return output_to_native_arrays(inputs_to_ivy_arrays(fn))
+    return outputs_to_native_arrays(inputs_to_ivy_arrays(fn))
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Make `fn` receive `ivy.NativeArray` and return `ivy.Array`.
-
-    Wrap `fn` so that input arrays are all converted to
-    `ivy.NativeArray` instances and return arrays are all converted to
-    `ivy.Array` instances.
-    """
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
 
 
@@ -1914,3 +1868,82 @@ class override(contextlib.ContextDecorator):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
                     globals_getter_func([item, "override"])
+
+
+def get_decorators(
+        fn_name: str,
+        main_decorators: Set[Callable],
+        decorator_lookup: Dict[FrozenSet, Set],
+) -> Set:
+    """Gets the decorators from the lookup table
+    
+    Parameters
+    ----------
+    fn_name : str
+        The name of the function to get the decorators for
+    
+    decorator_lookup : dict
+        The lookup table of frozen sets of function names to decorators list
+    """
+    found = False
+    for funcs in decorator_lookup.keys():
+        if fn_name in funcs:
+            ret = decorator_lookup[funcs].union(main_decorators)
+            found = True
+            break
+    if not found:
+        raise KeyError(f"Function `{fn_name}` not found in decorator lookup table,"
+                       "please add it to the table.")
+    return _rearrange_decorators(ret)
+
+
+def _replace_to_x_and_back(decorators: Set[Callable]) -> Set[Callable]:
+    names = {dec.__name__ for dec in decorators}
+
+    if "to_native_arrays_and_back" in names:
+        decorators.remove(to_native_arrays_and_back)
+        decorators.add(inputs_to_native_arrays)
+        decorators.add(outputs_to_ivy_arrays)
+    
+    if "to_ivy_arrays_and_back" in names:
+        decorators.remove(to_ivy_arrays_and_back)
+        decorators.add(inputs_to_ivy_arrays)
+        decorators.add(outputs_to_native_arrays)
+
+
+def _rearrange_decorators(decorators: set) -> tuple:
+    _replace_to_x_and_back(decorators)
+
+    unknowns = {decorator.__name__
+                for decorator in decorators
+                if decorator.__name__ not in FN_DECORATORS}
+    if unknowns:
+        unknowns = ", ".join(unknowns)
+        raise KeyError(f"Unknown decorators found: {unknowns}")
+
+    def _get_name(decorator):
+        return decorator.__name__
+
+    return sorted(decorators, key=_get_name, reverse=True)
+
+
+def decorate(main_decorators, decorator_lookup):
+    """Decorates a function with the decorators from the lookup table
+
+    Parameters
+    ----------
+    decorator_lookup : dict
+        The lookup table of frozen sets of function names to decorators list
+    """
+
+    def _decorate(fn):
+        decorators = get_decorators(fn.__name__, main_decorators, decorator_lookup)
+
+        @functools.wraps(fn)
+        def wrap(*args, **kwargs):
+            nonlocal fn
+            for decorator in decorators:
+                fn = decorator(fn)
+            return fn(*args, **kwargs)
+        return wrap
+    return _decorate

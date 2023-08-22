@@ -1782,7 +1782,7 @@ def wrap_frontend_function_args(argument):
             lambda x: hasattr(x, "__module__")
             and x.__module__.startswith("ivy.functional.frontends"),
         ):
-            return ivy_frontend.output_to_native_arrays(
+            return ivy_frontend.outputs_to_native_arrays(
                 ivy_frontend.frontend_outputs_to_ivy_arrays(argument)
             )
     if ivy_frontend.nested_any(argument, lambda x: isinstance(x, ivy_frontend.Shape)):
