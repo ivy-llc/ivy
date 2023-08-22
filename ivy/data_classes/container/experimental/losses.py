@@ -159,7 +159,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def _static_huber_loss(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -325,4 +325,3 @@ class _ContainerWithLossesExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-

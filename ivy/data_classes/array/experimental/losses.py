@@ -48,7 +48,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array(0.20000000000000004)
         """
         return ivy.l1_loss(self._data, target, reduction=reduction, out=out)
-    
+
     def huber_loss(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
@@ -96,4 +96,3 @@ class _ArrayWithLossesExperimental(abc.ABC):
         return ivy.huber_loss(
             self._data, pred, reduction=reduction, delta=delta, out=out
         )
-
