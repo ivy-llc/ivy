@@ -1456,7 +1456,13 @@ def test_square(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.sqrt",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"), allow_inf=False
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        allow_inf=False,
+        # Safety factor is to account for complex, where taking square root
+        # involves taking absolute value first
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ).filter(lambda x: x[0][0] not in ["bfloat16"]),
 )
 def test_sqrt(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
