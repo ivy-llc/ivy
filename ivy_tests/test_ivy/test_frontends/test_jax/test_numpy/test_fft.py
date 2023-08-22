@@ -52,7 +52,7 @@ def test_jax_numpy_fft(
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.fft2",
     dtype_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex", full=False),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_value=-1e5,
         max_value=1e5,
@@ -96,7 +96,6 @@ def test_jax_numpy_fft2(
         norm=norm,
         atol=1e-02,
         rtol=1e-02,
-        test_values=False,
     )
 
 
