@@ -120,12 +120,7 @@ def seed(*, seed_value: int = 0) -> None:
     torch.cuda.manual_seed(seed_value)
     if hasattr(torch.backends, "mps"):
         if torch.backends.mps.is_available():
-            try:
-                import torch.mps
-
-                torch.mps.manual_seed(seed_value)
-            except ImportError:
-                pass
+            torch.mps.manual_seed(seed_value)
     return
 
 
