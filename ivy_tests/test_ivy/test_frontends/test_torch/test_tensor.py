@@ -4705,7 +4705,7 @@ def test_torch_tensor_acos_(
         on_device=on_device,
     )
 
-_
+
 # copy_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
