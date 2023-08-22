@@ -2,7 +2,6 @@
 
 # global
 import torch
-import torch.mps
 from typing import Optional, Union, Sequence
 
 # local
@@ -119,7 +118,14 @@ def randint(
 def seed(*, seed_value: int = 0) -> None:
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed(seed_value)
-    torch.mps.manual_seed(seed_value)
+    if hasattr(torch.backends, "mps"):
+        if torch.backends.mps.is_available():
+            try:
+                import torch.mps
+
+                torch.mps.manual_seed(seed_value)
+            except ImportError:
+                pass
     return
 
 
