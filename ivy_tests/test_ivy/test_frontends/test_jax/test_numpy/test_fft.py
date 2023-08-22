@@ -72,7 +72,15 @@ def test_jax_numpy_fft(
     norm=st.sampled_from(["backward", "ortho", "forward", None]),
 )
 def test_jax_numpy_fft2(
-    dtype_values, s, axes, norm, frontend, backend_fw, test_flags, fn_tree, on_device,
+    dtype_values,
+    s,
+    axes,
+    norm,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtype, values = dtype_values
     helpers.test_frontend_function(
