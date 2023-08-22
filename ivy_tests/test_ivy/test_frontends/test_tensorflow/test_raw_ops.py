@@ -1541,7 +1541,6 @@ def test_tensorflow_FFT(  # NOQA
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    #test_with_out=st.just(False),
 )
 def test_tensorflow_FFT2D(
     *,
@@ -1563,6 +1562,7 @@ def test_tensorflow_FFT2D(
         input=x[0],
         rtol=1e-02,
         atol=1e-02,
+        # test_values=False,
     )
 
 
