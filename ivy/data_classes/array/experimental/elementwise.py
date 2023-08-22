@@ -1024,6 +1024,9 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
     def sparsify_tensor(
         self: ivy.Array,
         card: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array class method variant of ivy.sparsify_tensor. This method simply wraps
@@ -1058,4 +1061,4 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
         """
-        return ivy.sparsify_tensor(self._data, card)
+        return ivy.sparsify_tensor(self._data, card, out=out)
