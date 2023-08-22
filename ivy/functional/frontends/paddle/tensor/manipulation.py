@@ -155,6 +155,10 @@ def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
 
+def rot90(x, k=1, axes=(0, 1), name=None):
+    return ivy.rot90(x, k=k, axes=axes)
+
+
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
@@ -164,8 +168,8 @@ def take_along_axis(arr, indices, axis):
             "int32",
             "int64",
         )
-
-
+    }
+)
 @with_supported_device_and_dtypes(
     {
         "2.5.1 and above": {
@@ -178,15 +182,10 @@ def take_along_axis(arr, indices, axis):
             ),
             "gpu": ("float16",),
         },
-
     },
     "paddle",
 )
 @to_ivy_arrays_and_back
-
 def moveaxis(x, source, destination, name=None):
     return ivy.moveaxis(x, source, destination)
-
-def rot90(x, k=1, axes=(0, 1), name=None):
-    return ivy.rot90(x, k=k, axes=axes)
 
