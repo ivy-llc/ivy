@@ -62,15 +62,9 @@ def split(x, num_or_sections, axis=0, name=None):
     return ivy.split(x, num_or_size_splits=num_or_sections, axis=axis)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int16", "complex64", "complex128")},
-    "paddle",
-)
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "int32", "int64", "bool")},"paddle")
 @to_ivy_arrays_and_back
 def tolist(x):
-    print("-------------------")
-    print(x)
-    print("-------------------")
     return ivy.to_list(x)
 
 
