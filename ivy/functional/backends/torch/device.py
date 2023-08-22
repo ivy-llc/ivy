@@ -80,7 +80,8 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:
     if torch_dev.type == "cuda":
         torch.cuda.empty_cache()
     elif torch_dev.type == "mps":
-        torch.mps.empty_cache()
+        from torch import mps
+        mps.empty_cache()
 
 
 def num_gpus() -> int:
