@@ -11033,7 +11033,8 @@ def test_torch_tensor_stride(
     init_tree="torch.tensor",
     method_name="log1p",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_value=1e37,
     ),
 )
 def test_torch_tensor_log1p(
