@@ -21,7 +21,7 @@ All of these new words can get confusing! We've created a glossary to help nail 
         E.g. Tensorflow and PyTorch.
 
     Ivy Transpiler
-        The transpiler allows the framework to framework code conversions for supported frameworks.
+        The transpiler allows framework to framework code conversions for supported frameworks.
 
     Ivy Container
         An Ivy class which inherits from :code:`dict` allows for storing nested data.

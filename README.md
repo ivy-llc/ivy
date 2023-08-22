@@ -432,7 +432,7 @@ docker pull unifyai/ivy:latest-gpu
 ### Installing from source
 
 You can also install Ivy from the source if you want to take advantage of
-the latest changes, but we can't ensure everything will work as
+the latest changes, but we can\'t ensure everything will work as
 expected. :sweat_smile:
 
 ``` bash
@@ -1642,7 +1642,7 @@ Can\'t wait to see you there!
 
 ## Citation
 
-If you use Ivy for your work, please don't forget to give proper credit
+If you use Ivy for your work, please don\'t forget to give proper credit
 by including the accompanying [paper](https://arxiv.org/abs/2102.02886)
 📄 in your references. It\'s a small way to show appreciation and help
 to continue to support this and other open source projects 🙌

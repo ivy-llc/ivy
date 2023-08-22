@@ -223,7 +223,7 @@ Nested keys can also be set in one line, using either ‘/’ or ‘.’ as a de
     }
 
 One of the key benefits of using properties under the hood is the autocomplete support this introduces.
-Class attributes can be auto-completed when pressing the tab midway through typing.
+Class attributes can be auto-completed when pressing the :code:`Tab` midway through typing.
 This is not possible with Dicts.
 
 .. code-block:: python
