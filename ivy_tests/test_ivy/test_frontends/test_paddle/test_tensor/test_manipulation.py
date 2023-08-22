@@ -609,31 +609,30 @@ def test_paddle_roll(
 # tolist
 @handle_frontend_test(
     fn_tree="paddle.tensor.manipulation.tolist",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_input_and_label=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=6,
+        num_arrays=1  
     ),
 )
-def test_tolist(
+def test_paddle_tolist(
     *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
+    dtype_and_input_and_label,
     frontend,
     test_flags,
+    fn_tree,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtypes, (input_data,) = dtype_and_input_and_label  
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
+        x=input_data
     )
+
+
 
 # take_along_axis
 @handle_frontend_test(
