@@ -351,3 +351,11 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
     dice_denominator = ivy.sum(input, axis=reduce_dim) + ivy.sum(label, axis=reduce_dim)
     dice_score = 1 - inse * 2 / (dice_denominator + epsilon)
     return ivy.mean(dice_score)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def square_error_cost(input, label):
+    diff = input - label
+    out = ivy.square(diff)
+    return out
