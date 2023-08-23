@@ -1268,12 +1268,14 @@ def test_jax_quantile(
 @handle_frontend_test(
     fn_tree="jax.numpy.nanquantile",
     dtype_and_x=_statistical_dtype_values(function="nanquantile"),
+    q=st.floats(0.0, 1.0),
     keepdims=st.booleans(),
     method=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
 )
 def test_jax_nanquantile(
     *,
-    dtype_array_axes_q,
+    q,
+    dtype_and_x,
     keepdims,
     method,
     on_device,
@@ -1282,9 +1284,9 @@ def test_jax_nanquantile(
     test_flags,
     backend_fw,
 ):
-    dtypes, array, axes, q = dtype_array_axes_q
+    input_dtype, array, axes = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         backend_to_test=backend_fw,
