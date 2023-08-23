@@ -61,8 +61,6 @@ def get_item(
         )
     else:
         ret = x.__getitem__(query)
-    if copy:
-        return paddle_backend.copy_array(ret).data
     return ret
 
 

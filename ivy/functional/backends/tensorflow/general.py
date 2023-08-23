@@ -60,8 +60,6 @@ def get_item(
     *,
     copy: bool = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if copy:
-        return tf.identity(x.__getitem__(query))
     return x.__getitem__(query)
 
 

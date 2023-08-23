@@ -76,8 +76,6 @@ def get_item(
         query, _ = _mask_to_index(query, x)
     elif isinstance(query, list):
         query = (query,)
-    if copy:
-        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
