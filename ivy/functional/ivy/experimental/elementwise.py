@@ -1358,6 +1358,8 @@ def sparsify_tensor(
         Tensor to be sparsified
     card
         Desired number of non-zero elements in the tensor
+    out
+        Optional output array for writing the result to.
 
     Returns
     -------

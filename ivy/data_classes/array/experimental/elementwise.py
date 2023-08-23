@@ -1039,6 +1039,8 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             The tensor to sparsify.
         card : int
             The number of values to keep.
+        out : array, optional
+            Optional output array, for writing the result to.
 
         Returns
         -------
