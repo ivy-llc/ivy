@@ -282,7 +282,8 @@ def cross(
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return the determinant of a square matrix (or a stack of square matrices)``x``.
+    """
+    Return the determinant of a square matrix (or a stack of square matrices)``x``.
 
     Parameters
     ----------
@@ -361,7 +362,8 @@ def diagonal(
     axis2: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the specified diagonals of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -538,9 +540,10 @@ def eig(
     *,
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
-    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
-    matrices) and ``L`` is a vector (or a stack of vectors).
+    """
+    Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric
+    matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and
+    ``L`` is a vector (or a stack of vectors).
 
     .. note::
        The function ``eig`` currently behaves like ``eigh``, as
@@ -572,7 +575,6 @@ def eig(
 
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
-
     """
     return current_backend(x).eig(x, out=out)
 
@@ -592,9 +594,10 @@ def eigh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    r"""Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
-    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
-    matrices) and ``L`` is a vector (or a stack of vectors).
+    r"""
+    Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of symmetric
+    matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of matrices) and
+    ``L`` is a vector (or a stack of vectors).
 
     .. note::
        The function ``eig`` will be added in a future version of the specification, as
@@ -643,7 +646,6 @@ def eigh(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
@@ -847,8 +849,9 @@ def inv(
     adjoint: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the multiplicative inverse of a square matrix (or a stack of square
-    matrices) ``x``.
+    """
+    Return the multiplicative inverse of a square matrix (or a stack of square matrices)
+    ``x``.
 
     Parameters
     ----------
@@ -922,7 +925,6 @@ def inv(
                       [0.0177, -0.000429, -0.00762]])
 
     }
-
     """
     return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
@@ -1573,7 +1575,8 @@ def outer(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the outer product of two vectors ``x1`` and ``x2``.
+    """
+    Return the outer product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
@@ -1644,7 +1647,6 @@ def outer(
                 [ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],
                 [ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],
                 [ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])
-
     """
     return current_backend(x1, x2).outer(x1, x2, out=out)
 
@@ -1664,7 +1666,8 @@ def pinv(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
+    """
+    Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
     ``x``.
 
     Parameters
@@ -1786,7 +1789,6 @@ def qr(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).qr(x, mode=mode, out=out)
 
@@ -1952,7 +1954,6 @@ def solve(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
@@ -1971,10 +1972,11 @@ def svd(
     compute_uv: bool = True,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-    """Return a singular value decomposition A = USVh of a matrix (or a stack of
-    matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal
-    columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``
-    is a matrix (or a stack of matrices) with orthonormal rows.
+    """
+    Return a singular value decomposition A = USVh of a matrix (or a stack of matrices)
+    ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal columns,
+    ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh`` is a
+    matrix (or a stack of matrices) with orthonormal rows.
 
     Parameters
     ----------
@@ -2098,7 +2100,8 @@ def svd(
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return the singular values of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the singular values of a matrix (or a stack of matrices) ``x``.
 
     Parameters
     ----------
@@ -2218,7 +2221,6 @@ def svdvals(
         a: ivy.array([12.95925522, 4.6444726, 2.54687881]),
         b: ivy.array([23.16134834, 10.35037804, 4.31025076, 1.35769391])
     }
-
     """
     return current_backend(x).svdvals(x, out=out)
 
@@ -2330,8 +2332,9 @@ def trace(
     axis2: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the sum along the specified diagonals of a matrix (or a stack of
-    matrices) ``x``.
+    """
+    Return the sum along the specified diagonals of a matrix (or a stack of matrices)
+    ``x``.
 
     **Special cases**
 
@@ -2527,7 +2530,8 @@ def vector_norm(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Compute the vector norm of a vector (or batch of vectors) ``x``.
+    r"""
+    Compute the vector norm of a vector (or batch of vectors) ``x``.
 
     Parameters
     ----------
@@ -2647,7 +2651,6 @@ def vector_norm(
         a: ivy.array([0.33333334]),
         b: ivy.array([0.])
     }
-
     """
     return current_backend(x).vector_norm(
         x, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out

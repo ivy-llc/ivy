@@ -2,6 +2,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -11,7 +12,7 @@ def atleast_1d(*tensors):
 
 @to_ivy_arrays_and_back
 def flip(input, dims):
-    return ivy.flip(input, axis=dims)
+    return ivy.flip(input, axis=dims, copy=True)
 
 
 @to_ivy_arrays_and_back
@@ -23,7 +24,7 @@ def fliplr(input):
         message="requires tensor to be at least 2D",
         as_array=False,
     )
-    return ivy.fliplr(input)
+    return ivy.fliplr(input, copy=True)
 
 
 @to_ivy_arrays_and_back
@@ -35,7 +36,7 @@ def flipud(input):
         message="requires tensor to be at least 1D",
         as_array=False,
     )
-    return ivy.flipud(input)
+    return ivy.flipud(input, copy=True)
 
 
 @to_ivy_arrays_and_back
@@ -297,12 +298,12 @@ def rot90(input, k, dims):
     new_axes[min(dims)], new_axes[max(dims)] = max(dims), min(dims)
     if k == 1:
         flipped = ivy.flip(input, axis=dims[1])
-        return ivy.permute_dims(flipped, axes=new_axes)
+        return ivy.permute_dims(flipped, axes=new_axes, copy=True)
     elif k == 2:
-        return ivy.flip(input, axis=dims)
+        return ivy.flip(input, axis=dims, copy=True)
     elif k == 3:
         flipped = ivy.flip(input, axis=dims[0])
-        return ivy.permute_dims(flipped, axes=new_axes)
+        return ivy.permute_dims(flipped, axes=new_axes, copy=True)
     else:
         return input
 
@@ -413,6 +414,55 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
+# TODO: Add Ivy function for block_diag but only scipy.linalg and \
+# and torch supports block_diag currently
+@to_ivy_arrays_and_back
+def block_diag(*tensors):
+    shapes_list = [ivy.shape(t) for t in tensors]
+    # TODO: Add ivy function to return promoted dtype for multiple tensors at once
+    promoted_dtype = ivy.as_ivy_dtype(tensors[0].dtype)
+    for idx in range(1, len(tensors)):
+        promoted_dtype = torch_frontend.promote_types_torch(
+            tensors[idx - 1].dtype, tensors[idx].dtype
+        )
+
+    inp_tensors = [ivy.asarray(t, dtype=promoted_dtype) for t in tensors]
+    tensors_2d = []
+    result_dim_0, result_dim_1 = 0, 0
+    for idx, t_shape in enumerate(shapes_list):
+        dim_0, dim_1 = 1, 1
+        if len(t_shape) > 2:
+            raise ivy.exceptions.IvyError(
+                "Input tensors must have 2 or fewer dimensions."
+                f"Input {idx} has {len(t_shape)} dimensions"
+            )
+        elif len(t_shape) == 2:
+            dim_0, dim_1 = t_shape
+            tensors_2d.append(inp_tensors[idx])
+        elif len(t_shape) == 1:
+            dim_1 = t_shape[0]
+            tensors_2d.append(ivy.reshape(inp_tensors[idx], shape=(dim_0, dim_1)))
+        else:
+            tensors_2d.append(ivy.reshape(inp_tensors[idx], shape=(dim_0, dim_1)))
+
+        result_dim_0 += dim_0
+        result_dim_1 += dim_1
+        shapes_list[idx] = (dim_0, dim_1)
+
+    ret = ivy.zeros((result_dim_0, result_dim_1), dtype=promoted_dtype)
+    ret_dim_0 = 0
+    ret_dim_1 = 0
+    for idx, t_shape in enumerate(shapes_list):
+        dim_0, dim_1 = t_shape
+        ret[ret_dim_0 : ret_dim_0 + dim_0, ret_dim_1 : ret_dim_1 + dim_1] = (
+            ivy.copy_array(tensors_2d[idx])
+        )
+        ret_dim_0 += dim_0
+        ret_dim_1 += dim_1
+
+    return ret
+
+
 @with_supported_dtypes(
     {"2.0.1 and below": ("complex64", "complex128")},
     "torch",
@@ -454,3 +504,8 @@ def corrcoef(input):
             f" input with {ivy.shape(input)} dimansions"
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
+
+
+@to_ivy_arrays_and_back
+def kron(input, other, *, out=None):
+    return ivy.kron(input, other, out=out)

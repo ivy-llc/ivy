@@ -204,13 +204,13 @@ def lu_factor(
 
 
 def dot(
-        a: tf.Tensor,
-        b: tf.Tensor,
-        /,
-        *,
-        out: Optional[tf.Tensor] = None,
+    a: tf.Tensor,
+    b: tf.Tensor,
+    /,
+    *,
+    out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-    return tf.tensordot(a, b, out=out)
+    return tf.tensordot(a, b, axes=1)
 
 
 dot.support_native_out = True

@@ -346,6 +346,7 @@ def test_jax_sum(
         keepdims=keepdims,
         initial=initial,
         where=where,
+        backend_to_test=backend_fw,
     )
 
 
