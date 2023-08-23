@@ -135,3 +135,38 @@ def affine_grid(theta, out_shape, align_corners=True):
             base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
             grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
             return grid.view((N, D, H, W, 3))
+
+
+@to_ivy_arrays_and_back
+def channel_shuffle(x, groups, data_format="NCHW"):
+    input_shape = len(ivy.shape(x))
+    if input_shape != 4:
+        raise ValueError(
+            "Input x should be 4D tensor, but received x with the shape of {}".format(
+                ivy.shape(x)
+            )
+        )
+
+    if not isinstance(groups, int):
+        raise TypeError("groups must be int type")
+
+    if groups <= 0:
+        raise ValueError("groups must be positive")
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "Attr(data_format) should be 'NCHW' or 'NHWC'."
+            "But recevie Attr(data_format): {} ".format(data_format)
+        )
+
+    if data_format == "NCHW":
+        b, c, h, w = ivy.shape(x)
+        x = ivy.reshape(x, (b, groups, c // groups, h, w))
+        x = ivy.permute_dims(x, (0, 2, 1, 3, 4))
+        x = ivy.reshape(x, (b, c, h, w))
+    else:
+        b, h, w, c = ivy.shape(x)
+        x = ivy.reshape(x, (b, h, w, groups, c // groups))
+        x = ivy.permute_dims(x, (0, 1, 2, 4, 3))
+        x = ivy.reshape(x, (b, h, w, c))
+    return x
