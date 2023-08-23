@@ -4,6 +4,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
@@ -375,7 +376,7 @@ def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 
 @st.composite
 def _fill_value(draw):
-    dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
+    dtype = draw(helpers.get_dtypes("valid", full=False))[0]
     with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
@@ -395,7 +396,7 @@ def _fill_value(draw):
         max_dim_size=5,
     ),
     fill_value=_fill_value(),
-    dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
+    dtypes=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -421,7 +422,7 @@ def _dtype_and_values(draw):
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=5,
-            dtype=draw(helpers.get_dtypes("numeric", full=False, key="dtype")),
+            dtype=draw(helpers.get_dtypes("valid", full=False)),
         )
     )
 
