@@ -1,4 +1,5 @@
 import functools
+import platform
 from typing import Callable, Iterable
 from importlib import import_module
 
@@ -24,7 +25,7 @@ def _infer_return_array(x: Iterable) -> Callable:
 
     # if function's input is a scalar, list, or tuple
     # convert to current backend's frontend array
-    if "builtins" in module_path:
+    if "builtins" in module_path or isinstance(x, ivy.Array):
         cur_backend = ivy.current_backend_str()
         module_str = cur_backend if len(cur_backend) != 0 else "numpy"
 
@@ -70,7 +71,17 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
             jax.config.update("jax_enable_x64", True)
 
+        (
+            ivy.set_default_int_dtype("int32")
+            if platform.system() == "Windows"
+            else ivy.set_default_int_dtype("int64")
+        )
+        ivy.set_default_float_dtype("float64")
+
         ret, frontend_array = fn(*args, **kwargs)
+
+        ivy.unset_default_float_dtype()
+        ivy.unset_default_int_dtype()
 
         if isinstance(ret, (ivy.Array, ivy.NativeArray)):
             return frontend_array(ret)
