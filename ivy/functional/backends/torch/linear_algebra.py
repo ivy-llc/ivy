@@ -592,4 +592,5 @@ def lstsq(
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     return torch.linalg.lstsq(A, B, rcond=rcond, driver=driver)
 
+
 lstsq.support_native_out = True
