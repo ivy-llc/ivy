@@ -2,7 +2,6 @@
 
 from typing import Union, Optional, Tuple
 
-# import tnp
 import tensorflow as tf
 
 # local
