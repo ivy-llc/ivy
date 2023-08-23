@@ -2161,8 +2161,11 @@ def triu_indices(
 def complex(
     real: Union[ivy.Array, ivy.NativeArray],
     imag: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
+    dtype: Optional[ivy.Array] = None,
+    device: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return a complex tensor with a real part ``real`` and imaginary part ``imag``.
 
@@ -2210,4 +2213,4 @@ def complex(
             (2.+4.j)])
     ivy.complex128
     """
-    return current_backend().complex(real, imag, out=out)
+    return current_backend().complex(real, imag, dtype=dtype, device=device, out=out)

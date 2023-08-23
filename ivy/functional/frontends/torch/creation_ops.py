@@ -240,12 +240,16 @@ def full_like(
 
 @to_ivy_arrays_and_back
 def complex(
-    real, imag, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
+    real,
+    imag,
+    *,
+    out=None,
+    dtype=ivy.complex,
+    layout=None,
+    device=None,
+    requires_grad=False,
 ):
-    ret = ivy.complex(real, imag, out=out, dtype=dtype, device=device)
-    if requires_grad:
-        return ivy.variable(ret)
-    return ret
+    return ivy.complex(real, imag, out=out, dtype=dtype, device=device)
 
 
 @to_ivy_arrays_and_back

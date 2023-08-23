@@ -648,7 +648,13 @@ def triu_indices(
 def complex(
     real: torch.Tensor,
     imag: torch.Tensor,
+    /,
+    *,
+    device: torch.device,
 ) -> torch.Tensor:
     assert real.shape == imag.shape, "real and imag must be the same shape"
-    ret = torch.complex(real, imag, dtype=torch.complex)
+    assert real.dtype == imag.dtype, "real and imag must be the same dtype"
+    real = real.to(device).to(real.dtype)
+    imag = imag.to(device).to(imag.dtype)
+    ret = torch.complex(real, imag)
     return ret
