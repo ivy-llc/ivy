@@ -510,15 +510,15 @@ def test_paddle_nll_loss(
             st.lists(
                 (
                     st.lists(
-                        st.integers(min_value=0,max_value=1),min_size=3,max_size=3
+                        st.integers(min_value=0, max_value=1), min_size=3, max_size=3
                     )
                 ),
                 min_size=3,
-                max_size=3
+                max_size=3,
             )
         ),
         min_size=1,
-        max_size=1
+        max_size=1,
     ),
     epsilon=st.floats(
         min_value=1e-6,
