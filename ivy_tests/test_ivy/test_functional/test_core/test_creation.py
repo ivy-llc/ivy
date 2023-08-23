@@ -401,6 +401,8 @@ def _fill_value(draw):
     test_gradients=st.just(False),
 )
 def test_full(*, shape, fill_value, dtypes, test_flags, backend_fw, fn_name, on_device):
+    if dtypes[0].startswith("uint") and fill_value < 0:
+        fill_value = -fill_value
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -431,12 +433,15 @@ def _dtype_and_values(draw):
 @handle_test(
     fn_tree="functional.ivy.full_like",
     dtype_and_x=_dtype_and_values(),
+    dtypes=helpers.get_dtypes("valid", full=False),
     fill_value=_fill_value(),
 )
 def test_full_like(
-    *, dtype_and_x, fill_value, test_flags, backend_fw, fn_name, on_device
+    *, dtype_and_x, dtypes, fill_value, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
+    if dtypes[0].startswith("uint") and fill_value < 0:
+        fill_value = -fill_value
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -445,7 +450,7 @@ def test_full_like(
         fn_name=fn_name,
         x=x[0],
         fill_value=fill_value,
-        dtype=dtype[0],
+        dtype=dtypes[0],
         device=on_device,
     )
 
