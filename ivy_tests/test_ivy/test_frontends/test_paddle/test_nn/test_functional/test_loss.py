@@ -505,7 +505,21 @@ def test_paddle_nll_loss(
         max_num_dims=3,
         max_dim_size=3,
     ),
-    labels=st.lists((st.lists((st.lists(st.integers(min_value=0,max_value=1),min_size=3,max_size=3)),min_size=3,max_size=3)),min_size=1,max_size=1),
+    labels=st.lists(
+        (
+            st.lists(
+                (
+                    st.lists(
+                        st.integers(min_value=0,max_value=1),min_size=3,max_size=3
+                    )
+                ),
+                min_size=3,
+                max_size=3
+            )
+        ),
+        min_size=1,
+        max_size=1
+    ),
     epsilon=st.floats(
         min_value=1e-6,
         max_value=1e-2,
@@ -522,11 +536,11 @@ def test_paddle_dice_loss(
     backend_fw,
 ):
     x_dtype, x = dtype_and_x
-    x[0] = x[0].reshape([3,3,3])
+    x[0] = x[0].reshape([3, 3, 3])
     labels = ivy.array(labels, dtype=ivy.int64)
-    labels = labels.reshape([3,3,1])
+    labels = labels.reshape([3, 3, 1])
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int64]+ x_dtype,
+        input_dtypes=[ivy.int64] + [int.float64] + x_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
