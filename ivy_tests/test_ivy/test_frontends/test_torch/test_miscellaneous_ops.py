@@ -1723,41 +1723,37 @@ def test_torch_kron(
     )
 
 
-# bincount
+# diagflat
 @handle_frontend_test(
-    fn_tree="torch.bincount",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_value=1,
-        max_value=2,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=1,
-            ),
-            key="shape",
-        ),
+    fn_tree="torch.diagflat",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
     ),
+    offset=st.integers(min_value=-4, max_value=4),
     test_with_out=st.just(False),
 )
-def test_torch_bincount(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
+def test_torch_diagflat(
+    dtype_and_values,
+    offset,
     test_flags,
     backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         x=x[0],
-        weights=None,
-        minlength=0,
+        offset=offset,
     )
