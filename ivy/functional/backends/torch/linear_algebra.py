@@ -579,3 +579,18 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("integer","bool")}, backend_version)
+def lstsq(
+    A: torch.Tensor,
+    B: torch.Tensor,
+    /,
+    *,
+    rcond : Optional[float] = None,
+    driver : Optional[str] = None
+) -> Tuple[torch.Tensor, torch.Tensor ,torch.Tensor , torch.Tensor]:
+    return torch.linalg.lstsq(A, B , rcond=rcond , driver=driver)
+
+
+lstsq.support_native_out = True
