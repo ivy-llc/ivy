@@ -124,8 +124,7 @@ def eye(
 
 
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    capsule = jax.dlpack.to_dlpack(x)
-    return jax.dlpack.from_dlpack(capsule)
+    return jax.dlpack.from_dlpack(x.__dlpack__())
 
 
 def full(
