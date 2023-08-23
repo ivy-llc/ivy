@@ -540,7 +540,7 @@ def test_paddle_dice_loss(
     labels = ivy.array(labels, dtype=ivy.int64)
     labels = labels.reshape([3, 3, 1])
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int64] + [int.float64] + x_dtype,
+        input_dtypes=[ivy.int64] + [ivy.float64] + x_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
