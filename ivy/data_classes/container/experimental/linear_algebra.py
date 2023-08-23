@@ -1889,3 +1889,104 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_tt_matrix_to_tensor(
+        tt_matrix: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.tt_matrix_to_tensor. This method
+        simply wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
+        applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[[[0.49671414],
+        ...                      [-0.1382643]],
+        ...
+        ...                     [[0.64768857],
+        ...                      [1.5230298]]]],
+        ...                   [[[[-0.23415337],
+        ...                      [-0.23413695]],
+        ...
+        ...                     [[1.57921278],
+        ...                      [0.76743472]]]]])))
+        >>> y = ivy.Container.static_tt_matrix_to_tensor(x)
+        >>> print(y["a"])
+        ivy.array([[[[-0.1163073 , -0.11629914],
+        [ 0.03237505,  0.03237278]],
+
+        [[ 0.78441733,  0.38119566],
+        [-0.21834874, -0.10610882]]],
+
+
+        [[[-0.15165846, -0.15164782],
+        [-0.35662258, -0.35659757]],
+
+        [[ 1.02283812,  0.49705869],
+        [ 2.40518808,  1.16882598]]]])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "tt_matrix_to_tensor",
+            tt_matrix,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def tt_matrix_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.tt_matrix_to_tensor. This method
+        simply wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
+        applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[[[0.49671414],
+        ...                      [-0.1382643]],
+        ...
+        ...                     [[0.64768857],
+        ...                      [1.5230298]]]],
+        ...                   [[[[-0.23415337],
+        ...                      [-0.23413695]],
+        ...
+        ...                     [[1.57921278],
+        ...                      [0.76743472]]]]])))
+        >>> y = ivy.Container.tt_matrix_to_tensor(x)
+        >>> print(y["a"])
+        ivy.array([[[[-0.1163073 , -0.11629914],
+        [ 0.03237505,  0.03237278]],
+
+        [[ 0.78441733,  0.38119566],
+        [-0.21834874, -0.10610882]]],
+
+
+        [[[-0.15165846, -0.15164782],
+        [-0.35662258, -0.35659757]],
+
+        [[ 1.02283812,  0.49705869],
+        [ 2.40518808,  1.16882598]]]])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "tt_matrix_to_tensor",
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

@@ -203,6 +203,10 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64")},
+    backend_version,
+)
 def dot(
     a: tf.Tensor,
     b: tf.Tensor,

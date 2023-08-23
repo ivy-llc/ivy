@@ -675,3 +675,40 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             tol=tol,
             verbose=verbose,
         )
+
+    def tt_matrix_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+    ) -> ivy.Array:
+        """
+        Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
+        wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
+        applies to this.
+
+         method with minimal changes.
+         --------
+         >>> a = ivy.array([[[[[0.49671414],
+         ...                      [-0.1382643]],
+         ...
+         ...                     [[0.64768857],
+         ...                      [1.5230298]]]],
+         ...                   [[[[-0.23415337],
+         ...                      [-0.23413695]],
+         ...
+         ...                     [[1.57921278],
+         ...                      [0.76743472]]]]])
+         >>> a.tt_matrix_to_tensor()
+         ivy.array([[[[-0.1163073 , -0.11629914],
+          [ 0.03237505,  0.03237278]],
+
+         [[ 0.78441733,  0.38119566],
+          [-0.21834874, -0.10610882]]],
+
+
+        [[[-0.15165846, -0.15164782],
+          [-0.35662258, -0.35659757]],
+
+         [[ 1.02283812,  0.49705869],
+          [ 2.40518808,  1.16882598]]]])
+        """
+        return ivy.tt_matrix_to_tensor(self._data)

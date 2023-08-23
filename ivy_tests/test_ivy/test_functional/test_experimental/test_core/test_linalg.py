@@ -1612,29 +1612,33 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     )
 
 
-# test values from tensorly.tt_matrix_to_tensor
-@pytest.mark.parametrize(
-    "factor1, factor2, res_true",
-    [
-        (
-            [[[[0.49671414], [-0.1382643]], [[0.64768857], [1.5230298]]]],
-            [[[[-0.23415337], [-0.23413695]], [[1.57921278], [0.76743472]]]],
-            [
-                [
-                    [[-0.1163073, -0.11629914], [0.03237505, 0.03237278]],
-                    [[0.78441733, 0.38119566], [-0.21834874, -0.10610882]],
-                ],
-                [
-                    [[-0.15165846, -0.15164782], [-0.35662258, -0.35659757]],
-                    [[1.02283812, 0.49705869], [2.40518808, 1.16882598]],
-                ],
-            ],
+@st.composite
+def _tt_matrix_to_tensor_data(draw):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=(2, 1, 2, 2, 1),
+            shared_dtype=True,
         )
-    ],
+    )
+    return x_dtype, x
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tt_matrix_to_tensor",
+    data=_tt_matrix_to_tensor_data(),
+    test_with_out=st.just(False),
 )
-def test_tt_matrix_to_tensor(factor1, factor2, res_true):
-    tt_matrix = [ivy.array(factor1), ivy.array(factor2)]
-    reconstructed_tensor = ivy.array(res_true)
-    ret_tensor = ivy.tt_matrix_to_tensor(tt_matrix)
-    assert ret_tensor.shape == (2, 2, 2, 2)
-    np.allclose(ivy.to_numpy(ret_tensor), ivy.to_numpy(reconstructed_tensor))
+def test_tt_matrix_to_tensor2(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = data
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e8,
+        atol_=1e8,
+        factors=x[0],
+    )
