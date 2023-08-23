@@ -679,13 +679,28 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
     def tt_matrix_to_tensor(
         self: Union[ivy.Array, ivy.NativeArray],
         /,
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         """
         Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
         wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
-        applies to this.
+        applies to this method with minimal changes.
 
-         method with minimal changes.
+        Parameters
+        ----------
+        tt_matrix
+                array of 4D-arrays
+                TT-Matrix factors (known as core) of shape
+                (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        output_tensor: array
+                    tensor whose TT-Matrix decomposition was given by 'factors'
          --------
          >>> a = ivy.array([[[[[0.49671414],
          ...                      [-0.1382643]],
@@ -711,4 +726,4 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
          [[ 1.02283812,  0.49705869],
           [ 2.40518808,  1.16882598]]]])
         """
-        return ivy.tt_matrix_to_tensor(self._data)
+        return ivy.tt_matrix_to_tensor(self._data, out=out)

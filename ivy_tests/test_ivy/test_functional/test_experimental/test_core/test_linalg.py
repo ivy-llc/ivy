@@ -1618,7 +1618,10 @@ def _tt_matrix_to_tensor_data(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=1,
-            shape=(2, 1, 2, 2, 1),
+            min_num_dims=5,
+            max_num_dims=5,
+            min_dim_size=2,
+            # shape=(2, 1, 2, 2, 1),
             shared_dtype=True,
         )
     )
@@ -1628,7 +1631,6 @@ def _tt_matrix_to_tensor_data(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.tt_matrix_to_tensor",
     data=_tt_matrix_to_tensor_data(),
-    test_with_out=st.just(False),
 )
 def test_tt_matrix_to_tensor2(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = data

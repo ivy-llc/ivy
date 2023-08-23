@@ -1676,6 +1676,8 @@ def dot(
 def tt_matrix_to_tensor(
     tt_matrix: Union[ivy.Array, ivy.NativeArray],
     /,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return the full tensor whose TT-Matrix decomposition is given by 'factors' Re-
@@ -1688,6 +1690,9 @@ def tt_matrix_to_tensor(
             array of 4D-arrays
             TT-Matrix factors (known as core) of shape
             (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+    out
+        Optional output array. If provided, the output array to store the result.
 
     Returns
     -------
@@ -1792,4 +1797,4 @@ def tt_matrix_to_tensor(
             bt = b.permute_dims(newaxes_b).reshape(newshape_b)
             res = ivy.dot(at, bt)
             res = res.reshape(olda + oldb)
-    return ivy.permute_dims(ivy.reshape(res, full_shape), axes=order)
+    return ivy.permute_dims(ivy.reshape(res, full_shape), axes=order, out=out)

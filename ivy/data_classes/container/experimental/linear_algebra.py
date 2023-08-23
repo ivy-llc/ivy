@@ -1899,11 +1899,27 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.tt_matrix_to_tensor. This method
         simply wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
         applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        tt_matrix
+                array of 4D-arrays
+                TT-Matrix factors (known as core) of shape
+                (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        output_tensor
+                    tensor whose TT-Matrix decomposition was given by 'factors'
 
         Examples
         --------
@@ -1939,6 +1955,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            out=out,
         )
 
     def tt_matrix_to_tensor(
@@ -1949,11 +1966,27 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.tt_matrix_to_tensor. This method
         simply wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
         applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        tt_matrix
+                array of 4D-arrays
+                TT-Matrix factors (known as core) of shape
+                (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        output_tensor
+                    tensor whose TT-Matrix decomposition was given by 'factors'
 
         Examples
         --------
@@ -1989,4 +2022,5 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            out=out,
         )
