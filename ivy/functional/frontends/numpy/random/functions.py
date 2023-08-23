@@ -204,4 +204,5 @@ def logistic(loc=0.0, scale=1.0, size=None):
 def zipf(a, size=None):
     if a <= 1:
         return 0
-    return ivy.np.random.zipf(a, size=size)
+    x = ivy.np.random.zipf(a, size=size)
+    return x
