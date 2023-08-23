@@ -16,13 +16,27 @@ from ivy.utils.exceptions import handle_exceptions
 # ------- #
 
 
-def _reduce_loss(red, loss, axis, out):
-    if red == "sum":
-        return ivy.negative(ivy.sum(loss, axis=axis), out=out)
-    elif red == "mean":
-        return ivy.negative(ivy.mean(loss, axis=axis), out=out)
+def _reduce_loss(
+    loss, target, reduction="mean", class_weights=None, sample_weights=1.0, axis=-1
+):
+    loss = loss.sum(axis=axis)
+    if sample_weights is not None:
+        loss = loss * sample_weights
+    if reduction == "mean":
+        if class_weights is not None:
+            return -loss.sum() / (class_weights * target).sum()
+        else:
+            return -loss.mean()
+    elif reduction == "sum":
+        return -loss.sum()
     else:
-        return ivy.negative(loss, out=out)
+        return -loss
+
+
+def _broadcast_class_weights(class_weights, target, axis=-1):
+    num_dims_to_extend = target.ndim - 1
+    shape = [1 for x in range(num_dims_to_extend)] + [len(class_weights)]
+    return ivy.reshape(class_weights, shape).swapaxes(-1, axis)
 
 
 # Extra #
@@ -35,54 +49,40 @@ def _reduce_loss(red, loss, axis, out):
 @inputs_to_ivy_arrays
 @handle_array_function
 def cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    epsilon: float = 1e-7,
-    reduction: str = "sum",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Compute cross-entropy between predicted and true discrete distributions.
+    inputs,
+    target,
+    from_logits=False,
+    class_weights=None,
+    sample_weights=None,
+    reduction="mean",
+    label_smoothing=0.0,
+    axis=-1,
+):
+    log_probs = ivy.softmax(inputs, axis=axis).log() if from_logits else inputs.log()
+    if inputs.ndim != target.ndim:
+        target = target.astype("int32")
+        _target = ivy.one_hot(target, target.max() + 1, axis=axis)
+    else:
+        _target = target
 
-    Parameters
-    ----------
-    true
-        input array containing true labels.
-    pred
-        input array containing the predicted labels.
-    axis
-        the axis along which to compute the cross-entropy. If axis is ``-1``,
-        the cross-entropy will be computed along the last dimension. Default: ``-1``.
-    epsilon
-        a float in [0.0, 1.0] specifying the amount of smoothing when calculating
-        the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
-    out
-        optional output array, for writing the result to. It must have a shape
-        that the inputs broadcast to.
+    if label_smoothing > 0.0:
+        num_classes = _target.shape[axis]
+        _target = (1.0 - label_smoothing) * _target + (label_smoothing / num_classes)
 
-    Returns
-    -------
-    ret
-        The cross-entropy loss between the given distributions
-
-    Examples
-    --------
-    >>> x = ivy.array([0, 0, 1, 0])
-    >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array(1.3862944)
-
-    >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.cross_entropy(x, z))
-    ivy.array(0.35667497)
-    """
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    log_pred = ivy.log(pred)
-    return _reduce_loss(reduction, log_pred * true, axis, out)
+    loss = log_probs * _target
+    if class_weights is not None:
+        class_weights = _broadcast_class_weights(
+            class_weights=class_weights, target=_target, axis=axis
+        )
+        loss = loss * class_weights
+    return _reduce_loss(
+        loss,
+        _target,
+        reduction=reduction,
+        class_weights=class_weights,
+        axis=axis,
+        sample_weights=sample_weights,
+    )
 
 
 @handle_exceptions
@@ -266,120 +266,3 @@ def binary_cross_entropy(
         )
 
     return _reduce_loss(reduction, loss, axis, out)
-
-
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-def sparse_cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    epsilon: float = 1e-7,
-    reduction: str = "sum",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Compute sparse cross entropy between logits and labels.
-
-    Parameters
-    ----------
-    true
-     input array containing the true labels as logits.
-    pred
-     input array containing the predicted labels as logits.
-    axis
-     the axis along which to compute the cross-entropy. If axis is ``-1``, the
-     cross-entropy will be computed along the last dimension. Default: ``-1``.
-    epsilon
-     a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
-     loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
-    out
-     optional output array, for writing the result to. It must have a shape
-     that the inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        The sparse cross-entropy loss between the given distributions
-
-    Functional Examples
-    -------------------
-
-    With :class:`ivy.Array` input:
-
-    >> x = ivy.array([2])
-    >> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >> print(ivy.sparse_cross_entropy(x, y))
-    ivy.array([0.35667494])
-
-    >>> x = ivy.array([3])
-    >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array(21.79329094)
-
-    >>> x = ivy.array([2,3])
-    >>> y = ivy.array([0.1, 0.1])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array(11.512926)
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([4])
-    >>> y = ivy.native_array([0.1, 0.2, 0.1, 0.1, 0.5])
-    >>> print(ivy.sparse_cross_entropy(x, y))
-    ivy.array([0.693])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([4]))
-    >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.1, 0.1, 0.5]))
-    >>> print(ivy.sparse_cross_entropy(x, y))
-    {
-        a: ivy.array([0.693])
-    }
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.array([0])
-    >>> y = ivy.native_array([0.1, 0.2, 0.6, 0.1])
-    >>> print(ivy.sparse_cross_entropy(x,y))
-    ivy.array([2.3])
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-
-    >>> x = ivy.array([0])
-    >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))
-    >>> print(ivy.sparse_cross_entropy(x,y))
-    {
-        a: ivy.array([2.3])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([2])
-    >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(x.sparse_cross_entropy(y))
-    ivy.array([0.357])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([2]))
-    >>> y = ivy.Container(a=ivy.array([0.1, 0.1, 0.7, 0.1]))
-    >>> print(x.sparse_cross_entropy(y))
-    {
-        a: ivy.array([0.357])
-    }
-    """
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    true = ivy.one_hot(true, pred.shape[axis])
-    return ivy.cross_entropy(
-        true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
-    )
