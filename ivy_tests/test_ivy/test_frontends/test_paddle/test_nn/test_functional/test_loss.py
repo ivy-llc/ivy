@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -490,4 +491,62 @@ def test_paddle_nll_loss(
         weight=weight[0],
         ignore_index=ignore_index,
         reduction=reduction,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.dice_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=False,
+        min_num_dims=3,
+        min_dim_size=3,
+        max_num_dims=3,
+        max_dim_size=3,
+    ),
+    labels=st.lists(
+        (
+            st.lists(
+                (
+                    st.lists(
+                        st.integers(min_value=0, max_value=1), min_size=3, max_size=3
+                    )
+                ),
+                min_size=3,
+                max_size=3,
+            )
+        ),
+        min_size=1,
+        max_size=1,
+    ),
+    epsilon=st.floats(
+        min_value=1e-6,
+        max_value=1e-2,
+    ),
+)
+def test_paddle_dice_loss(
+    dtype_and_x,
+    labels,
+    epsilon,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x = dtype_and_x
+    x[0] = x[0].reshape([3, 3, 3])
+    labels = ivy.array(labels, dtype=ivy.int64)
+    labels = labels.reshape([3, 3, 1])
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int64] + [ivy.float64] + x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=labels,
+        epsilon=epsilon,
     )
