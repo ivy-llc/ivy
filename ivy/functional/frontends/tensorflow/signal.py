@@ -41,6 +41,22 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
 def stft(signals, frame_length, frame_step, fft_length=None,
         window_fn=ivy.hann_window, pad_end=False, name=None):
 
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
     input_dtype = ivy.dtype(signals)
     if input_dtype == ivy.float32:
         dtype = ivy.complex64
