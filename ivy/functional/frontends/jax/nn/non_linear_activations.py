@@ -291,7 +291,7 @@ def softmax(x, axis=-1, where=None, initial=None):
 @to_ivy_arrays_and_back
 def softplus(x):
     x = _type_conversion(x)
-    return ivy.softplus(x).astype(x.dtype)
+    return ivy.softplus(x, complex_mode="jax").astype(x.dtype)
 
 
 @to_ivy_arrays_and_back

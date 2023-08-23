@@ -121,6 +121,7 @@ def softplus(
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
+    complex_mode="jax",
 ) -> paddle.Tensor:
     if beta is not None and beta != 1:
         x_beta = x * beta

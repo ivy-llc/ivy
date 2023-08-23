@@ -71,9 +71,7 @@ def softmax(
     return torch.nn.functional.softmax(x, axis)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("complex", "float16", "bfloat16")}, backend_version
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def softplus(
     x: torch.Tensor,
     /,
@@ -81,6 +79,7 @@ def softplus(
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[torch.Tensor] = None,
+    complex_mode="jax",
 ) -> torch.Tensor:
     kwargs = {
         k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
