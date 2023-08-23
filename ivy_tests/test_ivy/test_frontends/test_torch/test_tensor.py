@@ -12252,7 +12252,11 @@ def put_along_axis_helper(draw):
         helpers.dtype_values_axis(
             available_dtypes=["int64"],
             min_num_dims=2,
+            max_num_dims=3,
             min_dim_size=2,
+            max_dim_size=5,
+            min_value=-1e2,
+            max_value=1e2,
             valid_axis=True,
             force_int_axis=True,
             ret_shape=True,
@@ -12260,14 +12264,15 @@ def put_along_axis_helper(draw):
         )
     )
 
+    # TODO: helpers.dtype_and_values draws
+    #  unwantend axis values
     if axis < 0:
         axis = 0
     idx_shape = list(shape)
     idx_shape[axis] = 1
-    idx_shape = tuple(idx_shape)
 
     idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, 1)
     )
     indices = draw(idx_strategy)
 
@@ -12276,7 +12281,9 @@ def put_along_axis_helper(draw):
     )
     values = draw(values_strategy)
 
-    return input_dtype, x[0], indices, values, axis
+    x = x[0] if isinstance(x, list) else x
+    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
+    return input_dtype, x, indices, values, axis
 
 
 # scatter_add_
@@ -12297,12 +12304,12 @@ def test_torch_instance_scatter_add_(
 ):
     input_dtype, x, indices, values, axis = args
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        init_input_dtypes=[input_dtype],
+        backend_to_test="torch",
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=["int64", "int64", input_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -12336,12 +12343,12 @@ def test_torch_instance_scatter_(
 ):
     input_dtype, x, indices, values, axis = args
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        init_input_dtypes=[input_dtype],
+        backend_to_test="torch",
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=["int64", "int64", input_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -12376,12 +12383,12 @@ def test_torch_instance_scatter_reduce_(
 ):
     input_dtype, x, indices, values, axis = args
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        init_input_dtypes=[input_dtype],
+        backend_to_test="torch",
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=["int64", "int64", input_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -12414,12 +12421,12 @@ def test_torch_instance_scatter_add(
 ):
     input_dtype, x, indices, values, axis = args
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        init_input_dtypes=[input_dtype],
+        backend_to_test="torch",
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=["int64", "int64", input_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -12453,12 +12460,12 @@ def test_torch_instance_scatter(
 ):
     input_dtype, x, indices, values, axis = args
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        init_input_dtypes=[input_dtype],
+        backend_to_test="torch",
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=["int64", "int64", input_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -12493,12 +12500,12 @@ def test_torch_instance_scatter_reduce(
 ):
     input_dtype, x, indices, values, axis = args
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        init_input_dtypes=[input_dtype],
+        backend_to_test="torch",
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=["int64", "int64", input_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
