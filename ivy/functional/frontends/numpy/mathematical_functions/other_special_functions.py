@@ -35,3 +35,10 @@ def unwrap(p, discont=None, axis=-1, *, period=2 * ivy.pi):
     up = ivy.array(p, copy=True, dtype=dtype)
     up[slice1] = p[slice1] + ph_correct.cumsum(axis)
     return up
+
+
+@to_ivy_arrays_and_back
+def sinc(x):
+    _x = ivy.asarray(x)
+    pi_x = ivy.pi * ivy.where(_x == 0, 1.0e-20, _x)
+    return ivy.sin(pi_x) / pi_x
