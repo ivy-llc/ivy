@@ -229,14 +229,14 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Parameters
         ----------
+        self
+            Input array of two or more dimensions.
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
             If False, the function must never copy.
             In case copy is False we avoid copying by returning
              a view of the input array.
-        self
-            Input array of two or more dimensions.
         k
             Number of times the array is rotated by 90 degrees.
         axes

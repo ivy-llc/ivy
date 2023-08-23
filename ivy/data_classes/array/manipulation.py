@@ -747,7 +747,7 @@ class _ArrayWithManipulation(abc.ABC):
         ----------
         self
             Input array to unstack.
-         copy
+        copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
             If False, the function must never copy.
