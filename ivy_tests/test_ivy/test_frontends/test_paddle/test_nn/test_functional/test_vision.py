@@ -116,10 +116,10 @@ def test_paddle_affine_grid(
 
 @st.composite
 def _image_shape_helper(draw, data_format):
-    n = draw(helpers.ints(min_value=1, max_value=2), label="batch")
+    n = draw(helpers.ints(min_value=1, max_value=10), label="batch")
     c = draw(st.sampled_from([1, 3]), label="channel")
-    h = draw(helpers.ints(min_value=3, max_value=3), label="height")
-    w = draw(helpers.ints(min_value=3, max_value=3), label="width")
+    h = draw(helpers.ints(min_value=1, max_value=100), label="height")
+    w = draw(helpers.ints(min_value=1, max_value=100), label="width")
 
     if data_format == "NCHW":
         shape = (n, c, h, w)
