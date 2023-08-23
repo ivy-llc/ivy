@@ -204,6 +204,7 @@ class _ArrayWithActivations(abc.ABC):
         beta: Optional[Union[int, float]] = None,
         threshold: Optional[Union[int, float]] = None,
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
@@ -220,6 +221,9 @@ class _ArrayWithActivations(abc.ABC):
             the threshold parameter of the softplus function.
         out
             optional output array, for writing the result to. It must have a shape
+        complex_mode
+           optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -243,7 +247,13 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(x)
         ivy.array([1.55, 2.13, 2.13])
         """
-        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
+        return ivy.softplus(
+            self._data,
+            beta=beta,
+            threshold=threshold,
+            out=out,
+            complex_mode=complex_mode,
+        )
 
     def log_softmax(
         self: ivy.Array,
