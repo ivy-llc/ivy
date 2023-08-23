@@ -64,17 +64,6 @@ def abs(x, name=None):
     return ivy.abs(x)
 
 
-def sigmoid(x, name=None):
-    return ivy.sigmoid(x)
-
-
-# Apply decorators to sigmoid function
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def sigmoid_supported_dtypes(x, name=None):
-    return sigmoid(x)
-
-
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def sigmoid_unsupported_dtypes(x, name=None):
