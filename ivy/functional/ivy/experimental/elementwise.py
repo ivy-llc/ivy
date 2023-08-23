@@ -1380,7 +1380,7 @@ def sparsify_tensor(
     [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
     """
     if card >= ivy.prod(ivy.array(x.shape)):
-        return x
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
     _shape = ivy.shape(x)
     x = ivy.reshape(ivy.sort(ivy.abs(x)), (-1,))
     tensor = ivy.concat([ivy.zeros(len(x) - card, dtype=x.dtype), x[-card:]], axis=0)
