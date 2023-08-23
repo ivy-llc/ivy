@@ -1651,20 +1651,22 @@ class Tensor:
         return torch_frontend.gather(self, dim=dim, index=index)
 
     def scatter_add_(self, dim, index, src):
-        self.ivy_array = ivy.put_along_axis(self, index, src, dim, mode="add").ivy_array
+        self.ivy_array = ivy.put_along_axis(
+            self.ivy_array, index, src, dim, mode="add"
+        ).ivy_array
         return self
 
     def scatter_(self, dim, index, src, reduce=None):
         if reduce is None:
             reduce = "assign"
         self.ivy_array = ivy.put_along_axis(
-            self, index, src, dim, mode=reduce
+            self.ivy_array, index, src, dim, mode=reduce
         ).ivy_array
         return self
 
     def scatter_reduce_(self, dim, index, src, reduce, *, include_self=True):
         self.ivy_array = ivy.put_along_axis(
-            self, index, src, dim, mode=reduce
+            self.ivy_array, index, src, dim, mode=reduce
         ).ivy_array
         return self
 
