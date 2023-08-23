@@ -177,4 +177,3 @@ def crop(img, top, left, height, width):
 def hflip(img):
     img = ivy.array(img)
     return ivy.flip(img, axis=-1)
-

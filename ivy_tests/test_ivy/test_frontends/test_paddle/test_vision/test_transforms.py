@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
 # to_tensor
 @handle_frontend_test(
     fn_tree="paddle.to_tensor",
@@ -129,7 +130,6 @@ def test_paddle_vflip(
     test_flags,
     backend_fw,
 ):
-
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -182,6 +182,7 @@ def test_paddle_crop(
         width=width,
         backend_to_test=backend_fw,
     )
+
 
 # hflip
 @handle_frontend_test(
