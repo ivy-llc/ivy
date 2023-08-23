@@ -365,10 +365,11 @@ def affine_grid(theta, size, align_corners=False):
             grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
             return grid.view((N, D, H, W, 3))
 
-def border_clamp(grid, w, h):
+def border_clamp(grid, border, channel=None):
     ones = ivy.ones_like(grid[:, :, :, 0])
-    grid[:, :, :, 0] = ivy.fmin(w + ones, ivy.fmax(grid[:, :, :, 0], ones))
-    grid[:, :, :, 1] = ivy.fmin(h + ones, ivy.fmax(grid[:, :, :, 1], ones))
+    grid[:, :, :, channel] = ivy.fmin(border + ones, ivy.fmax(grid[:, :, :, channel], ones))
+    # grid[:, :, :, 0] = ivy.clip(grid[:, :, :, 0], 1, w + 1)
+    # grid[:, :, :, 1] = ivy.clip(grid[:, :, :, 0], 1, h + 1)
     return grid
 
 def reflect(x, low2, high2):
@@ -399,6 +400,7 @@ def bicubic_interp(fx, alpha = -0.75):
 @to_ivy_arrays_and_back
 def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corners=None):
     # Ref:
+    # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/GridSampler.cpp
     # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cpu/GridSamplerKernel.cpp
     # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/GridSampler.cu
     # https://github.com/Tencent/ncnn/blob/cb674ac5eddb32f0709a60c81f71d2cbc6bc89da/src/layer/gridsample.cpp#L21
@@ -406,53 +408,60 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
         n, c, h, w = input.shape
         n, to_h, to_w, gc = grid.shape
 
-        # Extend image with padding value
+        # padding images so we can access padding values by indexing
+        # Padding for h and w
         padding = [(0, 0) for i in range(2)] + [
-            (1, 3),
-            (1, 3),
+            (1, 2),
+            (1, 2),
         ]
 
-        # Un-normalize grid
+        # Un-normalize 2D grid
         if align_corners: # to range[0, size - 1]
-            grid[:, :, :, 0] = ((grid[:, :, :, 0] + 1) / 2) * (w - 1)
-            grid[:, :, :, 1] = ((grid[:, :, :, 1] + 1) / 2) * (h - 1)
-        else: # to range[0.5, size - 0.5]
-            grid[:, :, :, 0] = ((grid[:, :, :, 0] + 1) * w - 1) / 2
-            grid[:, :, :, 1] = ((grid[:, :, :, 1] + 1) * h - 1) / 2
+            # grid[..., 0] = ((grid[..., 0] + 1) / 2) * (w - 1)
+            # grid[..., 1] = ((grid[..., 1] + 1) / 2) * (h - 1)
+            grid = ((grid + 1) / 2)
+            grid[..., 0] *= (w - 1)
+            grid[..., 1] *= (h - 1)
 
+        else: # to range[0.5, size - 0.5]
+            grid[..., 0] = ((grid[..., 0] + 1) * w - 1) / 2
+            grid[..., 1] = ((grid[..., 1] + 1) * h - 1) / 2
+
+        # Shifting because we applied padding for bicubic
         grid += 1
         h += 1
         w += 1
 
-
         # compute all coordinate depends on padding mode. Apply padding(zeros, reflect, border)
         if padding_mode == 'reflection':
             if align_corners:
-                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], 1, 2*(w - 1))
-                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], 1, 2*(h - 1))
+                grid[..., 0] = reflect(grid[..., 0], 1, 2*(w - 1))
+                grid[..., 1] = reflect(grid[..., 1], 1, 2*(h - 1))
             else:
-                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], 0, 2*w - 1)
-                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], 0, 2*h - 1)
+                grid[..., 0] = reflect(grid[..., 0], 0, 2*w - 1)
+                grid[..., 1] = reflect(grid[..., 1], 0, 2*h - 1)
 
-            grid = border_clamp(grid, w - 1, h - 1)
+            # grid = border_clamp(grid, w - 1, h - 1)
+            grid = border_clamp(grid, w - 1, 0)
+            grid = border_clamp(grid, h - 1, 1)
             input = ivy.pad(input, padding, mode="reflect")
+            # input = ivy.pad(input, padding, mode="constant", constant_values=0)
+
 
         elif padding_mode == 'border':
-            grid = border_clamp(grid, w - 1, h - 1)
+            grid = border_clamp(grid, w - 1, 0)
+            grid = border_clamp(grid, h - 1, 1)
             input = ivy.pad(input, padding, mode="symmetric")
+            # input = ivy.pad(input, padding, mode="constant", constant_values=0)
 
         elif padding_mode == 'zeros':
-            w_mask = ivy.bitwise_or(grid[:, :, :, 0] < 0, grid[:, :, :, 0] > w)
-            h_mask = ivy.bitwise_or(grid[:, :, :, 1] < 0, grid[:, :, :, 1] > h)
+            w_mask = ivy.bitwise_or(grid[..., 0] < 0, grid[..., 0] > w)
+            h_mask = ivy.bitwise_or(grid[..., 1] < 0, grid[..., 1] > h)
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
             grid[zeros_mask] += (w * h)
-            grid = border_clamp(grid, w, h)
+            grid = border_clamp(grid, w, 0)
+            grid = border_clamp(grid, h, 1)
             input = ivy.pad(input, padding, mode="constant", constant_values=0)
-
-        # Shift because we need to perform bicubic
-        # grid += 1
-        # h += 1
-        # w += 1
 
         # Apply sampling by mode
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
@@ -530,12 +539,92 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
         n, c, d, h, w = input.shape
         n, to_d, to_h, to_w, gc = grid.shape
 
+        # Padding for d, h, and w
         padding = [(0, 0) for i in range(2)] + [
-            (1, 3),
-            (1, 3),
-            (1, 3)
+            (1, 2),
+            (1, 2),
+            (1, 2)
         ]
-        pass
+
+        # Un-normalize 2D grid
+        if align_corners:  # to range[0, size - 1]
+            grid[:, :, :, 0] = ((grid[:, :, :, 0] + 1) / 2) * (w - 1)
+            grid[:, :, :, 1] = ((grid[:, :, :, 1] + 1) / 2) * (h - 1)
+            grid[:, :, :, 2] = ((grid[:, :, :, 1] + 1) / 2) * (d - 1)
+        else:  # to range[0.5, size - 0.5]
+            grid[:, :, :, 0] = ((grid[:, :, :, 0] + 1) * w - 1) / 2
+            grid[:, :, :, 1] = ((grid[:, :, :, 1] + 1) * h - 1) / 2
+            grid[:, :, :, 2] = ((grid[:, :, :, 2] + 1) * d - 1) / 2
+
+        # Shifting because we applied padding for bicubic
+        grid += 1
+        d += 1
+        h += 1
+        w += 1
+
+        if padding_mode == 'reflection':
+            if align_corners:
+                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], 1, 2*(w - 1))
+                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], 1, 2*(h - 1))
+                grid[:, :, :, 2] = reflect(grid[:, :, :, 2], 1, 2*(d - 1))
+            else:
+                grid[:, :, :, 0] = reflect(grid[:, :, :, 0], 0, 2*w - 1)
+                grid[:, :, :, 1] = reflect(grid[:, :, :, 1], 0, 2*h - 1)
+                grid[:, :, :, 2] = reflect(grid[:, :, :, 2], 0, 2*d - 1)
+
+            grid = border_clamp(grid, w - 1, 0)
+            grid = border_clamp(grid, h - 1, 1)
+            grid = border_clamp(grid, d - 1, 2)
+            input = ivy.pad(input, padding, mode="reflect")
+
+        elif padding_mode == 'border':
+            grid = border_clamp(grid, w - 1, 0)
+            grid = border_clamp(grid, h - 1, 1)
+            grid = border_clamp(grid, d - 1, 2)
+            input = ivy.pad(input, padding, mode="symmetric")
+
+        elif padding_mode == 'zeros':
+            w_mask = ivy.bitwise_or(grid[:, :, :, 0] < 0, grid[:, :, :, 0] > w)
+            h_mask = ivy.bitwise_or(grid[:, :, :, 1] < 0, grid[:, :, :, 1] > h)
+            d_mask = ivy.bitwise_or(grid[:, :, :, 2] < 0, grid[:, :, :, 1] > d)
+            zeros_mask = ivy.bitwise_or(w_mask, h_mask)
+            zeros_mask = ivy.bitwise_or(zeros_mask, d_mask)
+
+            grid[zeros_mask] += (w * h * d)
+            grid = border_clamp(grid, w, 0)
+            grid = border_clamp(grid, h, 1)
+            grid = border_clamp(grid, d, 2)
+            input = ivy.pad(input, padding, mode="constant", constant_values=0)
+
+        batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
+        batch_coor = ivy.repeat(batch_coor, to_h * to_w * to_d, axis=1)
+        batch_coor = ivy.reshape(batch_coor, (n, to_h, to_w, to_d))
+        w_coor = ivy.reshape(grid[..., 0], (n, to_h, to_w, to_d))
+        h_coor = ivy.reshape(grid[..., 1], (n, to_h, to_w, to_d))
+        d_coor = ivy.reshape(grid[..., 2], (n, to_h, to_w, to_d))
+
+        if mode == 'bilinear':
+            tnw = ivy.astype(ivy.floor(grid), ivy.int64)
+            bse = tnw + 1
+
+            w_tnw = ivy.reshape(tnw[..., 0], (n, to_h, to_w, to_d)) # also the w of tsw, bsw, bnw
+            h_tnw = ivy.reshape(tnw[..., 1], (n, to_h, to_w, to_d)) # also the h of tne, bnw, bne
+            d_tnw = ivy.reshape(tnw[..., 2], (n, to_h, to_w, to_d)) # also the d of all top (tne, tse, tsw)
+
+            w_bse = ivy.reshape(bse[..., 0], (n, to_h, to_w, to_d)) # the w of tse, tne, bne
+            h_bse = ivy.reshape(bse[..., 1], (n, to_h, to_w, to_d)) # the h of tse, tsw, bsw
+            d_bse = ivy.reshape(bse[..., 2], (n, to_h, to_w, to_d)) # the d of all bottom (bsw, bnw, bne)
+
+
+
+
+
+
+
+
+
+
+
 
     else:
         print("Not supported input shape")
