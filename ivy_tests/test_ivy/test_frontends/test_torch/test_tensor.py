@@ -11629,6 +11629,8 @@ def test_torch_isnan(
     method_name="char",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-128,
+        max_value=127,
     ),
 )
 def test_torch_char(
