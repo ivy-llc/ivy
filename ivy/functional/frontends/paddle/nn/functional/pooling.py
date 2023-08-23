@@ -113,3 +113,16 @@ def max_unpool1d(
     name=None,
 ):
     return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
+
+
+def max_unpool3d(
+    x,
+    indices,
+    kernel_size,
+    stride=None,
+    padding=0,
+    data_format="NCL",
+    output_size=None,
+    name=None,
+):
+    return ivy.max_unpool3d(x, indices, kernel_size, stride, padding, data_format)
