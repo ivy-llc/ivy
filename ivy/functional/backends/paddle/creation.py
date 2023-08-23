@@ -24,7 +24,6 @@ from ivy.functional.ivy.creation import (
 )
 from . import backend_version
 from paddle.device import core
-from ivy.functional.backends.paddle.device import to_device
 
 # Array API Standard #
 # -------------------#
@@ -50,23 +49,19 @@ def arange(
             stop = start
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
-            return to_device(
-                paddle.arange(start, stop, step, dtype=paddle.int32), device
-            )
+            return paddle.arange(start, stop, step, dtype=paddle.int32)
 
         elif (
             isinstance(start, float)
             or isinstance(stop, float)
             or isinstance(step, float)
         ):
-            return to_device(
-                paddle.arange(start, stop, step, dtype=paddle.float32), device
-            )
+            return paddle.arange(start, stop, step, dtype=paddle.float32)
 
         else:
-            return to_device(paddle.arange(start, stop, step), device)
+            return paddle.arange(start, stop, step)
     else:
-        return to_device(paddle.arange(start, stop, step).cast(dtype), device)
+        return paddle.arange(start, stop, step).cast(dtype)
 
 
 @asarray_to_native_arrays_and_back
@@ -92,7 +87,6 @@ def asarray(
     device: core.Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    device = ivy.as_native_dev(device)
     if isinstance(obj, paddle.Tensor):
         if copy:
             # Checking if the tensor is not empty
@@ -104,7 +98,7 @@ def asarray(
                 ret = obj
         else:
             ret = obj
-        return to_device(ret, device).astype(dtype)
+        return ret.astype(dtype)
 
     elif isinstance(obj, (Number, bool, complex)):
         return paddle_backend.squeeze(
@@ -123,7 +117,7 @@ def empty(
 ) -> paddle.Tensor:
     if isinstance(shape, int):
         shape = [shape]
-    return to_device(paddle.empty(shape=shape).cast(dtype), device)
+    return paddle.empty(shape=shape).cast(dtype)
 
 
 def empty_like(
@@ -134,7 +128,7 @@ def empty_like(
     device: core.Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return to_device(paddle.empty(shape=x.shape).cast(dtype), device)
+    return paddle.empty(shape=x.shape).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -168,7 +162,7 @@ def eye(
         n_cols = n_rows
     if batch_shape is None:
         batch_shape = []
-    i = to_device(paddle.eye(n_rows, n_cols, dtype=dtype), device)
+    i = paddle.eye(n_rows, n_cols, dtype=dtype)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
 
@@ -179,7 +173,7 @@ def eye(
     elif -n_rows < k < 0:
         mat = paddle.concat(
             [
-                to_device(paddle.zeros([-k, n_cols], dtype=dtype), device),
+                paddle.zeros([-k, n_cols], dtype=dtype),
                 i[: n_rows + k],
             ],
             0,
@@ -189,16 +183,14 @@ def eye(
     elif 0 < k < n_cols:
         mat = paddle.concat(
             [
-                to_device(paddle.zeros([n_rows, k], dtype=dtype), device),
+                paddle.zeros([n_rows, k], dtype=dtype),
                 i[:, : n_cols - k],
             ],
             1,
         )
         return paddle.tile(paddle.reshape(mat, reshape_dims), tile_dims)
     else:
-        return to_device(
-            paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype), device
-        )
+        return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
@@ -219,13 +211,9 @@ def full(
     if not isinstance(shape, Sequence):
         shape = [shape]
     if ivy.as_native_dtype(dtype) is paddle.int8:
-        return to_device(
-            paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
-        )
+        return paddle.full(shape=shape, fill_value=fill_value).cast(dtype)
     else:
-        return to_device(
-            paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device
-        )
+        return paddle.full(shape=shape, fill_value=fill_value, dtype=dtype)
 
 
 def full_like(
@@ -395,7 +383,7 @@ def linspace(
         ans = paddle.to_tensor(ans.data)
     if "int" in str(dtype) and paddle.is_floating_point(ans):
         ans = paddle.floor(ans)
-    return to_device(ans.cast(dtype), device)
+    return ans.cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -453,7 +441,7 @@ def ones(
     device: core.Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return to_device(paddle.ones(shape=shape).cast(dtype), device)
+    return paddle.ones(shape=shape).cast(dtype)
 
 
 def ones_like(
@@ -512,7 +500,7 @@ def zeros(
     device: core.Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return to_device(paddle.zeros(shape=shape).cast(dtype), device)
+    return paddle.zeros(shape=shape).cast(dtype)
 
 
 def zeros_like(
@@ -597,7 +585,7 @@ def one_hot(
         res = paddle.moveaxis(res, -1, axis)
     if expand_ret:
         res = res.squeeze()
-    return to_device(res.cast(dtype), device)
+    return res.cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -653,8 +641,4 @@ def triu_indices(
         return paddle.to_tensor([], place=device, dtype="int64"), paddle.to_tensor(
             [], place=device, dtype="int64"
         )
-    return tuple(
-        to_device(
-            paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
-        )
-    )
+    return tuple(paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"))

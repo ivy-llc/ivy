@@ -88,10 +88,6 @@ def tril_indices(
             ret[0].append(i)
             ret[1].append(j)
 
-    if device is not None:
-        with tf.device(ivy.as_native_dev(device)):
-            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
-
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 

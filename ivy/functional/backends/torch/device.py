@@ -10,7 +10,10 @@ from torch.profiler import profile
 
 # local
 import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _shift_native_arrays_on_default_device,
+    Profiler as BaseProfiler,
+)
 
 torch_scatter = None
 
@@ -102,6 +105,14 @@ def tpu_is_available() -> bool:
     if importlib.util.find_spec("torch_xla") is not None:
         return True
     return False
+
+
+def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
+    args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
+        *args, device_shifting_dev=device_shifting_dev, **kwargs
+    )
+    with torch.device(device_shifting_dev):
+        return fn(*args, **kwargs)
 
 
 class Profiler(BaseProfiler):

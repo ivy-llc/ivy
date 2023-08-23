@@ -52,24 +52,17 @@ def arange(
             stop = float(start)
         else:
             stop = start
-    with tf.device(device):
-        if dtype is None:
-            if (
-                isinstance(start, int)
-                and isinstance(stop, int)
-                and isinstance(step, int)
-            ):
-                return tf.cast(
-                    tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32
-                )
-            else:
-                return tf.range(start, stop, delta=step)
+    if dtype is None:
+        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+            return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32)
         else:
-            dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-            if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
-                return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
-            else:
-                return tf.range(start, stop, delta=step, dtype=dtype)
+            return tf.range(start, stop, delta=step)
+    else:
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+        if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
+            return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
+        else:
+            return tf.range(start, stop, delta=step, dtype=dtype)
 
 
 @asarray_to_native_arrays_and_back
@@ -96,13 +89,12 @@ def asarray(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        # convert the input to a tensor using the appropriate function
-        try:
-            ret = tf.convert_to_tensor(obj, dtype)
-        except (TypeError, ValueError):
-            ret = tf.cast(obj, dtype)
-        return tf.identity(ret) if copy else ret
+    # convert the input to a tensor using the appropriate function
+    try:
+        ret = tf.convert_to_tensor(obj, dtype)
+    except (TypeError, ValueError):
+        ret = tf.cast(obj, dtype)
+    return tf.identity(ret) if copy else ret
 
 
 def empty(
@@ -112,8 +104,7 @@ def empty(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        return tf.experimental.numpy.empty(shape, dtype)
+    return tf.experimental.numpy.empty(shape, dtype)
 
 
 def empty_like(
@@ -124,8 +115,7 @@ def empty_like(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        return tf.experimental.numpy.empty_like(x, dtype=dtype)
+    return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("uint16",)}, backend_version)
@@ -140,43 +130,42 @@ def eye(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        if n_cols is None:
-            n_cols = n_rows
-        if batch_shape is None:
-            batch_shape = []
-        i = tf.eye(n_rows, n_cols, dtype=dtype)
-        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
-        tile_dims = list(batch_shape) + [1, 1]
+    if n_cols is None:
+        n_cols = n_rows
+    if batch_shape is None:
+        batch_shape = []
+    i = tf.eye(n_rows, n_cols, dtype=dtype)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
 
-        # k=index of the diagonal. A positive value refers to an upper diagonal,
-        # a negative value to a lower diagonal, and 0 to the main diagonal.
-        # Default: ``0``.
-        # value of k ranges from -n_rows < k < n_cols
+    # k=index of the diagonal. A positive value refers to an upper diagonal,
+    # a negative value to a lower diagonal, and 0 to the main diagonal.
+    # Default: ``0``.
+    # value of k ranges from -n_rows < k < n_cols
 
-        # k=0 refers to the main diagonal
-        if k == 0:
-            return tf.eye(n_rows, n_cols, batch_shape=batch_shape, dtype=dtype)
+    # k=0 refers to the main diagonal
+    if k == 0:
+        return tf.eye(n_rows, n_cols, batch_shape=batch_shape, dtype=dtype)
 
-        # when k is negative
-        elif -n_rows < k < 0:
-            mat = tf.concat(
-                [tf.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]],
-                0,
-            )
-            return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
+    # when k is negative
+    elif -n_rows < k < 0:
+        mat = tf.concat(
+            [tf.zeros([-k, n_cols], dtype=dtype), i[: n_rows + k]],
+            0,
+        )
+        return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
 
-        elif 0 < k < n_cols:
-            mat = tf.concat(
-                [
-                    tf.zeros([n_rows, k], dtype=dtype),
-                    i[:, : n_cols - k],
-                ],
-                1,
-            )
-            return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
-        else:
-            return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
+    elif 0 < k < n_cols:
+        mat = tf.concat(
+            [
+                tf.zeros([n_rows, k], dtype=dtype),
+                i[:, : n_cols - k],
+            ],
+            1,
+        )
+        return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
+    else:
+        return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
 # noinspection PyShadowingNames
@@ -202,11 +191,10 @@ def full(
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    with tf.device(device):
-        return tf.fill(
-            shape,
-            tf.constant(fill_value, dtype=dtype),
-        )
+    return tf.fill(
+        shape,
+        tf.constant(fill_value, dtype=dtype),
+    )
 
 
 def full_like(
@@ -219,8 +207,7 @@ def full_like(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    with tf.device(device):
-        return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
+    return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
 def _slice_at_axis(sl, axis):
@@ -241,21 +228,18 @@ def linspace(
 ):
     if axis is None:
         axis = -1
-    with tf.device(device):
-        start = tf.cast(tf.constant(start), dtype=dtype)
-        stop = tf.cast(tf.constant(stop), dtype=dtype)
-        if not endpoint:
-            ans = tf.linspace(start, stop, num + 1, axis=axis)
-            if axis < 0:
-                axis += len(ans.shape)
-            ans = tf.convert_to_tensor(
-                ans.numpy()[_slice_at_axis(slice(None, -1), axis)]
-            )
-        else:
-            ans = tf.linspace(start, stop, num, axis=axis)
-        if dtype.is_integer and ans.dtype.is_floating:
-            ans = tf.math.floor(ans)
-        return tf.cast(ans, dtype)
+    start = tf.cast(tf.constant(start), dtype=dtype)
+    stop = tf.cast(tf.constant(stop), dtype=dtype)
+    if not endpoint:
+        ans = tf.linspace(start, stop, num + 1, axis=axis)
+        if axis < 0:
+            axis += len(ans.shape)
+        ans = tf.convert_to_tensor(ans.numpy()[_slice_at_axis(slice(None, -1), axis)])
+    else:
+        ans = tf.linspace(start, stop, num, axis=axis)
+    if dtype.is_integer and ans.dtype.is_floating:
+        ans = tf.math.floor(ans)
+    return tf.cast(ans, dtype)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
@@ -288,8 +272,7 @@ def ones(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        return tf.ones(shape, dtype)
+    return tf.ones(shape, dtype)
 
 
 def ones_like(
@@ -300,8 +283,7 @@ def ones_like(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        return tf.ones_like(x, dtype=dtype)
+    return tf.ones_like(x, dtype=dtype)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
@@ -335,8 +317,7 @@ def zeros(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        return tf.zeros(shape, dtype)
+    return tf.zeros(shape, dtype)
 
 
 def zeros_like(
@@ -347,8 +328,7 @@ def zeros_like(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        return tf.zeros_like(x, dtype=dtype)
+    return tf.zeros_like(x, dtype=dtype)
 
 
 # Extra #
@@ -381,20 +361,6 @@ def one_hot(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    device = ivy.default_device(device)
-
-    if device is not None:
-        indices = tf.cast(indices, tf.int64)
-        with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(
-                indices,
-                depth,
-                on_value=on_value,
-                off_value=off_value,
-                axis=axis,
-                dtype=dtype,
-            )
-
     return tf.one_hot(
         indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
     )
@@ -440,9 +406,5 @@ def triu_indices(
         for j in range(max(0, k + i), n_cols, 1):
             ret[0].append(i)
             ret[1].append(j)
-
-    if device is not None:
-        with tf.device(ivy.as_native_dev(device)):
-            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
