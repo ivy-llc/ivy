@@ -49,7 +49,9 @@ def softmax(
     if "complex" in str(dtype):
         amax = tf_backend.max(x, axis=axis, keepdims=True)
         normalized = tf.exp(tf.subtract(x, amax))
-        return tf.divide(normalized, tf.reduce_sum(normalized, axis=axis, keepdims=True))
+        return tf.divide(
+            normalized, tf.reduce_sum(normalized, axis=axis, keepdims=True)
+        )
     return tf.nn.softmax(x, axis)
 
 

@@ -111,12 +111,8 @@ def softmax(
         amax = paddle_backend.max(x, axis=axis, keepdims=True)
     else:
         amax = paddle.max(x, axis, keepdim=True)
-    exp_x = paddle_backend.exp(
-        paddle.subtract(x, amax)
-    )
-    return paddle.divide(
-        exp_x, paddle.sum(exp_x, axis=axis, keepdim=True)
-    )
+    exp_x = paddle_backend.exp(paddle.subtract(x, amax))
+    return paddle.divide(exp_x, paddle.sum(exp_x, axis=axis, keepdim=True))
 
 
 def softplus(

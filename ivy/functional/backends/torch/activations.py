@@ -71,12 +71,8 @@ def softmax(
         axis = -1
     if "complex" in str(x.dtype):
         amax = torch_backend.max(x, axis=axis, keepdims=True)
-        exp_x = torch.exp(
-            torch.subtract(x, amax)
-        )
-        return torch.divide(
-            exp_x, torch.sum(exp_x, dim=axis, keepdim=True)
-        )
+        exp_x = torch.exp(torch.subtract(x, amax))
+        return torch.divide(exp_x, torch.sum(exp_x, dim=axis, keepdim=True))
     return torch.nn.functional.softmax(x, axis)
 
 

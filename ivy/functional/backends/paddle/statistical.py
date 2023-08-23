@@ -85,7 +85,9 @@ def max(
             # we consider the number with the biggest real and imag part
             img_max = paddle.max(imag, axis=axis, keepdim=keepdims)
             img_max = paddle.cast(img_max, x.dtype)
-            return paddle.add(paddle.cast(real_max, x.dtype), paddle.multiply(img_max, const))
+            return paddle.add(
+                paddle.cast(real_max, x.dtype), paddle.multiply(img_max, const)
+            )
         else:
             ret = paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims)
     else:
