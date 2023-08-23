@@ -82,10 +82,10 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculate an implementation-dependent approximation of the principal value of
-    the normalized sinc function, having domain ``(-infinity, +infinity)`` and
-    codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
-    Each element ``x_i`` is assumed to be expressed in radians.
+    Calculate an implementation-dependent approximation of the principal value of the
+    normalized sinc function, having domain ``(-infinity, +infinity)`` and codomain
+    ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``. Each element
+    ``x_i`` is assumed to be expressed in radians.
 
     **Special cases**
 
@@ -987,9 +987,9 @@ def conj(
 
     .. math::
         a + bj
-    
+
     the complex conjugate is defined as
-    
+
     .. math::
         a - bj
 
@@ -1176,7 +1176,6 @@ def lerp(
         a: ivy.array([7.55000019, 8.05000019]),
         b: ivy.array([5., 5.5])
     }
-
     """
     input_end_allowed_types = [
         "int8",

@@ -120,14 +120,14 @@ def value_test(
     """
     assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
 
-    if type(ret_np_flat) != list:
+    if type(ret_np_flat) != list:  # noqa: E721
         ret_np_flat = [ret_np_flat]
-    if type(ret_np_from_gt_flat) != list:
+    if type(ret_np_from_gt_flat) != list:  # noqa: E721
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
     assert len(
         ret_np_flat
     ) == len(ret_np_from_gt_flat), (
-        "The length of results from backend {} and ground truth"
+        "The length of results from backend {} and ground truth "
         "framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
         "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
