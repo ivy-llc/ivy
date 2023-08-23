@@ -9,3 +9,11 @@ class NodeProto:
 
     def __call__(self, *args, **kwargs):
         return self._fn(*args, **kwargs)
+
+
+class GraphProto:
+    def __init__(self):
+        self.node = None
+        self.name = None
+        self.input = None
+        self.output = None
