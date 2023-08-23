@@ -1668,10 +1668,10 @@ def dot(
     return current_backend(a, b).dot(a, b, out=out)
 
 
-@handle_exceptions
-@to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 @handle_array_like_without_promotion
+@inputs_to_ivy_arrays
 @handle_array_function
 def tt_matrix_to_tensor(
     tt_matrix: Union[ivy.Array, ivy.NativeArray],
