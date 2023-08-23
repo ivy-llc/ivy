@@ -199,7 +199,9 @@ def test_tensorflow_max_pool(
 def test_tensorflow_depthwise_conv2d_backprop_input(
     *, x_f_d_df, frontend, test_flags, fn_tree, backend_fw, on_device
 ):
-    input_dtypes, x, out_backprop, filters, dilations, data_format, stride, padding = x_f_d_df
+    input_dtypes, x, out_backprop, filters, dilations, data_format, stride, padding = (
+        x_f_d_df
+    )
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
