@@ -547,8 +547,8 @@ def __find_cummax(
         isinstance(x.tolist()[0], list)
         and len(x[0].shape) >= 1
         and (
-            (type(x[0]) == paddle.Tensor)
-            or (type(x[0]) == ivy.data_classes.array.array.Array)
+            isinstance(x[0], paddle.Tensor)
+            or isinstance(x[0], ivy.data_classes.array.Array)
         )
     ):
         if axis >= 1:
@@ -599,7 +599,7 @@ def __find_cummax(
                 values.append(y)
             indices.append(n)
 
-    if type(x) == paddle.Tensor:
+    if isinstance(x, paddle.Tensor):
         return paddle.to_tensor(values, dtype=x.dtype), paddle.to_tensor(
             indices, dtype="int64"
         )

@@ -123,23 +123,6 @@ def pad(input, pad, mode="constant", value=0):
     return ivy.pad(input, pad, mode=mode_dict[mode], constant_values=value)
 
 
-def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
-    if scale_factor and (not size):
-        if type(scale_factor) == int:
-            h_new = int(w_old * scale_factor)
-            w_new = int(h_old * scale_factor)
-        elif type(scale_factor) == tuple:
-            h_new = int(w_old * scale_factor[0])
-            w_new = int(h_old * scale_factor[1])
-    elif (not scale_factor) and size:
-        if type(size) == int:
-            h_new = size
-            w_new = size
-        elif type(size) == tuple:
-            h_new, w_new = size
-    return h_new, w_new
-
-
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
