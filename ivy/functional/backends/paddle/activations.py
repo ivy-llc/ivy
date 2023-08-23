@@ -108,7 +108,8 @@ def softmax(
         axis = -1
 
     if paddle.is_complex(x):
-        amax = paddle_backend.max(x, axis=axis, keepdims=True)
+        amax = paddle.max(x.real(), axis=axis, keepdim=True)
+        amax = paddle.cast(amax, x.dtype)
     else:
         amax = paddle.max(x, axis, keepdim=True)
     exp_x = paddle_backend.exp(paddle.subtract(x, amax))

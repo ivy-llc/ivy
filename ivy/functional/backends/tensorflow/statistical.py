@@ -26,6 +26,7 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -35,18 +36,6 @@ def max(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if "complex" in str(x.dtype):
-        real = tf.math.real(x)
-        imag = tf.math.imag(x)
-        const = tf.convert_to_tensor(1j, dtype=x.dtype)
-        real_max = tf.reduce_max(real, axis=axis, keepdims=keepdims)
-        imag = tf.where(
-            real == real_max, imag, tf.experimental.numpy.finfo(imag.dtype).min
-        )
-        # we consider the number with the biggest real and imag part
-        img_max = tf.reduce_max(imag, axis=axis, keepdims=keepdims)
-        img_max = tf.cast(img_max, x.dtype)
-        return tf.add(tf.cast(real_max, x.dtype), tf.multiply(img_max, const))
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
 

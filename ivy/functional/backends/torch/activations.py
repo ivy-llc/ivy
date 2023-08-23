@@ -13,7 +13,6 @@ import torch.nn
 
 # local
 import ivy
-import ivy.functional.backends.torch as torch_backend
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
@@ -70,7 +69,8 @@ def softmax(
     if axis is None:
         axis = -1
     if "complex" in str(x.dtype):
-        amax = torch_backend.max(x, axis=axis, keepdims=True)
+        amax = torch.max(torch.real(x), dim=axis, keepdim=True).values
+        amax = amax.to(x.dtype)
         exp_x = torch.exp(torch.subtract(x, amax))
         return torch.divide(exp_x, torch.sum(exp_x, dim=axis, keepdim=True))
     return torch.nn.functional.softmax(x, axis)

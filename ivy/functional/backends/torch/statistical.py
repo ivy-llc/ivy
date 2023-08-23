@@ -36,6 +36,7 @@ def min(
 min.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def max(
     x: torch.Tensor,
     /,
@@ -51,16 +52,6 @@ def max(
             return x
     if not keepdims and not axis and axis != 0:
         return torch.amax(input=x, out=out)
-    elif "complex" in str(x.dtype):
-        real = torch.real(x)
-        imag = torch.imag(x)
-        const = torch.tensor(1j, dtype=x.dtype)
-        real_max = torch.max(real, dim=axis, keepdim=keepdims).values
-        imag = torch.where(real == real_max, imag, torch.finfo(imag.dtype).min)
-        # we consider the number with the biggest real and imag part
-        img_max = torch.max(imag, dim=axis, keepdim=keepdims).values
-        img_max = img_max.to(x.dtype)
-        return torch.add(real_max.to(x.dtype), torch.multiply(img_max, const))
     return torch.amax(input=x, dim=axis, keepdim=keepdims, out=out)
 
 
