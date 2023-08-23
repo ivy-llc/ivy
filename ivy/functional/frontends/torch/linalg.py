@@ -376,5 +376,5 @@ def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
-def lstsq(A , B ,rcond = None , driver=None):
-    return ivy.lstsq(A,B, rcond=rcond , driver = driver)
+def lstsq(A, B, rcond=None, driver=None):
+    return ivy.lstsq(A, B, rcond=rcond, driver=driver)
