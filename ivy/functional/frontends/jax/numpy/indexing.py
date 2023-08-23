@@ -107,7 +107,7 @@ def choose(arr, choices, out=None, mode="raise"):
     return ivy.choose(arr, choices, out=out, mode=mode)
 
 
-def _make_1d_grid_from_slice(s):  #noqa:
+def _make_1d_grid_from_slice(s):
     step = 1 if s.step is None else s.step
     start = 0 if s.start is None else s.start
     if s.step is not None and ivy.is_complex_dtype(s.step):
@@ -189,6 +189,7 @@ class _AxisConcat(abc.ABC):
 
 class RClass(_AxisConcat):
     """RClass represents"""
+
     axis = 0
     ndmin = 1
     trans1d = -1
