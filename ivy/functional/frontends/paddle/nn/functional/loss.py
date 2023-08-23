@@ -66,7 +66,6 @@ def mse_loss(input, label, reduction="mean", name=None):
     ret = ivy.square(input - label)
     ret = reduction(ret)
 
-
     return paddle.to_tensor(ret)
 
 
