@@ -261,7 +261,6 @@ def full_like(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
