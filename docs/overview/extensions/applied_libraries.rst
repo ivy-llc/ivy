@@ -5,8 +5,8 @@ In other parts of the overview, we have focused on the the Ivy framework itself.
 Here, we explore how Ivy has been used to create a suite of libraries in various fields related to ML.
 Aside from being useful tools for ML developers in any framework, these libraries are a perfect showcase of what is possible using Ivy!
 
-Currently there are Ivy libraries for: Mechanics, 3D Vision, Robotics, Gym Environments and Differentiable Memory.
-We run through some demos from these library now, and encourage you to pip install the libraries and run the demos yourself if you like what you see!
+Currently, there are Ivy libraries for: Mechanics, 3D Vision, Robotics, Gym Environments, and Differentiable Memory.
+We run through some demos from these libraries now, and encourage you to pip install the libraries and run the demos yourself if you like what you see!
 
 Ivy Mechanics
 -------------
@@ -71,8 +71,8 @@ This demo shows the use of :code:`ivy_robot.sample_spline_path` and :code:`ivy_r
 Ivy Gym
 -------
 
-`Ivy Gym <https://github.com/unifyai/gym>`_ provides differentiable implementations of the control environments provided by OpenAI Gym, as well as new “Swimmer” task which illustrates the simplicity of creating new tasks.
-The differentiable nature of the environments means that the cumulative reward can be directly optimized in a supervised manner, without need for reinforcement learning.
+`Ivy Gym <https://github.com/unifyai/gym>`_ provides differentiable implementations of the control environments provided by OpenAI Gym, as well as a new “Swimmer” task which illustrates the simplicity of creating new tasks.
+The differentiable nature of the environments means that the cumulative reward can be directly optimized in a supervised manner, without the need for reinforcement learning.
 Ivy Gym opens the door for intersectional research between supervised learning, trajectory optimization, and reinforcement learning.
 
 For example, we show demos of each of the environments :code:`cartpole`, :code:`mountain_car`, :code:`pendulum`, :code:`reacher`, and :code:`swimmer` solved using direct trajectory optimization below.
@@ -108,6 +108,6 @@ In this demo we create an egocentric 3D map of a room using :code:`ivy_memory.ES
 
 **Round Up**
 
-Hopefully this has given you an idea of what’s possible using Ivy’s collection of applied libraries, and more importantly, given you inspiration for what’s possible using Ivy 🙂
+Hopefully, this has given you an idea of what’s possible using Ivy’s collection of applied libraries, and more importantly, given you inspiration for what’s possible using Ivy 🙂
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
