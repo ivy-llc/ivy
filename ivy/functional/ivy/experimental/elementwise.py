@@ -82,10 +82,10 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculate an implementation-dependent approximation of the principal value of
-    the normalized sinc function, having domain ``(-infinity, +infinity)`` and
-    codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
-    Each element ``x_i`` is assumed to be expressed in radians.
+    Calculate an implementation-dependent approximation of the principal value of the
+    normalized sinc function, having domain ``(-infinity, +infinity)`` and codomain
+    ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``. Each element
+    ``x_i`` is assumed to be expressed in radians.
 
     **Special cases**
 

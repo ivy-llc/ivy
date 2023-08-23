@@ -38,39 +38,31 @@ def directory_generator(req, base="/opt/fw/"):
 def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] if "==" in pkg else pkg == "torch":
         subprocess.run(
-            (
-                f"yes |pip3 install --upgrade {pkg} --target"
-                f" {path} --default-timeout=100 --extra-index-url"
-                " https://download.pytorch.org/whl/cu118  --no-cache-dir"
-            ),
+            f"yes |pip3 install --upgrade {pkg} --target"
+            f" {path} --default-timeout=100 --extra-index-url"
+            " https://download.pytorch.org/whl/cu118  --no-cache-dir",
             shell=True,
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         subprocess.run(
-            (
-                f"yes |pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
-                " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
-                " --no-cache-dir"
-            ),
+            f"yes |pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
+            " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
+            " --no-cache-dir",
             shell=True,
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
         subprocess.run(
-            (
-                "yes |pip install "
-                f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post117"
-                f" --target {path}  -f"
-                " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
-                " --no-cache-dir"
-            ),
+            "yes |pip install "
+            f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post117"
+            f" --target {path}  -f"
+            " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
+            " --no-cache-dir",
             shell=True,
         )
     else:
         subprocess.run(
-            (
-                f"yes |pip3 install --upgrade {pkg} --target"
-                f" {path} --default-timeout=100   --no-cache-dir"
-            ),
+            f"yes |pip3 install --upgrade {pkg} --target"
+            f" {path} --default-timeout=100   --no-cache-dir",
             shell=True,
         )
 
