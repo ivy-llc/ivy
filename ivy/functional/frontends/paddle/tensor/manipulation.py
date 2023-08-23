@@ -154,6 +154,37 @@ def unstack(x, axis=0, name=None):
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
+def rot90(x, k=1, axes=(0, 1), name=None):
+    return ivy.rot90(x, k=k, axes=axes)
+
+def with_supported_dtypes(supported_versions):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            current_version = "2.5.1 and below" 
+            if current_version in supported_versions:
+                supported_dtypes = supported_versions[current_version]
+                for arg in args:
+                    dtype = ivy.get_dtype(arg)
+                    if dtype not in supported_dtypes:
+                        raise ValueError(f"Dtype {dtype} is not supported for the selected version {current_version}.")
+            else:
+                raise ValueError(f"Version {current_version} is not supported.")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@with_supported_dtypes({
+    "2.5.1 and below": (
+        "bool",
+        "float32",
+        "float64",
+        "int32",
+        "int64",
+    )
+})
+def rot90(x, k=1, axes=(0, 1), name=None):
+    return ivy.rot90(x, k=k, axes=axes)
+
 
 @with_supported_device_and_dtypes(
     {
@@ -173,3 +204,6 @@ def take_along_axis(arr, indices, axis):
 @to_ivy_arrays_and_back
 def rot90(x, k=1, axes=(0, 1), name=None):
     return ivy.rot90(x, k=k, axes=axes)
+
+def moveaxis(x, source, destination, name=None):
+    return ivy.moveaxis(x, source, destination)
