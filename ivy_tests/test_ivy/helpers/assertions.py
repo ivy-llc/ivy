@@ -144,7 +144,7 @@ def value_test(
             if specific_tolerance_dict.get(dtype) is not None:
                 rtol = specific_tolerance_dict.get(dtype)
             else:
-                rtol = TOLERANCE_DICT.get(dtype, 1e-03)
+                rtol = TOLERANCE_DICT.get(dtype, 1e-03) if rtol is None else rtol
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
