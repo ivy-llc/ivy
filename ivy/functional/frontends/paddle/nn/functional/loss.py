@@ -339,7 +339,7 @@ def dice_loss(input, label, epsilon=0.00001, name=None):
         ),
     )
     ivy.assertions.check_true(
-        tuple(input.shape[:-1]) == tuple(label.shape[:-1]),
+        input.shape[:-1] == label.shape[:-1],
         message="All dimensions should be equal except the last one.",
     )
     ivy.assertions.check_true(
