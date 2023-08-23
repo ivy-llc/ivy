@@ -723,7 +723,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
     if width_pair[0] > 0:
         left_ramp = ivy.linspace(
             end_value_pair[0],
-            ivy.array(edge_pair[0].squeeze(axis)),
+            ivy.array(edge_pair[0].squeeze(axis=axis)),
             num=width_pair[0],
             endpoint=False,
             dtype=ivy.Dtype(str(padded.dtype)),
@@ -735,7 +735,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
         right_ramp = ivy.flip(
             ivy.linspace(
                 end_value_pair[1],
-                ivy.array(edge_pair[1].squeeze(axis)),
+                ivy.array(edge_pair[1].squeeze(axis=axis)),
                 num=width_pair[1],
                 endpoint=False,
                 dtype=ivy.Dtype(str(padded.dtype)),
@@ -849,13 +849,16 @@ def _set_wrap_both(padded, axis, width_pair):
 
 def _pad_simple(array, pad_width, fill_value=None):
     new_shape = tuple(
-        left + size + right for size, (left, right) in zip(array.shape, pad_width)
+        [left + size + right for size, (left, right) in zip(array.shape, pad_width)]
     )
     padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
         padded = ivy.ones_like(padded) * fill_value
     original_area_slice = tuple(
-        slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
+        [
+            slice(left, left + size)
+            for size, (left, right) in zip(array.shape, pad_width)
+        ]
     )
     padded[original_area_slice] = array
     return padded, original_area_slice
@@ -2109,7 +2112,8 @@ def unique_consecutive(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Eliminates all but the first element from every consecutive group of equivalent
+    """
+    Eliminates all but the first element from every consecutive group of equivalent
     elements in ``x``.
 
     Parameters
@@ -2267,11 +2271,10 @@ def partial_unfold(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Partial unfolding of a tensor while ignoring the specified number
-    of dimensions at the beginning and the end.
-    For instance, if the first dimension of the tensor is the number
-    of samples, to unfold each sample, set skip_begin=1.
-    This would, for each i in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
+    Partial unfolding of a tensor while ignoring the specified number of dimensions at
+    the beginning and the end. For instance, if the first dimension of the tensor is the
+    number of samples, to unfold each sample, set skip_begin=1. This would, for each i
+    in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
 
     Parameters
     ----------
