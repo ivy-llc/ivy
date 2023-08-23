@@ -202,10 +202,7 @@ def full(
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     with tf.device(device):
-        return tf.fill(
-            shape,
-            tf.constant(fill_value, dtype=dtype),
-        )
+        return tf.experimental.numpy.full(shape, fill_value, dtype=dtype)
 
 
 def full_like(
