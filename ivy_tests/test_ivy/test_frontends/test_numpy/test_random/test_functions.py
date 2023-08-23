@@ -834,6 +834,7 @@ def test_numpy_logistic(
     )
 
 
+# zipf
 @handle_frontend_test(
     fn_tree="numpy.random.zipf",
     input_dtypes=helpers.get_dtypes("float", index=2),

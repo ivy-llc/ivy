@@ -203,7 +203,5 @@ def logistic(loc=0.0, scale=1.0, size=None):
 @from_zero_dim_arrays_to_scalar
 def zipf(a, size=None):
     if a <= 1:
-        raise ValueError(
-            "Parameter 'alpha' must be greater than 1 for the Zipf distribution."
-        )
-    return ivy.floor((1.0 / a) ** 1.0).astype(int)
+        return 0
+    return ivy.np.random.zipf(a, size=size)
