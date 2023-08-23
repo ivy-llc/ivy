@@ -782,10 +782,10 @@ def test_paddle_tensor_sqrt(
 # sqrt_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
+    init_tree="paddle.to_tensor",
     method_name="sqrt_",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_tensor_sqrt_(
