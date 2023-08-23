@@ -132,6 +132,7 @@ def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_dev
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
+        tolerance_dict={"bfloat16": 1e-1},
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
