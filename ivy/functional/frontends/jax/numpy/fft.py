@@ -29,7 +29,6 @@ def fft(a, n=None, axis=-1, norm=None):
     return ivy.fft(a, axis, norm=norm, n=n)
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def ifftn(a, s=None, axes=None, norm=None):
     a = ivy.asarray(a, dtype=ivy.complex128)
