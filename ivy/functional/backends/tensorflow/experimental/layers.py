@@ -948,7 +948,7 @@ def trans_x_to_s(
     dim: Sequence[int] = (-2, -1),
 ) -> Union[tf.Tensor, tf.Variable]:
     """Change the shape of the input array x to the desired output shape s."""
-    if x.dtype != tf.complex128 or x.dtype != tf.complex64:
+    if x.dtype != tf.complex128 and x.dtype != tf.complex64:
         x = tf.cast(x, tf.float32)
     x_shape = x.shape
     if dim == (-1, -2) or dim == (1, 0):
@@ -960,21 +960,21 @@ def trans_x_to_s(
         x_new = x[: s[0], : s[1]]
         if s[0] != x_new.shape[0]:
             size = s[0] - x_new.shape[0]
-            z = tf.zeros((size, s[1]))
+            z = tf.zeros((size, s[1]), dtype=x.dtype)
             x_new = tf.concat([x_new, z], 0)
         elif s[1] != x_new.shape[1]:
             size = s[1] - x_new.shape[1]
-            z = tf.zeros((s[0], size))
+            z = tf.zeros((s[0], size), dtype=x.dtype)
             x_new = tf.concat([x_new, z], 1)
     elif (s[0] >= x_shape[0] and s[1] <= x_shape[1]) and min(s) <= min(x_shape):
         x_new = x[: s[0], : s[1]]
         size = s[0] - x_new.shape[0]
-        z = tf.zeros((size, s[1]))
+        z = tf.zeros((size, s[1]), dtype=x.dtype)
         x_new = tf.concat([x_new, z], 0)
     elif (s[0] < x_shape[0] and s[1] > x_shape[1]) and min(s) == min(x_shape):
         x_new = x[: s[0], : s[1]]
         size = s[1] - x_new.shape[1]
-        z = tf.zeros((s[0], size))
+        z = tf.zeros((s[0], size), dtype=x.dtype)
         x_new = tf.concat([x_new, z], axis=1)
     else:
         x_new = x[: s[0], : s[1]]
