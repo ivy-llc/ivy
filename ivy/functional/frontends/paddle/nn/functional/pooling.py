@@ -21,25 +21,19 @@ def avg_pool2d(
     data_format="NCHW",
     name=None,
 ):
+    if stride is None:
+        stride = kernel_size
     kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, "2d", name="stride")
     padding = _broadcast_pooling_helper(padding, "2d", name="padding")
-    kernel_pads = list(zip(kernel_size, padding))
-
-    # Padding should be less than or equal to half of kernel size
-    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
-        raise ValueError(
-            "pad should be smaller than or equal to half of kernel size, "
-            f"but got padding={padding}, kernel_size={kernel_size}. "
-        )
-
     # Figure out padding string
-    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
         padding = "SAME"
     else:
         padding = "VALID"
 
-    count_include_pad = False if exclusive else True
+    count_include_pad = not exclusive
     return ivy.avg_pool2d(
         x,
         kernel_size,
@@ -57,8 +51,19 @@ def avg_pool2d(
 def avg_pool1d(
     x, kernel_size, stride=None, padding=0, exclusive=True, ceil_mode=False, name=None
 ):
-    data_format = "NCL"
+    data_format = "NCW"
     exclusive = not exclusive
+    if stride is None:
+        stride = kernel_size
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    # Figure out padding string
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
 
     return ivy.avg_pool1d(
         x,
@@ -81,6 +86,12 @@ def adaptive_avg_pool1d(x, output_size, name=None):
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def adaptive_avg_pool2d(x, output_size, data_format="NCHW", name=None):
     return ivy.adaptive_avg_pool2d(x, output_size)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def adaptive_avg_pool3d(x, output_size, data_format="NCHW", name=None):
+    return ivy.adaptive_avg_pool3d(x, output_size)
 
 
 @to_ivy_arrays_and_back

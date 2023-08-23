@@ -215,14 +215,16 @@ def kl_div(logits, labels, reduction="mean"):
     """
     Computes the Kullback-Leibler (KL) Divergence between the logits and the labels.
 
-    Parameters:
+    Parameters
+    ----------
         logits (numpy array): The input logits array.
         labels (numpy array): The label array which has the same shape as logits.
         reduction (str): Specifies the reduction to be applied to the output.
                          Its value must be one of 'none', 'mean', 'batchmean',
                          or 'sum'. Default: 'mean'.
 
-    Returns:
+    Returns
+    -------
         float or numpy array: If reduction is 'none', then output is
         a numpy array and has the same shape as logits.
                               Otherwise, it is a scalar (float).
@@ -313,6 +315,25 @@ def interpolate(
     "mindspore",
 )
 @to_ivy_arrays_and_back
+def hardswish(x):
+    return ivy.hardswish(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
+@to_ivy_arrays_and_back
 def pad(input, pad_width, mode="constant", constant_values=0):
     return ivy.pad(input, pad_width, mode=mode, constant_values=constant_values)
 
@@ -386,3 +407,31 @@ def fast_gelu(input_x):
     return (input_x / (1 + ivy.exp(-1.702 * ivy.abs(input_x)))) * ivy.exp(
         0.851 * (input_x - ivy.abs(input_x))
     )
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float32", "float64")}, "mindspore")
+@to_ivy_arrays_and_back
+def softshrink(x, lambd=0.5):
+    low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
+    up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
+    return ivy.add(low, up)
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def gumbel_softmax(logits, tau=1, hard=False, dim=-1):
+    gumbels = -ivy.empty_like(logits).exponential().log()
+    gumbels = (logits + gumbels) / tau
+    y_soft = ivy.softmax(gumbels, axis=dim)
+
+    if hard:
+        indices = y_soft.max(axis=dim, keepdims=True)[1]
+        y_hard = ivy.zeros_like(logits)
+        updates = ivy.ones_like(indices)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
+
+        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
+    else:
+        ret = y_soft
+
+    return ret
