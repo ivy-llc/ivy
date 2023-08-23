@@ -69,7 +69,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> ret = x.is_ivy_array()
         >>> print(ret)
         True
-
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
@@ -842,7 +841,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
         True
-
         """
         return ivy.assert_supports_inplace(self)
 
@@ -1093,6 +1091,22 @@ class _ArrayWithGeneral(abc.ABC):
         -------
         ret
             The new item following the numerically stable power.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instance method:
+
+        >>> x = ivy.asarray([2, 4])
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        ivy.array([ 4.00004, 16.00008])
+
+        >>> x = ivy.asarray([[2., 4.], [6., 8.]])
+        >>> y = ivy.asarray([2., 4.])
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        ivy.array([[4.00004000e+00, 2.56002560e+02],
+                [3.60001200e+01, 4.09602048e+03]])
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
 

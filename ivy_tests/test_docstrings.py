@@ -77,42 +77,42 @@ def check_docstring_examples_run(
     get_backend
     """
     to_skip = [
-         "random_normal",
-         "random_uniform",
-         "randint",
-         "shuffle",
-         "beta",
-         "gamma",
-         "dev",
-         "num_gpus",
-         "current_backend",
-         "get_backend",
-         "namedtuple",
-         "invalid_dtype",
-         "DType",
-         "NativeDtype",
-         "Dtype",
-         "multinomial",
-         "num_cpu_cores",
-         "get_all_ivy_arrays_on_dev",
-         "num_ivy_arrays_on_dev",
-         "total_mem_on_dev",
-         "used_mem_on_dev",
-         "percent_used_mem_on_dev",
-         "function_supported_dtypes",
-         "function_unsupported_dtypes",
-         "randint",
-         "unique_counts",
-         "unique_all",
-         "dropout",
-         "dropout1d",
-         "dropout2d",
-         "dropout3d",
-         "total_mem_on_dev",
-         "supports_inplace_updates",
-         "get",
-         "deserialize",
-         "set_split_factor",
+        "random_normal",
+        "random_uniform",
+        "randint",
+        "shuffle",
+        "beta",
+        "gamma",
+        "dev",
+        "num_gpus",
+        "current_backend",
+        "get_backend",
+        "namedtuple",
+        "invalid_dtype",
+        "DType",
+        "NativeDtype",
+        "Dtype",
+        "multinomial",
+        "num_cpu_cores",
+        "get_all_ivy_arrays_on_dev",
+        "num_ivy_arrays_on_dev",
+        "total_mem_on_dev",
+        "used_mem_on_dev",
+        "percent_used_mem_on_dev",
+        "function_supported_dtypes",
+        "function_unsupported_dtypes",
+        "randint",
+        "unique_counts",
+        "unique_all",
+        "dropout",
+        "dropout1d",
+        "dropout2d",
+        "dropout3d",
+        "total_mem_on_dev",
+        "supports_inplace_updates",
+        "get",
+        "deserialize",
+        "set_split_factor",
     ]
     # the temp skip list consists of functions
     # which have an issue with their implementation
@@ -361,21 +361,17 @@ def test_docstrings(backend):
             for method_name in dir(v):
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Array, method_name)
-                    if (
-                        helpers.gradient_incompatible_function(
-                            fn=getattr(ivy.functional, method_name)
-                        )
-                        or check_docstring_examples_run(fn=method, from_array=True)
-                    ):
+                    if helpers.gradient_incompatible_function(
+                        fn=getattr(ivy.functional, method_name)
+                    ) or check_docstring_examples_run(fn=method, from_array=True):
                         continue
                     success = False
                     failures.append("Array." + method_name)
                 else:
                     method = getattr(ivy.Array, method_name)
-                    if (
-                        helpers.gradient_incompatible_function(fn=method)
-                        or check_docstring_examples_run(fn=method, from_array=True)
-                    ):
+                    if helpers.gradient_incompatible_function(
+                        fn=method
+                    ) or check_docstring_examples_run(fn=method, from_array=True):
                         continue
                     success = False
                     failures.append("Array." + method_name)
@@ -384,30 +380,25 @@ def test_docstrings(backend):
             for method_name in dir(v):
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
-                    if (
-                        helpers.gradient_incompatible_function(
-                            fn=getattr(ivy.functional, method_name)
-                        )
-                        or check_docstring_examples_run(fn=method, from_container=True)
-                    ):
+                    if helpers.gradient_incompatible_function(
+                        fn=getattr(ivy.functional, method_name)
+                    ) or check_docstring_examples_run(fn=method, from_container=True):
                         continue
                     success = False
                     failures.append("Container." + method_name)
                 else:
                     method = getattr(ivy.Container, method_name)
-                    if (
-                        helpers.gradient_incompatible_function(fn=method)
-                        or check_docstring_examples_run(fn=method, from_container=True)
-                    ):
+                    if helpers.gradient_incompatible_function(
+                        fn=method
+                    ) or check_docstring_examples_run(fn=method, from_container=True):
                         continue
                     success = False
                     failures.append("Container." + method_name)
 
         else:
-            if (
-                check_docstring_examples_run(fn=v)
-                or helpers.gradient_incompatible_function(fn=v)
-            ):
+            if check_docstring_examples_run(
+                fn=v
+            ) or helpers.gradient_incompatible_function(fn=v):
                 continue
             success = False
             failures.append(k)

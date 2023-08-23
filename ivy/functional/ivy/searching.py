@@ -368,7 +368,6 @@ def nonzero(
         a: ivy.array([0, 1, 2]),
         b: ivy.array([])
     }]
-
     """
     return current_backend(x).nonzero(
         x, as_tuple=as_tuple, size=size, fill_value=fill_value
@@ -453,7 +452,6 @@ def where(
         a: ivy.array([1, 0, 1]),
         b: ivy.array([1, 0, 1])
     }
-
     """
     return current_backend(x1).where(condition, x1, x2, out=out)
 
