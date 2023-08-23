@@ -354,15 +354,32 @@ def check_kernel_padding_size(kernel_size, padding_size):
             )
 
 
+def check_inplace_update_support(ensure_in_backend, x):
+    current_backend = ivy.current_backend_str()
+    is_tf_variable = current_backend == "tensorflow" and not ivy.is_ivy_array(
+        x, exclusive=True
+    )
+    if (
+        ensure_in_backend
+        or ivy.is_native_array(x)
+        or (ivy.inplace_mode == "strict" and not is_tf_variable)
+    ):
+        raise ivy.utils.exceptions.InplaceUpdateException(
+            f"{current_backend} does not support inplace updates "
+            "and ivy cannot support the operation in 'strict' mode\n"
+            "To enable inplace update, use ivy.set_inplace_mode('lenient')\n"
+        )
+
+
+# Jax Specific #
+# ------- #
+
+
 def check_dev_correct_formatting(device):
     assert device[0:3] in ["gpu", "tpu", "cpu"]
     if device != "cpu":
         assert device[3] == ":"
         assert device[4:].isnumeric()
-
-
-# Jax Specific #
-# ------- #
 
 
 def _check_jax_x64_flag(dtype):

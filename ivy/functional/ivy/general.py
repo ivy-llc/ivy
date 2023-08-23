@@ -3263,6 +3263,8 @@ def inplace_update(
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
+ivy.inplace_mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+
 
 @handle_exceptions
 def set_inplace_mode(mode: str = "lenient") -> None:
@@ -3303,6 +3305,7 @@ def set_inplace_mode(mode: str = "lenient") -> None:
     Enabling strict mode can help users have more control over memory management
     but may lead to errors if the backend doesn't support inplace updates natively.
     """
+    global inplace_mode_stack
     inplace_modes = ["lenient", "strict"]
     ivy.utils.assertions.check_elem_in_list(
         mode, inplace_modes, False, f"inplace mode must be one of {inplace_modes}"

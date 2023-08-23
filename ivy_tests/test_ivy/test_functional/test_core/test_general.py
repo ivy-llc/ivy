@@ -1242,7 +1242,7 @@ def test_inplace_update(
                 backend=backend_fw, ret_np_flat=x, ret_np_from_gt_flat=val
             )
         elif not supports_update and ivy_backend.inplace_mode == "strict":
-            with pytest.raises(Exception):
+            with pytest.raises(ivy.utils.exceptions.InplaceUpdateException):
                 ivy_backend.inplace_update(x, val)
 
 

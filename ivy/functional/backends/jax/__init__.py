@@ -172,43 +172,6 @@ native_inplace_support = False
 backend = "jax"
 
 
-def _handle_inplace_mode():
-    if not hasattr(ivy, "inplace_mode") or ivy.inplace_mode not in [
-        "lenient",
-        "strict",
-    ]:
-        ivy.set_inplace_mode("lenient")
-
-    if ivy.inplace_mode == "lenient":
-        inplace_update_msg = (
-            f"The current backend: '{backend}' does not support "
-            "inplace updates natively for arrays and variables "
-            "And since the current ivy.inplace_mode is set to 'lenient', "
-            "Ivy would quietly create new arrays when using inplace "
-            "updates, but a 'strict' mode is available if you want to "
-            "control your memory management and raise an error "
-            "whenever an inplace update is attempted.\n"
-        )
-    else:
-        inplace_update_msg = (
-            f"The current backend: '{backend}' does not support "
-            "inplace updates natively for arrays and variables "
-            "And since the current ivy.inplace_mode is set to 'strict', "
-            "Ivy will throw an error "
-            "whenever an inplace update is attempted.\n"
-        )
-    warnings.warn(inplace_update_msg)
-    warnings.warn(
-        f"The current backend: '{backend}' "
-        "will lead to overhead Creating many views"
-        "when performing inplace updates.\n"
-    )
-
-
-if not native_inplace_support:
-    _handle_inplace_mode()
-
-
 supports_gradients = True
 
 

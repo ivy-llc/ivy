@@ -12,6 +12,7 @@ from ivy.utils import _importlib, verbosity
 # local
 from ivy.func_wrapper import _wrap_function
 from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
+from ivy.utils.exceptions import handle_inplace_mode
 
 backend_stack = []
 compiled_backends = {}
@@ -465,6 +466,8 @@ def set_backend(backend: str, dynamic: bool = False):
         if verbosity.level > 0:
             verbosity.cprint("backend stack: {}".format(backend_stack))
 
+    handle_inplace_mode()
+
     return ivy
 
 
@@ -584,8 +587,12 @@ def previous_backend():
                 ivy.__dict__[k] = v
             if k in ivy.functional.__dict__ and not k.startswith("__"):
                 ivy.functional.__dict__[k] = v
+
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
+
+    handle_inplace_mode()
+
     return backend
 
 
@@ -623,7 +630,10 @@ def choose_random_backend(excluded=None):
 def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
     if cached and backend in compiled_backends.keys():
-        return compiled_backends[backend][-1]
+        cached_backend = compiled_backends[backend][-1]
+        if not cached_backend.native_inplace_support:
+            handle_inplace_mode()
+        return cached_backend
     with _importlib.LocalIvyImporter():
         ivy_pack = _importlib._import_module("ivy")
         ivy_pack._is_local_pkg = True
@@ -652,4 +662,7 @@ def with_backend(backend: str, cached: bool = True):
         compiled_backends[backend].append(ivy_pack)
     except KeyError:
         compiled_backends[backend] = [ivy_pack]
+
+    handle_inplace_mode()
+
     return ivy_pack

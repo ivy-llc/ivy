@@ -1,3 +1,5 @@
+import warnings
+
 import ivy
 import functools
 from typing import Callable
@@ -288,6 +290,11 @@ class IvyNotImplementedException(NotImplementedError):
         super().__init__(message)
 
 
+class InplaceUpdateException(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
 class IvyError(IvyException):
     def __init__(self, *messages, include_backend=False):
         super().__init__(*messages, include_backend=include_backend)
@@ -390,6 +397,25 @@ def handle_exceptions(fn: Callable) -> Callable:
             raise ivy.utils.exceptions.IvyBackendException(
                 fn.__name__, str(e), include_backend=True
             )
+        except InplaceUpdateException as e:
+            _configure_stack_trace(e.__traceback__)
+            raise ivy.utils.exceptions.InplaceUpdateException(
+                fn.__name__, str(e), include_backend=True
+            )
 
     _handle_exceptions.handle_exceptions = True
     return _handle_exceptions
+
+
+def handle_inplace_mode():
+    current_backend = ivy.current_backend_str()
+    if not ivy.native_inplace_support and ivy.inplace_mode == "lenient":
+        warnings.warn(
+            f"The current backend: '{current_backend}' does not support "
+            "inplace updates natively. Ivy would quietly create new arrays when "
+            "using inplace updates with this backend, leading to memory overhead "
+            "(same applies for views). If you want to control your memory "
+            "management, consider doing ivy.set_inplace_mode('strict') which "
+            "should raise an error whenever an inplace update is attempted "
+            "with this backend."
+        )
