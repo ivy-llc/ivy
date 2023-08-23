@@ -1760,6 +1760,7 @@ class Tensor:
 
     def random_(
         self,
+        from_=0,
         to=None,
         *,
         generator=None,
@@ -1771,7 +1772,7 @@ class Tensor:
                 to = ivy.iinfo(self.dtype).max
         low = 0
         self.ivy_array = ivy.random_uniform(
-            low=low, high=to, shape=self.size(), dtype=self.dtype
+            low=from_, high=to, shape=self.size(), dtype=self.dtype
         )
         return self.ivy_array
 
