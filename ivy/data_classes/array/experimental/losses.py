@@ -48,7 +48,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array(0.20000000000000004)
         """
         return ivy.l1_loss(self._data, target, reduction=reduction, out=out)
-    
+
     def smooth_l1_loss(
         self: ivy.Array,
         target: Union[ivy.Array, ivy.NativeArray],
@@ -97,4 +97,3 @@ class _ArrayWithLossesExperimental(abc.ABC):
         return ivy.smooth_l1_loss(
             self._data, target, beta=beta, reduction=reduction, out=out
         )
-

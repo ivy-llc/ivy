@@ -159,7 +159,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def _static_smooth_l1_loss(
         input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
