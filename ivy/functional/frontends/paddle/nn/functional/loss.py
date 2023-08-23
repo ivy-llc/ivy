@@ -59,15 +59,13 @@ def binary_cross_entropy_with_logits(
     return paddle.to_tensor(ivy.atleast_1d(ret))
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @inputs_to_ivy_arrays
 def mse_loss(input, label, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
     ret = ivy.square(input - label)
     ret = reduction(ret)
 
-    if ret.shape == ():
-        ret = ret.expand_dims()
 
     return paddle.to_tensor(ret)
 
