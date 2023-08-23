@@ -1,7 +1,6 @@
 # global
 
 from typing import Union, Optional, Tuple
-
 import tensorflow as tf
 
 # local
