@@ -155,10 +155,12 @@ class _ArrayWithCreationExperimental(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
             The array containing the window.
+
         Examples
         --------
         >>> ivy.blackman_window(4, periodic = True)

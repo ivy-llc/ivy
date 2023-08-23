@@ -92,8 +92,6 @@ def get_item(
     *,
     copy: bool = None,
 ) -> torch.Tensor:
-    if copy:
-        return x.__getitem__(query).clone()
     return x.__getitem__(query)
 
 

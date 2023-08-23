@@ -199,7 +199,7 @@ def get_all_ivy_arrays_on_dev(
     all_arrays = list()
     for obj in gc.get_objects():
         if (
-            type(obj) == ivy.data_classes.array.array.Array
+            obj is ivy.data_classes.array.array.Array
             and ivy.is_ivy_array(obj)
             and ivy.dev(obj) == device
         ):
@@ -1245,10 +1245,8 @@ def function_supported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        (
-            "supported_devices and unsupported_devices attributes cannot both "
-            "exist in a particular backend"
-        ),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1298,10 +1296,8 @@ def function_unsupported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        (
-            "supported_devices and unsupported_devices attributes cannot both "
-            "exist in a particular backend"
-        ),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
