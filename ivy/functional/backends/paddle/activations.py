@@ -95,7 +95,7 @@ def sigmoid(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def softmax(
     x: paddle.Tensor,
@@ -106,11 +106,16 @@ def softmax(
 ) -> paddle.Tensor:
     if axis is None:
         axis = -1
+
+    if paddle.is_complex(x):
+        amax = paddle_backend.max(x, axis=axis, keepdims=True)
+    else:
+        amax = paddle.max(x, axis, keepdim=True)
     exp_x = paddle_backend.exp(
-        paddle_backend.subtract(x, paddle_backend.max(x, axis=axis, keepdims=True))
+        paddle.subtract(x, amax)
     )
-    return paddle_backend.divide(
-        exp_x, paddle_backend.sum(exp_x, axis=axis, keepdims=True)
+    return paddle.divide(
+        exp_x, paddle.sum(exp_x, axis=axis, keepdim=True)
     )
 
 

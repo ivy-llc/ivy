@@ -1005,6 +1005,13 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
         return paddle.exp(x)
+    elif paddle.is_complex(x):
+        imag = paddle.imag(x)
+        const = paddle.to_tensor(1j, dtype=x.dtype)
+        mag = paddle.cast(paddle.exp(paddle.real(x)), x.dtype)
+        real = paddle.cast(paddle.cos(imag), x.dtype)
+        imag = paddle.multiply(paddle.cast(paddle.sin(imag), x.dtype), const)
+        return paddle.multiply(paddle.add(real, imag), mag)
     return pow(math.e, x).astype(x.dtype)
 
 

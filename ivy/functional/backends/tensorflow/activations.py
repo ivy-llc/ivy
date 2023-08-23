@@ -13,6 +13,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
+import ivy.functional.backends.tensorflow as tf_backend
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
@@ -39,10 +40,16 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.sigmoid(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ) -> Tensor:
+    if axis is None:
+        axis = -1
+    dtype = x.dtype
+    if "complex" in str(dtype):
+        amax = tf_backend.max(x, axis=axis, keepdims=True)
+        normalized = tf.exp(tf.subtract(x, amax))
+        return tf.divide(normalized, tf.reduce_sum(normalized, axis=axis, keepdims=True))
     return tf.nn.softmax(x, axis)
 
 

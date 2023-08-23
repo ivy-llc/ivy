@@ -13,6 +13,7 @@ import torch.nn
 
 # local
 import ivy
+import ivy.functional.backends.torch as torch_backend
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
@@ -58,7 +59,7 @@ def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 sigmoid.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def softmax(
     x: torch.Tensor,
     /,
@@ -68,6 +69,14 @@ def softmax(
 ) -> torch.Tensor:
     if axis is None:
         axis = -1
+    if "complex" in str(x.dtype):
+        amax = torch_backend.max(x, axis=axis, keepdims=True)
+        exp_x = torch.exp(
+            torch.subtract(x, amax)
+        )
+        return torch.divide(
+            exp_x, torch.sum(exp_x, dim=axis, keepdim=True)
+        )
     return torch.nn.functional.softmax(x, axis)
 
 

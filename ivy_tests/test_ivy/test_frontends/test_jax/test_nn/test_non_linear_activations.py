@@ -291,11 +291,14 @@ def test_jax_one_hot(
 @handle_frontend_test(
     fn_tree="jax.nn.softmax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
         max_axes_size=1,
         force_int_axis=True,
         valid_axis=True,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
