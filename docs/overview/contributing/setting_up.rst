@@ -18,7 +18,7 @@ This page explains the main steps to get started!
 Forking and cloning the repo
 ----------------------------
 
-#. You will first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.
+#. You will first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of the Ivy repository in your GitHub account.
 #. Clone your forked repo to your local machine.
 
 Depending on your preferred mode of cloning, any of the below should work:
@@ -35,7 +35,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with latest changes.
+Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with the latest changes.
 
 .. code-block:: none
 
@@ -45,7 +45,7 @@ Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy
 Pre-Commit
 ----------
 
-Our development team also make use of the :code:`pre-commit` PyPI `package <https://pypi.org/project/pre-commit/>`_.
+Our development team also makes use of the :code:`pre-commit` PyPI `package <https://pypi.org/project/pre-commit/>`_.
 
 Check out their `page <https://pre-commit.com/>`_ for more details.
 
@@ -72,7 +72,7 @@ PyCharm
 
 `Pycharm <https://www.jetbrains.com/pycharm/>`_ is the main IDE of choice for our development team.
 However, you are of course welcome to use whatever Integrated Development Environment (IDE) you're most familiar with.
-If you do decide to use PyCharm, you should make sure to check whether you are eligible for a `free student licence <https://www.jetbrains.com/community/education/#students>`_.
+If you do decide to use PyCharm, you should make sure to check whether you are eligible for a `free student license <https://www.jetbrains.com/community/education/#students>`_.
 Many people seem to miss this option, so we thought we would add an explicit reminder here in the setting up guide!
 
 **Important Points**
@@ -116,7 +116,7 @@ Using miniconda
 
       conda activate ivy_dev
 
-#. Now install ivy package for development by running the command below:
+#. Now install the ivy package for development by running the command below:
 
    .. code-block:: none
 
@@ -128,19 +128,19 @@ Using miniconda
 
       a. Going to settings -> project -> Python Interpreter
 
-      b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      b. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
       
-      c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
+      c. Choosing "conda environment" from the left panel. Choose the existing environment and select the drop down and you should find the path python in the environment.
 
    #. VSCode
 
       a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type "Python: Select Interpreter" and select the environment you created.
       
-   If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+   If you don't find a path to your created python environment, you can run :code:`where python` in the conda command line while the environment is activate and it should give the path which can be added manually.
 
 #. Installing the development dependencies.
 
-   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
+   a. On Linux, Windows, or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
@@ -185,7 +185,7 @@ This is a builtin package and doesn't require explicit installation.
 
    (on Mac/Linux)
 
-#. Now install ivy package for development by running the command below:
+#. Now install the ivy package for development by running the command below:
 
    .. code-block:: none
 
@@ -197,9 +197,9 @@ This is a builtin package and doesn't require explicit installation.
 
       a. Going to settings -> project -> Python Interpreter
 
-      b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      b. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
 
-      c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python. The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+      c. Choosing "virtualenv environment" from the left panel. Choose an existing environment and add the path to python. The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
 
       Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
 
@@ -209,7 +209,7 @@ This is a builtin package and doesn't require explicit installation.
 
 #. Installing the development dependencies.
    
-   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
+   a. On Linux, Windows, or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
@@ -239,7 +239,7 @@ This is a builtin package and doesn't require explicit installation.
 
       pip install -r requirements.txt
 
-   This will install packages required for running the tests in Array API suite.
+   This will install packages required for running the tests in the Array API suite.
 
 Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_ OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
 For VSCode, you can follow the instructions `virtual environments <https://code.visualstudio.com/docs/python/environments#_creating-environments>`_.
@@ -277,16 +277,16 @@ Windows
    Add the remote python interpreter by:
 
    a. Going to the settings -> Build, Execution, Deployment -> Docker
-      Click the "+" on top left and it should add a docker connection.
+      Click the "+" on the top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new small drop down menu. Select "On Docker...". A         window will open which will have three steps.
+   c. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new small drop down menu. Select "On Docker...". A         window will open which will have three steps.
 #. It will ask to create a new Docker target, at this step you have to select the following:
 
    a. Docker image -> Docker
    b. Image -> Pull
    c. Image tag -> unifyai/ivy:latest
    d. Select "Next"
-#. The image will start pulling. It will take a respectible amount of time to complete. Once you see "Introspection Completed" message, select "Next".
+#. The image will start pulling. It will take a respectable amount of time to complete. Once you see the "Introspection Completed" message, select "Next".
 #. Another window will appear, at this step select the following:
 
    a. In the left panel select "System Interpreter".
@@ -307,7 +307,7 @@ Windows
   :width: 420
 
 Once these steps are finished, your interpreter should be set up correctly!
-If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
+If Docker's latest version causes an error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.
 
 
@@ -328,24 +328,24 @@ MacOS
 #. Get the latest Docker Image for Ivy by:
 
    a. Running Docker desktop.
-   b. Opening terminal, and running the command: :code:`docker pull unifyai/ivy:latest`
+   b. Opening the terminal, and running the command: :code:`docker pull unifyai/ivy:latest`
 
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 #. Open pycharm with your cloned Ivy repository.
    Add the remote python interpreter by:
 
    a. Going to the settings -> Build, Execution, Deployment -> Docker.
-      Click the "+" on top left and it should add a docker connection.
+      Click the "+" on the top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   c. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
    d. Choosing "On Docker" from the dropdown menu.
    e. Choosing "Docker" from the "Docker server" dropdown menu, choosing "Pull" if you want to use a remote interpreter, and using :code:`unifyai/ivy:latest` as the image tag.
    f. If you don't want to use a remote interpreter, choose "Build" and use the suitable Dockerfile; then choosing :code:`docker/Dockerfile` to be the Dockerfile.
-   g. Clicking next and navigating to system interpreter tab from the menu on the left.
+   g. Clicking next and navigating to the system interpreter tab from the menu on the left.
    h. Choosing the built interpreter from the dropdown menu.
 
 Once these steps are finished, your interpreter should be set up correctly!
-If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
+If Docker's latest version causes an error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
 
 **Important Note**
 
@@ -414,9 +414,9 @@ Ubuntu
    Add the remote python interpreter by:
 
    a. Going to the settings -> Build, Execution, Deployment -> Docker.
-      Click the "+" on top left and it should add a docker connection.
+      Click the "+" on the top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+   c. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
@@ -568,13 +568,13 @@ Windows
 
 #. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
 #. Install `Visual Studio Code here <https://code.visualstudio.com/>`_
-#. Open Docker desktop, make sure it's running while following the process below.
+#. Open the Docker desktop, make sure it's running while following the process below.
    You can close the Docker desktop window afterwards, Docker will continue to run in the background.
-#. Open Visual Studio Code, open the Ivy repo folder and follow the steps listed below:
+#. Open Visual Studio Code, open the Ivy repo folder, and follow the steps listed below:
 
    a. At the bottom right a window will pop up asking for "Dev Containers" extension, install that.
       In case the window doesn't pop up, search for the "Dev Containers" extension in the Visual Studio Code and install that.
-   b. Install the "Docker" extension for Visual Studio Code, you'll easily find that searching "docker" in the extensions tab.
+   b. Install the "Docker" extension for Visual Studio Code, you'll easily find that by searching "docker" in the extensions tab.
    c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
    d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
    e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name". Opening the container may take a long time, as the Docker image is very large (5+ GB).
@@ -585,7 +585,7 @@ Ubuntu
 #. Install `Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_
 #. Install `Visual Studio Code <https://code.visualstudio.com/>`_
 #. Clone your fork of the Ivy repository.
-#. Open Visual Studio Code, open the Ivy repo folder and following the steps listed below:
+#. Open Visual Studio Code, open the Ivy repo folder, and follow the steps listed below:
 
    a. Install the :code:`Dev Containers` and :code:`Docker` extensions.
    b. Open the :code:`.devcontainer/devcontainer.json` file.
@@ -603,7 +603,7 @@ WSL
 ***
  
 It is understandable that working with computationally heavy tools like Docker and PyCharm is not always comfortable for developers.
-By utilizing WSL, you can run a Linux distribution on your Windows machine and in addition, venv is leveraged to create 
+By utilizing WSL, you can run a Linux distribution on your Windows machine, and in addition, venv is leveraged to create 
 isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm, 
 the steps explained below will help you in setting up a less resource-intensive Ivy environment.
 
@@ -663,11 +663,11 @@ the steps explained below will help you in setting up a less resource-intensive 
 GitHub Codespaces
 *****************
 
-It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
-Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
+It can be a headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
+Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (which means no local computation) with the same configuration as defined by :code:`ivy/Dockerfile`.
 Since it's a VM, we no longer have to worry about installing the right packages, modules etc.
 We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too.
-With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have Visual Studio code or a browser installed.
+With all the computations being done on the cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have Visual Studio code or a browser installed.
 
 **Important Note**
 
@@ -678,7 +678,7 @@ If you are using the free one you will have *limited* access to GitHub Codespace
 
 1. Before we setup GitHub Codespaces, we need to have Visual Studio Code installed (you can get it from `here <https://code.visualstudio.com/>`_).
 
-2. Once Visual Studio Code is installed, head over to the extension page (it's icon is on the left pane), and search "Codespaces" and then install the extension locally.
+2. Once the Visual Studio Code is installed, head over to the extension page (it's icon is on the left pane), search "Codespaces" and then install the extension locally.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/extension_install.png?raw=true
    :width: 420
@@ -689,7 +689,7 @@ Now we are ready to begin!
 
 Just follow the steps outlined below:
 
-1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on three dots, then click ``new with options...``.
+1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to the Codespaces tab, and then click on three dots, then click ``new with options...``.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/fork_create_codespace.png?raw=true
    :width: 420
@@ -705,11 +705,11 @@ Just follow the steps outlined below:
       - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
       - :code:`Ivy GPU Development Environment (build)` - This will set up the development environment of ivy for GPU and build image from :code:`ivy/docker/DockerfileGPU`.
       - :code:`Ivv Development Environment for Multiver...` - This will set up the development environment of multiversion support with ivy and build image from :code:`ivy/docker/DockerfileMultiversion`.
-      - :code:`Ivy Development Environment (image)` - This will set up the development environment of ivy for CPU and build image from latest image from dockerhub.
-      - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from latest image from dockerhub.
+      - :code:`Ivy Development Environment (image)` - This will set up the development environment of ivy for CPU and build image from the latest image from dockerhub.
+      - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from the latest image from dockerhub.
    
    For now, we will select :code:`Ivy Development Environment (image)`.
-   Select your region and prefered machine type, then click on "Create Codespace".
+   Select your region and preferred machine type, then click on "Create Codespace".
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/devcontainer_config.png?raw=true
    :width: 420
@@ -722,13 +722,13 @@ Give the relevant permissions to the browser to open up Visual Studio Code.
 
 5. Once visual studio code opens up, it will start building the remote container.
 In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box.
-Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process.
+Please be patient while the container is being built, it may take upto 10-15 minutes, but it's a one-time process.
 Any subsequent connections to your ivy codespace will launch in 10-12 seconds.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/building_codespace.png?raw=true
    :width: 420
 
-Log of container being built would look like below:
+The Log of the container being built would look like the below:
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/log_codespace.png?raw=true
    :width: 420
@@ -739,13 +739,13 @@ Log of container being built would look like below:
    :width: 420
 
 7. That's it, you have just setup GitHub codespaces and can start developing Ivy.
-The configuration files install all the required packages, extensions for you to get started quickly.
+The configuration files install all the required packages, and extensions for you to get started quickly.
 
 **Setting up Codespaces with a GPU**
 
 If you want to setup a GPU instance on codespaces and also have access to it, kindly follow the guidelines below:
 
-1. Point 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)". 
+1. Points 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)". 
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
    :width: 420
@@ -761,20 +761,20 @@ If you have already setup codespaces, refer to the following to open your previo
 
 There are 3 ways to connect your existing codespaces, you can use any of the approaches mentioned below.
 
-1. Go to your fork of ivy, click on the green coloured dropdown "Code", go to codespaces tab, then select your codespace.
-This will open up a new tab, from there either you can develop on the browser itself, or click on "Open this codespaces on VS code desktop" to open up visual studio code application and develop from there.
+1. Go to your fork of ivy, click on the green coloured dropdown "Code", go to the codespaces tab, then select your codespace.
+This will open up a new tab, from there either you can develop on the browser itself, or click on "Open this codespaces on VS code desktop" to open up the visual studio code application and develop from there.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/existing_codespace_fork.png?raw=true
    :width: 420
 
-2. Other way to connect is to open up visual studio code application.
+2. Another way to connect is to open up the visual studio code application.
 There is a good chance that you would see :code:`ivy [Codespaces]` or :code:`ivy [vscode-remote]` on your recently opened projects.
 If you click either of those, it will open up your codespace.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/recent_projects.png?raw=true
    :width: 420
 
-3. If in any case it doesn't show your codespace on recent projects, go to "Remote Connection Explorer" extension tab on the left pane, from there make sure you have selected "Github Codespaces" on the top-left dropdown.
+3. If in any case, it doesn't show your codespace on recent projects, go to the "Remote Connection Explorer" extension tab on the left pane, from there make sure you have selected "Github Codespaces" on the top-left dropdown.
 Once you find your codespace, right click on it and then select "Connect to codespace in current window".
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/connect_existing.png?raw=true
@@ -808,7 +808,7 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 
 4. Following all of this, you should refresh the test suite and you should now be able to run tests right from VS Code!
 
-5. To simply run the tests using play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
+5. To simply run the tests using the play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
 
 .. code-block:: json
 
