@@ -483,16 +483,16 @@ def test_jax_numpy_c_(inputs, backend_fw):
         ret = jnp_frontend.c_.__getitem__(tuple(inputs))
     assert np.allclose(ret.ivy_array, ret_gt)
 
-    
+
 # choose
 @handle_frontend_test(
     fn_tree="jax.numpy.choose",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],     
+        indices_dtypes=["int32", "int64"],
     ),
     out=st.none(),
-    mode=st.sampled_from(['wrap', 'clip', 'raise']),
+    mode=st.sampled_from(["wrap", "clip", "raise"]),
     test_with_out=st.just(False),
 )
 def test_jax_choose(
@@ -504,7 +504,7 @@ def test_jax_choose(
     frontend,
     backend_fw,
     fn_tree,
-    on_device,    
+    on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     choices = ivy.array(
@@ -521,4 +521,4 @@ def test_jax_choose(
         choices=choices,
         out=out,
         mode=mode,
-    )    
+    )
