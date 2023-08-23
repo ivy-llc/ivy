@@ -201,6 +201,69 @@ def smooth_l1_loss(
     >>> target = ivy.array([6.0, 2.0, 3.0])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(1.5)
+    >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
+    >>> target = ivy.array([2.5, 3.5, 5.5, 6.5])
+    >>> loss = ivy.smooth_l1_loss(input, target, beta=1.5, reduction='sum')
+    ivy.array(0.5)
+    >>> input = ivy.array([0.8, 1.2, 2.5, 3.7])
+    >>> target = ivy.array([0.9, 1.0, 2.3, 3.6])
+    >>> loss = ivy.smooth_l1_loss(input, target, beta=0.5, reduction='none')
+    ivy.array([0.0133, 0.0250, 0.0056, 0.0025])
+    >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
+    >>> target = ivy.array([2.5, 3.5, 5.5, 6.5])
+    >>> loss = ivy.smooth_l1_loss(input, target, beta=0.2, reduction='mean')
+    ivy.array(0.025)
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1.5, 2.2, 3.7])
+    >>> y = ivy.native_array([2.1, 1.9, 3.5])
+    >>> print(ivy.smooth_l1_loss(x, y, beta=0.5))
+    ivy.array(0.0675)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]))
+    >>> y = ivy.Container(a=ivy.array([2.5, 1.8, 3.2]))
+    >>> print(ivy.smooth_l1_loss(x, y, beta=1.0))
+    {
+        a: ivy.array(0.3467)
+    }
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.native_array([6.0, 2.0, 3.0])
+    >>> print(ivy.smooth_l1_loss(x, y, beta=0.5))
+    ivy.array(1.5)
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.Container(a=ivy.array([6.0, 2.0, 3.0]))
+    >>> print(ivy.smooth_l1_loss(x, y, beta=1.0))
+    {
+        a: ivy.array(1.5)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([2.5, 1.8, 3.2])
+    >>> print(x.smooth_l1_loss(y, beta=1.0))
+    ivy.array(0.3467)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]))
+    >>> y = ivy.Container(a=ivy.array([2.5, 1.8, 3.2]))
+    >>> print(x.smooth_l1_loss(y, beta=1.0))
+    {
+        a: ivy.array(0.3467)
+    }
 
     Smooth L1 loss defined in the Fast R-CNN paper as:
     ::
