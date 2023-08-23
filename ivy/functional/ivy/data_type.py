@@ -22,8 +22,113 @@ from ivy.func_wrapper import (
     inputs_to_native_shapes,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+
+# Decorators #
+# ---------- #
+
+
+_main_decorators = {
+    handle_exceptions,
+}
+
+
+_decorators_per_function = {
+    frozenset({"astype"}): {
+        handle_nestable,
+        handle_array_like_without_promotion,
+        handle_array_function,
+        handle_out_argument,
+        to_native_arrays_and_back,
+        handle_device_shifting,
+        handle_backend_invalid,
+    },
+    frozenset({"broadcast_arrays"}): {
+        handle_nestable,
+        handle_array_function,
+        to_native_arrays_and_back,
+        handle_device_shifting,
+        handle_backend_invalid,
+    },
+    frozenset({"broadcast_to"}): {
+        handle_nestable,
+        handle_array_like_without_promotion,
+        handle_array_function,
+        inputs_to_native_shapes,
+        handle_out_argument,
+        to_native_arrays_and_back,
+        handle_device_shifting,
+        handle_backend_invalid,
+    },
+    frozenset({"can_cast"}): {
+        handle_nestable,
+        handle_array_function,
+        inputs_to_ivy_arrays,
+        handle_device_shifting,
+    },
+    frozenset({"finfo", "iinfo"}): {
+        handle_device_shifting,
+        inputs_to_native_arrays,
+        handle_backend_invalid,
+    },
+    frozenset({"dtype", "result_type"}): {
+        inputs_to_native_arrays,
+        handle_nestable,
+        handle_device_shifting,
+        handle_backend_invalid,
+    },
+    frozenset(
+        {
+            "as_ivy_dtype",
+            "set_default_uint_dtype",
+            "infer_default_dtype",
+            "is_native_dtype",
+            "closest_valid_dtype",
+            "promote_types_of_inputs",
+            "unset_default_uint_dtype",
+            "set_default_float_dtype",
+            "is_hashable_dtype",
+            "unset_default_int_dtype",
+            "dtype_bits",
+            "unset_default_complex_dtype",
+            "as_native_dtype",
+            "unset_default_dtype",
+            "promote_types",
+            "set_default_dtype",
+            "invalid_dtype",
+            "type_promote_arrays",
+            "set_default_complex_dtype",
+            "unset_default_float_dtype",
+            "set_default_int_dtype",
+            "valid_dtype",
+            "check_float",
+        }
+    ): set(),
+    frozenset({"default_float_dtype", "is_complex_dtype"}): {
+        inputs_to_ivy_arrays,
+        handle_nestable,
+    },
+    frozenset({"default_dtype", "default_int_dtype", "default_uint_dtype"}): {
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"default_complex_dtype"}): {
+        inputs_to_ivy_arrays,
+        handle_device_shifting,
+        handle_nestable,
+    },
+    frozenset({"function_supported_dtypes", "function_unsupported_dtypes"}): {
+        handle_nestable,
+    },
+    frozenset({"is_uint_dtype", "is_bool_dtype", "is_float_dtype", "is_int_dtype"}): {
+        inputs_to_native_arrays,
+        handle_nestable,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -244,14 +349,7 @@ Finfo = None
 Iinfo = None
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -353,12 +451,7 @@ def astype(
     return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """
     Broadcasts one or more arrays against one another.
@@ -432,15 +525,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     return current_backend(arrays[0]).broadcast_arrays(*arrays)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -507,11 +592,7 @@ def broadcast_to(
     return current_backend(x).broadcast_to(x, shape, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -587,10 +668,7 @@ def can_cast(
         return False
 
 
-@handle_exceptions
-@handle_backend_invalid
-@inputs_to_native_arrays
-@handle_device_shifting
+@decorate(*decorators)
 def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -675,10 +753,7 @@ def finfo(
     return current_backend(None).finfo(type)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@inputs_to_native_arrays
-@handle_device_shifting
+@decorate(*decorators)
 def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -752,11 +827,7 @@ def iinfo(
     return current_backend(None).iinfo(type)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@inputs_to_native_arrays
-@handle_device_shifting
+@decorate(*decorators)
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
@@ -918,7 +989,7 @@ class DefaultComplexDtype:
         return self
 
 
-@handle_exceptions
+@decorate(*decorators)
 def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
     """
     Get the number of bits used for representing the input data type.
@@ -954,7 +1025,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
     return current_backend(dtype_in).dtype_bits(dtype_in)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     """
     Check if the given data type is hashable or not.
@@ -976,7 +1047,7 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
         return False
 
 
-@handle_exceptions
+@decorate(*decorators)
 def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
     """
     Convert native data type to string representation.
@@ -994,7 +1065,7 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
     return current_backend(None).as_ivy_dtype(dtype_in)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.NativeDtype:
     """
     Convert data type string representation to native data type.
@@ -1031,7 +1102,7 @@ def _check_complex128(input) -> bool:
     return False
 
 
-@handle_exceptions
+@decorate(*decorators)
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype, str]:
     """
     Determine the closest valid datatype to the datatype passed as input.
@@ -1072,9 +1143,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def default_float_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1167,7 +1236,7 @@ def default_float_dtype(
     return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
 
 
-@handle_exceptions
+@decorate(*decorators)
 def infer_default_dtype(
     dtype: Union[ivy.Dtype, ivy.NativeDtype, str], as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
@@ -1215,8 +1284,7 @@ def infer_default_dtype(
     return default_dtype
 
 
-@handle_exceptions
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def default_dtype(
     *,
     dtype: Optional[Union[ivy.Dtype, str]] = None,
@@ -1308,8 +1376,7 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-@handle_exceptions
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def default_int_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1423,8 +1490,7 @@ def default_int_dtype(
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
-@handle_exceptions
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def default_uint_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1521,10 +1587,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_ivy_arrays
-@handle_device_shifting
+@decorate(*decorators)
 def default_complex_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1617,11 +1680,7 @@ def default_complex_dtype(
     return ivy.ComplexDtype(ivy.as_ivy_dtype(ret))
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@inputs_to_native_arrays
-@handle_device_shifting
+@decorate(*decorators)
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
@@ -1667,8 +1726,7 @@ def dtype(
     return current_backend(x).dtype(x, as_native=as_native)
 
 
-@handle_exceptions
-@handle_nestable
+@decorate(*decorators)
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple, dict]:
     """
     Return the supported data types of the current backend's function. The function
@@ -1718,8 +1776,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
     )
 
 
-@handle_exceptions
-@handle_nestable
+@decorate(*decorators)
 def function_unsupported_dtypes(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
@@ -1772,7 +1829,7 @@ def function_unsupported_dtypes(
     )
 
 
-@handle_exceptions
+@decorate(*decorators)
 def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
     """
     Determine whether the provided data type is not support by the current framework.
@@ -1806,9 +1863,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> 
     return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_native_arrays
+@decorate(*decorators)
 def is_bool_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1852,9 +1907,7 @@ def is_bool_dtype(
     return "bool" in ivy.as_ivy_dtype(dtype_in)
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_native_arrays
+@decorate(*decorators)
 def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1940,7 +1993,7 @@ def is_int_dtype(
     return "int" in ivy.as_ivy_dtype(dtype_in)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def check_float(x: Any) -> bool:
     """
     Check if the input is a float or a float-like object.
@@ -1958,9 +2011,7 @@ def check_float(x: Any) -> bool:
     return isinstance(x, (int, np.float)) and not type(x) == bool
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_native_arrays
+@decorate(*decorators)
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -2009,9 +2060,7 @@ def is_float_dtype(
     return "float" in as_ivy_dtype(dtype_in)
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_native_arrays
+@decorate(*decorators)
 def is_uint_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -2057,9 +2106,7 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
-@handle_exceptions
-@handle_nestable
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def is_complex_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -2105,7 +2152,7 @@ def is_complex_dtype(
     return "complex" in as_ivy_dtype(dtype_in)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def promote_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
@@ -2155,7 +2202,7 @@ def promote_types(
     return ret
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     """
     Set the datatype `dtype` as default data type.
@@ -2191,7 +2238,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     default_dtype_stack.append(dtype)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
     """
     Set the 'float_dtype' as the default data type.
@@ -2219,7 +2266,7 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
     default_float_dtype_stack.append(float_dtype)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
     """
     Set the 'int_dtype' as the default data type.
@@ -2247,7 +2294,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
     default_int_dtype_stack.append(int_dtype)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
     """
     Set the uint dtype to be default.
@@ -2273,7 +2320,7 @@ def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
     default_uint_dtype_stack.append(uint_dtype)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
     """
     Set the 'complex_dtype' as the default data type.
@@ -2301,7 +2348,7 @@ def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
     default_complex_dtype_stack.append(complex_dtype)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def type_promote_arrays(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2327,7 +2374,7 @@ def type_promote_arrays(
     return ivy.astype(x1, new_type), ivy.astype(x2, new_type)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def unset_default_dtype():
     """
     Reset the current default dtype to the previous state.
@@ -2352,7 +2399,7 @@ def unset_default_dtype():
         default_dtype_stack.pop(-1)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def unset_default_float_dtype():
     """
     Reset the current default float dtype to the previous state.
@@ -2373,7 +2420,7 @@ def unset_default_float_dtype():
         default_float_dtype_stack.pop(-1)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def unset_default_int_dtype():
     """
     Reset the current default int dtype to the previous state.
@@ -2397,7 +2444,7 @@ def unset_default_int_dtype():
         default_int_dtype_stack.pop(-1)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def unset_default_uint_dtype():
     """
     Reset the current default uint dtype to the previous state.
@@ -2417,7 +2464,7 @@ def unset_default_uint_dtype():
         default_uint_dtype_stack.pop(-1)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def unset_default_complex_dtype():
     """
     Reset the current default complex dtype to the previous state.
@@ -2438,7 +2485,7 @@ def unset_default_complex_dtype():
         default_complex_dtype_stack.pop(-1)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
     """
     Determine whether the provided data type is supported by the current framework.
@@ -2472,7 +2519,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
 
 
-@handle_exceptions
+@decorate(*decorators)
 def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],
@@ -2528,7 +2575,7 @@ def promote_types_of_inputs(
     return ivy.to_native(x1), ivy.to_native(x2)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     """
     Determine whether the input dtype is a Native dtype.

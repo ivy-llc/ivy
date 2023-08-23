@@ -14,8 +14,68 @@ from ivy.func_wrapper import (
     handle_device_shifting,
     inputs_to_ivy_arrays,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_nestable,
+    handle_exceptions,
+}
+
+
+_decorators_per_function = {
+    frozenset({"cond", "matrix_exp", "adjoint", "kronecker", "diagflat", "kron"}): {
+        handle_device_shifting,
+        handle_backend_invalid,
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_out_argument,
+    },
+    frozenset({"eig", "eigvals"}): {
+        handle_device_shifting,
+        handle_backend_invalid,
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+    },
+    frozenset({"multi_dot"}): {
+        handle_backend_invalid,
+        to_native_arrays_and_back,
+        handle_out_argument,
+    },
+    frozenset(
+        {
+            "khatri_rao",
+            "make_svd_non_negative",
+            "truncated_svd",
+            "mode_dot",
+            "multi_mode_dot",
+            "svd_flip",
+            "initialize_tucker",
+            "tucker",
+            "partial_tucker",
+        }
+    ): {
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_array_function,
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"dot"}): {
+        to_native_arrays_and_back,
+        handle_out_argument,
+    },
+    frozenset({"eigh_tridiagonal"}): {
+        handle_array_like_without_promotion,
+        handle_array_function,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
 
 # Helpers #
 # ------- #
@@ -25,10 +85,7 @@ def _check_valid_dimension_size(std):
     ivy.utils.assertions.check_dimensions(std)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_array_function
+@decorate(*decorators)
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -162,13 +219,7 @@ def eigh_tridiagonal(
     return eigenvalues, eigenvectors
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -230,13 +281,7 @@ def diagflat(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -273,13 +318,7 @@ def kron(
     return current_backend(a, b).kron(a, b, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -317,12 +356,7 @@ def matrix_exp(
     return current_backend(x).matrix_exp(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -381,12 +415,7 @@ def eig(
     return current_backend(x).eig(x)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -425,13 +454,7 @@ def eigvals(
     return current_backend(x).eigvals(x)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -466,11 +489,7 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
@@ -524,13 +543,7 @@ multi_dot.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -573,13 +586,7 @@ def cond(
 
 # This code has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_kronecker.py
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def kronecker(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     skip_matrix: Optional[int] = None,
@@ -624,12 +631,7 @@ def kronecker(
 
 # The code has been adapated from tensorly.khatri_rao
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_khatri_rao.py#L9
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def khatri_rao(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -727,12 +729,7 @@ def khatri_rao(
 
 # The following code has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L5
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -820,12 +817,7 @@ def mode_dot(
 
 # The following code has been adapated from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L81
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def multi_mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
@@ -945,12 +937,7 @@ def _svd_checks(x, n_eigenvecs=None):
 
 # This function has been adapated from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L12
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def svd_flip(
     U: Union[ivy.Array, ivy.NativeArray],
     V: Union[ivy.Array, ivy.NativeArray],
@@ -1015,12 +1002,7 @@ def svd_flip(
 
 # This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L65
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def make_svd_non_negative(
     x: Union[ivy.Array, ivy.NativeArray],
     U: Union[ivy.Array, ivy.NativeArray],
@@ -1110,12 +1092,7 @@ def make_svd_non_negative(
 
 # The following function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L206
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def truncated_svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1200,12 +1177,7 @@ def _svd_interface(
 
 # TODO update svd type hints when other svd methods have been added
 # also update the test
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def initialize_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Sequence[int],
@@ -1313,12 +1285,7 @@ def initialize_tucker(
 
 # This function has been adpated from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_tucker.py#L98
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def partial_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1462,12 +1429,7 @@ def partial_tucker(
     return (core, factors)
 
 
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1610,10 +1572,7 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_exceptions
+@decorate(*decorators)
 def dot(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],

@@ -14,8 +14,32 @@ from ivy.func_wrapper import (
     handle_device_shifting,
     handle_complex_input,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_backend_invalid,
+    handle_array_like_without_promotion,
+    to_native_arrays_and_back,
+    handle_array_function,
+    handle_exceptions,
+    handle_nestable,
+    handle_out_argument,
+}
+
+_decorators_per_function = {
+    frozenset({"leaky_relu", "gelu", "relu"}): {handle_complex_input},
+    frozenset({"sigmoid", "softmax", "mish", "log_softmax", "softplus"}): {
+        handle_device_shifting,
+    },
+    frozenset({"hardswish"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 def _gelu_jax_like(
@@ -34,15 +58,7 @@ def _gelu_jax_like(
     return x * cdf
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-@handle_complex_input
+@decorate(*decorators)
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -123,15 +139,7 @@ def _leaky_relu_jax_like(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-@handle_complex_input
+@decorate(*decorators)
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -204,14 +212,7 @@ def leaky_relu(
 leaky_relu.jax_like = _leaky_relu_jax_like
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -296,15 +297,7 @@ def _relu_jax_like(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-@handle_complex_input
+@decorate(*decorators)
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -368,14 +361,7 @@ def relu(
 relu.jax_like = _relu_jax_like
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -446,14 +432,7 @@ def sigmoid(
     return current_backend(x).sigmoid(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -498,14 +477,7 @@ def softmax(
     return current_backend(x).softmax(x, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -557,14 +529,7 @@ def softplus(
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -613,13 +578,7 @@ def mish(
     return current_backend(x).mish(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
+@decorate(*decorators)
 def hardswish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

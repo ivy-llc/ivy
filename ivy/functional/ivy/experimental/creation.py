@@ -17,16 +17,62 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 
+# Decorators #
+# ---------- #
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
+_main_decorators = {handle_exceptions}
+
+_decorators_per_function = {
+    frozenset({"vorbis_window", "kaiser_window", "hann_window"}): {
+        handle_device_shifting,
+        handle_out_argument,
+        infer_dtype,
+        handle_backend_invalid,
+        to_native_arrays_and_back,
+        handle_nestable,
+    },
+    frozenset({"kaiser_bessel_derived_window"}): {
+        handle_out_argument,
+        infer_dtype,
+        handle_nestable,
+    },
+    frozenset({"hamming_window", "random_tucker"}): {
+        infer_dtype,
+        handle_nestable,
+    },
+    frozenset({"tril_indices"}): {
+        infer_device,
+        outputs_to_ivy_arrays,
+        handle_nestable,
+    },
+    frozenset({"eye_like"}): {
+        handle_out_argument,
+        infer_device,
+        infer_dtype,
+        handle_array_like_without_promotion,
+        inputs_to_ivy_arrays,
+        handle_nestable,
+    },
+    frozenset({"ndenumerate"}): {inputs_to_ivy_arrays},
+    frozenset({"indices", "ndindex"}): set(),
+    frozenset({"unsorted_segment_min"}): {
+        to_native_arrays_and_back,
+        handle_nestable,
+        handle_backend_invalid,
+    },
+    frozenset({"unsorted_segment_sum"}): {
+        to_native_arrays_and_back,
+        handle_nestable,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -62,13 +108,7 @@ def vorbis_window(
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
+@decorate(*decorators)
 def hann_window(
     size: int,
     *,
@@ -110,13 +150,7 @@ def hann_window(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
+@decorate(*decorators)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -161,10 +195,7 @@ def kaiser_window(
     )
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@infer_dtype
+@decorate(*decorators)
 def kaiser_bessel_derived_window(
     window_length: int,
     beta: float = 12.0,
@@ -214,9 +245,7 @@ def kaiser_bessel_derived_window(
     return result
 
 
-@handle_exceptions
-@handle_nestable
-@infer_dtype
+@decorate(*decorators)
 def hamming_window(
     window_length: int,
     *,
@@ -281,10 +310,7 @@ hamming_window.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_nestable
-@outputs_to_ivy_arrays
-@infer_device
+@decorate(*decorators)
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -375,13 +401,7 @@ def tril_indices(
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_ivy_arrays
-@infer_dtype
-@infer_device
+@decorate(*decorators)
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -480,8 +500,7 @@ def _iter_product(*args, repeat=1):
         yield tuple(prod)
 
 
-@handle_exceptions
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def ndenumerate(
     input: Iterable,
 ) -> Generator:
@@ -521,7 +540,7 @@ def ndenumerate(
     return _ndenumerate(input)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def ndindex(
     shape: Tuple,
 ) -> Generator:
@@ -552,7 +571,7 @@ def ndindex(
     return _iter_product(*args)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def indices(
     dimensions: Sequence[int],
     *,
@@ -611,10 +630,7 @@ indices.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@to_native_arrays_and_back
+@decorate(*decorators)
 def unsorted_segment_min(
     data: Union[ivy.Array, ivy.NativeArray],
     segment_ids: Union[ivy.Array, ivy.NativeArray],
@@ -652,9 +668,7 @@ def unsorted_segment_min(
     return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
 
 
-@handle_exceptions
-@handle_nestable
-@to_native_arrays_and_back
+@decorate(*decorators)
 def unsorted_segment_sum(
     data: Union[ivy.Array, ivy.NativeArray],
     segment_ids: Union[ivy.Array, ivy.NativeArray],
@@ -687,9 +701,7 @@ def unsorted_segment_sum(
     return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)
 
 
-@handle_exceptions
-@handle_nestable
-@infer_dtype
+@decorate(*decorators)
 def random_tucker(
     shape: Sequence[int],
     rank: Sequence[int],

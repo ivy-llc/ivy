@@ -33,7 +33,132 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
+
+# Decorators #
+# ---------- #
+
+_main_decorators = set()
+
+
+# ToDo: Fix the decorators for the functions in this map
+_decorators_per_function = {
+    frozenset({"arange"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        outputs_to_ivy_arrays,
+        handle_out_argument,
+        infer_device,
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_nestable,
+    },
+    frozenset({"asarray"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_device_shifting,
+    },
+    frozenset({"empty", "zeros", "ones"}): {
+        handle_backend_invalid,
+        inputs_to_native_shapes,
+        outputs_to_ivy_arrays,
+        handle_array_function,
+        handle_out_argument,
+        infer_device,
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_nestable,
+        infer_dtype,
+    },
+    frozenset({"full_like", "ones_like", "zeros_like", "empty_like", "linspace"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        handle_out_argument,
+        infer_device,
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_nestable,
+        to_native_arrays_and_back,
+        infer_dtype,
+    },
+    frozenset({"from_dlpack", "tril", "meshgrid", "triu"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_nestable,
+        to_native_arrays_and_back,
+        handle_device_shifting,
+    },
+    frozenset({"eye"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        outputs_to_ivy_arrays,
+        handle_out_argument,
+        infer_device,
+        handle_array_like_without_promotion,
+        handle_nestable,
+        infer_dtype,
+    },
+    frozenset({"full"}): {
+        handle_backend_invalid,
+        inputs_to_native_shapes,
+        outputs_to_ivy_arrays,
+        handle_array_function,
+        handle_out_argument,
+        infer_device,
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_nestable,
+        inputs_to_native_arrays,
+    },
+    frozenset({"copy_array"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_nestable,
+        inputs_to_native_arrays,
+        handle_device_shifting,
+    },
+    frozenset({"native_array"}): {
+        handle_backend_invalid,
+        handle_array_like_without_promotion,
+    },
+    frozenset({"one_hot"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        handle_out_argument,
+        infer_device,
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_nestable,
+        to_native_arrays_and_back,
+    },
+    frozenset({"logspace"}): {
+        handle_backend_invalid,
+        handle_array_function,
+        handle_out_argument,
+        infer_device,
+        handle_array_like_without_promotion,
+        handle_nestable,
+        to_native_arrays_and_back,
+        infer_dtype,
+    },
+    frozenset({"frombuffer"}): {outputs_to_ivy_arrays, handle_nestable},
+    frozenset({"triu_indices"}): {
+        infer_device,
+        outputs_to_ivy_arrays,
+        handle_nestable,
+        handle_exceptions,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
 
 # Helpers #
 # --------#
@@ -277,14 +402,7 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@outputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def arange(
     start: Number,
     /,
@@ -381,11 +499,7 @@ def arange(
     )
 
 
-@handle_backend_invalid
-@handle_array_like_without_promotion
-@handle_out_argument
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def asarray(
     obj: Union[
         ivy.Array,
@@ -472,16 +586,7 @@ def asarray(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@outputs_to_ivy_arrays
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -537,16 +642,7 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@outputs_to_ivy_arrays
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -635,15 +731,7 @@ def ones(
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -744,15 +832,7 @@ def full_like(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -866,15 +946,7 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -983,13 +1055,7 @@ def zeros_like(
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1039,13 +1105,7 @@ def tril(
     return current_backend(x).tril(x, k=k, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1095,16 +1155,7 @@ def triu(
     return current_backend(x).triu(x, k=k, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@outputs_to_ivy_arrays
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -1147,15 +1198,7 @@ def empty(
     return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1200,14 +1243,7 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@outputs_to_ivy_arrays
-@handle_array_function
-@infer_dtype
-@infer_device
+@decorate(*decorators)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -1343,15 +1379,7 @@ def eye(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1455,13 +1483,7 @@ def linspace(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
@@ -1576,16 +1598,7 @@ def meshgrid(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@inputs_to_native_arrays
-@outputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -1689,13 +1702,7 @@ def full(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1743,13 +1750,7 @@ def from_dlpack(
 array = asarray
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1854,8 +1855,7 @@ def copy_array(
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
-@handle_backend_invalid
-@handle_array_like_without_promotion
+@decorate(*decorators)
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -1909,14 +1909,7 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -2024,14 +2017,7 @@ def one_hot(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@infer_device
+@decorate(*decorators)
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -2142,8 +2128,7 @@ def logspace(
     return result
 
 
-@handle_nestable
-@outputs_to_ivy_arrays
+@decorate(*decorators)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -2204,10 +2189,7 @@ def frombuffer(
     )
 
 
-@handle_exceptions
-@handle_nestable
-@outputs_to_ivy_arrays
-@infer_device
+@decorate(*decorators)
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,

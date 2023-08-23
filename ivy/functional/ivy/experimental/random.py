@@ -10,17 +10,37 @@ from ivy.func_wrapper import (
     infer_device,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
+_main_decorators = {
+    handle_nestable,
+    handle_device_shifting,
+    to_native_arrays_and_back,
+    handle_exceptions,
+    handle_backend_invalid,
+    handle_out_argument,
+}
+
+_decorators_per_function = {
+    frozenset({"dirichlet"}): set(),
+    frozenset({"beta", "gamma"}): {
+        inputs_to_native_shapes,
+    },
+    frozenset({"poisson", "bernoulli"}): {
+        inputs_to_native_shapes,
+        infer_device,
+        infer_dtype,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
 # dirichlet
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -83,13 +103,7 @@ def dirichlet(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -138,13 +152,7 @@ def beta(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
@@ -189,15 +197,7 @@ def gamma(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -262,15 +262,7 @@ def poisson(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
     *,

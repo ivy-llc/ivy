@@ -13,17 +13,109 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
+# Decorators #
+# ---------- #
+
+_main_decorators = {handle_nestable}
+
+_decorators_per_function = {
+    frozenset({"lgamma"}): {
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_array_function,
+        handle_out_argument,
+        handle_exceptions,
+    },
+    frozenset({"ldexp", "conj", "isclose", "frexp", "zeta", "nextafter", "sinc"}): {
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+        handle_out_argument,
+        handle_exceptions,
+    },
+    frozenset({"hypot", "fmax", "float_power"}): {
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+        handle_out_argument,
+    },
+    frozenset({"copysign", "xlogy"}): {
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+        handle_out_argument,
+        handle_exceptions,
+    },
+    frozenset({"count_nonzero"}): {
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+        infer_dtype,
+        handle_exceptions,
+    },
+    frozenset({"nansum"}): {
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_out_argument,
+        handle_device_shifting,
+        infer_dtype,
+        handle_exceptions,
+    },
+    frozenset({"fix", "signbit", "diff"}): {
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+        handle_out_argument,
+    },
+    frozenset({"allclose", "gradient"}): {
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+        handle_exceptions,
+    },
+    frozenset({"binarizer"}): {
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_exceptions,
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"lerp"}): {
+        handle_array_like_without_promotion,
+        handle_partial_mixed_function,
+        handle_array_function,
+        handle_device_shifting,
+        handle_exceptions,
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"modf"}): {
+        handle_array_like_without_promotion,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_out_argument,
+        handle_exceptions,
+    },
+    frozenset({"digamma"}): {
+        to_native_arrays_and_back,
+        handle_exceptions,
+        handle_out_argument,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def lgamma(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -68,13 +160,7 @@ def lgamma(
     return ivy.current_backend(x).lgamma(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -146,11 +232,7 @@ def sinc(
     return ivy.current_backend(x).sinc(x, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -192,11 +274,7 @@ def fmax(
     return ivy.current_backend().fmax(x1, x2, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def float_power(
     x1: Union[ivy.Array, float, list, tuple],
     x2: Union[ivy.Array, float, list, tuple],
@@ -240,12 +318,7 @@ def float_power(
     return ivy.current_backend().float_power(x1, x2, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -287,13 +360,7 @@ def copysign(
     return ivy.current_backend().copysign(x1, x2, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
+@decorate(*decorators)
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -346,14 +413,7 @@ def count_nonzero(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
+@decorate(*decorators)
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -405,13 +465,7 @@ def nansum(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -471,12 +525,7 @@ def isclose(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -508,11 +557,7 @@ def signbit(
     return ivy.current_backend(x).signbit(x, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def hypot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -545,12 +590,7 @@ def hypot(
     return ivy.current_backend(x1, x2).hypot(x1, x2, out=out)
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -601,12 +641,7 @@ def diff(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -676,12 +711,7 @@ def allclose(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -714,13 +744,7 @@ def fix(
     return ivy.current_backend(x).fix(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -756,13 +780,7 @@ def nextafter(
     return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -800,12 +818,7 @@ def zeta(
     return ivy.current_backend(x, q).zeta(x, q, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -880,12 +893,7 @@ def gradient(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
@@ -926,11 +934,7 @@ def xlogy(
     return ivy.current_backend(x, y).xlogy(x, y, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def binarizer(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -967,13 +971,7 @@ def binarizer(
     return ret
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1050,13 +1048,7 @@ def conj(
     return ivy.current_backend(x).conj(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1092,13 +1084,7 @@ def ldexp(
     return ivy.current_backend(x1, x2).ldexp(x1, x2, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_partial_mixed_function
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def lerp(
     input: Union[ivy.Array, ivy.NativeArray],
     end: Union[ivy.Array, ivy.NativeArray],
@@ -1222,13 +1208,7 @@ lerp.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1260,12 +1240,7 @@ def frexp(
     return ivy.current_backend(x).frexp(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def modf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1297,10 +1272,7 @@ def modf(
     return ivy.current_backend(x).modf(x, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def digamma(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

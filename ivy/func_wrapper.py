@@ -6,10 +6,9 @@ import weakref
 import warnings
 import copy as python_copy
 from types import FunctionType
-from typing import Callable, Literal
+from typing import Callable, Literal, Set, FrozenSet, Tuple, Dict
 import inspect
 import numpy as np
-from typing import Dict, Set, FrozenSet, Callable
 
 from ivy.utils.exceptions import IvyValueError
 
@@ -604,6 +603,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 def to_native_arrays_and_back(fn: Callable) -> Callable:
     """
     Make `fn` receive `ivy.NativeArray` and return `ivy.Array`.
+
     Wrap `fn` so that input arrays are all converted to
     `ivy.NativeArray` instances and return arrays are all converted to
     `ivy.Array` instances.
@@ -1877,17 +1877,18 @@ class override(contextlib.ContextDecorator):
 
 
 def get_decorators(
-        fn_name: str,
-        main_decorators: Set[Callable],
-        decorator_lookup: Dict[FrozenSet, Set],
-) -> Set:
-    """Gets the decorators from the lookup table
-    
+    fn_name: str,
+    main_decorators: Set[Callable],
+    decorator_lookup: Dict[FrozenSet, Set],
+) -> Set[Callable]:
+    """
+    Get the decorators from the lookup table.
+
     Parameters
     ----------
     fn_name : str
         The name of the function to get the decorators for
-    
+
     decorator_lookup : dict
         The lookup table of frozen sets of function names to decorators list
     """
@@ -1898,8 +1899,10 @@ def get_decorators(
             found = True
             break
     if not found:
-        raise KeyError(f"Function `{fn_name}` not found in decorator lookup table,"
-                       "please add it to the table.")
+        raise KeyError(
+            f"Function `{fn_name}` not found in decorator lookup table,"
+            "please add it to the table."
+        )
     return _rearrange_decorators(ret)
 
 
@@ -1910,19 +1913,21 @@ def _replace_to_x_and_back(decorators: Set[Callable]) -> Set[Callable]:
         decorators.remove(to_native_arrays_and_back)
         decorators.add(inputs_to_native_arrays)
         decorators.add(outputs_to_ivy_arrays)
-    
+
     if "to_ivy_arrays_and_back" in names:
         decorators.remove(to_ivy_arrays_and_back)
         decorators.add(inputs_to_ivy_arrays)
         decorators.add(outputs_to_native_arrays)
 
 
-def _rearrange_decorators(decorators: set) -> tuple:
+def _rearrange_decorators(decorators: Set[Callable]) -> Tuple[Callable]:
     _replace_to_x_and_back(decorators)
 
-    unknowns = {decorator.__name__
-                for decorator in decorators
-                if decorator.__name__ not in FN_DECORATORS}
+    unknowns = {
+        decorator.__name__
+        for decorator in decorators
+        if decorator.__name__ not in FN_DECORATORS
+    }
     if unknowns:
         unknowns = ", ".join(unknowns)
         raise KeyError(f"Unknown decorators found: {unknowns}")
@@ -1930,11 +1935,14 @@ def _rearrange_decorators(decorators: set) -> tuple:
     def _get_name(decorator):
         return decorator.__name__
 
-    return sorted(decorators, key=_get_name, reverse=True)
+    return tuple(sorted(decorators, key=_get_name, reverse=True))
 
 
-def decorate(main_decorators, decorator_lookup):
-    """Decorates a function with the decorators from the lookup table
+def decorate(
+    main_decorators: Set[Callable], decorator_lookup: Dict[FrozenSet, Set]
+) -> Callable:
+    """
+    Decorate a function with the decorators from the lookup table.
 
     Parameters
     ----------
@@ -1951,5 +1959,7 @@ def decorate(main_decorators, decorator_lookup):
             for decorator in decorators:
                 fn = decorator(fn)
             return fn(*args, **kwargs)
+
         return wrap
+
     return _decorate

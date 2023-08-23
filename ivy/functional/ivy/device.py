@@ -36,6 +36,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -44,6 +45,59 @@ soft_device_mode_stack = list()
 dev_handles = dict()
 split_factors = dict()
 max_chunk_sizes = dict()
+
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {handle_exceptions}
+
+_decorators_per_function = {
+    frozenset(
+        {
+            "num_cpu_cores",
+            "split_func_call",
+            "set_soft_device_mode",
+            "as_ivy_dev",
+            "percent_used_mem_on_dev",
+            "gpu_is_available",
+            "tpu_is_available",
+            "get_all_ivy_arrays_on_dev",
+            "num_ivy_arrays_on_dev",
+            "total_mem_on_dev",
+            "set_split_factor",
+            "split_factor",
+            "unset_soft_device_mode",
+            "dev_util",
+            "unset_default_device",
+            "set_default_device",
+            "clear_cached_mem_on_dev",
+            "used_mem_on_dev",
+            "as_native_dev",
+            "num_gpus",
+            "default_device",
+        }
+    ): set(),
+    frozenset(
+        {
+            "function_supported_devices",
+            "print_all_ivy_arrays_on_dev",
+            "function_unsupported_devices",
+        }
+    ): {handle_nestable},
+    frozenset({"dev"}): {
+        handle_nestable,
+        handle_backend_invalid,
+        to_native_arrays_and_back,
+    },
+    frozenset({"to_device"}): {
+        to_native_arrays_and_back,
+        handle_array_like_without_promotion,
+        handle_nestable,
+        handle_out_argument,
+        handle_backend_invalid,
+    },
+}
 
 
 # Extra #
@@ -169,7 +223,10 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 # Array Printing
 
 
-@handle_exceptions
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def get_all_ivy_arrays_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
@@ -208,7 +265,7 @@ def get_all_ivy_arrays_on_dev(
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
-@handle_exceptions
+@decorate(*decorators)
 def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     """
     Return the number of arrays which are currently alive on the specified device.
@@ -245,8 +302,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
 
-@handle_exceptions
-@handle_nestable
+@decorate(*decorators)
 def print_all_ivy_arrays_on_dev(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -289,7 +345,7 @@ def print_all_ivy_arrays_on_dev(
 ivy.soft_device_mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_soft_device_mode(mode: bool) -> None:
     """
     Set the mode of whether to move input arrays to `ivy.default_device()` before
@@ -314,7 +370,7 @@ def set_soft_device_mode(mode: bool) -> None:
     ivy.__setattr__("soft_device_mode", mode, True)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def unset_soft_device_mode() -> None:
     """
     Reset the mode of moving input arrays to `ivy.default_device()` before performing an
@@ -339,10 +395,7 @@ def unset_soft_device_mode() -> None:
 # Retrieval
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@to_native_arrays_and_back
+@decorate(*decorators)
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -383,7 +436,7 @@ def dev(
 # Conversions
 
 
-@handle_exceptions
+@decorate(*decorators)
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     """
     Convert device to string representation.
@@ -407,7 +460,7 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     return ivy.current_backend().as_ivy_dev(device)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeDevice:
     """
     Convert device string representation to native device type.
@@ -452,7 +505,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
 # Memory
 
 
-@handle_exceptions
+@decorate(*decorators)
 def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """
     Clear memory cache on target device.
@@ -472,7 +525,7 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> N
     ivy.current_backend().clear_cached_mem_on_dev(device)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """
     Get the total amount of memory (in GB) for a given device string. In case of CPU,
@@ -511,7 +564,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         )
 
 
-@handle_exceptions
+@decorate(*decorators)
 def used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
@@ -571,7 +624,7 @@ def used_mem_on_dev(
         )
 
 
-@handle_exceptions
+@decorate(*decorators)
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
@@ -635,7 +688,7 @@ def percent_used_mem_on_dev(
 # Utilization
 
 
-@handle_exceptions
+@decorate(*decorators)
 def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """
     Get the current utilization (%) for a given device.
@@ -678,7 +731,7 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 # Availability
 
 
-@handle_exceptions
+@decorate(*decorators)
 def gpu_is_available() -> bool:
     """
     Determine whether a GPU is available to use, with the backend framework.
@@ -696,7 +749,7 @@ def gpu_is_available() -> bool:
     return ivy.current_backend().gpu_is_available()
 
 
-@handle_exceptions
+@decorate(*decorators)
 def num_cpu_cores(*, logical: bool = True) -> int:
     """
     Determine the number of cores available in the cpu.
@@ -722,7 +775,7 @@ def num_cpu_cores(*, logical: bool = True) -> int:
         return psutil.cpu_count(logical=False)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def num_gpus() -> int:
     """
     Determine the number of available GPUs, with the backend framework.
@@ -740,7 +793,7 @@ def num_gpus() -> int:
     return ivy.current_backend().num_gpus()
 
 
-@handle_exceptions
+@decorate(*decorators)
 def tpu_is_available() -> bool:
     """
     Determine whether a TPU is available to use, with the backend framework.
@@ -762,7 +815,7 @@ def tpu_is_available() -> bool:
 
 
 # noinspection PyShadowingNames
-@handle_exceptions
+@decorate(*decorators)
 def default_device(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     /,
@@ -835,7 +888,7 @@ def default_device(
     return ivy.as_ivy_dev(ret)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """
     Set the default device to given device instance.
@@ -867,7 +920,7 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     default_device_stack.append(device)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def unset_default_device() -> None:
     """
     Reset the default device to "cpu".
@@ -889,12 +942,7 @@ def unset_default_device() -> None:
 # Device Allocation #
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -939,7 +987,7 @@ def to_device(
 # Function Splitting #
 
 
-@handle_exceptions
+@decorate(*decorators)
 def split_factor(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     /,
@@ -978,7 +1026,7 @@ def split_factor(
     return split_factors.setdefault(device, 0.0)
 
 
-@handle_exceptions
+@decorate(*decorators)
 def set_split_factor(
     factor: float, /, *, device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
 ) -> None:
@@ -1027,7 +1075,7 @@ def set_split_factor(
     split_factors[device] = factor
 
 
-@handle_exceptions
+@decorate(*decorators)
 def split_func_call(
     func: Callable,
     inputs: Union[ivy.Array, ivy.NativeArray],
@@ -1215,8 +1263,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     return tuple(supported)
 
 
-@handle_exceptions
-@handle_nestable
+@decorate(*decorators)
 def function_supported_devices(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
@@ -1269,8 +1316,7 @@ def function_supported_devices(
     )
 
 
-@handle_exceptions
-@handle_nestable
+@decorate(*decorators)
 def function_unsupported_devices(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:

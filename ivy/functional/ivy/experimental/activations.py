@@ -14,16 +14,43 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 
+_main_decorators = {
+    handle_out_argument,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_exceptions,
+}
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+_decorators_per_function = {
+    frozenset({"thresholded_relu", "logit", "logsigmoid"}): {
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+    },
+    frozenset({"prelu"}): {
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"selu", "silu", "relu6"}): {
+        handle_device_shifting,
+        to_native_arrays_and_back,
+        handle_array_function,
+        handle_backend_invalid,
+    },
+    frozenset({"elu"}): {
+        to_native_arrays_and_back,
+        handle_array_function,
+        handle_backend_invalid,
+    },
+}
+
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -67,11 +94,7 @@ def logit(
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],
@@ -125,13 +148,7 @@ def prelu(
         raise IvyException
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -186,14 +203,7 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -232,13 +242,7 @@ def relu6(
     return current_backend(x).relu6(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -283,14 +287,7 @@ def logsigmoid(
     return ivy.current_backend(input).logsigmoid(input, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -342,14 +339,7 @@ def selu(
     return current_backend(x).selu(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -392,13 +382,7 @@ def silu(
     return current_backend(x).silu(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
+@decorate(*decorators)
 def elu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     handle_array_function,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
@@ -25,12 +26,94 @@ _min = builtins.min
 _slice = builtins.slice
 _max = builtins.max
 
+# Decorators #
+# ---------- #
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+_main_decorators = {
+    handle_nestable,
+}
+
+_decorators_per_function = {
+    frozenset(
+        {
+            "max_pool2d",
+            "avg_pool3d",
+            "max_pool1d",
+            "avg_pool2d",
+            "avg_pool1d",
+            "max_pool3d",
+            "max_unpool1d",
+        }
+    ): {
+        handle_out_argument,
+        handle_backend_invalid,
+        handle_device_shifting,
+        to_native_arrays_and_back,
+    },
+    frozenset({"pool"}): {
+        handle_out_argument,
+        handle_backend_invalid,
+        to_native_arrays_and_back,
+    },
+    frozenset({"dct"}): {
+        handle_out_argument,
+        handle_backend_invalid,
+        handle_exceptions,
+        handle_device_shifting,
+        to_native_arrays_and_back,
+    },
+    frozenset({"idct"}): {
+        handle_out_argument,
+        handle_exceptions,
+        to_native_arrays_and_back,
+    },
+    frozenset({"dropout2d", "dropout1d", "dropout3d", "ifft", "embedding", "fft"}): {
+        handle_out_argument,
+        handle_backend_invalid,
+        handle_exceptions,
+        handle_device_shifting,
+        to_native_arrays_and_back,
+        handle_array_like_without_promotion,
+    },
+    frozenset({"dft", "interp"}): {
+        handle_out_argument,
+        inputs_to_ivy_arrays,
+        handle_exceptions,
+    },
+    frozenset({"interpolate"}): {
+        inputs_to_ivy_arrays,
+        handle_exceptions,
+        handle_array_function,
+        handle_partial_mixed_function,
+    },
+    frozenset({"adaptive_avg_pool1d", "adaptive_max_pool2d"}): {
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"reduce_window", "adaptive_avg_pool2d"}): {
+        inputs_to_ivy_arrays,
+        handle_exceptions,
+        handle_array_function,
+        handle_array_like_without_promotion,
+    },
+    frozenset({"ifftn", "fft2"}): {
+        handle_out_argument,
+        handle_backend_invalid,
+        handle_exceptions,
+        to_native_arrays_and_back,
+        handle_array_like_without_promotion,
+    },
+    frozenset({"rfftn"}): {
+        handle_out_argument,
+        handle_backend_invalid,
+        handle_exceptions,
+        to_native_arrays_and_back,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -114,11 +197,7 @@ def max_pool1d(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def max_unpool1d(
     x: ivy.Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -185,11 +264,7 @@ def max_unpool1d(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -273,11 +348,7 @@ def max_pool2d(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -359,11 +430,7 @@ def max_pool3d(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -442,11 +509,7 @@ def avg_pool1d(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -530,11 +593,7 @@ def avg_pool2d(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -619,10 +678,7 @@ def avg_pool3d(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def pool(
     x: Union[ivy.Array, ivy.NativeArray],
     window_shape: Union[int, Tuple[int], Tuple[int, int]],
@@ -696,12 +752,7 @@ def pool(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -802,16 +853,15 @@ def dct(
         a: ivy.array([96., -28.1580677, -31.89422607, 22.86190414,
                       -26.00041008, 19.75149155, -16.97056389, 10.87819386,
                       -5.89381361]),
-        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00])
+        b: ivy.array([
+            1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00
+            ])
     }
     """
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def idct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -893,10 +943,14 @@ def idct(
     >>> y = ivy.idct(x, type=3, n=None, norm='ortho')
     >>> print(y)
     {
-        a: ivy.array([1.01823380e+02, -5.15385818e+01, 1.36371466e-06, -5.38763905e+00,
-                      0.00000000e+00, -1.60722279e+00, -8.80319249e-08, -4.05617893e-01]),
-        b: ivy.array([1.27279224e+01, -6.44232273e+00, 1.70464332e-07, -6.73454881e-01,
-                      0.00000000e+00, -2.00902849e-01, -1.10039906e-08, -5.07022366e-02])
+        a: ivy.array([
+            1.01823380e+02, -5.15385818e+01, 1.36371466e-06, -5.38763905e+00,
+            0.00000000e+00, -1.60722279e+00, -8.80319249e-08, -4.05617893e-01
+        ]),
+        b: ivy.array([
+            1.27279224e+01, -6.44232273e+00, 1.70464332e-07, -6.73454881e-01,
+            0.00000000e+00, -2.00902849e-01, -1.10039906e-08, -5.07022366e-02
+        ])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -912,7 +966,8 @@ def idct(
         a: ivy.array([86.29723358, -66.69506073, 9.93914604, 2.88008881,
                       -16.18951607, 18.06697273, -17.57439613, 11.68861485,
                       -4.41308832]),
-        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00])
+        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16,
+                      -1.00000000e+00])
     }
     """
     return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
@@ -927,13 +982,7 @@ idct.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -997,13 +1046,7 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1073,13 +1116,7 @@ def dropout1d(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def dropout2d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1139,13 +1176,7 @@ def dropout2d(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1191,13 +1222,7 @@ def dropout3d(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -1260,13 +1285,7 @@ def ifft(
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1314,10 +1333,7 @@ def embedding(
     )
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1392,10 +1408,7 @@ def dft(
     return res
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -1840,11 +1853,7 @@ def _interpolate_with_kernel(
     return ivy.einsum(equation, x, *operands)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_partial_mixed_function
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
@@ -2157,8 +2166,7 @@ def _mask(vals, length, range_max, dim, mask_value=0.0):
         return vals, length
 
 
-@handle_nestable
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def adaptive_max_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2250,8 +2258,7 @@ adaptive_max_pool2d.mixed_backend_wrappers = {
 }
 
 
-@handle_nestable
-@inputs_to_ivy_arrays
+@decorate(*decorators)
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -2330,11 +2337,7 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2543,11 +2546,7 @@ avg_pool2d.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def reduce_window(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -2630,12 +2629,7 @@ reduce_window.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2707,12 +2701,7 @@ fft2.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def ifftn(
     x: Union[ivy.Array, ivy.NativeArray],
     s: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -2791,11 +2780,7 @@ def ifftn(
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
+@decorate(*decorators)
 def rfftn(
     x: Union[ivy.Array, ivy.NativeArray],
     s: Optional[Sequence[int]] = None,

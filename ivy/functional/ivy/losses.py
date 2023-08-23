@@ -8,8 +8,27 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_array_function,
+    inputs_to_ivy_arrays,
+    handle_array_like_without_promotion,
+    handle_nestable,
+    handle_exceptions,
+}
+
+_decorators_per_function = {
+    frozenset({"cross_entropy", "sparse_cross_entropy", "binary_cross_entropy"}): set()
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -26,14 +45,10 @@ def _reduce_loss(red, loss, axis, out):
 
 
 # Extra #
-# ------#
+# ----- #
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -85,11 +100,7 @@ def cross_entropy(
     return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -268,11 +279,7 @@ def binary_cross_entropy(
     return _reduce_loss(reduction, loss, axis, out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

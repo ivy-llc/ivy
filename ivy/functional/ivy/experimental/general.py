@@ -9,8 +9,25 @@ from ivy import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_exceptions,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
+    handle_array_function,
+}
+
+_decorators_per_function = {frozenset({"reduce"}): set()}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 def _correct_ivy_callable(func):
@@ -25,11 +42,7 @@ def _correct_ivy_callable(func):
     return func
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def reduce(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],

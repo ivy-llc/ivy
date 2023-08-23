@@ -7,15 +7,30 @@ from ivy.func_wrapper import (
     handle_nestable,
     inputs_to_ivy_arrays,
     handle_array_function,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_exceptions,
+    handle_nestable,
+    inputs_to_ivy_arrays,
+    handle_array_function,
+}
+
+_decorators_per_function = {
+    frozenset({"log_poisson_loss"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
 # log_poisson_loss
-@handle_exceptions
-@handle_nestable
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def log_poisson_loss(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

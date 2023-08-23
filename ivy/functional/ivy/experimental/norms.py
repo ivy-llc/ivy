@@ -13,16 +13,43 @@ from ivy.func_wrapper import (
     handle_array_function,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_nestable,
+    handle_exceptions,
+}
+
+_decorators_per_function = {
+    frozenset({"l1_normalize", "lp_normalize", "l2_normalize"}): {
+        handle_out_argument,
+        to_native_arrays_and_back,
+        handle_backend_invalid,
+        handle_device_shifting,
+    },
+    frozenset({"instance_norm", "batch_norm"}): {
+        handle_partial_mixed_function,
+        handle_array_like_without_promotion,
+        inputs_to_ivy_arrays,
+        handle_array_function,
+    },
+    frozenset({"group_norm"}): {
+        handle_array_like_without_promotion,
+        inputs_to_ivy_arrays,
+        handle_array_function,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -60,12 +87,7 @@ def l1_normalize(
     return current_backend(x).l1_normalize(x, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -102,12 +124,7 @@ def l2_normalize(
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_partial_mixed_function
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -224,12 +241,7 @@ batch_norm.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_nestable
-@handle_partial_mixed_function
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -354,11 +366,7 @@ instance_norm.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def group_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     num_groups: int = 1,
@@ -441,12 +449,7 @@ group_norm.mixed_backend_wrappers = {
 }
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
