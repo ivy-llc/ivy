@@ -99,8 +99,8 @@ def batch_norm(
 
 batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
     (x.ndim > 1 and x.ndim < 6)
-    and (scale is None or scale.ndim == 1)
-    and (offset is None or offset.ndim == 1)
+    and (scale is not None and scale.ndim == 1)
+    and (offset is not None and offset.ndim == 1)
 )
 
 

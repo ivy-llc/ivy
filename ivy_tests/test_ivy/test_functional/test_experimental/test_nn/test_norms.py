@@ -84,25 +84,31 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         )
     )
     _, offset = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype,
-            shape=shape3,
-            min_value=-1001,
-            max_value=999,
-            large_abs_safety_factor=24,
-            small_abs_safety_factor=24,
-            safety_factor_scale="log",
+        st.one_of(
+            helpers.dtype_and_values(
+                dtype=x_dtype,
+                shape=shape3,
+                min_value=-1001,
+                max_value=999,
+                large_abs_safety_factor=24,
+                small_abs_safety_factor=24,
+                safety_factor_scale="log",
+            ),
+            st.just(([None], [None])),
         )
     )
     _, scale = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype,
-            shape=shape4,
-            min_value=-1001,
-            max_value=999,
-            large_abs_safety_factor=24,
-            small_abs_safety_factor=24,
-            safety_factor_scale="log",
+        st.one_of(
+            helpers.dtype_and_values(
+                dtype=x_dtype,
+                shape=shape4,
+                min_value=-1001,
+                max_value=999,
+                large_abs_safety_factor=24,
+                small_abs_safety_factor=24,
+                safety_factor_scale="log",
+            ),
+            st.just(([None], [None])),
         )
     )
     eps = draw(
