@@ -71,7 +71,7 @@ def test_numpy_eig(
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
-    """make symmetric positive-definite since ivy does not support complex data dtypes
+    """Make symmetric positive-definite since ivy does not support complex data dtypes
     currently."""
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
