@@ -325,3 +325,77 @@ def bernoulli(
         seed=seed,
         out=out,
     )
+
+
+# multivariate_normal
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def multivariate_normal(
+    mean: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
+    cov: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
+    /,
+    *,
+    size: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Draw random samples from a multi variate normal distribution. The multivariate
+    normal, multinormal or Gaussian distribution is a generalization of the one-
+    dimensional normal distribution to higher dimensions. Such a distribution is
+    specified by its mean and covariance matrix. These parameters are analogous to the
+    mean (average or “center”) and variance (standard deviation, or “width,” squared) of
+    the one-dimensional normal distribution. This distribution is also used to generate
+    independent samples in the n-dim. The distribution has a special relation with
+    independence wherein a gaussian distribution implies independence.
+
+    Parameters
+    ----------
+    mean
+        Mean of the N-dimensional distribution
+    cov
+        Covariance matrix of the distribution. It must be symmetric and
+        positive-semidefinite for proper sampling.
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The drawn samples, of shape (size, k).
+
+    Functional Examples
+    -------------------
+
+    >>> alpha = [1.0, 2.0, 3.0]
+    >>> ivy.dirichlet(alpha)
+    ivy.array([0.10598304, 0.21537054, 0.67864642])
+
+    >>> alpha = [1.0, 2.0, 3.0]
+    >>> ivy.dirichlet(alpha, size = (2,3))
+    ivy.array([[[0.48006698, 0.07472073, 0.44521229],
+        [0.55479872, 0.05426367, 0.39093761],
+        [0.19531053, 0.51675832, 0.28793114]],
+
+       [[0.12315625, 0.29823365, 0.5786101 ],
+        [0.15564976, 0.50542368, 0.33892656],
+        [0.1325352 , 0.44439589, 0.42306891]]])
+    """
+    return ivy.current_backend().multivariate_normal(
+        mean,
+        cov,
+        size=size,
+        dtype=dtype,
+        seed=seed,
+        out=out,
+    )
