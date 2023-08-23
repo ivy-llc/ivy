@@ -5,7 +5,7 @@ Here, we explain how the :class:`ivy.Container` class saves you a ton of time an
 So without further ado, let’s dive in!
 
 Firstly, Dictionaries are an incredibly powerful and useful data type in Python.
-They enable a clean, readable and efficient-access (via hashing) storage of arbitrarily hierarchical data.
+They enable a clean, readable, and efficient-access (via hashing) storage of arbitrarily hierarchical data.
 
 The :class:`ivy.Container` class can be seen as a souped-up Dict, with many useful features built on top.
 It’s the backbone of most high level operations in Ivy.
@@ -223,7 +223,7 @@ Nested keys can also be set in one line, using either ‘/’ or ‘.’ as a de
     }
 
 One of the key benefits of using properties under the hood is the autocomplete support this introduces.
-Class attributes can be auto-completed when pressing tab midway through typing.
+Class attributes can be auto-completed when pressing the :code:`Tab` midway through typing.
 This is not possible with Dicts.
 
 .. code-block:: python
@@ -363,7 +363,7 @@ Customized Representations
 Not only does :class:`ivy.Container` print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation.
 This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.
 
-If our networks weights go many levels deep in the nested hierarchy, we might not want to see all of them when printing our container to screen.
+If our networks weights go many levels deep in the nested hierarchy, we might not want to see all of them when printing our container to the screen.
 Consider the following nested structure.
 
 .. code-block:: python
@@ -537,7 +537,7 @@ Our code will be much cleaner if we do something like the following, particularl
         agent.cams = (agent.cams - cam_min) / cam_range
 
 Of course, this argument holds for the use of custom classes or built-in containers (Python list, dict, tuple etc.), and isn’t only relevant for the Ivy container.
-However the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the :code:`update_agent` method.
+However, the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the :code:`update_agent` method.
 
 Configuration
 --------------
