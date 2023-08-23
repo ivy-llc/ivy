@@ -498,6 +498,46 @@ def softmax(
     return current_backend(x).softmax(x, axis=axis, out=out)
 
 
+def _wrap_between(y, a):
+    """Wrap y between [-a, a]"""
+    a = ivy.array(a, dtype=y.dtype)
+    a2 = ivy.array(2 * a, dtype=y.dtype)
+    zero = ivy.array(0, dtype=y.dtype)
+    rem = ivy.remainder(ivy.add(y, a), a2)
+    rem = ivy.where(rem < zero, rem + a2, rem) - a
+    return rem
+
+
+def _softplus_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[ivy.Array] = None,
+):
+    if beta is not None:
+        x_beta = ivy.multiply(x, ivy.array(beta, dtype=x.dtype))
+    else:
+        x_beta = x
+    amax = ivy.relu(x_beta)
+    res = ivy.subtract(x_beta, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
+    res = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(res))))
+    res = ivy.real(res) + _wrap_between(ivy.imag(res), ivy.pi).astype(
+        x.dtype
+    ) * ivy.astype(1j, x.dtype)
+    if beta is not None:
+        res = ivy.divide(res, ivy.array(beta, dtype=x.dtype))
+    if threshold is not None:
+        res = ivy.where(
+            ivy.real(x_beta) < threshold,
+            res,
+            x,
+        ).astype(x.dtype)
+    return res
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -506,6 +546,7 @@ def softmax(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -513,9 +554,16 @@ def softplus(
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the softplus function element-wise.
+
+    If the input is complex, then by default we apply the softplus operation
+    `log(1+ exp(x))` to  each element
+    If threshold is set we check if either its real part is strictly negative or
+    if its real part is zero and its imaginary part is negative then we apply
+    `input×β > threshold`.
 
     Parameters
     ----------
@@ -524,10 +572,14 @@ def softplus(
     beta
         The beta value for the softplus formation. Default: ``None``.
     threshold
-        values above this revert to a linear function. Default: ``None``.
+        values above this revert to a linear function
+        If the input is complex, only its real part is considered. Default: ``None``
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
     Returns
     -------
@@ -555,6 +607,9 @@ def softplus(
     ivy.array([1.31, 2.13, 3.  ])
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
+
+
+softplus.jax_like = _softplus_jax_like
 
 
 @handle_exceptions

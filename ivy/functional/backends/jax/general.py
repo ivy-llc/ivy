@@ -76,8 +76,6 @@ def get_item(
         query, _ = _mask_to_index(query, x)
     elif isinstance(query, list):
         query = (query,)
-    if copy:
-        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
@@ -89,12 +87,13 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> JaxArray:
-    if copy:
-        x = x.copy()
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query, expected_shape = _mask_to_index(query, x)
         val = _broadcast_to(val, expected_shape)._data
-    return x.at[query].set(val)
+    ret = x.at[query].set(val)
+    if copy:
+        return ret
+    return ivy.inplace_update(x, _to_device(ret))
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
