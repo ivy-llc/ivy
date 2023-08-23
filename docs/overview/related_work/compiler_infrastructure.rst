@@ -30,16 +30,16 @@ MLIR
 The `Multi Level Intermediate Representation (MLIR)`_ is an important piece of compiler infrastructure designed to represent multiple levels of abstraction, with abstractions and domain-specific IR constructs being easy to add, and with location being a first-class construct.
 It is part of the broader `LLVM`_ project.
 It aims to address software fragmentation, improve compilation for heterogeneous hardware, significantly reduce the cost of building domain specific compilers, and aid in connecting existing compilers together.
-Comparing to other parts of the overall ML stack, MLIR is designed to operate at a lower level than the neural network exchange formats.
+Compared to other parts of the overall ML stack, MLIR is designed to operate at a lower level than the neural network exchange formats.
 For example, the `Onnx-mlir`_ compiler uses the MLIR compiler infrastructure to implement a compiler which enables `ONNX`_ defined models to be compiled into native code.
 
 OneAPI
 ------
-`OneAPI`_ is an open standard for a unified Application Programming Interface (API) intended to be used across different compute accelerator (coprocessor) architectures, including GPUs, AI accelerators and field-programmable gate arrays, although at present the main user is `Intel`_, with them being the authors of the standard.
+`OneAPI`_ is an open standard for a unified Application Programming Interface (API) intended to be used across different compute accelerator (coprocessor) architectures, including GPUs, AI accelerators, and field-programmable gate arrays, although at present the main user is `Intel`_, with them being the authors of the standard.
 The set of APIs spans several domains that benefit from acceleration, including libraries for linear algebra math, deep learning, machine learning, video processing, and others.
-`OneDNN`_ is particularly relevant, focusing on neural networks functions for deep learning training and inference.
+`OneDNN`_ is particularly relevant, focusing on neural network functions for deep learning training and inference.
 Intel CPUs and GPUs have accelerators for Deep Learning software, and OneDNN provides a unified interface to utilize these accelerators, with much of the hardware-specific complexity abstracted away.
 In a similar manner to `MLIR`_, OneAPI is also designed to operate at a lower level than the Neural Network :ref:`Exchange Formats`.
-The interface is lower level and more primitive than the neural network exchange formats, with focus on the core low-level operations such as convolutions, matrix multiplications, batch normalization etc.
+The interface is lower level and more primitive than the neural network exchange formats, with a focus on the core low-level operations such as convolutions, matrix multiplications, batch normalization etc.
 This makes OneDNN very much complementary to these formats, where OneDNN can sit below the exchange formats in the overall stack, enabling accelerators to be fully leveraged with minimal hardware-specific considerations, with this all helpfully being abstracted by the OneDNN API.
-Indeed, OneAPI and MLIR can work together in tandem, and OneDNN are working to `integrate Tensor Possessing Primitives in the MLIR compilers used underneath TensorFlow <https://www.oneapi.io/blog/tensorflow-and-onednn-in-partnership/>`_.
+Indeed, OneAPI and MLIR can work together in tandem, and OneDNN is working to `integrate Tensor Possessing Primitives in the MLIR compilers used underneath TensorFlow <https://www.oneapi.io/blog/tensorflow-and-onednn-in-partnership/>`_.
