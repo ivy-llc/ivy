@@ -6,6 +6,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_nestable,
     inputs_to_ivy_arrays,
+    handle_array_like_without_promotion,
     handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -28,11 +29,11 @@ def log_poisson_loss(
 ) -> ivy.Array:
     """
     Compute the log-likelihood loss between the prediction and the target under the
-    assumption that the target has a Poisson distribution. Caveat: By default,
-    this is not the exact loss, but the loss minus a constant term [log(z!)].
-    That has no effect for optimization, but does not play well with relative loss
-    comparisons. To compute an approximation of the log factorial term, specify
-    ``compute_full_loss=True`` to enable Stirling's Approximation.
+    assumption that the target has a Poisson distribution. Caveat: By default, this is
+    not the exact loss, but the loss minus a constant term [log(z!)]. That has no effect
+    for optimization, but does not play well with relative loss comparisons. To compute
+    an approximation of the log factorial term, specify ``compute_full_loss=True`` to
+    enable Stirling's Approximation.
 
     Parameters
     ----------
@@ -91,5 +92,63 @@ def log_poisson_loss(
         return ivy.sum(loss, axis=axis, out=out)
     elif reduction == "mean":
         return ivy.mean(loss, axis=axis, out=out)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def l1_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute L1 loss (Mean Absolute Error - MAE) between targeticted and input values.
+
+    Parameters
+    ----------
+    input : Union[ivy.Array, ivy.NativeArray]
+        Input array containing input values.
+    target : Union[ivy.Array, ivy.NativeArray]
+        Input array containing targeted values.
+    reduction : str, optional
+        Reduction method for the output loss. Options:
+        "none" (no reduction), "mean" (mean of losses),
+        "sum" (sum of losses). Default: "mean".
+    out : Optional[ivy.Array], optional
+        Optional output array for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+
+    Returns
+    -------
+    ivy.Array
+        The L1 loss (MAE) between the given input and targeticted values.
+
+
+    Examples
+    --------
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([0.5, 2.5, 2.0])
+    >>> print(ivy.l1_loss(x, y))
+    ivy.array(0.6)
+    >>> a = ivy.array([[1.0, 2.0], [3.0, 4.0]])
+    >>> b = ivy.array([[0.5, 1.5], [2.5, 3.5]])
+    >>> print(ivy.l1_loss(a, b))
+    ivy.array(0.5)
+    """
+    loss = ivy.abs(target - input)
+
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss

@@ -13,7 +13,7 @@ import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_test,
     assert_all_close,
-    update_backend,
+    BackendHandler,
 )
 
 
@@ -484,7 +484,7 @@ def test_tensorflow_Div(  # NOQA
 @st.composite
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             return draw(helpers.ints(min_value=0, max_value=5))
         elif ivy_backend.is_int_dtype(dtype):
