@@ -152,3 +152,5 @@ print(avg_pool_output)
 
 print("\nMax Pooling Output:")
 print(max_pool_output)
+
+#lets se how this works
