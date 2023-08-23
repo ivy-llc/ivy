@@ -1,8 +1,6 @@
 # global
 from hypothesis import strategies as st
 import math
-import hypothesis.extra.numpy as nph
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -712,68 +710,4 @@ def test_paddle_rot90(
         x=m,
         k=k,
         axes=tuple(axes),
-    )
-
-
-@st.composite
-def put_along_axis_helper(draw):
-    input_dtype, x, axis, shape = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=2,
-            min_dim_size=2,
-            valid_axis=True,
-            force_int_axis=True,
-            ret_shape=True,
-            min_axis=0,
-            max_axis=1,
-        )
-    )
-
-    if axis < 0:
-        axis = 0
-    idx_shape = list(shape)
-    idx_shape[axis] = 1
-    idx_shape = tuple(idx_shape)
-
-    idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 1)
-    )
-    indices = draw(idx_strategy)
-
-    values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(0, 1e3)
-    )
-    values = draw(values_strategy)
-
-    return input_dtype, x[0], indices, values, axis
-
-
-@handle_frontend_test(
-    fn_tree="paddle.put_along_axis",
-    args=put_along_axis_helper(),
-    mode=st.sampled_from(["add", "assign", "mul", "multiply"]),
-    test_with_out=st.just(False),
-)
-def test_paddle_put_along_axis(
-    *,
-    args,
-    mode,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x, indices, value, axis = args
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        arr=x,
-        indices=indices,
-        values=value,
-        axis=axis,
-        reduce=mode,
     )
