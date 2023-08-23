@@ -2761,10 +2761,8 @@ def get_item(
     copy
         boolean indicating whether to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
