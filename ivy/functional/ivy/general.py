@@ -2944,9 +2944,7 @@ def _parse_query(query, x_shape, scatter=False):
 
     # convert slices to range arrays
     query = [
-        _parse_slice(q, x_shape[i]).astype(ivy.int64)
-        if isinstance(q, slice)
-        else q
+        _parse_slice(q, x_shape[i]).astype(ivy.int64) if isinstance(q, slice) else q
         for i, q in enumerate(query)
     ]
 
@@ -2995,13 +2993,13 @@ def _parse_query(query, x_shape, scatter=False):
             for arr in array_queries
         ]
         array_queries = ivy.stack(array_queries, axis=1)
-    if len(array_inds) == len(query):   # advanced indexing
+    if len(array_inds) == len(query):  # advanced indexing
         indices = array_queries.reshape((*target_shape, len(x_shape)))
-    elif len(array_inds) == 0:   # basic indexing
+    elif len(array_inds) == 0:  # basic indexing
         indices = ivy.stack(ivy.meshgrid(*query, indexing="ij"), axis=-1).reshape(
             (*target_shape, len(x_shape))
         )
-    else:   # mixed indexing
+    else:  # mixed indexing
         if to_front:
             post_array_queries = (
                 ivy.stack(
@@ -3017,7 +3015,9 @@ def _parse_query(query, x_shape, scatter=False):
             indices = ivy.array(
                 [
                     (*arr, *post)
-                    for arr, post in itertools.product(array_queries, post_array_queries)
+                    for arr, post in itertools.product(
+                        array_queries, post_array_queries
+                    )
                 ]
             ).reshape((*target_shape, len(x_shape)))
         else:
