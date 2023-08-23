@@ -126,3 +126,29 @@ def max_pool1d(
         data_format=data_format,
         ceil_mode=ceil_mode,
     )
+
+
+from pooling import avg_pool2d, max_pool2d, avg_pool1d, max_pool1d
+
+# Create an example input tensor
+input_tensor = ivy.array([[
+    [[1.0, 2.0, 3.0, 4.0],
+     [5.0, 6.0, 7.0, 8.0],
+     [9.0, 10.0, 11.0, 12.0],
+     [13.0, 14.0, 15.0, 16.0]]
+]])
+
+# Perform average pooling on the input tensor
+avg_pool_output = avg_pool2d(input_tensor, kernel_size=(2, 2), stride=(2, 2))
+
+# Perform max pooling on the input tensor
+max_pool_output = max_pool2d(input_tensor, kernel_size=(2, 2), stride=(2, 2))
+
+print("Input Tensor:")
+print(input_tensor)
+
+print("\nAverage Pooling Output:")
+print(avg_pool_output)
+
+print("\nMax Pooling Output:")
+print(max_pool_output)
