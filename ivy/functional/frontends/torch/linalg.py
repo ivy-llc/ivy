@@ -370,3 +370,12 @@ def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
             matrix = input * math.nan
             info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
             return matrix, info
+
+#ldl_solve
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
+def ldl_solve(LD, pivots, B, *, hermitian=False, out=None):
+    return ivy.ldl_solve(LD,pivots,B,hermitian=hermitian,out=out)
