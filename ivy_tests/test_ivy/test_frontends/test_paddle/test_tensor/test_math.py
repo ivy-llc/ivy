@@ -381,7 +381,7 @@ def test_paddle_subtract(
 
 # subtract_
 @handle_frontend_test(
-    fn_tree="paddle.subtract_",
+    fn_tree="paddle.tensor.math.subtract_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -734,7 +734,7 @@ def test_paddle_remainder(
 
 # remainder_
 @handle_frontend_test(
-    fn_tree="paddle.remainder_",
+    fn_tree="paddle.tensor.math.remainder_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1060,7 +1060,7 @@ def test_paddle_exp(
 
 # exp_
 @handle_frontend_test(
-    fn_tree="paddle.exp_",
+    fn_tree="paddle.tensor.math.exp_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
