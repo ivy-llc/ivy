@@ -155,9 +155,7 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
             permuted_axes = [0, 1, 2]
 
         img_np = ivy.permute(img, permuted_axes)
-
         normalized_img = ivy.divide(ivy.subtract(img_np, mean), std)
-
         return normalized_img
     else:
         raise ValueError("Unsupported input format")
