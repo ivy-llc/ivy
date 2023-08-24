@@ -269,8 +269,12 @@ def eig(input, *, out=None):
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def solve(A, B, *, left=True, out=None):
-    # TODO: Implement left
-    return ivy.solve(A, B, out=out)
+    if left:
+        return ivy.solve(A, B, out=out)
+    else:
+        A_T, B_T = ivy.matrix_transpose(A), ivy.matrix_transpose(B)
+        X_T = ivy.solve(A_T, B_T, out=out)
+        return ivy.matrix_transpose(X_T)
 
 
 @to_ivy_arrays_and_back
@@ -342,9 +346,14 @@ def multi_dot(tensors, *, out=None):
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def solve_ex(A, B, *, left=True, check_errors=False, out=None):
-    # TODO: Implement left
     try:
-        result = ivy.solve(A, B, out=out)
+        if left:
+            result = ivy.solve(A, B, out=out)
+        else:
+            A_T, B_T = ivy.matrix_transpose(A), ivy.matrix_transpose(B)
+            X_T = ivy.solve(A_T, B_T, out=out)
+            result = ivy.matrix_transpose(X_T)
+
         info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
         return result, info
     except RuntimeError as e:
