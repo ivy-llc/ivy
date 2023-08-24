@@ -152,3 +152,134 @@ def l1_loss(
         return ivy.mean(loss, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def smooth_l1_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    beta: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the smooth L1 loss between two input tensors.
+
+    Parameters
+    ----------
+    input : array_like
+        First input tensor.
+    target : array_like
+        Second input tensor.
+    beta : float, optional
+        The smooth parameter. Default is 1.0.
+    reduction : str, optional
+        Specifies the type of reduction to apply to the output.
+        Should be one of 'none', 'sum', or 'mean'. Default is 'mean'.
+    out : array, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The smooth_l1_loss between the two input tensors.
+
+    Examples
+    --------
+    >>> input = ivy.array([1.0, 2.0, 3.0])
+    >>> target = ivy.array([2.5, 1.8, 3.2])
+    >>> ivy.smooth_l1_loss(x, y, beta=1.0)
+    ivy.array(0.3467)
+    >>> input = ivy.array([1.0, 2.0, 3.0])
+    >>> target = ivy.array([6.0, 2.0, 3.0])
+    >>> ivy.smooth_l1_loss(x, y, beta=1.0)
+    ivy.array(1.5)
+    >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
+    >>> target = ivy.array([2.5, 3.5, 5.5, 6.5])
+    >>> loss = ivy.smooth_l1_loss(input, target, beta=1.5, reduction='sum')
+    ivy.array(0.5)
+    >>> input = ivy.array([0.8, 1.2, 2.5, 3.7])
+    >>> target = ivy.array([0.9, 1.0, 2.3, 3.6])
+    >>> loss = ivy.smooth_l1_loss(input, target, beta=0.5, reduction='none')
+    ivy.array([0.0133, 0.0250, 0.0056, 0.0025])
+    >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
+    >>> target = ivy.array([2.5, 3.5, 5.5, 6.5])
+    >>> loss = ivy.smooth_l1_loss(input, target, beta=0.2, reduction='mean')
+    ivy.array(0.025)
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1.5, 2.2, 3.7])
+    >>> y = ivy.native_array([2.1, 1.9, 3.5])
+    >>> print(ivy.smooth_l1_loss(x, y, beta=0.5))
+    ivy.array(0.0675)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]))
+    >>> y = ivy.Container(a=ivy.array([2.5, 1.8, 3.2]))
+    >>> print(ivy.smooth_l1_loss(x, y, beta=1.0))
+    {
+        a: ivy.array(0.3467)
+    }
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.native_array([6.0, 2.0, 3.0])
+    >>> print(ivy.smooth_l1_loss(x, y, beta=0.5))
+    ivy.array(1.5)
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.Container(a=ivy.array([6.0, 2.0, 3.0]))
+    >>> print(ivy.smooth_l1_loss(x, y, beta=1.0))
+    {
+        a: ivy.array(1.5)
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([2.5, 1.8, 3.2])
+    >>> print(x.smooth_l1_loss(y, beta=1.0))
+    ivy.array(0.3467)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]))
+    >>> y = ivy.Container(a=ivy.array([2.5, 1.8, 3.2]))
+    >>> print(x.smooth_l1_loss(y, beta=1.0))
+    {
+        a: ivy.array(0.3467)
+    }
+    """
+    if beta < 1e-5:
+        # if beta == 0,  will result in nan gradients when
+        # the chain rule is applied due to pytorch implementation details
+        # (the False branch "0.5 * n ** 2 / 0" has an incoming gradient of
+        # zeros, rather than "no gradient"). To avoid this issue, we define
+        # small values of beta to be exactly l1 loss.
+        loss = ivy.abs(input - target)
+    else:
+        n = ivy.abs(input - target)
+        cond = n < beta
+        loss = ivy.where(cond, 0.5 * n**2 / beta, n - 0.5 * beta)
+
+    if reduction == "mean":
+        return ivy.mean(loss, out=out)
+    elif reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "none":
+        return ivy.inplace_update(out, loss) if out is not None else loss
