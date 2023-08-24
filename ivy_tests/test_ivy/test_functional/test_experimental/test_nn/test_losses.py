@@ -102,6 +102,8 @@ def test_l1_loss(
 
 
 # smooth_l1_loss
+# all loss functions failing for the paddle backend
+# due to bfloat16 compatibility problem
 @handle_test(
     fn_tree="functional.ivy.experimental.smooth_l1_loss",
     dtype_and_input=helpers.dtype_and_values(
