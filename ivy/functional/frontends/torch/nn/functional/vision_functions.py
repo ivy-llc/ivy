@@ -3,7 +3,7 @@ import math
 
 # local
 import ivy
-from ivy import with_unsupported_dtypes
+from ivy import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.utils.exceptions import IvyNotImplementedException
 
@@ -391,7 +391,7 @@ def bicubic_interp(fx, alpha = -0.75):
     return coeffs
 
 border_clamp = lambda grid, border: ivy.fmin(border, ivy.fmax(grid, 0))
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "float32")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corners=None):
     # Ref:

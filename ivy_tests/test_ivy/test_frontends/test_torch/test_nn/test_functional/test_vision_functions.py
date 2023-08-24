@@ -364,7 +364,7 @@ def test_torch_affine_grid(
 def _grid_sample_helper(draw, dtype, mode, padding_mode):
     dtype = draw(dtype)
     align_corners = draw(st.booleans())
-    dims = draw(helpers.ints(min_value=4, max_value=5))
+    dims = draw(st.integers(4, 5))
     height = draw(helpers.ints(min_value=10, max_value=15))
     width = draw(helpers.ints(min_value=10, max_value=15))
     channels = draw(helpers.ints(min_value=1, max_value=3))
@@ -393,7 +393,7 @@ def _grid_sample_helper(draw, dtype, mode, padding_mode):
                 max_value=1.0,
             )
         )
-    else:
+    elif dims == 5:
         depth = draw(helpers.ints(min_value=10, max_value=15))
         grid_d = draw(helpers.ints(min_value=5, max_value=10))
         x = draw(
@@ -418,8 +418,8 @@ def _grid_sample_helper(draw, dtype, mode, padding_mode):
     fn_tree="torch.nn.functional.grid_sample",
     dtype_x_grid_modes=_grid_sample_helper(
         dtype=helpers.get_dtypes("valid", full=False),
-        mode = ['nearest'],
-        padding_mode = ['border']
+        mode = ['nearest', 'bilinear'],
+        padding_mode = ['border', 'zeros', 'reflection']
     ),
 )
 def test_torch_grid_sample(
