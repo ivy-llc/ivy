@@ -664,3 +664,8 @@ def zeros_initializer(shape, dtype=None, name=None):
     if dtype is None:
         dtype = ivy.default_dtype()
     return ivy.zeros(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def stop_gradient(input, name=None): 
+    return ivy.stop_gradient(input)
