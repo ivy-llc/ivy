@@ -76,6 +76,36 @@ def test_jax_argwhere(
     )
 
 
+# count_nonzero
+@handle_frontend_test(
+    fn_tree="jax.numpy.count_nonzero",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_count_nonzero(
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=None,
+        keepdims=False,
+    )
+
+
 # argsort
 @handle_frontend_test(
     fn_tree="jax.numpy.argsort",

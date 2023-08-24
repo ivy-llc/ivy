@@ -43,6 +43,11 @@ def argwhere(a, /, *, size=None, fill_value=None):
 
 
 @to_ivy_arrays_and_back
+def count_nonzero(a, axis=None, keepdims=False):
+    return ivy.count_nonzero(a, axis=axis, keepdims=keepdims, dtype=ivy.int64)
+
+
+@to_ivy_arrays_and_back
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
         logging.warning(
