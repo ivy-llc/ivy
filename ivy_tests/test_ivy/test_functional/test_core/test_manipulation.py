@@ -343,12 +343,17 @@ def _basic_min_x_max(draw):
     if generate_min:
         min_val = draw( helpers.array_values(dtype=dtype[0], shape=()))
     max_val = draw(
-        st.one_of(
-            st.just(None),
-            helpers.array_values(dtype=dtype[0], shape=()).filter(
-                lambda x: x > min_val
-            ),
-        )
+           if generate_max:
+        scalar = min_val.tolist() if min_val is not None else None
+        max_val = draw(
+                helpers.array_values(dtype=dtype[0], shape=(),min_value=scalar)
+            )
+    if min_val is None and max_val is None:
+        generate_max = draw(st.booleans())
+        if generate_max:
+            max_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
+        else:
+            min_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
     )
     return [dtype], (value[0], min_val, max_val)
 
