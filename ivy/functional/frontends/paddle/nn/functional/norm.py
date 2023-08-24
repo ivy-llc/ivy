@@ -22,7 +22,7 @@ def batch_norm(
     training=False,
     momentum=0.9,
     epsilon=1e-05,
-    data_format="NCHW",
+    data_format="NCS",
     use_global_stats=None,
     name=None,
 ):

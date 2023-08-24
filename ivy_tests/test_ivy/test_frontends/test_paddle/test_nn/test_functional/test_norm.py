@@ -49,7 +49,7 @@ def test_paddle_layer_norm(
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.bach_norm",
     values_tuple=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     eps=st.floats(min_value=0.01, max_value=0.1),
 )
