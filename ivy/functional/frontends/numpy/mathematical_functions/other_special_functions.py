@@ -39,6 +39,4 @@ def unwrap(p, discont=None, axis=-1, *, period=2 * ivy.pi):
 
 @to_ivy_arrays_and_back
 def sinc(x):
-    _x = ivy.asarray(x)
-    pi_x = ivy.pi * ivy.where(_x == 0, 1.0e-20, _x)
-    return ivy.sin(pi_x) / pi_x
+    return ivy.sinc(x)
