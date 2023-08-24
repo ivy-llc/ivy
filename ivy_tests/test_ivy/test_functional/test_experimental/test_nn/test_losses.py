@@ -102,8 +102,8 @@ def test_l1_loss(
 
 
 # smooth_l1_loss
-# all loss functions failing for the paddle backend
-# due to bfloat16 compatibility problem
+# all loss functions failing for paddle backend due to
+# "There is no grad op for inputs:[0] or it's stop_gradient=True."
 @handle_test(
     fn_tree="functional.ivy.experimental.smooth_l1_loss",
     dtype_and_input=helpers.dtype_and_values(
