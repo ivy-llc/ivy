@@ -1,5 +1,6 @@
 # global
 from hypothesis import assume, strategies as st
+#import ivy.numpy as inpv
 import numpy as np
 
 # local
@@ -582,6 +583,11 @@ def test_numpy_modf(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
+    # Create two empty arrays as the 'out' argument
+    out_integer = (np.empty_like(x[0]))
+    out_fraction = (np.empty_like(x[0]))
+    out = (out_integer, out_fraction)
+
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -590,7 +596,7 @@ def test_numpy_modf(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        out=None,
+        out=out,
         where=where,
         casting=casting,
         order="K",

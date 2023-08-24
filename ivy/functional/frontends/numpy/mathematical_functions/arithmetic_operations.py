@@ -306,7 +306,7 @@ def _modf(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-
+    
     integral_part = ivy.floor(x)
     fractional_part = x - integral_part
 
@@ -322,7 +322,7 @@ def _modf(
             fractional_part,
             ivy.default(out, ivy.zeros_like(fractional_part)),
             out=out,
-        )
+            )
 
     return fractional_part, integral_part
 
