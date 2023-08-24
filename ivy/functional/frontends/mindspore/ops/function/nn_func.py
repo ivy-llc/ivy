@@ -215,14 +215,16 @@ def kl_div(logits, labels, reduction="mean"):
     """
     Computes the Kullback-Leibler (KL) Divergence between the logits and the labels.
 
-    Parameters:
+    Parameters
+    ----------
         logits (numpy array): The input logits array.
         labels (numpy array): The label array which has the same shape as logits.
         reduction (str): Specifies the reduction to be applied to the output.
                          Its value must be one of 'none', 'mean', 'batchmean',
                          or 'sum'. Default: 'mean'.
 
-    Returns:
+    Returns
+    -------
         float or numpy array: If reduction is 'none', then output is
         a numpy array and has the same shape as logits.
                               Otherwise, it is a scalar (float).
@@ -296,6 +298,25 @@ def interpolate(
         align_corners=align_corners,
         recompute_scale_factor=recompute_scale_factor,
     )
+
+
+@with_supported_dtypes(
+    {
+        "2.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def hardswish(x):
+    return ivy.hardswish(x)
 
 
 @with_supported_dtypes(
