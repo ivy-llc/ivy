@@ -103,7 +103,6 @@ def indices(dimensions, dtype=int, sparse=False):
 
 @to_ivy_arrays_and_back
 def choose(arr, choices, out=None, mode="raise"):
-    """jax.numpy.choose(arr, choices, out=None, mode='raise')"""
     return ivy.choose(arr, choices, out=out, mode=mode)
 
 
@@ -188,8 +187,6 @@ class _AxisConcat(abc.ABC):
 
 
 class RClass(_AxisConcat):
-    """RClass represents"""
-
     axis = 0
     ndmin = 1
     trans1d = -1
