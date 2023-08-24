@@ -667,5 +667,5 @@ def zeros_initializer(shape, dtype=None, name=None):
 
 
 @to_ivy_arrays_and_back
-def stop_gradient(input, name=None): 
+def stop_gradient(input, name=None):
     return ivy.stop_gradient(input)
