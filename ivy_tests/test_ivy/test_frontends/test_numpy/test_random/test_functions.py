@@ -920,6 +920,53 @@ def test_numpy_pareto(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.wald",
+    input_dtypes=helpers.get_dtypes("float"),
+    mean=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+        max_value=1000,
+    ),
+    scale=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+        max_value=1000,
+    ),
+    size=helpers.get_shape(allow_none=False),
+)
+def test_numpy_wald(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    mean,
+    scale,
+):
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mean=mean,
+        scale=scale,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.triangular",
     input_dtypes=helpers.get_dtypes("float"),
     left=st.floats(

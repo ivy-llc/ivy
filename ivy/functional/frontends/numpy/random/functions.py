@@ -221,6 +221,25 @@ def pareto(a, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def wald(mean, scale, size=None):
+    if size is None:
+        size = 1
+    mu_2l = mean / (2 * scale)
+    Y = ivy.random_normal(mean=0, std=1, shape=size, dtype="float64")
+    U = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+
+    Y = mean * ivy.square(Y)
+    X = mean + mu_2l * (Y - ivy.sqrt(((4 * scale) * Y) + ivy.square(Y)))
+
+    condition = U <= mean / (mean + X)
+    value1 = X
+    value2 = mean * mean / X
+
+    return ivy.where(condition, value1, value2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def triangular(left, mode, right, size=None):
     if left > mode or mode > right or left == right:
         raise ivy.utils.exceptions.IvyValueError(
