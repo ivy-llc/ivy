@@ -49,21 +49,25 @@ The following is the recommended order to follow :
 
 #.  :code:`@handle_complex_input`
 #.  :code:`@infer_device`
+#.  :code:`@handle_device_shifting`
 #.  :code:`@infer_dtype`
 #.  :code:`@handle_array_function`
 #.  :code:`@outputs_to_ivy_arrays`
+#.  :code:`@outputs_to_ivy_shapes`
 #.  :code:`@outputs_to_native_arrays`
 #.  :code:`@inputs_to_native_arrays`
+#.  :code:`@inputs_to_native_shapes`
 #.  :code:`@inputs_to_ivy_arrays`
 #.  :code:`@handle_out_argument`
 #.  :code:`@handle_view_indexing`
 #.  :code:`@handle_view`
 #.  :code:`@handle_array_like_without_promotion`
+#.  :code:`@handle_partial_mixed_function`
 #.  :code:`@handle_nestable`
+#.  :code:`@handle_ragged`
+#.  :code:`@handle_backend_invalid`
 #.  :code:`@handle_exceptions`
-#.  :code:`@with_unsupported_dtypes`
 #.  :code:`@handle_nans`
-#.  :code:`@handle_mixed_function`
 
 This recommended order is followed to ensure that tests are efficient and accurate. It is important to follow this order because the decorators depend on each other. For example, the :code:`@infer_device` decorator needs to be applied before the :code:`@infer_dtype` decorator, because the :code:`@infer_dtype` decorator needs to know the device of the function in order to infer the data type.
 
