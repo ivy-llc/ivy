@@ -307,6 +307,36 @@ def test_torch_isinf(
     )
 
 
+# isreal
+@handle_frontend_test(
+    fn_tree="torch.isreal",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
+    ),
+)
+def test_torch_isreal(
+    *,
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+    )
+
+
 # isposinf
 @handle_frontend_test(
     fn_tree="torch.isposinf",

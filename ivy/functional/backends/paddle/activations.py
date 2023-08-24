@@ -58,6 +58,9 @@ def leaky_relu(
     return F.leaky_relu(x, negative_slope=alpha)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex128", "complex64")}}, backend_version
+)
 def gelu(
     x: paddle.Tensor,
     /,
@@ -118,6 +121,7 @@ def softplus(
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
+    complex_mode="jax",
 ) -> paddle.Tensor:
     if beta is not None and beta != 1:
         x_beta = x * beta
