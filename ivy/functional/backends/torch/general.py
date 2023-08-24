@@ -92,8 +92,6 @@ def get_item(
     *,
     copy: bool = None,
 ) -> torch.Tensor:
-    if copy:
-        return x.__getitem__(query).clone()
     return x.__getitem__(query)
 
 
@@ -108,7 +106,7 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> torch.Tensor:
-    if x.dtype != val.dtype:
+    if hasattr(x, "dtype") and hasattr(val, "dtype") and x.dtype != val.dtype:
         val = val.to(x.dtype)
     if copy:
         x = x.clone()

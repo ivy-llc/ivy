@@ -132,6 +132,7 @@ def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_dev
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
+        tolerance_dict={"bfloat16": 1e-1},
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
@@ -347,11 +348,10 @@ def test_einsum(
 ):
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
-    i = 0
     # x_dtype = np.dtype(dtype[0])
-    for x_ in operands:
-        kw["x{}".format(i)] = x_.astype(dtypes[i])
-        i += 1
+    for i, x_ in enumerate(operands):
+        dtype = dtypes[i][0]
+        kw["x{}".format(i)] = np.array(x_).astype(dtype)
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_function(

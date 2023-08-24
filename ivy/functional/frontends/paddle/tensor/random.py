@@ -8,7 +8,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64")},
+    {"2.5.1 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -22,7 +22,7 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64")},
+    {"2.5.1 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -32,7 +32,7 @@ def poisson(x, name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and above": {
+        "2.5.1 and above": {
             "cpu": (
                 "bfloat16",
                 "float32",
@@ -73,7 +73,7 @@ def randn(shape, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64")},
+    {"2.5.1 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -85,7 +85,7 @@ def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64")},
+    {"2.5.1 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -94,12 +94,12 @@ def standard_normal(shape, dtype=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.0 and below": ("int16", "float16", "bfloat16", "uint8")},
+    {"2.5.1 and below": ("int16", "float16", "bfloat16", "uint8")},
     "paddle",
 )
 @to_ivy_arrays_and_back
 def randint_like(x, low=0, high=None, dtype=None, name=None):
-    if high == None:
+    if high is None:
         high = low
         low = 0
         if high <= 0:

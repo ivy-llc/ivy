@@ -624,8 +624,8 @@ def test_nanmedian(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         atol_=1e-02,
-        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         a=x[0],

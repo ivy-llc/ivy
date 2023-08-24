@@ -10,22 +10,20 @@ Exchange Formats
 .. _`Khronos Group`: https://www.khronos.org/
 .. _`Apple`: https://www.apple.com/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
-.. |onnx| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/onnx.png
+.. |onnx| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/onnx.png
     :height: 20pt
     :class: dark-light
-.. |nnef| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/nnef.png
+.. |nnef| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/nnef.png
     :height: 15pt
     :class: dark-light
-.. |coreml| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/coreml.png
+.. |coreml| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/coreml.png
     :height: 20pt
     :class: dark-light
 
 Neural network exchange formats define a standardized file representation specifically for neural networks.
 The idea is that these can be used as an intermediate representation for communicating or “exchanging” neural network architectures between different ML frameworks or between ML frameworks and the target hardware.
-The focus is generally on simplifying deployment of neural networks, with a typical workflow being: train the model, save in an exchange format, use this exchange format to communicate with the target compilers and hardware for model inference.
+The focus is generally on simplifying the deployment of neural networks, with a typical workflow being: train the model, save in an exchange format, and use this exchange format to communicate with the target compilers and hardware for model inference.
 
 ONNX |onnx|
 -----------
@@ -44,9 +42,5 @@ Overall, NNEF shares a lot of similarities with ONNX, but has not reached the sa
 CoreML |coreml|
 ---------------
 `CoreML`_ itself is not an exchange format, it is a framework which enables models to be trained and deployed on `Apple`_ devices with a simple zero-code interactive interface.
-However, CoreML is built upon its own Core ML format, and Apple have open sourced :code:`coremltools`, which provides a set of tools to convert ML models from various frameworks into the Core ML format.
+However, CoreML is built upon its own Core ML format, and Apple has open sourced :code:`coremltools`, which provides a set of tools to convert ML models from various frameworks into the Core ML format.
 The Core ML format is itself an exchange format, albeit with the sole purpose of exchanging to Apple’s CoreML framework, rather than enabling exchanges between multiple different parties as is the case for the other exchange formats.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!

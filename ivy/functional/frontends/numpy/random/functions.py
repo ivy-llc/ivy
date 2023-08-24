@@ -187,6 +187,17 @@ def gumbel(loc=0.0, scale=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def f(dfn, dfd, size=None):
+    # Generate samples from the uniform distribution
+    x1 = ivy.gamma(ivy.to_scalar(ivy.divide(dfn, 2)), 2.0, shape=size, dtype="float64")
+    x2 = ivy.gamma(ivy.to_scalar(ivy.divide(dfd, 2)), 2.0, shape=size, dtype="float64")
+    # Calculate the F-distributed samples
+    samples = ivy.divide(ivy.divide(x1, ivy.array(dfn)), ivy.divide(x2, ivy.array(dfd)))
+    return samples
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def gamma(shape, scale=1.0, size=None):
     return ivy.gamma(shape, scale, shape=size, dtype="float64")
 
@@ -197,3 +208,47 @@ def logistic(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     x = loc + scale * ivy.log(u / (1 - u))
     return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def pareto(a, size=None):
+    if a < 0:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    return ivy.pow(1 / (1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def wald(mean, scale, size=None):
+    if size is None:
+        size = 1
+    mu_2l = mean / (2 * scale)
+    Y = ivy.random_normal(mean=0, std=1, shape=size, dtype="float64")
+    U = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+
+    Y = mean * ivy.square(Y)
+    X = mean + mu_2l * (Y - ivy.sqrt(((4 * scale) * Y) + ivy.square(Y)))
+
+    condition = U <= mean / (mean + X)
+    value1 = X
+    value2 = mean * mean / X
+
+    return ivy.where(condition, value1, value2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def triangular(left, mode, right, size=None):
+    if left > mode or mode > right or left == right:
+        raise ivy.utils.exceptions.IvyValueError(
+            "left < mode < right is not being followed"
+        )
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    condition = u <= (mode - left) / (right - left)
+    values1 = left + (right - left) * (u * (mode - left) / (right - left)) ** 0.5
+    values2 = (
+        right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
+    )
+    return ivy.where(condition, values1, values2)
