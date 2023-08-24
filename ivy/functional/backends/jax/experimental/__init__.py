@@ -14,6 +14,7 @@ from .general import *
 from .gradients import *
 from .layers import *
 from .linear_algebra import *
+from .losses import *
 from .manipulation import *
 from .norms import *
 from .random import *
@@ -23,6 +24,7 @@ from .sorting import *
 from .sparse_array import *
 from .statistical import *
 from .utility import *
+
 
 del (
     activations,
@@ -35,6 +37,7 @@ del (
     gradients,
     layers,
     linear_algebra,
+    losses,
     manipulation,
     norms,
     random,

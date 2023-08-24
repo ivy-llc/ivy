@@ -151,3 +151,49 @@ def test_smooth_l1_loss(
         beta=beta,
         reduction=reduction,
     )
+
+
+# poisson_nll_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.poisson_nll_loss",
+    dtype_input_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_dim_size=1,
+        min_num_dims=1,
+        min_value=2,
+        max_value=1e04,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    log_input=st.booleans(),
+    full=st.booleans(),
+    epsilon=st.sampled_from([1e-8, 1e-5, 1e-3]),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_poisson_nll_loss(
+    dtype_input_target,
+    log_input,
+    full,
+    epsilon,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, inputs = dtype_input_target
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=inputs[0],
+        target=inputs[1],
+        log_input=log_input,
+        full=full,
+        eps=epsilon,
+        reduction=reduction,
+    )
