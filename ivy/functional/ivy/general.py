@@ -2761,10 +2761,8 @@ def get_item(
     copy
         boolean indicating whether to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -2803,8 +2801,6 @@ def get_item(
             )
         ret = ivy.gather_nd(x, query)
         ret = ivy.reshape(ret, target_shape) if target_shape != list(ret.shape) else ret
-    if copy:
-        return ivy.copy_array(ret)
     return ret
 
 
@@ -2820,7 +2816,6 @@ get_item.mixed_backend_wrappers = {
 
 @handle_nestable
 @handle_partial_mixed_function
-@handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
 def set_item(
@@ -2944,9 +2939,7 @@ def _parse_query(query, x_shape, scatter=False):
 
     # convert slices to range arrays
     query = [
-        _parse_slice(q, x_shape[i]).astype(ivy.int64)
-        if isinstance(q, slice)
-        else q
+        _parse_slice(q, x_shape[i]).astype(ivy.int64) if isinstance(q, slice) else q
         for i, q in enumerate(query)
     ]
 
@@ -2995,13 +2988,13 @@ def _parse_query(query, x_shape, scatter=False):
             for arr in array_queries
         ]
         array_queries = ivy.stack(array_queries, axis=1)
-    if len(array_inds) == len(query):   # advanced indexing
+    if len(array_inds) == len(query):  # advanced indexing
         indices = array_queries.reshape((*target_shape, len(x_shape)))
-    elif len(array_inds) == 0:   # basic indexing
+    elif len(array_inds) == 0:  # basic indexing
         indices = ivy.stack(ivy.meshgrid(*query, indexing="ij"), axis=-1).reshape(
             (*target_shape, len(x_shape))
         )
-    else:   # mixed indexing
+    else:  # mixed indexing
         if to_front:
             post_array_queries = (
                 ivy.stack(
@@ -3017,7 +3010,9 @@ def _parse_query(query, x_shape, scatter=False):
             indices = ivy.array(
                 [
                     (*arr, *post)
-                    for arr, post in itertools.product(array_queries, post_array_queries)
+                    for arr, post in itertools.product(
+                        array_queries, post_array_queries
+                    )
                 ]
             ).reshape((*target_shape, len(x_shape)))
         else:
