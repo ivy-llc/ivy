@@ -147,13 +147,13 @@ def adjust_brightness(img, brightness_factor):
 @with_unsupported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
-def normalize(img, mean, std, data_format='CHW', to_rgb=False):
+def normalize(img, mean, std, data_format="CHW", to_rgb=False):
     if ivy.is_array(img):
         # Convert Ivy array to numpy array
         img_np = ivy.to_numpy(img)
         
         # Transpose the image if data_format is 'HWC'
-        if data_format == 'HWC':
+        if data_format == "HWC":
             img_np = np.transpose(img_np, (2, 0, 1))
         
         # Apply normalization manually
