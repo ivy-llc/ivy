@@ -723,3 +723,6 @@ class ndarray:
 
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
+
+    def round(self, decimals=0, out=None):
+        return np_frontend.round(self, decimals=decimals, out=out)
