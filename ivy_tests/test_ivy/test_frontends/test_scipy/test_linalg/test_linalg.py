@@ -280,7 +280,6 @@ def test_scipy_kron(dtype_and_x, frontend, test_flags, fn_tree, on_device, backe
 
 
 # eigh_tridiagonal
-
 @handle_frontend_test(
     fn_tree="scipy.linalg.eigh_tridiagonal",
     all_args=_generate_eigh_tridiagonal_args(),
@@ -312,7 +311,6 @@ def test_scipy_eigh_tridiagonal(
 
 
 # norm
-
 @handle_frontend_test(
     fn_tree="scipy.linalg.norm",
     dtype_values=_norm_helper(),
