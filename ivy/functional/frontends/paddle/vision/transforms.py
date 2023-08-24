@@ -163,7 +163,7 @@ def vflip(img, data_format="CHW"):
 
 
 @with_unsupported_device_and_dtypes(
-   {"2.5.1 and below": ("float16", "float32", "int16", "int8", "uint8")}, "paddle"
+    {"2.5.1 and below": ("float16", "float32", "int16", "int8", "uint8")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def crop(img, top, left, height, width):
