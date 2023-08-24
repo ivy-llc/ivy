@@ -220,7 +220,9 @@ def moveaxis(x, source, destination):
 
     # Ensure the length of source and destination are the same
     if len(source) != len(destination):
-        raise ValueError("The number of source axes must match the number of destination axes.")
+        raise ValueError(
+            "The number of source axes must match the number of destination axes."
+        )
 
     # Compute the new order of axes
     order = [i for i in range(len(x.shape)) if i not in source]
