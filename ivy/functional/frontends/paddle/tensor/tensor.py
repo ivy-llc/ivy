@@ -145,6 +145,11 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sqrt(self, name=None):
         return paddle_frontend.Tensor(ivy.sqrt(self._ivy_array))
+    
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def sqrt_(self, name=None):
+        self.ivy_array = self.sqrt().ivy_array
+        return self
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cos(self, name=None):
