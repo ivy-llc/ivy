@@ -213,13 +213,19 @@ def logistic(loc=0.0, scale=1.0, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def choice(a, size=None, replace=True, p=None):
-    if size is None or len(size) == 0:
-        size = 1
-    else:
-        size = size[0]  # ivy.multinomial takes size as an int
+    sc_size = 1
+    if isinstance(size, int):
+        sc_size = size
+    elif size is not None:
+        #  If the given shape is, e.g., (m, n, k)
+        #  then m * n * k samples are drawn. As per numpy docs
+        sc_size = 1
+        for s in size:
+            if s is not None:
+                sc_size *= s
     if isinstance(a, int):
         a = ivy.arange(a)
-    index = ivy.multinomial(len(a), size, replace=replace, probs=p)
+    index = ivy.multinomial(len(a), sc_size, replace=replace, probs=p)
     return a[index]
 
 
