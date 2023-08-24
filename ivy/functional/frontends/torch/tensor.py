@@ -1839,7 +1839,6 @@ class Tensor:
                 to = ivy.finfo(self.dtype).max
             else:
                 to = ivy.iinfo(self.dtype).max
-        low = 0
         self.ivy_array = ivy.random_uniform(
             low=from_, high=to, shape=self.size(), dtype=self.dtype
         )
