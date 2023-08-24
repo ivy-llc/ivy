@@ -1,9 +1,10 @@
+import tensorflow as tf
 from ivy_tests.frontend_helpers import handle_frontend_test
 import ivy_tests.test_ivy.helpers as helpers
 import hypothesis.strategies as st
 
 @handle_frontend_test(
-    fn_tree="ivy.sets.intersection",
+    fn_tree="tf.sets.intersection",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float")
     ),
