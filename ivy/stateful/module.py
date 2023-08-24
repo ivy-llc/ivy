@@ -824,7 +824,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             self.training = mode
         for module in self.v:
             module = getattr(self, module, None)
-            if module:
+            if isinstance(module, ivy.Module):
                 module.eval(mode=mode)
 
     def __repr__(self):
