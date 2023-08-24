@@ -144,30 +144,21 @@ def adjust_brightness(img, brightness_factor):
     extreme_target = ivy.zeros_like(img)
     return _blend_images(img, extreme_target, brightness_factor)
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 def normalize(img, mean, std, data_format="CHW", to_rgb=False):
     if ivy.is_array(img):
-        # Convert Ivy array to numpy array
-        img_np = ivy.to_numpy(img)
-        
-        # Transpose the image if data_format is 'HWC'
         if data_format == "HWC":
-            img_np = np.transpose(img_np, (2, 0, 1))
-        
-        # Apply normalization manually
-        normalized_img = (img_np - mean) / std
-        
-        # Convert back to Ivy array
-        normalized_ivy_array = ivy.array(normalized_img)
-        return normalized_ivy_array
-    elif isinstance(img, Image.Image):
-        # Convert image to Ivy array
-        img_array = np.array(img)
-        normalized_img_array = (img_array - mean) / std
-        normalized_ivy_array = ivy.array(normalized_img_array)
-        return normalized_ivy_array
+            permuted_axes = [2, 0, 1]
+        else:
+            permuted_axes = [0, 1, 2]
+
+        img_np = ivy.permute(img, permuted_axes)
+
+        normalized_img = ivy.divide(ivy.subtract(img_np, mean), std)
+
+        return normalized_img
     else:
         raise ValueError("Unsupported input format")
 
