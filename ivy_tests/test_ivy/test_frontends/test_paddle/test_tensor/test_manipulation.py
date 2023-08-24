@@ -718,6 +718,34 @@ def test_paddle_take_along_axis(
     )
 
 
+# moveaxis
+@handle_frontend_test(
+    fn_tree="paddle.moveaxis",
+    dtype_x_source_destination=_moveaxis_helper(),
+)
+def test_paddle_moveaxis(
+    *,
+    dtype_x_source_destination,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, source, destination = dtype_x_source_destination
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        source=source,
+        destination=destination,
+    )
+    
+
 # rot90
 @handle_frontend_test(
     fn_tree="paddle.rot90",
