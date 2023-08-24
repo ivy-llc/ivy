@@ -373,3 +373,117 @@ def test_tensorflow_gamma(
         seed=seed,
         test_values=False,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_binomial",
+    output_dtype=helpers.array_dtypes(
+        available_dtypes=("float32", "float64"),
+    ),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    counts=st.one_of(
+        helpers.ints(allow_inf=False, allow_nan=False, min_value=-2, max_value=5),
+        helpers.lists(
+            x=helpers.floats(
+                allow_nan=False, allow_inf=False, min_value=-2, max_value=5
+            ),
+            min_size=1,
+            max_size=10,
+        ),
+    ),
+    probs=st.one_of(
+        helpers.floats(allow_inf=False, allow_nan=False, min_value=-2, max_value=5),
+        helpers.lists(
+            x=helpers.floats(
+                allow_nan=False, allow_inf=False, min_value=-2, max_value=5
+            ),
+            min_size=1,
+            max_size=10,
+        ),
+    ),
+    seed=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_stateless_binomial(
+    frontend,
+    fn_tree,
+    on_device,
+    counts,
+    probs,
+    seed,
+    output_dtype,
+    shape,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, seed = seed
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        counts=counts,
+        probs=probs,
+        dtype=output_dtype[0],
+        seed=seed[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_gamma",
+    dtype=helpers.array_dtypes(
+        available_dtypes=("float32", "float64"),
+    ),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    alpha=st.floats(
+        allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=3
+    ),
+    beta=st.floats(
+        allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=3
+    ),
+    seed=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_stateless_gamma(
+    frontend,
+    fn_tree,
+    on_device,
+    shape,
+    alpha,
+    beta,
+    dtype,
+    seed,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, seed = seed
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        alpha=alpha,
+        beta=beta,
+        dtype=dtype[0],
+        seed=seed[0],
+    )
