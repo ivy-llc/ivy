@@ -27,11 +27,6 @@ def _as_varaible_strategy(draw):
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
 
-@st.composite
-def _compile_strategy(draw):
-    draw(st.booleans())
-
-
 BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltAsVariableStrategy = _as_varaible_strategy()
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
@@ -39,7 +34,7 @@ BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
-BuiltCompileStrategy = _compile_strategy()
+BuiltCompileStrategy = st.just(False)
 BuiltFrontendArrayStrategy = st.booleans()
 
 
@@ -165,6 +160,7 @@ class FrontendFunctionTestFlags(TestFlags):
         inplace,
         as_variable,
         native_arrays,
+        test_compile,
         generate_frontend_arrays,
     ):
         self.num_positional_args = num_positional_args
@@ -172,6 +168,7 @@ class FrontendFunctionTestFlags(TestFlags):
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.test_compile = test_compile
         self.generate_frontend_arrays = generate_frontend_arrays
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
@@ -193,6 +190,7 @@ class FrontendFunctionTestFlags(TestFlags):
             f"inplace={self.inplace}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"test_compile={self.test_compile}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
         )
 
@@ -209,6 +207,7 @@ def frontend_function_flags(
     inplace,
     as_variable,
     native_arrays,
+    test_compile,
     generate_frontend_arrays,
 ):
     return draw(
@@ -219,6 +218,7 @@ def frontend_function_flags(
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
         )
     )
@@ -336,15 +336,11 @@ def method_flags(
 
 
 class FrontendMethodTestFlags(TestFlags):
-    def __init__(
-        self,
-        num_positional_args,
-        as_variable,
-        native_arrays,
-    ):
+    def __init__(self, num_positional_args, as_variable, native_arrays, test_compile):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.test_compile = test_compile
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
@@ -363,6 +359,7 @@ class FrontendMethodTestFlags(TestFlags):
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"test_compile={self.test_compile}."
         )
 
     def __repr__(self):
@@ -376,6 +373,7 @@ def frontend_method_flags(
     num_positional_args,
     as_variable,
     native_arrays,
+    test_compile,
 ):
     return draw(
         st.builds(
@@ -383,5 +381,6 @@ def frontend_method_flags(
             num_positional_args=num_positional_args,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            test_compile=test_compile,
         )
     )
