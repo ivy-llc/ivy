@@ -83,3 +83,28 @@ def stateless_poisson(shape, seed, lam, dtype=ivy.int32, name=None):
 @to_ivy_arrays_and_back
 def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
     return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)
+
+
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def stateless_binomial(counts, probs, seed, output_dtype=ivy.int32, shape=None, name=None):
+    if any(p < 0 or p > 1 for p in probs):
+        raise ValueError("p must be in the interval (0, 1)")
+    if any(c < 0 for c in counts):
+        raise ValueError("n must be strictly positive")
+    if shape is None:
+        raise ValueError("missing shape argument")
+    if isinstance(shape, int):
+        shape = (shape,)
+    lambda_ = ivy.multiply(counts, probs)
+    return ivy.poisson(lam=lambda_, shape=shape, seed=seed[0] + seed[1], dtype=output_dtype)
+
+
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def stateless_gamma(shape, seed, alpha, beta=None, dtype=ivy.float32, name=None):
+    return ivy.gamma(shape=shape, seed=seed[0] + seed[1], alpha=alpha, beta=beta, dtype=dtype)
