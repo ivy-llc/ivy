@@ -166,6 +166,71 @@ def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
 
+  @with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def moveaxis(x, source, destination):
+    """
+    Move the specified axis from `source` to `destination` in the input array.
+    Parameters:
+    - x (array): The input array.
+    - source (int or list of ints): The source axis or axes to move.
+    - destination (int or list of ints): The destination axis or axes.
+    Returns:
+    - array: The resulting array with the specified axis moved.
+    Example:
+    ```python
+    import ivy
+    # Create a 2D array
+    arr = ivy.array([[1, 2], [3, 4]])
+    # Move the first axis (axis 0) to the second position
+    result = ivy.moveaxis(arr, source=0, destination=1)
+    # Resulting array:
+    # array([[1, 3],
+    #        [2, 4]])
+    ```
+    Example with multiple axes:
+    ```python
+    import ivy
+    # Create a 3D array
+    arr = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    # Move axes 0 and 2 to positions 1 and 0, respectively
+    result = ivy.moveaxis(arr, source=[0, 2], destination=[1, 0])
+    # Resulting array:
+    # array([[[1, 5],
+    #         [3, 7]],
+    #        [[2, 6],
+    #         [4, 8]]])
+    ```
+    """
+    # Convert source and destination to lists if they are ints
+    if isinstance(source, int):
+        source = [source]
+    if isinstance(destination, int):
+        destination = [destination]
+
+    # Ensure the length of source and destination are the same
+    if len(source) != len(destination):
+        raise ValueError("The number of source axes must match the number of destination axes.")
+
+    # Compute the new order of axes
+    order = [i for i in range(len(x.shape)) if i not in source]
+    for dest, src in sorted(zip(destination, source)):
+        order.insert(dest, src)
+
+    # Transpose the tensor to achieve the desired axes order
+    return ivy.transpose(x, order)
+
+
 @with_supported_device_and_dtypes(
     {
         "2.5.1 and above": {
