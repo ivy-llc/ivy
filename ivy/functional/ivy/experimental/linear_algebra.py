@@ -1652,7 +1652,7 @@ def dot(
 
     >>> a = ivy.array([[1, 2], [3, 4]])
     >>> b = ivy.array([[5, 6], [7, 8]])
-    >>> c = ivy.empty_like(d)
+    >>> c = ivy.empty_like(a)
     >>> ivy.dot(a, b, out=c)
     >>> print(c)
     ivy.array([[19, 22],
