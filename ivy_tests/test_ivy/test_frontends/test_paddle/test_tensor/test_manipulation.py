@@ -682,6 +682,34 @@ def test_paddle_roll(
     )
 
 
+# tolist
+@handle_frontend_test(
+    fn_tree="paddle.tensor.manipulation.tolist",
+    dtype_and_input_and_label=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1  
+    ),
+)
+def test_paddle_tolist(
+    *,
+    dtype_and_input_and_label,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes, (input_data,) = dtype_and_input_and_label  
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=input_data
+    )
+
+
+
 # take_along_axis
 @handle_frontend_test(
     fn_tree="paddle.take_along_axis",
@@ -716,7 +744,6 @@ def test_paddle_take_along_axis(
         indices=indices,
         axis=axis,
     )
-
 
 # rot90
 @handle_frontend_test(
