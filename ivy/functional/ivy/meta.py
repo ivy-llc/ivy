@@ -1,11 +1,25 @@
 # global
 import ivy
-from ivy.func_wrapper import handle_array_function
+from ivy.func_wrapper import handle_array_function, decorate
 from ivy.functional.ivy.gradients import gradient_descent_update
 from ivy.utils.exceptions import handle_exceptions
 
 # local
 from typing import Optional, Union, Callable, Tuple, Any
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_exceptions,
+    handle_array_function,
+}
+
+_decorators_per_function = {
+    frozenset({"reptile_step", "maml_step", "fomaml_step"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 # Extra #
 # ------#
@@ -405,8 +419,7 @@ def _train_tasks(
 # First Order
 
 
-@handle_exceptions
-@handle_array_function
+@decorate(*decorators)
 def fomaml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,
@@ -529,8 +542,7 @@ def fomaml_step(
 fomaml_step.computes_gradients = True
 
 
-@handle_exceptions
-@handle_array_function
+@decorate(*decorators)
 def reptile_step(
     batch: ivy.Container,
     cost_fn: Callable,
@@ -671,8 +683,7 @@ reptile_step.computes_gradients = True
 # Second Order
 
 
-@handle_exceptions
-@handle_array_function
+@decorate(*decorators)
 def maml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,

@@ -15,9 +15,42 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.backend import backend_stack
 from ivy.utils.exceptions import handle_exceptions
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_exceptions,
+    handle_nestable,
+    to_native_arrays_and_back,
+    handle_device_shifting,
+    handle_out_argument,
+    handle_array_function,
+    handle_backend_invalid,
+}
+
+_decorators_per_function = {
+    frozenset({"random_uniform", "random_normal"}): {
+        inputs_to_native_shapes,
+        infer_dtype,
+        infer_device,
+    },
+    frozenset({"multinomial"}): {
+        infer_device,
+    },
+    frozenset({"randint"}): {
+        inputs_to_native_shapes,
+        infer_device,
+    },
+    frozenset({"seed"}): set(),
+    frozenset({"shuffle"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -88,16 +121,7 @@ def _check_shapes_broadcastable(out, inp):
 # ------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -206,16 +230,7 @@ def random_uniform(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@infer_dtype
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -320,14 +335,7 @@ def random_normal(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -431,15 +439,7 @@ def multinomial(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-@infer_device
+@decorate(*decorators)
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -512,8 +512,13 @@ def randint(
     )
 
 
-@handle_exceptions
-@handle_nestable
+@decorate(
+    {
+        handle_exceptions,
+        handle_nestable,
+    },
+    _decorators_per_function,
+)
 def seed(*, seed_value: int = 0) -> None:
     """
     Set the seed for random number generation.
@@ -531,13 +536,7 @@ def seed(*, seed_value: int = 0) -> None:
     return ivy.current_backend().seed(seed_value=seed_value)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = 0,

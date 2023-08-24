@@ -9,19 +9,27 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_function,
     inputs_to_ivy_arrays,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
+_main_decorators = {
+    handle_exceptions,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
+    handle_array_function,
+}
+
+_decorators_per_function = {frozenset({"layer_norm"}): set()}
+
+decorators = _main_decorators, _decorators_per_function
 
 # Extra #
 # ------#
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],

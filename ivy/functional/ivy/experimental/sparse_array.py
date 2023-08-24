@@ -1,7 +1,24 @@
 # local
 import ivy
-from ivy.func_wrapper import inputs_to_native_arrays
+from ivy.func_wrapper import inputs_to_native_arrays, decorate
 from ivy.utils.exceptions import handle_exceptions
+
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_exceptions,
+}
+
+_decorators_per_function = {
+    frozenset({"is_native_sparse_array", "native_sparse_array"}): {
+        inputs_to_native_arrays,
+    },
+    frozenset({"native_sparse_array_to_indices_values_and_shape"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # helpers
@@ -790,14 +807,12 @@ def is_ivy_sparse_array(x):
     return isinstance(x, ivy.SparseArray)
 
 
-@handle_exceptions
-@inputs_to_native_arrays
+@decorate(*decorators)
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
 
 
-@handle_exceptions
-@inputs_to_native_arrays
+@decorate(*decorators)
 def native_sparse_array(
     data=None,
     *,
@@ -823,6 +838,6 @@ def native_sparse_array(
     )
 
 
-@handle_exceptions
+@decorate(*decorators)
 def native_sparse_array_to_indices_values_and_shape(x):
     return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)

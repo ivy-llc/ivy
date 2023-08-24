@@ -11,21 +11,37 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_array_function,
+    to_native_arrays_and_back,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
+    handle_exceptions,
+}
+
+_decorators_per_function = {
+    frozenset({"unique_all", "unique_inverse", "unique_counts"}): set(),
+    frozenset({"unique_values"}): {handle_out_argument},
+}
+
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # Array API Standard #
 # -------------------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -148,13 +164,7 @@ def unique_all(
     return ivy.current_backend(x).unique_all(x, axis=axis, by_value=by_value)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -256,14 +266,7 @@ def unique_inverse(
     return ivy.current_backend(x).unique_inverse(x)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -350,13 +353,7 @@ def unique_values(
     return ivy.current_backend(x).unique_values(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

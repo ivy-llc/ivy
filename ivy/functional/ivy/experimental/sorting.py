@@ -9,15 +9,33 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@to_native_arrays_and_back
-@handle_device_shifting
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_exceptions,
+    handle_nestable,
+    handle_backend_invalid,
+    to_native_arrays_and_back,
+    handle_device_shifting,
+}
+
+_decorators_per_function = {
+    frozenset({"invert_permutation"}): set(),
+    frozenset({"lexsort"}): {
+        handle_out_argument,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def invert_permutation(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -49,12 +67,7 @@ def invert_permutation(
 # -------------------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,

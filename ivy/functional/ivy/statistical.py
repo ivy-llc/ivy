@@ -12,9 +12,32 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_array_function,
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
+}
+
+_decorators_per_function = {
+    frozenset({"min"}): set(),
+    frozenset(
+        {"std", "prod", "cumprod", "sum", "cumsum", "einsum", "var", "mean", "max"}
+    ): {handle_exceptions},
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 # Helpers #
 # --------#
@@ -35,13 +58,7 @@ def _get_promoted_type_of_operands(operands):
 # -------------------#
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -143,14 +160,7 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -254,14 +264,7 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -366,14 +369,7 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -502,14 +498,7 @@ def prod(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -641,14 +630,7 @@ def std(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -782,14 +764,7 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -899,14 +874,7 @@ def var(
 # ------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1044,14 +1012,7 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1182,14 +1143,7 @@ def cumprod(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

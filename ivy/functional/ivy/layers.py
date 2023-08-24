@@ -17,8 +17,92 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_array_function,
+}
+
+_decorators_per_function = {
+    frozenset({"dropout", "linear"}): {
+        handle_partial_mixed_function,
+        handle_array_like_without_promotion,
+        handle_array_function,
+        handle_nestable,
+        handle_exceptions,
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"scaled_dot_product_attention"}): {
+        handle_array_like_without_promotion,
+        handle_array_function,
+        handle_exceptions,
+    },
+    frozenset({"multi_head_attention"}): {
+        handle_out_argument,
+        handle_array_function,
+        handle_nestable,
+        handle_exceptions,
+        inputs_to_ivy_arrays,
+    },
+    frozenset({"conv1d", "depthwise_conv2d", "conv3d", "conv_general_dilated"}): {
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_array_function,
+        handle_backend_invalid,
+        to_native_arrays_and_back,
+        handle_nestable,
+        handle_exceptions,
+    },
+    frozenset(
+        {
+            "conv_general_transpose",
+            "conv3d_transpose",
+            "conv2d_transpose",
+            "conv1d_transpose",
+        }
+    ): {
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_array_function,
+        handle_backend_invalid,
+        to_native_arrays_and_back,
+        handle_nestable,
+        handle_exceptions,
+        inputs_to_native_shapes,
+    },
+    frozenset({"conv2d"}): {
+        to_native_arrays_and_back,
+        handle_device_shifting,
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_array_function,
+        handle_nestable,
+        handle_backend_invalid,
+    },
+    frozenset({"conv"}): {
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_array_function,
+        handle_exceptions,
+        inputs_to_native_shapes,
+    },
+    frozenset({"lstm_update"}): {
+        handle_array_like_without_promotion,
+        handle_array_function,
+        handle_nestable,
+        handle_exceptions,
+        inputs_to_ivy_arrays,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 # Extra #
 # ------#
@@ -73,12 +157,7 @@ def _in_projection(
 
 
 # Linear #
-@handle_exceptions
-@handle_nestable
-@handle_partial_mixed_function
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -233,12 +312,7 @@ linear.mixed_backend_wrappers = {
 # Dropout #
 
 
-@handle_exceptions
-@handle_nestable
-@handle_partial_mixed_function
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -420,9 +494,7 @@ dropout.mixed_backend_wrappers = {
 # Attention #
 
 
-@handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
+@decorate(*decorators)
 def scaled_dot_product_attention(
     query: Union[ivy.Array, ivy.NativeArray],
     key: Union[ivy.Array, ivy.NativeArray],
@@ -702,12 +774,8 @@ def scaled_dot_product_attention(
     return result if not ivy.exists(out) else ivy.inplace_update(out, result)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
 # @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def multi_head_attention(
     query: Union[ivy.Array, ivy.NativeArray],
     key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -884,14 +952,7 @@ def multi_head_attention(
 # Convolutions #
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -994,15 +1055,7 @@ def conv1d(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1141,13 +1194,7 @@ def conv1d_transpose(
     )
 
 
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1280,15 +1327,7 @@ def conv2d(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1419,14 +1458,7 @@ def conv2d_transpose(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1558,14 +1590,7 @@ def depthwise_conv2d(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1679,15 +1704,7 @@ def conv3d(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1818,14 +1835,7 @@ def conv3d_transpose(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1902,15 +1912,7 @@ def conv_general_dilated(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1979,11 +1981,7 @@ def conv_general_transpose(
     )
 
 
-@handle_exceptions
-@handle_array_like_without_promotion
-@handle_out_argument
-@inputs_to_native_shapes
-@handle_array_function
+@decorate(*decorators)
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -2085,11 +2083,7 @@ def conv(
 # LSTM #
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
+@decorate(*decorators)
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],

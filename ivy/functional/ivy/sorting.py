@@ -11,22 +11,38 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+    handle_device_shifting,
+    handle_backend_invalid,
+    handle_exceptions,
+}
+
+_decorators_per_function = {
+    frozenset({"sort", "argsort", "searchsorted"}): {
+        handle_array_like_without_promotion,
+        handle_array_function,
+    },
+    frozenset({"msort"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 # Array API Standard #
 # -------------------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -140,14 +156,7 @@ def argsort(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -247,12 +256,7 @@ def sort(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -290,14 +294,7 @@ def msort(
 # ------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],

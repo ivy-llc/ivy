@@ -10,21 +10,36 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_array_function,
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_backend_invalid,
+    handle_exceptions,
+}
+
+_decorators_per_function = {
+    frozenset({"all", "any"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # Array API Standard #
 # -------------------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
+@decorate(*decorators)
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -132,13 +147,7 @@ def all(
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
+@decorate(*decorators)
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -253,7 +262,7 @@ def save(item, filepath, format=None):
         raise ivy.utils.exceptions.IvyException("Unsupported item type for saving.")
 
 
-@staticmethod
+@staticmethod  # Should not be replaced
 def load(filepath, format=None, type="module"):
     if type == "module":
         return ivy.Module.load(filepath)

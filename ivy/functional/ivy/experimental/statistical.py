@@ -9,8 +9,52 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_backend_invalid,
+    to_native_arrays_and_back,
+    handle_exceptions,
+    handle_nestable,
+}
+
+_decorators_per_function = {
+    frozenset(
+        {
+            "igamma",
+            "quantile",
+            "bincount",
+            "nanmedian",
+            "corrcoef",
+            "histogram",
+            "median",
+        }
+    ): {
+        handle_device_shifting,
+        handle_out_argument,
+    },
+    frozenset({"nanmean"}): {
+        infer_dtype,
+        handle_device_shifting,
+        handle_out_argument,
+    },
+    frozenset({"cov"}): {
+        handle_array_like_without_promotion,
+    },
+    frozenset({"cummax", "cummin"}): {
+        handle_array_function,
+        handle_out_argument,
+        handle_array_like_without_promotion,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # TODO: Make bins optional by offering an automatic bins creation like numpy.
@@ -18,12 +62,7 @@ from ivy.utils.exceptions import handle_exceptions
 #       Bins as str is not defined (check Numpy implementation).
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -151,12 +190,7 @@ def histogram(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def median(
     input: ivy.Array,
     /,
@@ -197,13 +231,7 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@infer_dtype
-@handle_device_shifting
+@decorate(*decorators)
 def nanmean(
     a: ivy.Array,
     /,
@@ -253,12 +281,7 @@ def nanmean(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -340,12 +363,7 @@ def quantile(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def corrcoef(
     x: ivy.Array,
     /,
@@ -357,12 +375,7 @@ def corrcoef(
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def nanmedian(
     input: ivy.Array,
     /,
@@ -430,12 +443,7 @@ def nanmedian(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def bincount(
     x: ivy.Array,
     /,
@@ -474,12 +482,7 @@ def bincount(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -515,11 +518,7 @@ def igamma(
     return ivy.current_backend().igamma(a, x=x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
+@decorate(*decorators)
 def cov(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray] = None,
@@ -659,13 +658,7 @@ def cov(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
+@decorate(*decorators)
 def cummax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -760,13 +753,7 @@ def cummax(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
+@decorate(*decorators)
 def cummin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

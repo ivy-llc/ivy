@@ -6,16 +6,28 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
+# Decorators #
+# ---------- #
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+_main_decorators = {
+    handle_exceptions,
+    handle_device_shifting,
+    handle_nestable,
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_backend_invalid,
+}
+
+_decorators_per_function = {frozenset({"unravel_index"}): set()}
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def unravel_index(
     indices: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int],

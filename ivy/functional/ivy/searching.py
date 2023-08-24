@@ -14,21 +14,35 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
+
+# Decorators #
+# ---------- #
+
+_main_decorators = {
+    handle_array_function,
+    to_native_arrays_and_back,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
+    handle_exceptions,
+}
+
+_decorators_per_function = {
+    frozenset({"argmin", "argwhere", "argmax", "where"}): {handle_out_argument},
+    frozenset({"nonzero"}): set(),
+}
+
+decorators = _main_decorators, _decorators_per_function
 
 
 # Array API Standard #
-# -------------------#
+# ------------------- #
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -128,14 +142,7 @@ def argmax(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -236,13 +243,7 @@ def argmin(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -374,14 +375,7 @@ def nonzero(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -460,14 +454,7 @@ def where(
 # ------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

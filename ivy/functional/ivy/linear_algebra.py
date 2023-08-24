@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    decorate,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -22,15 +23,74 @@ inf = float("inf")
 # Array API Standard #
 # -------------------#
 
+# Decorators #
+# ---------- #
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+_main_decorators = {
+    handle_backend_invalid,
+    handle_exceptions,
+    to_native_arrays_and_back,
+    handle_device_shifting,
+    handle_nestable,
+}
+
+_decorators_per_function = {
+    frozenset(
+        {
+            "eigh",
+            "inv",
+            "vander",
+            "diagonal",
+            "svdvals",
+            "matrix_transpose",
+            "qr",
+            "vector_norm",
+            "cholesky",
+            "trace",
+            "eig",
+            "matrix_norm",
+            "matrix_rank",
+            "eigvalsh",
+            "diag",
+            "pinv",
+            "matrix_power",
+            "vector_to_skew_symmetric_matrix",
+            "det",
+        }
+    ): {
+        handle_array_like_without_promotion,
+        handle_out_argument,
+        handle_array_function,
+    },
+    frozenset(
+        {
+            "inner",
+            "matmul",
+            "tensorsolve",
+            "tensordot",
+            "outer",
+            "cross",
+            "vecdot",
+            "solve",
+        }
+    ): {
+        handle_array_function,
+        handle_out_argument,
+    },
+    frozenset({"slogdet", "svd"}): {
+        handle_array_like_without_promotion,
+        handle_array_function,
+    },
+    frozenset({"lu_factor"}): {
+        handle_array_like_without_promotion,
+        handle_out_argument,
+    },
+}
+
+decorators = _main_decorators, _decorators_per_function
+
+
+@decorate(*decorators)
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -164,13 +224,7 @@ def cholesky(
     return current_backend(x).cholesky(x, upper=upper, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -271,14 +325,7 @@ def cross(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -345,14 +392,7 @@ def det(
     return current_backend(x).det(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -526,14 +566,7 @@ def diagonal(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -579,14 +612,7 @@ def eig(
     return current_backend(x).eig(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -650,14 +676,7 @@ def eigh(
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -759,13 +778,7 @@ def eigvalsh(
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def inner(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -834,14 +847,7 @@ def inner(
     return current_backend(x1, x2).inner(x1, x2, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def inv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -929,13 +935,7 @@ def inv(
     return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1091,14 +1091,7 @@ def matmul(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1253,14 +1246,7 @@ def matrix_norm(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1354,14 +1340,7 @@ def matrix_power(
     return current_backend(x).matrix_power(x, n, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1470,14 +1449,7 @@ def matrix_rank(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1561,13 +1533,7 @@ def matrix_transpose(
     return current_backend(x).matrix_transpose(x, conjugate=conjugate, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1651,14 +1617,7 @@ def outer(
     return current_backend(x1, x2).outer(x1, x2, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1727,14 +1686,7 @@ def pinv(
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1793,13 +1745,7 @@ def qr(
     return current_backend(x).qr(x, mode=mode, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1902,13 +1848,7 @@ def slogdet(
     return current_backend(x).slogdet(x)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1958,13 +1898,7 @@ def solve(
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2089,14 +2023,7 @@ def svd(
     return current_backend(x).svd(x, compute_uv=compute_uv, full_matrices=full_matrices)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -2225,13 +2152,7 @@ def svdvals(
     return current_backend(x).svdvals(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2315,14 +2236,7 @@ def tensordot(
     return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2443,13 +2357,7 @@ def trace(
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2512,14 +2420,7 @@ def vecdot(
     return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2661,14 +2562,7 @@ def vector_norm(
 # ------#
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2746,14 +2640,7 @@ def diag(
     return current_backend(x).diag(x, k=k, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def vander(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2820,14 +2707,7 @@ def vander(
     return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -2856,13 +2736,7 @@ def vector_to_skew_symmetric_matrix(
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
+@decorate(*decorators)
 def lu_factor(
     A: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2891,13 +2765,7 @@ def lu_factor(
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
+@decorate(*decorators)
 def tensorsolve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
