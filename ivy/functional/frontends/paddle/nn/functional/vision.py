@@ -138,9 +138,8 @@ def affine_grid(theta, out_shape, align_corners=True):
 
 
 @to_ivy_arrays_and_back
-def channel_shuffle(x, groups, data_format="NCHW"):
-    input_shape = len(ivy.shape(x))
-    if input_shape != 4:
+def channel_shuffle(x, groups, data_format="NCHW", name=None):
+    if len(ivy.shape(x)) != 4:
         raise ValueError(
             "Input x should be 4D tensor, but received x with the shape of {}".format(
                 ivy.shape(x)

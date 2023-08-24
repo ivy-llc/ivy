@@ -131,7 +131,7 @@ def _image_shape_helper(draw, data_format):
 
 # channel_shuffle
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.vision.channel_shuffle",
+    fn_tree="paddle.nn.functional.channel_shuffle",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["float32", "float64"],
         shape=_image_shape_helper(data_format=st.sampled_from(["NCHW", "NHWC"])),
