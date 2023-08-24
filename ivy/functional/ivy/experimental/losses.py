@@ -305,6 +305,9 @@ def smooth_l1_loss(
 
 
         The loss with the reduction option applied.
+        The tests will be failing for the paddle due to bfloat16 and these
+        tests are not only failing for smooth_l1_loss but also for other
+        implemented loss functions
     """
     if beta < 1e-5:
         # if beta == 0,  will result in nan gradients when
