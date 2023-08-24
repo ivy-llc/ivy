@@ -166,7 +166,7 @@ def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
 
-  @with_supported_dtypes(
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "float32",
