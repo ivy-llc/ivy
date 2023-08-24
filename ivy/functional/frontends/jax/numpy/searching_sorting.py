@@ -99,6 +99,7 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.14 and below": ("complex64", "complex128")}, "jax")
 def lexsort(keys, /, *, axis=-1):
     return ivy.lexsort(keys, axis=axis)
 
