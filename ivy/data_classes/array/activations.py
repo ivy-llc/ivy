@@ -26,12 +26,12 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         self
             input array.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -66,12 +66,12 @@ class _ArrayWithActivations(abc.ABC):
             input array.
         alpha
             the slope of the negative section.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -108,12 +108,12 @@ class _ArrayWithActivations(abc.ABC):
             input array.
         approximate
             whether to use the approximate version of the gelu function.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -203,8 +203,8 @@ class _ArrayWithActivations(abc.ABC):
         *,
         beta: Optional[Union[int, float]] = None,
         threshold: Optional[Union[int, float]] = None,
-        out: Optional[ivy.Array] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
@@ -219,11 +219,11 @@ class _ArrayWithActivations(abc.ABC):
             the beta parameter of the softplus function.
         threshold
             the threshold parameter of the softplus function.
-        out
-            optional output array, for writing the result to. It must have a shape
         complex_mode
            optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array, for writing the result to. It must have a shape
 
         Returns
         -------
@@ -251,8 +251,8 @@ class _ArrayWithActivations(abc.ABC):
             self._data,
             beta=beta,
             threshold=threshold,
-            out=out,
             complex_mode=complex_mode,
+            out=out,
         )
 
     def log_softmax(

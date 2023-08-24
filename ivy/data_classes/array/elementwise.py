@@ -2568,12 +2568,12 @@ class _ArrayWithElementwise(abc.ABC):
         self
             input array whose elements each represent a hyperbolic angle.
             Should have a real-valued floating-point data type.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
 
         Returns
         -------

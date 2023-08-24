@@ -58,12 +58,12 @@ def gelu(
     approximate
         Whether to approximate, default is ``True``. An approximation is always used if
         the input array is complex.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
         ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -152,12 +152,12 @@ def leaky_relu(
         Input array.
     alpha
         Negative slope for ReLU.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
         ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -322,12 +322,12 @@ def relu(
     ----------
     x
         input array
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
         ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -551,8 +551,8 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the softplus function element-wise.
@@ -572,12 +572,12 @@ def softplus(
     threshold
         values above this revert to a linear function
         If the input is complex, only its real part is considered. Default: ``None``
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
         ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------

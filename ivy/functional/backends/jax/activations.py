@@ -58,8 +58,8 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[JaxArray] = None,
     complex_mode="jax",
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if beta is not None and beta != 1:
         x_beta = x * beta

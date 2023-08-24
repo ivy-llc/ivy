@@ -82,8 +82,8 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[torch.Tensor] = None,
     complex_mode="jax",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     kwargs = {
         k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
