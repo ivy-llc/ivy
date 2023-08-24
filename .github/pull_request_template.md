@@ -1,6 +1,6 @@
 
 <!-- 
-This template will help you to have a meaningful PR, please follow it and do not leave it blanket. 
+This template will help you to have a meaningful PR, please follow it and do not leave it blank.
 -->
 
 # PR Description 
