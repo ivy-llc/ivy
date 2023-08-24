@@ -718,6 +718,28 @@ def test_paddle_take_along_axis(
     )
 
 
+# Helper for moveaxis
+@st.composite
+def _moveaxis_helper(draw):
+    input_dtype = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=2,
+            max_num_dims=5,
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            min_num_dims=2,
+            max_num_dims=5,
+        )
+    )
+    source = draw(st.integers(0, x.ndim - 1))
+    destination = draw(st.integers(0, x.ndim - 1))
+    return input_dtype, x, source, destination
+    
+
 # moveaxis
 @handle_frontend_test(
     fn_tree="paddle.moveaxis",
