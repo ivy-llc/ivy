@@ -212,6 +212,15 @@ def logistic(loc=0.0, scale=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def choice(a, size=None, replace=True, p=None):
+    if isinstance(a, int):
+        a = ivy.arange(a)
+    index = ivy.multinomial(len(a), size, replace=replace, probs=p)
+    return a[index]
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def pareto(a, size=None):
     if a < 0:
         return 0
