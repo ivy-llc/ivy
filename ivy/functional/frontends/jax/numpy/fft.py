@@ -27,3 +27,9 @@ def fft(a, n=None, axis=-1, norm=None):
     if norm is None:
         norm = "backward"
     return ivy.fft(a, axis, norm=norm, n=n)
+
+
+@to_ivy_arrays_and_back
+def ifftn(a, s=None, axes=None, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    return ivy.ifftn(a, s=s, axes=axes, norm=norm)
