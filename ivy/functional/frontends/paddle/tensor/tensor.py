@@ -145,7 +145,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sqrt(self, name=None):
         return paddle_frontend.Tensor(ivy.sqrt(self._ivy_array))
-    
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sqrt_(self, name=None):
         self.ivy_array = self.sqrt().ivy_array
@@ -619,16 +619,7 @@ class Tensor:
         )
 
     @with_supported_dtypes(
-        {
-            "2.5.1 and below": (
-                "float32",
-                "float64",
-                "bool",
-                "int8",
-                "int32",
-                "int64"
-            )
-        },
+        {"2.5.1 and below": ("float32", "float64", "bool", "int8", "int32", "int64")},
         "paddle",
     )
     def squeeze(self, axis=None, name=None):
