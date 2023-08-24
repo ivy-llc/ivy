@@ -39,4 +39,6 @@ def unwrap(p, discont=None, axis=-1, *, period=2 * ivy.pi):
 
 @to_ivy_arrays_and_back
 def sinc(x):
+    if ivy.get_num_dims(x) == 0:
+        x = ivy.astype(x, ivy.float64)
     return ivy.sinc(x)
