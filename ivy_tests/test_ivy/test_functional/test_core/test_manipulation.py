@@ -339,9 +339,9 @@ def _basic_min_x_max(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
         )
     )
-    min_val = draw(
-        st.one_of(st.just(None), helpers.array_values(dtype=dtype[0], shape=()))
-    )
+    min_val,max_val = None, None
+    if generate_min:
+        min_val = draw( helpers.array_values(dtype=dtype[0], shape=()))
     max_val = draw(
         st.one_of(
             st.just(None),
