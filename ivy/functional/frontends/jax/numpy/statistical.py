@@ -247,7 +247,7 @@ def nanmax(
                 ax = axis[0] % len(s)
             else:
                 ax = axis % len(s)
-            s[ax] = 1
+            s[ax] = ivy.array(1)
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -268,7 +268,7 @@ def nanmax(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return res.astype(ivy.dtype(a))
 
 
 @to_ivy_arrays_and_back
@@ -294,7 +294,8 @@ def nanmin(
                 ax = axis[0] % len(s)
             else:
                 ax = axis % len(s)
-            s[ax] = 1
+
+            s[ax] = ivy.array(1)
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -315,7 +316,7 @@ def nanmin(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return res.astype(ivy.dtype(a))
 
 
 @handle_jax_dtype
@@ -442,7 +443,7 @@ def nanmedian(
 ):
     return ivy.nanmedian(
         a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
-    )
+    ).astype(a.dtype)
 
 
 @to_ivy_arrays_and_back
