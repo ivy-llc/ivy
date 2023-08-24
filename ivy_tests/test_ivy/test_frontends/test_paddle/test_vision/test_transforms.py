@@ -145,10 +145,10 @@ def test_paddle_vflip(
 @handle_frontend_test(
     fn_tree="paddle.vision.transforms.crop",
     dtype_and_x=helpers.dtype_and_values(
-       available_dtypes=helpers.get_dtypes("valid"),
-       num_arrays=1,
-       min_dim_size=2,
-       max_dim_size=100,
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+        min_dim_size=2,
+        max_dim_size=100,
     ),
     top=st.integers(min_value=0, max_value=100),
     left=st.integers(min_value=0, max_value=100),
