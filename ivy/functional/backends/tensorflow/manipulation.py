@@ -356,13 +356,16 @@ def clip(
         if x_max is not None:
             x_max = tf.cast(x_max, promoted_type)
 
-    if tf.size(x) == 0:
-        ret = x
-    elif x.dtype == tf.bool:
-        ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
-        ret = tf.cast(ret, x.dtype)
+    if x_min is not None and x_max is not None:
+        if tf.size(x) == 0:
+            ret = x
+        elif x.dtype == tf.bool:
+            ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
+            ret = tf.cast(ret, x.dtype)
+        else:
+            ret = tf.clip_by_value(x, x_min, x_max)
     else:
-        ret = tf.clip_by_value(x, x_min, x_max)
+        ret = tf.experimental.numpy.clip(x, x_min, x_max)
 
     return ret
 
