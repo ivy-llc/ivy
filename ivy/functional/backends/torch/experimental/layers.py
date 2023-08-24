@@ -858,6 +858,9 @@ def embedding(
     max_norm: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
     return torch.nn.functional.embedding(indices, weights, max_norm=max_norm)
 
 

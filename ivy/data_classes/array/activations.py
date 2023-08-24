@@ -10,7 +10,13 @@ import ivy
 
 
 class _ArrayWithActivations(abc.ABC):
-    def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def relu(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
         function, and so the docstring for ivy.relu also applies to this method with
@@ -23,6 +29,9 @@ class _ArrayWithActivations(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+           optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -36,7 +45,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0., 0., 1.])
         """
-        return ivy.relu(self._data, out=out)
+        return ivy.relu(self._data, out=out, complex_mode=complex_mode)
 
     def leaky_relu(
         self: ivy.Array,
@@ -61,7 +70,8 @@ class _ArrayWithActivations(abc.ABC):
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
         complex_mode
-            optional specifier for how to handle complex data types.
+           optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -85,6 +95,7 @@ class _ArrayWithActivations(abc.ABC):
         *,
         approximate: bool = False,
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gelu. This method simply wraps the
@@ -100,6 +111,9 @@ class _ArrayWithActivations(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -188,6 +202,7 @@ class _ArrayWithActivations(abc.ABC):
         beta: Optional[Union[int, float]] = None,
         threshold: Optional[Union[int, float]] = None,
         out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
@@ -204,6 +219,9 @@ class _ArrayWithActivations(abc.ABC):
             the threshold parameter of the softplus function.
         out
             optional output array, for writing the result to. It must have a shape
+        complex_mode
+           optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -227,7 +245,13 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(x)
         ivy.array([1.55, 2.13, 2.13])
         """
-        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
+        return ivy.softplus(
+            self._data,
+            beta=beta,
+            threshold=threshold,
+            out=out,
+            complex_mode=complex_mode,
+        )
 
     def log_softmax(
         self: ivy.Array,

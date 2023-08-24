@@ -4,7 +4,6 @@ Superset Behaviour
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
-.. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
 .. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
 .. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 
@@ -267,7 +266,7 @@ This should have hopefully given you a good feel what should and should not be i
 In many cases, there is not a clear right and wrong answer, and we arrive at the final decision via open discussion.
 If you find yourself proposing the addition of a new function in Ivy, then we will most likely have this discussion on your Pull Request!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior channel`_ or in the `superset behavior forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior channel`_!
 
 
 **Video**
