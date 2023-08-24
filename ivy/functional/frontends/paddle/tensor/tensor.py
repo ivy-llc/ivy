@@ -622,4 +622,3 @@ class Tensor:
     def squeeze_(self, axis=None, name=None):
         self.ivy_array = self.squeeze(axis=axis).ivy_array
         return self
-    
