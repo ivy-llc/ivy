@@ -617,3 +617,8 @@ class Tensor:
         return paddle_frontend.Tensor(
             ivy.std(self._ivy_array, axis=axis, keepdims=keepdim)
         )
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float32", "float64", "float16")}, "paddle")
+    def ceil_(self, name=None):
+        self.ivy_array = self.ceil().ivy_array
+        return self
