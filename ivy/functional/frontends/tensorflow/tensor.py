@@ -86,7 +86,10 @@ class EagerTensor:
         return self.__rand__(y)
 
     def __array__(self, dtype=None, name="array"):
-        return array(ivy.asarray(self.ivy_array, dtype=to_ivy_dtype(dtype)))
+        if not dtype:
+            return ivy.to_numpy(self.ivy_array)
+        dtype = to_ivy_dtype(dtype)
+        return ivy.to_numpy(self.ivy_array.astype(dtype))
 
     def __bool__(self, name="bool"):
         temp = ivy.squeeze(self.ivy_array, axis=None)
