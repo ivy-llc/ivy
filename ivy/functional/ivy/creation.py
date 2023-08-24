@@ -494,7 +494,8 @@ def zeros(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with zeros.
+    """
+    Return a new array having a specified ``shape`` and filled with zeros.
 
     Parameters
     ----------
@@ -559,7 +560,8 @@ def ones(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with ones.
+    """
+    Return a new array having a specified ``shape`` and filled with ones.
 
     .. note::
 
@@ -658,8 +660,9 @@ def full_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with ``fill_value`` and having the same ``shape`` as
-    an input array ``x`` .
+    """
+    Return a new array filled with ``fill_value`` and having the same ``shape`` as an
+    input array ``x`` .
 
     Parameters
     ----------
@@ -766,8 +769,9 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with ones and having the same shape as an input
-    array ``x``.
+    """
+    Return a new array filled with ones and having the same shape as an input array
+    ``x``.
 
     .. note::
 
@@ -866,7 +870,6 @@ def ones_like(
         a: ivy.array([1., 1.]),
         b: ivy.array([1., 1.])
     }
-
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
@@ -888,8 +891,9 @@ def zeros_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with zeros and having the same ``shape`` as an input
-    array ``x``.
+    """
+    Return a new array filled with zeros and having the same ``shape`` as an input array
+    ``x``.
 
     Parameters
     ----------
@@ -983,7 +987,6 @@ def zeros_like(
         a: ivy.array([0., 0.]),
         b: ivy.array([0., 0.])
     }
-
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
@@ -1002,7 +1005,8 @@ def tril(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
     .. note::
 
@@ -1039,7 +1043,6 @@ def tril(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).tril(x, k=k, out=out)
 
@@ -1058,7 +1061,8 @@ def triu(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
     .. note::
 
@@ -1095,7 +1099,6 @@ def triu(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).triu(x, k=k, out=out)
 
@@ -1600,7 +1603,8 @@ def full(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with ``fill_value``.
+    """
+    Return a new array having a specified ``shape`` and filled with ``fill_value``.
 
     Parameters
     ----------
@@ -1686,8 +1690,6 @@ def full(
         b: ivy.array([[[False, False]],
                       [[False, False]]])
     }
-
-
     """
     return current_backend().full(
         shape, fill_value, dtype=dtype, device=device, out=out
@@ -1704,7 +1706,8 @@ def full(
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return a new array containing the data from another (array) object with a
+    """
+    Return a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
     Parameters
@@ -1736,7 +1739,6 @@ def from_dlpack(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).from_dlpack(x, out=out)
 
@@ -2221,16 +2223,17 @@ def triu_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array]:
-    """Return the indices of the upper triangular part of a row by col matrix in a
-    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
-    row coordinates of all indices and the second row contains column coordinates.
-    Indices are ordered based on rows and then columns.  The upper triangular part
-    of the matrix is defined as the elements on and above the diagonal.  The argument
-    k controls which diagonal to consider. If k = 0, all elements on and above the main
-    diagonal are retained. A positive value excludes just as many diagonals above the
-    main diagonal, and similarly a negative value includes just as many diagonals
-    below the main diagonal. The main diagonal are the set of indices
-    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
+    """
+    Return the indices of the upper triangular part of a row by col matrix in a 2-by-N
+    shape (tuple of two N dimensional arrays), where the first row contains row
+    coordinates of all indices and the second row contains column coordinates. Indices
+    are ordered based on rows and then columns.  The upper triangular part of the matrix
+    is defined as the elements on and above the diagonal.  The argument k controls which
+    diagonal to consider. If k = 0, all elements on and above the main diagonal are
+    retained. A positive value excludes just as many diagonals above the main diagonal,
+    and similarly a negative value includes just as many diagonals below the main
+    diagonal. The main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
+    n_cols}−1].
 
     Notes
     -----
@@ -2300,6 +2303,5 @@ def triu_indices(
     >>> x = ivy.triu_indices(2,4,-100)
     >>> print(x)
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))
-
     """
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
