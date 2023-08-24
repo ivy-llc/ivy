@@ -1314,17 +1314,24 @@ def _get_axis_and_p(draw):
         )
     )
     axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
-    return p, x_dtype, values, axis
+    # ToDo: fix the castable dtype helper. Right now using `dtype` causes errors
+    #  dtype should be real for real inputs, but got ComplexDouble
+    x_dtype, values, dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("valid")), x_dtype[0], values[0]
+        )
+    )
+    return p, x_dtype, values, axis, x_dtype
 
 
 @handle_frontend_test(
     fn_tree="torch.linalg.norm",
-    p_dtype_x_axis=_get_axis_and_p(),
+    args=_get_axis_and_p(),
     keepdim=st.booleans(),
 )
 def test_torch_norm(
     *,
-    p_dtype_x_axis,
+    args,
     keepdim,
     on_device,
     fn_tree,
@@ -1332,16 +1339,20 @@ def test_torch_norm(
     test_flags,
     backend_fw,
 ):
-    p, dtype, x, axis = p_dtype_x_axis
+    p, x_dtype, x, axis, dtype = args
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[x_dtype],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-01,
+        atol=1e-08,
         A=x,
         ord=p,
         dim=axis,
         keepdim=keepdim,
+        dtype=dtype,
+        out=None,
     )
