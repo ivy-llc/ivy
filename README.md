@@ -2,31 +2,31 @@
 > to some users, [join the waitlist](https://console.unify.ai/) if you
 > want to test them out!
 
-<img class="only-dark" width="100%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only"/>
+<img class="only-dark" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo_dark.png#gh-dark-mode-only"/>
 
-<img class="only-light" width="100%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true#gh-light-mode-only"/>
+<img class="only-light" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo.png?raw=true#gh-light-mode-only"/>
 
 ------------------------------------------------------------------------
 
 <div style="display: block;" align="center">
 <a href="https://unify.ai/">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.svg">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/website_button.svg">
 </a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
 <a href="https://unify.ai/docs/ivy">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.svg">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/docs_button.svg">
 </a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
 <a href="https://unify.ai/demos">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.svg">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/examples_button.svg">
 </a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
 <a href="https://unify.ai/docs/ivy/overview/design.html">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.svg">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/design_button.svg">
 </a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
 <a href="https://unify.ai/docs/ivy/overview/faq.html">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.svg">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/faq_button.svg">
 </a>
 </div>
 
@@ -69,22 +69,22 @@
 <div style="display: block;" align="center">
     <div>
     <a href="https://jax.readthedocs.io">
-        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
+        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/jax_logo.png">
     </a>
-    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     <a href="https://www.tensorflow.org">
-        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
+        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/tensorflow_logo.png">
     </a>
-    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     <a href="https://pytorch.org">
-        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
+        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/pytorch_logo.png">
     </a>
-    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
-    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     <a href="https://numpy.org">
-        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
+        <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/numpy_logo.png">
     </a>
     </div>
 </div>
@@ -319,7 +319,7 @@ print('Finished training!')
 The model\'s output can be visualized as follows:
 
 <div align="center">
-   <img width="50%" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/regressor_lq.gif">
+   <img width="50%" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/regressor_lq.gif">
 </div>
 
 Last but not least, we are also working on specific extension totally
@@ -335,47 +335,47 @@ and more!
 
 <br/>
 <div align="center">
-<a href="https://github.com/unifyai/mech">
-    <picture>
-        <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
-        <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
-    </picture>
+<a class="only-dark" href="https://github.com/unifyai/mech#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_mech_dark.png#gh-dark-mode-only">
 </a>
-<a href="https://github.com/unifyai/vision">
-    <picture>
-        <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision_dark.png">
-        <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png">
-    </picture>
+<a class="only-light" href="https://github.com/unifyai/mech#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_mech.png#gh-light-mode-only">
 </a>
-<a href="https://github.com/unifyai/robot">
-    <picture>
-        <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot_dark.png">
-        <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png">
-    </picture>
+<a class="only-dark" href="https://github.com/unifyai/vision#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_vision_dark.png#gh-dark-mode-only">
 </a>
-<a href="https://github.com/unifyai/gym">
-    <picture>
-        <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym_dark.png">
-        <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png">
-    </picture>
+<a class="only-light" href="https://github.com/unifyai/vision#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_vision.png#gh-light-mode-only">
 </a>
-<a href="https://github.com/unifyai/memory">
-    <picture>
-        <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory_dark.png">
-        <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png">
-    </picture>
+<a class="only-dark" href="https://github.com/unifyai/robot#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_robot_dark.png#gh-dark-mode-only">
 </a>
-<a href="https://github.com/unifyai/builder">
-    <picture>
-        <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder_dark.png">
-        <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png">
-    </picture>
+<a class="only-light" href="https://github.com/unifyai/robot#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_robot.png#gh-light-mode-only">
 </a>
-<a href="https://github.com/unifyai/models">
-    <picture>
-        <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models_dark.png">
-        <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png">
-    </picture>
+<a class="only-dark" href="https://github.com/unifyai/gym#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_gym_dark.png#gh-dark-mode-only">
+</a>
+<a class="only-light" href="https://github.com/unifyai/gym#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_gym.png#gh-light-mode-only">
+</a>
+<a class="only-dark" href="https://github.com/unifyai/memory#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_memory_dark.png#gh-dark-mode-only">
+</a>
+<a class="only-light" href="https://github.com/unifyai/memory#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_memory.png#gh-light-mode-only">
+</a>
+<a class="only-dark" href="https://github.com/unifyai/builder#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_builder_dark.png#gh-dark-mode-only">
+</a>
+<a class="only-light" href="https://github.com/unifyai/builder#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_builder.png#gh-light-mode-only">
+</a>
+<a class="only-dark" href="https://github.com/unifyai/models#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_models_dark.png#gh-dark-mode-only">
+</a>
+<a class="only-light" href="https://github.com/unifyai/models#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_models.png#gh-light-mode-only">
 </a>
 </div>
 <br clear="all" />
@@ -533,7 +533,7 @@ multiple use cases, but feel free to check out some shorter
 framework-specific examples here ⬇️
 
 <details>
-<summary><b>I'm using PyTorch&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
+<summary><b>I'm using PyTorch&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
    <blockquote>You can use Ivy to get PyTorch code from:
       <details>
          <summary>Any model</summary>
@@ -760,7 +760,7 @@ out = torch_loss(p, t)
 </details>
 
 <details>
-<summary><b>I'm using TensorFlow&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tf_small_logo.png"></b></summary>
+<summary><b>I'm using TensorFlow&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/tf_small_logo.png"></b></summary>
 <blockquote>You can use Ivy to get TensorFlow code from:
 <details>
 <summary>Any model</summary>
@@ -994,7 +994,7 @@ out = tf_loss(p, t)
 </details>
 
 <details>
-<summary><b>I'm using Jax&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_small_logo.png"></b></summary>
+<summary><b>I'm using Jax&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/jax_small_logo.png"></b></summary>
 <blockquote>You can use Ivy to get JAX code from:
 <details>
 <summary>Any model</summary>
@@ -1245,7 +1245,7 @@ out = jax_loss(p, t)
 </details>
 
 <details>
-<summary><b>I'm using NumPy&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_small_logo.png"></b></summary>
+<summary><b>I'm using NumPy&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/numpy_small_logo.png"></b></summary>
 <blockquote>You can use Ivy to get NumPy code from:
 <details>
 <summary>Any library</summary>
@@ -1399,7 +1399,7 @@ out = np_loss(p, t)
 </blockquote>
 </details>
 
-<h3>I'm using Ivy&ensp;<img class="dark-light" style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/ivy_logo_only_small.png"></h3>
+<h3>I'm using Ivy&ensp;<img class="dark-light" style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/logos/ivy_logo_only.svg"></h3>
 
 Or you can use Ivy as a framework, breaking yourself (and your code)
 free from deciding which community to support, allowing anyone to run

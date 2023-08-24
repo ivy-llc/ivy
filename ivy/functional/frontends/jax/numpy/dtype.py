@@ -86,6 +86,15 @@ def result_type(*args):
 
 
 @with_supported_dtypes(
+    {"2.13.0 and below": ("integer",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def iinfo(int_type):
+    return ivy.iinfo(int_type)
+
+
+@with_supported_dtypes(
     {"2.13.0 and below": ("float16", "float32", "float64")},
     "jax",
 )
