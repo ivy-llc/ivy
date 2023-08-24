@@ -885,7 +885,7 @@ def test_numpy_logistic(
     fn_tree="numpy.random.choice",
     dtypes=helpers.get_dtypes("float", full=False),
     a=helpers.ints(min_value=2, max_value=10),
-    size=helpers.ints(min_value=2, max_value=10),
+    size=helpers.get_shape(allow_none=False),
 )
 def test_numpy_choice(
     dtypes,

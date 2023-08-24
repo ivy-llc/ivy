@@ -213,6 +213,10 @@ def logistic(loc=0.0, scale=1.0, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def choice(a, size=None, replace=True, p=None):
+    if size is None or len(size) == 0:
+        size = 1
+    else:
+        size = size[0]  # ivy.multinomial takes size as an int
     if isinstance(a, int):
         a = ivy.arange(a)
     index = ivy.multinomial(len(a), size, replace=replace, probs=p)
