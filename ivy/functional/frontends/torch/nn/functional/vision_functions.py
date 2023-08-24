@@ -365,10 +365,6 @@ def affine_grid(theta, size, align_corners=False):
             grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
             return grid.view((N, D, H, W, 3))
 
-# def border_clamp(grid, border):
-#     return ivy.fmin(border, ivy.fmax(grid, 0))
-
-border_clamp = lambda grid, border: ivy.fmin(border, ivy.fmax(grid, 0))
 
 def reflect(x, low2, high2):
     min = low2 / 2
@@ -394,6 +390,7 @@ def bicubic_interp(fx, alpha = -0.75):
     coeffs.append(1 - coeffs[0] - coeffs[1] - coeffs[2])
     return coeffs
 
+border_clamp = lambda grid, border: ivy.fmin(border, ivy.fmax(grid, 0))
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "float32")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corners=None):
@@ -427,18 +424,12 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
                 grid[..., 0] = reflect(grid[..., 0], -1, 2*w - 1)
                 grid[..., 1] = reflect(grid[..., 1], -1, 2*h - 1)
 
-            # grid = border_clamp(grid, w - 1, h - 1)
-            # grid = border_clamp(grid, w - 1, 0)
-            # grid = border_clamp(grid, h - 1, 1)
             grid[..., 0] = border_clamp(grid[..., 0], w - 1)
             grid[..., 1] = border_clamp(grid[..., 1], h - 1)
-
 
         elif padding_mode == 'border':
             grid[..., 0] = border_clamp(grid[..., 0], w - 1)
             grid[..., 1] = border_clamp(grid[..., 1], h - 1)
-            # grid = border_clamp(grid, w - 1, 0)
-            # grid = border_clamp(grid, h - 1, 1)
 
         elif padding_mode == 'zeros':
             w_mask = ivy.bitwise_or(grid[..., 0] < 0, grid[..., 0] > w)
@@ -447,15 +438,14 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
             grid[zeros_mask] += (w * h)
             grid[..., 0] = border_clamp(grid[..., 0], w)
             grid[..., 1] = border_clamp(grid[..., 1], h)
-            # grid = border_clamp(grid, w, 0)
-            # grid = border_clamp(grid, h, 1)
 
+        # pad and shift for 1
         padding = [(0, 0) for i in range(2)] + [
             (1, 2),
             (1, 2),
         ]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
-        grid += 1 # shift for 1 because
+        grid += 1
 
         # Apply sampling by mode
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
@@ -484,8 +474,8 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
             return v0 * (1 - beta) + v1 * beta
 
         elif mode == 'bicubic':
-            w1 = ivy.astype(ivy.floor(w_coor), ivy.int64)  # .long()
-            h1 = ivy.astype(ivy.floor(h_coor), ivy.int64)  # .long()
+            w1 = ivy.astype(ivy.floor(w_coor), ivy.int64)
+            h1 = ivy.astype(ivy.floor(h_coor), ivy.int64)
             w0 = w1 - 1
             h0 = h1 - 1
             w2 = w0 + 1
@@ -575,11 +565,7 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
             grid[..., 2] = border_clamp(grid[..., 2], d)
 
         # Padding for d, h, and w
-        padding = [(0, 0) for i in range(2)] + [
-            (0, 2),
-            (0, 2),
-            (0, 2)
-        ]
+        padding = [(0, 0) for _ in range(2)] + [(0, 2) for _ in range(3)]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
 
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
@@ -633,7 +619,9 @@ def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corner
             w_coor = ivy.astype(ivy.round(w_coor), ivy.int64)
             h_coor = ivy.astype(ivy.round(h_coor), ivy.int64)
             d_coor = ivy.astype(ivy.round(d_coor), ivy.int64)
+            print(w_coor.shape, h_coor.shape, d_coor.shape, input[batch_coor, :, d_coor, h_coor, w_coor].shape)
             return ivy.permute_dims(input[batch_coor, :, d_coor, h_coor, w_coor], (0, 4, 1, 2, 3))
+            # return ivy.permute_dims(input[batch_coor, :, d_coor, h_coor, w_coor], (0, 4, 1, 2, 3))
 
         elif mode == 'bicubic':
             print("Bicubic is not support in 3D grid sampling")
