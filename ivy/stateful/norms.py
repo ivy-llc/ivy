@@ -103,6 +103,7 @@ class BatchNorm2D(Module):
         device=None,
         v=None,
         dtype=None,
+        training=True,
     ):
         """
         Class for applying Layer Normalization over a mini-batch of inputs.
@@ -151,6 +152,7 @@ class BatchNorm2D(Module):
         self._bias_init = Zeros()
         self._running_mean_init = Zeros()
         self._running_var_init = Ones()
+        self.training = training
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
@@ -175,7 +177,7 @@ class BatchNorm2D(Module):
     def _forward(
         self,
         inputs,
-        training: bool = False,
+        training: bool = None,
     ):
         """
         Perform forward pass of the BatchNorm layer.
@@ -192,6 +194,8 @@ class BatchNorm2D(Module):
         ret
             The outputs following the batch normalization operation.
         """
+        orig_training = self.training
+        training = training if training is not None else self.training
         normalized, running_mean, running_var = ivy.batch_norm(
             inputs,
             self.v.running_mean,
@@ -207,4 +211,5 @@ class BatchNorm2D(Module):
             self.v.running_mean = running_mean
             self.v.running_var = running_var
 
+        self.training = orig_training
         return normalized

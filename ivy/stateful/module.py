@@ -817,6 +817,16 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         """Set the buffer at any place within the class."""
         self._set_buffers({var_name: value})
 
+    def eval(self, mode: bool = False):
+        # disables training mode for child modules
+        # if it exists
+        if hasattr(self, "training"):
+            self.training = mode
+        for module in self.v:
+            module = getattr(self, module, None)
+            if module:
+                module.eval(mode=mode)
+
     def __repr__(self):
         return object.__repr__(self)
 
