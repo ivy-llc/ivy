@@ -144,6 +144,7 @@ def adjust_brightness(img, brightness_factor):
     extreme_target = ivy.zeros_like(img)
     return _blend_images(img, extreme_target, brightness_factor)
 
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -159,6 +160,7 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
         return normalized_img
     else:
         raise ValueError("Unsupported input format")
+
 
 @with_unsupported_device_and_dtypes(
     {
