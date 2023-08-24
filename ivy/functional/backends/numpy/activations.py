@@ -11,7 +11,7 @@ from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 @_scalar_output_to_0d_array
 def relu(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.maximum(x, 0, out=out, dtype=x.dtype)
 
@@ -24,8 +24,8 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
-    out: Optional[np.ndarray] = None,
     complex_mode="jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
@@ -36,8 +36,8 @@ def gelu(
     /,
     *,
     approximate: bool = False,
-    out: Optional[np.ndarray] = None,
     complex_mode="jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if approximate:
         ret = 0.5 * x * (1 + np.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))

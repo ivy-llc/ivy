@@ -754,7 +754,7 @@ tan.support_native_out = True
 
 @_scalar_output_to_0d_array
 def tanh(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.tanh(x, out=out)
 

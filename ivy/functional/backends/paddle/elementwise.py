@@ -707,7 +707,7 @@ def not_equal(
     backend_version,
 )
 def tanh(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,

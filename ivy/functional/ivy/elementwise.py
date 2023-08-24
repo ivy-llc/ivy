@@ -6400,8 +6400,8 @@ def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Calculate an implementation-dependent approximation to the hyperbolic tangent,

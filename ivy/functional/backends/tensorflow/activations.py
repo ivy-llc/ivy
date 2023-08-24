@@ -22,8 +22,8 @@ def gelu(
     /,
     *,
     approximate: bool = False,
-    out: Optional[Tensor] = None,
     complex_mode="jax",
+    out: Optional[Tensor] = None,
 ) -> Tensor:
     if x.dtype in [tf.complex64, tf.complex128]:
         return 0.5 * x * (1 + tf.math.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
@@ -35,13 +35,13 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
-    out: Optional[Tensor] = None,
     complex_mode="jax",
+    out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-def relu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> Tensor:
+def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
 

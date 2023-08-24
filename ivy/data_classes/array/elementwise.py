@@ -2555,8 +2555,8 @@ class _ArrayWithElementwise(abc.ABC):
     def tanh(
         self: ivy.Array,
         *,
-        out: Optional[ivy.Array] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
@@ -2589,7 +2589,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([0., 0.762, 0.964])
         """
-        return ivy.tanh(self._data, out=out, complex_mode=complex_mode)
+        return ivy.tanh(self._data, complex_mode=complex_mode, out=out)
 
     def trunc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

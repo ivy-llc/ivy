@@ -8273,8 +8273,8 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[ivy.Container] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.tanh. This method simply wraps the
@@ -8328,8 +8328,8 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
             complex_mode=complex_mode,
+            out=out,
         )
 
     def tanh(
@@ -8339,8 +8339,8 @@ class _ContainerWithElementwise(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[ivy.Container] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.tanh. This method simply wraps the
@@ -8394,8 +8394,8 @@ class _ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
             complex_mode=complex_mode,
+            out=out,
         )
 
     @staticmethod

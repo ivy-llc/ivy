@@ -14,8 +14,8 @@ class _ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        out: Optional[ivy.Array] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
@@ -45,15 +45,15 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0., 0., 1.])
         """
-        return ivy.relu(self._data, out=out, complex_mode=complex_mode)
+        return ivy.relu(self._data, complex_mode=complex_mode, out=out)
 
     def leaky_relu(
         self: ivy.Array,
         /,
         *,
         alpha: float = 0.2,
-        out: Optional[ivy.Array] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
@@ -86,7 +86,7 @@ class _ArrayWithActivations(abc.ABC):
         ivy.array([ 0.39, -0.17])
         """
         return ivy.leaky_relu(
-            self._data, alpha=alpha, out=out, complex_mode=complex_mode
+            self._data, alpha=alpha, complex_mode=complex_mode, out=out
         )
 
     def gelu(
@@ -94,8 +94,8 @@ class _ArrayWithActivations(abc.ABC):
         /,
         *,
         approximate: bool = False,
-        out: Optional[ivy.Array] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gelu. This method simply wraps the
@@ -128,7 +128,7 @@ class _ArrayWithActivations(abc.ABC):
         ivy.array([-0.138, -0.165, 1.4])
         """
         return ivy.gelu(
-            self._data, approximate=approximate, out=out, complex_mode=complex_mode
+            self._data, approximate=approximate, complex_mode=complex_mode, out=out
         )
 
     def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:

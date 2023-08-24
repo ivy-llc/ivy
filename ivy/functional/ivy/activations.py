@@ -45,8 +45,8 @@ def gelu(
     /,
     *,
     approximate: bool = False,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the Gaussian error linear unit (GELU) activation function.
@@ -135,8 +135,8 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the leaky rectified linear unit function element-wise.
@@ -307,8 +307,8 @@ def relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the rectified linear unit function element-wise.

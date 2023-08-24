@@ -31,7 +31,7 @@ unsupported_dtypes = [
 
 
 def relu(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
@@ -48,8 +48,8 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
-    out: Optional[paddle.Tensor] = None,
     complex_mode="jax",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
@@ -69,8 +69,8 @@ def gelu(
     /,
     *,
     approximate: bool = False,
-    out: Optional[paddle.Tensor] = None,
     complex_mode="jax",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
         sqrt_2_over_pi = 0.7978845608

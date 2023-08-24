@@ -744,8 +744,8 @@ def tanh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     complex_mode="jax",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.tanh(x)
 

@@ -16,8 +16,8 @@ def gelu(
     /,
     *,
     approximate: bool = False,
-    out: Optional[None] = None,
     complex_mode="jax",
+    out: Optional[None] = None,
 ) -> None:
     if approximate:
         return (
@@ -27,12 +27,12 @@ def gelu(
 
 
 def leaky_relu(
-    x: None, /, *, alpha: float = 0.2, out: Optional[None] = None, complex_mode="jax"
+    x: None, /, *, alpha: float = 0.2, complex_mode="jax", out: Optional[None] = None
 ) -> None:
     return mx.nd.LeakyReLU(x, slope=alpha)
 
 
-def relu(x: None, /, *, out: Optional[None] = None, complex_mode="jax") -> None:
+def relu(x: None, /, *, complex_mode="jax", out: Optional[None] = None) -> None:
     return mx.nd.relu(x)
 
 
