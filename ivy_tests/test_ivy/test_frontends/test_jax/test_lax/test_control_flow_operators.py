@@ -214,6 +214,7 @@ def test_jax_while_loop(
         init_val=x[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="jax.lax.scan",
     dtype_and_x=helpers.dtype_and_values(
