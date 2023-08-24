@@ -194,16 +194,15 @@ def _relu6_jax_like(
     fn_original=None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    return ivy.where(
-        (
-            ivy.logical_or(
-                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
-            )
-        ),
-        ivy.minimum(ivy.array(0.0, dtype=x.dtype), 6),
-        x,
-    )
-
+        return ivy.where(
+          ivy.logical_or(ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)),
+          ivy.array(0, dtype=x.dtype),
+          ivy.where(
+            ivy.logical_or(ivy.real(x) > 6, ivy.logical_and(ivy.real(x) == 6, ivy.imag(x) > 0)),
+            ivy.array(6, dtype=x.dtype),
+            x,
+          ),
+        )
 
 @handle_exceptions
 @handle_backend_invalid
