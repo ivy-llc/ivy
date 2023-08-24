@@ -1,7 +1,7 @@
 # local
 
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -138,6 +138,7 @@ def affine_grid(theta, out_shape, align_corners=True):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def channel_shuffle(x, groups, data_format="NCHW", name=None):
     if len(ivy.shape(x)) != 4:
         raise ValueError(
