@@ -7,7 +7,7 @@ from typing import Optional
 
 # local
 import ivy
-from ..pipeline_helper import update_backend, get_frontend_config
+from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -39,9 +39,9 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
     if is_frontend_test:
-        framework_module = get_frontend_config(framework)
+        framework_module = get_frontend_config(framework).supported_dtypes
     else:
-        framework_module = ivy.with_backend(framework, cached=True)
+        framework_module = ivy.with_backend(framework)
 
     if kind == "valid":
         return framework_module.valid_dtypes
@@ -369,7 +369,7 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         bound_dtype_bits = lambda d: (
             ivy_backend.dtype_bits(d) / 2
             if ivy_backend.is_complex_dtype(d)

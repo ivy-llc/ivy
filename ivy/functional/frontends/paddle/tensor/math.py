@@ -110,6 +110,12 @@ def round(x, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def round_(x, name=None):
+    return ivy.inplace_update(x, round(x))
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
 
@@ -400,6 +406,11 @@ def rsqrt(x, name=None):
     return 1 / ivy.sqrt(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def rsqrt_(x, name=None):
+    return ivy.inplace_update(x, ivy.reciprocal(ivy.inplace_update(x, ivy.sqrt(x))))
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -431,6 +442,15 @@ def mm(input, mat2, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
+    value = alpha * ivy.matmul(x, y) + (beta * input)
+    return value
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
 )
 @to_ivy_arrays_and_back
@@ -452,3 +472,33 @@ def take(
         index = ivy.where(index < 0, index % x.shape[-1], index)
         index = ivy.where(index >= x.shape[-1], index % x.shape[-1], index)
     return ivy.gather(x, index, axis=0)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amax(x, axis=None, keepdims=False):
+    if axis is None:
+        return ivy.max(x)
+    if isinstance(axis, int):
+        axis = [axis]
+    for i in range(len(axis)):
+        if axis[i] < 0:
+            axis[i] += x.ndim
+    for i in axis:
+        if i < 0 or i >= x.ndim:
+            raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
+    return ivy.max(x, axis=axis, keepdims=keepdims)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
+    # TODO this function will be simplified as soon as the ivy.stanh(x,a,b) is added
+    exp_ax = ivy.exp(ivy.multiply(scale_a, x))
+    exp_minus_ax = ivy.exp(ivy.multiply(-scale_a, x))
+    numerator = ivy.subtract(exp_ax, exp_minus_ax)
+    denominator = ivy.add(exp_ax, exp_minus_ax)
+    ret = ivy.multiply(scale_b, ivy.divide(numerator, denominator))
+    return ret
