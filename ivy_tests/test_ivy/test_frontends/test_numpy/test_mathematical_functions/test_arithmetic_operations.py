@@ -1,6 +1,5 @@
 # global
 from hypothesis import assume, strategies as st
-#import ivy.numpy as inpv
 import numpy as np
 
 # local
