@@ -2394,16 +2394,9 @@ def test_tensorflow_unravel_index(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-
 )
 def test_tensorflow_stop_gradient(
-    *, 
-    dtype_and_x, 
-    test_flags, 
-    backend_fw, 
-    fn_tree, 
-    frontend,
-    on_device
+    *, dtype_and_x, test_flags, backend_fw, fn_tree, frontend, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
