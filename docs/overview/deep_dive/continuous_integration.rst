@@ -2,7 +2,6 @@ Continuous Integration
 ======================
 
 .. _`continuous integration channel`: https://discord.com/channels/799879767196958751/1028268051776413759
-.. _`continuous integration forum`: https://discord.com/channels/799879767196958751/1028298018438520862
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
@@ -399,8 +398,7 @@ You can filter tests by selecting choices from the various dropdowns. The link c
 
 This should have hopefully given you a good feel for how Continuous Integration works in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_
-or in the `continuous integration forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_!
 
 **Video**
 

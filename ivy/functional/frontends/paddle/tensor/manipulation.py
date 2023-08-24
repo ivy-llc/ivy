@@ -15,6 +15,17 @@ def reshape(x, shape):
     return ivy.reshape(x, shape)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def reshape_(x, shape):
+    ret = ivy.reshape(x, shape)
+    ivy.inplace_update(x, ret)
+    return x
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def abs(x, name=None):
@@ -147,6 +158,10 @@ def roll(x, shifts, axis=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
+def unstack(x, axis=0, name=None):
+    return ivy.unstack(x, axis=axis)
+
+
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
