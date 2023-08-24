@@ -738,7 +738,7 @@ def _moveaxis_helper(draw):
     source = draw(st.integers(0, x.ndim - 1))
     destination = draw(st.integers(0, x.ndim - 1))
     return input_dtype, x, source, destination
-    
+
 
 # moveaxis
 @handle_frontend_test(
@@ -766,7 +766,7 @@ def test_paddle_moveaxis(
         source=source,
         destination=destination,
     )
-    
+
 
 # rot90
 @handle_frontend_test(
