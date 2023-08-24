@@ -110,6 +110,12 @@ def round(x, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def round_(x, name=None):
+    return ivy.inplace_update(x, round(x))
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
 
@@ -398,6 +404,11 @@ def lerp(x, y, weight, name=None):
 @to_ivy_arrays_and_back
 def rsqrt(x, name=None):
     return 1 / ivy.sqrt(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def rsqrt_(x, name=None):
+    return ivy.inplace_update(x, ivy.reciprocal(ivy.inplace_update(x, ivy.sqrt(x))))
 
 
 @with_supported_dtypes(
