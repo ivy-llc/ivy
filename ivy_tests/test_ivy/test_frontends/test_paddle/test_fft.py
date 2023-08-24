@@ -226,6 +226,5 @@ def test_paddle_ifft2(
         n=n,
         axis=axis,
         norm=norm,
-        valid_axis=True,
         force_int_axis=True,
     )
