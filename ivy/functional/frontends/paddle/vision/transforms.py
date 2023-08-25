@@ -170,9 +170,25 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
         raise ValueError("Unsupported input format")
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def adjust_contrast(img, contrast_factor):
+    assert contrast_factor >= 0, "contrast_factor should be non-negative."
+    assert _get_image_num_channels(img, "CHW") in [
+        1,
+        3,
+    ], "channels of input should be either 1 or 3."
+
+    mean = ivy.mean(img)
+    img_contrasted = (img - mean) * contrast_factor + mean
+
+    return ivy.clip(img_contrasted, 0, 1)  # Assuming pixel values are in [0, 1] range
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
+
+
 @to_ivy_arrays_and_back
 def to_tensor(pic, data_format="CHW"):
     array = ivy.array(pic)
