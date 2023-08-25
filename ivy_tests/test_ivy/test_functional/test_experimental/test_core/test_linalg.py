@@ -1612,16 +1612,17 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     )
 
 
-#von_entropy
+# von_entropy
 @handle_test(
     fn_tree="functional.ivy.experimental.vonneumann_entropy",
     dtype_and_tensor=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), allow_inf=False
-    ).filter(lambda x: x[0][0] not in ["bfloat16"])
-
+    ).filter(lambda x: x[0][0] not in ["bfloat16"]),
 )
-def test_vonneumann_entropy(*, dtype_and_tensor, test_flags, backend_fw, fn_name, on_device):
-    dtype,x=dtype_and_tensor
+def test_vonneumann_entropy(
+    *, dtype_and_tensor, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x = dtype_and_tensor
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,

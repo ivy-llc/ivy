@@ -1686,7 +1686,9 @@ def _eps(dtype:float):
 def vonneumann_entropy(
     tensor: Union[ivy.Array, ivy.NativeArray],
     ):
-    """Returns the von Neumann entropy of a density matrix (2-mode, square) tensor (matrix).
+    """
+    Returns the von Neumann entropy of a density matrix (2-mode, square) tensor
+    (matrix).
 
     Parameters
     ----------
