@@ -2826,5 +2826,5 @@ def test_paddle_tensor_trunc(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        on_device=on_device
+        on_device=on_device,
     )
