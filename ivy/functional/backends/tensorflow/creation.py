@@ -168,6 +168,18 @@ def eye(
         return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return dlcapsule
+
+
 # noinspection PyShadowingNames
 def from_dlpack(
     x: Union[tf.Tensor, tf.Variable],
