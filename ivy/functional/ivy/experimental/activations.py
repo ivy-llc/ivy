@@ -333,8 +333,8 @@ def _selu_jax_like(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Apply jax definition of selu to function
-    source:
+    Alpha and scale are taken from jax's implementation of selu
+    Source:
         [https://jax.readthedocs.io/en/latest/_modules/jax/_src/nn/functions.html#selu]
     """
     alpha = 1.6732632423543772848170429916717

@@ -91,8 +91,6 @@ def sigmoid(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return 1 / (1 + paddle_backend.exp(-x))
         return F.sigmoid(x.cast("float32")).cast(x.dtype)
     return F.sigmoid(x)
 

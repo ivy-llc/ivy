@@ -35,17 +35,7 @@ def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 def sigmoid(
     x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
 ) -> Tensor:
-    if x.dtype.is_complex:
-        real_part = tf.math.real(x)
-        imag_part = tf.math.imag(x)
-
-        real_result = 1 / (1 + tf.exp(-real_part))
-        imag_result = 1 / (1 + tf.exp(-imag_part))
-
-        result = tf.complex(real_result, imag_result)
-    else:
-        result = tf.nn.sigmoid(x)
-    return result
+    return tf.nn.sigmoid(x)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
@@ -97,14 +87,4 @@ def mish(
 def hardswish(
     x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
 ) -> Tensor:
-    if x.dtype.is_complex:
-        real_part = tf.real(x)
-        imag_part = tf.imag(x)
-
-        real_result = real_part * tf.nn.relu6(real_part + 3) / 6
-        imag_result = imag_part * tf.nn.relu6(imag_part + 3) / 6
-
-        result = tf.complex(real_result, imag_result)
-    else:
-        result = x * tf.nn.relu6(x + 3) / 6
-    return result
+    return x * tf.nn.relu6(x + 3) / 6

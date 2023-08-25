@@ -131,14 +131,4 @@ def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 def hardswish(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
 ) -> torch.Tensor:
-    if x.dtype.is_complex:
-        real_part = x.real
-        imag_part = x.imag
-
-        real_result = real_part * torch.nn.functional.relu6(real_part + 3) / 6
-        imag_result = imag_part * torch.nn.functional.relu6(imag_part + 3) / 6
-
-        result = torch.complex(real_result, imag_result)
-    else:
-        result = torch.nn.functional.hardswish(x)
-    return result
+    return torch.nn.functional.hardswish(x)
