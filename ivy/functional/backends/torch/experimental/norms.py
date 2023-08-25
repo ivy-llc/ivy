@@ -50,12 +50,10 @@ def batch_norm(
     xdims = x.ndim
     if data_format == "NSC":
         x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
-    runningmean = mean.clone()
-    runningvariance = variance.clone()
     xnormalized = torch.nn.functional.batch_norm(
         x,
-        runningmean,
-        runningvariance,
+        mean,
+        variance,
         weight=scale,
         bias=offset,
         training=training,
@@ -64,7 +62,7 @@ def batch_norm(
     )
     if data_format == "NSC":
         xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
-    return xnormalized, runningmean, runningvariance
+    return xnormalized, mean, variance
 
 
 batch_norm.partial_mixed_handler = (
@@ -95,8 +93,6 @@ def instance_norm(
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
     variance.requires_grad = False
-    runningmean = mean.clone()
-    runningvariance = variance.clone()
     # reshape  from  N, *S, C to N, C, *S
     xdims = x.ndim
     if data_format == "NSC":
@@ -104,8 +100,8 @@ def instance_norm(
 
     xnormalized = torch.nn.functional.instance_norm(
         x,
-        runningmean,
-        runningvariance,
+        mean,
+        variance,
         weight=scale,
         bias=offset,
         use_input_stats=training,
@@ -114,7 +110,7 @@ def instance_norm(
     )
     if data_format == "NSC":
         xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
-    return xnormalized, runningmean, runningvariance
+    return xnormalized, mean, variance
 
 
 instance_norm.partial_mixed_handler = (

@@ -26,6 +26,7 @@ FN_DECORATORS = [
     "inputs_to_native_arrays",
     "inputs_to_native_shapes",
     "inputs_to_ivy_arrays",
+    "handle_inplace_update_norm",
     "handle_out_argument",
     "handle_view_indexing",
     "handle_view",
@@ -1054,6 +1055,44 @@ def handle_partial_mixed_function(fn) -> Callable:
 
     _handle_partial_mixed_function.handle_partial_mixed_function = True
     return _handle_partial_mixed_function
+
+
+# handling inplace update for tensorflow and jax
+# backend implementations of batchnorm and instance norm
+
+
+def handle_inplace_update_norm(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_inplace_update_norm(*args, **kwargs):
+        """
+        Call `fn` and inplace update the input mean and variance with the running mean
+        and running variance returned by the function for tensorflow and jax since these
+        backends don't natively support inplace updates.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the inplace update
+            handled for jax and tensorflow.
+        """
+        normalized, runningmean, runningvar = fn(*args, **kwargs)
+        curr_backend = ivy.current_backend_str()
+
+        if curr_backend == "jax" or curr_backend == "tensorflow":
+            ivy.inplace_update(args[1], runningmean)
+            ivy.inplace_update(args[2], runningvar)
+
+        return normalized, runningmean, runningvar
+
+    _handle_inplace_update_norm.handle_inplace_update_norm = True
+    return _handle_inplace_update_norm
 
 
 # Functions #

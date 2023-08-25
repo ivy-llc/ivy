@@ -97,7 +97,7 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
+batch_norm.partial_mixed_handler = lambda x, *args, scale=None, offset=None, **kwargs: (
     (x.ndim > 1 and x.ndim < 6)
     and (scale is not None and scale.ndim == 1)
     and (offset is not None and offset.ndim == 1)

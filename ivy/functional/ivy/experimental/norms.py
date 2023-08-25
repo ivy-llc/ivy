@@ -195,8 +195,8 @@ def batch_norm(
     inv = 1.0 / ivy.sqrt(variance + eps)
     if scale is not None:
         inv = inv * scale
-    xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+    xnormalized = x * inv.astype(ivy.dtype(x), copy=False) + ivy.astype(
+        offset - mean * inv if offset is not None else -mean * inv, ivy.dtype(x)
     )
 
     if data_format == "NCS":
@@ -204,11 +204,19 @@ def batch_norm(
             xnormalized, axes=(0, xdims - 1, *range(1, xdims - 1))
         )
 
+    print(f"runing mean {runningmean}")
+    mean = ivy.inplace_update(mean, runningmean)
+    variance = ivy.inplace_update(variance, runningvariance)
+
     if ivy.exists(out):
         xnormalized = ivy.inplace_update(out[0], xnormalized)
         runningmean = ivy.inplace_update(out[1], runningmean)
         runningvariance = ivy.inplace_update(out[2], runningvariance)
 
+    print("*****")
+    print(mean)
+    print(variance)
+    print("*****")
     return xnormalized, runningmean, runningvariance
 
 
@@ -218,6 +226,7 @@ batch_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_inplace_update_norm",
         "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
@@ -341,7 +350,11 @@ def instance_norm(
         runningmean = ivy.inplace_update(out[1], runningmean)
         runningvariance = ivy.inplace_update(out[2], runningvariance)
 
-    return (xnormalized, runningmean, runningvariance)
+    return (
+        xnormalized,
+        ivy.inplace_update(mean, runningmean),
+        ivy.inplace_update(variance, runningvariance),
+    )
 
 
 instance_norm.mixed_backend_wrappers = {
@@ -350,6 +363,7 @@ instance_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_inplace_update_norm",
         "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
