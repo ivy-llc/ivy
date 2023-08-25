@@ -658,14 +658,12 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
-        assert ivy_backend.nested_map(
-            ret,
-            lambda x: (
-                _is_frontend_array(x)
-                if ivy_backend.is_array(x) and test_flags.generate_frontend_arrays
-                else True
-            ),
-        ), "Frontend function returned non-frontend arrays: {}".format(ret)
+        # test if frontend array was returned
+        if test_flags.generate_frontend_arrays:
+            assert ivy_backend.nested_map(
+                ret,
+                lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
+            ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
