@@ -313,7 +313,7 @@ def _broadcastable_trio(draw):
 
 # where
 @handle_frontend_test(
-    fn_tree="numpy.where",
+    fn_tree="paddle.where",
     broadcastables=_broadcastable_trio(),
     test_with_out=st.just(False),
 )
@@ -337,39 +337,3 @@ def test_numpy_where(
         x1=x1,
         x2=x2,
     )
-
-
-# @handle_frontend_test(
-#     fn_tree="paddle.where",
-#     dtype_and_x=helpers.dtype_and_values(
-#         available_dtypes=helpers.get_dtypes("valid"),
-#         min_num_dims=1,
-#         min_dim_size=1,
-#     ),
-#     test_with_out=st.just(False),
-# )
-# def test_paddle_where(
-#     dtype_and_x,
-#     on_device,
-#     fn_tree,
-#     frontend,
-#     backend_fw,
-#     test_flags,
-# ):
-#     dtype, x_1 = dtype_and_x
-#     x_1 = x_1
-#     x = x_1 * 2
-#     y = x_1 * -2
-#     condition = 0.5
-
-#     helpers.test_frontend_function(
-#         input_dtypes=dtype,
-#         frontend=frontend,
-#         backend_to_test=backend_fw,
-#         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         on_device=on_device,
-#         condition=condition,
-#         x=x,
-#         y=y,
-#     )
