@@ -983,17 +983,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
             The data type to produce. Must be a floating point type.
         out
             optional output container, for writing the result to.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
 
         Returns
         -------
