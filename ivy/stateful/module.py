@@ -149,6 +149,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._target = None
         self._lazy_compiled = False
         self._dynamic_backend = dynamic_backend
+        self.training = True
         if build_mode != "on_init":
             return
         if hasattr(Module, "_init_var"):
@@ -819,13 +820,15 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     def eval(self, mode: bool = False):
         # disables training mode for child modules
-        # if it exists
-        if hasattr(self, "training"):
-            self.training = mode
+        self.training = mode
         for module in self.v:
             module = getattr(self, module, None)
             if isinstance(module, ivy.Module):
-                module.eval(mode=mode)
+                module.eval()
+
+    def train(self, mode: bool = True):
+        # enables/disables training mode
+        self.eval(mode=mode)
 
     def __repr__(self):
         return object.__repr__(self)
