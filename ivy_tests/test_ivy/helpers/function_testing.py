@@ -1996,12 +1996,17 @@ def get_frontend_ret(
             )
         ret = frontend_fn(*args, **kwargs)
         if test_compile and frontend_array_function is not None:
-            ret = ivy_backend.nested_map(
-                ret,
-                arrays_to_frontend(backend, frontend_array_function),
-                include_derived={tuple: True},
-            )
-        if as_ivy_arrays:
+            if as_ivy_arrays:
+                ret = ivy_backend.nested_map(
+                    ret, ivy_backend.asarray, include_derived={tuple: True}
+                )
+            else:
+                ret = ivy_backend.nested_map(
+                    ret,
+                    arrays_to_frontend(backend, frontend_array_function),
+                    include_derived={tuple: True},
+                )
+        elif as_ivy_arrays:
             ret = ivy_backend.nested_map(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
             )
