@@ -106,3 +106,19 @@ def bernoulli(
     if not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
     return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)
+
+
+def multivariate_normal(
+    mean: Union[float, np.ndarray],
+    cov: Union[float, np.ndarray],
+    /,
+    *,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: Optional[str] = None,
+    dtype: Optional[np.dtype] = None,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if seed is not None:
+        np.random.seed(seed)
+    return np.asarray(np.random.multivariate_normal(mean, cov, size), dtype=dtype)
