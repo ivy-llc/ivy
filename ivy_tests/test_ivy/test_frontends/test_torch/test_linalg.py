@@ -1289,3 +1289,30 @@ def test_torch_cholesky_ex(
         input=x,
         upper=upper,
     )
+
+
+# diagonal
+@handle_frontend_test(
+    fn_tree="torch.linalg.diagonal",
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+)
+def test_torch_diagonal(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=True,
+        tensors=x,
+    )
