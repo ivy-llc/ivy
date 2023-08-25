@@ -218,12 +218,3 @@ def adjust_contrast(img, contrast_factor):
         raise ValueError("channels of input should be either 1 or 3.")
 
     return adjusted_image
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-@to_ivy_arrays_and_back
-def hflip(img):
-    img = ivy.array(img)
-    return ivy.flip(img, axis=-1)
