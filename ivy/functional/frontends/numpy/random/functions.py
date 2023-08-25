@@ -239,5 +239,9 @@ def triangular(left, mode, right, size=None):
 def logseries(p=0, size=None):
     if p <= 0 or p >= 1:
         raise ValueError("p value must be in the open interval (0, 1)")
-    ret = -ivy.pow(p,size) / ivy.multiply(ivy.log(1-p),size)
+    r = ivy.log(1 - p)
+    u= ivy.random_uniform(low=0.0,high=1.0,shape=size)
+    v = ivy.random_uniform(low=0.0, high=1.0, shape=size)
+    q= 1 - ivy.exp(r * u)
+    ret = 1 + ivy.log(v) / ivy.log(q)
     return ret
