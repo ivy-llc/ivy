@@ -21,3 +21,8 @@ def eigh(a, /, UPLO="L"):
 @from_zero_dim_arrays_to_scalar
 def eigvalsh(a, /, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
+
+
+@to_ivy_arrays_and_back
+def eigvals(a):
+    return ivy.eigvals(a)

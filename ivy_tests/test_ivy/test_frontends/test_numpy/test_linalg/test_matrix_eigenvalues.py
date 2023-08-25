@@ -158,3 +158,52 @@ def test_numpy_eigh(
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
+
+
+# eigvals
+@handle_frontend_test(
+    fn_tree="numpy.linalg.eigvals",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=4).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+)
+def test_numpy_eigvals(
+    dtypes_values,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtypes, a = dtypes_values
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+    )
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        ret = np.sort(np.abs(ivy_backend.to_numpy(ret))).astype(np.float64)
+        frontend_ret = np.sort(np.abs(frontend_ret)).astype(np.float64)
+
+        assert_all_close(
+            ret_np=ret,
+            ret_from_gt_np=frontend_ret,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+            atol=1e-2,
+            rtol=1e-2,
+        )
