@@ -2841,12 +2841,15 @@ def set_item(
         boolean indicating whether to copy x.
         If True, the function will update and return a copy of x.
         If False, the function will update x inplace.
+
     Returns
     -------
     ret
         the array with updated values at the specified indices.
+
     Functional Examples
     -------------------
+
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])
