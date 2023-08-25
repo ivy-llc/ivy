@@ -1252,6 +1252,65 @@ def test_torch_broadcast_shapes(
     assert ret == frontend_ret
 
 
+@st.composite
+def _get_input_and_broadcast_shape(draw):
+    # Determine the dimensionality of the tensor, ranging from scalar (0D) to 3D.
+    num_dims = draw(st.integers(min_value=0, max_value=3))
+
+    # Generate the dimensions of the tensor.
+    dims = [draw(st.integers(min_value=1, max_value=5)) for _ in range(num_dims)]
+
+    # Make Tensor.
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), shape=dims
+        )
+    )
+
+    # Define the broadcast shape dimension
+    broadcast_num_dims = draw(st.integers(min_value=num_dims, max_value=3))
+
+    # Construct the broadcast shape.
+    if broadcast_num_dims == num_dims:
+        shape = tuple(dims)
+    else:
+        shape_components = [
+            draw(st.integers(min_value=1, max_value=5))
+            for _ in range(broadcast_num_dims - num_dims)
+        ]
+        shape = tuple(shape_components) + tuple(dims)
+
+    return x_dtype, x, shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.broadcast_to",
+    array_and_shape=_get_input_and_broadcast_shape(),
+    test_with_out=st.just(False),
+)
+def test_torch_broadcast_to(
+    *,
+    array_and_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, array, shape = array_and_shape
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        array=array[0],
+        shape=shape,
+    )
+
+
 # atleast_2d
 @handle_frontend_test(
     fn_tree="torch.atleast_2d",
@@ -1691,4 +1750,33 @@ def test_torch_corrcoef(
         on_device=on_device,
         backend_to_test=backend_fw,
         input=x[0],
+    )
+
+
+# kron
+@handle_frontend_test(
+    fn_tree="torch.kron",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+    ),
+)
+def test_torch_kron(
+    dtype_and_x,
+    frontend,
+    fn_tree,
+    test_flags,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    input, label = x[0], x[1]
+    helpers.test_frontend_function(
+        input_dtypes=["float32"],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        other=label,
     )
