@@ -378,7 +378,6 @@ def reflect(x, low2, high2):
     x[flips % 2 != 0] += (span - extra + min)[flips % 2 != 0]
     return x
 
-
 def bicubic_interp(fx, alpha=-0.75):
     coeffs = []
 
@@ -395,10 +394,6 @@ def bicubic_interp(fx, alpha=-0.75):
     coeffs.append((alpha + 2) * fx2 * fx2 * fx2 - ((alpha + 3) * fx2 * fx2) + 1)
     coeffs.append(1 - coeffs[0] - coeffs[1] - coeffs[2])
     return coeffs
-
-
-border_clamp = lambda grid, border: ivy.fmin(border, ivy.fmax(grid, 0))
-
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
@@ -438,17 +433,20 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             grid[..., 1] = ivy.clip(grid[..., 1], 0, h - 1)
 
         elif padding_mode == "zeros":
-            w_mask = ivy.bitwise_or(grid[..., 0] < 0, grid[..., 0] > w)
-            h_mask = ivy.bitwise_or(grid[..., 1] < 0, grid[..., 1] > h)
+            grid_round = ivy.round(grid)
+            if mode == "nearest":
+                w_mask = ivy.bitwise_or(grid_round[..., 0] < 0, grid_round[..., 0] > w)
+                h_mask = ivy.bitwise_or(grid_round[..., 1] < 0, grid_round[..., 1] > h)
+            else:
+                w_mask = ivy.bitwise_or(grid_round[..., 0] < -1, grid_round[..., 0] > w)
+                h_mask = ivy.bitwise_or(grid_round[..., 1] < -1, grid_round[..., 1] > h)
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
-            grid[zeros_mask] += w * h
-            grid[..., 0] = ivy.clip(grid[..., 0], 0, w)
-            grid[..., 1] = ivy.clip(grid[..., 1], 0, h)
+            grid[zeros_mask] = ivy.repeat(ivy.array([[w, h]]), repeats=zeros_mask.shape[0], axis=0)
 
         # pad and shift for 1
-        padding = [(0, 0) for i in range(2)] + [(1, 2) for i in range(2)]
+        padding = [(0, 0) for i in range(2)] + [(2, 2) for i in range(2)]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
-        grid += 1
+        grid += 2
 
         # Apply sampling by mode
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
@@ -477,6 +475,11 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             v1 = v10 * (1 - alpha) + v11 * alpha
 
             return v0 * (1 - beta) + v1 * beta
+
+        elif mode == "nearest":
+            w_coor = ivy.astype(ivy.round(w_coor), ivy.int64)
+            h_coor = ivy.astype(ivy.round(h_coor), ivy.int64)
+            return ivy.permute_dims(input[batch_coor, :, h_coor, w_coor], (0, 3, 1, 2))
 
         elif mode == "bicubic":
             w1 = ivy.astype(ivy.floor(w_coor), ivy.int64)
@@ -540,10 +543,10 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
                 + v3 * h_coeffs[3]
             )
 
-        elif mode == "nearest":
-            w_coor = ivy.astype(ivy.round(w_coor), ivy.int64)
-            h_coor = ivy.astype(ivy.round(h_coor), ivy.int64)
-            return ivy.permute_dims(input[batch_coor, :, h_coor, w_coor], (0, 3, 1, 2))
+        # elif mode == "nearest":
+        #     w_coor = ivy.astype(ivy.round(w_coor), ivy.int64)
+        #     h_coor = ivy.astype(ivy.round(h_coor), ivy.int64)
+        #     return ivy.permute_dims(input[batch_coor, :, h_coor, w_coor], (0, 3, 1, 2))
 
     elif ivy.get_num_dims(input) == 5:  # sample from 3D images
         n, c, d, h, w = input.shape
@@ -579,20 +582,34 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             grid[..., 2] = ivy.clip(grid[..., 2], 0, d - 1)
 
         elif padding_mode == "zeros":
-            w_mask = ivy.bitwise_or(grid[..., 0] < 0, grid[..., 0] > w - 1)
-            h_mask = ivy.bitwise_or(grid[..., 1] < 0, grid[..., 1] > h - 1)
-            d_mask = ivy.bitwise_or(grid[..., 2] < 0, grid[..., 2] > d - 1)
+            grid_round = ivy.round(grid)
+            if mode == "nearest":
+                w_mask = ivy.bitwise_or(grid_round[..., 0] < 0, grid_round[..., 0] > w)
+                h_mask = ivy.bitwise_or(grid_round[..., 1] < 0, grid_round[..., 1] > h)
+                d_mask = ivy.bitwise_or(grid_round[..., 2] < 0, grid_round[..., 2] > d)
+            else:
+                w_mask = ivy.bitwise_or(grid_round[..., 0] < -1, grid_round[..., 0] > w)
+                h_mask = ivy.bitwise_or(grid_round[..., 1] < -1, grid_round[..., 1] > h)
+                d_mask = ivy.bitwise_or(grid_round[..., 2] < -1, grid_round[..., 2] > d)
+
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
             zeros_mask = ivy.bitwise_or(zeros_mask, d_mask)
-
-            grid[zeros_mask] += w * h * d
-            grid[..., 0] = ivy.clip(grid[..., 0], 0, w)
-            grid[..., 1] = ivy.clip(grid[..., 1], 0, h)
-            grid[..., 2] = ivy.clip(grid[..., 2], 0, d)
+            grid[zeros_mask] = ivy.repeat(ivy.array([[w, h, d]]), repeats=zeros_mask.shape[0], axis=0)
+            # w_mask = ivy.bitwise_or(grid[..., 0] < 0, grid[..., 0] > w - 1)
+            # h_mask = ivy.bitwise_or(grid[..., 1] < 0, grid[..., 1] > h - 1)
+            # d_mask = ivy.bitwise_or(grid[..., 2] < 0, grid[..., 2] > d - 1)
+            # zeros_mask = ivy.bitwise_or(w_mask, h_mask)
+            # zeros_mask = ivy.bitwise_or(zeros_mask, d_mask)
+            #
+            # grid[zeros_mask] += w * h * d
+            # grid[..., 0] = ivy.clip(grid[..., 0], 0, w)
+            # grid[..., 1] = ivy.clip(grid[..., 1], 0, h)
+            # grid[..., 2] = ivy.clip(grid[..., 2], 0, d)
 
         # Padding for d, h, and w
-        padding = [(0, 0) for _ in range(2)] + [(0, 2) for _ in range(3)]
+        padding = [(0, 0) for _ in range(2)] + [(1, 2) for _ in range(3)]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
+        grid += 1
 
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
         batch_coor = ivy.repeat(batch_coor, to_d * to_h * to_w, axis=1)
@@ -610,28 +627,38 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             h1 = h0 + 1
             d1 = d0 + 1
 
-            v000 = ivy.permute_dims(input[batch_coor, :, d0, h0, w0], (0, 4, 1, 2, 3))
-            v001 = ivy.permute_dims(input[batch_coor, :, d0, h0, w1], (0, 4, 1, 2, 3))
-            v010 = ivy.permute_dims(input[batch_coor, :, d0, h1, w0], (0, 4, 1, 2, 3))
-            v011 = ivy.permute_dims(input[batch_coor, :, d0, h1, w1], (0, 4, 1, 2, 3))
-            v100 = ivy.permute_dims(input[batch_coor, :, d1, h0, w0], (0, 4, 1, 2, 3))
-            v101 = ivy.permute_dims(input[batch_coor, :, d1, h0, w1], (0, 4, 1, 2, 3))
-            v110 = ivy.permute_dims(input[batch_coor, :, d1, h1, w0], (0, 4, 1, 2, 3))
-            v111 = ivy.permute_dims(input[batch_coor, :, d1, h1, w1], (0, 4, 1, 2, 3))
+            v000 = ivy.permute_dims(input[batch_coor, :, d0, h0, w0], (0, 4, 1, 2, 3)) # tnw
+            v001 = ivy.permute_dims(input[batch_coor, :, d0, h0, w1], (0, 4, 1, 2, 3)) # tne
+            v010 = ivy.permute_dims(input[batch_coor, :, d0, h1, w0], (0, 4, 1, 2, 3)) # tsw
+            v011 = ivy.permute_dims(input[batch_coor, :, d0, h1, w1], (0, 4, 1, 2, 3)) # tse
+            v100 = ivy.permute_dims(input[batch_coor, :, d1, h0, w0], (0, 4, 1, 2, 3)) # bnw
+            v101 = ivy.permute_dims(input[batch_coor, :, d1, h0, w1], (0, 4, 1, 2, 3)) # bne
+            v110 = ivy.permute_dims(input[batch_coor, :, d1, h1, w0], (0, 4, 1, 2, 3)) # bsw
+            v111 = ivy.permute_dims(input[batch_coor, :, d1, h1, w1], (0, 4, 1, 2, 3)) # bse
 
             alpha = ivy.reshape(w_coor - w0, (n, 1, to_d, to_h, to_w))
             beta = ivy.reshape(h_coor - h0, (n, 1, to_d, to_h, to_w))
             gamma = ivy.reshape(d_coor - d0, (n, 1, to_d, to_h, to_w))
 
-            v00 = v000 * (1 - alpha) + v001 * alpha
-            v01 = v010 * (1 - alpha) + v011 * alpha
-            v10 = v100 * (1 - alpha) + v101 * alpha
-            v11 = v110 * (1 - alpha) + v111 * alpha
+            # v00 = (v000 * (1 - alpha)) + (v001 * alpha)
+            # v01 = (v010 * (1 - alpha)) + (v011 * alpha)
+            # v10 = (v100 * (1 - alpha)) + (v101 * alpha)
+            # v11 = (v110 * (1 - alpha)) + (v111 * alpha)
+            #
+            # v0 = v00 * (1 - beta) + v01 * beta
+            # v1 = v10 + (1 - beta) + v11 * beta
+            #
+            # return v0 * (1 - gamma) + v1 * gamma
+            v = (alpha * beta * gamma) * v111
+            v += ((1 - alpha) * beta * gamma) * v110
+            v += (alpha * (1 - beta) * gamma) * v101
+            v += ((1 - alpha) * (1 - beta) * gamma) * v100
 
-            v0 = v00 * (1 - beta) + v01 * beta
-            v1 = v10 + (1 - beta) + v11 * beta
-
-            return v0 * (1 - gamma) + v1 * gamma
+            v += (alpha * beta * (1 - gamma)) * v011
+            v += ((1 - alpha) * beta * (1 - gamma)) * v010
+            v += (alpha * (1 - beta) * (1 - gamma)) * v001
+            v += ((1 - alpha) * (1 - beta) * (1 - gamma)) * v000
+            return v
             # tnw = ivy.astype(ivy.floor(grid), ivy.int64)
             # bse = tnw + 1
 
