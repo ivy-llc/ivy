@@ -360,8 +360,9 @@ def test_torch_affine_grid(
         align_corners=align_corners,
     )
 
+
 @st.composite
-def _grid_sample_helper(draw, dtype, dims, mode, padding_mode):
+def grid_sample_helper(draw, dtype, dims, mode, padding_mode):
     dtype = draw(dtype)
     align_corners = draw(st.booleans())
     # dims = draw(st.integers(4, 5))
@@ -381,8 +382,8 @@ def _grid_sample_helper(draw, dtype, dims, mode, padding_mode):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=[batch, channels, height, width],
-                min_value=0.0,
-                max_value=1.0,
+                min_value=-1,
+                max_value=1,
             )
         )
 
@@ -401,7 +402,7 @@ def _grid_sample_helper(draw, dtype, dims, mode, padding_mode):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=[batch, channels, depth, height, width],
-                min_value=0,
+                min_value=-1,
                 max_value=1,
             )
         )
@@ -415,13 +416,15 @@ def _grid_sample_helper(draw, dtype, dims, mode, padding_mode):
             )
         )
     return dtype, x, grid, mode, padding_mode, align_corners
+
+
 @handle_frontend_test(
     fn_tree="torch.nn.functional.grid_sample",
-    dtype_x_grid_modes=_grid_sample_helper(
+    dtype_x_grid_modes=grid_sample_helper(
         dtype=helpers.get_dtypes("valid", full=False),
-        dims = 4,
-        mode = ['nearest', 'bilinear'],
-        padding_mode = ['border', 'zeros', 'reflection']
+        dims=4,
+        mode=["nearest", "bilinear"],
+        padding_mode=["border", "zeros", "reflection"],
     ),
 )
 def test_torch_grid_sample_2d(
@@ -441,10 +444,9 @@ def test_torch_grid_sample_2d(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-
         input=x,
         grid=grid,
         mode=mode,
         padding_mode=padding_mode,
-        align_corners=align_corners
+        align_corners=align_corners,
     )
