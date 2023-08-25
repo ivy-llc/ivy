@@ -88,7 +88,16 @@ def asarray(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(obj, paddle.Tensor):
-        ret = obj
+        if copy:
+            # Checking if the tensor is not empty
+            # As clone is not supported for empty tensors
+            if all(obj.shape):
+                ret = obj.clone().detach()
+                ret.stop_gradient = obj.stop_gradient
+            else:
+                ret = obj
+        else:
+            ret = obj
         return ret.astype(dtype)
 
     elif isinstance(obj, (Number, bool, complex)):
