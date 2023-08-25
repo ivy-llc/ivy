@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
+from ivy import sparse_array
 
 # Helpers #
 # ------- #
@@ -393,6 +394,15 @@ def test_array_add_sparse(
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     dtype, x = dtype_and_x
+
+    # initiate a sparse array
+    sparse_inst = sparse_array.SparseArray(
+        coo_indices=coo_ind,
+        values=val,
+        dense_shape=shp,
+        format="coo",
+    )
+
     helpers.test_method(
         backend_to_test=backend_fw,
         on_device=on_device,
@@ -403,12 +413,7 @@ def test_array_add_sparse(
         init_input_dtypes=dtype,
         method_input_dtypes=["int64", val_dtype],
         method_all_as_kwargs_np={
-            "other": {
-                "coo_indices": coo_ind,
-                "values": val,
-                "dense_shape": shp,
-                "format": "coo",
-            }
+            "other": sparse_inst,
         },
         class_name=class_name,
         method_name=method_name,
