@@ -621,6 +621,27 @@ def mish(
     return current_backend(x).mish(x, out=out)
 
 
+def _hardswish_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    def hard_sigmoid(x):
+        return ivy.relu6(x + 3.0) / 6
+
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        x * hard_sigmoid(x),
+        x,
+    )
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -675,3 +696,6 @@ def hardswish(
     }
     """
     return current_backend(x).hardswish(x, out=out)
+
+
+hardswish.jax_like = _hardswish_jax_like

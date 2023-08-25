@@ -180,7 +180,8 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def hardswish(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
