@@ -335,7 +335,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     _visited=_visited,
                     without_initialisation=without_initialisation,
                     key=name,
-                    key_chain=key_chain
+                    key_chain=key_chain,
                 )
                 if ret:
                     vs[name] = ret
