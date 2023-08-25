@@ -391,7 +391,8 @@ def bicubic_interp(fx, alpha = -0.75):
     return coeffs
 
 border_clamp = lambda grid, border: ivy.fmin(border, ivy.fmax(grid, 0))
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+# @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(input, grid, mode='bilinear', padding_mode='zeros', align_corners=None):
     # Ref:

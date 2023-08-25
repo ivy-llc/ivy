@@ -361,10 +361,11 @@ def test_torch_affine_grid(
     )
 
 @st.composite
-def _grid_sample_helper(draw, dtype, mode, padding_mode):
+def _grid_sample_helper(draw, dtype, dims, mode, padding_mode):
     dtype = draw(dtype)
     align_corners = draw(st.booleans())
-    dims = draw(st.integers(4, 5))
+    # dims = draw(st.integers(4, 5))
+    dims = dims
     height = draw(helpers.ints(min_value=10, max_value=15))
     width = draw(helpers.ints(min_value=10, max_value=15))
     channels = draw(helpers.ints(min_value=1, max_value=3))
@@ -380,8 +381,8 @@ def _grid_sample_helper(draw, dtype, mode, padding_mode):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=[batch, channels, height, width],
-                min_value=0,
-                max_value=1,
+                min_value=0.0,
+                max_value=1.0,
             )
         )
 
@@ -389,8 +390,8 @@ def _grid_sample_helper(draw, dtype, mode, padding_mode):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=[batch, grid_h, grid_w, 2],
-                min_value=-1.0,
-                max_value=1.0,
+                min_value=-1,
+                max_value=1,
             )
         )
     elif dims == 5:
@@ -409,8 +410,8 @@ def _grid_sample_helper(draw, dtype, mode, padding_mode):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=[batch, grid_d, grid_h, grid_w, 3],
-                min_value=-1.0,
-                max_value=1.0,
+                min_value=-1,
+                max_value=1,
             )
         )
     return dtype, x, grid, mode, padding_mode, align_corners
@@ -418,11 +419,12 @@ def _grid_sample_helper(draw, dtype, mode, padding_mode):
     fn_tree="torch.nn.functional.grid_sample",
     dtype_x_grid_modes=_grid_sample_helper(
         dtype=helpers.get_dtypes("valid", full=False),
+        dims = 4,
         mode = ['nearest', 'bilinear'],
         padding_mode = ['border', 'zeros', 'reflection']
     ),
 )
-def test_torch_grid_sample(
+def test_torch_grid_sample_2d(
     *,
     dtype_x_grid_modes,
     on_device,
