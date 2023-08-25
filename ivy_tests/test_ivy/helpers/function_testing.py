@@ -658,14 +658,12 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
-        assert ivy_backend.nested_map(
-            ret,
-            lambda x: (
-                _is_frontend_array(x)
-                if ivy_backend.is_array(x) and test_flags.generate_frontend_arrays
-                else True
-            ),
-        ), "Frontend function returned non-frontend arrays: {}".format(ret)
+        # test if frontend array was returned
+        if test_flags.generate_frontend_arrays:
+            assert ivy_backend.nested_map(
+                ret,
+                lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
+            ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
@@ -1998,12 +1996,17 @@ def get_frontend_ret(
             )
         ret = frontend_fn(*args, **kwargs)
         if test_compile and frontend_array_function is not None:
-            ret = ivy_backend.nested_map(
-                ret,
-                arrays_to_frontend(backend, frontend_array_function),
-                include_derived={tuple: True},
-            )
-        if as_ivy_arrays:
+            if as_ivy_arrays:
+                ret = ivy_backend.nested_map(
+                    ret, ivy_backend.asarray, include_derived={tuple: True}
+                )
+            else:
+                ret = ivy_backend.nested_map(
+                    ret,
+                    arrays_to_frontend(backend, frontend_array_function),
+                    include_derived={tuple: True},
+                )
+        elif as_ivy_arrays:
             ret = ivy_backend.nested_map(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
             )
