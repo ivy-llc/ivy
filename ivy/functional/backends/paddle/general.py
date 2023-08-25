@@ -10,7 +10,7 @@ import multiprocessing as _multiprocessing
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.functional.ivy.general import _broadcast_to
-from ivy.utils.assertions import check_inplace_update_support
+from ivy.utils.exceptions import _check_inplace_update_support
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -331,7 +331,7 @@ def inplace_update(
     ensure_in_backend: bool = False,
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
-    check_inplace_update_support()
+    _check_inplace_update_support()
 
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)

@@ -1,8 +1,6 @@
 # global
 import sys
 import logging
-import warnings
-
 import tensorflow as tf
 
 for device in tf.config.experimental.list_physical_devices("GPU"):
@@ -150,9 +148,6 @@ invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_ver
 
 native_inplace_support = False
 
-backend = "tensorflow"
-
-
 supports_gradients = True
 
 
@@ -160,6 +155,9 @@ def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
         type = ivy.default_dtype()
     return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
+
+
+backend = "tensorflow"
 
 
 # local sub-modules

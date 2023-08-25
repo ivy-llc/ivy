@@ -1,7 +1,5 @@
 # global
 import sys
-import warnings
-
 from packaging import version
 import jaxlib
 import jax
@@ -181,6 +179,9 @@ def closest_valid_dtype(type=None, /, as_native=False):
     if isinstance(type, str) and type in invalid_dtypes:
         return {"int64": ivy.int32, "uint64": ivy.uint32, "float64": ivy.float32}[type]
     return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
+
+
+backend = "jax"
 
 
 # local sub-modules

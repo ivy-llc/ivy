@@ -18,7 +18,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax.device import _to_array
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.functional.backends.jax import JaxArray, NativeArray
-from ivy.utils.assertions import check_inplace_update_support
+from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 
 
@@ -252,7 +252,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        check_inplace_update_support(ensure_in_backend, x)
+        _check_inplace_update_support(ensure_in_backend, x)
 
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)

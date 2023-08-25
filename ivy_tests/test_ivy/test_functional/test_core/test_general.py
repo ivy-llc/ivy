@@ -1263,6 +1263,13 @@ def test_set_inplace_mode(mode):
     assert ivy.inplace_mode == mode
 
 
+@pytest.mark.parametrize("mode", ["lenient", "strict"])
+def test_unset_inplace_mode(mode):
+    ivy.set_inplace_mode(mode)
+    ivy.unset_inplace_mode()
+    assert ivy.inplace_mode == "lenient"
+
+
 # inplace_decrement
 @handle_test(
     fn_tree="functional.ivy.inplace_decrement",
