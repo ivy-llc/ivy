@@ -1041,6 +1041,8 @@ def fft2(
     norm: str = "backward",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
     if len(x.shape) > 2:
         result = _fft2_helper(x, s, dim)
     else:
