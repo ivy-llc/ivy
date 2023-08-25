@@ -593,6 +593,8 @@ def test_paddle_tensor_exp(
         frontend=frontend,
         on_device=on_device,
     )
+
+
 # exp_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -626,6 +628,7 @@ def test_paddle_tensor_exp_(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # cos
 @handle_frontend_method(
