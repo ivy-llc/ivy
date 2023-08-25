@@ -59,46 +59,6 @@ def _get_repeat_interleaves_args(
     return [values_dtype, repeats_dtype], values, repeats, axis, output_size
 
 
-# atleast_1d
-@handle_frontend_test(
-    fn_tree="torch.atleast_1d",
-    dtype_and_tensors=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=st.integers(min_value=1, max_value=5),
-    ),
-    test_with_out=st.just(False),
-)
-def test_torch_atleast_1d(
-    *,
-    dtype_and_tensors,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtypes, tensors = dtype_and_tensors
-    if isinstance(dtypes, list):  # If more than one value was generated
-        args = {
-            f"x{i}": np.array(tensor, dtype=dtypes[i])
-            for i, tensor in enumerate(tensors)
-        }
-    else:  # If exactly one value was generated
-        args = {"x0": np.array(tensors, dtype=dtypes)}
-    test_flags.num_positional_args = len(tensors)
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        **args,
-    )
-
-
-
-
 # stft
 @handle_frontend_test(
     fn_tree="torch.stft",
