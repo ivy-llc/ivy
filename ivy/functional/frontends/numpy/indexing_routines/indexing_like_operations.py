@@ -98,3 +98,29 @@ def compress(condition, a, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@to_ivy_arrays_and_back
+def put(a, ind, v, mode='raise'):
+    '''
+    a: the target array
+    ind: the target indices, interpreted as integers
+    v: the values to place in a at target indices. If v is shorter than ind, it will be repeated as necessary.
+    mode: specifies how out-of-bounds indices will behave. It can take on one of three values: 'raise', 'wrap', or 'clip'. The default value is 'raise'.
+    '''
+    a = ivy.array(a)
+    ind = ivy.array(ind)
+    v = ivy.array(v)
+
+    if mode == 'raise':
+        a[ind] = v
+    elif mode == 'wrap':
+        ind = ind % len(a)
+        a[ind] = v
+    elif mode == 'clip':
+        ind = ivy.clip(ind, 0, len(a) - 1)
+        a[ind] = v
+    else:
+        raise ValueError("mode must be one of 'raise', 'wrap', or 'clip'")
+
+    return a

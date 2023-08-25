@@ -6,7 +6,7 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
+import ivy
 
 @handle_frontend_test(
     fn_tree="numpy.take_along_axis",
@@ -188,3 +188,51 @@ def test_numpy_compress(
         a=arr[0],
         axis=ax,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.put",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        dtype=["float32"],
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=10,
+        num_arrays=1
+    ),
+    v=helpers.ints(min_value=1, max_value=10),
+    indices=helpers.ints(min_value=1, max_value=10),
+    mode=st.sampled_from(["clip", "wrap"]),
+    test_with_out=st.just(False),
+
+
+)
+def test_numpy_put(
+        dtype_x,
+        v,
+        indices,
+        mode,
+        test_flags,
+        frontend,
+        backend_fw,
+        fn_tree,
+        on_device,
+):
+    dtypes, x = dtype_x
+    x = ivy.array(x)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        ind=indices,
+        v=v,
+        mode=mode,
+
+    )
+
