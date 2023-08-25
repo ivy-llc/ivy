@@ -326,7 +326,7 @@ def flipud(input):
 
 @to_ivy_arrays_and_back
 def deg2rad(input, *, out=None):
-    return ivy.array(input * 3.1416 / 180, out=out)
+    return ivy.array(input * ivy.pi / 180, out=out)
 
 
 arcsinh = asinh
