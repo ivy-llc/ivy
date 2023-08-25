@@ -262,9 +262,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
+                ivy.Container,
+                ivy.Container,
+                ivy.Container,
             ]
         ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -346,7 +346,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     def batch_norm(
-        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        self: ivy.Container,
         mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
         variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
         /,
@@ -359,9 +359,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
+                ivy.Container,
+                ivy.Container,
+                ivy.Container,
             ]
         ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -456,9 +456,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
+                ivy.Container,
+                ivy.Container,
+                ivy.Container,
             ]
         ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -538,7 +538,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     def instance_norm(
-        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        self: ivy.Container,
         mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
         variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
         /,
@@ -551,9 +551,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
-                Union[ivy.Array, ivy.Container],
+                ivy.Container,
+                ivy.Container,
+                ivy.Container,
             ]
         ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
