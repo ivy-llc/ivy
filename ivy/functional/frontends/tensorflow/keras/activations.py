@@ -1,6 +1,7 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -60,6 +61,10 @@ def swish(x):
     return ivy.multiply(x, ivy.sigmoid(x))
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("bfloat16", "float16", "float32", "float64")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def elu(x, alpha=1.0):
     zeros = ivy.zeros_like(x, dtype=ivy.dtype(x))
@@ -71,58 +76,13 @@ def elu(x, alpha=1.0):
     return ret_val
 
 
-elu.supported_dtypes = {
-    "numpy": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "tensorflow": (
-        "bfloat16",
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "torch": (
-        "bfloat16",
-        "float32",
-        "float64",
-    ),
-    "jax": (
-        "bfloat16",
-        "float16",
-        "float32",
-        "float64",
-    ),
-}
-
-
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def selu(x):
     return ivy.selu(x)
-
-
-selu.supported_dtypes = {
-    "numpy": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "tensorflow": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "torch": (
-        "float32",
-        "float64",
-    ),
-    "jax": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-}
 
 
 ACTIVATION_FUNCTIONS = [
@@ -137,6 +97,10 @@ ACTIVATION_FUNCTIONS = [
 ]
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    "tensorflow",
+)
 def deserialize(name, custom_objects=None):
     if name is None:
         return None
@@ -161,29 +125,6 @@ def deserialize(name, custom_objects=None):
 
     else:
         raise ValueError(f"Could not interpret activation function: {name}")
-
-
-deserialize.supported_dtypes = {
-    "numpy": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "tensorflow": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "torch": (
-        "float32",
-        "float64",
-    ),
-    "jax": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-}
 
 
 def get(identifier):

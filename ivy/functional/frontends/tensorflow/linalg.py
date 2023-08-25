@@ -168,6 +168,7 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     keepdims = keepdims or False
@@ -177,12 +178,6 @@ def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
         return ivy.matrix_norm(tensor, ord=ord, axis=axis, keepdims=keepdims)
     # Else resort to a vector norm
     return ivy.vector_norm(tensor, ord=ord, axis=axis, keepdims=keepdims)
-
-
-norm.supported_dtypes = (
-    "float32",
-    "float64",
-)
 
 
 @to_ivy_arrays_and_back
@@ -216,18 +211,13 @@ def matrix_transpose(a, name="matrix_transpose", conjugate=False):
     return ivy.matrix_transpose(a)
 
 
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def global_norm(t_list, name=None):
     l2_norms = [
         ivy.sqrt((ivy.sum(ivy.square(t)))) ** 2 for t in t_list if t is not None
     ]
     return ivy.sqrt(ivy.sum(ivy.asarray(l2_norms, dtype=ivy.dtype(l2_norms[0]))))
-
-
-global_norm.supported_dtypes = (
-    "float32",
-    "float64",
-)
 
 
 @to_ivy_arrays_and_back

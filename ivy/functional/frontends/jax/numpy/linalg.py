@@ -81,18 +81,16 @@ def pinv(a, rcond=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"0.4.14 and below": ("float32", "float64")},
+    "jax",
+)
 def norm(x, ord=None, axis=None, keepdims=False):
     if ord is None:
         ord = 2
     if type(axis) in [list, tuple] and len(axis) == 2:
         return Array(ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims))
     return Array(ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims))
-
-
-norm.supported_dtypes = (
-    "float32",
-    "float64",
-)
 
 
 @to_ivy_arrays_and_back

@@ -561,17 +561,12 @@ def scan(
     return ivy.associative_scan(elems, fn, reverse=reverse)
 
 
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     return tf_frontend.linalg.norm(
         tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
     )
-
-
-norm.supported_dtypes = (
-    "float32",
-    "float64",
-)
 
 
 @to_ivy_arrays_and_back
