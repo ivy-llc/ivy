@@ -179,24 +179,51 @@ class ArrayMode:
         return self
 
 
+
 def get_referrers_recursive(
-    item, depth=0, max_depth=None, seen_set=None, local_set=None
-):
+    item: object,
+    depth: int = 0,
+    max_depth: int = None,
+    seen_set: set = None,
+    local_set: set = None
+) -> ivy.Container:
     """
-    Summary.
+    Recursively retrieves referrers of an item.
+
+    This function recursively fetches referrers of the input `item` up to a specified `max_depth`.
 
     Parameters
     ----------
-    item
+    item : object
+        The input item for which referrers need to be retrieved.
+    depth : int, optional
+        Current depth in the recursion. (default is 0)
+    max_depth : int, optional
+        Maximum depth of recursion. If `None`, there's no depth limit. (default is None)
+    seen_set : set, optional
+        Set of seen referrer IDs to avoid duplicates. (default is None)
+    local_set : set, optional
+        Set of local referrer IDs to avoid repeated processing. (default is None)
 
-    depth
-         (Default value = 0)
-    max_depth
-         (Default value = None)
-    seen_set
-         (Default value = None)
-    local_set
-         (Default value = None`)
+    Returns
+    -------
+    ivy.Container
+        A container representing referrers and their sub-referrers up to the `max_depth`.
+
+    Examples
+    --------
+    >>> import gc
+    >>> def example_function():
+    ...     lst = [1, 2, 3]
+    ...     return get_referrers_recursive(lst, max_depth=2)
+    >>> result = example_function()
+    >>> print(result)
+    Container(
+        '2883430037152': Container(
+            '2883430054592': 'tracked',
+            '2883429961088': 'tracked'
+        )
+    )
     """
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
@@ -237,10 +264,7 @@ def get_referrers_recursive(
             val = this_repr
         ret_cont[str(ref_id)] = val
     return ret_cont
-
-
-@handle_exceptions
-@handle_backend_invalid
+    
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
