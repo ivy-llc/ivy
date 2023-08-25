@@ -368,6 +368,16 @@ def relu(
 relu.jax_like = _relu_jax_like
 
 
+def _sigmoid_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return 1 / (1 + ivy.exp(-x))
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -452,6 +462,9 @@ def sigmoid(
     }
     """
     return current_backend(x).sigmoid(x, out=out)
+
+
+sigmoid.jax_like = _sigmoid_jax_like
 
 
 @handle_exceptions

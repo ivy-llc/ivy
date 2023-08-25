@@ -85,8 +85,7 @@ def gelu(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16", "complex128", "complex64")}},
-    backend_version,
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )
 def sigmoid(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"

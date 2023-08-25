@@ -12,7 +12,6 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
@@ -33,13 +32,20 @@ def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def sigmoid(
     x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
 ) -> Tensor:
-    if not ivy.is_array(x):
-        x = float(x)
-    return tf.nn.sigmoid(x)
+    if x.dtype.is_complex:
+        real_part = tf.math.real(x)
+        imag_part = tf.math.imag(x)
+
+        real_result = 1 / (1 + tf.exp(-real_part))
+        imag_result = 1 / (1 + tf.exp(-imag_part))
+
+        result = tf.complex(real_result, imag_result)
+    else:
+        result = tf.nn.sigmoid(x)
+    return result
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
