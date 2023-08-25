@@ -94,7 +94,7 @@ def set_item(
     ret = x.at[query].set(val)
     if copy:
         return ret
-    return ivy.inplace_update(x, _to_device(ret))
+    return ivy.inplace_update(x, ret)
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
