@@ -750,6 +750,10 @@ def Conv3D(
     )
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("bfloat16", "float16", "float32", "float64")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def Elu(features, name=None):
     zeros = ivy.zeros_like(features, dtype=ivy.dtype(features))
@@ -761,32 +765,6 @@ def Elu(features, name=None):
         ivy.subtract(ivy.exp(features), ones),
     )
     return ret_val
-
-
-Elu.supported_dtypes = {
-    "numpy": (
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "tensorflow": (
-        "bfloat16",
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "torch": (
-        "bfloat16",
-        "float32",
-        "float64",
-    ),
-    "jax": (
-        "bfloat16",
-        "float16",
-        "float32",
-        "float64",
-    ),
-}
 
 
 @to_ivy_arrays_and_back
@@ -862,33 +840,17 @@ def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMat
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
 
 LeakyRelu = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.nn.leaky_relu,
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": ("bfloat16", "float16", "float32", "float64"),
+        },
+        "tensorflow",
+    )(
+        map_raw_ops_alias(
+            tf_frontend.nn.leaky_relu,
+        )
     )
 )
-
-LeakyRelu.supported_dtypes = {
-    "numpy": (
-        "float32",
-        "float64",
-    ),
-    "tensorflow": (
-        "bfloat16",
-        "float16",
-        "float32",
-        "float64",
-    ),
-    "torch": (
-        "float32",
-        "float64",
-    ),
-    "jax": (
-        "bfloat16",
-        "float16",
-        "float32",
-        "float64",
-    ),
-}
 
 
 @to_ivy_arrays_and_back
@@ -906,6 +868,10 @@ Zeta = to_ivy_arrays_and_back(
 )
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("complex64", "complex128")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def Imag(
     *,
@@ -917,27 +883,13 @@ def Imag(
     return ivy.astype(ivy.imag(input), Tout)
 
 
-Imag.supported_dtypes = {
-    "tensorflow": (
-        "complex64",
-        "complex128",
-    ),
-}
-
-
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float64", "float128", "halfcomplex64", "complex128")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
     return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
-
-
-Svd.supported_dtypes = {
-    "tensorflow": (
-        "float64",
-        "float128",
-        "halfcomplex64",
-        "complex128",
-    ),
-}
 
 
 Einsum = to_ivy_arrays_and_back(
