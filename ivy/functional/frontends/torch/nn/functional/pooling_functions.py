@@ -9,6 +9,10 @@ from ivy.functional.frontends.torch.func_wrapper import (
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
 
@@ -24,6 +28,48 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
             f"`{name}` must either be a single int, "
             f"or a tuple of {dims[pool_dims]} ints. "
         )
+
+
+# --- Main --- #
+# ------------ #
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def adaptive_avg_pool1d(input, output_size):
+    return ivy.adaptive_avg_pool1d(input, output_size)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def adaptive_avg_pool2d(input, output_size):
+    return ivy.adaptive_avg_pool2d(input, output_size)
+
+
+@to_ivy_arrays_and_back
+def adaptive_max_pool2d(
+    input,
+    output_size,
+    return_indices=False,
+):
+    # ToDo: Add return_indices once superset is implemented
+    return ivy.adaptive_max_pool2d(input, output_size)
 
 
 @to_ivy_arrays_and_back
@@ -95,89 +141,37 @@ def avg_pool2d(
 
 
 @to_ivy_arrays_and_back
-def max_pool1d(
+def avg_pool3d(
     input,
     kernel_size,
     stride=None,
     padding=0,
     ceil_mode=False,
-    dilation=1,
-    return_indices=False,
+    count_include_pad=True,
+    divisor_override=None,
 ):
     if stride is None:
         stride = kernel_size
-    data_format = "NCW"
-    return ivy.max_pool1d(
+    # TODO: remove the broadcasting and padding string specification when ivy.avg_pool
+    #   support explicit padding
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
+    return ivy.avg_pool3d(
         input,
         kernel_size,
         stride,
         padding,
-        data_format=data_format,
-        dilation=dilation,
+        data_format="NCDHW",
         ceil_mode=ceil_mode,
+        count_include_pad=count_include_pad,
+        divisor_override=divisor_override,
     )
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-@to_ivy_arrays_and_back
-def max_pool2d(
-    input,
-    kernel_size,
-    stride=None,
-    padding=0,
-    dilation=1,
-    ceil_mode=False,
-    return_indices=False,
-):
-    if stride is None:
-        stride = kernel_size
-    return ivy.max_pool2d(
-        input,
-        kernel_size,
-        stride,
-        padding,
-        data_format="NCHW",
-        dilation=dilation,
-        ceil_mode=ceil_mode,
-    )
-
-
-@to_ivy_arrays_and_back
-def adaptive_max_pool2d(
-    input,
-    output_size,
-    return_indices=False,
-):
-    # ToDo: Add return_indices once superset is implemented
-    return ivy.adaptive_max_pool2d(input, output_size)
-
-
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "bfloat16",
-            "float16",
-        )
-    },
-    "torch",
-)
-@to_ivy_arrays_and_back
-def adaptive_avg_pool1d(input, output_size):
-    return ivy.adaptive_avg_pool1d(input, output_size)
-
-
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
-@to_ivy_arrays_and_back
-def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
 
 
 @with_unsupported_dtypes(
@@ -235,34 +229,48 @@ def lp_pool2d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
 
 
 @to_ivy_arrays_and_back
-def avg_pool3d(
+def max_pool1d(
     input,
     kernel_size,
     stride=None,
     padding=0,
     ceil_mode=False,
-    count_include_pad=True,
-    divisor_override=None,
+    dilation=1,
+    return_indices=False,
 ):
     if stride is None:
         stride = kernel_size
-    # TODO: remove the broadcasting and padding string specification when ivy.avg_pool
-    #   support explicit padding
-    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
-    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
-    if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
-    ):
-        padding = "SAME"
-    else:
-        padding = "VALID"
-    return ivy.avg_pool3d(
+    data_format = "NCW"
+    return ivy.max_pool1d(
         input,
         kernel_size,
         stride,
         padding,
-        data_format="NCDHW",
+        data_format=data_format,
+        dilation=dilation,
         ceil_mode=ceil_mode,
-        count_include_pad=count_include_pad,
-        divisor_override=divisor_override,
+    )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def max_pool2d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
+):
+    if stride is None:
+        stride = kernel_size
+    return ivy.max_pool2d(
+        input,
+        kernel_size,
+        stride,
+        padding,
+        data_format="NCHW",
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )

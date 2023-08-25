@@ -9,12 +9,62 @@ import ivy.functional.frontends.tensorflow as frontend
 import ivy.functional.frontends.numpy as np_frontend
 
 
-def to_ivy_dtype(dtype):
-    if not dtype or isinstance(dtype, str):
-        return dtype
-    if isinstance(dtype, np_frontend.dtype):
-        return dtype.ivy_dtype
-    return frontend.as_dtype(dtype).ivy_dtype
+# --- Helpers --- #
+# --------------- #
+
+
+def _ivy_array_to_tensorflow(x):
+    if isinstance(x, ivy.Array) or ivy.is_native_array(x):
+        return frontend.EagerTensor(x)
+    return x
+
+
+def _native_to_ivy_array(x):
+    if isinstance(x, ivy.NativeArray):
+        return ivy.array(x)
+    return x
+
+
+def _tf_frontend_array_to_ivy(x):
+    if hasattr(x, "ivy_array"):
+        return x.ivy_array
+    return x
+
+
+def _to_ivy_array(x):
+    return _tf_frontend_array_to_ivy(_native_to_ivy_array(x))
+
+
+# update kwargs dictionary keys helper
+def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
+    """
+    Update the key-word only arguments dictionary.
+
+    Parameters
+    ----------
+    kwargs
+        A dictionary containing key-word only arguments to be updated.
+
+    to_update
+        The dictionary containing keys to update from raw_ops function the mapping
+        is raw_ops argument name against corresponding tf_frontend argument name.
+
+    Returns
+    -------
+    ret
+        An updated dictionary with new keyword mapping
+    """
+    new_kwargs = {}
+    for key, value in kwargs.items():
+        if to_update.__contains__(key):
+            new_kwargs.update({to_update[key]: value})
+        else:
+            new_kwargs.update({key: value})
+    return new_kwargs
+
+
+# --- Main --- #
+# ------------ #
 
 
 def handle_tf_dtype(fn: Callable) -> Callable:
@@ -45,28 +95,6 @@ def handle_tf_dtype(fn: Callable) -> Callable:
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     _handle_tf_dtype.handle_tf_dtype = True
     return _handle_tf_dtype
-
-
-def _tf_frontend_array_to_ivy(x):
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    return x
-
-
-def _ivy_array_to_tensorflow(x):
-    if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return frontend.EagerTensor(x)
-    return x
-
-
-def _native_to_ivy_array(x):
-    if isinstance(x, ivy.NativeArray):
-        return ivy.array(x)
-    return x
-
-
-def _to_ivy_array(x):
-    return _tf_frontend_array_to_ivy(_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -109,69 +137,6 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays = True
     return _inputs_to_ivy_arrays_tf
-
-
-def outputs_to_frontend_arrays(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _outputs_to_frontend_arrays_tf(*args, **kwargs):
-        """
-        Call the function, and then convert all `tensorflow.Tensor` instances in the
-        function return into `ivy.Array` instances.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with ivy arrays as tensorflow.Tensor arrays.
-        """
-        # call unmodified function
-        ret = fn(*args, **kwargs)
-
-        # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
-        return ivy.nested_map(
-            ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
-        )
-
-    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True
-    return _outputs_to_frontend_arrays_tf
-
-
-def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
-
-
-# update kwargs dictionary keys helper
-def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
-    """
-    Update the key-word only arguments dictionary.
-
-    Parameters
-    ----------
-    kwargs
-        A dictionary containing key-word only arguments to be updated.
-
-    to_update
-        The dictionary containing keys to update from raw_ops function the mapping
-        is raw_ops argument name against corresponding tf_frontend argument name.
-
-    Returns
-    -------
-    ret
-        An updated dictionary with new keyword mapping
-    """
-    new_kwargs = {}
-    for key, value in kwargs.items():
-        if to_update.__contains__(key):
-            new_kwargs.update({to_update[key]: value})
-        else:
-            new_kwargs.update({key: value})
-    return new_kwargs
 
 
 def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
@@ -226,3 +191,46 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         return _wraped_fn
 
     return _wrap_raw_ops_alias(alias, kwargs_to_update)
+
+
+def outputs_to_frontend_arrays(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _outputs_to_frontend_arrays_tf(*args, **kwargs):
+        """
+        Call the function, and then convert all `tensorflow.Tensor` instances in the
+        function return into `ivy.Array` instances.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with ivy arrays as tensorflow.Tensor arrays.
+        """
+        # call unmodified function
+        ret = fn(*args, **kwargs)
+
+        # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
+        return ivy.nested_map(
+            ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
+        )
+
+    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True
+    return _outputs_to_frontend_arrays_tf
+
+
+def to_ivy_arrays_and_back(fn: Callable) -> Callable:
+    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
+
+
+def to_ivy_dtype(dtype):
+    if not dtype or isinstance(dtype, str):
+        return dtype
+    if isinstance(dtype, np_frontend.dtype):
+        return dtype.ivy_dtype
+    return frontend.as_dtype(dtype).ivy_dtype

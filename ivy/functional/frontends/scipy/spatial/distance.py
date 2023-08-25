@@ -6,8 +6,8 @@ from ivy.functional.frontends.scipy.func_wrapper import (
 import ivy.functional.frontends.scipy as sc_frontend
 
 
-# Helpers #
-# ------- #
+# --- Helpers --- #
+# --------------- #
 
 
 def _validate_vector(u, dtype=None):
@@ -22,6 +22,16 @@ def _validate_weights(w, dtype="float64"):
     if ivy.any(w < 0):
         raise ValueError("Input weights should be all non-negative")
     return w
+
+
+# --- Main --- #
+# ------------ #
+
+
+# euclidean
+@to_ivy_arrays_and_back
+def euclidean(u, v, /, *, w=None):
+    return minkowski(u, v, p=2, w=w)
 
 
 # Functions #
@@ -50,9 +60,3 @@ def minkowski(u, v, p=2, /, *, w=None):
         u_v = ivy.multiply(root_w, u_v)
     dist = sc_frontend.linalg.norm(u_v, ord=p)
     return dist
-
-
-# euclidean
-@to_ivy_arrays_and_back
-def euclidean(u, v, /, *, w=None):
-    return minkowski(u, v, p=2, w=w)

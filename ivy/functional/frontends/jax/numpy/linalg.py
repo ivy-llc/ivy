@@ -7,20 +7,18 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
-def inv(a):
-    return ivy.inv(a)
+def cholesky(a):
+    return ivy.cholesky(a)
+
+
+@to_ivy_arrays_and_back
+def cond(x, p=None):
+    return ivy.cond(x, p=p)
 
 
 @to_ivy_arrays_and_back
 def det(a):
     return ivy.det(a)
-
-
-@to_ivy_arrays_and_back
-def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
-    if not compute_uv:
-        return ivy.svdvals(a)
-    return ivy.svd(a, full_matrices=full_matrices)
 
 
 @to_ivy_arrays_and_back
@@ -41,28 +39,23 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 
 
 @to_ivy_arrays_and_back
-def eigvalsh(a, UPLO="L"):
-    return ivy.eigvalsh(a, UPLO=UPLO)
-
-
-@to_ivy_arrays_and_back
-def qr(a, mode="reduced"):
-    return ivy.qr(a, mode=mode)
-
-
-@to_ivy_arrays_and_back
 def eigvals(a):
     return ivy.eigh(a)
 
 
 @to_ivy_arrays_and_back
-def cholesky(a):
-    return ivy.cholesky(a)
+def eigvalsh(a, UPLO="L"):
+    return ivy.eigvalsh(a, UPLO=UPLO)
 
 
 @to_ivy_arrays_and_back
-def slogdet(a, method=None):
-    return ivy.slogdet(a)
+def inv(a):
+    return ivy.inv(a)
+
+
+@to_ivy_arrays_and_back
+def matrix_power(a, n):
+    return ivy.matrix_power(a, n)
 
 
 @to_ivy_arrays_and_back
@@ -71,13 +64,8 @@ def matrix_rank(M, tol=None):
 
 
 @to_ivy_arrays_and_back
-def solve(a, b):
-    return ivy.solve(a, b)
-
-
-@to_ivy_arrays_and_back
-def pinv(a, rcond=None):
-    return ivy.pinv(a, rtol=rcond)
+def multi_dot(arrays, *, precision=None):
+    return ivy.multi_dot(arrays)
 
 
 @to_ivy_arrays_and_back
@@ -94,14 +82,30 @@ def norm(x, ord=None, axis=None, keepdims=False):
 
 
 @to_ivy_arrays_and_back
-def matrix_power(a, n):
-    return ivy.matrix_power(a, n)
+def pinv(a, rcond=None):
+    return ivy.pinv(a, rtol=rcond)
 
 
 @to_ivy_arrays_and_back
-def tensorsolve(a, b, axes=None):
-    a, b = promote_types_of_jax_inputs(a, b)
-    return ivy.tensorsolve(a, b, axes=axes)
+def qr(a, mode="reduced"):
+    return ivy.qr(a, mode=mode)
+
+
+@to_ivy_arrays_and_back
+def slogdet(a, method=None):
+    return ivy.slogdet(a)
+
+
+@to_ivy_arrays_and_back
+def solve(a, b):
+    return ivy.solve(a, b)
+
+
+@to_ivy_arrays_and_back
+def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
+    if not compute_uv:
+        return ivy.svdvals(a)
+    return ivy.svd(a, full_matrices=full_matrices)
 
 
 @to_ivy_arrays_and_back
@@ -122,10 +126,6 @@ def tensorinv(a, ind=2):
 
 
 @to_ivy_arrays_and_back
-def cond(x, p=None):
-    return ivy.cond(x, p=p)
-
-
-@to_ivy_arrays_and_back
-def multi_dot(arrays, *, precision=None):
-    return ivy.multi_dot(arrays)
+def tensorsolve(a, b, axes=None):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.tensorsolve(a, b, axes=axes)

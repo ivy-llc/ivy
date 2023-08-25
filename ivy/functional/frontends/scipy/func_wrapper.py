@@ -5,6 +5,10 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _from_ivy_array_to_scipy_frontend_array(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
@@ -34,6 +38,10 @@ def _native_to_ivy_array(x):
 
 def _to_ivy_array(x):
     return _from_scipy_frontend_array_to_ivy_array(_native_to_ivy_array(x))
+
+
+# --- Main --- #
+# ------------ #
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -90,17 +98,6 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     return _outputs_to_frontend_arrays_scipy
 
 
-def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
-
-    Wrap `fn` so that input arrays are all converted to `ivy.Array`
-    instances and return arrays are all converted to `ndarray.NDArray`
-    instances.
-    """
-    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
-
-
 def outputs_to_native_arrays(fn: Callable):
     @functools.wraps(fn)
     def _outputs_to_native_arrays(*args, **kwargs):
@@ -110,3 +107,14 @@ def outputs_to_native_arrays(fn: Callable):
         return ret
 
     return _outputs_to_native_arrays
+
+
+def to_ivy_arrays_and_back(fn: Callable) -> Callable:
+    """
+    Wrap `fn` so it receives and returns `ivy.Array` instances.
+
+    Wrap `fn` so that input arrays are all converted to `ivy.Array`
+    instances and return arrays are all converted to `ndarray.NDArray`
+    instances.
+    """
+    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))

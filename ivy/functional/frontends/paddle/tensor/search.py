@@ -38,8 +38,8 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def sort(x, /, *, axis=-1, descending=False, name=None):
-    return ivy.sort(x, axis=axis, descending=descending)
+def masked_select(x, mask, name=None):
+    return ivy.flatten(x[mask])
 
 
 @with_supported_dtypes(
@@ -75,8 +75,8 @@ def searchsorted(sorted_sequence, values, out_int32=False, right=False, name=Non
     "paddle",
 )
 @to_ivy_arrays_and_back
-def masked_select(x, mask, name=None):
-    return ivy.flatten(x[mask])
+def sort(x, /, *, axis=-1, descending=False, name=None):
+    return ivy.sort(x, axis=axis, descending=descending)
 
 
 @with_supported_dtypes(

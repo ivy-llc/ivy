@@ -6,6 +6,10 @@ import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _from_ivy_array_to_paddle_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
@@ -30,6 +34,29 @@ def _to_ivy_array(x):
     return x
 
 
+# --- Main --- #
+# ------------ #
+
+
+def inputs_to_ivy_arrays(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """Convert all `Tensor` instances in both the positional and keyword arguments
+        into `ivy.Array` instances, and then call the function with the updated
+        arguments."""
+        # convert all input arrays to ivy.Array instances
+        new_args = ivy.nested_map(
+            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
+        )
+        new_kwargs = ivy.nested_map(
+            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
+        )
+
+        return fn(*new_args, **new_kwargs)
+
+    return new_fn
+
+
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -49,25 +76,6 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         return _from_ivy_array_to_paddle_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
-
-    return new_fn
-
-
-def inputs_to_ivy_arrays(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
-        """Convert all `Tensor` instances in both the positional and keyword arguments
-        into `ivy.Array` instances, and then call the function with the updated
-        arguments."""
-        # convert all input arrays to ivy.Array instances
-        new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
-        )
-        new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
-        )
-
-        return fn(*new_args, **new_kwargs)
 
     return new_fn
 
