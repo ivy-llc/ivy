@@ -559,7 +559,7 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     # ToDo add with_backend refactor in GC
-    _switch_backend_context(test_flags.test_compile)
+    _switch_backend_context(test_flags.test_compile or test_flags.transpile)
 
     assert (
         not test_flags.with_out or not test_flags.inplace
@@ -2035,6 +2035,7 @@ def _get_transpiled_data_if_required(
     frontend_fw_kwargs,
 ):
     iterations = 10
+
     compiled_fn = compiled_if_required(
         frontend,
         frontend_fn,
