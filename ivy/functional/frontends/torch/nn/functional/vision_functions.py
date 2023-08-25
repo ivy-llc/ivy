@@ -437,20 +437,20 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
                 h_mask = ivy.bitwise_or(grid_round[..., 1] < 0, grid_round[..., 1] > h)
             else:
                 w_mask = ivy.bitwise_or(
-                    grid_round[..., 0] < -1, grid_round[..., 0] > w + 1
+                    grid_round[..., 0] < -3, grid_round[..., 0] > w + 1
                 )
                 h_mask = ivy.bitwise_or(
-                    grid_round[..., 1] < -1, grid_round[..., 1] > h + 1
+                    grid_round[..., 1] < -3, grid_round[..., 1] > h + 1
                 )
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
             grid[zeros_mask] = ivy.repeat(
-                ivy.array([[w, h]]), repeats=zeros_mask.shape[0], axis=0
+                ivy.array([[w + 1, h + 1]]), repeats=zeros_mask.shape[0], axis=0
             )
 
         # pad and shift for 2
-        padding = [(0, 0) for _ in range(2)] + [(2, 3) for _ in range(2)]
+        padding = [(0, 0) for _ in range(2)] + [(4, 4) for _ in range(2)]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
-        grid += 2
+        grid += 4
 
         # Apply sampling by mode
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
@@ -554,9 +554,9 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
                 h_mask = ivy.bitwise_or(grid_round[..., 1] < 0, grid_round[..., 1] > h)
                 d_mask = ivy.bitwise_or(grid_round[..., 2] < 0, grid_round[..., 2] > d)
             else:
-                w_mask = ivy.bitwise_or(grid_round[..., 0] < -1, grid_round[..., 0] > w)
-                h_mask = ivy.bitwise_or(grid_round[..., 1] < -1, grid_round[..., 1] > h)
-                d_mask = ivy.bitwise_or(grid_round[..., 2] < -1, grid_round[..., 2] > d)
+                w_mask = ivy.bitwise_or(grid_round[..., 0] < -2, grid_round[..., 0] > w)
+                h_mask = ivy.bitwise_or(grid_round[..., 1] < -2, grid_round[..., 1] > h)
+                d_mask = ivy.bitwise_or(grid_round[..., 2] < -2, grid_round[..., 2] > d)
 
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
             zeros_mask = ivy.bitwise_or(zeros_mask, d_mask)
@@ -565,9 +565,9 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             )
 
         # Padding for d, h, and w
-        padding = [(0, 0) for _ in range(2)] + [(1, 2) for _ in range(3)]
+        padding = [(0, 0) for _ in range(2)] + [(2, 2) for _ in range(3)]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
-        grid += 1
+        grid += 2
 
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
         batch_coor = ivy.repeat(batch_coor, to_d * to_h * to_w, axis=1)
