@@ -1,5 +1,6 @@
 # global
 import copy
+import time
 from typing import Union, List
 import numpy as np
 import types
@@ -860,7 +861,18 @@ def test_frontend_function(
 
     # compute the return via the frontend framework
     frontend_fw = importlib.import_module(gt_frontend_submods)
-    frontend_ret = frontend_fw.__dict__[gt_fn_name](*args_frontend, **kwargs_frontend)
+    frontend_fw_fn = frontend_fw.__dict__[gt_fn_name]
+    frontend_ret = frontend_fw_fn(*args_frontend, **kwargs_frontend)
+    if test_flags.transpile:
+        _get_transpiled_data_if_required(
+            frontend_fn,
+            frontend_fw_fn,
+            frontend,
+            frontend_args=args,
+            frontend_kwargs=kwargs,
+            frontend_fw_args=args_frontend,
+            frontend_fw_kwargs=kwargs_frontend,
+        )
 
     if frontend_config.isscalar(frontend_ret):
         frontend_ret_np_flat = [frontend_config.to_numpy(frontend_ret)]
@@ -2011,6 +2023,56 @@ def get_frontend_ret(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
             )
     return ret
+
+
+def _get_transpiled_data_if_required(
+    frontend_fn,
+    frontend_fw_fn,
+    frontend,
+    frontend_args,
+    frontend_kwargs,
+    frontend_fw_args,
+    frontend_fw_kwargs,
+):
+    iterations = 10
+    compiled_fn = compiled_if_required(
+        frontend,
+        frontend_fn,
+        test_compile=True,
+        args=frontend_args,
+        kwargs=frontend_kwargs,
+    )
+    # with BackendHandler.update_backend(backend) as ivy_backend:
+    frontend_timings = []
+    frontend_fw_timings = []
+    for i in range(0, iterations):
+        # running the compiled frontend fn over n iterations
+        start = time.time()
+        compiled_fn(*frontend_args, **frontend_kwargs)
+        end = time.time()
+        frontend_timings.append(end - start)
+
+        # timing the frontend_fw_fn
+        start = time.time()
+        frontend_fw_fn(*frontend_fw_args, **frontend_fw_kwargs)
+        end = time.time()
+        frontend_fw_timings.append(end - start)
+
+    # compile to get ivy nodes
+    with BackendHandler.update_backend(frontend) as ivy_backend:
+        compiled_fn_to_ivy = ivy_backend.compile(
+            frontend_fn, to="ivy", args=frontend_args, kwargs=frontend_kwargs
+        )
+
+    frontend_time = np.mean(frontend_timings)
+    frontend_fw_time = np.mean(frontend_fw_timings)
+    backend_nodes = len(compiled_fn._functions)
+    ivy_nodes = len(compiled_fn_to_ivy._functions)
+
+    print(
+        f"frontend: {frontend}, backend_nodes: {backend_nodes}, ivy_nodes: {ivy_nodes},"
+        f" frontend_time: {frontend_time}, frontend_fw_time: {frontend_fw_time}"
+    )
 
 
 def args_to_container(array_args):

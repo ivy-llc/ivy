@@ -24,6 +24,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInplaceStrategy,
     BuiltCompileStrategy,
     BuiltFrontendArrayStrategy,
+    BuiltTranspileStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -418,6 +419,7 @@ def handle_frontend_test(
     native_array_flags=BuiltNativeArrayStrategy,
     test_compile=BuiltCompileStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
+    transpile=BuiltTranspileStrategy,
     **_given_kwargs,
 ):
     """
@@ -479,6 +481,7 @@ def handle_frontend_test(
             native_arrays=native_array_flags,
             test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
+            transpile=transpile,
         )
 
     def test_wrapper(test_fn):

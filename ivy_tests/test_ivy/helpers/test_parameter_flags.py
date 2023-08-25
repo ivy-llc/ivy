@@ -36,6 +36,7 @@ BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
 BuiltCompileStrategy = st.just(False)
 BuiltFrontendArrayStrategy = st.booleans()
+BuiltTranspileStrategy = st.just(False)
 
 
 flags_mapping = {
@@ -47,6 +48,7 @@ flags_mapping = {
     "with_out": "BuiltWithOutStrategy",
     "inplace": "BuiltInplace",
     "test_compile": "BuiltCompileStrategy",
+    "transpile": "BuiltTranspileStrategy",
 }
 
 
@@ -162,6 +164,7 @@ class FrontendFunctionTestFlags(TestFlags):
         native_arrays,
         test_compile,
         generate_frontend_arrays,
+        transpile,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
@@ -170,6 +173,7 @@ class FrontendFunctionTestFlags(TestFlags):
         self.as_variable = as_variable
         self.test_compile = test_compile
         self.generate_frontend_arrays = generate_frontend_arrays
+        self.transpile = transpile
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
@@ -192,6 +196,7 @@ class FrontendFunctionTestFlags(TestFlags):
             f"as_variable={self.as_variable}. "
             f"test_compile={self.test_compile}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
+            f"transpile={self.transpile}."
         )
 
     def __repr__(self):
@@ -209,6 +214,7 @@ def frontend_function_flags(
     native_arrays,
     test_compile,
     generate_frontend_arrays,
+    transpile,
 ):
     return draw(
         st.builds(
@@ -220,6 +226,7 @@ def frontend_function_flags(
             native_arrays=native_arrays,
             test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
+            transpile=transpile,
         )
     )
 
