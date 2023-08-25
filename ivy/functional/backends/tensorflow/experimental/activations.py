@@ -56,7 +56,6 @@ def selu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> T
     return ivy.astype(ret, x.dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def silu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> Tensor:
     ret = tf.nn.silu(x)
     if ivy.exists(out):
