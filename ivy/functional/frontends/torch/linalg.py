@@ -26,6 +26,9 @@ def diagonal(A, *, offset=0, dim1=-2, dim2=-1):
 def divide(input, other, *, rounding_mode=None, out=None):
     return ivy.divide(input, other, out=out)
 
+@to_ivy_arrays_and_back
+def lstsq(A, B, rcond=None, *, driver=None):
+    return torch_frontend.lstsq(A, B, rcond=rcond, driver=driver)
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
