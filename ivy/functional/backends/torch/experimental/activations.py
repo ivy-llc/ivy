@@ -32,7 +32,7 @@ def thresholded_relu(
     return torch.threshold(x, threshold=threshold, value=0)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def relu6(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
 ) -> torch.Tensor:

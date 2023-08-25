@@ -55,8 +55,6 @@ def relu6(
 ) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.relu6(x)
-    if paddle.is_complex(x):
-        return paddle.complex(F.relu6(x.real()), F.relu6(x.imag()))
     return F.relu6(x.cast("float32")).cast(x.dtype)
 
 
