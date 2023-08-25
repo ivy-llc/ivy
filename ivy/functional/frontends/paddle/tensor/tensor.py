@@ -640,3 +640,11 @@ class Tensor:
     )
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
+    
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+    )
+    def quantile(self, q, axis=None, keepdim=False, name=None):
+        return paddle_frontend.Tensor(
+            ivy.quantile(self._ivy_array, q=q, axis=axis, keepdims=keepdim)
+        )
