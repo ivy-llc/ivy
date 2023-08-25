@@ -212,23 +212,23 @@ def conv_transpose1d(
 @to_ivy_arrays_and_back
 def conv_transpose2d(
     input,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    output_padding=0,
-    groups=1,
-    dilation=1,
+    filters,
+    strides=1,
+    padding="SAME",
+    output_shape=None,
+    data_format="NHWC",
+    dilations= 1,
+    bias= None,
 ):
-    return _conv_transpose(
+    return ivy.conv2d_transpose(
         input,
-        weight,
-        bias=bias,
-        stride=stride,
-        padding=padding,
-        output_padding=output_padding,
-        groups=groups,
-        dilation=dilation,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+        bias=bias
     )
 
 
