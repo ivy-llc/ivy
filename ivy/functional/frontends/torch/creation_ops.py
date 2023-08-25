@@ -1,6 +1,5 @@
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     to_ivy_shape,
@@ -246,7 +245,6 @@ def as_tensor(
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("ndarray",)}, "torch")
 def from_numpy(data, /):
     return ivy.asarray(data, dtype=ivy.dtype(data))
 

@@ -82,15 +82,8 @@ def pinv(a, rcond=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "float32",
-                "float64",
-            )
-        }
-    },
+@with_supported_dtypes(
+    {"0.4.14 and below": ("float32","float64")},
     "jax",
 )
 def norm(x, ord=None, axis=None, keepdims=False):

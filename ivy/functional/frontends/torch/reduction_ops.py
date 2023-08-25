@@ -231,7 +231,7 @@ def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def aminmax(input, *, dim=None, keepdim=False, out=None):
     minmax_tuple = namedtuple("minmax", ["min", "max"])
     return minmax_tuple(
@@ -242,7 +242,7 @@ def aminmax(input, *, dim=None, keepdim=False, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
     return ivy.quantile(
         input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
