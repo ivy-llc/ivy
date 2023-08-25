@@ -102,6 +102,7 @@ class BatchNorm2D(Module):
         track_running_stats: bool = True,
         device=None,
         v=None,
+        training=True,
         dtype=None,
     ):
         """
@@ -111,7 +112,7 @@ class BatchNorm2D(Module):
         ----------
         num_features
             Trailing shape to applying the normalization to.
-        epsilon
+        eps
             small constant to add to the denominator,
             use global ivy.min_base by default.
         data_format
@@ -175,7 +176,6 @@ class BatchNorm2D(Module):
     def _forward(
         self,
         inputs,
-        training: bool = False,
     ):
         """
         Perform forward pass of the BatchNorm layer.
@@ -199,11 +199,11 @@ class BatchNorm2D(Module):
             eps=self._epsilon,
             momentum=self._momentum,
             data_format=self.data_format,
-            training=training,
+            training=self.training,
             scale=self.v.w if self._affine else None,
             offset=self.v.b if self._affine else None,
         )
-        if self._track_running_stats and training:
+        if self._track_running_stats and self.training:
             self.v.running_mean = running_mean
             self.v.running_var = running_var
 

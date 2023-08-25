@@ -147,7 +147,6 @@ class Dropout(Module):
         """
         self._prob = prob
         self._scale = scale
-        self.training = training
         Module.__init__(self, device=None, v=None, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
