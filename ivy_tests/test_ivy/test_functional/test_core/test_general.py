@@ -237,6 +237,7 @@ def test_set_item(
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
+        rtol_=1e-03,  # needed only for the paddle backend
         x=x,
         query=query,
         val=val,

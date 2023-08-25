@@ -409,6 +409,7 @@ def handle_test(
 def handle_frontend_test(
     *,
     fn_tree: str,
+    gt_fn_tree: str = None,
     aliases: List[str] = None,
     number_positional_args=None,
     test_with_out=BuiltWithOutStrategy,
@@ -428,7 +429,9 @@ def handle_frontend_test(
     ----------
     fn_tree
         Full function import path
-
+    gt_fn_tree
+        Full function import path for the ground truth function, by default will be
+        the same as fn_tree
     number_positional_args
         A search strategy for determining the number of positional arguments to be
         passed to the function
@@ -493,6 +496,7 @@ def handle_frontend_test(
                     if aliases is not None
                     else st.just(fn_tree)
                 ),
+                "gt_fn_tree": st.just(gt_fn_tree),
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:

@@ -58,3 +58,29 @@ def while_loop(cond_fun, body_fun, init_val):
     while cond_fun(val):
         val = body_fun(val)
     return val
+
+
+@to_ivy_arrays_and_back
+def scan(f, init, xs, length=None, reverse=False, unroll=1):
+    if not (callable(f)):
+        raise ivy.exceptions.IvyException(
+            "jax.lax.scan: Argument f should be callable."
+        )
+    if xs is None and length is None:
+        raise ivy.exceptions.IvyException(
+            "jax.lax.scan: Either xs or length must be provided."
+        )
+
+    if length is not None and (not isinstance(length, int) or length < 0):
+        raise ivy.exceptions.IvyException(
+            "jax.lax.scan: length must be a non-negative integer."
+        )
+    if xs is None:
+        xs = [None] * length
+
+    carry = init
+    ys = []
+    for x in xs:
+        carry, y = f(carry, x)
+        ys.append(y)
+    return carry, ivy.stack(ys)
