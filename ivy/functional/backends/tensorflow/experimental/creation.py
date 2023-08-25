@@ -1,13 +1,12 @@
 # global
 
 from typing import Union, Optional, Tuple
-import tnp
 import tensorflow as tf
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .. import backend_version
+
 
 # Array API Standard #
 # -------------------#
@@ -87,10 +86,6 @@ def tril_indices(
         for j in range(0, min(n_cols, k + i + 1), 1):
             ret[0].append(i)
             ret[1].append(j)
-
-    if device is not None:
-        with tf.device(ivy.as_native_dev(device)):
-            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
