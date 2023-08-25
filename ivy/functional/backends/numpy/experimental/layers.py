@@ -2,7 +2,7 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, List, Literal, Sequence
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -13,7 +13,15 @@ from ivy.functional.ivy.layers import (
     _depth_max_pooling_helper,
 )
 from ivy.functional.backends.numpy.layers import _add_dilations
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.experimental.layers import (
+    _padding_ceil_mode,
+    _cast_init,
+    _correct_ivy_callable,
+    _get_identity,
+    _padtype_to_pads,
+    _dilate,
+    _conv_view,
+)
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -1044,3 +1052,44 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
+
+
+def sliding_window(
+    input: np.ndarray,
+    kernel_size: Union[int, Tuple[int, int]],
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
+    /,
+    *,
+    init_value: Union[int, float] = None,
+    computation: Callable = None,
+) -> np.ndarray:
+    k_size, stride, padding, dilation = map(
+        lambda x: tuple([x] * len(input.shape)) if isinstance(x, int) else x,
+        [kernel_size, stride, padding, dilation],
+    )
+
+    if init_value and computation:
+        init_value = _cast_init(init_value, input.dtype)
+        computation = _correct_ivy_callable(computation)
+        identity = _get_identity(computation, input.dtype, init_value)
+    else:
+        identity = ivy.array(0)
+
+    if isinstance(padding, str):
+        pads = _padtype_to_pads(input.shape, k_size, stride, padding)
+    else:
+        pads = padding
+
+    input = input.reshape((1, 1) + input.shape)
+    if dilation:
+        input = _dilate(input, dilation, identity)
+
+    view = _conv_view(input, [1, 1] + list(k_size), stride, pads, identity)[0]
+    view = ivy.reshape(view, (*view.shape[1 : 1 + len(k_size)], -1))
+
+    if init_value and computation:
+        return view, init_value, computation
+
+    return view
