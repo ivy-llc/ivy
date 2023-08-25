@@ -1083,9 +1083,8 @@ def handle_inplace_update_norm(fn: Callable) -> Callable:
             handled for jax and tensorflow.
         """
         normalized, runningmean, runningvar = fn(*args, **kwargs)
-        curr_backend = ivy.current_backend_str()
 
-        if curr_backend == "jax" or curr_backend == "tensorflow":
+        if ivy.curr_backend_str() == "tensorflow":
             ivy.inplace_update(args[1], runningmean)
             ivy.inplace_update(args[2], runningvar)
 
