@@ -245,7 +245,6 @@ def as_tensor(
     return ivy.asarray(data, dtype=dtype, device=device)
 
 
-
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("ndarray",)}, "torch")
 def from_numpy(data, /):

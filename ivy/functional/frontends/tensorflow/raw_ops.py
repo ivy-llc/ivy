@@ -751,7 +751,7 @@ def Conv3D(
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("bfloat16" ,"float16", "float32", "float64")},
+    {"2.13.0 and below": ("bfloat16", "float16", "float32", "float64")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -846,8 +846,8 @@ LeakyRelu = to_ivy_arrays_and_back(
         },
         "tensorflow",
     )(
-    map_raw_ops_alias(
-        tf_frontend.nn.leaky_relu,
+        map_raw_ops_alias(
+            tf_frontend.nn.leaky_relu,
         )
     )
 )
@@ -889,7 +889,7 @@ def Imag(
 )
 @to_ivy_arrays_and_back
 def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
-    return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices) 
+    return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
 
 
 Einsum = to_ivy_arrays_and_back(

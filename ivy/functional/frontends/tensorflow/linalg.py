@@ -35,7 +35,6 @@ def eigh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
- 
 def eigvals(tensor, name=None):
     return ivy.eigvals(tensor)
 

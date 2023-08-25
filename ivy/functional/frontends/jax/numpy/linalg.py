@@ -92,7 +92,7 @@ def pinv(a, rcond=None):
         }
     },
     "jax",
-)   
+)
 def norm(x, ord=None, axis=None, keepdims=False):
     if ord is None:
         ord = 2
