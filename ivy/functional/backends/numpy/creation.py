@@ -61,7 +61,7 @@ def asarray(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = _to_device(np.asarray(obj, dtype=dtype), device=device)
-    return ret
+    return np.copy(ret) if copy else ret
 
 
 def empty(
