@@ -2,10 +2,10 @@ name: Build Dockerfile
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
     types: [labeled, review_requested]
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
 

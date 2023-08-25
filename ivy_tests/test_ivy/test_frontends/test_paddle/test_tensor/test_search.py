@@ -124,6 +124,7 @@ def test_paddle_sort(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -132,6 +133,7 @@ def test_paddle_sort(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        backend_to_test=backend_fw,
         x=x[0],
         axis=axis,
         descending=descending,
