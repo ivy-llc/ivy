@@ -127,7 +127,6 @@ class Dropout(Module):
         prob,
         scale: bool = True,
         dtype=None,
-        training: bool = True,
     ):
         """
         Dropout layer. The layer randomly zeroes some of the elements of the input
@@ -142,12 +141,9 @@ class Dropout(Module):
         dtype
             the desired data type of the internal variables to be created.
             Default is ``None``.
-        training
-            Turn on dropout if training, turn off otherwise. Default is ``True``.
         """
         self._prob = prob
         self._scale = scale
-        self.training = training
         Module.__init__(self, device=None, v=None, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):

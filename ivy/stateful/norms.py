@@ -95,7 +95,7 @@ class BatchNorm2D(Module):
         num_features,
         /,
         *,
-        eps: float = 1e-5,
+        epsilon: float = 1e-5,
         momentum: float = 0.1,
         data_format: str = "NSC",
         affine: bool = True,
@@ -133,14 +133,11 @@ class BatchNorm2D(Module):
         v
             the variables for each submodule in the sequence,
             constructed internally by default.
-        training
-            If true, calculate and use the mean and variance of `x`. Otherwise, use the
-            internal `mean` and `variance` when affine is True.
         """
         self.num_features = num_features
         self._affine = affine
         self.data_format = data_format
-        self._epsilon = eps
+        self._epsilon = epsilon
         self._momentum = momentum
         self._track_running_stats = track_running_stats
         self._weight_shape = num_features
@@ -175,7 +172,6 @@ class BatchNorm2D(Module):
     def _forward(
         self,
         inputs,
-        training: bool = False,
     ):
         """
         Perform forward pass of the BatchNorm layer.
@@ -184,8 +180,6 @@ class BatchNorm2D(Module):
         ----------
         inputs
             Inputs to process of shape N,C,*.
-        training
-            Determine the current phase (training/inference)
 
         Returns
         -------
@@ -199,11 +193,11 @@ class BatchNorm2D(Module):
             eps=self._epsilon,
             momentum=self._momentum,
             data_format=self.data_format,
-            training=training,
+            training=self.training,
             scale=self.v.w if self._affine else None,
             offset=self.v.b if self._affine else None,
         )
-        if self._track_running_stats and training:
+        if self._track_running_stats and self.training:
             self.v.running_mean = running_mean
             self.v.running_var = running_var
 
