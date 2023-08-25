@@ -30,6 +30,18 @@ def _get_image_num_channels(img, data_format):
     return ivy.shape(img)[_get_image_c_axis(data_format)]
 
 
+def _blend_images(img1, img2, ratio):
+    # TODO: ivy.check_float(img1) returns False for ivy array
+    # TODO: when lerp supports int type and when the above issue is fixed,
+    # replace this with ivy.check_float(img1)
+    max_value = (
+        1.0 if ivy.dtype(img1) == "float32" or ivy.dtype(img1) == "float64" else 255.0
+    )
+    return ivy.astype(
+        ivy.lerp(img2, img1, float(ratio)).clip(0, max_value), ivy.dtype(img1)
+    )
+
+
 def _rgb_to_hsv(img):
     maxc = ivy.max(img, axis=-3)
     minc = ivy.min(img, axis=-3)
@@ -118,6 +130,36 @@ def adjust_hue(img, hue_factor):
         raise ValueError("channels of input should be either 1 or 3.")
 
     return img_adjusted
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def adjust_brightness(img, brightness_factor):
+    assert brightness_factor >= 0, "brightness_factor should be non-negative."
+    assert _get_image_num_channels(img, "CHW") in [
+        1,
+        3,
+    ], "channels of input should be either 1 or 3."
+
+    extreme_target = ivy.zeros_like(img)
+    return _blend_images(img, extreme_target, brightness_factor)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+def normalize(img, mean, std, data_format="CHW", to_rgb=False):
+    if ivy.is_array(img):
+        if data_format == "HWC":
+            permuted_axes = [2, 0, 1]
+        else:
+            permuted_axes = [0, 1, 2]
+
+        img_np = ivy.permute(img, permuted_axes)
+        normalized_img = ivy.divide(ivy.subtract(img_np, mean), std)
+        return normalized_img
+    else:
+        raise ValueError("Unsupported input format")
 
 
 @with_unsupported_device_and_dtypes(

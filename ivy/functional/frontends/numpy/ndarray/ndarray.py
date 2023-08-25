@@ -482,6 +482,26 @@ class ndarray:
             out=out,
         )
 
+    def sum(
+        self,
+        *,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+    ):
+        return np_frontend.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            out=out,
+        )
+
     def tofile(self, fid, /, sep="", format_="%s"):
         if self.ndim == 0:
             string = str(self)
@@ -703,3 +723,6 @@ class ndarray:
 
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
+
+    def round(self, decimals=0, out=None):
+        return np_frontend.round(self, decimals=decimals, out=out)

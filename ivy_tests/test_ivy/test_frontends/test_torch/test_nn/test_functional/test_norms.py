@@ -18,30 +18,42 @@ def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
             max_num_dims=4,
             min_dim_size=min_dim_size,
             ret_shape=True,
-            max_value=999,
-            min_value=-1001,
         )
     )
     _, variance = draw(
         helpers.dtype_and_values(
             dtype=x_dtype,
             shape=(shape[1],),
-            max_value=999,
-            min_value=0,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+        )
+    )
+    _, mean = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(shape[1],),
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
         )
     )
     _, others = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype * 3,
-            shape=(shape[1],),
-            max_value=999,
-            min_value=-1001,
-            num_arrays=3,
+        st.one_of(
+            helpers.dtype_and_values(
+                dtype=x_dtype * 2,
+                shape=(shape[1],),
+                large_abs_safety_factor=24,
+                small_abs_safety_factor=24,
+                safety_factor_scale="log",
+                num_arrays=2,
+            ),
+            st.just(([None, None], [None, None])),
         )
     )
     momentum = draw(helpers.floats(min_value=0.01, max_value=0.1))
     eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
-    return x_dtype, x[-1], others[0], others[1], others[2], variance[0], momentum, eps
+    return x_dtype, x[-1], others[0], others[1], mean[0], variance[0], momentum, eps
 
 
 @handle_frontend_test(
