@@ -642,3 +642,4 @@ class Tensor:
         re_part = ivy.real(self._ivy_array)
         im_part = ivy.imag(self._ivy_array)
         return ivy.stack((re_part, im_part), axis=-1)
+      
