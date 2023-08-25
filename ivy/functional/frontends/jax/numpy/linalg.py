@@ -4,7 +4,6 @@ from ivy.functional.frontends.jax import Array
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
-from ivy import with_supported_device_and_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -83,7 +82,7 @@ def pinv(a, rcond=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"0.4.14 and below": ("float32","float64")},
+    {"0.4.14 and below": ("float32", "float64")},
     "jax",
 )
 def norm(x, ord=None, axis=None, keepdims=False):
