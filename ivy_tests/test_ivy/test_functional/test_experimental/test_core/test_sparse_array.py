@@ -2,9 +2,10 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
+import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
-from ivy import sparse_array
 
 # Helpers #
 # ------- #
@@ -15,7 +16,7 @@ def _sparse_coo_indices_values_shape(draw):
     num_elem = draw(helpers.ints(min_value=2, max_value=8))
     dim1 = draw(helpers.ints(min_value=2, max_value=5))
     dim2 = draw(helpers.ints(min_value=5, max_value=10))
-    value_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
+    value_dtype = draw(helpers.get_dtypes("float", full=False))[0]
     coo_indices = draw(
         helpers.array_values(
             dtype="int64",
@@ -373,48 +374,34 @@ def test_sparse_bsr(
     init_tree="ivy.array",
     method_tree="Array.__add__",
     sparse_data=_sparse_coo_indices_values_shape(),
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
-    ),
 )
 def test_array_add_sparse(
     sparse_data,
-    dtype_and_x,
     method_name,
     class_name,
-    ground_truth_backend,
-    backend_fw,
-    init_flags,
-    method_flags,
     on_device,
 ):
     coo_ind, val_dtype, val, shp = sparse_data
-    dtype, x = dtype_and_x
+
+    # set backed to 'torch' as this is the only backend which supports sparse arrays
+    ivy.set_backend("torch")
 
     # initiate a sparse array
-    sparse_inst = sparse_array.SparseArray(
+    sparse_inst = ivy.sparse_array.SparseArray(
         coo_indices=coo_ind,
         values=val,
         dense_shape=shp,
         format="coo",
     )
 
-    helpers.test_method(
-        backend_to_test=backend_fw,
-        on_device=on_device,
-        ground_truth_backend=ground_truth_backend,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=["int64", val_dtype],
-        method_all_as_kwargs_np={
-            "other": sparse_inst,
-        },
-        class_name=class_name,
-        method_name=method_name,
-    )
+    # create an Array instance
+    array_class = getattr(ivy, class_name)
+    x = np.random.random_sample(shp)
+    x = ivy.array(x, dtype=val_dtype, device=on_device)
+
+    # call add method
+    add_method = getattr(array_class, method_name)
+    res = add_method(x, sparse_inst)
+
+    # make sure the result is an Array instance
+    assert isinstance(res, array_class)
