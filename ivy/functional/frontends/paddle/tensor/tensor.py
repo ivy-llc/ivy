@@ -640,3 +640,9 @@ class Tensor:
     )
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
+
+    @with_supported_dtypes({"2.4.2 and below": ("uint16", "float16", "float32", "float64")}, "paddle")
+    def nanmean(self, axis=None, keepdim=False, name=None):
+        return paddle_frontend.Tensor(
+            ivy.nanmean(self._ivy_array, axis=axis, keepdims=keepdim)
+        )
