@@ -319,16 +319,19 @@ def _broadcastable_trio(draw):
     fn_tree="paddle.where",
     broadcastables=_broadcastable_trio(),
 )
-def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
+def test_paddle_where(
+    *, broadcastables, test_flags, frontend, backend_fw, fn_tree, on_device
+):
     cond, xs, dtypes = broadcastables
 
     helpers.test_frontend_function(
         input_dtypes=["bool"] + dtypes,
         test_flags=test_flags,
+        frontend=frontend,
         backend_to_test=backend_fw,
-        fn_name=fn_name,
+        fn_tree=fn_tree,
         on_device=on_device,
         condition=cond,
-        x1=xs[0],
-        x2=xs[1],
+        x=xs[0],
+        y=xs[1],
     )
