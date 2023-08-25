@@ -2838,26 +2838,21 @@ def set_item(
     val
         the array containing the values to be infused into x
     copy
-        boolean indicating whether or not to copy the input array.
-        If True, the function must always copy.
-        If False, the function must never copy.
-        In case copy is False we avoid copying by returning a view of the input array.
-
+        boolean indicating whether to copy x.
+        If True, the function will update and return a copy of x.
+        If False, the function will update x inplace.
     Returns
     -------
     ret
         the array with updated values at the specified indices.
-
     Functional Examples
     -------------------
-
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])
     >>> ivy.set_item(x, query, val)
     >>> print(x)
     ivy.array([10, 10, 20])
-
     >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
     >>> query = ([1, 1])
     >>> val = ivy.array([10, 10])
@@ -2866,6 +2861,8 @@ def set_item(
     ivy.array([[ 0, -1, 20],
            [10, 10, 10]])
     """
+    if copy:
+        x = ivy.copy_array(x)
     if 0 in x.shape or 0 in val.shape:
         return x
     inv_perm = None
