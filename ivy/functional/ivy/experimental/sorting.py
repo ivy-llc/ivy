@@ -32,10 +32,10 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def invert_permutation(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -67,7 +67,7 @@ def invert_permutation(
 # -------------------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def lexsort(
     keys: Union[ivy.Array, ivy.NativeArray],
     /,

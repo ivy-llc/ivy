@@ -1891,7 +1891,7 @@ class override(contextlib.ContextDecorator):
 def get_decorators(
     fn_name: str,
     main_decorators: Set[Callable],
-    decorator_lookup: Dict[FrozenSet, Set],
+    decorator_lookup: Dict[FrozenSet, Set[Callable]],
 ) -> Set[Callable]:
     """
     Get the decorators from the lookup table.

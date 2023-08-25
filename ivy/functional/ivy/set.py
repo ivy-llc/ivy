@@ -34,14 +34,14 @@ _decorators_per_function = {
 }
 
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Array API Standard #
 # -------------------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -164,7 +164,7 @@ def unique_all(
     return ivy.current_backend(x).unique_all(x, axis=axis, by_value=by_value)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -266,7 +266,7 @@ def unique_inverse(
     return ivy.current_backend(x).unique_inverse(x)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -353,7 +353,7 @@ def unique_values(
     return ivy.current_backend(x).unique_values(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

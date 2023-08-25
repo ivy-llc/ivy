@@ -78,7 +78,7 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 def _calculate_out_shape(axis, array_shape):
@@ -98,7 +98,7 @@ def _calculate_out_shape(axis, array_shape):
 # -------------------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -152,7 +152,7 @@ def concat(
     return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -284,7 +284,7 @@ def expand_dims(
     return current_backend(x).expand_dims(x, copy=copy, axis=axis, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -373,7 +373,7 @@ def flip(
     return current_backend(x).flip(x, copy=copy, axis=axis, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -468,7 +468,7 @@ def permute_dims(
     return current_backend(x).permute_dims(x, axes, copy=copy, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -589,7 +589,7 @@ def reshape(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -695,7 +695,7 @@ def roll(
     return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -783,7 +783,7 @@ def squeeze(
     return current_backend(x).squeeze(x, axis=axis, copy=copy, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -867,7 +867,7 @@ def stack(
 # ------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -988,7 +988,7 @@ def clip(
     return current_backend(x).clip(x, x_min, x_max, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1078,7 +1078,7 @@ def constant_pad(
     return current_backend(x).constant_pad(x, pad_width=pad_width, value=value, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1144,7 +1144,7 @@ def repeat(
     return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1226,7 +1226,7 @@ def split(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1332,7 +1332,7 @@ def swapaxes(
     return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1407,7 +1407,7 @@ def tile(
     return current_backend(x).tile(x, repeats, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1498,7 +1498,7 @@ def unstack(
     return current_backend(x).unstack(x, copy=copy, axis=axis, keepdims=keepdims)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

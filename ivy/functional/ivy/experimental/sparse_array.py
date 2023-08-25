@@ -18,7 +18,7 @@ _decorators_per_function = {
     frozenset({"native_sparse_array_to_indices_values_and_shape"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # helpers
@@ -807,12 +807,12 @@ def is_ivy_sparse_array(x):
     return isinstance(x, ivy.SparseArray)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def native_sparse_array(
     data=None,
     *,
@@ -838,6 +838,6 @@ def native_sparse_array(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def native_sparse_array_to_indices_values_and_shape(x):
     return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)

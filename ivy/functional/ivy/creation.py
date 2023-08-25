@@ -157,7 +157,7 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -402,7 +402,7 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def arange(
     start: Number,
     /,
@@ -499,7 +499,7 @@ def arange(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def asarray(
     obj: Union[
         ivy.Array,
@@ -586,7 +586,7 @@ def asarray(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -643,7 +643,7 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -733,7 +733,7 @@ def ones(
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -835,7 +835,7 @@ def full_like(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -949,7 +949,7 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1058,7 +1058,7 @@ def zeros_like(
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1108,7 +1108,7 @@ def tril(
     return current_backend(x).tril(x, k=k, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1158,7 +1158,7 @@ def triu(
     return current_backend(x).triu(x, k=k, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -1201,7 +1201,7 @@ def empty(
     return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1246,7 +1246,7 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -1382,7 +1382,7 @@ def eye(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1486,7 +1486,7 @@ def linspace(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
@@ -1601,7 +1601,7 @@ def meshgrid(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -1704,7 +1704,7 @@ def full(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1752,7 +1752,7 @@ def from_dlpack(
 array = asarray
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1857,7 +1857,7 @@ def copy_array(
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -1911,7 +1911,7 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -2019,7 +2019,7 @@ def one_hot(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -2130,7 +2130,7 @@ def logspace(
     return result
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -2191,7 +2191,7 @@ def frombuffer(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,

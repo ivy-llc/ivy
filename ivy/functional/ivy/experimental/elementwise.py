@@ -112,10 +112,10 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def lgamma(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -160,7 +160,7 @@ def lgamma(
     return ivy.current_backend(x).lgamma(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -232,7 +232,7 @@ def sinc(
     return ivy.current_backend(x).sinc(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -274,7 +274,7 @@ def fmax(
     return ivy.current_backend().fmax(x1, x2, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def float_power(
     x1: Union[ivy.Array, float, list, tuple],
     x2: Union[ivy.Array, float, list, tuple],
@@ -318,7 +318,7 @@ def float_power(
     return ivy.current_backend().float_power(x1, x2, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -360,7 +360,7 @@ def copysign(
     return ivy.current_backend().copysign(x1, x2, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -413,7 +413,7 @@ def count_nonzero(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -465,7 +465,7 @@ def nansum(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -525,7 +525,7 @@ def isclose(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -557,7 +557,7 @@ def signbit(
     return ivy.current_backend(x).signbit(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def hypot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -590,7 +590,7 @@ def hypot(
     return ivy.current_backend(x1, x2).hypot(x1, x2, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -641,7 +641,7 @@ def diff(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -711,7 +711,7 @@ def allclose(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -744,7 +744,7 @@ def fix(
     return ivy.current_backend(x).fix(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -780,7 +780,7 @@ def nextafter(
     return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -818,7 +818,7 @@ def zeta(
     return ivy.current_backend(x, q).zeta(x, q, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -893,7 +893,7 @@ def gradient(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
@@ -934,7 +934,7 @@ def xlogy(
     return ivy.current_backend(x, y).xlogy(x, y, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def binarizer(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -971,7 +971,7 @@ def binarizer(
     return ret
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1048,7 +1048,7 @@ def conj(
     return ivy.current_backend(x).conj(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1084,7 +1084,7 @@ def ldexp(
     return ivy.current_backend(x1, x2).ldexp(x1, x2, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def lerp(
     input: Union[ivy.Array, ivy.NativeArray],
     end: Union[ivy.Array, ivy.NativeArray],
@@ -1208,7 +1208,7 @@ lerp.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1240,7 +1240,7 @@ def frexp(
     return ivy.current_backend(x).frexp(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def modf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1272,7 +1272,7 @@ def modf(
     return ivy.current_backend(x).modf(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def digamma(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

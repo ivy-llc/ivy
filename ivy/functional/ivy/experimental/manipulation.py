@@ -203,10 +203,10 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -362,7 +362,7 @@ flatten.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def moveaxis(
     a: Union[ivy.Array, ivy.NativeArray],
     source: Union[int, Sequence[int]],
@@ -411,7 +411,7 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def heaviside(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -454,7 +454,7 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def flipud(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -497,7 +497,7 @@ def flipud(
     return ivy.current_backend().flipud(m, copy=copy, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def vstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -538,7 +538,7 @@ def vstack(
     return ivy.current_backend().vstack(arrays, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def hstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -575,7 +575,7 @@ def hstack(
     return ivy.current_backend().hstack(arrays, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -658,7 +658,7 @@ def rot90(
     return ivy.current_backend(m).rot90(m, copy=copy, k=k, axes=axes, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def top_k(
     x: Union[ivy.Array, ivy.NativeArray],
     k: int,
@@ -734,7 +734,7 @@ def top_k(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fliplr(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -778,7 +778,7 @@ def fliplr(
     return ivy.current_backend().fliplr(m, copy=copy, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def i0(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1094,7 +1094,7 @@ def _check_arguments(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -1358,7 +1358,7 @@ pad.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1405,7 +1405,7 @@ def vsplit(
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections, copy=copy)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1456,7 +1456,7 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections, copy=copy)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1497,7 +1497,7 @@ def atleast_1d(
     return ivy.current_backend().atleast_1d(*arys, copy=copy)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -1535,7 +1535,7 @@ def dstack(
     return ivy.current_backend().dstack(arrays, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
@@ -1578,7 +1578,7 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys, copy=copy)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1630,7 +1630,7 @@ def atleast_3d(
     return ivy.current_backend().atleast_3d(*arys, copy=copy)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1676,7 +1676,7 @@ def take_along_axis(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1730,7 +1730,7 @@ def hsplit(
     return ivy.current_backend(ary).hsplit(ary, indices_or_sections, copy=copy)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """
     Broadcasts shapes.
@@ -1757,7 +1757,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return ivy.current_backend().broadcast_shapes(*shapes)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def expand(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape],
@@ -1794,7 +1794,7 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def put_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1883,7 +1883,7 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -1954,7 +1954,7 @@ as_strided.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def concat_from_sequence(
     input_sequence: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -2061,7 +2061,7 @@ def _interleave(a, b, axis):
     return ivy.add(a, b)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def associative_scan(
     x: Union[ivy.Array, ivy.NativeArray],
     fn: Callable,
@@ -2139,7 +2139,7 @@ def associative_scan(
     return ivy.reshape(ivy.asarray(scans), elems[0].shape)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unique_consecutive(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2186,7 +2186,7 @@ def unique_consecutive(
     return ivy.current_backend(x).unique_consecutive(x, axis=axis)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fill_diagonal(
     a: Union[ivy.Array, ivy.NativeArray],
     v: Union[int, float],
@@ -2214,7 +2214,7 @@ def fill_diagonal(
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2242,7 +2242,7 @@ def unfold(
     return ivy.reshape(ivy.moveaxis(x, mode, 0), (x.shape[mode], -1), out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2277,7 +2277,7 @@ def fold(
     return ivy.moveaxis(ivy.reshape(x, full_shape), 0, mode, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def partial_unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2330,7 +2330,7 @@ def partial_unfold(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def partial_fold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2369,7 +2369,7 @@ def partial_fold(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def partial_tensor_to_vec(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2409,7 +2409,7 @@ def partial_tensor_to_vec(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def partial_vec_to_tensor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2440,7 +2440,7 @@ def partial_vec_to_tensor(
     return partial_fold(x, mode=0, shape=shape, skip_begin=skip_begin, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def matricize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2494,7 +2494,7 @@ def matricize(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def soft_thresholding(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

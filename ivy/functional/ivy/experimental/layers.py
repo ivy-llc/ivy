@@ -110,10 +110,10 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -197,7 +197,7 @@ def max_pool1d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def max_unpool1d(
     x: ivy.Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -264,7 +264,7 @@ def max_unpool1d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -348,7 +348,7 @@ def max_pool2d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -430,7 +430,7 @@ def max_pool3d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -509,7 +509,7 @@ def avg_pool1d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def avg_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -593,7 +593,7 @@ def avg_pool2d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def avg_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -678,7 +678,7 @@ def avg_pool3d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def pool(
     x: Union[ivy.Array, ivy.NativeArray],
     window_shape: Union[int, Tuple[int], Tuple[int, int]],
@@ -752,7 +752,7 @@ def pool(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -860,7 +860,7 @@ def dct(
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def idct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -979,7 +979,7 @@ idct.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -1043,7 +1043,7 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1113,7 +1113,7 @@ def dropout1d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dropout2d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1173,7 +1173,7 @@ def dropout2d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1219,7 +1219,7 @@ def dropout3d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -1282,7 +1282,7 @@ def ifft(
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1330,7 +1330,7 @@ def embedding(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1405,7 +1405,7 @@ def dft(
     return res
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -1850,7 +1850,7 @@ def _interpolate_with_kernel(
     return ivy.einsum(equation, x, *operands)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
@@ -2163,7 +2163,7 @@ def _mask(vals, length, range_max, dim, mask_value=0.0):
         return vals, length
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def adaptive_max_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2255,7 +2255,7 @@ adaptive_max_pool2d.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -2334,7 +2334,7 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2543,7 +2543,7 @@ avg_pool2d.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def reduce_window(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -2626,7 +2626,7 @@ reduce_window.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2698,7 +2698,7 @@ fft2.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def ifftn(
     x: Union[ivy.Array, ivy.NativeArray],
     s: Optional[Union[int, Tuple[int, ...]]] = None,
@@ -2777,7 +2777,7 @@ def ifftn(
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def rfftn(
     x: Union[ivy.Array, ivy.NativeArray],
     s: Optional[Sequence[int]] = None,

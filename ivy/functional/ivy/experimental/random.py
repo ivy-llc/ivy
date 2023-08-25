@@ -36,11 +36,11 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # dirichlet
-@decorate(*decorators)
+@decorate(*_decorators)
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -103,7 +103,7 @@ def dirichlet(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -152,7 +152,7 @@ def beta(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
@@ -197,7 +197,7 @@ def gamma(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -262,7 +262,7 @@ def poisson(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
     *,

@@ -70,10 +70,10 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -109,7 +109,7 @@ def vorbis_window(
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def hann_window(
     size: int,
     *,
@@ -151,7 +151,7 @@ def hann_window(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -196,7 +196,7 @@ def kaiser_window(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def kaiser_bessel_derived_window(
     window_length: int,
     beta: float = 12.0,
@@ -246,7 +246,7 @@ def kaiser_bessel_derived_window(
     return result
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def hamming_window(
     window_length: int,
     *,
@@ -311,7 +311,7 @@ hamming_window.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -402,7 +402,7 @@ def tril_indices(
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -500,7 +500,7 @@ def _iter_product(*args, repeat=1):
         yield tuple(prod)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def ndenumerate(
     input: Iterable,
 ) -> Generator:
@@ -540,7 +540,7 @@ def ndenumerate(
     return _ndenumerate(input)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def ndindex(
     shape: Tuple,
 ) -> Generator:
@@ -571,7 +571,7 @@ def ndindex(
     return _iter_product(*args)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def indices(
     dimensions: Sequence[int],
     *,
@@ -630,7 +630,7 @@ indices.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unsorted_segment_min(
     data: Union[ivy.Array, ivy.NativeArray],
     segment_ids: Union[ivy.Array, ivy.NativeArray],
@@ -668,7 +668,7 @@ def unsorted_segment_min(
     return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unsorted_segment_sum(
     data: Union[ivy.Array, ivy.NativeArray],
     segment_ids: Union[ivy.Array, ivy.NativeArray],
@@ -748,7 +748,7 @@ def blackman_window(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def random_tucker(
     shape: Sequence[int],
     rank: Sequence[int],

@@ -74,7 +74,7 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -85,7 +85,7 @@ def _check_valid_dimension_size(std):
     ivy.utils.assertions.check_dimensions(std)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -219,7 +219,7 @@ def eigh_tridiagonal(
     return eigenvalues, eigenvectors
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -281,7 +281,7 @@ def diagflat(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -318,7 +318,7 @@ def kron(
     return current_backend(a, b).kron(a, b, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -356,7 +356,7 @@ def matrix_exp(
     return current_backend(x).matrix_exp(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -415,7 +415,7 @@ def eig(
     return current_backend(x).eig(x)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -454,7 +454,7 @@ def eigvals(
     return current_backend(x).eigvals(x)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -489,7 +489,7 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
@@ -543,7 +543,7 @@ multi_dot.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -586,7 +586,7 @@ def cond(
 
 # This code has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_kronecker.py
-@decorate(*decorators)
+@decorate(*_decorators)
 def kronecker(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     skip_matrix: Optional[int] = None,
@@ -631,7 +631,7 @@ def kronecker(
 
 # The code has been adapated from tensorly.khatri_rao
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_khatri_rao.py#L9
-@decorate(*decorators)
+@decorate(*_decorators)
 def khatri_rao(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -729,7 +729,7 @@ def khatri_rao(
 
 # The following code has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L5
-@decorate(*decorators)
+@decorate(*_decorators)
 def mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -817,7 +817,7 @@ def mode_dot(
 
 # The following code has been adapated from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L81
-@decorate(*decorators)
+@decorate(*_decorators)
 def multi_mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
@@ -937,7 +937,7 @@ def _svd_checks(x, n_eigenvecs=None):
 
 # This function has been adapated from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L12
-@decorate(*decorators)
+@decorate(*_decorators)
 def svd_flip(
     U: Union[ivy.Array, ivy.NativeArray],
     V: Union[ivy.Array, ivy.NativeArray],
@@ -1002,7 +1002,7 @@ def svd_flip(
 
 # This function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L65
-@decorate(*decorators)
+@decorate(*_decorators)
 def make_svd_non_negative(
     x: Union[ivy.Array, ivy.NativeArray],
     U: Union[ivy.Array, ivy.NativeArray],
@@ -1092,7 +1092,7 @@ def make_svd_non_negative(
 
 # The following function has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L206
-@decorate(*decorators)
+@decorate(*_decorators)
 def truncated_svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1177,7 +1177,7 @@ def _svd_interface(
 
 # TODO update svd type hints when other svd methods have been added
 # also update the test
-@decorate(*decorators)
+@decorate(*_decorators)
 def initialize_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Sequence[int],
@@ -1285,7 +1285,7 @@ def initialize_tucker(
 
 # This function has been adpated from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_tucker.py#L98
-@decorate(*decorators)
+@decorate(*_decorators)
 def partial_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1429,7 +1429,7 @@ def partial_tucker(
     return (core, factors)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1572,7 +1572,7 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dot(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],

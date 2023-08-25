@@ -50,7 +50,7 @@ _decorators_per_function = {
     frozenset({"shuffle"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -121,7 +121,7 @@ def _check_shapes_broadcastable(out, inp):
 # ------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -230,7 +230,7 @@ def random_uniform(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -335,7 +335,7 @@ def random_normal(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -439,7 +439,7 @@ def multinomial(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -536,7 +536,7 @@ def seed(*, seed_value: int = 0) -> None:
     return ivy.current_backend().seed(seed_value=seed_value)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = 0,

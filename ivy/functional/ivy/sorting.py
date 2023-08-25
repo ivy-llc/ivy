@@ -36,13 +36,13 @@ _decorators_per_function = {
     frozenset({"msort"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 # Array API Standard #
 # -------------------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -156,7 +156,7 @@ def argsort(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -256,7 +256,7 @@ def sort(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -294,7 +294,7 @@ def msort(
 # ------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],

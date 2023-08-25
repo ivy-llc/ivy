@@ -39,7 +39,7 @@ _decorators_per_function = {
     frozenset({"hardswish"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 def _gelu_jax_like(
@@ -58,7 +58,7 @@ def _gelu_jax_like(
     return x * cdf
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -139,7 +139,7 @@ def _leaky_relu_jax_like(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -212,7 +212,7 @@ def leaky_relu(
 leaky_relu.jax_like = _leaky_relu_jax_like
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -297,7 +297,7 @@ def _relu_jax_like(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -361,7 +361,7 @@ def relu(
 relu.jax_like = _relu_jax_like
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -432,7 +432,7 @@ def sigmoid(
     return current_backend(x).sigmoid(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -517,7 +517,7 @@ def _softplus_jax_like(
     return res
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -583,7 +583,7 @@ def softplus(
 softplus.jax_like = _softplus_jax_like
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -632,7 +632,7 @@ def mish(
     return current_backend(x).mish(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def hardswish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

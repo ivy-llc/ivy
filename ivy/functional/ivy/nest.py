@@ -8,43 +8,14 @@ from collections import UserDict, OrderedDict
 
 # local
 import ivy
-from ivy.func_wrapper import decorate
 from ivy.utils.exceptions import handle_exceptions
 
-_main_decorators = {handle_exceptions}
-
-_decorators_per_function = {
-    frozenset(
-        {
-            "index_nest",
-            "nested_multi_map",
-            "nested_map",
-            "set_nest_at_indices",
-            "prune_nest_at_index",
-            "insert_into_nest_at_indices",
-            "all_nested_indices",
-            "map",
-            "duplicate_array_index_chains",
-            "copy_nest",
-            "nested_argwhere",
-            "map_nest_at_index",
-            "insert_into_nest_at_index",
-            "nested_any",
-            "multi_index_nest",
-            "set_nest_at_index",
-            "prune_nest_at_indices",
-            "map_nest_at_indices",
-        }
-    ): set()
-}
-
-decorators = _main_decorators, _decorators_per_function
 
 # Extra #
 # ------#
 
 
-@decorate(*decorators)
+@handle_exceptions
 def index_nest(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container],
     index: Union[List[int], Tuple[int], Iterable[int]],
@@ -120,7 +91,7 @@ def index_nest(
     return ret
 
 
-@decorate(*decorators)
+@handle_exceptions
 def prune_nest_at_index(nest: Iterable, index: Tuple, /) -> None:
     """
     Prune a nested object at a specified index.
@@ -138,7 +109,7 @@ def prune_nest_at_index(nest: Iterable, index: Tuple, /) -> None:
         prune_nest_at_index(nest[index[0]], index[1:])
 
 
-@decorate(*decorators)
+@handle_exceptions
 def set_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple],
     index: Sequence[Union[str, int]],
@@ -245,7 +216,7 @@ def set_nest_at_index(
     return _result
 
 
-@decorate(*decorators)
+@handle_exceptions
 def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
     if len(index) == 1:
         idx = index[0]
@@ -257,7 +228,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-@decorate(*decorators)
+@handle_exceptions
 def map_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
     index: Sequence[Union[str, int]],
@@ -365,7 +336,7 @@ def map_nest_at_index(
     return _result
 
 
-@decorate(*decorators)
+@handle_exceptions
 def multi_index_nest(
     nest: Union[List, Dict, Tuple, ivy.Array, ivy.NativeArray, ivy.Container],
     indices: Iterable[Iterable[int]],
@@ -436,7 +407,7 @@ def multi_index_nest(
     return [index_nest(nest, index) for index in indices]
 
 
-@decorate(*decorators)
+@handle_exceptions
 def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
     """
     Prune a nested object at specified indices.
@@ -457,7 +428,7 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
     [prune_nest_at_index(nest, index) for index in indices_sorted]
 
 
-@decorate(*decorators)
+@handle_exceptions
 def set_nest_at_indices(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
     indices: Union[List[int], Tuple[int], Iterable[int]],
@@ -541,7 +512,7 @@ def set_nest_at_indices(
     return result
 
 
-@decorate(*decorators)
+@handle_exceptions
 def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /) -> None:
     """
     Insert a value into the nested item at specified indices with specified values.
@@ -564,7 +535,7 @@ def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /) -> No
     ]
 
 
-@decorate(*decorators)
+@handle_exceptions
 def map_nest_at_indices(
     nest: Iterable,
     indices: Tuple,
@@ -647,7 +618,7 @@ def map_nest_at_indices(
     return result
 
 
-@decorate(*decorators)
+@handle_exceptions
 def nested_argwhere(
     nest: Iterable,
     fn: Callable,
@@ -827,7 +798,7 @@ def nested_argwhere(
     return [index for index in _indices if index]
 
 
-@decorate(*decorators)
+@handle_exceptions
 def all_nested_indices(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container] = None,
     /,
@@ -927,7 +898,7 @@ def all_nested_indices(
 # noinspection PyShadowingBuiltins
 
 
-@decorate(*decorators)
+@handle_exceptions
 def map(
     fn: Callable,
     constant: Optional[Dict[str, Any]] = None,
@@ -1032,7 +1003,7 @@ def map(
     return rets
 
 
-@decorate(*decorators)
+@handle_exceptions
 def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
@@ -1289,7 +1260,7 @@ def nested_map(
     return fn(x)
 
 
-@decorate(*decorators)
+@handle_exceptions
 def nested_any(
     nest: Iterable,
     fn: Callable,
@@ -1343,7 +1314,7 @@ def nested_any(
     return False
 
 
-@decorate(*decorators)
+@handle_exceptions
 def copy_nest(
     nest: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
@@ -1454,7 +1425,7 @@ def copy_nest(
     return nest
 
 
-@decorate(*decorators)
+@handle_exceptions
 def nested_multi_map(
     func: Callable,
     nests: List[Iterable],
@@ -1612,7 +1583,7 @@ def nested_multi_map(
     )
 
 
-@decorate(*decorators)
+@handle_exceptions
 def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterable]):
     """
     Group all unique index chains in a nest. This function is useful for finding all

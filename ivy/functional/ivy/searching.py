@@ -35,14 +35,14 @@ _decorators_per_function = {
     frozenset({"nonzero"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Array API Standard #
 # ------------------- #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -142,7 +142,7 @@ def argmax(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -243,7 +243,7 @@ def argmin(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -375,7 +375,7 @@ def nonzero(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -454,7 +454,7 @@ def where(
 # ------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

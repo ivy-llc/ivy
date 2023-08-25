@@ -27,7 +27,7 @@ _main_decorators = {
 
 _decorators_per_function = {frozenset({"reduce"}): set()}
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 def _correct_ivy_callable(func):
@@ -42,7 +42,7 @@ def _correct_ivy_callable(func):
     return func
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def reduce(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],

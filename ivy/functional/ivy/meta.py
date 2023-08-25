@@ -19,7 +19,7 @@ _decorators_per_function = {
     frozenset({"reptile_step", "maml_step", "fomaml_step"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 # Extra #
 # ------#
@@ -419,7 +419,7 @@ def _train_tasks(
 # First Order
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def fomaml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,
@@ -542,7 +542,7 @@ def fomaml_step(
 fomaml_step.computes_gradients = True
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def reptile_step(
     batch: ivy.Container,
     cost_fn: Callable,
@@ -683,7 +683,7 @@ reptile_step.computes_gradients = True
 # Second Order
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def maml_step(
     batch: ivy.Container,
     inner_cost_fn: Callable,

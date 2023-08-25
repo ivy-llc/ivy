@@ -24,10 +24,10 @@ _main_decorators = {
 
 _decorators_per_function = {frozenset({"unravel_index"}): set()}
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def unravel_index(
     indices: Union[ivy.Array, ivy.NativeArray],
     shape: Tuple[int],

@@ -47,10 +47,10 @@ _decorators_per_function = {
 }
 
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -94,7 +94,7 @@ def logit(
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],
@@ -148,7 +148,7 @@ def prelu(
         raise IvyException
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -203,7 +203,7 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -242,7 +242,7 @@ def relu6(
     return current_backend(x).relu6(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -287,7 +287,7 @@ def logsigmoid(
     return ivy.current_backend(input).logsigmoid(input, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -339,7 +339,7 @@ def selu(
     return current_backend(x).selu(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -382,7 +382,7 @@ def silu(
     return current_backend(x).silu(x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def elu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

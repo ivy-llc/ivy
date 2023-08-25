@@ -46,10 +46,10 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -87,7 +87,7 @@ def l1_normalize(
     return current_backend(x).l1_normalize(x, axis=axis, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -124,7 +124,7 @@ def l2_normalize(
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -241,7 +241,7 @@ batch_norm.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -368,7 +368,7 @@ instance_norm.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def group_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     num_groups: int = 1,
@@ -451,7 +451,7 @@ group_norm.mixed_backend_wrappers = {
 }
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

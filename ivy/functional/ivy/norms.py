@@ -23,13 +23,13 @@ _main_decorators = {
 
 _decorators_per_function = {frozenset({"layer_norm"}): set()}
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 # Extra #
 # ------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],

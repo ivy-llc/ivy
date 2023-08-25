@@ -60,7 +60,7 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -359,7 +359,7 @@ def _variable_data(
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -433,7 +433,7 @@ def stop_gradient(
 # AutoGrad #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def execute_with_gradients(
     func,
     xs: Union[ivy.Array, ivy.NativeArray],
@@ -519,7 +519,7 @@ def execute_with_gradients(
 execute_with_gradients.computes_gradients = True
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def value_and_grad(func: Callable) -> Callable:
     """
     Create a function that evaluates both func and the gradient of func.
@@ -553,7 +553,7 @@ def value_and_grad(func: Callable) -> Callable:
 value_and_grad.computes_gradients = True
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def jac(func: Callable) -> Callable:
     """
     Call function func, and return func's Jacobian partial derivatives.
@@ -587,7 +587,7 @@ def jac(func: Callable) -> Callable:
 jac.computes_gradients = True
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def grad(func: Callable, argnums: Union[int, Sequence[int]] = 0) -> Callable:
     """
     Call function func, and return func's gradients.
@@ -624,7 +624,7 @@ grad.computes_gradients = True
 # Optimizer Steps #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -775,7 +775,7 @@ adam_step.out_index = 0
 # Optimizer Updates #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -895,7 +895,7 @@ def optimizer_update(
     return w
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -985,7 +985,7 @@ def gradient_descent_update(
     return ivy.optimizer_update(w, dcdw, lr, stop_gradients=stop_gradients, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1033,7 +1033,7 @@ def lars_update(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1195,7 +1195,7 @@ def adam_update(
 adam_update.out_index = 0
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],

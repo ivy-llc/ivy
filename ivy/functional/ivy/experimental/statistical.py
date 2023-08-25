@@ -54,7 +54,7 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # TODO: Make bins optional by offering an automatic bins creation like numpy.
@@ -62,7 +62,7 @@ decorators = _main_decorators, _decorators_per_function
 #       Bins as str is not defined (check Numpy implementation).
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
-@decorate(*decorators)
+@decorate(*_decorators)
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -190,7 +190,7 @@ def histogram(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def median(
     input: ivy.Array,
     /,
@@ -231,7 +231,7 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def nanmean(
     a: ivy.Array,
     /,
@@ -281,7 +281,7 @@ def nanmean(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -363,7 +363,7 @@ def quantile(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def corrcoef(
     x: ivy.Array,
     /,
@@ -375,7 +375,7 @@ def corrcoef(
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def nanmedian(
     input: ivy.Array,
     /,
@@ -443,7 +443,7 @@ def nanmedian(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def bincount(
     x: ivy.Array,
     /,
@@ -482,7 +482,7 @@ def bincount(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -518,7 +518,7 @@ def igamma(
     return ivy.current_backend().igamma(a, x=x, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def cov(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray] = None,
@@ -658,7 +658,7 @@ def cov(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def cummax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -753,7 +753,7 @@ def cummax(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def cummin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

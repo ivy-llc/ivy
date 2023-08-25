@@ -37,7 +37,7 @@ _decorators_per_function = {
     ): {handle_exceptions},
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 # Helpers #
 # --------#
@@ -58,7 +58,7 @@ def _get_promoted_type_of_operands(operands):
 # -------------------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -160,7 +160,7 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -264,7 +264,7 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -369,7 +369,7 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -498,7 +498,7 @@ def prod(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -630,7 +630,7 @@ def std(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -764,7 +764,7 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -874,7 +874,7 @@ def var(
 # ------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1012,7 +1012,7 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1143,7 +1143,7 @@ def cumprod(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

@@ -102,7 +102,7 @@ _decorators_per_function = {
     },
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 # Extra #
 # ------#
@@ -157,7 +157,7 @@ def _in_projection(
 
 
 # Linear #
-@decorate(*decorators)
+@decorate(*_decorators)
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -312,7 +312,7 @@ linear.mixed_backend_wrappers = {
 # Dropout #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -494,7 +494,7 @@ dropout.mixed_backend_wrappers = {
 # Attention #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def scaled_dot_product_attention(
     query: Union[ivy.Array, ivy.NativeArray],
     key: Union[ivy.Array, ivy.NativeArray],
@@ -775,7 +775,7 @@ def scaled_dot_product_attention(
 
 
 # @handle_array_like_without_promotion
-@decorate(*decorators)
+@decorate(*_decorators)
 def multi_head_attention(
     query: Union[ivy.Array, ivy.NativeArray],
     key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -952,7 +952,7 @@ def multi_head_attention(
 # Convolutions #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1055,7 +1055,7 @@ def conv1d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1194,7 +1194,7 @@ def conv1d_transpose(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1327,7 +1327,7 @@ def conv2d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1458,7 +1458,7 @@ def conv2d_transpose(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1590,7 +1590,7 @@ def depthwise_conv2d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1704,7 +1704,7 @@ def conv3d(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1835,7 +1835,7 @@ def conv3d_transpose(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1912,7 +1912,7 @@ def conv_general_dilated(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1981,7 +1981,7 @@ def conv_general_transpose(
     )
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -2083,7 +2083,7 @@ def conv(
 # LSTM #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],

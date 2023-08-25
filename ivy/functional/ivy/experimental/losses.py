@@ -27,11 +27,11 @@ _decorators_per_function = {
     frozenset({"log_poisson_loss"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # log_poisson_loss
-@decorate(*decorators)
+@decorate(*_decorators)
 def log_poisson_loss(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

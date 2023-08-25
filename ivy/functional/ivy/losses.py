@@ -28,7 +28,7 @@ _decorators_per_function = {
     frozenset({"cross_entropy", "sparse_cross_entropy", "binary_cross_entropy"}): set()
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Helpers #
@@ -48,7 +48,7 @@ def _reduce_loss(red, loss, axis, out):
 # ----- #
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -100,7 +100,7 @@ def cross_entropy(
     return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -279,7 +279,7 @@ def binary_cross_entropy(
     return _reduce_loss(reduction, loss, axis, out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

@@ -32,14 +32,14 @@ _decorators_per_function = {
     frozenset({"all", "any"}): set(),
 }
 
-decorators = _main_decorators, _decorators_per_function
+_decorators = _main_decorators, _decorators_per_function
 
 
 # Array API Standard #
 # -------------------#
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -147,7 +147,7 @@ def all(
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@decorate(*decorators)
+@decorate(*_decorators)
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
