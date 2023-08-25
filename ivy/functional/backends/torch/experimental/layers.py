@@ -1021,7 +1021,7 @@ def sliding_window(
     /,
     *,
     data_format: str = "NHWC",
-):
+) -> torch.Tensor:
     if input.ndim == 4:
         if data_format == "NHWC":
             input = input.permute(0, 3, 1, 2)

@@ -1405,7 +1405,7 @@ def sliding_window(
     /,
     *,
     data_format="NHWC",
-):
+) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         # transpose input to "NHWC" acceptable to tensorflow
         input = tf.transpose(input, (0, 2, 3, 1))
