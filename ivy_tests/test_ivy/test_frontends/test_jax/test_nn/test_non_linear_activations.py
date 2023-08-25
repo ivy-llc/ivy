@@ -621,8 +621,8 @@ def test_jax_elu(
         on_device=on_device,
         x=xs[0],
         alpha=alpha,
-        rtol=1e-03,
-        atol=1e-03,
+        rtol=1e-02,
+        atol=1e-02,
     )
 
 

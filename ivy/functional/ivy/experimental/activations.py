@@ -194,15 +194,20 @@ def _relu6_jax_like(
     fn_original=None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-        return ivy.where(
-          ivy.logical_or(ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)),
-          ivy.array(0, dtype=x.dtype),
-          ivy.where(
-            ivy.logical_or(ivy.real(x) > 6, ivy.logical_and(ivy.real(x) == 6, ivy.imag(x) > 0)),
+    return ivy.where(
+        ivy.logical_or(
+            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+        ),
+        ivy.array(0, dtype=x.dtype),
+        ivy.where(
+            ivy.logical_or(
+                ivy.real(x) > 6, ivy.logical_and(ivy.real(x) == 6, ivy.imag(x) > 0)
+            ),
             ivy.array(6, dtype=x.dtype),
             x,
-          ),
-        )
+        ),
+    )
+
 
 @handle_exceptions
 @handle_backend_invalid
@@ -327,9 +332,14 @@ def _selu_jax_like(
     fn_original=None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    """
+    Apply jax definition of selu to function
+    source:
+        [https://jax.readthedocs.io/en/latest/_modules/jax/_src/nn/functions.html#selu]
+    """
     alpha = 1.6732632423543772848170429916717
     scale = 1.0507009873554804934193349852946
-    return scale * elu(x, alpha=alpha)
+    return ivy.multiply(scale, ivy.elu(x, alpha=alpha))
 
 
 @handle_exceptions
@@ -469,11 +479,19 @@ def _elu_jax_like(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     safe_x = ivy.where(
-        (x > 0),
+        ivy.logical_or(
+            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+        ),
+        x,
         0.0,
+    )
+    return ivy.where(
+        ivy.logical_or(
+            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+        ),
+        ivy.astype(ivy.multiply(alpha, ivy.expm1(safe_x)), x.dtype),
         x,
     )
-    return ivy.where((x > 0), x, ivy.astype(alpha * ivy.expm1(safe_x), x.dtype))
 
 
 @handle_exceptions

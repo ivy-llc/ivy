@@ -68,10 +68,12 @@ def imag(
 imag.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
 def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
+    if x.is_complex():
+        return torch.exp(x) - 1
     return torch.expm1(x, out=out)
 
 
