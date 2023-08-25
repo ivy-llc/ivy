@@ -42,4 +42,4 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
 @to_ivy_arrays_and_back
 def lu(x):
-    return ivy.lu(ivy.lu_factor(x))
+    return ivy.lu_factor(x)
