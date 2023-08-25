@@ -443,7 +443,7 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
             grid[zeros_mask] = ivy.repeat(ivy.array([[w, h]]), repeats=zeros_mask.shape[0], axis=0)
 
-        # pad and shift for 1
+        # pad and shift for 2
         padding = [(0, 0) for i in range(2)] + [(2, 2) for i in range(2)]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
         grid += 2
@@ -466,9 +466,7 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             v10 = ivy.permute_dims(input[batch_coor, :, h1, w0], (0, 3, 1, 2))
             v11 = ivy.permute_dims(input[batch_coor, :, h1, w1], (0, 3, 1, 2))
 
-            alpha = ivy.reshape(
-                w_coor - w0, (n, 1, to_h, to_w)
-            )  # We need to add a dimension here to make alpha and beta have a same shape
+            alpha = ivy.reshape(w_coor - w0, (n, 1, to_h, to_w))
             beta = ivy.reshape(h_coor - h0, (n, 1, to_h, to_w))
 
             v0 = v00 * (1 - alpha) + v01 * alpha
@@ -659,16 +657,7 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             v += (alpha * (1 - beta) * (1 - gamma)) * v001
             v += ((1 - alpha) * (1 - beta) * (1 - gamma)) * v000
             return v
-            # tnw = ivy.astype(ivy.floor(grid), ivy.int64)
-            # bse = tnw + 1
 
-            # w_tnw = ivy.reshape(tnw[..., 0], (n, to_h, to_w, to_d)) # also the w of tsw, bsw, bnw
-            # h_tnw = ivy.reshape(tnw[..., 1], (n, to_h, to_w, to_d)) # also the h of tne, bnw, bne
-            # d_tnw = ivy.reshape(tnw[..., 2], (n, to_h, to_w, to_d)) # also the d of all top (tne, tse, tsw)
-            #
-            # w_bse = ivy.reshape(bse[..., 0], (n, to_h, to_w, to_d)) # the w of tse, tne, bne
-            # h_bse = ivy.reshape(bse[..., 1], (n, to_h, to_w, to_d)) # the h of tse, tsw, bsw
-            # d_bse = ivy.reshape(bse[..., 2], (n, to_h, to_w, to_d)) # the d of all bottom (bsw, bnw, bne)
         elif mode == "nearest":
             w_coor = ivy.astype(ivy.round(w_coor), ivy.int64)
             h_coor = ivy.astype(ivy.round(h_coor), ivy.int64)
