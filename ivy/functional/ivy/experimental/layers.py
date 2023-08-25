@@ -3221,3 +3221,81 @@ max_unpool1d.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
+
+
+@handle_exceptions
+@inputs_to_ivy_arrays
+def adaptive_max_pool1d(
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: int,
+) -> ivy.Array:
+    """
+    Apply a 1D adaptive maximum pooling over an input signal composed of several input
+    planes.
+    Parameters
+    ----------
+    input
+        Input array. Must have shape (N, C, L_in) or (C, L_in) where N is
+        the batch dimension, C is the feature dimension, and L_in is the spatial
+        dimension.
+    output_size
+        Spatial output size.
+    Returns
+    -------
+        The result of the pooling operation. Will have shape (N, C, L_out) or
+        (C, L_out), where L_out = `output_size`
+    """
+    squeeze = False
+    if input.ndim == 2:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif input.ndim != 3:
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
+        )
+
+    if input.shape[-1] % output_size == 0:
+        stride = input.shape[-1] // output_size
+        kernel_size = input.shape[-1] - (output_size - 1) * stride
+        pooled_output = ivy.max_pool1d(
+            input, kernel_size, stride, "VALID", data_format="NCW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
+        input.shape[-1], output_size, input.device
+    )
+
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(input.to_numpy()[..., idxw])
+
+    if not adaptive_w:
+        ret = ivy.max(vals, axis=-1)
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
+
+    vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
+
+    ret = None
+    for i in range(vals.shape[-1]):
+        if ret is None:
+            ret = vals[..., i]
+        else:
+            ret = ivy.maximum(ret, vals[..., i])
+    pooled_output = ret.astype(vals.dtype)
+
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
+    return pooled_output
+
+
+adaptive_max_pool1d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
