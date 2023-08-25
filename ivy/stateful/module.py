@@ -881,9 +881,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if len(mod.submod_dict):
                 for module_name, module in mod.submod_dict.items():
                     module_name = (
-                       module_name
-                       if parent_k is None
-                       else ".".join([parent_k, module_name])
+                        module_name
+                        if parent_k is None
+                        else ".".join([parent_k, module_name])
                     )
                     _nest(module, module_name)
             else:
