@@ -1944,10 +1944,11 @@ def _rearrange_decorators(decorators: Set[Callable]) -> Tuple[Callable]:
         unknowns = ", ".join(unknowns)
         raise KeyError(f"Unknown decorators found: {unknowns}")
 
-    def _get_name(decorator):
-        return decorator.__name__
+    def _get_name_idx(decorator):
+        return FN_DECORATORS.index(decorator.__name__)
 
-    return tuple(sorted(decorators, key=_get_name, reverse=True))
+    ret = tuple(sorted(decorators, key=_get_name_idx))
+    return ret
 
 
 def decorate(
