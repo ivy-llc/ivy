@@ -148,4 +148,3 @@ def rfftfreq(n, d=1.0):
 def rfftn(a, s=None, axes=None, norm=None):
     a = ivy.asarray(a, dtype=ivy.complex128)
     return ivy.rfftn(a, s=s, axes=axes, norm=norm)
-
