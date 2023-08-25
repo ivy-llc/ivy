@@ -2759,7 +2759,7 @@ def get_item(
     query
         array, index array, integer indices or boolean mask.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
         If False, the function must never copy.
         In case copy is False we avoid copying by returning a view of the input array.
@@ -2855,8 +2855,8 @@ def set_item(
     >>> val = ivy.array([10, 10])
     >>> ivy.set_item(x, query, val)
     >>> print(x)
-    ivy.array([10, 10, 20])
 
+    ivy.array([10, 10, 20])
     >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
     >>> query = ([1, 1])
     >>> val = ivy.array([10, 10])

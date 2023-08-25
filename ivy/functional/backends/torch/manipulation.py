@@ -56,9 +56,6 @@ def expand_dims(
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
-    if copy:
-        newarr = torch.clone(x)
-        return newarr.reshape(out_shape)
     return x.reshape(out_shape)
 
 
@@ -82,9 +79,6 @@ def flip(
     else:
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    if copy:
-        newarr = torch.clone(x)
-        return torch.flip(newarr, new_axis)
     return torch.flip(x, new_axis)
 
 
@@ -96,9 +90,6 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if copy:
-        newarr = torch.clone(x)
-        return torch.permute(newarr, axes)
     return torch.permute(x, axes)
 
 
@@ -118,11 +109,6 @@ def reshape(
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, torch.tensor(shape) != 0, x.shape)
         ]
-    if copy:
-        newarr = torch.clone(x)
-        if order == "F":
-            return _reshape_fortran_torch(newarr, shape)
-        return torch.reshape(newarr, shape)
     if order == "F":
         return _reshape_fortran_torch(x, shape)
     return torch.reshape(x, shape)
@@ -164,9 +150,6 @@ def squeeze(
             raise ivy.utils.exceptions.IvyException(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
-        if copy:
-            newarr = torch.clone(x)
-            return torch.squeeze(newarr, axis)
         return torch.squeeze(x, axis)
     if axis is None:
         if copy:
@@ -232,9 +215,6 @@ def split(
                     num_or_size_splits
                 )
             )
-        if copy:
-            newarr = torch.clone(x)
-            return [newarr]
         return [x]
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
@@ -261,9 +241,6 @@ def split(
             )
     elif isinstance(num_or_size_splits, list):
         num_or_size_splits = tuple(num_or_size_splits)
-    if copy:
-        newarr = torch.clone(x)
-        return list(torch.split(newarr, num_or_size_splits, axis))
     return list(torch.split(x, num_or_size_splits, axis))
 
 
@@ -330,9 +307,6 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if copy:
-        newarr = torch.clone(x)
-        return torch.transpose(newarr, axis0, axis1)
     return torch.transpose(x, axis0, axis1)
 
 
@@ -374,12 +348,7 @@ def unstack(
             newarr = torch.clone(x)
             return [newarr]
         return [x]
-    ret = None
-    if copy:
-        newarr = torch.clone(x)
-        ret = list(torch.unbind(x, axis))
-    else:
-        ret = list(torch.unbind(x, axis))
+    ret = list(torch.unbind(x, axis))
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
