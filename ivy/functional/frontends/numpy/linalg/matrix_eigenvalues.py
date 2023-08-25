@@ -18,11 +18,11 @@ def eigh(a, /, UPLO="L"):
 
 
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def eigvalsh(a, /, UPLO="L"):
-    return ivy.eigvalsh(a, UPLO=UPLO)
+def eigvals(a):
+    return ivy.eigvals(a)
 
 
 @to_ivy_arrays_and_back
-def eigvals(a):
-    return ivy.eigvals(a)
+@from_zero_dim_arrays_to_scalar
+def eigvalsh(a, /, UPLO="L"):
+    return ivy.eigvalsh(a, UPLO=UPLO)
