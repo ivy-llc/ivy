@@ -4,6 +4,7 @@ from ivy.functional.frontends.jax import Array
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy import with_supported_device_and_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -81,18 +82,23 @@ def pinv(a, rcond=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    "jax",
+)   
 def norm(x, ord=None, axis=None, keepdims=False):
     if ord is None:
         ord = 2
     if type(axis) in [list, tuple] and len(axis) == 2:
         return Array(ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims))
     return Array(ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims))
-
-
-norm.supported_dtypes = (
-    "float32",
-    "float64",
-)
 
 
 @to_ivy_arrays_and_back
