@@ -285,7 +285,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         _visited[id(obj)] = True
         # ToDo: add support for finding local variables, if/when JAX supports
         #  uniquely flagging variables
-        if isinstance(obj,  Module) and obj is not self:
+        if isinstance(obj, Module) and obj is not self:
             obj.top_v = self._top_v_fn
             obj.top_mod = self._top_mod_fn
             self._sub_mods.add(obj)
@@ -880,7 +880,11 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         def _nest(mod, parent_k=None):
             if len(mod.submod_dict):
                 for module_name, module in mod.submod_dict.items():
-                    module_name = module_name if parent_k is None else ".".join([parent_k, module_name])
+                    module_name = (
+                       module_name
+                       if parent_k is None
+                       else ".".join([parent_k, module_name])
+                    )
                     _nest(module, module_name)
             else:
                 _set_nested(mod, parent_k)
