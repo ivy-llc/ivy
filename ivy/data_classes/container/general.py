@@ -1015,10 +1015,8 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             An ivy.Container instance of True bool values if nodes of the Container \
             support in-place operations, raises IvyBackendException otherwise
-
         Examples
         --------
-
         >>> ivy.set_backend("numpy")
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
@@ -3195,6 +3193,42 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             A container of elements containing the new items following the
             numerically stable power.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container.stable_pow(x, 2)
+        >>> print(y)
+        {
+            a: ivy.array([4.00004, 16.00008]),
+            b: ivy.array([36.00012, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.Container.stable_pow(x, 2)
+        >>> print(y)
+        {
+            a: ivy.array(16.00008),
+            b: ivy.array(64.00016)
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.asarray([1, 2])
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([4.00001, 16.00008]),
+            b: ivy.array([8.00001, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container(a=4, b=8)
+        >>> z = ivy.Container.stable_pow(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([16.00032, 256.00256]),
+            b: ivy.array([1679638.395, 16777383.77])
+        }
         """
         return ContainerBase.cont_multi_map_in_function(
             "stable_pow",
@@ -3248,6 +3282,42 @@ class _ContainerWithGeneral(ContainerBase):
         ret
             A container of elements containing the new items following the
             numerically stable power.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        {
+            a: ivy.array([4.00004, 16.00008]),
+            b: ivy.array([36.00012, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = x.stable_pow(2)
+        >>> print(y)
+        {
+            a: ivy.array(16.00008),
+            b: ivy.array(64.00016)
+        }
+
+        >>> x = ivy.Container(a=4, b=8)
+        >>> y = ivy.asarray([1, 2])
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        {
+            a: ivy.array([4.00001, 16.00008]),
+            b: ivy.array([8.00001, 64.00016])
+        }
+
+        >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
+        >>> y = ivy.Container(a=4, b=8)
+        >>> z = x.stable_pow(y)
+        >>> print(z)
+        {
+            a: ivy.array([16.00032, 256.00256]),
+            b: ivy.array([1679638.395, 16777383.77])
+        }
         """
         return self._static_stable_pow(
             self,
