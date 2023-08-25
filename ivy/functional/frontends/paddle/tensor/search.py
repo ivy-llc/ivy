@@ -89,5 +89,5 @@ def topk(x, k, axis=None, largest=True, sorted=True, name=None):
 
 # where
 @to_ivy_arrays_and_back
-def where(cond, x1, x2, name=None):
-    ivy.where(cond, x1, x2)
+def where(condition, x1, x2, name=None):
+    ivy.where(condition, x1, x2)

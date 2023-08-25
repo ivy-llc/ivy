@@ -1,7 +1,6 @@
 # global
 import numpy as np
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -300,40 +299,36 @@ def test_paddle_topk(
 
 @st.composite
 def _broadcastable_trio(draw):
-    dtype = draw(helpers.get_dtypes("valid", full=False))
-    shapes_st = draw(
-        hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    cond = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, xs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shape=shape,
+            shared_dtype=True,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
     )
-    cond_shape, x1_shape, x2_shape = shapes_st.input_shapes
-    cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-    x1 = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
-    x2 = draw(helpers.array_values(dtype=dtype[0], shape=x2_shape))
-    return cond, x1, x2, (dtype * 2)
+    return cond, xs, dtypes
 
 
-# where
 @handle_frontend_test(
     fn_tree="paddle.where",
     broadcastables=_broadcastable_trio(),
-    test_with_out=st.just(False),
 )
-def test_numpy_where(
-    broadcastables,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    cond, x1, x2, dtype = broadcastables
-    helpers.test_frontend_function(
-        input_dtypes=["bool", dtype],
-        backend_to_test=backend_fw,
-        frontend=frontend,
+def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
+    cond, xs, dtypes = broadcastables
+
+    helpers.test_function(
+        input_dtypes=["bool"] + dtypes,
         test_flags=test_flags,
-        fn_tree=fn_tree,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
         on_device=on_device,
-        cond=cond,
-        x1=x1,
-        x2=x2,
+        condition=cond,
+        x1=xs[0],
+        x2=xs[1],
     )
