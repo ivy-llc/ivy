@@ -359,3 +359,5 @@ def square_error_cost(input, label):
     diff = input - label
     out = ivy.square(diff)
     return out
+
+
