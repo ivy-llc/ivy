@@ -194,7 +194,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
             return
         self.build(*args, dynamic_backend=dynamic_backend, buffers=buffers, **kwargs)
-        self.training = True
 
     # Private #
     # --------#
@@ -224,25 +223,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         _fn_with_var_arg_wrapper.wrapped = True
         return _fn_with_var_arg_wrapper
 
-    def _add_module(self, obj, name, /, *, names_chain=None):
-        if names_chain is None:
-            sub_names = [name]
-        else:
-            sub_names = names_chain.split(".") + [name]
-        subs_dict = self.submod_dict
-        for n in sub_names[:-1]:
-            subs_dict = subs_dict.setdefault(n, {})
-        subs_dict[sub_names[-1]] = obj
-
     def _find_variables(
-        self,
-        /,
-        *,
-        obj=None,
-        _visited=None,
-        without_initialisation=False,
-        key=None,
-        key_chain=None,
+        self, /, *, obj=None, _visited=None, without_initialisation=False
     ):
         """
         Find all internal variables in obj. Return empty Container if obj is None.
@@ -267,11 +249,11 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         _visited[id(obj)] = True
         # ToDo: add support for finding local variables, if/when JAX supports
         #  uniquely flagging variables
-        if isinstance(obj,  Module) and obj is not self:
+        if isinstance(obj, Module) and obj is not self:
             obj.top_v = self._top_v_fn
             obj.top_mod = self._top_mod_fn
             self._sub_mods.add(obj)
-            self._add_module(obj, key, names_chain=key_chain)
+
             if not obj.built_ and without_initialisation:
                 return lambda: obj._build_and_return_v(
                     *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
@@ -281,46 +263,36 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
             )
         elif isinstance(obj, (list, tuple)):
-            key_chain = key if key_chain is None else ".".join([key_chain, key])
             for i, v in enumerate(obj):
                 ret = self._find_variables(
                     obj=v,
                     _visited=_visited,
                     without_initialisation=without_initialisation,
-                    key=str(i),
-                    key_chain=key_chain,
                 )
                 if ret:
                     vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
-            key_chain = key if key_chain is None else ".".join([key_chain, key])
             for k, v in obj.items():
-                name = k[1:] if k[0] == "_" else k
                 ret = self._find_variables(
                     obj=v,
                     _visited=_visited,
                     without_initialisation=without_initialisation,
-                    key=name,
-                    key_chain=key_chain,
                 )
                 if ret:
-                    vs[name] = ret
+                    vs[k[1:] if k[0] == "_" else k] = ret
             return vs
         elif not hasattr(obj, "__dict__"):
             return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__":
-                name = k[1:] if k[0] == "_" else k
                 ret = self._find_variables(
                     obj=v,
                     _visited=_visited,
                     without_initialisation=without_initialisation,
-                    key=name,
-                    key_chain=key_chain
                 )
                 if ret:
-                    vs[name] = ret
+                    vs[k[1:] if k[0] == "_" else k] = ret
         return vs
 
     def _build_and_return_v(self, *args, **kwargs):
@@ -771,7 +743,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             ),
             dynamic_backend=dynamic_backend,
         )
-
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
@@ -789,13 +760,13 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     build_callable=True,
                     assert_and_assign=True,
                 )
+
                 self.v = created_n_found
         else:
             self.v = created_n_found
         # remove duplicates
         self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
         # build any child 'on_call' layers
-
         if not built and from_call:
             # update child modules to share the same device
             for k, v in self.__dict__.items():
@@ -804,9 +775,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
             # build during forward pass
             self._forward(*args, **kwargs)
+
             # re-build variables based on additional child on-call layers, if v not
             # passed in constructor
-
             if not ivy.exists(v_from_constructor):
                 created_n_found = Container(
                     dict(
@@ -851,27 +822,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     # Properties #
     # -----------#
-    @property
-    def submods_dict(self):
-        ret_nest = {}
-
-        def _set_nested(obj, names):
-            names = names.split(".")
-            ret = ret_nest
-            for name in names[:-1]:
-                ret = ret.setdefault(name, {})
-            ret[names[-1]] = obj
-
-        def _nest(mod, parent_k=None):
-            if len(mod.submod_dict):
-                for param_name, param in mod.submod_dict.items():
-                    param_name = param_name if parent_k is None else ".".join([parent_k, param_name])
-                    _nest(v, param_name)
-            else:
-                _set_nested(mod, parent_k)
-        for k, v in self.submod_dict.items():
-            _nest(v, k)
-        return ivy.Container(ret_nest)
 
     @property
     def build_mode(self):
@@ -989,17 +939,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             dill.dump(self, f)
         if ivy.current_backend_str() == "paddle":
             self._convert_numpy_to_tensors()
-
-    def train(self, mode=None):
-        mode = True if mode is None else mode
-        self.training = mode
-        for _, mod in self.submods_dict.cont_flatten_key_chains():
-            mod.training = mode
-        return self
-
-    def eval(self):
-        self.train(False)
-        return self
 
     @staticmethod
     def load(filename):
