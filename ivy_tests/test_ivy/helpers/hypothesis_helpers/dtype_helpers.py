@@ -216,7 +216,6 @@ def get_dtypes(
 
     # If being called from a frontend test
 
-
     # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
