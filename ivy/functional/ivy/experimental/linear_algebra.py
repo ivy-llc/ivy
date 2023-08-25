@@ -1793,8 +1793,8 @@ def tt_matrix_to_tensor(
                 N2 *= bs[axis]
             newshape_b = (N2, int(ivy.prod([bs[ax] for ax in notin])))
             oldb = [bs[axis] for axis in notin]
-            at = a.permute_dims(newaxes_a).reshape(newshape_a)
-            bt = b.permute_dims(newaxes_b).reshape(newshape_b)
+            at = a.permute_dims(axes=newaxes_a).reshape(newshape_a)
+            bt = b.permute_dims(axes=newaxes_b).reshape(newshape_b)
             res = ivy.dot(at, bt)
             res = res.reshape(olda + oldb)
     return ivy.permute_dims(ivy.reshape(res, full_shape), axes=order, out=out)

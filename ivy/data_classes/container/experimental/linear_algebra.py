@@ -1895,10 +1895,10 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         tt_matrix: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1962,10 +1962,10 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2015,8 +2015,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         [[ 1.02283812,  0.49705869],
         [ 2.40518808,  1.16882598]]]])
         """
-        return ContainerBase.cont_multi_map_in_function(
-            "tt_matrix_to_tensor",
+        return self.static_tt_matrix_to_tensor(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
