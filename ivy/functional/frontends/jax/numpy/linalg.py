@@ -40,7 +40,7 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 
 @to_ivy_arrays_and_back
 def eigvals(a):
-    return ivy.eigh(a)
+    return ivy.eigvals(a)
 
 
 @to_ivy_arrays_and_back
