@@ -442,18 +442,6 @@ def square(x, name=None):
     return ivy.square(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
-    # TODO this function will be simplified as soon as the ivy.stanh(x,a,b) is added
-    exp_ax = ivy.exp(ivy.multiply(scale_a, x))
-    exp_minus_ax = ivy.exp(ivy.multiply(-scale_a, x))
-    numerator = ivy.subtract(exp_ax, exp_minus_ax)
-    denominator = ivy.add(exp_ax, exp_minus_ax)
-    ret = ivy.multiply(scale_b, ivy.divide(numerator, denominator))
-    return ret
-
-
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
