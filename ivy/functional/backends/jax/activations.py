@@ -71,6 +71,16 @@ def softplus(
         return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
 
+# Softsign
+def softsign(
+        x: JaxArray,
+        /,
+        *,
+        out: Optional[JaxArray] = None
+) -> JaxArray:
+    # return x / (1 + jnp.abs(x))
+    return jax.nn.soft_sign(x)
+
 
 def log_softmax(
     x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None

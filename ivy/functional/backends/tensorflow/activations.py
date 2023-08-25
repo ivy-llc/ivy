@@ -79,6 +79,15 @@ def softplus(
     return res
 
 
+#Softsign
+def softsign(
+        x: tf.Tensor,
+        /,
+        out: Optional[tf.Tensor] = None
+) -> tf.Tensor:
+    return tf.nn.softsign(x)
+
+
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def log_softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None

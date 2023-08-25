@@ -504,6 +504,12 @@ def silu(features, beta: float = 1.0):
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
+#Softsign
+@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def softsign(x, name=None):
+    return ivy.softsign(x)
+
 
 # sufficient_statistics
 @to_ivy_arrays_and_back
