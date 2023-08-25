@@ -423,8 +423,8 @@ def grid_sample_helper(draw, dtype, dims, mode, padding_mode):
     dtype_x_grid_modes=grid_sample_helper(
         dtype=helpers.get_dtypes("valid", full=False),
         dims=4,
-        mode=["nearest", "bilinear"],
-        padding_mode=["border", "zeros"],
+        mode=["nearest", "bilinear", "bicubic"],
+        padding_mode=["border", "zeros", "reflection"],
     ),
 )
 def test_torch_grid_sample_2d(
@@ -437,7 +437,6 @@ def test_torch_grid_sample_2d(
     test_flags,
 ):
     dtype, x, grid, mode, padding_mode, align_corners = dtype_x_grid_modes
-    print(dtype, x, grid, mode, padding_mode, align_corners)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
