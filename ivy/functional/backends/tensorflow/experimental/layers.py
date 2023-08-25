@@ -1057,7 +1057,6 @@ def fft2(
         return result
 
 
-
 # --- IFFTN --- #
 def fft_input_validation(x):
     if not x.dtype.is_complex:
