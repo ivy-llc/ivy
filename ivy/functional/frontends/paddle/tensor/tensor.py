@@ -629,3 +629,16 @@ class Tensor:
     )
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("complex64", "complex128")},
+        "paddle",
+    )
+    def as_real(self, name=None):
+        if not ivy.is_complex_dtype(self._ivy_array):
+            raise ivy.exceptions.IvyError(
+                "as_real is only supported for complex tensors"
+            )
+        re_part = ivy.real(self._ivy_array)
+        im_part = ivy.imag(self._ivy_array)
+        return ivy.stack((re_part, im_part), axis=-1)
