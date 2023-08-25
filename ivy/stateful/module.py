@@ -888,6 +888,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     _nest(module, module_name)
             else:
                 _set_nested(mod, parent_k)
+
         for k, v in self.submod_dict.items():
             _nest(v, k)
         return ivy.Container(ret_nest)
