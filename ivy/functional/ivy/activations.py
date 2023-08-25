@@ -631,15 +631,7 @@ def _hardswish_jax_like(
     def hard_sigmoid(x):
         return ivy.relu6(x + 3.0) / 6
 
-    return ivy.where(
-        (
-            ivy.logical_or(
-                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
-            )
-        ),
-        x * hard_sigmoid(x),
-        x,
-    )
+    return x * hard_sigmoid(x)
 
 
 @handle_exceptions

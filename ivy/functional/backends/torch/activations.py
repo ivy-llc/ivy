@@ -125,15 +125,20 @@ def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 
 @with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "complex",
-            "float16",
-        )
-    },
+    {"2.0.1 and below": ("float16",)},
     backend_version,
 )
 def hardswish(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
 ) -> torch.Tensor:
-    return torch.nn.functional.hardswish(x)
+    if x.dtype.is_complex:
+        real_part = x.real
+        imag_part = x.imag
+
+        real_result = real_part * torch.nn.functional.relu6(real_part + 3) / 6
+        imag_result = imag_part * torch.nn.functional.relu6(imag_part + 3) / 6
+
+        result = torch.complex(real_result, imag_result)
+    else:
+        result = torch.nn.functional.hardswish(x)
+    return result

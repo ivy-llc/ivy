@@ -88,8 +88,17 @@ def mish(
     return x * tf.math.tanh(tf.math.softplus(x))
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def hardswish(
     x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
 ) -> Tensor:
-    return x * tf.nn.relu6(x + 3) / 6
+    if x.dtype.is_complex:
+        real_part = tf.real(x)
+        imag_part = tf.imag(x)
+
+        real_result = real_part * tf.nn.relu6(real_part + 3) / 6
+        imag_result = imag_part * tf.nn.relu6(imag_part + 3) / 6
+
+        result = tf.complex(real_result, imag_result)
+    else:
+        result = x * tf.nn.relu6(x + 3) / 6
+    return result
