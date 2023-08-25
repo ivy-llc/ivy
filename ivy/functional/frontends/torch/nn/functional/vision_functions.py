@@ -431,17 +431,8 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             grid[..., 1] = ivy.clip(grid[..., 1], 0, h - 1)
 
         elif padding_mode == "zeros":
-            grid_round = ivy.round(grid)
-            if mode == "nearest":
-                w_mask = ivy.bitwise_or(grid_round[..., 0] < 0, grid_round[..., 0] > w)
-                h_mask = ivy.bitwise_or(grid_round[..., 1] < 0, grid_round[..., 1] > h)
-            else:
-                w_mask = ivy.bitwise_or(
-                    grid_round[..., 0] < -3, grid_round[..., 0] > w + 1
-                )
-                h_mask = ivy.bitwise_or(
-                    grid_round[..., 1] < -3, grid_round[..., 1] > h + 1
-                )
+            w_mask = ivy.bitwise_or(grid[..., 0] < -3, grid[..., 0] > w + 1)
+            h_mask = ivy.bitwise_or(grid[..., 1] < -3, grid[..., 1] > h + 1)
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
             grid[zeros_mask] = ivy.repeat(
                 ivy.array([[w + 1, h + 1]]), repeats=zeros_mask.shape[0], axis=0
@@ -548,15 +539,9 @@ def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corner
             grid[..., 2] = ivy.clip(grid[..., 2], 0, d - 1)
 
         elif padding_mode == "zeros":
-            grid_round = ivy.round(grid)
-            if mode == "nearest":
-                w_mask = ivy.bitwise_or(grid_round[..., 0] < 0, grid_round[..., 0] > w)
-                h_mask = ivy.bitwise_or(grid_round[..., 1] < 0, grid_round[..., 1] > h)
-                d_mask = ivy.bitwise_or(grid_round[..., 2] < 0, grid_round[..., 2] > d)
-            else:
-                w_mask = ivy.bitwise_or(grid_round[..., 0] < -2, grid_round[..., 0] > w)
-                h_mask = ivy.bitwise_or(grid_round[..., 1] < -2, grid_round[..., 1] > h)
-                d_mask = ivy.bitwise_or(grid_round[..., 2] < -2, grid_round[..., 2] > d)
+            w_mask = ivy.bitwise_or(grid[..., 0] < -2, grid[..., 0] > w)
+            h_mask = ivy.bitwise_or(grid[..., 1] < -2, grid[..., 1] > h)
+            d_mask = ivy.bitwise_or(grid[..., 2] < -2, grid[..., 2] > d)
 
             zeros_mask = ivy.bitwise_or(w_mask, h_mask)
             zeros_mask = ivy.bitwise_or(zeros_mask, d_mask)
