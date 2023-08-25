@@ -1,6 +1,7 @@
 # global
 import numpy as np
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -297,51 +298,78 @@ def test_paddle_topk(
     )
 
 
-# @st.composite
-# def _broadcastable_trio(draw):
-#     dtype = draw(helpers.get_dtypes("valid", full=False))
-#     shapes_st = draw(
-#         hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
-#     )
-#     cond_shape, x1_shape, x2_shape = shapes_st.input_shapes
-#     condition = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-#     x = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
-#     y = draw(helpers.array_values(dtype=dtype[0], shape=x2_shape))
-#     return condition, x, y, (dtype * 2)
+@st.composite
+def _broadcastable_trio(draw):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    shapes_st = draw(
+        hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
+    )
+    cond_shape, x1_shape, x2_shape = shapes_st.input_shapes
+    cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
+    x1 = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
+    x2 = draw(helpers.array_values(dtype=dtype[0], shape=x2_shape))
+    return cond, x1, x2, (dtype * 2)
 
 
 # where
 @handle_frontend_test(
-    fn_tree="paddle.where",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        min_dim_size=1,
-    ),
+    fn_tree="numpy.where",
+    broadcastables=_broadcastable_trio(),
     test_with_out=st.just(False),
 )
-def test_paddle_where(
-    dtype_and_x,
-    on_device,
-    fn_tree,
+def test_numpy_where(
+    broadcastables,
     frontend,
-    backend_fw,
     test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
 ):
-    dtype, x_1 = dtype_and_x
-    x_1 = x_1
-    x = x_1 * 2
-    y = x_1 * -2
-    condition = 0.5
-
+    cond, x1, x2, dtype = broadcastables
     helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
+        input_dtypes=["bool", dtype],
         backend_to_test=backend_fw,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=condition,
-        x=x,
-        y=y,
+        cond=cond,
+        x1=x1,
+        x2=x2,
     )
+
+
+# @handle_frontend_test(
+#     fn_tree="paddle.where",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         min_num_dims=1,
+#         min_dim_size=1,
+#     ),
+#     test_with_out=st.just(False),
+# )
+# def test_paddle_where(
+#     dtype_and_x,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     backend_fw,
+#     test_flags,
+# ):
+#     dtype, x_1 = dtype_and_x
+#     x_1 = x_1
+#     x = x_1 * 2
+#     y = x_1 * -2
+#     condition = 0.5
+
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         backend_to_test=backend_fw,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         condition=condition,
+#         x=x,
+#         y=y,
+#     )
