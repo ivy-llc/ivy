@@ -502,3 +502,11 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
     denominator = ivy.add(exp_ax, exp_minus_ax)
     ret = ivy.multiply(scale_b, ivy.divide(numerator, denominator))
     return ret
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def min(x, axis=None, keepdim=False, name=None):
+    return ivy.min(x, axis=axis, keepdims=keepdim)
