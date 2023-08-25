@@ -322,7 +322,7 @@ def _broadcastable_trio(draw):
 def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
     cond, xs, dtypes = broadcastables
 
-    helpers.test_function(
+    helpers.test_frontend_function(
         input_dtypes=["bool"] + dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
