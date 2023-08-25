@@ -157,7 +157,7 @@ def test_smooth_l1_loss(
 @handle_test(
     fn_tree="functional.ivy.experimental.huber_loss",
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-10,
         max_value=10,
         allow_inf=False,
@@ -166,7 +166,7 @@ def test_smooth_l1_loss(
         min_dim_size=3,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-10,
         max_value=10,
         allow_inf=False,
