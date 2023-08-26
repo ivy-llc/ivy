@@ -885,3 +885,32 @@ def test_paddle_dist(
         y=x[1],
         p=p,
     )
+
+
+# cov
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cov",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1
+    ),
+    rcond=st.floats(1e-5, 1e-3),
+    test_with_out=st.just(False),
+)
+def test_paddle_cov(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        x=x
+    )
