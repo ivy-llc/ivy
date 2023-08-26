@@ -1839,7 +1839,6 @@ def flatten(*, backend: str, ret):
     """Return a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
-
     with update_backend(backend) as ivy_backend:
         ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.is_ivy_array)
 
@@ -1884,7 +1883,11 @@ def flatten_and_to_np(*, backend: str, ret):
     # flatten the return
     ret_flat = flatten(backend=backend, ret=ret)
     with update_backend(backend) as ivy_backend:
-        return [ivy_backend.to_numpy(x) for x in ret_flat]
+        ret = [ivy_backend.to_numpy(x) for x in ret_flat]
+    for i in range(len(ret_flat)):
+        if str(ret_flat[i].dtype) != str(ret[i].dtype):
+            ret[i] = np.array(ret_flat[i])
+    return ret
 
 
 def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):

@@ -196,17 +196,17 @@ def nanprod(
     initial: Optional[Union[int, float, complex, ivy.Container]] = None,
     where: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    a = torch.nan_to_num(a, nan=1.0)
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
     a = a.type(dtype)
+    a = torch.nan_to_num(a, nan=1.0)
     if a.dtype == torch.float16:
         a = a.type(torch.float32)
     if axis == ():
         return a.type(dtype)
     if axis is None:
-        return torch.prod(input=a, out=out)
+        return torch.prod(input=a, out=out).type(dtype)
     if isinstance(axis, tuple) or isinstance(axis, list):
         for i in axis:
             a = torch.prod(a, dim=i, keepdim=keepdims, out=out).type(dtype)
