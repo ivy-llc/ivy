@@ -49,7 +49,7 @@ def logsigmoid(
     return tf.math.log_sigmoid(input)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, backend_version)
 def selu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> Tensor:
     ret = tf.nn.selu(x)
     if ivy.exists(out):
@@ -64,7 +64,7 @@ def silu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> T
     return ivy.astype(ret, x.dtype)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, backend_version)
 def elu(
     x: Tensor,
     /,
