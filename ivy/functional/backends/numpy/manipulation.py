@@ -52,6 +52,9 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.expand_dims(newarr, axis)
     return np.expand_dims(x, axis)
 
 
@@ -74,6 +77,9 @@ def flip(
     if type(axis) is int:
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
+    if copy:
+        newarr = x.copy()
+        return np.flip(newarr, axis)
     return np.flip(x, axis)
 
 
@@ -85,6 +91,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.transpose(newarr, axes)
     return np.transpose(x, axes)
 
 
@@ -104,6 +113,9 @@ def reshape(
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, np.array(shape) != 0, x.shape)
         ]
+    if copy:
+        newarr = x.copy()
+        return np.reshape(newarr, shape, order=order)
     return np.reshape(x, shape, order=order)
 
 
@@ -134,6 +146,9 @@ def squeeze(
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
+    if copy:
+        newarr = x.copy()
+        return np.squeeze(newarr, axis=axis)
     return np.squeeze(x, axis=axis)
 
 
@@ -170,6 +185,9 @@ def split(
                     num_or_size_splits
                 )
             )
+        if copy:
+            newarr = x.copy()
+            return [newarr]
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
@@ -235,6 +253,9 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.swapaxes(newarr, axis0, axis1)
     return np.swapaxes(x, axis0, axis1)
 
 
@@ -247,6 +268,9 @@ def unstack(
     keepdims: bool = False,
 ) -> List[np.ndarray]:
     if x.shape == ():
+        if copy:
+            newarr = x.copy()
+            return [newarr]
         return [x]
     x_split = None
     if copy:

@@ -127,7 +127,9 @@ def asarray(
         if contain_tensor:
             ret = _stack_tensors(obj, dtype).to(device)
             return ret.clone().detach() if copy else ret
+
     ret = torch.as_tensor(obj, dtype=dtype, device=device)
+
     return ret.clone().detach() if copy else ret
 
 

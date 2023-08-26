@@ -2,7 +2,6 @@ import ivy
 import ivy.functional.frontends.pandas.series as series
 from typing import Iterable
 
-
 class Index:
     def __init__(self, data, dtype=None, copy=False, name=None, tupleize_cols=True):
         self.index = data

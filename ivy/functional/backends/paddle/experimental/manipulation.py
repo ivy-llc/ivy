@@ -125,6 +125,8 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        m = m.clone()
     if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.flip(m.cast("float32"), axis=0).cast(m.dtype)
     return paddle.flip(m, axis=0)
@@ -184,6 +186,8 @@ def rot90(
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        m = m.clone()
     if (k % 4) and m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.rot90(m.cast("float32"), k=k, axes=axes).cast(m.dtype)
     return paddle.rot90(m, k=k, axes=axes)
@@ -223,6 +227,8 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        m = m.clone()
     if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.flip(m.cast("float32"), axis=1).cast(m.dtype)
     return paddle.flip(m, axis=1)
@@ -278,6 +284,8 @@ def flatten(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
+    if copy:
+        x = x.clone()
     if x.ndim == 0:
         return x
 

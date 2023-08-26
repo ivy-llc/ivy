@@ -9,8 +9,22 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
-# --- Helpers --- #
-# --------------- #
+@to_ivy_arrays_and_back
+def angle(z, deg=False):
+    angle = ivy.angle(z, deg=deg)
+    if deg and len(z.shape) == 0:
+        angle = ivy.astype(angle, ivy.float64)
+    return angle
+
+
+@to_ivy_arrays_and_back
+def imag(val):
+    return ivy.imag(val)
+
+
+@to_ivy_arrays_and_back
+def real(val):
+    return ivy.real(val)
 
 
 @handle_numpy_out
@@ -33,25 +47,3 @@ def _conj(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-# --- Main --- #
-# ------------ #
-
-
-@to_ivy_arrays_and_back
-def angle(z, deg=False):
-    angle = ivy.angle(z, deg=deg)
-    if deg and len(z.shape) == 0:
-        angle = ivy.astype(angle, ivy.float64)
-    return angle
-
-
-@to_ivy_arrays_and_back
-def imag(val):
-    return ivy.imag(val)
-
-
-@to_ivy_arrays_and_back
-def real(val):
-    return ivy.real(val)

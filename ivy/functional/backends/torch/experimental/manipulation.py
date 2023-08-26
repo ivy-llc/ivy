@@ -19,6 +19,8 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        a = torch.clone(a)
     return torch.moveaxis(a, source, destination)
 
 
@@ -49,6 +51,8 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    if copy:
+        m = torch.clone(m)
     return torch.flipud(m)
 
 
@@ -86,6 +90,8 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        m = torch.clone(m)
     return torch.rot90(m, k, axes)
 
 
@@ -122,6 +128,8 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    if copy:
+        m = torch.clone(m)
     return torch.fliplr(m)
 
 
@@ -151,6 +159,8 @@ def flatten(
     order: Optional[str] = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = torch.clone(x)
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
 
 
@@ -170,6 +180,8 @@ def vsplit(
         raise ivy.utils.exceptions.IvyError(
             "vsplit only works on arrays of 2 or more dimensions"
         )
+    if copy:
+        ary = torch.clone(ary)
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
@@ -184,10 +196,14 @@ def dsplit(
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
+    if copy:
+        ary = torch.clone(ary)
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+    if copy:
+        arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_1d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
@@ -206,6 +222,8 @@ def dstack(
 
 
 def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+    if copy:
+        arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_2d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
@@ -215,6 +233,8 @@ def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.T
 def atleast_3d(
     *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[torch.Tensor]:
+    if copy:
+        arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_3d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
@@ -270,6 +290,8 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
+    if copy:
+        ary = torch.clone(ary)
     if len(ary.shape) == 1:
         return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
@@ -293,6 +315,8 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = torch.clone(x)
     return x.expand(shape)
 
 

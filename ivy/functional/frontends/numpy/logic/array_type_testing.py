@@ -9,10 +9,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
-# --- Helpers --- #
-# --------------- #
-
-
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back

@@ -2,23 +2,25 @@
 import ivy
 from ivy.functional.frontends.jax import Array
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
-def cholesky(a):
-    return ivy.cholesky(a)
-
-
-@to_ivy_arrays_and_back
-def cond(x, p=None):
-    return ivy.cond(x, p=p)
+def inv(a):
+    return ivy.inv(a)
 
 
 @to_ivy_arrays_and_back
 def det(a):
     return ivy.det(a)
+
+
+@to_ivy_arrays_and_back
+def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
+    if not compute_uv:
+        return ivy.svdvals(a)
+    return ivy.svd(a, full_matrices=full_matrices)
 
 
 @to_ivy_arrays_and_back
@@ -39,51 +41,8 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 
 
 @to_ivy_arrays_and_back
-def eigvals(a):
-    return ivy.eigvals(a)
-
-
-@to_ivy_arrays_and_back
 def eigvalsh(a, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
-
-
-@to_ivy_arrays_and_back
-def inv(a):
-    return ivy.inv(a)
-
-
-@to_ivy_arrays_and_back
-def matrix_power(a, n):
-    return ivy.matrix_power(a, n)
-
-
-@to_ivy_arrays_and_back
-def matrix_rank(M, tol=None):
-    return ivy.matrix_rank(M, atol=tol)
-
-
-@to_ivy_arrays_and_back
-def multi_dot(arrays, *, precision=None):
-    return ivy.multi_dot(arrays)
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"0.4.14 and below": ("float32", "float64")},
-    "jax",
-)
-def norm(x, ord=None, axis=None, keepdims=False):
-    if ord is None:
-        ord = 2
-    if type(axis) in [list, tuple] and len(axis) == 2:
-        return Array(ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims))
-    return Array(ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims))
-
-
-@to_ivy_arrays_and_back
-def pinv(a, rcond=None):
-    return ivy.pinv(a, rtol=rcond)
 
 
 @to_ivy_arrays_and_back
@@ -92,8 +51,23 @@ def qr(a, mode="reduced"):
 
 
 @to_ivy_arrays_and_back
+def eigvals(a):
+    return ivy.eigh(a)
+
+
+@to_ivy_arrays_and_back
+def cholesky(a):
+    return ivy.cholesky(a)
+
+
+@to_ivy_arrays_and_back
 def slogdet(a, method=None):
     return ivy.slogdet(a)
+
+
+@to_ivy_arrays_and_back
+def matrix_rank(M, tol=None):
+    return ivy.matrix_rank(M, atol=tol)
 
 
 @to_ivy_arrays_and_back
@@ -102,10 +76,34 @@ def solve(a, b):
 
 
 @to_ivy_arrays_and_back
-def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
-    if not compute_uv:
-        return ivy.svdvals(a)
-    return ivy.svd(a, full_matrices=full_matrices)
+def pinv(a, rcond=None):
+    return ivy.pinv(a, rtol=rcond)
+
+
+@to_ivy_arrays_and_back
+def norm(x, ord=None, axis=None, keepdims=False):
+    if ord is None:
+        ord = 2
+    if type(axis) in [list, tuple] and len(axis) == 2:
+        return Array(ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims))
+    return Array(ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims))
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)
+
+
+@to_ivy_arrays_and_back
+def matrix_power(a, n):
+    return ivy.matrix_power(a, n)
+
+
+@to_ivy_arrays_and_back
+def tensorsolve(a, b, axes=None):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.tensorsolve(a, b, axes=axes)
 
 
 @to_ivy_arrays_and_back
@@ -126,6 +124,10 @@ def tensorinv(a, ind=2):
 
 
 @to_ivy_arrays_and_back
-def tensorsolve(a, b, axes=None):
-    a, b = promote_types_of_jax_inputs(a, b)
-    return ivy.tensorsolve(a, b, axes=axes)
+def cond(x, p=None):
+    return ivy.cond(x, p=p)
+
+
+@to_ivy_arrays_and_back
+def multi_dot(arrays, *, precision=None):
+    return ivy.multi_dot(arrays)

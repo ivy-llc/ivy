@@ -4,8 +4,13 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-def is_complex(input):
-    return ivy.is_complex_dtype(input)
+def is_tensor(obj):
+    return ivy.is_array(obj)
+
+
+@to_ivy_arrays_and_back
+def numel(input):
+    return ivy.astype(ivy.array(input.size), ivy.int64)
 
 
 @to_ivy_arrays_and_back
@@ -19,10 +24,5 @@ def is_nonzero(input):
 
 
 @to_ivy_arrays_and_back
-def is_tensor(obj):
-    return ivy.is_array(obj)
-
-
-@to_ivy_arrays_and_back
-def numel(input):
-    return ivy.astype(ivy.array(input.size), ivy.int64)
+def is_complex(input):
+    return ivy.is_complex_dtype(input)

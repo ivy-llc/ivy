@@ -28,6 +28,8 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        a = a.copy()
     return np.moveaxis(a, source, destination)
 
 
@@ -58,6 +60,8 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        m = m.copy()
     return np.flipud(m)
 
 
@@ -91,6 +95,8 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        m = m.copy()
     return np.rot90(m, k, axes)
 
 
@@ -125,6 +131,8 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        m = m.copy()
     return np.fliplr(m)
 
 
@@ -285,6 +293,8 @@ def vsplit(
         raise ivy.exceptions.IvyError(
             "vsplit only works on arrays of 2 or more dimensions"
         )
+    if copy:
+        ary = ary.copy()
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
@@ -299,12 +309,16 @@ def dsplit(
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
+    if copy:
+        ary = ary.copy()
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
     *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
+    if copy:
+        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_1d(*arys)
 
 
@@ -318,12 +332,16 @@ def dstack(
 
 
 def atleast_2d(*arys: np.ndarray, copy: Optional[bool] = None) -> List[np.ndarray]:
+    if copy:
+        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_2d(*arys)
 
 
 def atleast_3d(
     *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
+    if copy:
+        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_3d(*arys)
 
 
@@ -379,6 +397,8 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
+    if copy:
+        ary = ary.copy()
     if ary.ndim == 1:
         return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
@@ -402,6 +422,8 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
