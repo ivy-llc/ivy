@@ -378,4 +378,4 @@ def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
 ) 
 def lstsq(A, B, rcond=None, driver=None):
     return ivy.lstsq(A, B, rcond=rcond, driver=driver)
-    
+
