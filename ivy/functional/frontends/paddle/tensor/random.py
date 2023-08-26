@@ -135,10 +135,10 @@ def randint_like(x, low=0, high=None, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64")},
+    {"2.5.1 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
 def multinomial(x, num_samples=1, replacement=False, name=None):
-    n = ivy.astype(ivy.array(x.size), ivy.int64)
+    n = num_samples + 1
     return ivy.multinomial(n, num_samples, probs=x, replace=replacement)
