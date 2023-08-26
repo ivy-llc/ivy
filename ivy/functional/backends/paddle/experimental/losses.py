@@ -34,3 +34,33 @@ def l1_loss(
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
     return F.l1_loss(input, target, reduction=reduction)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def smooth_l1_loss(
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    /,
+    *,
+    beta: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
+) -> paddle.Tensor:
+    return paddle.nn.functional.smooth_l1_loss(
+        input, target, reduction=reduction, beta=beta
+    )
