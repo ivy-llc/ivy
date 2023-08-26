@@ -27,6 +27,20 @@ def argmax(a, axis=None, out=None, keepdims=False):
 
 
 @to_ivy_arrays_and_back
+def argsort(a, axis=-1, kind="stable", order=None):
+    if kind != "stable":
+        logging.warning(
+            "'kind' argument to argsort is ignored; only 'stable' sorts are supported."
+        )
+    if order is not None:
+        raise ivy.utils.exceptions.IvyError(
+            "'order' argument to argsort is not supported."
+        )
+
+    return ivy.argsort(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def argwhere(a, /, *, size=None, fill_value=None):
     if size is None and fill_value is None:
         return ivy.argwhere(a)
@@ -43,27 +57,25 @@ def argwhere(a, /, *, size=None, fill_value=None):
 
 
 @to_ivy_arrays_and_back
-def argsort(a, axis=-1, kind="stable", order=None):
-    if kind != "stable":
-        logging.warning(
-            "'kind' argument to argsort is ignored; only 'stable' sorts are supported."
-        )
-    if order is not None:
-        raise ivy.utils.exceptions.IvyError(
-            "'order' argument to argsort is not supported."
-        )
+def extract(condition, arr):
+    if condition.dtype is not bool:
+        condition = condition != 0
+    return arr[condition]
 
-    return ivy.argsort(a, axis=axis)
+
+@to_ivy_arrays_and_back
+def flatnonzero(a):
+    return ivy.nonzero(ivy.reshape(a, (-1,)))
+
+
+@to_ivy_arrays_and_back
+def lexsort(keys, /, *, axis=-1):
+    return ivy.lexsort(keys, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def msort(a):
     return ivy.msort(a)
-
-
-@to_ivy_arrays_and_back
-def nonzero(a, *, size=None, fill_value=None):
-    return ivy.nonzero(a, size=size, fill_value=fill_value)
 
 
 @to_ivy_arrays_and_back
@@ -99,15 +111,13 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
 
 
 @to_ivy_arrays_and_back
-def lexsort(keys, /, *, axis=-1):
-    return ivy.lexsort(keys, axis=axis)
+def nonzero(a, *, size=None, fill_value=None):
+    return ivy.nonzero(a, size=size, fill_value=fill_value)
 
 
 @to_ivy_arrays_and_back
-def extract(condition, arr):
-    if condition.dtype is not bool:
-        condition = condition != 0
-    return arr[condition]
+def searchsorted(a, v, side="left", sorter=None, *, method="scan"):
+    return ivy.searchsorted(a, v, side=side, sorter=sorter, ret_dtype="int32")
 
 
 @to_ivy_arrays_and_back
@@ -117,26 +127,8 @@ def sort(a, axis=-1, kind="quicksort", order=None):
 
 
 @to_ivy_arrays_and_back
-def flatnonzero(a):
-    return ivy.nonzero(ivy.reshape(a, (-1,)))
-
-
-@to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
-
-
-@to_ivy_arrays_and_back
-def searchsorted(a, v, side="left", sorter=None, *, method="scan"):
-    return ivy.searchsorted(a, v, side=side, sorter=sorter, ret_dtype="int32")
-
-
-@to_ivy_arrays_and_back
-def where(condition, x=None, y=None, size=None, fill_value=0):
-    if x is not None and y is not None:
-        return ivy.where(condition, x, y)
-    else:
-        raise ValueError("Both x and y should be given.")
 
 
 @to_ivy_arrays_and_back
@@ -172,3 +164,13 @@ def unique(
     # indexing each element whose condition is True except for the values
     uniques = [uniques[0]] + [uni for idx, uni in enumerate(uniques[1:]) if bools[idx]]
     return uniques
+
+
+@to_ivy_arrays_and_back
+def where(condition, x=None, y=None, *, size=None, fill_value=0):
+    if x is None and y is None:
+        return nonzero(condition, size=size, fill_value=fill_value)
+    if x is not None and y is not None:
+        return ivy.where(condition, x, y)
+    else:
+        raise ValueError("Both x and y should be given.")
