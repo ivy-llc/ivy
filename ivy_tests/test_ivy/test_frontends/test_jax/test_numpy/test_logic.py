@@ -1165,14 +1165,7 @@ def test_jax_numpy_packbits(
     bitorder=st.sampled_from(["big", "little"]),
 )
 def test_jax_numpy_unpackbits(
-    dtype_x_axis,
-    bitorder,
-    frontend,
-    on_device,
-    *,
-    fn_tree,
-    test_flags,
-    backend_fw
+    dtype_x_axis, bitorder, frontend, on_device, *, fn_tree, test_flags, backend_fw
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -1184,5 +1177,5 @@ def test_jax_numpy_unpackbits(
         x=x[0],
         axis=axis,
         bitorder=bitorder,
-        backend_to_test=backend_fw
+        backend_to_test=backend_fw,
     )
