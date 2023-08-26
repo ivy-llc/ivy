@@ -675,8 +675,7 @@ class ndarray:
     def __array__(self, dtype=None, /):
         if not dtype:
             return ivy.to_numpy(self.ivy_array)
-        dtype = np_frontend.to_ivy_dtype(dtype)
-        return ivy.to_numpy(self.ivy_array.astype(dtype))
+        return ivy.to_numpy(self.ivy_array).astype(dtype)
 
     def __array_wrap__(self, array, context=None, /):
         return np_frontend.array(array)

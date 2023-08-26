@@ -3075,7 +3075,7 @@ def test_numpy___array__(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "dtype": input_dtypes[0],
+            "dtype": np.dtype(input_dtypes[0]),
         },
         init_flags=init_flags,
         method_flags=method_flags,
@@ -3091,8 +3091,7 @@ def test_numpy___array__(
     init_tree="numpy.array",
     method_name="__array_wrap__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
 )
