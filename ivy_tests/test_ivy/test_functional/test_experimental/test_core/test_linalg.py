@@ -7,7 +7,7 @@ import itertools
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 import ivy
 
 
@@ -483,11 +483,12 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     dtype_x=_generate_multi_dot_dtype_and_arrays(),
     test_gradients=st.just(False),
 )
-def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name):
+def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
+        on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         test_values=True,
@@ -1138,7 +1139,7 @@ def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
             Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-        with update_backend("numpy") as ivy_backend:
+        with BackendHandler.update_backend("numpy") as ivy_backend:
             S_mat = (
                 S
                 * ivy_backend.eye(
@@ -1249,7 +1250,7 @@ def test_initialize_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
         ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
     )
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         n_elem = int(ivy_backend.prod(rank[: len(modes)])) * int(
             ivy_backend.prod(x.shape[len(modes) :])
         )
@@ -1339,7 +1340,7 @@ def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
         ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
     )
 
-    with update_backend(backend_fw) as ivy_backend:
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
         n_elem = int(ivy_backend.prod(rank[: len(modes)])) * int(
             ivy_backend.prod(x.shape[len(modes) :])
         )
