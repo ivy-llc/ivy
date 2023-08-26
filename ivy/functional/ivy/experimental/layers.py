@@ -19,6 +19,7 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
+from ivy.functional.ivy.experimental.creation import hann_window
 from ivy.utils.exceptions import handle_exceptions
 
 _min = builtins.min
@@ -2878,3 +2879,101 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+# stft
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def stft(
+    signals: Union[ivy.Array, ivy.NativeArray],
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional = None,
+    pad_end: bool = False,
+    #name: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+    input_dtype = ivy.dtype(signals)
+    if input_dtype == ivy.float32:
+        dtype = ivy.complex64
+    elif input_dtype == ivy.float64:
+        dtype = ivy.complex128
+
+    def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
+
+        if fft_length == None:
+            fft_length = 1
+            while fft_length < frame_length:
+                fft_length *= 2
+
+        num_samples = signals.shape[-1]
+
+        if pad_end:
+            num_samples = signals.shape[-1]
+            num_frames = -(-num_samples // frame_step)
+            pad_length = max(0, frame_length + frame_step * (num_frames - 1) - num_samples)
+
+            signals = ivy.pad(signals, [(0, pad_length)])
+        else:
+            num_frames = 1 + (num_samples - frame_length) // frame_step
+
+        stft_result = []
+
+        if window_fn == None:
+            window = 1
+        else:
+            window = window_fn(frame_length)
+
+        for i in range(num_frames):
+
+            start = i * frame_step
+            end = start + frame_length
+            frame = signals[..., start:end]
+            windowed_frame = frame * window
+            pad_length = fft_length - frame_length
+            windowed_frame = ivy.pad(windowed_frame, [(0, pad_length)])
+            windowed_frame = ivy.astype(windowed_frame, dtype)
+
+            fft_frame = ivy.fft(windowed_frame, -1, out=out)
+            slit = int((fft_length // 2 + 1))
+            stft_result.append(fft_frame[..., 0:slit])
+
+        stft = ivy.stack(stft_result, axis=0)
+        return ivy.asarray(stft)
+
+    def stft_helper(nested_list, frame_length, frame_step, fft_length):
+
+        nested_list = ivy.asarray(nested_list)
+        if len(ivy.shape(nested_list)) > 1:
+            return [stft_helper(sublist, frame_length, frame_step, fft_length)
+                    for sublist in nested_list]
+        else:
+            return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
+
+    to_return = ivy.asarray(stft_helper(signals, frame_length, frame_step, fft_length))
+    return ivy.astype(to_return, dtype)
