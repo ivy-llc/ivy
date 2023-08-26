@@ -41,10 +41,11 @@ def relu6(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> 
     return tf.nn.relu6(x)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
 def logsigmoid(
     input: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
 ) -> Tensor:
+    if input.dtype in [tf.complex64, tf.complex128]:
+        return tf.math.log(tf.nn.sigmoid(input))
     return tf.math.log_sigmoid(input)
 
 
