@@ -122,8 +122,10 @@ def cross(input, other, dim=None, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def cummax(input, dim, *, out=None):
-    return ivy.cummax(input, axis=dim, out=out)
+def cummax(input, dim, *, dtype=None, out=None):
+    if not dtype and "int" in input.dtype:
+        dtype = ivy.int64
+    return ivy.cummax(input, axis=dim, dtype=dtype, out=out)
 
 
 @to_ivy_arrays_and_back
