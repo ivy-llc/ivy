@@ -429,7 +429,7 @@ def _calculate_same_padding(kernel_size, stride, shape):
     count_include_pad=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_torch_avg_pool2d(
+def test_mindspore_avg_pool2d(
     dtype_x_k_s,
     count_include_pad,
     pad_mode,
