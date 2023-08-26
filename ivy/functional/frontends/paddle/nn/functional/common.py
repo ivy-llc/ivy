@@ -27,21 +27,6 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def dropout2d(x, *, p=0.5, training=True, data_format="NCHW", name=None):
-    return ivy.dropout2d(x, p=p, training=training, data_format=data_format)
-
-
-def get_mask(shape, device, prob, seed=None):
-    mask = ivy.where(
-        ivy.random_uniform(shape=shape, device=device, seed=seed) < prob,
-        0.0,
-        1.0,
-    )
-    return mask
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=None):
     if axis > 1:
         raise ValueError("Axis value can only be 0 or 1 or None.")
@@ -69,22 +54,23 @@ def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=No
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def zeropad2d(x, padding, data_format="NCHW", name=None):
-    if ivy.is_array(padding):
-        padding = padding.to_list()
-    if isinstance(padding, int):
-        padding = [padding, padding, padding, padding]
-    if len(padding) != 4:
-        raise ValueError("Padding length should be 4.")
-    if x.ndim != 4:
-        raise ValueError("Input x must be 4-dimensional.")
-    if data_format == "NCHW":
-        padding = ((0, 0), (0, 0), (padding[2], padding[3]), (padding[0], padding[1]))
-    elif data_format == "NHWC":
-        padding = ((0, 0), (padding[2], padding[3]), (padding[0], padding[1]), (0, 0))
-    else:
-        raise ValueError("Unknown data_format: {}".format(data_format))
-    return ivy.pad(x, padding, mode="constant", constant_values=0.0)
+def dropout2d(x, *, p=0.5, training=True, data_format="NCHW", name=None):
+    return ivy.dropout2d(x, p=p, training=training, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def dropout3d(x, p=0.5, training=True, data_format="NCDHW", name=None):
+    return ivy.dropout3d(x, p, training=training, data_format=data_format)
+
+
+def get_mask(shape, device, prob, seed=None):
+    mask = ivy.where(
+        ivy.random_uniform(shape=shape, device=device, seed=seed) < prob,
+        0.0,
+        1.0,
+    )
+    return mask
 
 
 @to_ivy_arrays_and_back
@@ -109,12 +95,6 @@ def interpolate(
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     return ivy.linear(x, weight, bias=bias)
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def dropout3d(x, p=0.5, training=True, data_format="NCDHW", name=None):
-    return ivy.dropout3d(x, p, training=training, data_format=data_format)
 
 
 @to_ivy_arrays_and_back
@@ -195,3 +175,23 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
             window = ivy.flatten(window, start_dim=1)
             folder.append(window)
     return ivy.stack(folder, axis=2)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def zeropad2d(x, padding, data_format="NCHW", name=None):
+    if ivy.is_array(padding):
+        padding = padding.to_list()
+    if isinstance(padding, int):
+        padding = [padding, padding, padding, padding]
+    if len(padding) != 4:
+        raise ValueError("Padding length should be 4.")
+    if x.ndim != 4:
+        raise ValueError("Input x must be 4-dimensional.")
+    if data_format == "NCHW":
+        padding = ((0, 0), (0, 0), (padding[2], padding[3]), (padding[0], padding[1]))
+    elif data_format == "NHWC":
+        padding = ((0, 0), (padding[2], padding[3]), (padding[0], padding[1]), (0, 0))
+    else:
+        raise ValueError("Unknown data_format: {}".format(data_format))
+    return ivy.pad(x, padding, mode="constant", constant_values=0.0)
