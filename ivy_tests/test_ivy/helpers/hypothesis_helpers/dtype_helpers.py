@@ -7,7 +7,7 @@ from typing import Optional
 
 # local
 import ivy
-from ..pipeline_helper import update_backend, get_frontend_config
+from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -216,10 +216,6 @@ def get_dtypes(
 
     # If being called from a frontend test
 
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
-        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind, True)
-        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-
     # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
@@ -369,7 +365,7 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         bound_dtype_bits = lambda d: (
             ivy_backend.dtype_bits(d) / 2
             if ivy_backend.is_complex_dtype(d)

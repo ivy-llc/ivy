@@ -60,12 +60,10 @@ def flatten(
     x
         input array to flatten.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     start_dim
         first dim to flatten. If not set, defaults to 0.
     end_dim
@@ -151,8 +149,6 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    if copy:
-        x = ivy.copy_array(x)
     if x.shape == ():
         x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
@@ -224,12 +220,10 @@ def moveaxis(
         Destination positions for each of the original axes.
         These must also be unique.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -321,12 +315,10 @@ def flipud(
     m
         The array to be flipped.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -459,12 +451,10 @@ def rot90(
     m
         Input array of two or more dimensions.
     copy
-        boolean indicating whether to copy the input array.
-        If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        boolean indicating whether or not to copy the input array. 
+        If True, the function must always copy. 
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     k
         Number of times the array is rotated by 90 degrees.
     axes
@@ -629,12 +619,10 @@ def fliplr(
     m
         The array to be flipped. Must be at least 2-D.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -723,7 +711,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
     if width_pair[0] > 0:
         left_ramp = ivy.linspace(
             end_value_pair[0],
-            ivy.array(edge_pair[0].squeeze(axis)),
+            ivy.array(edge_pair[0].squeeze(axis=axis)),
             num=width_pair[0],
             endpoint=False,
             dtype=ivy.Dtype(str(padded.dtype)),
@@ -735,7 +723,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
         right_ramp = ivy.flip(
             ivy.linspace(
                 end_value_pair[1],
-                ivy.array(edge_pair[1].squeeze(axis)),
+                ivy.array(edge_pair[1].squeeze(axis=axis)),
                 num=width_pair[1],
                 endpoint=False,
                 dtype=ivy.Dtype(str(padded.dtype)),
@@ -849,13 +837,16 @@ def _set_wrap_both(padded, axis, width_pair):
 
 def _pad_simple(array, pad_width, fill_value=None):
     new_shape = tuple(
-        left + size + right for size, (left, right) in zip(array.shape, pad_width)
+        [left + size + right for size, (left, right) in zip(array.shape, pad_width)]
     )
     padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
         padded = ivy.ones_like(padded) * fill_value
     original_area_slice = tuple(
-        slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
+        [
+            slice(left, left + size)
+            for size, (left, right) in zip(array.shape, pad_width)
+        ]
     )
     padded[original_area_slice] = array
     return padded, original_area_slice
@@ -1269,12 +1260,10 @@ def vsplit(
         If indices_or_sections is a sequence of ints or 1-D array,
         then input is split at each of the indices.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1325,12 +1314,10 @@ def dsplit(
         If indices_or_sections is a sequence of ints or 1-D array,
         then input is split at each of the indices.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1371,12 +1358,10 @@ def atleast_1d(
     arys
         One or more input arrays.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1461,12 +1446,10 @@ def atleast_2d(
         converted to arrays. Arrays that already have two or more
         dimensions are preserved.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1509,12 +1492,10 @@ def atleast_3d(
         converted to arrays. Arrays that already have three or more
         dimensions are preserved.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1625,12 +1606,10 @@ def hsplit(
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1714,12 +1693,10 @@ def expand(
         A 1-D Array indicates the shape you want to expand to,
         following the broadcast rule.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -2109,7 +2086,8 @@ def unique_consecutive(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Eliminates all but the first element from every consecutive group of equivalent
+    """
+    Eliminates all but the first element from every consecutive group of equivalent
     elements in ``x``.
 
     Parameters
@@ -2267,11 +2245,10 @@ def partial_unfold(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Partial unfolding of a tensor while ignoring the specified number
-    of dimensions at the beginning and the end.
-    For instance, if the first dimension of the tensor is the number
-    of samples, to unfold each sample, set skip_begin=1.
-    This would, for each i in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
+    Partial unfolding of a tensor while ignoring the specified number of dimensions at
+    the beginning and the end. For instance, if the first dimension of the tensor is the
+    number of samples, to unfold each sample, set skip_begin=1. This would, for each i
+    in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
 
     Parameters
     ----------

@@ -31,9 +31,9 @@ Ivy is entirely complimentary to the standard, implementing all of the functions
 Further into the future, we have quite lofty ambitions for Ivy to extend beyond the Python realm, and to help build the bedrock of a more general, language-agnostic, purely mathematical standardized Array API.
 Given that the function signatures at the Array API level are very much mathematically bound, it is certainly possible to define this purely mathematical, language-agnostic Array API, using the Array API Standard as a starting point.
 In this light, the current release of Ivy would simply be the "Python backend" of Ivy, which itself of course would contain the same framework-specific backends itself, but just pushed one level further down the backend hierarchy.
-In future, we hope that it will be possible to use this mathematical API as an intermediate representation which would enable transpilations between frameworks in *different* languages.
+In the future, we hope that it will be possible to use this mathematical API as an intermediate representation which would enable transpilations between frameworks in *different* languages.
 For example, transpiling from `PyTorch`_ to the `Flux`_ framework written in `Julia`_ would be a great feature.
-However, for the time being we are focusing exclusively on Python, in order to mitigate the risk of "biting off more than we can chew"!
+However, for the time being, we are focusing exclusively on Python, in order to mitigate the risk of "biting off more than we can chew"!
 
 Wrapper Frameworks
 ------------------
@@ -68,13 +68,13 @@ We take the initiative of wrapping the functional APIs of each framework and eac
 Additionally, Ivy also enables transpilations for training, not only for deployment.
 For example, Ivy enables users to fine-tune or retrain `JAX`_ models using their `PyTorch`_ training pipeline, something which the exchange formats do not enable.
 Finally, Ivy exhaustively supports the full range of array processing functions available in all frameworks, which again the exchange formats do not do.
-This makes it much more broadly applicable to a wider range of applications, spanning from cutting edge deep learning to more conventional machine learning, general numerical computing and data analytics.
+This makes it much more broadly applicable to a wider range of applications, spanning from cutting edge deep learning to more conventional machine learning, general numerical computing, and data analytics.
 
 Compiler Infrastructure
 -----------------------
 Compiler infrastructure is essential in order to enable arbitrary frameworks to support arbitrary hardware targets.
 `MLIR`_, for example, has hugely simplified `TensorFlow`_'s workflow for supporting various hardware vendors in a scalable manner, with minimal code duplication.
-However, while infrastructure such as MLIR at the compiler level is essential for framework developers, in its current form it cannot easily be used to guide the creation of tools which enable code transpilations between the user facing functions higher up the ML stack.
+However, while infrastructure such as MLIR at the compiler level is essential for framework developers, in its current form it cannot easily be used to guide the creation of tools that enable code transpilations between the user facing functions higher up the ML stack.
 The intermediate representations used by the compiler infrastructure sit further down the stack, closer to the compilers and to the hardware.
 Transpilation between frameworks requires an IR that sits between the functional APIs of the frameworks themselves, in the way that Ivy does, and this is not really the purpose of these compiler infrastructure IRs.
 Ivy's unification goals are therefore complimentary to the unifying goals of the various compiler infrastructure efforts.
@@ -102,7 +102,7 @@ ML-Unifying Companies
 The ML-unifying companies `Quansight`_, `OctoML`_ and `Modular`_ are/were directly involved with the `Array API Standard`_, `Apache TVM`_ and `MLIR`_ respectively, as explained in the :ref:`ML-Unifying Companies` section.
 For the same reasons that Ivy as a framework is complementary to these three frameworks, Ivy as a company is also complementary to these three companies.
 Firstly, we are adhering to the `Array API Standard`_ defined by Quansight.
-In essence they have written the standard and we have implemented it, which is pretty much as complementary as it gets.
+In essence, they have written the standard and we have implemented it, which is pretty much as complementary as it gets.
 Similarly, OctoML makes it easy for anyone to *deploy* their model anywhere, while Ivy makes it easy for anyone to mix and match any code from any frameworks and versions to *train* their model anywhere.
 Again very complementary objectives.
 Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their "", and this would also be a great addition to the field.
