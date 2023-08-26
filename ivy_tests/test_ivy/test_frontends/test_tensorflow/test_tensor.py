@@ -1254,9 +1254,9 @@ def test_tensorflow__rmatmul__(
     init_tree="tensorflow.constant",
     method_name="__array__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=3
     ),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow__array__(
     dtype_and_x,
@@ -1265,9 +1265,14 @@ def test_tensorflow__array__(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    with BackendHandler.update_backend(backend_fw):
-        ret = EagerTensor(x[0]).__array__(dtype[0])
+    dtype[0] = np.dtype(dtype[0])
     ret_gt = tf.constant(x[0]).__array__(dtype[0])
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        local_importer = ivy_backend.utils.dynamic_import
+        function_module = local_importer.import_module(
+            "ivy.functional.frontends.tensorflow"
+        )
+        ret = function_module.constant(x[0]).__array__(dtype[0])
     helpers.value_test(
         ret_np_flat=ret.ravel(),
         ret_np_from_gt_flat=ret_gt.ravel(),
