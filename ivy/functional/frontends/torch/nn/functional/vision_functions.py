@@ -3,7 +3,7 @@ import math
 
 # local
 import ivy
-from ivy import with_unsupported_dtypes
+from ivy import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.utils.exceptions import IvyNotImplementedException
 
@@ -373,9 +373,9 @@ def reflect(x, low2, high2):
     frac_in = ivy.abs(x / span)
     extra = (frac_in - ivy.floor(frac_in)) * ivy.abs(span)
     flips = ivy.floor(x / span)
-    x *= 0
-    x[flips % 2 == 0] += (extra + min)[flips % 2 == 0]
-    x[flips % 2 != 0] += (span - extra + min)[flips % 2 != 0]
+    # x *= 0
+    x[flips % 2 == 0] = (extra + min)[flips % 2 == 0]
+    x[flips % 2 != 0] = (span - extra + min)[flips % 2 != 0]
     return x
 
 
@@ -392,7 +392,8 @@ def bicubic_interp(x, t, alpha=-0.75):
     return x[0] * coeffs[0] + x[1] * coeffs[1] + x[2] * coeffs[2] + x[3] * coeffs[3]
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+# @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(input, grid, mode="bilinear", padding_mode="zeros", align_corners=None):
     # Ref:
