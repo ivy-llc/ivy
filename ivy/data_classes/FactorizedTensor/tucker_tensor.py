@@ -3,7 +3,6 @@ from .base import FactorizedTensor
 import ivy
 
 # global
-from scipy.optimize import brentq
 from copy import deepcopy
 import warnings
 
@@ -236,6 +235,8 @@ class TuckerTensor(FactorizedTensor):
     def validate_tucker_rank(
         tensor_shape, rank="same", rounding="round", fixed_modes=None
     ):
+        from scipy.optimize import brentq
+
         if rounding == "ceil":
             rounding_fun = ivy.ceil
         elif rounding == "floor":

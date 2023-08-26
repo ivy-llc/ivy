@@ -1,6 +1,5 @@
 # global
 from hypothesis import strategies as st
-import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -139,7 +138,6 @@ def x_and_ifftn(draw):
 
 
 # fft
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.fft",
     d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
@@ -167,7 +165,6 @@ def test_scipy_fft(
 
 
 # ifft
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.ifft",
     d_x_d_n_n=x_and_ifft(),
@@ -195,7 +192,6 @@ def test_scipy_ifft(
 
 
 # dct
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.dct",
     dtype_x_and_args=valid_dct(),
@@ -226,7 +222,6 @@ def test_scipy_dct(
 
 
 # idct
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.idct",
     dtype_x_and_args=valid_idct(),
@@ -257,7 +252,6 @@ def test_scipy_idct(
 
 
 # fft2
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.fft2",
     d_x_d_s_n=x_and_fft2(),
@@ -285,7 +279,6 @@ def test_scipy_fft2(
 
 
 # ifftn
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.ifftn",
     d_x_d_s_n_workers=x_and_ifftn(),
@@ -314,7 +307,6 @@ def test_scipy_ifftn(
 
 
 # rfftn
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.rfftn",
     d_x_d_s_n_workers=x_and_ifftn(),

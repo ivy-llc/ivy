@@ -85,10 +85,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -134,10 +133,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -187,10 +185,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -248,10 +245,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         order
             Read the elements of the input array using this index order,
             and place the elements into the reshaped array using this index order.
@@ -374,10 +370,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -598,10 +593,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
         num_or_size_splits
             Number of equal arrays to divide the array into along the given axis if an
             integer. The size of each split element if a sequence of integers or
@@ -658,10 +652,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -757,10 +750,9 @@ class _ArrayWithManipulation(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         axis
             Axis for which to unpack the array.
         keepdims
