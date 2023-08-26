@@ -218,11 +218,6 @@ def FFT(*, input, name="FFT"):
 
 
 @to_ivy_arrays_and_back
-def FFT2D(*, input, name="FFT2D"):
-    return ivy.array(ivy.fft2(input), dtype=input.dtype)
-
-
-@to_ivy_arrays_and_back
 def Gather(*, params, indices, validate_indices=None, name="Gather"):
     return ivy.gather(params, indices, axis=0, batch_dims=0)
 
@@ -961,4 +956,18 @@ Einsum = to_ivy_arrays_and_back(
         },
         "tensorflow",
     )(map_raw_ops_alias(tf_frontend.general_functions.einsum))
+)
+
+
+Igamma = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "float64",
+                "float32",
+                "half",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.igamma))
 )
