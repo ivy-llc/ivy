@@ -9,7 +9,10 @@ import jaxlib.xla_extension
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _shift_native_arrays_on_default_device,
+    Profiler as BaseProfiler,
+)
 
 
 # Helpers #
@@ -94,6 +97,14 @@ def as_native_dev(device, /):
     else:
         idx = 0
     return jax.devices(device)[idx]
+
+
+def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
+    args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
+        *args, device_shifting_dev=device_shifting_dev, **kwargs
+    )
+    with jax.default_device(device_shifting_dev):
+        return fn(*args, **kwargs)
 
 
 def clear_cached_mem_on_dev(device: str, /):
