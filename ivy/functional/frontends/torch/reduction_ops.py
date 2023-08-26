@@ -123,9 +123,12 @@ def nanmedian(input, dim=None, keepdim=False, out=None):
 
     median_tuple = namedtuple("median", ["values", "indices"])
 
-    if input.ndim == 0:
+    if input.ndim == 0 or input.shape == (1,):
         result = median_tuple(input, ivy.array(0))
+        return result
     else:
+        if ivy.isnan(input).any():
+            input = input[~ivy.isnan(input)]
         sorted_indices = ivy.argsort(input, axis=dim)
         median_indices = ivy.gather(
             sorted_indices, (sorted_indices.shape[dim] - 1) // 2, axis=dim
@@ -133,7 +136,6 @@ def nanmedian(input, dim=None, keepdim=False, out=None):
         median_values = ivy.take_along_axis(
             input, ivy.expand_dims(median_indices, axis=dim), dim
         ).squeeze(axis=dim)
-
         if keepdim:
             median_values = ivy.expand_dims(median_values, axis=dim)
             median_indices = ivy.expand_dims(median_indices, axis=dim)

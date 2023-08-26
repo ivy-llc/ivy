@@ -443,6 +443,8 @@ def test_torch_median(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         valid_axis=True,
+        allow_nan=True,
+        allow_inf=False,
         force_int_axis=True,
     ),
     keepdim=st.booleans(),
