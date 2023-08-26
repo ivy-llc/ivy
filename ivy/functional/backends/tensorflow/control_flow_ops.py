@@ -20,10 +20,7 @@ def if_else(cond, body_fn, orelse_fn, vars):
 
     # use pythonic placeholder until the graph compiler supports callable arguments
 
-    if cond:
-        return body_fn(*vars)
-    else:
-        return orelse_fn(*vars)
+    return body_fn(*vars) if cond else orelse_fn(*vars)
 
 
 def while_loop(test_fn, body_fn, vars):
@@ -75,4 +72,4 @@ def _tuple_to_dict(t):
 
 
 def _dict_to_tuple(d):
-    return tuple([d[k] for k in d])
+    return tuple(d[k] for k in d)

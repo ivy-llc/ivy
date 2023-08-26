@@ -118,8 +118,7 @@ def eye(
         return i
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
-    return_mat = jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
-    return return_mat
+    return jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
 
 
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -220,9 +219,7 @@ def linspace(
     ):
         out = jax.lax.floor(out)
 
-    ans = jax.lax.convert_element_type(out, dtype)
-
-    return ans
+    return jax.lax.convert_element_type(out, dtype)
 
 
 def meshgrid(
@@ -299,9 +296,7 @@ def copy_array(
         if isinstance(x, jax.core.ShapedArray)
         else jnp.array(x)
     )
-    if to_ivy_array:
-        return ivy.to_ivy(x)
-    return x
+    return ivy.to_ivy(x) if to_ivy_array else x
 
 
 def one_hot(
@@ -323,11 +318,11 @@ def one_hot(
         if on_none and off_none:
             dtype = jnp.float32
         else:
-            if not on_none:
-                dtype = jnp.array(on_value).dtype
-            elif not off_none:
-                dtype = jnp.array(off_value).dtype
-
+            dtype = (
+                jnp.array(on_value).dtype
+                if not on_none
+                else jnp.array(off_value).dtype
+            )
     res = jnp.eye(depth, dtype=dtype)[jnp.array(indices, dtype="int64").reshape(-1)]
     res = res.reshape(list(indices.shape) + [depth])
 

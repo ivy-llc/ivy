@@ -26,20 +26,20 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
     """
 
     def new_function(
-        *args,
-        key_chains: Optional[
-            Union[Sequence[str], Dict[str, str], ivy.Container]
-        ] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[ivy.Container] = None,
-        **kwargs
-    ):
+            *args,
+            key_chains: Optional[
+                Union[Sequence[str], Dict[str, str], ivy.Container]
+            ] = None,
+            to_apply: Union[bool, ivy.Container] = True,
+            prune_unapplied: Union[bool, ivy.Container] = False,
+            map_sequences: Union[bool, ivy.Container] = False,
+            out: Optional[ivy.Container] = None,
+            **kwargs
+        ):
         function = ivy.__dict__[function_name]
         data_idx = function.array_spec[0]
         if (
-            not (data_idx[0][0] == 0 and len(data_idx[0]) == 1)
+            (data_idx[0][0] != 0 or len(data_idx[0]) != 1)
             and args
             and ivy.is_ivy_container(args[0])
             and not static

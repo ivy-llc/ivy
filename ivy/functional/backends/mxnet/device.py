@@ -14,9 +14,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 def dev(
     x: Union[(None, mx.ndarray.NDArray)], /, *, as_native: bool = False
 ) -> Union[(ivy.Device, str)]:
-    if as_native:
-        return x.context
-    return as_ivy_dev(x.context)
+    return x.context if as_native else as_ivy_dev(x.context)
 
 
 def to_device(
@@ -37,24 +35,19 @@ def as_ivy_dev(device):
         return None
     # if mx device context is passed
     p, dev_id = (device.device_type, device.device_id)
-    if p == "cpu":
-        return ivy.Device(p)
-    return ivy.Device(p + ":" + str(dev_id))
+    return ivy.Device(p) if p == "cpu" else ivy.Device(f"{p}:{str(dev_id)}")
 
 
 def as_native_dev(device: str, /):
     if isinstance(device, mx.Context):
         return device
-    if device is None or device.find("cpu") != -1:
+    if device is None or "cpu" in device:
         mx_dev = "cpu"
-    elif device.find("gpu") != -1:
+    elif "gpu" in device:
         mx_dev = "gpu"
     else:
-        raise Exception("dev input {} not supported.".format(device))
-    if device.find(":") != -1:
-        mx_dev_id = int(device[device.find(":") + 1 :])
-    else:
-        mx_dev_id = 0
+        raise Exception(f"dev input {device} not supported.")
+    mx_dev_id = int(device[device.find(":") + 1 :]) if ":" in device else 0
     return mx.Context(mx_dev, mx_dev_id)
 
 
@@ -67,9 +60,7 @@ def num_gpus() -> int:
 
 
 def gpu_is_available() -> bool:
-    if mx.context.num_gpus() > 0:
-        return True
-    return False
+    return mx.context.num_gpus() > 0
 
 
 def tpu_is_available() -> bool:

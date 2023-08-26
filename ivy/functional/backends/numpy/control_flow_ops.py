@@ -9,11 +9,7 @@ def if_else(cond, body_fn, orelse_fn, vars):
     if isinstance(cond, bool):
         v = cond
         cond = lambda *_: v
-    cond = cond(*vars)
-    if cond:
-        return body_fn(*vars)
-    else:
-        return orelse_fn(*vars)
+    return body_fn(*vars) if (cond := cond(*vars)) else orelse_fn(*vars)
 
 
 def while_loop(test_fn, body_fn, vars):

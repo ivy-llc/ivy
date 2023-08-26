@@ -194,7 +194,7 @@ class Array(
             ivy_backend = ivy.with_backend(self._backend)
             to_numpy = ivy_backend.to_numpy
 
-            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
+            if _is_variable(self.data) and self._backend not in ["jax", "numpy"]:
                 native_data = _variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
@@ -391,10 +391,7 @@ class Array(
         if self._dev_str is None:
             self._dev_str = ivy.as_ivy_dev(self.device)
             self._pre_repr = "ivy.array"
-            if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
-            else:
-                self._post_repr = ")"
+            self._post_repr = f", dev={self._dev_str})" if "gpu" in self._dev_str else ")"
         sig_fig = ivy.array_significant_figures
         dec_vals = ivy.array_decimal_values
         if self.backend == "" or ivy.is_local():
@@ -442,16 +439,11 @@ class Array(
         return self._data.__contains__(key)
 
     def __getstate__(self):
-        data_dict = dict()
-
-        # only pickle the native array
-        data_dict["data"] = self.data
-
-        # also store the local ivy framework that created this array
-        data_dict["backend"] = self.backend
-        data_dict["device_str"] = ivy.as_ivy_dev(self.device)
-
-        return data_dict
+        return {
+            "data": self.data,
+            "backend": self.backend,
+            "device_str": ivy.as_ivy_dev(self.device),
+        }
 
     def __setstate__(self, state):
         # we can construct other details of ivy.Array
@@ -667,10 +659,10 @@ class Array(
         return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
-        return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
+        return ivy.divide(self._data, other), ivy.remainder(self._data, other)
 
     def __rdivmod__(self, other):
-        return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
+        return ivy.divide(other, self._data), ivy.remainder(other, self._data)
 
     def __truediv__(self, other):
         """
@@ -760,33 +752,21 @@ class Array(
 
     def __float__(self):
         if hasattr(self._data, "__float__"):
-            if "complex" in self.dtype:
-                res = float(self.real)
-            else:
-                res = self._data.__float__()
+            res = float(self.real) if "complex" in self.dtype else self._data.__float__()
         else:
             res = float(ivy.to_scalar(self._data))
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return res if res is NotImplemented else to_ivy(res)
 
     def __int__(self):
         if hasattr(self._data, "__int__"):
-            if "complex" in self.dtype:
-                res = int(self.real)
-            else:
-                res = self._data.__int__()
+            res = int(self.real) if "complex" in self.dtype else self._data.__int__()
         else:
             res = int(ivy.to_scalar(self._data))
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return res if res is NotImplemented else to_ivy(res)
 
     def __complex__(self):
         res = complex(ivy.to_scalar(self._data))
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
+        return res if res is NotImplemented else to_ivy(res)
 
     def __bool__(self):
         return self._data.__bool__()

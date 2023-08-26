@@ -178,10 +178,11 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         if not isinstance(arrays, (list, tuple)):
             arrays = [arrays]
-        if isinstance(arrays, tuple):
-            x = (self._data) + arrays
-        else:
-            x = [self._data] + arrays
+        x = (
+            (self._data) + arrays
+            if isinstance(arrays, tuple)
+            else [self._data] + arrays
+        )
         return ivy.vstack(x, out=out)
 
     def hstack(
@@ -1013,10 +1014,11 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         elif new_axis == 1:
             if not isinstance(input_sequence, (tuple, list)):
                 input_sequence = [input_sequence]
-            if isinstance(input_sequence, tuple):
-                input_sequence = (self._data,) + input_sequence
-            else:
-                input_sequence = [self._data] + input_sequence
+            input_sequence = (
+                (self._data,) + input_sequence
+                if isinstance(input_sequence, tuple)
+                else [self._data] + input_sequence
+            )
             return ivy.concat_from_sequence(
                 input_sequence, new_axis=new_axis, axis=axis, out=out
             )

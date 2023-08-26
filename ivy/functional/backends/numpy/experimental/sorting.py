@@ -11,8 +11,7 @@ def invert_permutation(
     sorted_indices = np.argsort(x)
     inverse = np.zeros_like(sorted_indices)
     inverse[sorted_indices] = np.arange(len(x))
-    inverse_permutation = np.argsort(inverse)
-    return inverse_permutation
+    return np.argsort(inverse)
 
 
 # lexsort

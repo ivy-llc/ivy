@@ -17,9 +17,7 @@ class _ArrayWithManipulation(abc.ABC):
         /,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, Sequence[int]]] = None,
     ) -> ivy.Array:
-        if shape:
-            return self.reshape(shape)
-        return self.reshape(self.shape)
+        return self.reshape(shape) if shape else self.reshape(self.shape)
 
     def concat(
         self: ivy.Array,

@@ -23,9 +23,7 @@ def logit(
     else:
         x = np.clip(x, eps, 1 - eps)
     ret = (np.log(x / (1 - x))).astype(x_dtype)
-    if np.isscalar(ret):
-        return np.array(ret)
-    return ret
+    return np.array(ret) if np.isscalar(ret) else ret
 
 
 @_scalar_output_to_0d_array
@@ -61,9 +59,7 @@ def selu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     alpha = 1.6732632423543772848170429916717
     scale = 1.0507009873554804934193349852946
     ret = (scale * np.where(x > 0, x, alpha * np.expm1(x))).astype(x.dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ret
+    return ivy.inplace_update(out, ret).astype(x.dtype) if ivy.exists(out) else ret
 
 
 selu.support_native_out = True
@@ -89,9 +85,7 @@ def elu(
 ) -> np.ndarray:
     # exp = np.expm1(x)
     ret = np.where(x > 0, x, np.multiply(alpha, np.expm1(x))).astype(x.dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ret
+    return ivy.inplace_update(out, ret).astype(x.dtype) if ivy.exists(out) else ret
 
 
 elu.support_native_out = True

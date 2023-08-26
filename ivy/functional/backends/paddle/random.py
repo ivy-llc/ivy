@@ -108,8 +108,7 @@ def multinomial(
         probs = paddle.cast(probs, paddle.float32)
     if seed:
         paddle.seed(seed)
-    x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
-    return x
+    return paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
 
 
 @with_unsupported_device_and_dtypes(

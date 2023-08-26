@@ -95,12 +95,8 @@ def top_k(
     out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     k = min(k, x.shape[axis])
-    if not largest:
-        indices = jnp.argsort(x, axis=axis)
-        indices = jnp.take(indices, jnp.arange(k), axis=axis)
-    else:
-        indices = jnp.argsort(-x, axis=axis)
-        indices = jnp.take(indices, jnp.arange(k), axis=axis)
+    indices = jnp.argsort(-x, axis=axis) if largest else jnp.argsort(x, axis=axis)
+    indices = jnp.take(indices, jnp.arange(k), axis=axis)
     if not sorted:
         indices = jnp.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
@@ -183,9 +179,7 @@ def pad(
             padding_value = ivy.native_array(constant_values, dtype=input_dtype)
         else:
             padding_value = constant_values
-        padded = jlax.pad(input, padding_value, pad_width)
-        return padded
-
+        return jlax.pad(input, padding_value, pad_width)
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
@@ -347,11 +341,9 @@ def concat_from_sequence(
     if is_tuple:
         input_sequence = list(input_sequence)
     if new_axis == 0:
-        ret = jnp.concatenate(input_sequence, axis=axis)
-        return ret
+        return jnp.concatenate(input_sequence, axis=axis)
     elif new_axis == 1:
-        ret = jnp.stack(input_sequence, axis=axis)
-        return ret
+        return jnp.stack(input_sequence, axis=axis)
 
 
 def unique_consecutive(

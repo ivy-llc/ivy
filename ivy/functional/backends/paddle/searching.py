@@ -135,9 +135,7 @@ def nonzero(
         elif diff < 0:
             res = res[:, :size]
 
-    if as_tuple:
-        return tuple(res)
-    return res.T
+    return tuple(res) if as_tuple else res.T
 
 
 def where(

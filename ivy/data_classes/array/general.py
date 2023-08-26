@@ -164,7 +164,7 @@ class _ArrayWithGeneral(abc.ABC):
            [ True,  True, False],
            [False, False,  True]])
         """
-        arrays = [self] + [x for x in x2]
+        arrays = [self] + list(x2)
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
 
     def has_nans(self: ivy.Array, /, *, include_infs: bool = True):

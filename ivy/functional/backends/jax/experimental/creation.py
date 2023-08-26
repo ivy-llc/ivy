@@ -23,11 +23,12 @@ def vorbis_window(
         [
             round(
                 math.sin(
-                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                    (ivy.pi / 2)
+                    * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
                 ),
                 8,
             )
-            for i in range(1, window_length * 2)[0::2]
+            for i in range(1, window_length * 2)[::2]
         ],
         dtype=dtype,
     )
@@ -60,7 +61,7 @@ def kaiser_window(
 ) -> JaxArray:
     if window_length < 2:
         return jnp.ones([window_length], dtype=dtype)
-    if periodic is False:
+    if not periodic:
         return jnp.kaiser(M=window_length, beta=beta).astype(dtype)
     else:
         return jnp.kaiser(M=window_length + 1, beta=beta)[:-1].astype(dtype)
@@ -126,6 +127,4 @@ def blackman_window(
 def trilu(
     x: JaxArray, /, *, k: int = 0, upper: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if upper:
-        return jnp.triu(x, k)
-    return jnp.tril(x, k)
+    return jnp.triu(x, k) if upper else jnp.tril(x, k)

@@ -14,9 +14,7 @@ from ivy.functional.ivy.general import _broadcast_to
 
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, paddle.Tensor):
-        if exclusive and not x.stop_gradient:
-            return False
-        return True
+        return bool(not exclusive or x.stop_gradient)
     return False
 
 
@@ -36,11 +34,9 @@ def _check_query(query):
     return (
         query.ndim > 1
         if ivy.is_array(query)
-        else (
-            all(ivy.is_array(query) and i.ndim <= 1 for i in query)
-            if isinstance(query, tuple)
-            else False if isinstance(query, int) else True
-        )
+        else all(ivy.is_array(query) and i.ndim <= 1 for i in query)
+        if isinstance(query, tuple)
+        else not isinstance(query, int)
     )
 
 
@@ -53,15 +49,14 @@ def get_item(
 ) -> paddle.Tensor:
     dtype = x.dtype
     if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
-        ret = x.cast("float32").__getitem__(query).cast(dtype)
+        return x.cast("float32").__getitem__(query).cast(dtype)
     elif dtype in [paddle.complex64, paddle.complex128]:
-        ret = paddle.complex(
+        return paddle.complex(
             x.real().__getitem__(query),
             x.imag().__getitem__(query),
         )
     else:
-        ret = x.__getitem__(query)
-    return ret
+        return x.__getitem__(query)
 
 
 get_item.partial_mixed_handler = (
@@ -75,24 +70,16 @@ def to_numpy(
     if isinstance(x, (float, int, bool)):
         return x
     elif isinstance(x, np.ndarray):
-        if copy:
-            return x.copy()
-        else:
-            return x
+        return x.copy() if copy else x
     elif paddle.is_tensor(x):
-        if copy:
-            return np.array(x)
-        else:
-            return np.asarray(x)
+        return np.array(x) if copy else np.asarray(x)
     elif isinstance(x, list):
         return [ivy.to_numpy(u) for u in x]
     raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
 
 
 def to_scalar(x: paddle.Tensor, /) -> Number:
-    if isinstance(x, (Number, complex)):
-        return x
-    return x.item()
+    return x if isinstance(x, (Number, complex)) else x.item()
 
 
 def to_list(x: paddle.Tensor, /) -> list:
@@ -215,10 +202,10 @@ def gather_nd(
     # Assuming we have a batch of shape [B1, B2], we use meshgrid to create a
     # grid of size B1 x B2.
     batch_dim_list = paddle_backend.unstack(batch_shape, axis=0)
-    dim_ranges = [
-        paddle.arange(0, x.item(), 1, dtype=indices.dtype) for x in batch_dim_list
-    ]
-    if dim_ranges:
+    if dim_ranges := [
+        paddle.arange(0, x.item(), 1, dtype=indices.dtype)
+        for x in batch_dim_list
+    ]:
         if len(dim_ranges) > 1:
             mesh_list = paddle_backend.meshgrid(*dim_ranges, indexing="ij")
         else:
@@ -231,7 +218,7 @@ def gather_nd(
         paddle_backend.stack(flat_list, axis=0) if flat_list else paddle.to_tensor([])
     )
     index_grid = paddle_backend.permute_dims(
-        stacked_list, axes=[axis for axis in range(stacked_list.ndim)][::-1]
+        stacked_list, axes=list(range(stacked_list.ndim))[::-1]
     )
     # We need to concatenate these batch coordinates with the internal indices.
     # concat -> index_grid [B1.B2, 2] with indices [i1, ..., iK, C]
@@ -303,10 +290,7 @@ def inplace_decrement(
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_ivy_array(x):
-        target = x.data
-    else:
-        target = x
+    target = x.data if ivy.is_ivy_array(x) else x
     return paddle.assign(paddle_backend.subtract(x_native, val_native), target)
 
 
@@ -315,10 +299,7 @@ def inplace_increment(
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_ivy_array(x):
-        target = x.data
-    else:
-        target = x
+    target = x.data if ivy.is_ivy_array(x) else x
     return paddle.assign(paddle_backend.add(x_native, val_native), target)
 
 
@@ -330,24 +311,23 @@ def inplace_update(
     ensure_in_backend: bool = False,
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
-    if ivy.is_array(x) and ivy.is_array(val):
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-
-        if val_native.shape == x_native.shape:
-            if x_native.dtype != val_native.dtype:
-                x_native = x_native.astype(val_native.dtype)
-            paddle.assign(val_native, x_native)
-        else:
-            x_native = val_native
-        if ivy.is_native_array(x):
-            return x_native
-        if ivy.is_ivy_array(x):
-            x.data = x_native
-        else:
-            x = ivy.Array(x_native)
-        return x
-    else:
+    if not ivy.is_array(x) or not ivy.is_array(val):
         return val
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+
+    if val_native.shape == x_native.shape:
+        if x_native.dtype != val_native.dtype:
+            x_native = x_native.astype(val_native.dtype)
+        paddle.assign(val_native, x_native)
+    else:
+        x_native = val_native
+    if ivy.is_native_array(x):
+        return x_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
+    return x
 
 
 def inplace_variables_supported():
@@ -425,8 +405,7 @@ def scatter_nd(
         )
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or "replace"'
         )
     if reduction == "min":
         updates = ivy.minimum(ivy.gather_nd(target, indices), updates)._data
@@ -477,9 +456,7 @@ def scatter_nd(
                 updates = updates.cast("float64")
             updates = paddle.subtract(updates, gathered_vals)
         ret = paddle.scatter_nd_add(target, indices, updates).cast(target_dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
 
 def shape(
@@ -543,7 +520,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)

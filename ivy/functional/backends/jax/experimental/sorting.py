@@ -18,8 +18,7 @@ def invert_permutation(
     sorted_indices = jnp.argsort(x)
     inverse = jnp.zeros_like(sorted_indices)
     inverse = inverse.at[sorted_indices].set(jnp.arange(len(x)))
-    inverse_permutation = jnp.argsort(inverse)
-    return inverse_permutation
+    return jnp.argsort(inverse)
 
 
 # lexsort

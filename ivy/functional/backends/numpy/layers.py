@@ -17,7 +17,7 @@ from ivy.functional.ivy.layers import (
 def _add_dilations(x, dilations, axis, values=0):
     return np.insert(
         x,
-        [i for i in range(1, x.shape[axis])] * (dilations - 1),
+        list(range(1, x.shape[axis])) * (dilations - 1),
         values=values,
         axis=axis,
     )
@@ -135,7 +135,7 @@ def conv1d(
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 1, dilations)
 
     x_shape = x.shape
-    filter_shape = list(filters.shape[0:1])
+    filter_shape = list(filters.shape[:1])
     input_dim = filters.shape[-2]
     output_dim = filters.shape[-1]
     new_w = (x_shape[1] - filter_shape[0]) // strides[0] + 1
@@ -217,7 +217,7 @@ def conv2d(
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 2, dilations)
 
     x_shape = x.shape
-    filter_shape = list(filters.shape[0:2])
+    filter_shape = list(filters.shape[:2])
     input_dim = filters.shape[-2]
     output_dim = filters.shape[-1]
     new_h = (x_shape[1] - filter_shape[0]) // strides[0] + 1
@@ -246,9 +246,7 @@ def conv2d(
     # B x OH x OW x O
     res = np.sum(mult, (3, 4, 5))
     res = np.add(res, bias) if bias is not None else res
-    if data_format == "NCHW":
-        return np.transpose(res, (0, 3, 1, 2))
-    return res
+    return np.transpose(res, (0, 3, 1, 2)) if data_format == "NCHW" else res
 
 
 def conv2d_transpose(
@@ -358,7 +356,7 @@ def conv3d(
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 3, dilations)
 
     x_shape = x.shape
-    filter_shape = list(filters.shape[0:3])
+    filter_shape = list(filters.shape[:3])
     input_dim = filters.shape[-2]
     output_dim = filters.shape[-1]
     new_d = (x_shape[1] - filter_shape[0]) // strides[0] + 1
@@ -390,9 +388,7 @@ def conv3d(
     # B x OD X OH x OW x O
     res = np.sum(mult, (4, 5, 6, 7))
     res = np.add(res, bias) if bias is not None else res
-    if data_format == "NCDHW":
-        return np.transpose(res, (0, 4, 1, 2, 3))
-    return res
+    return np.transpose(res, (0, 4, 1, 2, 3)) if data_format == "NCDHW" else res
 
 
 def conv3d_transpose(
@@ -456,7 +452,7 @@ def conv_general_dilated(
     x, filters = _dilate_pad_conv(x, filters, strides, padding, dims, dilations)
 
     x_shape = x.shape
-    filter_shape = list(filters.shape[0:dims])
+    filter_shape = list(filters.shape[:dims])
     input_dim = filters.shape[-2]
     output_dim = filters.shape[-1]
     new_shape = [
@@ -493,7 +489,7 @@ def conv_general_dilated(
         )
 
         # B x OH x OW x O
-        res.append(np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)])))
+        res.append(np.sum(mult, tuple(list(range(dims + 1, dims * 2 + 2)))))
     res = np.concatenate(res, axis=-1)
     res = np.add(res, bias) if bias is not None else res
 

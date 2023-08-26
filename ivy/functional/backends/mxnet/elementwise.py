@@ -521,14 +521,8 @@ def sin(
     else:
         ret = mx.nd.sin(x)
 
-    if "int" in str(x_dtype):
-        ret = ret.astype("float32")
-    else:
-        ret = ret.astype(x_dtype)
-
-    if zero_dim:
-        return ret.reshape(())
-    return ret
+    ret = ret.astype("float32") if "int" in str(x_dtype) else ret.astype(x_dtype)
+    return ret.reshape(()) if zero_dim else ret
 
 
 def sinh(

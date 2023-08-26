@@ -24,11 +24,9 @@ def cholesky(
     x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
-        ret = np.linalg.cholesky(x)
-    else:
-        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)), axes=axes)
-    return ret
+        return np.linalg.cholesky(x)
+    axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+    return np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)), axes=axes)
 
 
 @with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
@@ -190,8 +188,7 @@ def matrix_rank(
     tol = np.maximum(atol, rtol * sigma)
     # make sure it's broadcastable again with svd_values
     tol = np.expand_dims(tol, axis=-1)
-    ret = np.count_nonzero(svd_values > tol, axis=-1)
-    return ret
+    return np.count_nonzero(svd_values > tol, axis=-1)
 
 
 def matrix_transpose(
@@ -225,10 +222,7 @@ def pinv(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if rtol is None:
-        return np.linalg.pinv(x)
-    else:
-        return np.linalg.pinv(x, rtol)
+    return np.linalg.pinv(x) if rtol is None else np.linalg.pinv(x, rtol)
 
 
 @with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
@@ -276,7 +270,7 @@ def solve(
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
             x2 = np.expand_dims(x2, axis=1)
-    for i in range(len(x1.shape) - 2):
+    for _ in range(len(x1.shape) - 2):
         x2 = np.expand_dims(x2, axis=0)
     ret = np.linalg.solve(x1, x2)
     if expanded_last:

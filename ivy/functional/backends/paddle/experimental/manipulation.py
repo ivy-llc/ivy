@@ -353,9 +353,7 @@ def atleast_1d(
                 res.append(ivy.expand_dims(ary, axis=0))
         else:
             res.append(ary)
-    if len(res) == 1:
-        return res[0]
-    return res
+    return res[0] if len(res) == 1 else res
 
 
 def dstack(
@@ -385,9 +383,7 @@ def atleast_2d(
                 res.append(ivy.expand_dims(ary, axis=list(range(2 - ary.ndim))))
         else:
             res.append(ary)
-    if len(res) == 1:
-        return res[0]
-    return res
+    return res[0] if len(res) == 1 else res
 
 
 @with_unsupported_device_and_dtypes(
@@ -409,10 +405,7 @@ def atleast_3d(
         else:
             result = ary
         res.append(result)
-    if len(res) == 1:
-        return res[0]
-    else:
-        return res
+    return res[0] if len(res) == 1 else res
 
 
 @with_unsupported_device_and_dtypes(
@@ -434,22 +427,21 @@ def take_along_axis(
 ) -> paddle.Tensor:
     if arr.ndim != indices.ndim:
         raise ivy.utils.exceptions.IvyException(
-            "arr and indices must have the same number of dimensions;"
-            + f" got {arr.ndim} vs {indices.ndim}"
+            f"arr and indices must have the same number of dimensions; got {arr.ndim} vs {indices.ndim}"
         )
     indices = indices.cast("int64")
     if mode not in ["clip", "fill", "drop"]:
         raise ValueError(
             f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
         )
-    arr_shape = arr.shape
     if axis < 0:
         axis += arr.ndim
+    arr_shape = arr.shape
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         with ivy.ArrayMode(False):
             indices = ivy.clip(indices, 0, max_index)
-    elif mode in ("fill", "drop"):
+    elif mode in {"fill", "drop"}:
         if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):
@@ -515,7 +507,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
         else:
             return paddle.broadcast_shape(s1, s2)
 
-    if len(shapes) == 0:
+    if not shapes:
         raise ValueError("shapes=[] must be non-empty")
     elif len(shapes) == 1:
         return shapes[0]
@@ -635,7 +627,7 @@ def fill_diagonal(
             end = shape[1] * shape[1]
     else:
         step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
-    end = max_end if end > max_end else end
+    end = min(end, max_end)
     a = paddle.reshape(a, (-1,))
     w = paddle.zeros(a.shape, dtype=bool)
     ins = paddle.arange(0, max_end)

@@ -52,12 +52,11 @@ def batch_norm(
         data_format = (
             data_formats[4:][x.ndim - 3]
             if data_format[-1] == "C"
-            else data_formats[0:4][x.ndim - 2]
+            else data_formats[:4][x.ndim - 2]
         )
     except IndexError:
         raise IndexError(
-            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', "
-            "'NLC', 'NHWC', 'NDHWC' but receive {}".format(data_format)
+            f"data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', 'NLC', 'NHWC', 'NDHWC' but receive {data_format}"
         )
 
     with ivy.ArrayMode(False):
@@ -121,9 +120,8 @@ def l1_normalize(
     norm = paddle.where(norm == 0, paddle.to_tensor([1], dtype=x.dtype), norm)
     if out is None:
         return x / norm
-    else:
-        out[:] = x / norm
-        return out
+    out[:] = x / norm
+    return out
 
 
 def l2_normalize(

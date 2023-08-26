@@ -56,16 +56,11 @@ def set_item(
 
 
 def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
-    if copy:
-        return x.copy()
-    else:
-        return x
+    return x.copy() if copy else x
 
 
 def to_scalar(x: np.ndarray, /) -> Number:
-    if isinstance(x, (float, int)):
-        return x
-    return x.item()
+    return x if isinstance(x, (float, int)) else x.item()
 
 
 def to_list(x: np.ndarray, /) -> list:
@@ -81,8 +76,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
@@ -90,7 +85,7 @@ def gather(
     else:
         for b in range(batch_dims):
             if b == 0:
-                zip_list = [(p, i) for p, i in zip(params, indices)]
+                zip_list = list(zip(params, indices))
             else:
                 zip_list = [
                     (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
@@ -100,17 +95,14 @@ def gather(
             r = np.take(p, i, axis - batch_dims)
             result.append(r)
         result = np.array(result)
-        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+        result = result.reshape([*params.shape[:batch_dims], *result.shape[1:]])
     return _to_device(result)
 
 
 def gather_nd_helper(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
-    if len(indices.shape) == 0:
-        num_index_dims = 1
-    else:
-        num_index_dims = indices_shape[-1]
+    num_index_dims = 1 if len(indices.shape) == 0 else indices_shape[-1]
     result_dim_sizes_list = [
         _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
@@ -118,7 +110,7 @@ def gather_nd_helper(params, indices):
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_params = np.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
-    indices_scales = np.reshape(result_dim_sizes[0:num_index_dims], new_shape)
+    indices_scales = np.reshape(result_dim_sizes[:num_index_dims], new_shape)
     indices_for_flat_tiled = np.tile(
         np.reshape(np.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)),
         (1, implicit_indices_factor),
@@ -131,8 +123,7 @@ def gather_nd_helper(params, indices):
     flat_indices_for_flat = np.reshape(indices_for_flat, (-1,)).astype(np.int32)
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
-    res = np.reshape(flat_gather, new_shape)
-    return res
+    return np.reshape(flat_gather, new_shape)
 
 
 def gather_nd(
@@ -144,14 +135,14 @@ def gather_nd(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
-    batch_dims = batch_dims % len(params.shape)
+    batch_dims %= len(params.shape)
     result = []
     if batch_dims == 0:
         result = gather_nd_helper(params, indices)
     else:
         for b in range(batch_dims):
             if b == 0:
-                zip_list = [(p, i) for p, i in zip(params, indices)]
+                zip_list = list(zip(params, indices))
             else:
                 zip_list = [
                     (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
@@ -161,7 +152,7 @@ def gather_nd(
             r = gather_nd_helper(p, np.asarray(i, indices.dtype))
             result.append(r)
         result = np.array(result)
-        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+        result = result.reshape([*params.shape[:batch_dims], *result.shape[1:]])
     return _to_device(result)
 
 
@@ -206,32 +197,31 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
-    if ivy.is_array(x) and ivy.is_array(val):
-        if keep_input_dtype:
-            val = ivy.astype(val, x.dtype)
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-
-        # make both arrays contiguous if not already
-        if not x_native.flags.c_contiguous:
-            x_native = np.ascontiguousarray(x_native)
-        if not val_native.flags.c_contiguous:
-            val_native = np.ascontiguousarray(val_native)
-
-        if val_native.shape == x_native.shape:
-            if x_native.dtype != val_native.dtype:
-                x_native = x_native.astype(val_native.dtype)
-            np.copyto(x_native, val_native)
-        else:
-            x_native = val_native
-        if ivy.is_native_array(x):
-            return x_native
-        if ivy.is_ivy_array(x):
-            x.data = x_native
-        else:
-            x = ivy.Array(x_native)
-        return x
-    else:
+    if not ivy.is_array(x) or not ivy.is_array(val):
         return val
+    if keep_input_dtype:
+        val = ivy.astype(val, x.dtype)
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+
+    # make both arrays contiguous if not already
+    if not x_native.flags.c_contiguous:
+        x_native = np.ascontiguousarray(x_native)
+    if not val_native.flags.c_contiguous:
+        val_native = np.ascontiguousarray(val_native)
+
+    if val_native.shape == x_native.shape:
+        if x_native.dtype != val_native.dtype:
+            x_native = x_native.astype(val_native.dtype)
+        np.copyto(x_native, val_native)
+    else:
+        x_native = val_native
+    if ivy.is_native_array(x):
+        return x_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
+    return x
 
 
 def inplace_variables_supported():
@@ -239,9 +229,7 @@ def inplace_variables_supported():
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, (np.ndarray, np.generic)):
-        return True
-    return False
+    return isinstance(x, (np.ndarray, np.generic))
 
 
 def multiprocessing(context: Optional[str] = None):
@@ -266,26 +254,23 @@ def scatter_flat(
         ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
     if not target_given:
         reduction = "replace"
-    if reduction == "sum":
-        np.add.at(target, indices, updates)
+    if reduction == "max":
+        np.maximum.at(target, indices, updates)
+    elif reduction == "min":
+        np.minimum.at(target, indices, updates)
     elif reduction == "replace":
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
         target = np.asarray(target).copy()
         target.setflags(write=1)
         target[indices] = updates
-    elif reduction == "min":
-        np.minimum.at(target, indices, updates)
-    elif reduction == "max":
-        np.maximum.at(target, indices, updates)
+    elif reduction == "sum":
+        np.add.at(target, indices, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or "replace"'
         )
-    if target_given:
-        return ivy.inplace_update(out, target)
-    return target
+    return ivy.inplace_update(out, target) if target_given else target
 
 
 scatter_flat.support_native_out = True
@@ -312,20 +297,19 @@ def scatter_nd(
         shape = list(shape) if ivy.exists(shape) else list(out.shape)
         target = np.zeros(shape, dtype=updates.dtype)
     updates = _broadcast_to(updates, target[indices_tuple].shape)
-    if reduction == "sum":
-        np.add.at(target, indices_tuple, updates)
+    if reduction == "max":
+        np.maximum.at(target, indices_tuple, updates)
+    elif reduction == "min":
+        np.minimum.at(target, indices_tuple, updates)
     elif reduction == "replace":
         target = np.asarray(target).copy()
         target.setflags(write=1)
         target[indices_tuple] = updates
-    elif reduction == "min":
-        np.minimum.at(target, indices_tuple, updates)
-    elif reduction == "max":
-        np.maximum.at(target, indices_tuple, updates)
+    elif reduction == "sum":
+        np.add.at(target, indices_tuple, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or "replace"'
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, _to_device(target))
@@ -399,7 +383,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)

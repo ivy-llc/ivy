@@ -27,11 +27,11 @@ def cholesky(
     x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
-        ret = jnp.linalg.cholesky(x)
-    else:
-        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = jnp.transpose(jnp.linalg.cholesky(jnp.transpose(x, axes=axes)), axes=axes)
-    return ret
+        return jnp.linalg.cholesky(x)
+    axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+    return jnp.transpose(
+        jnp.linalg.cholesky(jnp.transpose(x, axes=axes)), axes=axes
+    )
 
 
 @with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
@@ -77,7 +77,7 @@ def diagonal(
     axis2: int = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
+    if x.dtype != bool and not jnp.issubdtype(x.dtype, jnp.integer):
         ret = jnp.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
         ret_edited = jnp.diagonal(
             x.at[1 / x == -jnp.inf].set(-jnp.inf),
@@ -193,12 +193,8 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if hasattr(axis, "__iter__"):
-        if not isinstance(axis, tuple):
-            axis = tuple(axis)
-    else:
-        if not isinstance(axis, tuple):
-            axis = (axis,)
+    if not isinstance(axis, tuple):
+        axis = tuple(axis) if hasattr(axis, "__iter__") else (axis, )
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
@@ -234,8 +230,7 @@ def matrix_rank(
     tol = jnp.maximum(atol, rtol * sigma)
     # make sure it's broadcastable again with svd_values
     tol = jnp.expand_dims(tol, axis=-1)
-    ret = jnp.count_nonzero(svd_values > tol, axis=-1)
-    return ret
+    return jnp.count_nonzero(svd_values > tol, axis=-1)
 
 
 @with_unsupported_dtypes(
@@ -276,11 +271,7 @@ def pinv(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if rtol is None:
-        ret = jnp.linalg.pinv(x)
-    else:
-        ret = jnp.linalg.pinv(x, rtol)
-    return ret
+    return jnp.linalg.pinv(x) if rtol is None else jnp.linalg.pinv(x, rtol)
 
 
 @with_unsupported_dtypes(
@@ -333,11 +324,10 @@ def solve(
     is_empty_x1 = x1.size == 0
     is_empty_x2 = x2.size == 0
     if is_empty_x1 or is_empty_x2:
-        for i in range(len(x1.shape) - 2):
+        for _ in range(len(x1.shape) - 2):
             x2 = jnp.expand_dims(x2, axis=0)
         output_shape = list(jnp.broadcast_shapes(x1.shape[:-2], x2.shape[:-2]))
-        output_shape.append(x2.shape[-2])
-        output_shape.append(x2.shape[-1])
+        output_shape.extend((x2.shape[-2], x2.shape[-1]))
         ret = jnp.array([]).reshape(output_shape)
     else:
         output_shape = tuple(jnp.broadcast_shapes(x1.shape[:-2], x2.shape[:-2]))

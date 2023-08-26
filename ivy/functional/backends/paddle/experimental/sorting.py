@@ -15,8 +15,7 @@ def invert_permutation(
     sorted_indices = paddle.argsort(x)
     inverse = paddle.zeros_like(sorted_indices)
     inverse[sorted_indices] = paddle.arange(len(x))
-    inverse_permutation = paddle.argsort(inverse)
-    return inverse_permutation
+    return paddle.argsort(inverse)
 
 
 # lexsort

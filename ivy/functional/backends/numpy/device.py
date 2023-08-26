@@ -12,9 +12,7 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
-    if as_native:
-        return "cpu"
-    return as_ivy_dev("cpu")
+    return "cpu" if as_native else as_ivy_dev("cpu")
 
 
 def as_ivy_dev(device: str, /):
@@ -50,12 +48,9 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
                 "Native Numpy does not support GPU placement, "
                 "consider using Jax instead"
             )
-        elif "cpu" in device:
-            pass
-        else:
+        elif "cpu" not in device:
             raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+                f"Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx' ], but found {device}"
             )
     return x
 
@@ -75,12 +70,9 @@ def to_device(
                 "Native Numpy does not support GPU placement, "
                 "consider using Jax instead"
             )
-        elif "cpu" in device:
-            pass
-        else:
+        elif "cpu" not in device:
             raise ivy.utils.exceptions.IvyException(
-                "Invalid device specified, must be in the form "
-                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+                f"Invalid device specified, must be in the form [ 'cpu:idx' | 'gpu:idx' ], but found {device}"
             )
     return x
 
@@ -102,7 +94,7 @@ class Profiler(BaseProfiler):
     def stop(self):
         time_taken = time.perf_counter() - self._start_time
         with open(os.path.join(self._save_dir, "profile.log"), "w+") as f:
-            f.write("took {} seconds to complete".format(time_taken))
+            f.write(f"took {time_taken} seconds to complete")
 
     def __enter__(self):
         self.start()

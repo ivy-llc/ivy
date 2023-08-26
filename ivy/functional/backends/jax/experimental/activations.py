@@ -54,22 +54,16 @@ def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArra
 
 def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jax.nn.selu(x).astype(x.dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ret
+    return ivy.inplace_update(out, ret).astype(x.dtype) if ivy.exists(out) else ret
 
 
 def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jax.nn.silu(x)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ret
+    return ivy.inplace_update(out, ret).astype(x.dtype) if ivy.exists(out) else ret
 
 
 def elu(
     x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jax.nn.elu(x, alpha)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ret
+    return ivy.inplace_update(out, ret).astype(x.dtype) if ivy.exists(out) else ret

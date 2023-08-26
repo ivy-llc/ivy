@@ -52,8 +52,7 @@ class TuckerTensor(FactorizedTensor):
         return 2
 
     def __repr__(self):
-        message = f"Decomposed rank-{self.rank} TuckerTensor of shape {self.shape} "
-        return message
+        return f"Decomposed rank-{self.rank} TuckerTensor of shape {self.shape} "
 
     # Public Methods #
     # ---------------#
@@ -91,8 +90,7 @@ class TuckerTensor(FactorizedTensor):
     @property
     def n_param(self):
         core, factors = self.core, self.factors
-        total_params = sum(int(ivy.prod(tensor.shape)) for tensor in [core] + factors)
-        return total_params
+        return sum(int(ivy.prod(tensor.shape)) for tensor in [core] + factors)
 
     # Class Methods #
     # ---------------#

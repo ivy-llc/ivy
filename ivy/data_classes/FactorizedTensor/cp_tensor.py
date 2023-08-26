@@ -51,10 +51,7 @@ class CPTensor(FactorizedTensor):
         return 2
 
     def __repr__(self):
-        message = (
-            f"(weights, factors) : rank-{self.rank} CPTensor of shape {self.shape}"
-        )
-        return message
+        return f"(weights, factors) : rank-{self.rank} CPTensor of shape {self.shape}"
 
     # Public Methods #
     # ---------------#
@@ -170,10 +167,7 @@ class CPTensor(FactorizedTensor):
     @property
     def n_param(self):
         factors_params = self.rank * ivy.sum(self.shape)
-        if self.weights:
-            return factors_params + self.rank
-        else:
-            return factors_params
+        return factors_params + self.rank if self.weights else factors_params
 
     # Class Methods #
     # ---------------#
@@ -257,10 +251,7 @@ class CPTensor(FactorizedTensor):
               of a full tensor of shape `tensor_shape`
         """
         factors_params = rank * ivy.sum(tensor_shape)
-        if weights:
-            return factors_params + rank
-        else:
-            return factors_params
+        return factors_params + rank if weights else factors_params
 
     @staticmethod
     def validate_cp_rank(tensor_shape, rank="same", rounding="round"):
@@ -630,16 +621,7 @@ class CPTensor(FactorizedTensor):
         contract = False
 
         ndims = len(matrix_or_vector.shape)
-        if ndims == 2:  # Tensor times matrix
-            # Test for the validity of the operation
-            if matrix_or_vector.shape[1] != shape[mode]:
-                raise ValueError(
-                    f"shapes {shape} and {matrix_or_vector.shape} not aligned in"
-                    f" mode-{mode} multiplication: {shape[mode]} (mode {mode}) !="
-                    f" {matrix_or_vector.shape[1]} (dim 1 of matrix)"
-                )
-
-        elif ndims == 1:  # Tensor times vector
+        if ndims == 1:
             if matrix_or_vector.shape[0] != shape[mode]:
                 raise ValueError(
                     f"shapes {shape} and {matrix_or_vector.shape} not aligned for"
@@ -648,6 +630,15 @@ class CPTensor(FactorizedTensor):
                 )
             if not keep_dim:
                 contract = True  # Contract over that mode
+        elif ndims == 2:
+            # Test for the validity of the operation
+            if matrix_or_vector.shape[1] != shape[mode]:
+                raise ValueError(
+                    f"shapes {shape} and {matrix_or_vector.shape} not aligned in"
+                    f" mode-{mode} multiplication: {shape[mode]} (mode {mode}) !="
+                    f" {matrix_or_vector.shape[1]} (dim 1 of matrix)"
+                )
+
         else:
             raise ValueError("Can only take n_mode_product with a vector or a matrix.")
 
@@ -665,9 +656,8 @@ class CPTensor(FactorizedTensor):
 
         if copy:
             return CPTensor((weights, factors))
-        else:
-            cp_tensor.shape = tuple(f.shape[0] for f in factors)
-            return cp_tensor
+        cp_tensor.shape = tuple(f.shape[0] for f in factors)
+        return cp_tensor
 
     @staticmethod
     def cp_norm(cp_tensor):

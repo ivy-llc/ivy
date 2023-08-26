@@ -8,17 +8,12 @@ import _pickle as cPickle
 from run_tests_CLI.get_all_tests import get_all_tests
 
 
-# Shared Map
-tests = {}
-
 N = 128
 run_iter = int(sys.argv[1]) - 1
 
 test_names = get_all_tests()
 
-# Create a Dictionary of Test Names to Index
-tests["index_mapping"] = test_names
-tests["tests_mapping"] = {}
+tests = {"index_mapping": test_names, "tests_mapping": {}}
 for i in range(len(test_names)):
     tests["tests_mapping"][test_names[i]] = i
 
@@ -29,7 +24,9 @@ if __name__ == "__main__":
         + ["ivy_tests"]
     )
     directories_filtered = [
-        x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
+        x
+        for x in directories
+        if not x.endswith("__pycache__") and "hypothesis" not in x
     ]
     directories = set(directories_filtered)
     num_tests = len(test_names)
@@ -47,20 +44,18 @@ if __name__ == "__main__":
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
-                    file_name = directory + "/" + file_name
+                    file_name = f"{directory}/{file_name}"
                     if file_name not in tests:
                         tests[file_name] = []
                         with open(file_name) as f:
-                            for line in f:
+                            for _ in f:
                                 tests[file_name].append(set())
                     with open(file_name) as f:
-                        i = 0
-                        for line in f:
+                        for i, line in enumerate(f):
                             if line[0] == ">":
                                 tests[file_name][i].add(
                                     tests["tests_mapping"][test_backend]
                                 )
-                            i += 1
         os.system("find . -name \\*cover -type f -delete")
 
 commit_hash = ""

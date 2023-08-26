@@ -111,12 +111,8 @@ def top_k(
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     k = min(k, x.shape[axis])
-    if not largest:
-        indices = np.argsort(x, axis=axis)
-        indices = np.take(indices, np.arange(k), axis=axis)
-    else:
-        indices = np.argsort(-x, axis=axis)
-        indices = np.take(indices, np.arange(k), axis=axis)
+    indices = np.argsort(-x, axis=axis) if largest else np.argsort(x, axis=axis)
+    indices = np.take(indices, np.arange(k), axis=axis)
     if not sorted:
         indices = np.sort(indices, axis=axis)
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
@@ -185,19 +181,16 @@ def _interior_pad(operand, padding_value, padding_config):
     for axis, (low, high, _) in enumerate(padding_config):
         if low < 0:
             start_indices[axis] = abs(low)
-        if high < 0:
-            limit_indices[axis] = high
-        else:
-            limit_indices[axis] = operand.shape[axis] + 1
+        limit_indices[axis] = high if high < 0 else operand.shape[axis] + 1
     padded = _slice(operand, start_indices, limit_indices)
 
     pad_width = [(0, 0)] * operand.ndim
     for axis, (low, high, _) in enumerate(padding_config):
         if low > 0 and high > 0:
             pad_width[axis] = (low, high)
-        elif low > 0 and not high > 0:
+        elif low > 0:
             pad_width[axis] = (low, 0)
-        elif high > 0 and not low > 0:
+        elif high > 0:
             pad_width[axis] = (0, high)
     padded = np.pad(padded, pad_width, constant_values=padding_value)
     return padded
@@ -357,20 +350,19 @@ def take_along_axis(
 ) -> np.ndarray:
     if arr.ndim != indices.ndim:
         raise ivy.utils.exceptions.IvyException(
-            "arr and indices must have the same number of dimensions;"
-            + f" got {arr.ndim} vs {indices.ndim}"
+            f"arr and indices must have the same number of dimensions; got {arr.ndim} vs {indices.ndim}"
         )
     if mode not in ["clip", "fill", "drop"]:
         raise ValueError(
             f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
         )
-    arr_shape = arr.shape
     if axis < 0:
         axis += arr.ndim
+    arr_shape = arr.shape
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = np.clip(indices, 0, max_index)
-    elif mode in ("fill", "drop"):
+    elif mode in {"fill", "drop"}:
         if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = np.NAN
         elif "uint" in str(arr.dtype):
@@ -446,11 +438,9 @@ def concat_from_sequence(
     if is_tuple:
         input_sequence = list(input_sequence)
     if new_axis == 0:
-        ret = np.concatenate(input_sequence, axis=axis)
-        return ret
+        return np.concatenate(input_sequence, axis=axis)
     elif new_axis == 1:
-        ret = np.stack(input_sequence, axis=axis)
-        return ret
+        return np.stack(input_sequence, axis=axis)
 
 
 def unique_consecutive(

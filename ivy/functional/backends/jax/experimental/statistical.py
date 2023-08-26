@@ -59,8 +59,8 @@ def histogram(
         a_along_axis_1d = (
             a.transpose(inverted_shape_dims).flatten().reshape((-1, shape_axes))
         )
+        ret = []
         if weights is None:
-            ret = []
             for a_1d in a_along_axis_1d:
                 ret_1D = jnp.histogram(
                     a_1d,
@@ -74,7 +74,6 @@ def histogram(
                 .flatten()
                 .reshape((-1, shape_axes))
             )
-            ret = []
             for a_1d, weights_1d in zip(a_along_axis_1d, weights_along_axis_1d):
                 ret_1D = jnp.histogram(
                     a_1d,
@@ -288,8 +287,8 @@ def cummax(
     elif x.dtype in (jnp.complex128, jnp.complex64):
         x = jnp.real(x).astype(jnp.float64)
 
-    if exclusive or (reverse and exclusive):
-        if exclusive and reverse:
+    if exclusive:
+        if reverse:
             indices = __find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
             x = jlax.cummax(jnp.flip(x, axis=axis), axis=axis)
             x, indices = jnp.swapaxes(x, axis, -1), jnp.swapaxes(indices, axis, -1)
@@ -300,7 +299,7 @@ def cummax(
             )
             x, indices = jnp.swapaxes(x, axis, -1), jnp.swapaxes(indices, axis, -1)
             res, indices = jnp.flip(x, axis=axis), jnp.flip(indices, axis=axis)
-        elif exclusive:
+        else:
             x = jnp.swapaxes(x, axis, -1)
             x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = jnp.swapaxes(x, axis, -1)
@@ -382,7 +381,7 @@ def cummin(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis < 0:
-        axis = axis + len(x.shape)
+        axis += len(x.shape)
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         if dtype is jnp.bool_:

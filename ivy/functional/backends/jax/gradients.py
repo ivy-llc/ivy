@@ -24,9 +24,7 @@ def variable(x, /):
 
 
 def is_variable(x, /, *, exclusive=False):
-    if exclusive:
-        return False
-    return isinstance(x, NativeArray)
+    return False if exclusive else isinstance(x, NativeArray)
 
 
 def variable_data(x: JaxArray, /) -> JaxArray:
@@ -47,8 +45,7 @@ def _forward_fn(
             xs_grad_arr_idx = ivy.nested_argwhere(
                 ivy.index_nest(xs, grad_idx), ivy.is_array
             )
-            for idx in xs_grad_arr_idx:
-                xs_grad_arr_idxs.append(grad_idx + idx)
+            xs_grad_arr_idxs.extend(grad_idx + idx for idx in xs_grad_arr_idx)
         ivy.set_nest_at_indices(xs, xs_grad_arr_idxs, x_arr_values)
     elif ivy.is_array(xs):
         xs = x
@@ -150,17 +147,15 @@ def jac(func: Callable):
         nested=True,
         include_derived=True,
     )
-    callback_fn = lambda x_in: ivy.to_ivy(
+    return lambda x_in: ivy.to_ivy(
         jax.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
         nested=True,
         include_derived=True,
     )
-    return callback_fn
 
 
 def grad(func: Callable, argnums: Union[int, Tuple[int]] = 0):
     grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(
+    return lambda x_in: ivy.to_ivy(
         jax.grad(grad_fn, argnums)(ivy.to_native(x_in))
     )
-    return callback_fn

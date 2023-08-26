@@ -85,9 +85,7 @@ def count_nonzero(
     if isinstance(axis, list):
         axis = tuple(axis)
     ret = np.count_nonzero(a, axis=axis, keepdims=keepdims)
-    if np.isscalar(ret):
-        return np.array(ret, dtype=dtype)
-    return ret.astype(dtype)
+    return np.array(ret, dtype=dtype) if np.isscalar(ret) else ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False
@@ -121,9 +119,7 @@ def isclose(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-    if np.isscalar(ret):
-        return np.array(ret, dtype="bool")
-    return ret
+    return np.array(ret, dtype="bool") if np.isscalar(ret) else ret
 
 
 isclose.support_native_out = False
@@ -255,10 +251,7 @@ def xlogy(
     x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x, y = promote_types_of_inputs(x, y)
-    if (x == 0).all():
-        return 0.0
-    else:
-        return x * np.log(y)
+    return 0.0 if (x == 0).all() else x * np.log(y)
 
 
 def conj(
@@ -268,9 +261,7 @@ def conj(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.conj(x, out=out)
-    if x.dtype == bool:
-        return ret.astype("bool")
-    return ret
+    return ret.astype("bool") if x.dtype == bool else ret
 
 
 def ldexp(
@@ -286,10 +277,7 @@ def ldexp(
 def frexp(
     x: np.ndarray, /, *, out: Optional[Tuple[np.ndarray, np.ndarray]] = None
 ) -> Tuple[np.ndarray, np.ndarray]:
-    if out is None:
-        return np.frexp(x, out=(None, None))
-    else:
-        return np.frexp(x, out=out)
+    return np.frexp(x, out=(None, None)) if out is None else np.frexp(x, out=out)
 
 
 def modf(
@@ -298,9 +286,7 @@ def modf(
     *,
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> np.ndarray:
-    if out:
-        return np.modf(x, out=out)
-    return np.modf(x)
+    return np.modf(x, out=out) if out else np.modf(x)
 
 
 # ---digamma---#
@@ -406,7 +392,7 @@ lanczos_den_coeffs = np.array(
 def sinpi(x):
     y = np.abs(x) % 2.0
     n = np.round(2.0 * y)
-    assert 0 <= n and n <= 4
+    assert 0 <= n <= 4
 
     if n == 0:
         r = np.sin(np.pi * y)
@@ -449,17 +435,9 @@ def lgamma(
 ) -> np.ndarray:
     def func(x):
         if not np.isfinite(x):
-            if np.isnan(x):
-                return x  # lgamma(nan) = nan
-            else:
-                return np.inf  # lgamma(+-inf) = +inf
-
+            return x if np.isnan(x) else np.inf
         if x == np.floor(x) and x <= 2.0:
-            if x <= 0.0:
-                return np.inf  # lgamma(n) = inf for integers n <= 0
-            else:
-                return 0.0  # lgamma(1) = lgamma(2) = 0.0
-
+            return np.inf if x <= 0.0 else 0.0
         absx = np.abs(x)
         if absx < 1e-20:
             return -np.log(absx)

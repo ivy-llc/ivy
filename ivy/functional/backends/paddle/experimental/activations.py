@@ -75,7 +75,7 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     if paddle.is_complex(x):
         alpha = 1.6732632423543772848170429916717
         scale = 1.0507009873554804934193349852946
-        ret = paddle_backend.multiply(
+        return paddle_backend.multiply(
             scale,
             paddle_backend.where(
                 paddle_backend.greater(x, 0),
@@ -83,7 +83,6 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
                 paddle_backend.multiply(alpha, paddle_backend.expm1(x)),
             ),
         )
-        return ret
     return F.selu(x.cast("float32")).cast(x.dtype)
 
 
@@ -102,12 +101,11 @@ def elu(
         return F.elu(x, alpha=alpha)
 
     if paddle.is_complex(x):
-        ret = (
+        return (
             paddle_backend.where(
                 paddle_backend.greater(x, 0),
                 x,
                 paddle_backend.multiply(alpha, paddle_backend.expm1(x)),
             ),
         )
-        return ret
     return F.elu(x.cast("float32"), alpha).cast(x.dtype)

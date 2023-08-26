@@ -48,21 +48,22 @@ def arange(
         stop = start
         start = 0
     if (step > 0 and start > stop) or (step < 0 and start < stop):
-        if isinstance(stop, float):
-            stop = float(start)
-        else:
-            stop = start
+        stop = float(start) if isinstance(stop, float) else start
     if dtype is None:
-        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
-            return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32)
-        else:
-            return tf.range(start, stop, delta=step)
+        return (
+            tf.cast(
+                tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32
+            )
+            if isinstance(start, int)
+            and isinstance(stop, int)
+            and isinstance(step, int)
+            else tf.range(start, stop, delta=step)
+        )
+    dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+    if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
+        return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
     else:
-        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-        if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
-            return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
-        else:
-            return tf.range(start, stop, delta=step, dtype=dtype)
+        return tf.range(start, stop, delta=step, dtype=dtype)
 
 
 @asarray_to_native_arrays_and_back
@@ -344,9 +345,7 @@ def copy_array(
     to_ivy_array: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if to_ivy_array:
-        return ivy.to_ivy(tf.identity(x))
-    return tf.identity(x)
+    return ivy.to_ivy(tf.identity(x)) if to_ivy_array else tf.identity(x)
 
 
 def one_hot(
@@ -379,11 +378,7 @@ def frombuffer(
     dtype = tf.dtypes.as_dtype(dtype)
     if offset > 0:
         offset = int(offset / dtype.size)
-    if count > -1:
-        ret = ret[offset : offset + count]
-    else:
-        ret = ret[offset:]
-
+    ret = ret[offset : offset + count] if count > -1 else ret[offset:]
     return ret
 
 
