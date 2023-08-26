@@ -5,6 +5,9 @@ import math
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_dtype_values_k_axes_for_rot90,
+)
 
 
 # Helpers #
@@ -28,6 +31,18 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
+@st.composite
+def dtypes_x_reshape_(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    return dtypes, x, shape
+
+
 # Tests #
 # ----- #
 
@@ -38,6 +53,33 @@ def dtypes_x_reshape(draw):
     dtypes_x_reshape=dtypes_x_reshape(),
 )
 def test_paddle_reshape(
+    *,
+    dtypes_x_reshape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, shape = dtypes_x_reshape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+    )
+
+
+# reshape_
+@handle_frontend_test(
+    fn_tree="paddle.reshape_",
+    dtypes_x_reshape=dtypes_x_reshape_(),
+)
+def test_paddle_reshape_(
     *,
     dtypes_x_reshape,
     on_device,
@@ -520,6 +562,43 @@ def test_paddle_gather(
     )
 
 
+# unstack
+@handle_frontend_test(
+    fn_tree="paddle.unstack",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        max_dim_size=1,
+    ),
+    number_positional_args=st.just(1),
+    axis=st.integers(-1, 0),
+    test_with_out=st.just(False),
+)
+def test_paddle_unstack(
+    *,
+    dtypes_values,
+    axis,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x = dtypes_values
+    axis = axis
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+    )
+
+
 # flip
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
@@ -639,30 +718,7 @@ def test_paddle_take_along_axis(
     )
 
 
-# gather_nd
-@handle_frontend_test(
-    fn_tree="paddle.gather_nd",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        min_dim_size=2,
-    ),
-    shift=helpers.ints(min_value=1, max_value=10),
-    axis=helpers.ints(min_value=-1, max_value=1),
-    test_with_out=st.just(False),
-)
-def test_paddle_gather_nd(
-    *,
-    dtype_and_x,
-    shift,
-    axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
+Solved from the merge of gather_nd and main branches.
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -670,7 +726,4 @@ def test_paddle_gather_nd(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        shifts=shift,
-        axis=axis,
-    )
+Again, Solved from the merge of gather_nd and main branches.
