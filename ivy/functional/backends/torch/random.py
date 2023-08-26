@@ -118,6 +118,11 @@ def randint(
 def seed(*, seed_value: int = 0) -> None:
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed(seed_value)
+    if hasattr(torch.backends, "mps"):
+        if torch.backends.mps.is_available():
+            from torch import mps
+
+            mps.manual_seed(seed_value)
     return
 
 
