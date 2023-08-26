@@ -666,3 +666,8 @@ def test_prelu(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+def ReLU(x):
+    for i in range(len(x)):
+        if(x[i]<=0):
+            x[i]=0
+    return x
