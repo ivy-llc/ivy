@@ -683,6 +683,7 @@ def handle_frontend_method(
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
     test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
@@ -742,6 +743,7 @@ def handle_frontend_method(
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
                 test_compile=test_compile,
+                precision_mode=precision_mode,
             )
 
             method_flags = pf.frontend_method_flags(
@@ -749,6 +751,7 @@ def handle_frontend_method(
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
                 test_compile=test_compile,
+                precision_mode=precision_mode,
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
