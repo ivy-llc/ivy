@@ -327,7 +327,7 @@ def handle_test(
         function
 
     precision_mode
-        A search strategy that generates a boolean to switch between two different 
+        A search strategy that generates a boolean to switch between two different
         precision modes supported by numpy and (torch, jax) and test the function
 
     as_variable_flags
@@ -454,7 +454,7 @@ def handle_frontend_test(
         parameter
 
     precision_mode
-        A search strategy that generates a boolean to switch between two different 
+        A search strategy that generates a boolean to switch between two different
         precision modes supported by numpy and (torch, jax) and test the function
 
     as_variable_flags
@@ -585,7 +585,7 @@ def handle_method(
         Full method import path
 
     ground_truth_backend
-        The framework to assert test results are equal to 
+        The framework to assert test results are equal to
     """
     # need to fill up the docstring
     is_method_tree_provided = method_tree is not None
