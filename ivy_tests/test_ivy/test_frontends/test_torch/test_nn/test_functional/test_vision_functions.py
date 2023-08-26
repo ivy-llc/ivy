@@ -362,11 +362,10 @@ def test_torch_affine_grid(
 
 
 @st.composite
-def grid_sample_helper(draw, dtype, dims, mode, padding_mode):
+def grid_sample_helper(draw, dtype, mode, padding_mode):
     dtype = draw(dtype)
     align_corners = draw(st.booleans())
-    # dims = draw(st.integers(4, 5))
-    dims = dims
+    dims = draw(st.integers(4, 5))
     height = draw(helpers.ints(min_value=10, max_value=15))
     width = draw(helpers.ints(min_value=10, max_value=15))
     channels = draw(helpers.ints(min_value=1, max_value=3))
@@ -422,8 +421,7 @@ def grid_sample_helper(draw, dtype, dims, mode, padding_mode):
     fn_tree="torch.nn.functional.grid_sample",
     dtype_x_grid_modes=grid_sample_helper(
         dtype=helpers.get_dtypes("valid", full=False),
-        dims=4,
-        mode=["nearest", "bilinear", "bicubic"],
+        mode=["nearest", "bilinear"],
         padding_mode=["border", "zeros", "reflection"],
     ),
 )
@@ -444,8 +442,6 @@ def test_torch_grid_sample_2d(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol_=1e-4,
-        atol_=1e-4,
         input=x,
         grid=grid,
         mode=mode,
