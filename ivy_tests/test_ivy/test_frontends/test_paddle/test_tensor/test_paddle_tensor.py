@@ -564,7 +564,7 @@ def test_paddle_cos(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_count_non_zeros(
+def test_paddle_count_nonzero(
     dtype_and_x,
     frontend_method_data,
     init_flags,
