@@ -218,3 +218,27 @@ def adjust_contrast(img, contrast_factor):
         raise ValueError("channels of input should be either 1 or 3.")
 
     return adjusted_image
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+def adjust_contrast(img, contrast_factor):
+    assert contrast_factor >= 0, "contrast_factor should be non-negative"
+
+    mean = ivy.mean(img)
+
+    channels = _get_image_num_channels(img, "CHW")
+
+    if channels == 1:
+        return img
+    elif channels == 3:
+        if ivy.dtype(img) == "uint8":
+            img = ivy.astype(img, "float32") / 255.0
+
+        adjusted_image = ivy.subtract(img, mean) * ivy.add(contrast_factor, mean)
+
+    else:
+        raise ValueError("channels of input should be either 1 or 3.")
+
+    return adjusted_image
