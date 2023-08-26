@@ -8,6 +8,7 @@ versions = {
     "jax": "0.4.14",
     "scipy": "1.10.1",
     "paddle": "2.5.1",
+    "sklearn": "1.3.0",
 }
 
 
