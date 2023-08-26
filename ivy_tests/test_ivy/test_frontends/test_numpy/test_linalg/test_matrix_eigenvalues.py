@@ -196,8 +196,8 @@ def test_numpy_eigvals(
     )
 
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        ret = np.sort(np.abs(ivy_backend.to_numpy(ret))).astype(np.float64)
-        frontend_ret = np.sort(np.abs(frontend_ret)).astype(np.float64)
+        ret = np.sort(ivy_backend.to_numpy(ret)).astype(np.complex128)
+        frontend_ret = np.sort(frontend_ret).astype(np.complex128)
 
         assert_all_close(
             ret_np=ret,
