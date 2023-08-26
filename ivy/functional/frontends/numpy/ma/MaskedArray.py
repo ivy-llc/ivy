@@ -3,15 +3,8 @@ import ivy.functional.frontends.numpy as np_frontend
 import numpy as np
 
 masked = True
-nomask = False
 masked_print_options = "--"
-
-# Helpers #
-# ------- #
-
-
-def _is_masked_array(x):
-    return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
+nomask = False
 
 
 # Class #
@@ -192,6 +185,14 @@ class MaskedArray(np_frontend.ndarray):
                 ]
             )
         return str(self._data.to_list())
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _is_masked_array(x):
+    return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
 
     # Instance Methods #
     # ---------------- #

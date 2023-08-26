@@ -216,10 +216,6 @@ def get_dtypes(
 
     # If being called from a frontend test
 
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
-        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind, True)
-        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-
     # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
