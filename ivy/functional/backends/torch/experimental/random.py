@@ -129,3 +129,25 @@ def bernoulli(
         .sample(shape)
         .to(device, dtype)
     )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+def multivariate_normal(
+    mean: Union[float, torch.Tensor],
+    cov: Union[float, torch.Tensor],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
+    device: torch.device = None,
+    seed: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if seed is not None:
+        torch.manual_seed(seed)
+    ret = torch.distributions.multivariate_normal.MultivariateNormal(mean, cov).sample(
+        shape
+    )
+    if device is not None:
+        return ret.to(device)
+    return ret
