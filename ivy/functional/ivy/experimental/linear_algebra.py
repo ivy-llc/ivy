@@ -1666,3 +1666,61 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a, b, out=out)
+
+
+@handle_nestable
+@to_native_arrays_and_back
+@handle_exceptions
+def general_inner_product(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    n_modes: Optional[int] = None,
+) -> Union[ivy.Array, float]:
+    """
+    Generalised inner products between tensors.
+
+        Takes the inner product between the last (respectively first)
+        `n_modes` of `a` (respectively `b`)
+
+    Parameters
+    ----------
+    a, b : tensor
+    n_modes : int, default is None
+        * if None, the traditional inner product is returned (i.e. a float)
+        * otherwise, the product between the `n_modes` last modes of `a`
+            and the `n_modes` first modes of `b` is returned.
+            The resulting tensor's order is `ndim(a) - n_modes`.
+
+    Returns
+    -------
+    inner_product : float if n_modes is None, tensor otherwise
+    """
+    shape_a = a.shape
+    shape_b = b.shape
+    if n_modes is None:
+        if shape_a != shape_b:
+            raise ValueError(
+                "Taking a generalised product between two tensors without specifying"
+                " common modes is equivalent to taking inner product.This requires"
+                f" a.shape == b.shape.However, got shapes {a.shape} and {b.shape}"
+            )
+        return ivy.sum(ivy.multiply(a, b))
+
+    common_modes = shape_a[len(shape_a) - n_modes :]
+    if common_modes != shape_b[:n_modes]:
+        raise ValueError(
+            f"Incorrect shapes for inner product along {n_modes} common modes."
+            f"Shapes {shape_a.shape} and {shape_b.shape}"
+        )
+
+    common_size = int(ivy.prod(common_modes)) if len(common_modes) != 0 else 0
+
+    output_shape = shape_a[:-n_modes] + shape_b[n_modes:]
+    if common_size == 0:
+        inner_product = ivy.dot(ivy.reshape(a, (-1,)), ivy.reshape(b, (-1,)))
+        return inner_product
+    else:
+        inner_product = ivy.dot(
+            ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
+        )
+    return ivy.reshape(inner_product, output_shape)

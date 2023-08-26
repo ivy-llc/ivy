@@ -1610,3 +1610,36 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
         ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
         "abs norm of difference between svd and random init too high",
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.general_inner_product",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=1,
+        max_value=10.0,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    n_modes=st.integers(min_value=0),
+)
+def test_general_inner_product(
+    *, dtype_and_x, n_modes, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        a=x[0],
+        b=x[1],
+        n_modes=n_modes,
+    )
