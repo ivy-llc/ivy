@@ -2542,7 +2542,7 @@ def choose(
     /,
     *,
     out: None = None,
-    mode: str | None = None,
+    mode: Union[str, None] = None,
 ) -> ivy.Array:
     """
     Take values from the input array by matching 1d index and data slices.
