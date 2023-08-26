@@ -139,7 +139,6 @@ def full(
     return jnp.full(shape, fill_value, dtype)
 
 
-
 def full_like(
     x: JaxArray,
     /,
@@ -150,7 +149,6 @@ def full_like(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.full_like(x, fill_value, dtype=dtype)
-
 
 
 # https://github.com/google/jax/blob/8b2e4f975c8c830502f5cc749b7253b02e78c9e8/jax/_src/numpy/lax_numpy.py#L2164

@@ -205,7 +205,6 @@ def full_like(
     return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
-
 def _slice_at_axis(sl, axis):
     return (slice(None),) * axis + (sl,) + (...,)
 
