@@ -156,9 +156,7 @@ def stop_gradient(
 ) -> Union[tf.Tensor, tf.Variable]:
     is_var = is_variable(x)
     x = tf.stop_gradient(x)
-    if is_var and preserve_type:
-        return variable(x)
-    return x
+    return variable(x) if is_var and preserve_type else x
 
 
 def jac(func: Callable):

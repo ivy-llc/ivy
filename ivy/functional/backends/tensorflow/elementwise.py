@@ -126,10 +126,7 @@ def bitwise_invert(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if "int" not in str(x.dtype):
-        return tf.logical_not(x)
-    else:
-        return tf.bitwise.invert(x)
+    return tf.logical_not(x) if "int" not in str(x.dtype) else tf.bitwise.invert(x)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
@@ -193,10 +190,7 @@ def ceil(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if "int" in str(x.dtype):
-        return x
-    else:
-        return tf.math.ceil(x)
+    return x if "int" in str(x.dtype) else tf.math.ceil(x)
 
 
 def cos(
@@ -280,10 +274,7 @@ def floor(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if "int" in str(x.dtype):
-        return x
-    else:
-        return tf.math.floor(x)
+    return x if "int" in str(x.dtype) else tf.math.floor(x)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
@@ -309,8 +300,7 @@ def fmin(
     x1, x2 = promote_types_of_inputs(x1, x2)
     x1 = tf.where(tf.math.is_nan(x1), x2, x1)
     x2 = tf.where(tf.math.is_nan(x2), x1, x2)
-    ret = tf.experimental.numpy.minimum(x1, x2)
-    return ret
+    return tf.experimental.numpy.minimum(x1, x2)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
@@ -362,16 +352,14 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
-    else:
+    if not ivy.is_int_dtype(x):
         if detect_negative and detect_positive:
             return tf.math.is_inf(x)
         elif detect_negative:
             return tf.experimental.numpy.isneginf(x)
         elif detect_positive:
             return tf.experimental.numpy.isposinf(x)
-        return tf.zeros_like(x, tf.bool)
+    return tf.zeros_like(x, tf.bool)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
@@ -381,10 +369,7 @@ def isnan(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
-    else:
-        return tf.math.is_nan(x)
+    return tf.zeros_like(x, tf.bool) if ivy.is_int_dtype(x) else tf.math.is_nan(x)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("unsigned",)}, backend_version)
@@ -652,15 +637,14 @@ def round(
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
-    else:
-        if decimals == 0:
-            return tf.cast(tf.round(x), x.dtype)
-        ret_dtype = x.dtype
-        factor = tf.constant(10**decimals, dtype=ret_dtype)
-        factor_deno = tf.where(
-            tf.math.is_finite(factor), factor, tf.constant(1, dtype=ret_dtype)
-        )
-        return tf.cast(tf.round(x * factor) / factor_deno, ret_dtype)
+    if decimals == 0:
+        return tf.cast(tf.round(x), x.dtype)
+    ret_dtype = x.dtype
+    factor = tf.constant(10**decimals, dtype=ret_dtype)
+    factor_deno = tf.where(
+        tf.math.is_finite(factor), factor, tf.constant(1, dtype=ret_dtype)
+    )
+    return tf.cast(tf.round(x * factor) / factor_deno, ret_dtype)
 
 
 def sign(
@@ -771,8 +755,8 @@ def trunc(
     ret = x
     if not ivy.is_array(x):
         raise ivy.utils.exceptions.IvyException("Input must be array")
-    elif not ("int" in str(x.dtype)):
-        if not ret.get_shape().ndims == 0:
+    elif "int" not in str(x.dtype):
+        if ret.get_shape().ndims != 0:
             ret = tf.tensor_scatter_nd_update(
                 x, tf.where(tf.greater_equal(x, 0)), tf.math.floor(x[x >= 0])
             )
@@ -1010,6 +994,5 @@ def nan_to_num(
     ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
     if copy:
         return ret
-    else:
-        x = ret
-        return x
+    x = ret
+    return x

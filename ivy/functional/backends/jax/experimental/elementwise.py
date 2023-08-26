@@ -227,7 +227,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -244,11 +244,7 @@ def gradient(
     f = jnp.asarray(x)
     N = f.ndim  # number of dimensions
 
-    if axis is None:
-        axes = tuple(range(N))
-    else:
-        axes = _normalize_axis_tuple(axis, N)
-
+    axes = tuple(range(N)) if axis is None else _normalize_axis_tuple(axis, N)
     len_axes = len(axes)
     n = (
         -1
@@ -332,7 +328,7 @@ def gradient(
                 (f[tuple(slice4)] - f[tuple(slice2)]) / (2.0 * ax_dx)
             )
         else:
-            dx1 = ax_dx[0:-1]
+            dx1 = ax_dx[:-1]
             dx2 = ax_dx[1:]
             a = -(dx2) / (dx1 * (dx1 + dx2))
             b = (dx2 - dx1) / (dx1 * dx2)
@@ -348,9 +344,9 @@ def gradient(
             out = out.at[tuple(slice1)].set(
                 a * f[tuple(slice2)] + b * f[tuple(slice3)] + c * f[tuple(slice4)]
             )
+        slice1[axis] = 0
         # Numerical differentiation: 1st order edges
         if edge_order == 1:
-            slice1[axis] = 0
             slice2[axis] = 1
             slice3[axis] = 0
             dx_0 = ax_dx if uniform_spacing else ax_dx[0]
@@ -368,9 +364,7 @@ def gradient(
                 (f[tuple(slice2)] - f[tuple(slice3)]) / dx_n
             )
 
-        # Numerical differentiation: 2nd order edges
         else:
-            slice1[axis] = 0
             slice2[axis] = 0
             slice3[axis] = 1
             slice4[axis] = 2
@@ -416,10 +410,7 @@ def gradient(
         slice3[axis] = slice(None)
         slice4[axis] = slice(None)
 
-    if len_axes == 1:
-        return outvals[0]
-    else:
-        return outvals
+    return outvals[0] if len_axes == 1 else outvals
 
 
 def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

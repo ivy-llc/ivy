@@ -4,10 +4,7 @@ import subprocess
 import sys
 
 # install requests only for build, and uninstall it later
-subprocess.run(
-    f"pip3 install requests",
-    shell=True,
-)
+subprocess.run("pip3 install requests", shell=True)
 
 import requests
 
@@ -30,7 +27,7 @@ def directory_generator(req, base="/opt/fw/"):
             pkg, ver = versions.split("/")
             path = base + pkg + "/" + ver
             if not os.path.exists(path):
-                install_pkg(path, pkg + "==" + ver)
+                install_pkg(path, f"{pkg}=={ver}")
         else:
             install_pkg(base + versions, versions)
 
@@ -76,7 +73,4 @@ if __name__ == "__main__":
 
     # uninstall requests when done
     # install requests only for build, and uninstall it later
-    subprocess.run(
-        f"yes |pip3 uninstall requests",
-        shell=True,
-    )
+    subprocess.run("yes |pip3 uninstall requests", shell=True)

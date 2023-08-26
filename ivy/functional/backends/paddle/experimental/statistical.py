@@ -40,16 +40,20 @@ def median(
     # only axis in the tensor so it needs to be handled manually
 
     ret_dtype = input.dtype
-    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        if paddle.is_complex(input):
-            ret = paddle.complex(
-                paddle.median(input.real(), axis=axis, keepdim=True),
-                paddle.median(input.imag(), axis=axis, keepdim=True),
-            )
-        else:
-            ret = paddle.median(input.cast("float32"), axis=axis, keepdim=True)
-    else:
+    if input.dtype in [
+        paddle.int32,
+        paddle.int64,
+        paddle.float32,
+        paddle.float64,
+    ]:
         ret = paddle.median(input, axis=axis, keepdim=True)
+    elif paddle.is_complex(input):
+        ret = paddle.complex(
+            paddle.median(input.real(), axis=axis, keepdim=True),
+            paddle.median(input.imag(), axis=axis, keepdim=True),
+        )
+    else:
+        ret = paddle.median(input.cast("float32"), axis=axis, keepdim=True)
     if not keepdims:
         ret = paddle_backend.squeeze(ret, axis=axis)
     # The following code is to simulate other frameworks
@@ -75,17 +79,16 @@ def nanmean(
     a = a.cast(
         ret_dtype
     )  # this is necessary to match other FWs behaviour which cast before calculation
-    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
-        if paddle.is_complex(a):
-            ret = paddle.complex(
-                paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
-                paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
-            )
-        else:
-            ret = paddle.nanmean(a.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
+    if a.dtype in [paddle.int64, paddle.float32, paddle.float64]:
         ret = paddle.nanmean(a, axis=axis, keepdim=keepdims)
 
+    elif paddle.is_complex(a):
+        ret = paddle.complex(
+            paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
+            paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
+        )
+    else:
+        ret = paddle.nanmean(a.cast("float32"), axis=axis, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
@@ -101,9 +104,8 @@ def _validate_quantile(q):
         for i in range(q.size):
             if not (0.0 <= q[i] <= 1.0):
                 return False
-    else:
-        if not (paddle.all(0 <= q) and paddle.all(q <= 1)):
-            return False
+    elif not paddle.all(q >= 0) or not paddle.all(q <= 1):
+        return False
     return True
 
 
@@ -457,11 +459,7 @@ def cov(
             raise ValueError("x2 has more than 2 dimensions")
 
     if ddof is None:
-        if bias == 0:
-            ddof = 1
-        else:
-            ddof = 0
-
+        ddof = 1 if bias == 0 else 0
     if dtype is None:
         x1 = x1.astype("float64")
         if x2 is not None:
@@ -546,10 +544,7 @@ def __find_cummax(
     if (
         isinstance(x.tolist()[0], list)
         and len(x[0].shape) >= 1
-        and (
-            (type(x[0]) == paddle.Tensor)
-            or (type(x[0]) == ivy.data_classes.array.array.Array)
-        )
+        and type(x[0]) in [paddle.Tensor, ivy.data_classes.array.array.Array]
     ):
         if axis >= 1:
             if not isinstance(x, list):
@@ -594,7 +589,7 @@ def __find_cummax(
         for idx, y in enumerate(x):
             if x[n] > y:
                 values.append(x[n])
-            elif x[n] <= y or idx == 0:
+            else:
                 n = idx
                 values.append(y)
             indices.append(n)
@@ -640,8 +635,7 @@ def cummin(
     if reverse:
         x = paddle.flip(x, axis=[axis])
     x_unstacked = paddle.unbind(x, axis=axis)
-    cummin_x_unstacked = []
-    cummin_x_unstacked.append(x_unstacked[0])
+    cummin_x_unstacked = [x_unstacked[0]]
     for i, x_sub in enumerate(x_unstacked[1:]):
         cummin_x_sub = paddle.minimum(cummin_x_unstacked[i], x_sub)
         cummin_x_unstacked.append(cummin_x_sub)

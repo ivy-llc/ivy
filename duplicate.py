@@ -8,7 +8,7 @@ def get_all_functions_from_directory(root_dir, startswith="test"):
         print("Invalid directory")
         exit(1)
     functions_names = []
-    for filename in glob.iglob(root_dir + "/**/*.py", recursive=True):
+    for filename in glob.iglob(f"{root_dir}/**/*.py", recursive=True):
         if len(filename) >= 2 and filename[:2] == "./":
             filename = filename[2:]
         filename = filename.replace(".py", "")
@@ -32,8 +32,7 @@ def check_duplicate():
         "ivy_tests/test_ivy/test_functional/test_experimental"
     )
     fn_ivy_test = set(fn_test_core).union(set(fn_test_nn))
-    common_list = fn_ivy_test.intersection(set(fn_test_experimental))
-    return common_list
+    return fn_ivy_test.intersection(set(fn_test_experimental))
 
 
 if __name__ == "__main__":

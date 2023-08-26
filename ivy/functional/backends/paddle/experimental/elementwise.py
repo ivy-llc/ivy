@@ -103,8 +103,7 @@ def copysign(
         paddle_backend.equal(x2, 0.0), paddle_backend.divide(1.0, x2), x2
     )
     signs = paddle_backend.sign(x2)
-    result = paddle_backend.multiply(paddle_backend.abs(x1), signs)
-    return result
+    return paddle_backend.multiply(paddle_backend.abs(x1), signs)
 
 
 @with_unsupported_device_and_dtypes(
@@ -338,7 +337,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -365,11 +364,7 @@ def gradient(
     # TODO: Remove % x.shape[axis] once scatter_nd supports negative indices
     with ivy.ArrayMode(False):
         N = x.ndim  # number of dimensions
-        if axis is None:
-            axes = tuple(range(N))
-        else:
-            axes = _normalize_axis_tuple(axis, N)
-
+        axes = tuple(range(N)) if axis is None else _normalize_axis_tuple(axis, N)
         len_axes = len(axes)
         n = (
             -1
@@ -395,10 +390,7 @@ def gradient(
                     raise ValueError("distances must be either scalars or 1d")
                 if len(distances) != x.shape[axes[i]]:
                     raise ValueError(
-                        "when 1d, distances must match "
-                        "the length of the corresponding dimension {} {}".format(
-                            len(distances), x.shape[axes[i]]
-                        )
+                        f"when 1d, distances must match the length of the corresponding dimension {len(distances)} {x.shape[axes[i]]}"
                     )
                 if ivy.is_int_dtype(distances.dtype):
                     # Convert numpy integer types to float64 to avoid modular
@@ -462,7 +454,7 @@ def gradient(
                     )
                     ivy.scatter_nd(tuple(slice1), updates, reduction="replace", out=out)
             else:
-                dx1 = ax_dx[0:-1]
+                dx1 = ax_dx[:-1]
                 dx2 = ax_dx[1:]
                 a = -(dx2) / (dx1 * (dx1 + dx2))
                 b = (dx2 - dx1) / (dx1 * dx2)
@@ -572,10 +564,7 @@ def gradient(
             slice3[axis] = slice(None)
             slice4[axis] = slice(None)
 
-    if len_axes == 1:
-        return outvals[0]
-    else:
-        return outvals
+    return outvals[0] if len_axes == 1 else outvals
 
 
 def xlogy(

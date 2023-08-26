@@ -89,11 +89,7 @@ def std(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    if size - correction <= 0:
-        ret = tf.experimental.numpy.std(x, axis=axis, keepdims=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
-        return ret
-    else:
+    if size - correction > 0:
         return tf.cast(
             tf.math.multiply(
                 tf.experimental.numpy.std(x, axis=axis, keepdims=keepdims),
@@ -101,6 +97,9 @@ def std(
             ),
             x.dtype,
         )
+    ret = tf.experimental.numpy.std(x, axis=axis, keepdims=keepdims)
+    ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+    return ret
 
 
 def sum(
@@ -134,16 +133,15 @@ def var(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    if size - correction <= 0:
-        ret = tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
-        ret = tf.cast(tf.fill(ret.shape, float("nan")), ret.dtype)
-        return ret
-    else:
+    if size - correction > 0:
         return (
             tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
             * size
             / (size - correction)
         )
+    ret = tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+    ret = tf.cast(tf.fill(ret.shape, float("nan")), ret.dtype)
+    return ret
 
 
 # Extra #
@@ -163,10 +161,7 @@ def cumprod(
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        if dtype is tf.bool:
-            dtype = ivy.default_int_dtype()
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = ivy.default_int_dtype() if dtype is tf.bool else _infer_dtype(x.dtype)
         dtype = ivy.as_native_dtype(dtype)
     x = tf.cast(x, dtype)
     return tf.math.cumprod(x, axis, exclusive, reverse)

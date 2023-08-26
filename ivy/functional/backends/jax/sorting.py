@@ -68,11 +68,11 @@ def searchsorted(
             f"must match, got {x.shape} and {v.shape}"
         )
         original_shape = v.shape
-        out_array = []  # JAX arrays are immutable.
         x = x.reshape(-1, x.shape[-1])
         v = v.reshape(-1, v.shape[-1])
-        for i in range(x.shape[0]):
-            out_array.append(jnp.searchsorted(x[i], v[i], side=side))
+        out_array = [
+            jnp.searchsorted(x[i], v[i], side=side) for i in range(x.shape[0])
+        ]
         ret = jnp.array(out_array).reshape(original_shape)
     else:
         ret = jnp.searchsorted(x, v, side=side)

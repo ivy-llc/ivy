@@ -80,9 +80,7 @@ def nonzero(
         elif diff < 0:
             res = np.array(res)[:, :size]
 
-    if as_tuple:
-        return tuple(res)
-    return np.stack(res, axis=1)
+    return tuple(res) if as_tuple else np.stack(res, axis=1)
 
 
 def where(

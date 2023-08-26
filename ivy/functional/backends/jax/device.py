@@ -46,9 +46,7 @@ def dev(
         dv = dv()
     except Exception:
         dv = jax.devices()[0]
-    if as_native:
-        return dv
-    return as_ivy_dev(dv)
+    return dv if as_native else as_ivy_dev(dv)
 
 
 def to_device(
@@ -82,9 +80,7 @@ def as_ivy_dev(device, /):
     if device is None:
         return None
     p, dev_id = (device.platform, device.id)
-    if p == "cpu":
-        return ivy.Device(p)
-    return ivy.Device(p + ":" + str(dev_id))
+    return ivy.Device(p) if p == "cpu" else ivy.Device(f"{p}:{str(dev_id)}")
 
 
 def as_native_dev(device, /):
@@ -92,10 +88,7 @@ def as_native_dev(device, /):
         return device
     dev_split = ivy.Device(device).split(":")
     device = dev_split[0]
-    if len(dev_split) > 1:
-        idx = int(dev_split[1])
-    else:
-        idx = 0
+    idx = int(dev_split[1]) if len(dev_split) > 1 else 0
     return jax.devices(device)[idx]
 
 

@@ -55,9 +55,7 @@ def asarray(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     ret = mx.nd.array(obj, device, dtype=dtype)
-    if copy:
-        return mx.numpy.copy(ret)
-    return ret
+    return mx.numpy.copy(ret) if copy else ret
 
 
 array = asarray
@@ -226,9 +224,7 @@ def copy_array(
     to_ivy_array: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    if to_ivy_array:
-        return ivy.to_ivy(x.copy())
-    return x.copy()
+    return ivy.to_ivy(x.copy()) if to_ivy_array else x.copy()
 
 
 def one_hot(

@@ -96,11 +96,10 @@ def eye(
     i = np.eye(n_rows, n_cols, k, dtype)
     if batch_shape is None:
         return _to_device(i, device=device)
-    else:
-        reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
-        tile_dims = list(batch_shape) + [1, 1]
-        return_mat = np.tile(np.reshape(i, reshape_dims), tile_dims)
-        return _to_device(return_mat, device=device)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    return_mat = np.tile(np.reshape(i, reshape_dims), tile_dims)
+    return _to_device(return_mat, device=device)
 
 
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
@@ -227,9 +226,7 @@ def copy_array(
     to_ivy_array: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if to_ivy_array:
-        return ivy.to_ivy(x.copy())
-    return x.copy()
+    return ivy.to_ivy(x.copy()) if to_ivy_array else x.copy()
 
 
 def one_hot(
@@ -251,11 +248,7 @@ def one_hot(
         if on_none and off_none:
             dtype = np.float32
         else:
-            if not on_none:
-                dtype = np.array(on_value).dtype
-            elif not off_none:
-                dtype = np.array(off_value).dtype
-
+            dtype = np.array(on_value).dtype if not on_none else np.array(off_value).dtype
     res = np.eye(depth, dtype=dtype)[np.array(indices, dtype="int64").reshape(-1)]
     res = res.reshape(list(indices.shape) + [depth])
 

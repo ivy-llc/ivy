@@ -435,8 +435,9 @@ class Container(
 
     def __divmod__(self, other):
         return ivy.Container.cont_multi_map(
-            lambda xs, _: tuple(
-                [operator.truediv(xs[0], xs[1]), operator.mod(xs[0], xs[1])]
+            lambda xs, _: (
+                operator.truediv(xs[0], xs[1]),
+                operator.mod(xs[0], xs[1]),
             ),
             [self, other],
             map_nests=True,
@@ -444,8 +445,9 @@ class Container(
 
     def __rdivmod__(self, other):
         return ivy.Container.cont_multi_map(
-            lambda xs, _: tuple(
-                [operator.truediv(xs[0], xs[1]), operator.mod(xs[0], xs[1])]
+            lambda xs, _: (
+                operator.truediv(xs[0], xs[1]),
+                operator.mod(xs[0], xs[1]),
             ),
             [other, self],
             map_nests=True,

@@ -88,9 +88,7 @@ def nonzero(
     res = tf.experimental.numpy.nonzero(x)
 
     if size is not None:
-        dtype = tf.int64
-        if isinstance(fill_value, float):
-            dtype = tf.float64
+        dtype = tf.float64 if isinstance(fill_value, float) else tf.int64
         res = tf.cast(res, dtype)
 
         diff = size - res[0].shape[0]
@@ -99,9 +97,7 @@ def nonzero(
         elif diff < 0:
             res = tf.slice(res, [0, 0], [-1, size])
 
-    if as_tuple:
-        return tuple(res)
-    return tf.stack(res, axis=1)
+    return tuple(res) if as_tuple else tf.stack(res, axis=1)
 
 
 def where(
@@ -126,14 +122,10 @@ def argwhere(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(x, tf.Variable):
-        x_ndim = x.shape.rank
-    else:
-        x_ndim = x.ndim
+    x_ndim = x.shape.rank if isinstance(x, tf.Variable) else x.ndim
     if x_ndim == 0:
         return tf.zeros(shape=[int(bool(x)), 0], dtype="int64")
     where_x = tf.experimental.numpy.nonzero(x)
-    res = tf.experimental.numpy.concatenate(
+    return tf.experimental.numpy.concatenate(
         [tf.expand_dims(item, -1) for item in where_x], -1
     )
-    return res

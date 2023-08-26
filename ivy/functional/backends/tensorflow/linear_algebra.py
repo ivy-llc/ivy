@@ -28,11 +28,9 @@ def cholesky(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
-        ret = tf.linalg.cholesky(x)
-    else:
-        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)), perm=axes)
-    return ret
+        return tf.linalg.cholesky(x)
+    axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+    return tf.transpose(tf.linalg.cholesky(tf.transpose(x, perm=axes)), perm=axes)
 
 
 @with_unsupported_dtypes(
@@ -152,8 +150,7 @@ def eigvalsh(
         return tf.linalg.eigh(x)[0]
     elif UPLO == "U":
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))[0]
-        return ret
+        return tf.linalg.eigh(tf.transpose(x, perm=axes))[0]
 
 
 @with_unsupported_dtypes(
@@ -238,11 +235,17 @@ def matmul(
     if (
         x1.shape == ()
         or x2.shape == ()
-        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-        or (len(x1.shape) == 1 and len(x2.shape) >= 2 and x1.shape[0] != x2.shape[-2])
-        or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
-        or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
+        or len(x1.shape) == len(x2.shape) == 1
+        and x1.shape != x2.shape
+        or len(x1.shape) == 1
+        and len(x2.shape) >= 2
+        and x1.shape[0] != x2.shape[-2]
+        or len(x2.shape) == 1
+        and len(x1.shape) >= 2
+        and x2.shape[0] != x1.shape[-1]
+        or len(x1.shape) >= 2
+        and len(x2.shape) >= 2
+        and x1.shape[-1] != x2.shape[-2]
     ):
         raise ivy.utils.exceptions.IvyException("Error,shapes not compatible")
 
@@ -361,7 +364,6 @@ def matrix_power(
     {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
-# noinspection PyPep8Naming
 def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -390,8 +392,7 @@ def matrix_rank(
     tol = tf.maximum(atol, rtol * sigma)
     # make sure it's broadcastable again with svd_values
     tol = tf.expand_dims(tol, axis=-1)
-    ret = tf.math.count_nonzero(svd_values > tol, axis=-1)
-    return ret
+    return tf.math.count_nonzero(svd_values > tol, axis=-1)
 
 
 @with_unsupported_dtypes(
@@ -447,11 +448,9 @@ def pinv(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
-        ret = tf.linalg.pinv(x)
-    else:
-        x, rtol = ivy.promote_types_of_inputs(x, rtol)
-        ret = tf.linalg.pinv(x, rtol)
-    return ret
+        return tf.linalg.pinv(x)
+    x, rtol = ivy.promote_types_of_inputs(x, rtol)
+    return tf.linalg.pinv(x, rtol)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
@@ -515,11 +514,10 @@ def solve(
     is_empty_x1 = tf.equal(tf.size(x1), 0)
     is_empty_x2 = tf.equal(tf.size(x2), 0)
     if is_empty_x1 or is_empty_x2:
-        for i in range(len(x1.shape) - 2):
+        for _ in range(len(x1.shape) - 2):
             x2 = tf.expand_dims(x2, axis=0)
         output_shape = list(output_shape)
-        output_shape.append(x2.shape[-2])
-        output_shape.append(x2.shape[-1])
+        output_shape.extend((x2.shape[-2], x2.shape[-1]))
         ret = tf.constant([])
         ret = tf.reshape(ret, output_shape)
     else:
@@ -572,8 +570,7 @@ def svdvals(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.svd(x, compute_uv=False)
-    return ret
+    return tf.linalg.svd(x, compute_uv=False)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
@@ -591,8 +588,7 @@ def tensordot(
     # type casting to float32 which is acceptable for tf.tensordot
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
 
-    ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
-    return ret
+    return tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
 
 
 @with_unsupported_dtypes(
@@ -734,6 +730,4 @@ def vector_to_skew_symmetric_matrix(
     row1 = tf.concat((zs, -a3s, a2s), -1)
     row2 = tf.concat((a3s, zs, -a1s), -1)
     row3 = tf.concat((-a2s, a1s, zs), -1)
-    # BS x 3 x 3
-    ret = tf.concat((row1, row2, row3), -2)
-    return ret
+    return tf.concat((row1, row2, row3), -2)

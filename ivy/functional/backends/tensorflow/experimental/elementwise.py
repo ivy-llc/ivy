@@ -240,7 +240,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -258,11 +258,7 @@ def gradient(
     x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
-    if axis is None:
-        axes = tuple(range(N))
-    else:
-        axes = _normalize_axis_tuple(axis, N)
-
+    axes = tuple(range(N)) if axis is None else _normalize_axis_tuple(axis, N)
     len_axes = len(axes)
     n = (
         -1
@@ -288,10 +284,7 @@ def gradient(
                 raise ValueError("distances must be either scalars or 1d")
             if len(distances) != x.shape[axes[i]]:
                 raise ValueError(
-                    "when 1d, distances must match "
-                    "the length of the corresponding dimension {} {}".format(
-                        len(distances), x.shape[axes[i]]
-                    )
+                    f"when 1d, distances must match the length of the corresponding dimension {len(distances)} {x.shape[axes[i]]}"
                 )
             if distances.dtype.is_integer:
                 # Convert numpy integer types to float64 to avoid modular
@@ -348,7 +341,7 @@ def gradient(
         if uniform_spacing:
             out[tuple(slice1)] = (x[tuple(slice4)] - x[tuple(slice2)]) / (2.0 * ax_dx)
         else:
-            dx1 = ax_dx[0:-1]
+            dx1 = ax_dx[:-1]
             dx2 = ax_dx[1:]
             a = -(dx2) / (dx1 * (dx1 + dx2))
             b = (dx2 - dx1) / (dx1 * dx2)
@@ -358,9 +351,9 @@ def gradient(
                 a * x[tuple(slice2)] + b * x[tuple(slice3)] + c * x[tuple(slice4)]
             )
 
+        slice1[axis] = 0
         # Numerical differentiation: 1st order edges
         if edge_order == 1:
-            slice1[axis] = 0
             slice2[axis] = 1
             slice3[axis] = 0
             dx_0 = ax_dx if uniform_spacing else ax_dx[0]
@@ -374,9 +367,7 @@ def gradient(
             # 1D equivalent -- out[-1] = (f[-1] - f[-2]) / (x[-1] - x[-2])
             out[tuple(slice1)] = (x[tuple(slice2)] - x[tuple(slice3)]) / dx_n
 
-        # Numerical differentiation: 2nd order edges
         else:
-            slice1[axis] = 0
             slice2[axis] = 0
             slice3[axis] = 1
             slice4[axis] = 2
@@ -422,10 +413,7 @@ def gradient(
         slice3[axis] = slice(None)
         slice4[axis] = slice(None)
 
-    if len_axes == 1:
-        return outvals[0]
-    else:
-        return outvals
+    return outvals[0] if len_axes == 1 else outvals
 
 
 @with_supported_dtypes(

@@ -61,33 +61,20 @@ def caster(dtype, intersect):
     if str(dtype) in intersect:
         # based on upcasting or downcasting do something
         if ivy.cast_dtypes():
-            # all casting types is enabled
-            # check cross_casting
-            ret_dtype = cross_caster(intersect)
-            if ret_dtype:
+            if ret_dtype := cross_caster(intersect):
                 return ret_dtype
-            # check upcasting
-            ret_dtype = upcaster(dtype, intersect)
-            if ret_dtype:
+            if ret_dtype := upcaster(dtype, intersect):
                 return ret_dtype
-            # check downcasting
-            ret_dtype = downcaster(dtype, intersect)
-            if ret_dtype:
+            if ret_dtype := downcaster(dtype, intersect):
                 return ret_dtype
         elif ivy.crosscast_dtypes:
-            # check cross_casting
-            ret_dtype = cross_caster(intersect)
-            if ret_dtype:
+            if ret_dtype := cross_caster(intersect):
                 return ret_dtype
         elif ivy.upcast_dtypes:
-            # check upcasting
-            ret_dtype = upcaster(dtype, intersect)
-            if ret_dtype:
+            if ret_dtype := upcaster(dtype, intersect):
                 return ret_dtype
         elif ivy.downcast_dtypes:
-            # check downcasting
-            ret_dtype = downcaster(dtype, intersect)
-            if ret_dtype:
+            if ret_dtype := downcaster(dtype, intersect):
                 return ret_dtype
 
 
@@ -217,8 +204,7 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
             return True, result
 
     raise TypeError(
-        "no implementation found for {} on types that implement "
-        "__ivy_array_function__: {}".format(func, list(map(type, overloaded_args)))
+        f"no implementation found for {func} on types that implement __ivy_array_function__: {list(map(type, overloaded_args))}"
     )
 
 
@@ -227,16 +213,18 @@ def _get_first_array(*args, **kwargs):
     array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
-        arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
-        if arr_idxs:
+        if arr_idxs := ivy.nested_argwhere(
+            args, array_fn, stop_after_n_found=1
+        ):
             arr = ivy.index_nest(args, arr_idxs[0])
-        else:
-            arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
-            if arr_idxs:
-                arr = ivy.index_nest(kwargs, arr_idxs[0])
+        elif arr_idxs := ivy.nested_argwhere(
+            kwargs, array_fn, stop_after_n_found=1
+        ):
+            arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
-        if arr_idxs:
+        if arr_idxs := ivy.nested_argwhere(
+            kwargs, array_fn, stop_after_n_found=1
+        ):
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
 
@@ -249,11 +237,10 @@ def _build_view(original, view, fn, args, kwargs, index=None):
                 "when performing inplace updates with this backend"
             )
         base = original._base
-        view._base = base
         view._manipulation_stack = python_copy.copy(original._manipulation_stack)
     else:
         base = original
-        view._base = base
+    view._base = base
     base._view_refs.append(weakref.ref(view))
     view._manipulation_stack.append((fn, args[1:], kwargs, index))
 
@@ -359,9 +346,7 @@ def handle_array_function(fn):
         success, value = try_array_function_override(
             ivy.__dict__[fn.__name__], overloaded_args, overloaded_types, args, kwargs
         )
-        if success:
-            return value
-        return fn(*args, **kwargs)
+        return value if success else fn(*args, **kwargs)
 
     _handle_array_function.handle_array_function = True
     return _handle_array_function
@@ -834,12 +819,13 @@ def handle_device_shifting(fn: Callable) -> Callable:
             dst_dev = (
                 dev
                 if dev is not None
-                else None if len(unique_devices) == 0 else next(iter(unique_devices))
+                else None
+                if not unique_devices
+                else next(iter(unique_devices))
             )
             return ivy.handle_soft_device_variable(
                 *args, fn=fn, device_shifting_dev=dst_dev, **kwargs
             )
-        # raise when arrays are on different devices
         elif len(unique_devices) > 1:
             raise ivy.utils.exceptions.IvyException(
                 "Expected all input arrays to be on the same device, "
@@ -929,9 +915,7 @@ def _update_torch_views(x, visited_view=None):
         if fn == "rot90":
             kwargs = kwargs.copy()
             kwargs["k"] = -kwargs["k"]
-            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
-        else:
-            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+        parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
     if ivy.exists(x._torch_base):
         _update_torch_views(x._torch_base, visited_view=x)
 
@@ -977,8 +961,8 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
-        if hasattr(ivy.Container, "_static_" + fn_name):
-            cont_fn = getattr(ivy.Container, "_static_" + fn_name)
+        if hasattr(ivy.Container, f"_static_{fn_name}"):
+            cont_fn = getattr(ivy.Container, f"_static_{fn_name}")
         else:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
@@ -1319,16 +1303,10 @@ def _dtype_device_wrapper_creator(attrib, t):
                                 t,
                             )
                             setattr(func, attrib, val)
-                        else:
-                            # for conflicting ones we do nothing
-                            pass
             else:
                 setattr(func, attrib, val)
                 setattr(func, "dictionary_info", version_dict)
-            if "frontends" in func.__module__:
-                # it's a frontend func, no casting modes for this
-                return func
-            return casting_modes_ops(func)
+            return func if "frontends" in func.__module__ else casting_modes_ops(func)
 
         return _wrapped
 

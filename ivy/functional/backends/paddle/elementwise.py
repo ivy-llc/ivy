@@ -93,10 +93,10 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if detect_negative and detect_positive:
-        return paddle.isinf(x)
-
     if detect_negative:
+        if detect_positive:
+            return paddle.isinf(x)
+
         return paddle_backend.equal(x, float("-inf"))
 
     if detect_positive:
@@ -641,9 +641,7 @@ def negative(
         x = paddle.to_tensor(
             x, dtype=ivy.default_dtype(item=x, as_native=True)
         ).squeeze()
-    if x.dtype == paddle.bool:
-        return paddle.logical_not(x)
-    return paddle.neg(x)
+    return paddle.logical_not(x) if x.dtype == paddle.bool else paddle.neg(x)
 
 
 def not_equal(
@@ -758,10 +756,9 @@ def pow(
             r = paddle.abs(x1)
             theta = paddle.angle(x1)
             power = x2 * paddle.complex(paddle.log(r), theta)
-            result = paddle.exp(power.real()) * paddle.complex(
+            return paddle.exp(power.real()) * paddle.complex(
                 paddle.cos(power.imag()), paddle.sin(power.imag())
             )
-            return result
         return paddle.pow(x1.astype("float32"), x2.astype("float32")).astype(ret_dtype)
     return paddle.pow(x1, x2)
 
@@ -834,15 +831,14 @@ def trapz(
 ) -> paddle.Tensor:
     if x is None:
         d = dx
+    elif x.ndim == 1:
+        d = paddle.diff(x)
+        # reshape to correct shape
+        shape = [1] * y.ndim
+        shape[axis] = d.shape[0]
+        d = d.reshape(shape)
     else:
-        if x.ndim == 1:
-            d = paddle.diff(x)
-            # reshape to correct shape
-            shape = [1] * y.ndim
-            shape[axis] = d.shape[0]
-            d = d.reshape(shape)
-        else:
-            d = paddle.diff(x, axis=axis)
+        d = paddle.diff(x, axis=axis)
 
     slice1 = [slice(None)] * y.ndim
     slice2 = [slice(None)] * y.ndim
@@ -1351,6 +1347,5 @@ def nan_to_num(
         )
         if copy:
             return ret.clone()
-        else:
-            x = ret
-            return x
+        x = ret
+        return x

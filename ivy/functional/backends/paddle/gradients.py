@@ -188,9 +188,7 @@ def stop_gradient(
 ):
     is_var = is_variable(x)
     x.stop_gradient = True
-    if is_var and preserve_type:
-        return variable(x)
-    return x
+    return variable(x) if is_var and preserve_type else x
 
 
 def _get_jac_one_arg_fn(grad_fn, xs, out_idx):
@@ -233,8 +231,7 @@ def _get_one_out_fn(grad_fn, xs, fn_ret):
 def jacobian_to_ivy(jacobian, in_shape, out_shape):
     jac_ivy = ivy.to_ivy(jacobian[:])
     jac_shape = out_shape + in_shape
-    jac_reshaped = jac_ivy.reshape(jac_shape)
-    return jac_reshaped
+    return jac_ivy.reshape(jac_shape)
 
 
 def jac(func: Callable):

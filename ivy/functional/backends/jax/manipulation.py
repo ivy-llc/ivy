@@ -27,8 +27,8 @@ def concat(
     axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    is_tuple = type(xs) is tuple
     if axis is None:
+        is_tuple = type(xs) is tuple
         if is_tuple:
             xs = list(xs)
         for i in range(len(xs)):
@@ -51,8 +51,7 @@ def expand_dims(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
-        ret = jnp.expand_dims(x, axis)
-        return ret
+        return jnp.expand_dims(x, axis)
     except ValueError as error:
         raise ivy.utils.exceptions.IvyIndexError(error)
 
@@ -126,7 +125,7 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     else:
         ret = jnp.squeeze(x, axis=axis)
@@ -162,9 +161,7 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                f"input array had no shape, but num_sections specified was {num_or_size_splits}"
             )
         return [x]
     if isinstance(num_or_size_splits, jnp.ndarray):
@@ -269,9 +266,7 @@ def unstack(
     dim_size = x.shape[axis]
     # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
     x_split = jnp.split(x, dim_size, axis)
-    if keepdims:
-        return x_split
-    return [jnp.squeeze(item, axis) for item in x_split]
+    return x_split if keepdims else [jnp.squeeze(item, axis) for item in x_split]
 
 
 def zero_pad(

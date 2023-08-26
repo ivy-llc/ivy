@@ -26,10 +26,7 @@ def argmax(
     if select_last_index:
         x = jnp.flip(x, axis=axis)
         ret = jnp.array(jnp.argmax(x, axis=axis, keepdims=keepdims))
-        if axis is not None:
-            ret = x.shape[axis] - ret - 1
-        else:
-            ret = x.size - ret - 1
+        ret = x.shape[axis] - ret - 1 if axis is not None else x.size - ret - 1
     else:
         ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
     if dtype:
@@ -52,10 +49,7 @@ def argmin(
     if select_last_index:
         x = jnp.flip(x, axis=axis)
         ret = jnp.array(jnp.argmin(x, axis=axis, keepdims=keepdims))
-        if axis is not None:
-            ret = x.shape[axis] - ret - 1
-        else:
-            ret = x.size - ret - 1
+        ret = x.shape[axis] - ret - 1 if axis is not None else x.size - ret - 1
     else:
         ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
     if dtype:
@@ -74,10 +68,7 @@ def nonzero(
 ) -> Union[JaxArray, Tuple[JaxArray]]:
     res = jnp.nonzero(x, size=size, fill_value=fill_value)
 
-    if as_tuple:
-        return tuple(res)
-
-    return jnp.stack(res, axis=1)
+    return tuple(res) if as_tuple else jnp.stack(res, axis=1)
 
 
 def where(

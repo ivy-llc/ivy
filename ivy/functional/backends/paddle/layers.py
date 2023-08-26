@@ -26,15 +26,14 @@ def _is_list_or_tuple(inp):
 def _convert_to_list(value, n, name="padding", _type=int):
     if isinstance(value, _type):
         return [value] * n
+    try:
+        value_list = list(value)
+    except TypeError:
+        raise ValueError(
+            f"The input {name}'s type must be list or tuple. Received: {value}"
+        )
     else:
-        try:
-            value_list = list(value)
-        except TypeError:
-            raise ValueError(
-                f"The input {name}'s type must be list or tuple. Received: {value}"
-            )
-        else:
-            return value_list
+        return value_list
 
 
 def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format):
@@ -70,7 +69,7 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         else:
             raise ValueError(f"Invalid padding format: {padding}")
 
-    if not all([p >= 0 for p in padding]):
+    if any(p < 0 for p in padding):
         raise ValueError(
             "Invalid padding, all values should be larger than"
             f"or equal to 0, but received: {padding}."

@@ -26,7 +26,7 @@ def kaiser_window(
 ) -> Union[tf.Tensor, tf.Variable]:
     if window_length < 2:
         return tf.ones([window_length], dtype=dtype)
-    if periodic is False:
+    if not periodic:
         return tf.signal.kaiser_window(window_length, beta, dtype=dtype)
     else:
         return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype)[:-1]

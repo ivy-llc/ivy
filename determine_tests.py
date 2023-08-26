@@ -44,15 +44,15 @@ def main():
         modified_files = commit._parse_diff(diff_index)
         for file in modified_files:
             try:
-                file_name = file.new_path + ",cover"
+                file_name = f"{file.new_path},cover"
             except:  # noqa
                 continue
             if file_name not in tests.keys():
                 continue
             tests_file = tests[file_name]
             change = file.diff_parsed
-            added = set([x - 1 for (x, _) in change["added"]])
-            deleted = set([x - 1 for (x, _) in change["deleted"]])
+            added = {x - 1 for (x, _) in change["added"]}
+            deleted = {x - 1 for (x, _) in change["deleted"]}
             updated = added.intersection(deleted)
             added = added.difference(updated)
             deleted = deleted.difference(updated)
@@ -99,7 +99,6 @@ def main():
         added_tests = list(added_tests)
         # if it is a PR, we must check that the tests added were in the files_changes
         if len(sys.argv) >= 3 and sys.argv[2] == "pr":
-            relevant_added_tests = []
             subprocess.run(
                 ["git", "remote", "add", "upstream", "https://github.com/unifyai/ivy"]
             )
@@ -115,15 +114,15 @@ def main():
                 diff_index = lca_commit.diff(commit._c_object, create_patch=True)
                 modified_files = commit._parse_diff(diff_index)
                 break
+            relevant_added_tests = []
             for test in added_tests:
                 for file in modified_files:
                     if file.new_path.strip() in test:
                         relevant_added_tests.append(test)
                         break
             added_tests = relevant_added_tests
-        else:
-            if len(added_tests) > 50:
-                added_tests = added_tests[:50]
+        elif len(added_tests) > 50:
+            added_tests = added_tests[:50]
         # Add these new_tests in the Mapping
         old_num_tests = len(old_tests)
         tests["index_mapping"] += added_tests
@@ -139,7 +138,7 @@ def main():
         directories_filtered = [
             x
             for x in directories
-            if not (x.endswith("__pycache__") or "hypothesis" in x)
+            if not x.endswith("__pycache__") and "hypothesis" not in x
         ]
         directories = set(directories_filtered)
         for test_backend in new_tests[old_num_tests:num_tests]:
@@ -156,22 +155,20 @@ def main():
                 for directory in directories:
                     for file_name in os.listdir(directory):
                         if file_name.endswith("cover"):
-                            file_name = directory + "/" + file_name
+                            file_name = f"{directory}/{file_name}"
                             if file_name not in tests:
                                 tests[file_name] = []
                                 with open(file_name) as f:
-                                    for line in f:
+                                    for _ in f:
                                         tests[file_name].append(set())
                             with open(file_name) as f:
-                                i = 0
-                                for line in f:
+                                for i, line in enumerate(f):
                                     if i >= len(tests[file_name]):
                                         tests[file_name].append(set())
                                     if line[0] == ">":
                                         tests[file_name][i].add(
                                             tests["tests_mapping"][test_backend]
                                         )
-                                    i += 1
                 os.system("find . -name \\*cover -type f -delete")
 
     with bz2.BZ2File("tests.pbz2", "w") as f:

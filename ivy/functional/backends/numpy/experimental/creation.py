@@ -70,7 +70,7 @@ def kaiser_window(
 ) -> np.ndarray:
     if window_length < 2:
         return np.ones([window_length], dtype=dtype)
-    if periodic is False:
+    if not periodic:
         return np.kaiser(M=window_length, beta=beta).astype(dtype)
     else:
         return np.kaiser(M=window_length + 1, beta=beta)[:-1].astype(dtype)
@@ -168,6 +168,4 @@ def trilu(
     upper: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if upper:
-        return np.triu(x, k)
-    return np.tril(x, k)
+    return np.triu(x, k) if upper else np.tril(x, k)

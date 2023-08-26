@@ -90,7 +90,7 @@ def searchsorted(
     ]:
         v = v.cast("float32")
 
-    right = True if side == "right" else False
+    right = side == "right"
     assert ivy.is_int_dtype(ret_dtype), ValueError(
         "only Integer data types are supported for ret_dtype."
     )

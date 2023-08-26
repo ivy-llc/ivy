@@ -64,8 +64,7 @@ def expand_dims(
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
-        ret = tf.reshape(x, shape=out_shape)
-        return ret
+        return tf.reshape(x, shape=out_shape)
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
         raise ivy.utils.exceptions.IvyIndexError(error)
 
@@ -78,21 +77,12 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    num_dims = len(x.shape)
-    if not num_dims:
-        ret = x
-    else:
-        if axis is None:
-            new_axis = list(range(num_dims))
-        else:
-            new_axis = axis
-        if type(new_axis) is int:
-            new_axis = [new_axis]
-        else:
-            new_axis = new_axis
-        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-        ret = tf.reverse(x, new_axis)
-    return ret
+    if not (num_dims := len(x.shape)):
+        return x
+    new_axis = list(range(num_dims)) if axis is None else axis
+    new_axis = [new_axis] if type(new_axis) is int else new_axis
+    new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+    return tf.reverse(x, new_axis)
 
 
 def permute_dims(
@@ -122,9 +112,7 @@ def reshape(
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, tf.constant(shape) != 0, x.shape)
         ]
-    if order == "F":
-        return _reshape_fortran_tf(x, shape)
-    return tf.reshape(x, shape)
+    return _reshape_fortran_tf(x, shape) if order == "F" else tf.reshape(x, shape)
 
 
 def roll(
@@ -140,12 +128,11 @@ def roll(
         axis = 0
         x = tf.reshape(x, [-1])
         roll = tf.roll(x, shift, axis)
-        ret = tf.reshape(roll, originalShape)
+        return tf.reshape(roll, originalShape)
     else:
         if isinstance(shift, int) and (type(axis) in [list, tuple]):
             shift = [shift for _ in range(len(axis))]
-        ret = tf.roll(x, shift, axis)
-    return ret
+        return tf.roll(x, shift, axis)
 
 
 def squeeze(
@@ -158,12 +145,10 @@ def squeeze(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if ivy.any(x.shape[axis] > 1):
-            raise ValueError(
-                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
-            )
-        ret = tf.squeeze(x, axis)
+            raise ValueError(f"{x.shape[axis]} must be lesser than or equal to 1")
+        return tf.squeeze(x, axis)
     elif axis is None:
-        ret = tf.squeeze(x)
+        return tf.squeeze(x)
     else:
         if isinstance(axis, tuple):
             axis = list(axis)
@@ -178,14 +163,11 @@ def squeeze(
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
                 raise ValueError(
-                    "Expected dimension of size 1, but found dimension size {}".format(
-                        x.shape[i]
-                    )
+                    f"Expected dimension of size 1, but found dimension size {x.shape[i]}"
                 )
             else:
                 x = tf.squeeze(x, i)
-        ret = x
-    return ret
+        return x
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
@@ -220,9 +202,7 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                f"input array had no shape, but num_sections specified was {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:
@@ -366,6 +346,4 @@ def unstack(
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
-    if keepdims:
-        return [tf.expand_dims(r, axis) for r in ret]
-    return ret
+    return [tf.expand_dims(r, axis) for r in ret] if keepdims else ret

@@ -104,20 +104,19 @@ def mean(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if x.dtype not in [
+    if x.dtype in [
         paddle.float32,
         paddle.float64,
     ]:
-        if paddle.is_complex(x):
-            ret = paddle.complex(
-                paddle.mean(x.real(), axis=axis, keepdim=keepdims),
-                paddle.mean(x.imag(), axis=axis, keepdim=keepdims),
-            )
-        else:
-            ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
         ret = paddle.mean(x, axis=axis, keepdim=keepdims)
 
+    elif paddle.is_complex(x):
+        ret = paddle.complex(
+            paddle.mean(x.real(), axis=axis, keepdim=keepdims),
+            paddle.mean(x.imag(), axis=axis, keepdim=keepdims),
+        )
+    else:
+        ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
@@ -138,8 +137,6 @@ def prod(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
-    # TODO:prod causes segmentation fault
-    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
 
 
 def _std(x, axis, correction, keepdim):
@@ -207,8 +204,7 @@ def var(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret = paddle_backend.pow(_std(x, axis, correction, keepdims), 2).cast(x.dtype)
-    return ret
+    return paddle_backend.pow(_std(x, axis, correction, keepdims), 2).cast(x.dtype)
 
 
 # Extra #

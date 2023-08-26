@@ -18,17 +18,13 @@ def is_native_array(
     if exclusive:
         return isinstance(x, mx.ndarray.NDArray)
     else:
-        return isinstance(x, mx.ndarray.NDArray) or isinstance(x, np.ndarray)
+        return isinstance(x, (mx.ndarray.NDArray, np.ndarray))
 
 
 def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
-    if copy:
-        if x.shape == ():
-            new_arr = x.asnumpy()
-            return new_arr
-        return x.copy().asnumpy()
-    else:
+    if not copy:
         return x.asnumpy()
+    return x.asnumpy() if x.shape == () else x.copy().asnumpy()
 
 
 def itemsize(x: mx.ndarray.NDArray, /) -> int:
