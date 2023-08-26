@@ -70,7 +70,7 @@ def smooth_l1_loss(
     {
         "2.5.1 and below": {
             "cpu": (
-                "bfloat16float16",
+                "bfloat16",
                 "int8",
                 "int16",
                 "int32",
