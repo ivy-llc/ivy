@@ -95,6 +95,15 @@ def det(input):
 
 
 @to_ivy_arrays_and_back
+def dot(input, other, *, out=None):
+    if len(input.shape) == 1 and len(other.shape) == 1:
+        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+        return ivy.matmul(input, other, out=out)
+    else:
+        raise RuntimeError("input must be 1D vectors")
+
+
+@to_ivy_arrays_and_back
 def ger(input, vec2, *, out=None):
     input, vec2 = torch_frontend.promote_types_of_torch_inputs(input, vec2)
     return ivy.outer(input, vec2, out=out)
@@ -138,10 +147,6 @@ def mm(input, mat2, *, out=None):
         raise RuntimeError("input must be 2D matrices")
     input, mat2 = torch_frontend.promote_types_of_torch_inputs(input, mat2)
     return ivy.matmul(input, mat2, out=out)
-
-
-# alias to fix mm transpilation issue as mm() gets mapped to spmm() after transpilation
-spmm = mm
 
 
 @to_ivy_arrays_and_back
@@ -191,6 +196,14 @@ def svd(input, some=True, compute_uv=True, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def trapezoid(y, x=None, *, dx=None, dim=-1):
+    if x is not None:
+        y, x = torch_frontend.promote_types_of_torch_inputs(y, x)
+    return ivy.trapz(y, x=x, dx=dx, axis=dim)
+
+
 @to_ivy_arrays_and_back
 def vdot(input, other, *, out=None):
     if len(input.shape) != 1 or len(other.shape) != 1:
@@ -200,18 +213,5 @@ def vdot(input, other, *, out=None):
     return ret.squeeze(0) if ret.ndim == 1 else ret
 
 
-@to_ivy_arrays_and_back
-def dot(input, other, *, out=None):
-    if len(input.shape) == 1 and len(other.shape) == 1:
-        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-        return ivy.matmul(input, other, out=out)
-    else:
-        raise RuntimeError("input must be 1D vectors")
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
-@to_ivy_arrays_and_back
-def trapezoid(y, x=None, *, dx=None, dim=-1):
-    if x is not None:
-        y, x = torch_frontend.promote_types_of_torch_inputs(y, x)
-    return ivy.trapz(y, x=x, dx=dx, axis=dim)
+# alias to fix mm transpilation issue as mm() gets mapped to spmm() after transpilation
+spmm = mm
