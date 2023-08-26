@@ -58,12 +58,14 @@ a. Find a task to work on which (i) is not marked as completed with a tick (ii) 
 
 b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 
-c. Comment on the ToDo list issue with a reference to this issue like so:
+c. Comment on the ToDo list issue with a reference to your new issue like so:
 
    :code:`- [ ] #Issue_number`
 
-   Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should be kept clean with comments only as described above. 
+   For example, if your issue number is 12345, then the text of your comment should be :code:`- [ ] #12345`. You could also use just the issue number (:code:`#12345`), or a link to the issue itself (:code:`https://github.com/unifyai/ivy/issues/12345`).
+
+   At some point after your comment is made, your issue will automatically be added to the ToDo list and the comment will be deleted.
+   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should be kept clean with comments only as described above.
 
 d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
