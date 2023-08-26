@@ -2,6 +2,16 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 import ivy.functional.frontends.numpy as np_frontend
 
+all_complex_dtypes = ["complex64", "complex128"]
+all_float_dtypes = [
+    "float16",
+    "float32",
+    "float64",
+]
+# dtypes as string
+all_int_dtypes = ["int8", "int16", "int32", "int64"]
+all_uint_dtypes = ["uint8", "uint16", "uint32", "uint64"]
+
 
 @to_ivy_arrays_and_back
 def can_cast(from_, to, casting="safe"):
@@ -53,25 +63,6 @@ def can_cast(from_, to, casting="safe"):
     return False
 
 
-def promote_types(type1, type2, /):
-    if isinstance(type1, np_frontend.dtype):
-        type1 = type1._ivy_dtype
-    if isinstance(type2, np_frontend.dtype):
-        type2 = type2._ivy_dtype
-    return np_frontend.dtype(np_frontend.promote_numpy_dtypes(type1, type2))
-
-
-# dtypes as string
-all_int_dtypes = ["int8", "int16", "int32", "int64"]
-all_uint_dtypes = ["uint8", "uint16", "uint32", "uint64"]
-all_float_dtypes = [
-    "float16",
-    "float32",
-    "float64",
-]
-all_complex_dtypes = ["complex64", "complex128"]
-
-
 def min_scalar_type(a, /):
     if ivy.is_array(a) and a.shape == ():
         a = a.item()
@@ -97,6 +88,14 @@ def min_scalar_type(a, /):
             return np_frontend.dtype(validation_dtype)
     else:
         return np_frontend.dtype(a.dtype)
+
+
+def promote_types(type1, type2, /):
+    if isinstance(type1, np_frontend.dtype):
+        type1 = type1._ivy_dtype
+    if isinstance(type2, np_frontend.dtype):
+        type2 = type2._ivy_dtype
+    return np_frontend.dtype(np_frontend.promote_numpy_dtypes(type1, type2))
 
 
 @to_ivy_arrays_and_back
