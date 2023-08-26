@@ -1328,3 +1328,30 @@ class _ArrayWithLayersExperimental(abc.ABC):
             padding=padding,
             data_format=data_format,
         )
+
+    def adaptive_max_pool3d(
+        self: ivy.Array,
+        output_size: Union[Sequence[int], int],
+    ) -> ivy.Array:
+        """
+        Apply a 3D adaptive maximum pooling over an input signal composed of several
+        input planes.
+        Parameters
+        ----------
+        self
+            Input array. Must have shape (N, C, D_in, H_in, W_in)
+            or (C, D_in, H_in, W_in) where N is the batch dimension,
+            C is the feature dimension, and D_in, H_in and W_in are
+            the 3 spatial dimensions.
+        output_size
+            Spatial output size.
+        Returns
+        -------
+            The result of the pooling operation.
+            Will have shape (N, C, S_0, S_1, S_2) or (C, S_0, S_1, S_2),
+            where S = `output_size`
+        """
+        return ivy.adaptive_max_pool3d(
+            self._data,
+            output_size,
+        )
