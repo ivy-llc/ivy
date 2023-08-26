@@ -193,13 +193,19 @@ def test_paddle_ifftshift(
 @handle_frontend_test(
     fn_tree="paddle.fft.rfft",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=(2,),
-        min_axis=-1,
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=2,
+        shape=helpers.get_shape(min_num_dims=1,
+                                max_num_dims=2,
+                                min_dim_size=2,
+                                max_dim_size=4,),
         force_int_axis=True,
+        valid_axis=True,
+        allow_neg_axes=True,
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
-    n=st.integers(min_value=2, max_value=10),
+    n=st.integers(min_value=2, max_value=10) | st.none(),
 )
 def test_paddle_rfft(
     dtype_input_axis, norm, n, frontend, backend_fw, test_flags, fn_tree, on_device
