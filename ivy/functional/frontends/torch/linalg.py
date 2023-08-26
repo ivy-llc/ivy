@@ -365,48 +365,17 @@ def vecdot(x, y, *, dim=-1, out=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-)
-
-def solve_ex(A, B, *, left=True, check_errors=False, out=None):
-    # TODO: Implement left
-    try:
-        result = ivy.solve(A, B, out=out)
-        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
-        return result, info
-    except RuntimeError as e:
-        if check_errors:
-            raise RuntimeError(e)
-        else:
-            result = A * math.nan
-            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
-
-            return result, info
-
-
-@to_ivy_arrays_and_back
-def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
-    try:
-        matrix = ivy.cholesky(input, upper=upper, out=out)
-        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
-        return matrix, info
-    except RuntimeError as e:
-        if check_errors:
-            raise RuntimeError(e)
-        else:
-            matrix = input * math.nan
-            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
-            return matrix, info
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-)
-def lstsq(A, B, rcond=None, driver=None):
-    return ivy.lstsq(A, B, rcond=rcond, driver=driver)
-
-  
+) 
 def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
         input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype
     )
+    
+    
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+) 
+def lstsq(A, B, rcond=None, driver=None):
+    return ivy.lstsq(A, B, rcond=rcond, driver=driver)
+    
