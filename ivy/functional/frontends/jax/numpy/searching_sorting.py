@@ -121,11 +121,6 @@ def searchsorted(a, v, side="left", sorter=None, *, method="scan"):
 
 
 @to_ivy_arrays_and_back
-def searchsorted(a, v, side="left", sorter=None, *, method="scan"):
-    return ivy.searchsorted(a, v, side=side, sorter=sorter, ret_dtype="int32")
-
-
-@to_ivy_arrays_and_back
 def sort(a, axis=-1, kind="quicksort", order=None):
     # todo: handle case where order is not None
     return ivy.sort(a, axis=axis)
