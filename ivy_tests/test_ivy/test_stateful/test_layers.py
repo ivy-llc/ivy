@@ -1558,7 +1558,6 @@ def test_embedding_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
-    backend_fw,
 ):
     ivy.seed(seed_value=seed)
     (

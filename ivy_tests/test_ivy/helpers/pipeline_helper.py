@@ -15,8 +15,8 @@ class WithBackendContext:
         return
 
 
-# update_backend: Callable = ivy.utils.backend.ContextManager
-update_backend: Callable = WithBackendContext
+update_backend: Callable = ivy.utils.backend.ContextManager
+# update_backend: Callable = WithBackendContext
 
 
 def get_frontend_config(frontend: str):
