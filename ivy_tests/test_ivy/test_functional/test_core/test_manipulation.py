@@ -6,6 +6,11 @@
 import numpy as np
 from hypothesis import strategies as st, assume
 
+#
+# from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
+# from ivy_tests.test_ivy.test_frontends.test_paddle.test_tensor.test_manipulation import _gather_helper
+#
+
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -711,7 +716,7 @@ def test_unstack(
 
 
 # gather_nd
-@handle_frontend_test(
+@handle_test(
     fn_tree="paddle.gather_nd",
     dtype_param_and_indices=_gather_helper(),
 )
