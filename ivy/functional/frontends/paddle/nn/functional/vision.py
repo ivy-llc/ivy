@@ -171,7 +171,7 @@ def grid_sample(x, grid, mode='bilinear', padding_mode='zeros', align_corners=Tr
 
 
 
-    return
+
 
 
 @to_ivy_arrays_and_back
