@@ -102,8 +102,7 @@ def test_paddle_mse_loss(
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
-    )
-    
+    ),
 )
 def test_square_error_cost(
     *,
