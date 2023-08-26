@@ -250,10 +250,10 @@ def clip(
             x = x.astype(promoted_type)
 
     # jnp.clip isn't used because of inconsistent gradients
-    if x_max is not None:
-        x = jnp.where(x > x_max, x_max, x)
     if x_min is not None:
         x = jnp.where(x < x_min, x_min, x)
+    if x_max is not None:
+        x = jnp.where(x > x_max, x_max, x)
 
     return x
 

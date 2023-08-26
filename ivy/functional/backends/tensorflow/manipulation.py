@@ -344,7 +344,7 @@ def clip(
 ) -> Union[tf.Tensor, tf.Variable]:
     if x_min is None and x_max is None:
         raise ValueError("At least one of the x_min or x_max must be provided")
-
+    cond = x_min is None or x_max is None or x_min < x_max
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
         promoted_type = ivy.as_native_dtype(
@@ -356,16 +356,16 @@ def clip(
         if x_max is not None:
             x_max = tf.cast(x_max, promoted_type)
 
-    if x_min is not None and x_max is not None:
+    if cond:
         if tf.size(x) == 0:
             ret = x
         elif x.dtype == tf.bool:
             ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
             ret = tf.cast(ret, x.dtype)
         else:
-            ret = tf.clip_by_value(x, x_min, x_max)
+            ret = tf.experimental.numpy.clip(x, x_min, x_max)
     else:
-        ret = tf.experimental.numpy.clip(x, x_min, x_max)
+        ret = tf.math.minimum(x_max, tf.math.maximum(x, x_min))
 
     return ret
 
