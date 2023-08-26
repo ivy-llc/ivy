@@ -12404,9 +12404,7 @@ def test_torch_triu_(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__array__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=3
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_torch__array__(
