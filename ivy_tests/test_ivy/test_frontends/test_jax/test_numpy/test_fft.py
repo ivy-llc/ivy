@@ -1,9 +1,14 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import (
+    handle_frontend_test,
+    assert_all_close,
+    BackendHandler,
+)
 
 
 # fft
@@ -83,7 +88,7 @@ def x_and_ifftn(draw):
     )
     x = draw(
         helpers.array_values(
-            dtype=dtype[0],
+            dtype=dtype[1],
             shape=tuple(x_dim),
             min_value=-1e-10,
             max_value=1e10,
@@ -106,27 +111,40 @@ def x_and_ifftn(draw):
 # ifftn
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.ifftn",
-    dtype_values_axes_norm=x_and_ifftn(),
+    d_a_s_a_n=x_and_ifftn(),
 )
 def test_jax_numpy_ifftn(
-    dtype_values_axes_norm,
+    d_a_s_a_n,
     frontend,
     backend_fw,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, a, s, axes, norm = dtype_values_axes_norm
-
-    helpers.test_frontend_function(
+    dtype, a, s, axes, norm = d_a_s_a_n
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         on_device=on_device,
         fn_tree=fn_tree,
+        test_values=False,
         a=a,
         s=s,
         axes=axes,
         norm=norm,
     )
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        ret = ivy_backend.to_numpy(ret).astype(np.complex128)
+        frontend_ret = frontend_ret[0].astype(np.complex128)
+
+        assert_all_close(
+            ret_np=ret,
+            ret_from_gt_np=frontend_ret,
+            ground_truth_backend=frontend,
+            backend=backend_fw,
+            atol=1e-2,
+            rtol=1e-2,
+        )
