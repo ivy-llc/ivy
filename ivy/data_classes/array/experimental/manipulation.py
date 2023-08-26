@@ -46,10 +46,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a view
+             of the input array.
         out
             optional output array, for writing the result to.
 
@@ -129,10 +128,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -233,6 +231,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             Input array of two or more dimensions.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         k
             Number of times the array is rotated by 90 degrees.
         axes
@@ -337,10 +341,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a
+             view of the input array.
         out
             optional output array, for writing the result to.
 
@@ -413,10 +416,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning a
+             view of the input array.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -576,10 +578,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -629,10 +630,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -673,10 +673,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+            a view of the input array.
 
         Returns
         -------
@@ -745,10 +744,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -785,10 +783,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -878,10 +875,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
 
         Returns
         -------
@@ -930,10 +926,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         copy
             boolean indicating whether or not to copy the input array.
             If True, the function must always copy.
-            If False, the function must never copy and must
-            raise a ValueError in case a copy would be necessary.
-            If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: ``None``.
+            If False, the function must never copy.
+            In case copy is False we avoid copying by returning
+             a view of the input array.
         out
             optional output array, for writing the result to.
 
