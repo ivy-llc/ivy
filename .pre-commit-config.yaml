@@ -25,3 +25,7 @@ repos:
       - id: pydocstyle
         # Exclude everything in frontends except __init__.py, and func_wrapper.py
         exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
+  - repo: https://github.com/unifyai/lint-hook
+    rev: 6b83a4f8058136be73bfb86d7fc4329c6c6fbb57
+    hooks:
+      - id: ivy-lint
