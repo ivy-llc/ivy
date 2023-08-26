@@ -40,7 +40,6 @@ def test_paddle_avg_pool3d(
         x[0] = x[0].reshape(
             (x[0].shape[0], x[0].shape[4], x[0].shape[1], x[0].shape[2], x[0].shape[3])
         )
-
     if len(stride) == 1:
         stride = (stride[0], stride[0], stride[0])
 
