@@ -555,11 +555,6 @@ def FFT(*, input, name="FFT"):
 
 
 @to_ivy_arrays_and_back
-def FFT2D(*, input, name="FFT2D"):
-    return ivy.array(ivy.fft2(input), dtype=input.dtype)
-
-
-@to_ivy_arrays_and_back
 def Fill(*, dims, value, name="Full"):
     return ivy.full(dims, value)
 
