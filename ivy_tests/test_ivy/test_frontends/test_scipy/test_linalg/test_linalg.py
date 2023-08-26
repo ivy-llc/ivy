@@ -4,7 +4,6 @@ import ivy
 import sys
 from hypothesis import strategies as st
 import numpy as np
-import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
