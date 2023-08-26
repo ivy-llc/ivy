@@ -15,6 +15,9 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_indexing_slicing_joining_
 from ivy_tests.test_ivy.test_frontends.test_torch.test_reduction_ops import (
     _get_axis_and_p,
 )
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_and_square_matrix,
+)
 
 try:
     import torch
@@ -10012,5 +10015,73 @@ def test_torch_instance_tile(
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="slice_scatter",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="slice_scatter_shape",
+        ),
+    ),
+    updates=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="update_shape",
+        ),
+    ),
+    begin=st.integers(min_value=0, max_value=2),
+    size=st.integers(min_value=1, max_value=3),
+    axis=st.integers(min_value=0, max_value=2),
+)
+def test_torch_instance_slice_scatter(
+    dtype_and_input,
+    updates,
+    begin,
+    size,
+    axis,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, value = dtype_and_input
+    _, update_value = updates
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": value[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "updates": update_value[0],
+            "begin": begin,
+            "size": size,
+            "axis": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )
