@@ -609,11 +609,12 @@ def unique_consecutive(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16", "bfloat16")}},
+    backend_version,
 )
 def fill_diagonal(
     a: paddle.Tensor,
-    v: Union[int, float],
+    v: Union[int, float, paddle.Tensor],
     /,
     *,
     wrap: bool = False,
@@ -633,10 +634,16 @@ def fill_diagonal(
     ins = paddle.arange(0, max_end)
     steps = paddle.arange(0, end, step)
 
-    for i in steps:
-        i = ins == i
-        w = paddle.logical_or(w, i)
-    v = paddle.to_tensor(v, dtype=a.dtype)
-    a = paddle.where(w, v, a)
+    if isinstance(v, paddle.Tensor):
+        v = paddle.reshape(v, (-1,))
+        len_v = v.shape[0]
+        for n, i in enumerate(steps):
+            a[i] = v[n % len_v]
+    else:
+        for i in steps:
+            i = ins == i
+            w = paddle.logical_or(w, i)
+        v = paddle.to_tensor(v, dtype=a.dtype)
+        a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
