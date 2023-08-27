@@ -374,10 +374,10 @@ def maximum(x1, x2, /):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "jax" : ("bfloat16",),
-        "tensorflow" : ("bfloat16",),
-        "torch" : ("bfloat16",),
-        "numpy" : ("bfloat16",),
+        "jax": ("bfloat16",),
+        "tensorflow": ("bfloat16",),
+        "torch": ("bfloat16",),
+        "numpy": ("bfloat16",),
     }
 )
 def mean(a, axis=None, keepdims=False, out=None, /):
