@@ -73,7 +73,7 @@ class Array:
             raise ivy.utils.exceptions.IvyException(
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
-        
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(
         self,
