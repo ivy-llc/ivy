@@ -372,15 +372,15 @@ def maximum(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def minimum(x1, x2, /):
-    x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    return ivy.minimum(x1, x2)
-
-
-@to_ivy_arrays_and_back
 def mean(x, axis=None, keepdims=False, out=None, /):
     x = promote_types_of_jax_inputs(x)
     return ivy.mean(x, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+def minimum(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.minimum(x1, x2)
 
 
 @to_ivy_arrays_and_back

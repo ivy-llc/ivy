@@ -718,7 +718,7 @@ def test_jax_mean(
         x=x[0],
         axis=x[1],
         keepdims=x[2],
-        out=x[3]
+        out=x[3],
     )
 
 
