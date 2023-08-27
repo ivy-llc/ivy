@@ -461,7 +461,6 @@ def grid_sample(
         padding = [(0, 0) for _ in range(2)] + [(4, 4) for _ in range(2)]
         input = ivy.pad(input, padding, mode="constant", constant_values=0)
 
-        # compute all coordinate depends on padding mode. Apply padding(zeros, reflect, border)
         if mode == "bicubic":
             grid_floor = ivy.floor(grid)
             distance = grid - grid_floor
@@ -617,6 +616,3 @@ def grid_sample(
 
     else:
         raise ivy.exceptions.IvyError(f"Not supported input shape {input.shape}")
-
-
-

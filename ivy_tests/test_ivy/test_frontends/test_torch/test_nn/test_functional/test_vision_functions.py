@@ -362,7 +362,7 @@ def test_torch_affine_grid(
 
 
 @st.composite
-def grid_sample_helper(draw, dtype, mode, padding_mode):
+def grid_sample_helper(draw, dtype, mode, mode_3d, padding_mode):
     dtype = draw(dtype)
     align_corners = draw(st.booleans())
     dims = draw(st.integers(4, 5))
@@ -374,9 +374,9 @@ def grid_sample_helper(draw, dtype, mode, padding_mode):
     grid_w = draw(helpers.ints(min_value=2, max_value=4))
     batch = draw(helpers.ints(min_value=1, max_value=5))
 
-    mode = draw(st.sampled_from(mode))
     padding_mode = draw(st.sampled_from(padding_mode))
     if dims == 4:
+        mode = draw(st.sampled_from(mode))
         x = draw(
             helpers.array_values(
                 dtype=dtype[0],
@@ -395,6 +395,7 @@ def grid_sample_helper(draw, dtype, mode, padding_mode):
             )
         )
     elif dims == 5:
+        mode = draw(st.sampled_from(mode_3d))
         depth = draw(helpers.ints(min_value=10, max_value=15))
         grid_d = draw(helpers.ints(min_value=5, max_value=10))
         x = draw(
@@ -421,7 +422,8 @@ def grid_sample_helper(draw, dtype, mode, padding_mode):
     fn_tree="torch.nn.functional.grid_sample",
     dtype_x_grid_modes=grid_sample_helper(
         dtype=helpers.get_dtypes("valid", full=False),
-        mode=["nearest", "bilinear"],
+        mode=["nearest", "bilinear", "bicubic"],
+        mode_3d=["nearest", "bilinear"],
         padding_mode=["border", "zeros", "reflection"],
     ),
 )
