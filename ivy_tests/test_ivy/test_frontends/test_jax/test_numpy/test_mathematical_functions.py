@@ -706,6 +706,7 @@ def test_jax_mean(
     frontend,
     backend_fw,
     test_flags,
+    **kwargs,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -716,9 +717,7 @@ def test_jax_mean(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        axis=x[1],
-        keepdims=x[2],
-        out=x[3],
+        **kwargs,
     )
 
 
