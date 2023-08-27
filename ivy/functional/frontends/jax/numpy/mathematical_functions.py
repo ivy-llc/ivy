@@ -372,8 +372,8 @@ def maximum(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def mean(x, axis=None, keepdims=False, out=None, /):
-    return ivy.mean(x, axis=axis, keepdims=keepdims, out=out)
+def mean(a, axis=None, keepdims=False, out=None, /):
+    return ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_ivy_arrays_and_back
