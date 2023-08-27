@@ -690,7 +690,9 @@ def test_jax_dot(
 @handle_frontend_test(
     fn_tree="jax.numpy.mean",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        large_abs_safety_factor=1.5,
+        small_abs_safety_factor=1.5,
     ),
     test_with_out=st.just(True),
 )
