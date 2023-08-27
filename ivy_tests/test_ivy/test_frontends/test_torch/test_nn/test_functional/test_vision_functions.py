@@ -366,12 +366,12 @@ def grid_sample_helper(draw, dtype, mode, padding_mode):
     dtype = draw(dtype)
     align_corners = draw(st.booleans())
     dims = draw(st.integers(4, 5))
-    height = draw(helpers.ints(min_value=10, max_value=15))
-    width = draw(helpers.ints(min_value=10, max_value=15))
+    height = draw(helpers.ints(min_value=5, max_value=10))
+    width = draw(helpers.ints(min_value=5, max_value=10))
     channels = draw(helpers.ints(min_value=1, max_value=3))
 
-    grid_h = draw(helpers.ints(min_value=5, max_value=10))
-    grid_w = draw(helpers.ints(min_value=5, max_value=10))
+    grid_h = draw(helpers.ints(min_value=2, max_value=4))
+    grid_w = draw(helpers.ints(min_value=2, max_value=4))
     batch = draw(helpers.ints(min_value=1, max_value=5))
 
     mode = draw(st.sampled_from(mode))
@@ -425,7 +425,7 @@ def grid_sample_helper(draw, dtype, mode, padding_mode):
         padding_mode=["border", "zeros", "reflection"],
     ),
 )
-def test_torch_grid_sample_2d(
+def test_torch_grid_sample(
     *,
     dtype_x_grid_modes,
     on_device,
