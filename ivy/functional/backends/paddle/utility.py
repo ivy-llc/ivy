@@ -2,8 +2,14 @@
 import paddle
 from typing import Union, Optional, Sequence
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": "bool"},
+    backend_version,
+)
 def all(
     x: paddle.Tensor,
     /,
@@ -12,7 +18,6 @@ def all(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = x.cast("bool")
     if axis is None:
         axis = list(range(x.ndim))
     if isinstance(axis, int):
@@ -33,6 +38,10 @@ def all(
     return ret
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": "bool"},
+    backend_version,
+)
 def any(
     x: paddle.Tensor,
     /,
@@ -41,7 +50,6 @@ def any(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = x.cast("bool")
     if axis is None:
         axis = list(range(x.ndim))
     if isinstance(axis, int):
