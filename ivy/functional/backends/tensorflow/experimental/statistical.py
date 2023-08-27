@@ -348,7 +348,6 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
 
     the result which we get from our _nanmedian_helper = [5., 6.]
     """
-
     dtype = input.dtype
     temp = tf.cast(input, tf.float64)
     num_dim = tf.rank(temp)
