@@ -74,7 +74,6 @@ def test_jax_sign(
 # abs
 @handle_frontend_test(
     fn_tree="jax.numpy.abs",
-    aliases=["jax.numpy.absolute"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"),
     ),
@@ -104,7 +103,6 @@ def test_jax_abs(
 # absolute
 @handle_frontend_test(
     fn_tree="jax.numpy.absolute",
-    aliases=["jax.numpy.abs"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"),
     ),
