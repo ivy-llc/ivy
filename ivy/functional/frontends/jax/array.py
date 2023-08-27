@@ -88,6 +88,21 @@ class Array:
             keepdims=keepdims,
         )
 
+    def argmin(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return jax_frontend.numpy.argmin(
+            self,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+        )
+
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
 
