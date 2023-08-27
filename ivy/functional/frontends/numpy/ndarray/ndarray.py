@@ -264,6 +264,27 @@ class ndarray:
             subok=subok,
         )
 
+    def conjugate(
+        self,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    ):
+        return np_frontend.conjugate(
+            self.ivy_array,
+            out=out,
+            where=where,
+            casting=casting,
+            order=order,
+            dtype=dtype,
+            subok=subok,
+        )
+
     def cumprod(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumprod(
             self,
@@ -606,7 +627,7 @@ class ndarray:
     def item(self, *args):
         if len(args) == 0:
             return self[0].ivy_array.to_scalar()
-        elif len(args) == 1 and type(args[0]) == int:
+        elif len(args) == 1 and isinstance(args[0], int):
             index = args[0]
             return self.ivy_array.flatten()[index].to_scalar()
         else:
