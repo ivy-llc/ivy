@@ -2956,7 +2956,7 @@ def test_paddle_tensor_trunc(
     dtype_and_x=_statistical_dtype_values(function="nanmedian"),
     keepdim=st.booleans(),
 )
-def test_paddle_instance_nanmedian(
+def test_paddle_tensor_nanmedian(
     dtype_and_x,
     keepdim,
     frontend,
