@@ -580,10 +580,10 @@ def can_cast(
     """
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
-    try:
-        dtype = ivy.promote_types(from_, to)
-        return dtype == to
-    except KeyError:
+    dtype = ivy.promote_types(from_, to)
+    if dtype == to:
+        return True
+    else:
         return False
 
 
@@ -969,11 +969,7 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     ret
         True if data type is hashable else False
     """
-    try:
-        hash(dtype_in)
-        return True
-    except TypeError:
-        return False
+    return hash(dtype_in)
 
 
 @handle_exceptions
@@ -2549,7 +2545,8 @@ def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     >>> ivy.is_native_array(ivy.float64)
     False
     """
-    try:
-        return current_backend(None).is_native_dtype(dtype_in)
-    except ValueError:
+    backend = current_backend(None)
+    if backend.is_native_dtype(dtype_in):
+        return True
+    else:
         return False
