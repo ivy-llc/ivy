@@ -27,7 +27,7 @@ def _get_seed(key):
 def PRNGKey(seed):
     return ivy.array([0, seed % 4294967295 - (seed // 4294967295)], dtype=ivy.int64)
 
-def remove_axis(shape, axis):
+def _remove_axis(shape, axis):
     return shape[:axis] + shape[axis + 1 :]
 
 
@@ -391,7 +391,7 @@ def categorical(key, logits, axis, shape=None):
 
     if axis >= 0:
         axis -= len(logits_arr.shape)
-    batch_shape = tuple(remove_axis(logits_arr.shape, axis))
+    batch_shape = tuple(_remove_axis(logits_arr.shape, axis))
 
     if shape is None:
         shape = batch_shape
