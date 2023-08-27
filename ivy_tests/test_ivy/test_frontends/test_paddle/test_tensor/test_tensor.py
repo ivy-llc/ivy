@@ -2937,6 +2937,9 @@ def test_paddle_tensor_trunc(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
+            "q": 0.5,
+            "axis": None,
+            "keepdim": False,
         },
         method_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
