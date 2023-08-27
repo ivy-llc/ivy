@@ -374,7 +374,6 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
         low=minval, high=maxval, shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1])
     )
 
-@handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
