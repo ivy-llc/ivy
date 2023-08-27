@@ -23,19 +23,23 @@ def argmax(
     select_last_index: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    """Return the indices of the maximum values along an axis."""
+
     if select_last_index:
         x = jnp.flip(x, axis=axis)
-        ret = jnp.array(jnp.argmax(x, axis=axis, keepdims=keepdims))
+        result = jnp.array(jnp.argmax(x, axis=axis, keepdims=keepdims))
         if axis is not None:
-            ret = x.shape[axis] - ret - 1
+            result = x.shape[axis] - result - 1
         else:
-            ret = x.size - ret - 1
+            result = x.size - result - 1
     else:
-        ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
+        result = jnp.argmax(x, axis=axis, keepdims=keepdims)
+
     if dtype:
         dtype = ivy.as_native_dtype(dtype)
-        return ret.astype(dtype)
-    return ret
+        return result.astype(dtype)
+
+    return result
 
 
 @with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
