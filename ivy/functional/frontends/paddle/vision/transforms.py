@@ -170,6 +170,21 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
         raise ValueError("Unsupported input format")
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "uint8")}, "paddle")
+@to_ivy_arrays_and_back
+def resize(img, size, interpolation="bilinear"):
+    if ivy.is_array(img):
+        # Get the height and width of the original image
+        orig_height, orig_width = img.shape[-3], img.shape[-2]
+
+        # Resize the image using Ivy's resize function
+        img_resized = ivy.resize(img, (orig_height * size[0], orig_width * size[1]))
+
+        return img_resized
+    else:
+        raise ValueError("Unsupported input format")
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
