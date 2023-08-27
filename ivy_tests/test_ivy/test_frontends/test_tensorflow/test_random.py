@@ -388,7 +388,7 @@ def test_tensorflow_gamma(
         max_dim_size=5,
     ),
     counts=st.one_of(
-        helpers.ints(allow_inf=False, allow_nan=False, min_value=-2, max_value=5),
+        helpers.ints(min_value=-2, max_value=5),
         helpers.lists(
             x=helpers.floats(
                 allow_nan=False, allow_inf=False, min_value=-2, max_value=5
