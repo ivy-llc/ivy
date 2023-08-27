@@ -5,7 +5,9 @@ import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import numpy as np
 import ivy
+from ivy import with_supported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import backend_version
 
 
 ivy_dtype_dict = {
@@ -138,6 +140,20 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     return result
 
 
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "bool",
+            "uint16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def broadcast_to(
     x: paddle.Tensor,
     /,
@@ -156,20 +172,7 @@ def broadcast_to(
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bfloat16,
-    ]:
-        return paddle.broadcast_to(x.cast("float32"), shape).cast(x.dtype)
-    elif x.dtype in [paddle.complex64, paddle.complex128]:
-        x_real = paddle.broadcast_to(x.real(), shape)
-        x_imag = paddle.broadcast_to(x.imag(), shape)
-        return paddle.complex(x_real, x_imag)
-    else:
-        return paddle.broadcast_to(x, shape)
+    return paddle.broadcast_to(x, shape)
 
 
 @_handle_nestable_dtype_info
