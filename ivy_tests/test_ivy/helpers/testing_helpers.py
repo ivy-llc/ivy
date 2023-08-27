@@ -611,6 +611,7 @@ def handle_method(
             num_positional_args=init_num_positional_args,
             as_variable=init_as_variable_flags,
             native_arrays=init_native_arrays,
+            precision_mode=precision_mode,
         )
 
         if method_num_positional_args is None:
@@ -623,6 +624,7 @@ def handle_method(
             as_variable=method_as_variable_flags,
             native_arrays=method_native_arrays,
             container_flags=method_container_flags,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
