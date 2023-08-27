@@ -5,14 +5,15 @@ import torch
 
 ivy.set_backend("torch")
 
-x = np.array([[1, 1], [0, 0]], dtype=np.int64)
+x = np.array([[0, 0], [0, 0]], dtype=np.float64)
 idx = np.array([[0, 0]], dtype=np.int64)
-vals = np.array([[1, 1]], dtype=np.int64)
+vals = np.array([[1, 1]], dtype=np.float64)
 axis = 0
 
 ivy_x = ivy.array(x)
 ivy_idx = ivy.array(idx)
 ivy_vals = ivy.array(vals)
+
 
 torch_x = torch.tensor(x)
 torch_idx = torch.tensor(idx)
