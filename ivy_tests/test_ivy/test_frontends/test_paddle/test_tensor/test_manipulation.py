@@ -31,6 +31,18 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
+@st.composite
+def dtypes_x_reshape_(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    return dtypes, x, shape
+
+
 # Tests #
 # ----- #
 
@@ -41,6 +53,33 @@ def dtypes_x_reshape(draw):
     dtypes_x_reshape=dtypes_x_reshape(),
 )
 def test_paddle_reshape(
+    *,
+    dtypes_x_reshape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, shape = dtypes_x_reshape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+    )
+
+
+# reshape_
+@handle_frontend_test(
+    fn_tree="paddle.reshape_",
+    dtypes_x_reshape=dtypes_x_reshape_(),
+)
+def test_paddle_reshape_(
     *,
     dtypes_x_reshape,
     on_device,
@@ -520,6 +559,43 @@ def test_paddle_gather(
         on_device=on_device,
         param=param[0],
         indices=indices[0],
+    )
+
+
+# unstack
+@handle_frontend_test(
+    fn_tree="paddle.unstack",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        max_dim_size=1,
+    ),
+    number_positional_args=st.just(1),
+    axis=st.integers(-1, 0),
+    test_with_out=st.just(False),
+)
+def test_paddle_unstack(
+    *,
+    dtypes_values,
+    axis,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x = dtypes_values
+    axis = axis
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
     )
 
 

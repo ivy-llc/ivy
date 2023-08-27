@@ -1,7 +1,7 @@
 Ivy Stateful API
 ================
 
-Here we explain how Ivy’s stateful API builds on the functional API and the :class:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
+Here we explain how Ivy’s stateful API builds on the functional API and the :class:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers, and custom trainable modules, which help get your ML projects up and running very quickly!
 
 So, without further ado, let’s walk through what the stateful API has to offer!
 
@@ -39,7 +39,7 @@ For example, we can create a linear layer by deriving from :class:`ivy.Module` l
               inputs, self.v.w,
               self.v.b if self._with_bias else None)
 
-For simplicity, this is slightly different to the builtin :class:`ivy.Linear` in a couple of ways, as we will explain in the Initializer section below.
+For simplicity, this is slightly different from the builtin :class:`ivy.Linear` in a couple of ways, as we will explain in the Initializer section below.
 
 All :class:`ivy.Module` instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an :class:`ivy.Container`.
 For our example above, the hierarchical structure of these variables is the same as that defined in the method :meth:`_create_variables`.
