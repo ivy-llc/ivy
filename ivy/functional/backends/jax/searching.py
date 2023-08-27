@@ -26,7 +26,12 @@ def argmax(
     """Return the indices of the maximum values along an axis."""
 
     if select_last_index:
-        x = jnp.flip(x, axis=axis)
+        if axis == 0:
+            x = jnp.flipud(x)
+        elif axis == 1:
+            x = jnp.fliplr(x)
+        else:
+            x = jnp.flip(x, axis=axis)
         result = jnp.array(jnp.argmax(x, axis=axis, keepdims=keepdims))
         if axis is not None:
             result = x.shape[axis] - result - 1
