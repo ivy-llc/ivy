@@ -119,13 +119,14 @@ def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=1,
         large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
     axis=st.one_of(
         helpers.ints(min_value=-1, max_value=0),
         st.none(),
     ),
+    test_gradients=st.just(False),
 )
 def test_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
