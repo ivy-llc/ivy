@@ -2143,8 +2143,8 @@ def test_paddle_stanh(
     fn_tree="paddle.tensor.math.amin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        allow_inf=False,
+        num_arrays=1,
+        allow_inf=True,
         shared_dtype=True,
     ),
 )
@@ -2166,4 +2166,7 @@ def test_paddle_amin(
         test_flags=test_flags,
         on_device=on_device,
         x=x[0],
+        keepdim=keepdim,
+        axis=axis,
+    
     )
