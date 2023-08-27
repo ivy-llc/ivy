@@ -13,33 +13,19 @@ import paddle.nn.functional as F
 # local
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 from . import backend_version
 
 
-unsupported_dtypes = [
-    paddle.int8,
-    paddle.int16,
-    paddle.int32,
-    paddle.int64,
-    paddle.uint8,
-    paddle.float16,
-    paddle.complex64,
-    paddle.complex128,
-    paddle.bool,
-]
-
-
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+)
 def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return paddle.complex(F.relu(x.real()), F.relu(x.imag()))
-        return F.relu(x.cast("float32")).cast(x.dtype)
     return F.relu(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
 )
 def leaky_relu(
     x: paddle.Tensor,
@@ -48,18 +34,11 @@ def leaky_relu(
     alpha: float = 0.2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return paddle.complex(
-                F.leaky_relu(x.real(), negative_slope=alpha),
-                F.leaky_relu(x.imag(), negative_slope=alpha),
-            )
-        return F.leaky_relu(x.cast("float32"), negative_slope=alpha).cast(x.dtype)
     return F.leaky_relu(x, negative_slope=alpha)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex128", "complex64")}}, backend_version
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
 )
 def gelu(
     x: paddle.Tensor,
@@ -68,29 +47,15 @@ def gelu(
     approximate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            if approximate:
-                return (
-                    0.5
-                    * x
-                    * (
-                        1
-                        + paddle_backend.tanh(0.7978845608 * (x + 0.044715 * x * x * x))
-                    )
-                )
-            return 0.5 * x * (1 + paddle_backend.erf(x / paddle_backend.sqrt(2)))
-        return F.gelu(x.cast("float32"), approximate=approximate).cast(x.dtype)
     return F.gelu(x, approximate=approximate)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+)
 def sigmoid(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return 1 / (1 + paddle_backend.exp(-x))
-        return F.sigmoid(x.cast("float32")).cast(x.dtype)
     return F.sigmoid(x)
 
 
@@ -168,16 +133,15 @@ def log_softmax(
     return ret
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+)
 def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
-        return F.mish(x.cast("float32")).cast(x.dtype)
     return F.mish(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
 )
 def hardswish(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
