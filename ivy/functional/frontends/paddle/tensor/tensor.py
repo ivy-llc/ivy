@@ -640,3 +640,9 @@ class Tensor:
     )
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
+        
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+    )
+    def trace(self, offset=0, axis1=0, axis2=1, name=None):
+        return paddle_frontend.Tensor(ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2))
