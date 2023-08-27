@@ -492,6 +492,35 @@ def test_paddle_round(
     )
 
 
+# round_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.round_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+    ),
+)
+def test_paddle_round_(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # ceil
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.ceil",
@@ -1748,6 +1777,34 @@ def test_paddle_rsqrt(
     )
 
 
+# rsqrt_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.rsqrt_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_rsqrt_(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # prod
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.prod",
@@ -2047,4 +2104,36 @@ def test_paddle_amax(
         test_flags=test_flags,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# stanh
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.stanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    scale_a=st.floats(1e-5, 1e5),
+    scale_b=st.floats(1e-5, 1e5),
+)
+def test_paddle_stanh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    scale_a,
+    scale_b,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        scale_a=scale_a,
+        scale_b=scale_b,
     )

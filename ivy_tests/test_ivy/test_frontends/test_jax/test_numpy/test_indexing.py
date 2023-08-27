@@ -1,12 +1,13 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import ivy
 from jax.numpy import tril, triu, r_, c_
 
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (
     _helper_r_,
     _helper_c_,
@@ -470,7 +471,7 @@ def test_jax_numpy_indices(
 def test_jax_numpy_r_(inputs, backend_fw):
     inputs, *_ = inputs
     ret_gt = r_.__getitem__(tuple(inputs))
-    with update_backend(backend_fw):
+    with BackendHandler.update_backend(backend_fw):
         ret = jnp_frontend.r_.__getitem__(tuple(inputs))
     assert np.allclose(ret.ivy_array, ret_gt)
 
@@ -478,6 +479,46 @@ def test_jax_numpy_r_(inputs, backend_fw):
 @handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_c_())  # dummy fn_tree
 def test_jax_numpy_c_(inputs, backend_fw):
     ret_gt = c_.__getitem__(tuple(inputs))
-    with update_backend(backend_fw):
+    with BackendHandler.update_backend(backend_fw):
         ret = jnp_frontend.c_.__getitem__(tuple(inputs))
     assert np.allclose(ret.ivy_array, ret_gt)
+
+
+# choose
+@handle_frontend_test(
+    fn_tree="jax.numpy.choose",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+    ),
+    out=st.none(),
+    mode=st.sampled_from(["wrap", "clip", "raise"]),
+    test_with_out=st.just(False),
+)
+def test_jax_choose(
+    *,
+    dtype_x_indices_axis,
+    out,
+    mode,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    choices = ivy.array(
+        [np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))]
+    )
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x,
+        choices=choices,
+        out=out,
+        mode=mode,
+    )

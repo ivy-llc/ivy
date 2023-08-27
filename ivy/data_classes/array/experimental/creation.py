@@ -155,10 +155,12 @@ class _ArrayWithCreationExperimental(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
             The array containing the window.
+
         Examples
         --------
         >>> ivy.blackman_window(4, periodic = True)
@@ -170,3 +172,42 @@ class _ArrayWithCreationExperimental(abc.ABC):
         return ivy.blackman_window(
             self._data, periodic=periodic, dtype=dtype, device=device, out=out
         )
+
+    def trilu(
+        self: ivy.Array,
+        /,
+        *,
+        k: int = 0,
+        upper: bool = True,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trilu. This method simply wraps the
+        function, and so the docstring for ivy.trilu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array having shape (..., M, N) and whose innermost two dimensions form
+            MxN matrices.    *,
+        k
+            diagonal below or above which to zero elements. If k = 0, the diagonal is
+            the main diagonal. If k < 0, the diagonal is below the main diagonal. If
+            k > 0, the diagonal is above the main diagonal. Default: ``0``.
+        upper
+            indicates whether upper or lower part of matrix is retained.
+            Default: ``True``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the upper triangular part(s). The returned array must
+            have the same shape and data type as ``self``. All elements below the
+            specified diagonal k must be zeroed. The returned array should be allocated
+            on the same device as ``self``.
+        """
+        return ivy.trilu(self._data, k=k, upper=upper, out=out)
