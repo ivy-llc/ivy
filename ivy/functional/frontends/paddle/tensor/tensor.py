@@ -142,6 +142,10 @@ class Tensor:
             ivy.argmax(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
         )
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "uint16")}, "paddle")
+    def unsqueeze(self, axis=None, name=None):
+        return paddle_frontend.Tensor(ivy.expand_dims(self._ivy_array, axis=axis))
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sqrt(self, name=None):
         return paddle_frontend.Tensor(ivy.sqrt(self._ivy_array))
