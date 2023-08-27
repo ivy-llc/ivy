@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
     fn_tree="numpy.fft.ifft",
     dtype_and_x=x_and_ifft(),
 )
-def test_numpy_iftt(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device):
+def test_numpy_ifft(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device):
     input_dtype, x, dim, norm, n = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -39,7 +39,7 @@ def test_numpy_iftt(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_d
         available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
     ),
 )
-def test_numpy_ifttshift(
+def test_numpy_ifftshift(
     dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device
 ):
     input_dtype, arr = dtype_and_x
@@ -92,7 +92,7 @@ def test_numpy_fft(
         available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
     ),
 )
-def test_numpy_fttshift(
+def test_numpy_fftshift(
     dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device
 ):
     input_dtype, arr = dtype_and_x
