@@ -716,7 +716,7 @@ def test_jax_mean(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=kwargs["x"],
+        a=x,
         **kwargs,
     )
 
