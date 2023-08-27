@@ -1611,3 +1611,54 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
         ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
         "abs norm of difference between svd and random init too high",
     )
+
+
+# dot
+@st.composite
+def _generate_dot_dtype_and_arrays(draw):
+    input_dtype = [draw(st.sampled_from(["float32", "float64"]))]
+    print()
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
+    )
+    shape_1 = (matrices_dims[0], matrices_dims[1])
+    shape_2 = (matrices_dims[1], matrices_dims[2])
+
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    return [matrix_1[0][0], matrix_2[0][0]], [matrix_1[1][0], matrix_2[1][0]]
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.dot",
+    data=_generate_dot_dtype_and_arrays(),
+    test_with_out=st.just(False),
+)
+def test_dot(data, test_flags, backend_fw, fn_name, on_device):
+    (input_dtypes, x) = data
+    return helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=["float32", "float32"],
+        test_values=True,
+        rtol_=1e-1,
+        atol_=6e-1,
+        a=x[0],
+        b=x[1],
+    )

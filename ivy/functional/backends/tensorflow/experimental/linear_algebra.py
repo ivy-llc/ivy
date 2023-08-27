@@ -203,6 +203,19 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def dot(
     a: tf.Tensor,
     b: tf.Tensor,

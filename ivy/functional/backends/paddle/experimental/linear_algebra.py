@@ -116,7 +116,7 @@ def dot(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.dot(a, b, out=out)
+    return paddle.tensordot(a, b, axes=1)
 
 
 dot.support_native_out = True
