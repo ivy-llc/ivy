@@ -57,7 +57,7 @@ def test_paddle_fft(
         force_int_axis=True,
     ),
 )
-def test_paddle_fttshift(
+def test_paddle_fftshift(
     dtype_x_axis, frontend, test_flags, fn_tree, on_device, backend_fw
 ):
     input_dtype, x, axes = dtype_x_axis
