@@ -27,6 +27,9 @@ def _get_seed(key):
 def PRNGKey(seed):
     return ivy.array([0, seed % 4294967295 - (seed // 4294967295)], dtype=ivy.int64)
 
+def _remove_axis(shape, axis):
+    return shape[:axis] + shape[axis + 1 :]
+
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
@@ -371,8 +374,6 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
         low=minval, high=maxval, shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1])
     )
 
-
-@handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
@@ -383,9 +384,41 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
     },
     "jax",
 )
+
+def categorical(key, logits, axis, shape=None):
+    _get_seed(key)
+    logits_arr = ivy.asarray(logits)
+
+    if axis >= 0:
+        axis -= len(logits_arr.shape)
+    batch_shape = tuple(_remove_axis(logits_arr.shape, axis))
+
+    if shape is None:
+        shape = batch_shape
+    else:
+        shape = tuple(shape)
+        if shape != batch_shape:
+            raise ValueError(
++                f"Shape {shape} is not compatible with reference shape {batch_shape}"
+                )
+
+    shape_prefix = shape[: len(shape) - len(batch_shape)]
+    logits_shape = list(shape[len(shape) - len(batch_shape) :])
+    logits_shape.insert(axis % len(logits_arr.shape), logits_arr.shape[axis])
+
+    gumbel_noise = gumbel(key, ivy.array(logits_shape), logits_arr.dtype)
+    expanded_logits = ivy.expand_dims(logits_arr, axis=axis)
+    noisy_logits = gumbel_noise + expanded_logits
+
+    # Use Ivy's argmax to get indices
+    indices = ivy.argmax(noisy_logits, axis=axis)
+
+    return indices
+
 def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
     seed = _get_seed(key)
     uniform_x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
     x = 1 - uniform_x
     weibull = x ** (concentration - 1) * -ivy.log(x / scale)
     return weibull
+
