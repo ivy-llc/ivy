@@ -213,7 +213,7 @@ def test_torch_scatter(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        backend_to_test="torch",
         input=x,
         dim=axis,
         index=indices,

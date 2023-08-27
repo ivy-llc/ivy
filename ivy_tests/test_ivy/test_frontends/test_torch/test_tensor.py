@@ -12444,7 +12444,7 @@ def test_torch_triu_(
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int64"],
+            available_dtypes=["int64", "float64", "int32", "float32"],
             min_num_dims=2,
             max_num_dims=3,
             min_dim_size=2,
@@ -12457,6 +12457,9 @@ def put_along_axis_helper(draw):
             min_axis=0,
         )
     )
+
+    x = x[0] if isinstance(x, list) else x
+    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
 
     # TODO: helpers.dtype_and_values draws
     #  unwantend axis values
@@ -12471,12 +12474,10 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(0, 1e3)
+        dtype=input_dtype, shape=idx_shape, elements=st.integers(0, 1e3)
     )
     values = draw(values_strategy)
 
-    x = x[0] if isinstance(x, list) else x
-    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
     return input_dtype, x, indices, values, axis
 
 
