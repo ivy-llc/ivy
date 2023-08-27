@@ -686,6 +686,42 @@ def test_jax_dot(
     )
 
 
+# mean
+@handle_frontend_test(
+    fn_tree="jax.numpy.mean",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(True),
+)
+def test_jax_mean(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=x[1],
+        keepdims=x[2],
+        out=x[3]
+    )
+
+
 # mod
 @handle_frontend_test(
     fn_tree="jax.numpy.mod",
