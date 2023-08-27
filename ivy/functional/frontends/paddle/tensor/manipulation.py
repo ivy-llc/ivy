@@ -77,20 +77,18 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
-@to_ivy_arrays_and_back
-def reshape(x, shape):
-    return ivy.reshape(x, shape)
-
-
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
-def reshape_(x, shape):
-    ret = ivy.reshape(x, shape)
-    ivy.inplace_update(x, ret)
-    return x
+def gather_nd(x, index, name=None):
+    return ivy.gather_nd(x, index, name)
+
+
+@to_ivy_arrays_and_back
+def reshape(x, shape):
+    return ivy.reshape(x, shape)
 
 
 @with_supported_dtypes(
@@ -183,4 +181,4 @@ def unstack(x, axis=0, name=None):
     return ivy.unstack(x, axis=axis)
 
 
-Solved from the merge of gather_nd and main branches.
+absolute = abs
