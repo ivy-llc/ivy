@@ -1000,8 +1000,10 @@ def test_unique_consecutive(
         max_num_dims=4,
         min_dim_size=3,
         max_dim_size=3,
+        num_arrays=2,
     ),
     v=st.sampled_from([1, 2, 3, 10]),
+    v_is_array_like=st.booleans(),
     wrap=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -1009,13 +1011,18 @@ def test_fill_diagonal(
     *,
     dt_a,
     v,
+    v_is_array_like,
     wrap,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
+    if backend_fw not in ["torch"]:
+        return
     dt, a = dt_a
+    if v_is_array_like:
+        v = a[1]
     helpers.test_function(
         input_dtypes=dt,
         test_flags=test_flags,
