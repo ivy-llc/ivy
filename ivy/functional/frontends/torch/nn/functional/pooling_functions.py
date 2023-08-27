@@ -141,7 +141,7 @@ def max_pool2d(
         ceil_mode=ceil_mode,
     )
 
-
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def max_pool3d(
     input,
