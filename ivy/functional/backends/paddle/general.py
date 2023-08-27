@@ -9,7 +9,9 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy import with_supported_dtypes
 from ivy.functional.ivy.general import _broadcast_to
+from . import backend_version
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -99,6 +101,21 @@ def to_list(x: paddle.Tensor, /) -> list:
     return x.tolist()
 
 
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": [
+            "float16",
+            "float32",
+            "float64",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+        ]
+    },
+    backend_version,
+)
 def gather(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -149,20 +166,24 @@ def gather(
     if batch_dims is not None:
         batch_dims = batch_dims % params.ndim
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
-    if params.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(params):
-            return paddle.complex(_gather(params.real()), _gather(params.imag()))
-        return _gather(params.cast("float32")).cast(params.dtype)
     return _gather(params)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "bool",
+            "float16",
+            "uint16",
+            "float32",
+            "float64",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def gather_nd(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -262,21 +283,7 @@ def gather_nd(
     # flat_indices now has shape [(B1.B2), i1, ..., iK, C]
     indices = paddle_backend.concat((index_grid, flat_indices), axis=-1)
     # indices has shape [(B1.B2), i1, ..., iK, 2+C]
-    if params.dtype in [
-        paddle.int8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-    ]:
-        if paddle.is_complex(params):
-            out = paddle.complex(
-                paddle.gather_nd(params.real(), indices),
-                paddle.gather_nd(params.imag(), indices),
-            )
-        else:
-            out = paddle.gather_nd(params.cast("float32"), indices).cast(params.dtype)
-    else:
-        out = paddle.gather_nd(params, indices)
+    out = paddle.gather_nd(params, indices)
     # out has shape [(B1.B2), i1, ..., iK, N-C]. Now we reshape batch to
     # its original form.
     out_shape = out.shape
@@ -379,6 +386,9 @@ def scatter_flat(
     )
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, backend_version
+)
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -438,45 +448,17 @@ def scatter_nd(
         indices = ivy.expand_dims(indices, axis=0)._data
         updates = ivy.expand_dims(updates, axis=0)._data
     target_dtype = target.dtype
-    if target_dtype in [
-        paddle.complex64,
-        paddle.complex128,
-    ]:
-        if reduction == "replace":
-            updates = paddle_backend.subtract(
-                updates,
-                paddle_backend.gather_nd(target, indices),
-            )
-        result_real = paddle.scatter_nd_add(target.real(), indices, updates.real())
-        result_imag = paddle.scatter_nd_add(target.imag(), indices, updates.imag())
-        ret = paddle.complex(result_real, result_imag)
-    elif target_dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        if reduction == "replace":
-            updates = paddle.subtract(
-                updates.cast("float32"),
-                paddle.gather_nd(target.cast("float32"), indices),
-            )
-        ret = paddle.scatter_nd_add(target.cast("float32"), indices, updates).cast(
-            target_dtype
-        )
-    else:
-        if reduction == "replace":
-            gathered_vals = paddle.gather_nd(target, indices)
-            # values greater than 2^24 - 1 can only be accurately represented as float64
-            if (np.abs(gathered_vals.numpy()).max() >= 2**24) or (
-                np.abs(updates.numpy()).max() >= 2**24
-            ):
-                gathered_vals = gathered_vals.cast("float64")
-                target = target.cast("float64")
-                updates = updates.cast("float64")
-            updates = paddle.subtract(updates, gathered_vals)
-        ret = paddle.scatter_nd_add(target, indices, updates).cast(target_dtype)
+    if reduction == "replace":
+        gathered_vals = paddle.gather_nd(target, indices)
+        # values greater than 2^24 - 1 can only be accurately represented as float64
+        if (np.abs(gathered_vals.numpy()).max() >= 2**24) or (
+            np.abs(updates.numpy()).max() >= 2**24
+        ):
+            gathered_vals = gathered_vals.cast("float64")
+            target = target.cast("float64")
+            updates = updates.cast("float64")
+        updates = paddle.subtract(updates, gathered_vals)
+    ret = paddle.scatter_nd_add(target, indices, updates).cast(target_dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
