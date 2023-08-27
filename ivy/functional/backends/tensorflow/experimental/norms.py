@@ -122,8 +122,10 @@ def instance_norm(
     x = tf.reshape(x, (1, *S, N * C))
     mean = tf.tile(mean, [N])
     variance = tf.tile(variance, [N])
-    scale = tf.tile(scale, [N])
-    offset = tf.tile(offset, [N])
+    if scale is not None:
+        scale = tf.tile(scale, [N])
+    if offset is not None:
+        offset = tf.tile(offset, [N])
     xnormalized, runningmean, runningvariance = batch_norm(
         x,
         mean,
