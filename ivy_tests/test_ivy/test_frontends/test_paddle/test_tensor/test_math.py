@@ -2141,14 +2141,16 @@ def test_paddle_stanh(
 # amin
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.amin",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
         num_arrays=1,
         allow_inf=True,
         shared_dtype=True,
+
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+        min_num_dims=1,
     ),
     keepdim=st.booleans(),
 )
@@ -2171,7 +2173,6 @@ def test_paddle_amin(
         test_flags=test_flags,
         on_device=on_device,
         x=x[0],
-        keepdim=keepdim,
-        axis=axis,
-    
+        axis = axis,
+        keepdim = keepdim,
     )
