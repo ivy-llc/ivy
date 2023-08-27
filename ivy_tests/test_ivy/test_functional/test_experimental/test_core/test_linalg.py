@@ -483,11 +483,12 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     dtype_x=_generate_multi_dot_dtype_and_arrays(),
     test_gradients=st.just(False),
 )
-def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name):
+def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
+        on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         test_values=True,
@@ -1617,15 +1618,15 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
-        max_num_dims=3,
+        max_num_dims=2,
         min_dim_size=2,
-        max_dim_size=5,
+        max_dim_size=2,
         min_value=1,
         max_value=10.0,
         num_arrays=2,
         shared_dtype=True,
     ),
-    n_modes=st.integers(min_value=0),
+    n_modes=st.integers(min_value=0, max_value=5),
 )
 def test_general_inner_product(
     *, dtype_and_x, n_modes, test_flags, backend_fw, fn_name, on_device

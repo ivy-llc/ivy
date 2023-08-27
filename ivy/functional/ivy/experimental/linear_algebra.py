@@ -1669,8 +1669,11 @@ def dot(
 
 
 @handle_nestable
-@to_native_arrays_and_back
 @handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+# @handle_device_shifting
 def general_inner_product(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -1684,16 +1687,19 @@ def general_inner_product(
 
     Parameters
     ----------
-    a, b : tensor
-    n_modes : int, default is None
-        * if None, the traditional inner product is returned (i.e. a float)
-        * otherwise, the product between the `n_modes` last modes of `a`
-            and the `n_modes` first modes of `b` is returned.
-            The resulting tensor's order is `ndim(a) - n_modes`.
+    a
+        first input tensor.
+    b
+        second input tensor.
+    n_modes
+        int, default is None. If None, the traditional inner product is returned
+        (i.e. a float) otherwise, the product between the `n_modes` last modes of
+        `a` and the `n_modes` first modes of `b` is returned. The resulting tensor's
+        order is `ndim(a) - n_modes`.
 
     Returns
     -------
-    inner_product : float if n_modes is None, tensor otherwise
+        float if n_modes is None, tensor otherwise
     """
     shape_a = a.shape
     shape_b = b.shape

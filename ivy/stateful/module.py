@@ -739,6 +739,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             ),
             dynamic_backend=dynamic_backend,
         )
+        created_n_found.cont_config["build_callable"] = True
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
@@ -753,7 +754,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
                 ivy.Container.cont_assert_identical_structure(
                     [created_n_found, v_from_constructor],
-                    build_callable=True,
                     assert_and_assign=True,
                 )
 
