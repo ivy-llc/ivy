@@ -2948,6 +2948,7 @@ def test_paddle_tensor_trunc(
         on_device=on_device,
     )
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
