@@ -34,13 +34,10 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
     {"2.13.0 and below": ("float16", "float32", "float64", "bfloat16")},
     "tensorflow",
 )
-@handle_tf_dtype
 @to_ivy_arrays_and_back
-def mfccs_from_log_mel_spectrograms(
-    log_mel_spectrograms, dct_type=2, n_mfcc=13, name=None
-):
-    mfccs = dct(log_mel_spectrograms, type=dct_type, n=n_mfcc)
-    return mfccs
+def mfccs_from_log_mel_spectrograms(log_mel_spectrograms):
+    dct_coefficients = dct(log_mel_spectrograms, type=2, n=13, axis=-1, norm="ortho")
+    return dct_coefficients
 
 
 @with_supported_dtypes(
