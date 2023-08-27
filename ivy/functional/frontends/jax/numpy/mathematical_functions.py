@@ -7,6 +7,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 
+
 @to_ivy_arrays_and_back
 def abs(x, /):
     return ivy.abs(x)
