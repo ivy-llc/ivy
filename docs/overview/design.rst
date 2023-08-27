@@ -9,8 +9,8 @@ If that sounds like you, feel free to check out the :ref:`Deep Dive` section aft
 
 | So, starting off with our higher level *design* section, Ivy can fulfill two distinct purposes:
 |
-| 1. enable automatic code conversions between frameworks
-| 2. serve as a new ML framework with multi-framework support
+| 1. Enabling automatic code conversions between frameworks
+| 2. Serving as a new ML framework with multi-framework support
 |
 | The Ivy codebase can then be split into three categories which are labelled (a),
 | (b) and (c) below, and can be further split into 8 distinct submodules.
