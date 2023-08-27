@@ -180,36 +180,35 @@ def test_tensorflow_vorbis_window(
 
 @st.composite
 def log_mel_spectrogram_shapes(draw):
-    frames = draw(st.integers(min_value=0, max_value=1000))
-    num_mel_bins = draw(st.integers(min_value=0, max_value=128))
+    frames = draw(st.integers(min_value=1, max_value=1000))
+    num_mel_bins = draw(st.integers(min_value=13, max_value=128))
     return frames, num_mel_bins
 
 
 # mfccs_from_log_mel_spectrograms
 @handle_frontend_test(
     fn_tree="tensorflow.signal.mfccs_from_log_mel_spectrograms",
-    shape=log_mel_spectrogram_shapes(),
     test_with_out=st.just(False),
+    dtype_and_spectrogram=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"], shape=log_mel_spectrogram_shapes()
+    ),
 )
 def test_tensorflow_mfccs_from_log_mel_spectrograms(
     *,
-    shape,
+    dtype_and_spectrogram,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
     on_device,
 ):
-    frames, num_mel_bins = shape
-    dtype, spectrogram = helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"], shape=(frames, num_mel_bins)
-    )
+    dtype, spectrograms = dtype_and_spectrogram
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=spectrogram,
+        log_mel_spectrograms=spectrograms[0],
     )
