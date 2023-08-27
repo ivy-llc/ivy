@@ -4,12 +4,22 @@ from typing import Optional, Union
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+        )
+    },
     backend_version,
 )
 def argsort(
@@ -21,19 +31,20 @@ def argsort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        x = x.cast("float32")
     return paddle.argsort(x, axis=axis, descending=descending)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+        )
+    },
     backend_version,
 )
 def sort(
@@ -45,21 +56,18 @@ def sort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        return paddle.sort(x.cast("float32"), axis=axis, descending=descending).cast(
-            x.dtype
-        )
     return paddle.sort(x, axis=axis, descending=descending)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
     backend_version,
 )
 def searchsorted(
@@ -72,24 +80,6 @@ def searchsorted(
     ret_dtype=paddle.int64,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        x = x.cast("float32")
-
-    if v.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        v = v.cast("float32")
-
     right = True if side == "right" else False
     assert ivy.is_int_dtype(ret_dtype), ValueError(
         "only Integer data types are supported for ret_dtype."
@@ -114,8 +104,17 @@ def searchsorted(
     return paddle.searchsorted(x, v, right=right).cast(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16", "float16", "complex")}},
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+        )
+    },
     backend_version,
 )
 def msort(
