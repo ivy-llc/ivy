@@ -168,6 +168,9 @@ def put_along_axis_helper(draw):
         )
     )
 
+    x = x[0] if isinstance(x, list) else x
+    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
+
     # TODO: helpers.dtype_and_values draws
     #  unwantend axis values
     if axis < 0:
@@ -182,12 +185,10 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(1, 1e3)
+        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e3)
     )
     values = draw(values_strategy)
 
-    x = x[0] if isinstance(x, list) else x
-    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
     return input_dtype, x, indices, values, axis
 
 

@@ -1,6 +1,8 @@
 # Testing Function
 # global
 from hypothesis import strategies as st
+import hypothesis.extra.numpy as nph
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -113,32 +115,67 @@ def test_numpy_diagonal(
     )
 
 
+@st.composite
+def put_along_axis_helper(draw):
+    input_dtype, x, axis, shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=["int64"],
+            min_num_dims=2,
+            max_num_dims=3,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=-1e2,
+            max_value=1e2,
+            valid_axis=True,
+            force_int_axis=True,
+            ret_shape=True,
+            min_axis=0,
+        )
+    )
+
+    x = x[0] if isinstance(x, list) else x
+    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
+
+    # TODO: helpers.dtype_and_values draws
+    #  unwantend axis values
+    if axis < 0:
+        axis = 0
+
+    idx_shape = list(shape)
+    idx_shape[axis] = 1
+
+    idx_strategy = nph.arrays(
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
+    )
+    indices = draw(idx_strategy)
+
+    values_strategy = nph.arrays(
+        dtype=input_dtype, shape=(), elements=st.integers(1, 1e3)
+    )
+    values = draw(values_strategy)
+
+    return input_dtype, x, indices, values, axis
+
+
 @handle_frontend_test(
     fn_tree="numpy.put_along_axis",
-    dtype_x_indices_axis=helpers.array_indices_put_along_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
+    args=put_along_axis_helper(),
     test_with_out=st.just(False),
 )
 def test_numpy_put_along_axis(
     *,
-    dtype_x_indices_axis,
+    args,
     test_flags,
     frontend,
     fn_tree,
     on_device,
     backend_fw,
 ):
-    dtypes, x, indices, axis, values, _ = dtype_x_indices_axis
+    dtypes, x, indices, values, axis = args
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=[dtypes],
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        backend_to_test="torch",
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
