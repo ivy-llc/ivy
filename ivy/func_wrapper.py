@@ -33,6 +33,7 @@ FN_DECORATORS = [
     "handle_partial_mixed_function",
     "handle_nestable",
     "handle_ragged",
+    "handle_backend_invalid",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -817,15 +818,27 @@ def handle_device_shifting(fn: Callable) -> Callable:
         -------
             The return of the function.
         """
+        dev = None
+        if "device" in kwargs and kwargs["device"] is not None:
+            dev = ivy.as_native_dev(kwargs["device"])
         if ivy.soft_device_mode:
-            return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+            return ivy.handle_soft_device_variable(
+                *args, fn=fn, device_shifting_dev=dev, **kwargs
+            )
         inputs = args + tuple(kwargs.values())
         devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
         unique_devices = set(devices)
         # check if arrays are on the same device
-        if len(unique_devices) == 1:
-            with ivy.DefaultDevice(next(iter(unique_devices))):
-                return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+        if len(unique_devices) <= 1:
+            # len(unique_devices) == 0 when there are no arrays
+            dst_dev = (
+                dev
+                if dev is not None
+                else None if len(unique_devices) == 0 else next(iter(unique_devices))
+            )
+            return ivy.handle_soft_device_variable(
+                *args, fn=fn, device_shifting_dev=dst_dev, **kwargs
+            )
         # raise when arrays are on different devices
         elif len(unique_devices) > 1:
             raise ivy.utils.exceptions.IvyException(
@@ -1507,6 +1520,57 @@ def handle_complex_input(fn: Callable) -> Callable:
 
     _handle_complex_input.handle_complex_input = True
     return _handle_complex_input
+
+
+def handle_backend_invalid(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_backend_invalid(*args, **kwargs):
+        """
+        Check if any of the arguments (or nested arguments) passed to the function are
+        instances of ivy.Array or ivy.NativeArray. If so, it returns the function. If
+        not, it raises an InvalidBackendException.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function if the current
+            backend matches the argument backend.
+            If not, it raises an InvalidBackendException
+        """
+        array_indices = ivy.nested_argwhere(
+            [args, kwargs], lambda x: isinstance(x, ivy.Array)
+        )
+        array_vals = ivy.multi_index_nest([args, kwargs], array_indices)
+
+        def func(x):
+            target_backend = ivy.utils.backend.handler._determine_backend_from_args(x)
+            if (
+                target_backend is not None
+                and ivy.backend != ""
+                and ivy.current_backend_str() != target_backend.backend
+            ):
+                raise ivy.utils.exceptions.InvalidBackendException(
+                    "Operation not allowed. Array was instantiated with backend"
+                    f" {target_backend.backend}. But current backend is"
+                    f" {ivy.backend}. Please set dynamic=True"
+                    " for the array if you want to convert it to the target"
+                    " backend"
+                )
+            return x
+
+        ivy.nested_map(array_vals, func, include_derived=True)
+
+        return fn(*args, **kwargs)
+
+    _handle_backend_invalid.handle_backend_invalid = True
+    return _handle_backend_invalid
 
 
 attribute_dict = {

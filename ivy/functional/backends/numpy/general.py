@@ -37,8 +37,6 @@ def get_item(
     *,
     copy: bool = None,
 ) -> np.ndarray:
-    if copy:
-        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 

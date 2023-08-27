@@ -61,8 +61,6 @@ def get_item(
         )
     else:
         ret = x.__getitem__(query)
-    if copy:
-        return paddle_backend.copy_array(ret).data
     return ret
 
 
@@ -408,6 +406,11 @@ def scatter_nd(
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
+
+    if indices.ndim > 1:
+        indices, unique_idxs = ivy.unique_all(indices, axis=0)[:2]
+        indices, unique_idxs = indices.data, unique_idxs.data
+        updates = ivy.gather(updates, unique_idxs, axis=0).data
 
     # implementation
     target_given = ivy.exists(out)

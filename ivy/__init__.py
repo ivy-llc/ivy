@@ -75,6 +75,14 @@ class Array:
     pass
 
 
+class TuckerTensor:
+    pass
+
+
+class CPTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -750,6 +758,7 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
+from .data_classes.FactorizedTensor import TuckerTensor, CPTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
