@@ -8,8 +8,7 @@ import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
-    with_supported_device_and_dtypes,
+    with_supported_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
 
@@ -20,6 +19,10 @@ from . import backend_version
 # -------------------#
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    backend_version,
+)
 def min(
     x: paddle.Tensor,
     /,
@@ -29,24 +32,7 @@ def min(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bfloat16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-            imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
-            ret = paddle.complex(real, imag)
-        else:
-            ret = paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.amin(x, axis=axis, keepdim=keepdims)
+    ret = paddle.amin(x, axis=axis, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
@@ -57,6 +43,10 @@ def min(
     return ret.astype(ret_dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    backend_version,
+)
 def max(
     x: paddle.Tensor,
     /,
@@ -66,24 +56,7 @@ def max(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.bfloat16,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            real_part = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
-            imag_part = paddle.amax(x.imag(), axis=axis, keepdim=keepdims)
-            ret = paddle.complex(real_part, imag_part)
-        else:
-            ret = paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.amax(x, axis=axis, keepdim=keepdims)
+    ret = paddle.amax(x, axis=axis, keepdim=keepdims)
 
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
@@ -95,6 +68,10 @@ def max(
     return ret.astype(ret_dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")},
+    backend_version,
+)
 def mean(
     x: paddle.Tensor,
     /,
@@ -104,19 +81,7 @@ def mean(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if x.dtype not in [
-        paddle.float32,
-        paddle.float64,
-    ]:
-        if paddle.is_complex(x):
-            ret = paddle.complex(
-                paddle.mean(x.real(), axis=axis, keepdim=keepdims),
-                paddle.mean(x.imag(), axis=axis, keepdim=keepdims),
-            )
-        else:
-            ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.mean(x, axis=axis, keepdim=keepdims)
+    ret = paddle.mean(x, axis=axis, keepdim=keepdims)
 
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
@@ -128,6 +93,10 @@ def mean(
     return ret.astype(ret_dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "float16", "uint16")},
+    backend_version,
+)
 def prod(
     x: paddle.Tensor,
     /,
@@ -161,6 +130,10 @@ def _std(x, axis, correction, keepdim):
     return out
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
 def std(
     x: paddle.Tensor,
     /,
@@ -173,6 +146,22 @@ def std(
     return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "uint16",
+            "float16",
+            "float32",
+            "float64",
+            "bool",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
 def sum(
     x: paddle.Tensor,
     /,
@@ -184,10 +173,7 @@ def sum(
 ) -> paddle.Tensor:
     dtype = x.dtype if dtype is None else dtype
     dtype = ivy.as_ivy_dtype(dtype)
-    if x.dtype in [paddle.int8, paddle.uint8]:
-        ret = paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
-    else:
-        ret = paddle.sum(x.cast(dtype), axis=axis, dtype=dtype, keepdim=keepdims)
+    ret = paddle.sum(x.cast(dtype), axis=axis, dtype=dtype, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
@@ -213,11 +199,18 @@ def var(
 
 # Extra #
 # ----- #
-@with_supported_device_and_dtypes(
+@with_supported_dtypes(
     {
-        "2.5.1 and below": {
-            "cpu": ("int32", "int64", "float64", "complex128", "float32", "complex64")
-        }
+        "2.5.1 and below": (
+            "complex64",
+            "complex128",
+            "float16",
+            "uint16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
     },
     backend_version,
 )
@@ -233,13 +226,6 @@ def cumprod(
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else x.dtype
     x = paddle.cast(x, dtype)
-    if ivy.as_native_dtype(dtype) in [
-        paddle.uint8,
-        paddle.int8,
-        paddle.int16,
-        paddle.float16,
-    ]:
-        x = paddle.cast(x, "float32")
     if not (exclusive or reverse):
         return paddle.cumprod(x, dim=axis).cast(dtype)
     elif exclusive and reverse:
@@ -274,8 +260,8 @@ def cumprod(
         return paddle_backend.flip(x, axis=axis).cast(dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def cumsum(
