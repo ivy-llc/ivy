@@ -374,37 +374,6 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
         low=minval, high=maxval, shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1])
     )
 
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "0.4.14 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "jax",
-)
-
-def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):
-    if shape is None:
-        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
-    if method == "cholesky":
-        cov_factor = ivy.cholesky(cov)
-    elif method == "eigh":
-        (w, v) = ivy.eigh(cov)
-        cov_factor = v * ivy.sqrt(w[..., None, :])
-    elif method == "svd":
-        (u, s, _) = ivy.svd(cov)
-        cov_factor = u * ivy.sqrt(s[..., None, :])
-
-    rand_normal = normal(key=key, shape=shape + mean.shape[-1:], dtype=dtype)
-    result = mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal.ivy_array)
-
-    return result
-
-
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
