@@ -150,8 +150,8 @@ Using miniconda
    
       .. code-block:: none
    
-         pip install -r requirements/optional_m1_1.txt
-         pip install -r requirements/optional_m1_2.txt
+         pip install -r requirements/optional_apple_silicon_1.txt
+         pip install -r requirements/optional_apple_silicon_2.txt
 
 Using venv
 **********
