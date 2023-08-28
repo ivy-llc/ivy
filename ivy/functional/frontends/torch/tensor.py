@@ -1857,6 +1857,22 @@ class Tensor:
         arr = torch_frontend.moveaxis(self, 0, dim)
         return arr
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "int16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def triu(self, diagonal=0):
+        return torch_frontend.triu(self, diagonal)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
