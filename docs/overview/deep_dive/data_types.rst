@@ -25,7 +25,6 @@ Data Types
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
-.. _`data types forum`: https://discord.com/channels/799879767196958751/1028297299799060490
 
 
 The data types supported by Ivy are as follows:
@@ -391,10 +390,11 @@ An example of the latter is :func:`ivy.abs` with a tensorflow backend:
 
 
 
-The :code: `[un]supported_dtypes_and_devices` decorators can be used for more specific cases where a certain
+The :code:`[un]supported_dtypes_and_devices` decorators can be used for more specific cases where a certain
 set of dtypes is not supported by a certain device.
 
 .. code-block:: python
+
     @with_unsupported_device_and_dtypes({"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
     def gcd(
         x1: Union[paddle.Tensor, int, list, tuple],
@@ -408,8 +408,8 @@ set of dtypes is not supported by a certain device.
 
 
 
-These decorators can also be used as context managers and be applied to a block of code at once or even a module, so that the decorator is applied to all the functions within that context.
-For example :
+These decorators can also be used as context managers and be applied to a block of code at once or even a module, so that the decorator is applied to all the functions within that context. For example:
+
 .. code-block:: python
 
     # we define this function each time we use this context manager
@@ -517,16 +517,16 @@ for most of the part as this could be seen as undesirable behavior to some of us
 
 There are currently four modes that accomplish this.
 
-1. :code:  `upcast_data_types`
-2. :code:  `downcast_data_types`
-3. :code:  `crosscast_data_types`
-4. :code:  `cast_data_types`
+1. :code:`upcast_data_types`
+2. :code:`downcast_data_types`
+3. :code:`crosscast_data_types`
+4. :code:`cast_data_types`
 
 :code:`upcast_data_types` mode casts the unsupported dtype encountered to the next highest supported dtype in the same
 dtype group, i.e, if the unsupported dtype encountered is :code:`uint8` , then this mode will try to upcast it to the next available supported :code:`uint` dtype. If no
-higher `uint` dtype is avaiable, then there won't be any upcasting performed. You can set this mode by calling :code:`ivy.upcast_data_types()` with an optional :code:`val` keyword argument that defaults to :code:`True`.
+higher `uint` dtype is available, then there won't be any upcasting performed. You can set this mode by calling :code:`ivy.upcast_data_types()` with an optional :code:`val` keyword argument that defaults to :code:`True`.
 
-Similarly, :code:`downcast_data_dtypes` tries to downcast to the next lower supported dtype in the same dtype group. No casting is performed is no lower dtype is found in the same group.
+Similarly, :code:`downcast_data_dtypes` tries to downcast to the next lower supported dtype in the same dtype group. No casting is performed if no lower dtype is found in the same group.
 It can also be set by calling :code:`ivy.downcast_data_types()` with the optional :code:`val` keyword that defaults to boolean value :code:`True`.
 
 :code:`crosscast_data_types` is for cases when a function doesn't support :code:`int` dtypes, but supports :code:`float` and vice-versa. In such cases,
@@ -535,12 +535,13 @@ we cast to the default supported :code:`float` dtype if it's the unsupported int
 The :code:`cast_data_types` mode is the combination of all the three modes that we discussed till now. It works it way from crosscasting to upcasting and finally to downcasting to provide support
 for any unsupported dtype that is encountered by the functions.
 
-This is the unsupported dtypes for :code: `exmp1`. It doesn't support :code: `float16`. We will see how we can
+This is the unsupported dtypes for :code:`exmp1`. It doesn't support :code:`float16`. We will see how we can
 still pass :code:`float16` arrays and watch it pass for different modes.
 
 Example of Upcasting mode :
 
 .. code-block:: python
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
     @handle_numpy_arrays_in_specific_backend
     def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -588,6 +589,7 @@ Example of Mixed casting mode :
 Example of Cross casting mode :
 
 .. code-block:: python
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float",)}, backend_version)
     @handle_numpy_arrays_in_specific_backend
     def lcm(
@@ -613,7 +615,7 @@ enable :code:`float` dtypes to be passed here too.
 
 
 
-Since all  :code: `float` dtypes are not supported by the :code:`lcm` function in :code: `torch` , it is
+Since all  :code:`float` dtypes are not supported by the :code:`lcm` function in :code:`torch`, it is
 casted to the default integer dtype , i.e :code:`int32`.
 
 While, casting modes can handle a lot of cases, it doesn't guarantee 100% support for the unsupported dtypes.
@@ -642,7 +644,7 @@ As with all superset design decisions, this behavior makes it much easier to sup
 
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_ or in the `data types forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_!
 
 
 **Video**

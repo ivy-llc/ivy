@@ -4,7 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
 # Helpers #
@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 @st.composite
 def _input_fill_and_dtype(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
         if ivy_backend.is_uint_dtype(dtype[0]):
             fill_values = draw(st.integers(min_value=0, max_value=5))
@@ -725,4 +725,38 @@ def test_paddle_complex(
         on_device=on_device,
         real=real,
         imag=imag,
+    )
+
+
+# linspace
+@handle_frontend_test(
+    fn_tree="paddle.linspace",
+    start=helpers.floats(min_value=-10, max_value=10),
+    stop=helpers.floats(min_value=-10, max_value=10),
+    num=helpers.ints(min_value=1, max_value=5),
+    dtype=helpers.get_dtypes("float"),
+    test_with_out=st.just(False),
+)
+def test_paddle_linspace(
+    start,
+    stop,
+    num,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        stop=stop,
+        num=num,
+        dtype=dtype[0],
     )
