@@ -24,6 +24,7 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
+from collections.abc import Hashable
 
 
 # Helpers #
@@ -583,8 +584,7 @@ def can_cast(
     dtype = ivy.promote_types(from_, to)
     if dtype == to:
         return True
-    else:
-        return False
+    return False
 
 
 @handle_exceptions
@@ -969,7 +969,7 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     ret
         True if data type is hashable else False
     """
-    return hash(dtype_in)
+    return isinstance(dtype_in, Hashable)
 
 
 @handle_exceptions
@@ -2126,7 +2126,9 @@ def promote_types(
     query.sort(key=lambda x: str(x))
     query = tuple(query)
 
-    def _promote(query):
+    def _promote(query, rev=False):
+        if rev:
+            query = (query[1], query[0])
         if array_api_promotion:
             return ivy.array_api_promotion_table[query]
         return ivy.promotion_table[query]
@@ -2134,10 +2136,8 @@ def promote_types(
     try:
         ret = _promote(query)
     except KeyError:
-        # try again with the dtypes swapped
-        query = (query[1], query[0])
         try:
-            ret = _promote(query)
+            ret = _promote(query, rev=True)
         except KeyError:
             raise ivy.utils.exceptions.IvyDtypePromotionError(
                 "these dtypes ({} and {}) are not type promotable, ".format(
@@ -2545,8 +2545,4 @@ def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     >>> ivy.is_native_array(ivy.float64)
     False
     """
-    backend = current_backend(None)
-    if backend.is_native_dtype(dtype_in):
-        return True
-    else:
-        return False
+    return current_backend(None).is_native_dtype(dtype_in)
