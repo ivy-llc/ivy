@@ -173,12 +173,16 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
+    dtype: np.dtype,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[np.ndarray] = None,
-    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    # Please note that numpy, by default, allocates arrays to CPU
+    # In order to perform allocation on other devices (p.e. GPU)
+    # other libraries, like cupy, need to be used. Not sure if this is
+    # what Ivy wants
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
     x, filters = _dilate_pad_conv_tranpose(
@@ -192,7 +196,7 @@ def conv1d_transpose(
     res = np.add(res, bias) if bias is not None else res
     if data_format == "NCW":
         res = np.transpose(res, (0, 2, 1))
-    return res
+    return res.astype(dtype)
 
 
 def conv2d(
