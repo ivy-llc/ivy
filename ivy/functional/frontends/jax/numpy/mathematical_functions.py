@@ -370,6 +370,7 @@ def maximum(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
 
+
 @with_supported_dtypes(
     {
         "tensorflow": ("float", "complex"),
