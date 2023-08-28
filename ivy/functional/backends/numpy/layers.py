@@ -178,6 +178,7 @@ def conv1d_transpose(
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     # Please note that numpy, by default, allocates arrays to CPU
     # In order to perform allocation on other devices (p.e. GPU)
