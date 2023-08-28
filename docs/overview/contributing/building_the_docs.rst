@@ -88,6 +88,6 @@ Then, run the following command to build the docs:
     cd doc-builder
     ./make_docs_without_docker.sh <ivy directory or applied library directory>
 
-The script will install required dependencies for `sphinx <https://www.sphinx-doc.org>`_
+The script will install the required dependencies for `sphinx <https://www.sphinx-doc.org>`_
 which is used to build the docs, as well as dependencies required by Ivy or the Ivy 
 applied library. Then it will build the docs for Ivy and store it in ``docs/build``.
