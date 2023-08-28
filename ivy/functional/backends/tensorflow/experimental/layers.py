@@ -1051,12 +1051,7 @@ def fft2(
         result = tf.signal.fft2d(x_complex)
 
     result = _fft2_norm(result, s, dim, norm)
-
-    if out is not None:
-        out = result
-        return out
-    else:
-        return result
+    return result
 
 
 # --- IFFTN --- #
