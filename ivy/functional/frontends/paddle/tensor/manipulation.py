@@ -122,7 +122,7 @@ def roll(x, shifts, axis=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def moveaxis(x, source, destination):
+def moveaxis(x, source, destination, name=None)):
     return ivy.moveaxis(x, source, destination)
 
 
