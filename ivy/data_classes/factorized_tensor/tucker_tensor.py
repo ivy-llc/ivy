@@ -7,6 +7,25 @@ from copy import deepcopy
 import warnings
 
 
+def _bisection_root_finder(fun, a, b, tol=1e-6, max_iter=100):
+    if fun(a) * fun(b) >= 0:
+        raise ValueError(
+            "Function values at the interval endpoints must have opposite signs"
+        )
+
+    for _ in range(max_iter):
+        c = (a + b) / 2
+        if fun(c) == 0 or (b - a) / 2 < tol:
+            return c
+
+        if fun(c) * fun(a) < 0:
+            b = c
+        else:
+            a = c
+
+    raise RuntimeError("Bisection algorithm did not converge")
+
+
 class TuckerTensor(FactorizedTensor):
     def __init__(self, tucker_tensor):
         super().__init__()
@@ -235,8 +254,6 @@ class TuckerTensor(FactorizedTensor):
     def validate_tucker_rank(
         tensor_shape, rank="same", rounding="round", fixed_modes=None
     ):
-        from scipy.optimize import brentq
-
         if rounding == "ceil":
             rounding_fun = ivy.ceil
         elif rounding == "floor":
@@ -288,7 +305,8 @@ class TuckerTensor(FactorizedTensor):
                 + n_fixed_params * x
                 - rank * n_param_tensor
             )
-            fraction_param = brentq(fun, 0.0, max(rank, 1.0))
+            # fraction_param = brentq(fun, 0.0, max(rank, 1.0))
+            fraction_param = _bisection_root_finder(fun, 0.0, max(rank, 1.0))
             rank = [max(int(rounding_fun(s * fraction_param)), 1) for s in tensor_shape]
 
             if fixed_modes is not None:
