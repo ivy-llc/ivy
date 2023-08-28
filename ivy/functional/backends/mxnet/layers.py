@@ -39,6 +39,13 @@ def conv1d_transpose(
     dilations: Union[(int, Tuple[int])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    # Moving inputs for the convolution to the respected device
+    # On mxnet, besides the inputs being on the same device
+    # we also need to declare on what device the operation will
+    # take place
+    x.copyto(device)
+    filters.copyto(device)
+    bias.copyto(device)
     if data_format == "NWC":
         x = mx.nd.swapaxes(x, 1, 2)
     outputs = ndarray.Deconvolution(

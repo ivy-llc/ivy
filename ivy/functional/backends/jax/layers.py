@@ -140,6 +140,11 @@ def conv1d_transpose(
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    # Moving inputs to the convolution to the respected device
+    # Being the inputs on the same device, the operation
+    # will take place on that device
+    x_device = jax.device_put(x, device=device)
+    filters_device = jax.device_put(filters, device=device)
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
     if data_format == "NWC":
@@ -151,8 +156,8 @@ def conv1d_transpose(
         x_shape, filters.shape, strides, padding, 1, dilations, output_shape
     )
     res = jlax.conv_transpose(
-        x,
-        filters,
+        x_device,
+        filters_device,
         strides,
         padding,
         dilations,
@@ -164,7 +169,7 @@ def conv1d_transpose(
         if data_format == "NWC":
             return jnp.add(res, bias)
         return jnp.add(res, bias[(None,) + (...,) + (None,) * 1])
-    return jax.device_put(res, device=device)
+    return res
 
 
 def conv2d(

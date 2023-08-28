@@ -1,7 +1,7 @@
 """Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional, Tuple, Union, Sequence, Literal
 
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -116,18 +116,21 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
+    dtype: tf.dtypes,
+    device: Literal["cpu", "gpu"],
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
-    if ivy.dev(x) == "cpu" and (
+) -> tf.Tensor:
+    if device == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
-        raise ivy.utils.exceptions.IvyException(
+        raise Exception(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
+
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
     filters = tf.transpose(filters, (0, 2, 1))
@@ -135,13 +138,22 @@ def conv1d_transpose(
     output_shape = _output_shape(
         x.shape, filters.shape, output_shape, strides, padding, 1, dilations
     )
-    res = tf.nn.conv1d_transpose(
-        x, filters, output_shape, strides, padding, "NWC", dilations
-    )
-    res = tf.math.add(res, bias) if bias is not None else res
+    devices = {
+        "cpu": "/device:CPU:0",
+        "gpu": "/device/GPU:0"
+    }
+    # In Tensorflow case, we just need to specify the device in which
+    # the convolution will take place and if necessary Tensorflow will
+    # automatically copy tensors between devices if needed.
+    with tf.device(devices[device]):
+        res = tf.nn.conv1d_transpose(
+            x, filters, output_shape, strides, padding, "NWC", dilations
+        )
+        res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
-    return res
+
+    return tf.cast(res, dtype)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
