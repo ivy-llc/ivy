@@ -2469,6 +2469,7 @@ def test_jax_hypot(
         atol=1e-2,
         x1=x[0],
         x2=x[1],
+        backend_to_test=backend_fw,
     )
 
 
