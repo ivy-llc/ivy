@@ -90,7 +90,7 @@ def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
 
 
 @st.composite
-def _get_dtypes(
+def get_dtypes(
     draw,
     kind="valid",
     index=0,
@@ -138,7 +138,7 @@ def _get_dtypes(
 
     Examples
     --------
-    >>> _get_dtypes()
+    >>> get_dtypes()
     ['float16',
         'uint8',
         'complex128',
@@ -154,37 +154,37 @@ def _get_dtypes(
         'int64',
         'uint64']
 
-    >>> _get_dtypes(kind='valid', full=False)
+    >>> get_dtypes(kind='valid', full=False)
     ['int16']
 
-    >>> _get_dtypes(kind='valid', full=False)
+    >>> get_dtypes(kind='valid', full=False)
     ['uint16']
 
-    >>> _get_dtypes(kind='numeric', full=False)
+    >>> get_dtypes(kind='numeric', full=False)
     ['complex64']
 
-    >>> _get_dtypes(kind='float', full=False, key="leaky_relu")
+    >>> get_dtypes(kind='float', full=False, key="leaky_relu")
     ['float16']
 
-    >>> _get_dtypes(kind='float', full=False, key="searchsorted")
+    >>> get_dtypes(kind='float', full=False, key="searchsorted")
     ['bfloat16']
 
-    >>> _get_dtypes(kind='float', full=False, key="dtype")
+    >>> get_dtypes(kind='float', full=False, key="dtype")
     ['float32']
 
-    >>> _get_dtypes("numeric", prune_function=False)
+    >>> get_dtypes("numeric", prune_function=False)
     ['int16']
 
-    >>> _get_dtypes("valid", prune_function=False)
+    >>> get_dtypes("valid", prune_function=False)
     ['uint32']
 
-    >>> _get_dtypes("valid", prune_function=False)
+    >>> get_dtypes("valid", prune_function=False)
     ['complex128']
 
-    >>> _get_dtypes("valid", prune_function=False)
+    >>> get_dtypes("valid", prune_function=False)
     ['bool']
 
-    >>> _get_dtypes("valid", prune_function=False)
+    >>> get_dtypes("valid", prune_function=False)
     ['float16']
     """
     mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
@@ -240,7 +240,7 @@ def array_dtypes(
     draw,
     *,
     num_arrays=st.shared(nh.ints(min_value=1, max_value=4), key="num_arrays"),
-    available_dtypes=_get_dtypes("valid"),
+    available_dtypes=get_dtypes("valid"),
     shared_dtype=False,
     array_api_dtypes=False,
 ):
@@ -269,40 +269,40 @@ def array_dtypes(
     Examples
     --------
     >>> array_dtypes(
-    ...     available_dtypes=_get_dtypes("numeric"),
+    ...     available_dtypes=get_dtypes("numeric"),
     ...     shared_dtype=True,
     ... )
     ['float64']
 
     >>> array_dtypes(
-    ...     available_dtypes=_get_dtypes("numeric"),
+    ...     available_dtypes=get_dtypes("numeric"),
     ...     shared_dtype=True,
     ... )
     ['int8', 'int8']
 
     >>> array_dtypes(
-    ...     available_dtypes=_get_dtypes("numeric"),
+    ...     available_dtypes=get_dtypes("numeric"),
     ...     shared_dtype=True,
     ... )
     ['int32', 'int32', 'int32', 'int32']
 
     >>> array_dtypes(
     ...     num_arrays=5,
-    ...     available_dtypes=_get_dtypes("valid"),
+    ...     available_dtypes=get_dtypes("valid"),
     ...     shared_dtype=False,
     ... )
     ['int8', 'float64', 'complex64', 'int8', 'bool']
 
     >>> array_dtypes(
     ...     num_arrays=5,
-    ...     available_dtypes=_get_dtypes("valid"),
+    ...     available_dtypes=get_dtypes("valid"),
     ...     shared_dtype=False,
     ... )
     ['bool', 'complex64', 'bool', 'complex64', 'bool']
 
     >>> array_dtypes(
     ...     num_arrays=5,
-    ...     available_dtypes=_get_dtypes("valid"),
+    ...     available_dtypes=get_dtypes("valid"),
     ...     shared_dtype=False,
     ... )
     ['float64', 'int8', 'float64', 'int8', 'float64']
