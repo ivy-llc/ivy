@@ -969,7 +969,7 @@ def test_paddle_tensor_tanh(
     init_tree="paddle.to_tensor",
     method_name="add_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_paddle_tensor_add_(
@@ -989,7 +989,7 @@ def test_paddle_tensor_add_(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"y": x[1]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
