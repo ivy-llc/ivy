@@ -680,7 +680,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         self: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
