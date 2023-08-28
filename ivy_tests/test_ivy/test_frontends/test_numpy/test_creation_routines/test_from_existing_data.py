@@ -1,9 +1,14 @@
 # global
 from hypothesis import strategies as st
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_creation import (
+    _get_dtype_buffer_count_offset,
+)
 
 
 @handle_frontend_test(
@@ -137,4 +142,33 @@ def test_numpy_frombuffer(
         on_device=on_device,
         buffer=a,
         dtype=dtype[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fromstring",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+    test_with_out=st.just(False),
+)
+def test_numpy_fromstring(
+    *,
+    dtype_buffer_count_offset,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        string="1 2",
+        dtype=ivy.float64,
+        count=-1,
+        sep=" ",
     )
