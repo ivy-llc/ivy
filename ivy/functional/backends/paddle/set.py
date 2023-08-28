@@ -3,15 +3,13 @@ import paddle
 from typing import Tuple, Optional
 from collections import namedtuple
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 
 # local
 from . import backend_version
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex",)}}, backend_version
-)
+@with_unsupported_dtypes({"2.5.1 and below": ("complex",)}, backend_version)
 def unique_all(
     x: paddle.Tensor,
     /,
