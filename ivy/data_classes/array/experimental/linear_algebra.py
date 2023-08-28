@@ -690,7 +690,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Parameters
         ----------
-        a
+        self
             First input array.
         b
             Second input array.
