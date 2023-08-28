@@ -42,6 +42,34 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
     return [dtype1], [values], axis, dtype2
 
 
+# abs
+@handle_frontend_test(
+    fn_tree="jax.numpy.abs",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_jax_abs(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # sign
 @handle_frontend_test(
     fn_tree="jax.numpy.sign",
