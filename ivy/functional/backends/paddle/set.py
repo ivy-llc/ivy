@@ -22,7 +22,13 @@ def unique_all(
         ["values", "indices", "inverse_indices", "counts"],
     )
 
-    if x.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
         x, x_dtype = x.cast("float32"), x.dtype
     else:
         x_dtype = x.dtype
