@@ -538,7 +538,8 @@ def nanquantile(
         warnings.warn(
             "interpolation is deprecated name for the method keyword argument since"
             " version 1.22.0 in JAX"
-        ) 
-    return ivy.nanquantile(
+        )
+    a = a[~ivy.isnan(a)]
+    return ivy.quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )
