@@ -179,24 +179,24 @@ def batch_norm(
     if data_format == "NCS":
         x = ivy.permute_dims(x, axes=(0, *range(2, xdims), 1))
 
-    runningmean = mean
-    runningvariance = variance
+    runningmean = batchmean = mean
+    runningvariance = batchvariance = variance
 
     if training:
         numel = int(ivy.prod(x.shape))
         n = numel if xdims == 1 else numel / x.shape[-1]
         dims = (0, *range(1, xdims - 1))
-        mean = ivy.mean(x, axis=dims)
-        variance = ivy.var(x, axis=dims)
-        runningmean = (1 - momentum) * runningmean + momentum * mean
-        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
-            n - 1
-        )
-    inv = 1.0 / ivy.sqrt(variance + eps)
+        batchmean = ivy.mean(x, axis=dims)
+        batchvariance = ivy.var(x, axis=dims)
+        runningmean = (1 - momentum) * runningmean + momentum * batchmean
+        runningvariance = (
+            1 - momentum
+        ) * runningvariance + momentum * batchvariance * n / (n - 1)
+    inv = 1.0 / ivy.sqrt(batchvariance + eps)
     if scale is not None:
         inv = inv * scale
-    xnormalized = x * inv.astype(ivy.dtype(x), copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, ivy.dtype(x)
+    xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
+        offset - batchmean * inv if offset is not None else -batchmean * inv, x.dtype
     )
 
     if data_format == "NCS":
@@ -204,20 +204,16 @@ def batch_norm(
             xnormalized, axes=(0, xdims - 1, *range(1, xdims - 1))
         )
 
-    print(f"runing mean {runningmean}")
-    mean = ivy.inplace_update(mean, runningmean)
-    variance = ivy.inplace_update(variance, runningvariance)
-
     if ivy.exists(out):
         xnormalized = ivy.inplace_update(out[0], xnormalized)
         runningmean = ivy.inplace_update(out[1], runningmean)
         runningvariance = ivy.inplace_update(out[2], runningvariance)
 
-    print("*****")
-    print(mean)
-    print(variance)
-    print("*****")
-    return xnormalized, runningmean, runningvariance
+    return (
+        xnormalized,
+        ivy.inplace_update(mean, runningmean),
+        ivy.inplace_update(variance, runningvariance),
+    )
 
 
 batch_norm.mixed_backend_wrappers = {
@@ -315,16 +311,16 @@ def instance_norm(
     C = x.shape[-1]
     S = x.shape[0:-2]
     x = x.reshape((1, *S, N * C))
-    mean = ivy.tile(mean, N)
-    variance = ivy.tile(variance, N)
+    tiledmean = ivy.tile(mean, N)
+    tiledvariance = ivy.tile(variance, N)
     if scale is not None:
         scale = ivy.tile(scale, N)
     if offset is not None:
         offset = ivy.tile(offset, N)
     xnormalized, runningmean, runningvariance = batch_norm(
         x,
-        mean,
-        variance,
+        tiledmean,
+        tiledvariance,
         scale=scale,
         offset=offset,
         training=training,
