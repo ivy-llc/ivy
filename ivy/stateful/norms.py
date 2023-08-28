@@ -152,8 +152,7 @@ class BatchNorm2D(Module):
         self._bias_init = Zeros()
         self._running_mean_init = Zeros()
         self._running_var_init = Ones()
-        self.training = training
-        Module.__init__(self, device=device, v=v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype, training=training)
 
     def _create_variables(self, device, dtype=None):
         """Create internal variables for the layer."""
@@ -174,11 +173,7 @@ class BatchNorm2D(Module):
             }
         return {}
 
-    def _forward(
-        self,
-        inputs,
-        training: bool = None,
-    ):
+    def _forward(self, inputs):
         """
         Perform forward pass of the BatchNorm layer.
 
@@ -186,16 +181,12 @@ class BatchNorm2D(Module):
         ----------
         inputs
             Inputs to process of shape N,C,*.
-        training
-            Determine the current phase (training/inference)
 
         Returns
         -------
         ret
             The outputs following the batch normalization operation.
         """
-        orig_training = self.training
-        training = training if training is not None else self.training
         normalized, running_mean, running_var = ivy.batch_norm(
             inputs,
             self.v.running_mean,
@@ -203,13 +194,12 @@ class BatchNorm2D(Module):
             eps=self._epsilon,
             momentum=self._momentum,
             data_format=self.data_format,
-            training=training,
+            training=self.training,
             scale=self.v.w if self._affine else None,
             offset=self.v.b if self._affine else None,
         )
-        if self._track_running_stats and training:
+        if self._track_running_stats and self.training:
             self.v.running_mean = running_mean
             self.v.running_var = running_var
 
-        self.training = orig_training
         return normalized
