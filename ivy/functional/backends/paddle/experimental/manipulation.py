@@ -76,6 +76,32 @@ _i0B = [
 
 @with_unsupported_device_and_dtypes(
     {
+        "2.5.1 and above": {
+            "cpu": ("bfloat16", "uint8")
+        },
+    },
+    backend_version,
+)
+def moveaxis(
+    a: paddle.Tensor,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if isinstance(source, tuple):
+        source = list(source)
+    if isinstance(destination, tuple):
+        source = list(destination)
+    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
+    return paddle.moveaxis(a, source, destination)
+
+
+@with_unsupported_device_and_dtypes(
+    {
         "2.5.1 and below": {
             "cpu": (
                 "int8",
@@ -140,32 +166,6 @@ def hstack(
             return ivy.concat(arrays, axis=1)
         else:
             return ivy.concat(arrays, axis=0)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and above": {
-            "cpu": ("bfloat16", "uint8")
-        },
-    },
-    backend_version,
-)
-def moveaxis(
-    a: paddle.Tensor,
-    source: Union[int, Sequence[int]],
-    destination: Union[int, Sequence[int]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if isinstance(source, tuple):
-        source = list(source)
-    if isinstance(destination, tuple):
-        source = list(destination)
-    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
-        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
-    return paddle.moveaxis(a, source, destination)
 
 
 @with_supported_device_and_dtypes(
