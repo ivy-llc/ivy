@@ -1,6 +1,9 @@
 """Collection of MXNet network layers, wrapped to fit Ivy syntax and signature."""
 # global
+import numpy as np
 import mxnet as mx
+import mxnet.ndarray as ndarray
+from mxnet.device import Device
 from typing import Optional, Tuple, Union, Sequence
 import ivy
 
@@ -26,15 +29,35 @@ def conv1d_transpose(
     x: Union[(None, mx.ndarray.NDArray)],
     filters: Union[(None, mx.ndarray.NDArray)],
     strides: Union[(int, Tuple[int])],
-    padding: str,
+    padding: Union[(int, Tuple[int])],
     /,
     *,
-    output_shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
-    data_format: str = "NWC",
+    dtype: np.dtype,
+    device: Device,
+    bias: Optional[ndarray.NDArray] = None,
     dilations: Union[(int, Tuple[int])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-):
-    raise IvyNotImplementedException()
+) -> Union[(None, mx.ndarray.NDArray)]:
+    inputs = mx.nd.swapaxes(x, 1, 2)
+    outputs = ndarray.Deconvolution(
+        inputs,
+        filters,
+        bias,
+        filters.shape,
+        strides,
+        dilations,
+        padding,
+        filters.shape[-1],
+        layout="NCW",
+        out=out,
+        dtype=dtype,
+        context=device
+    )
+
+    return mx.nd.swapaxes(outputs, 1, 2)
+
+
+
 
 
 def conv2d(
