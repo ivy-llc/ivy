@@ -415,9 +415,8 @@ def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
 
     masks = []
     for idx, border in enumerate(borders):
-        masks.append(ivy.bitwise_or(grid[..., idx] < -3, grid[..., idx] > border + 1))
-        borders[idx] += 1
-
+        masks.append(ivy.bitwise_or(grid[..., idx] < -4, grid[..., idx] > border + 2))
+        borders[idx] += 2
 
     zeros_mask = masks[0]
     for i in range(1, len(borders)):
