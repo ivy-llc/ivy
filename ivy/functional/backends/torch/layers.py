@@ -175,12 +175,14 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
+    dtype: torch.dtype,
+    device: torch.device,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
-):
+) -> torch.Tensor:
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     filters = filters.permute(1, 2, 0)
@@ -202,7 +204,7 @@ def conv1d_transpose(
         res = res[:, :, 0:-1]
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
-    return res
+    return torch.tensor(res, dtype=dtype, device=device)
 
 
 @with_unsupported_dtypes(
