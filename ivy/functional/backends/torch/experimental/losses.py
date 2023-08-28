@@ -52,3 +52,20 @@ def smooth_l1_loss(
         beta=beta,
         reduction=reduction,
     )
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("uint8", "int8", "int16", "int32", "int64", "bool")},
+    backend_version,
+)
+def huber_loss(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    delta: Optional[float] = 1.0,
+) -> torch.Tensor:
+    return torch.nn.functional.huber_loss(
+        input, target, reduction=reduction, delta=delta
+    )

@@ -64,3 +64,31 @@ def smooth_l1_loss(
     return paddle.nn.functional.smooth_l1_loss(
         input, target, reduction=reduction, beta=beta
     )
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def huber_loss(
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    /,
+    *,
+    delta: Optional[float] = 1.0,
+) -> paddle.Tensor:
+    return paddle.fluid.layers.huber_loss(input, target, delta=delta)
