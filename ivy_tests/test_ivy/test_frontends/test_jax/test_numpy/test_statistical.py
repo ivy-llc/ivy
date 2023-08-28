@@ -1266,12 +1266,15 @@ def test_jax_quantile(
     )
 
 
+#nanquantile
 @handle_frontend_test(
     fn_tree="jax.numpy.nanquantile",
     dtype_and_x=_statistical_dtype_values(function="nanquantile"),
     q=st.floats(0.0, 1.0),
     keepdims=st.booleans(),
     method=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
+    overwrite_input=st.just(False),
+    interpolation=st.just(None),
 )
 def test_jax_nanquantile(
     *,
@@ -1279,6 +1282,8 @@ def test_jax_nanquantile(
     dtype_and_x,
     keepdims,
     method,
+    overwrite_input,
+    interpolation,
     on_device,
     fn_tree,
     frontend,
@@ -1298,4 +1303,6 @@ def test_jax_nanquantile(
         axis=axes,
         method=method,
         keepdims=keepdims,
+        overwrite_input=overwrite_input,
+        interpolation=interpolation,
     )
