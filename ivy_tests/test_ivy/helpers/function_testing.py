@@ -118,7 +118,7 @@ def test_function(
     test_flags
         FunctionTestFlags object that stores all testing flags, including:
         num_positional_args, with_out, instance_method, as_variable,
-        native_arrays, container, gradient
+        native_arrays, container, gradient, precision_mode
     fw
         current backend (framework).
     fn_name
@@ -161,11 +161,13 @@ def test_function(
     >>> native_array_flags = False
     >>> container_flags = False
     >>> instance_method = False
+    >>> precision_mode = False
     >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
         instance_method,
         as_variable,
         native_arrays,
         container_flags,
+        precision_mode,
         none)
     >>> fw = "torch"
     >>> fn_name = "abs"
@@ -179,11 +181,13 @@ def test_function(
     >>> native_array_flags = [True, False]
     >>> container_flags = [False, False]
     >>> instance_method = False
+    >>> precision_mode = False
     >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
         instance_method,
         as_variable,
         native_arrays,
         container_flags,
+        precision_mode,
         none)
     >>> fw = "numpy"
     >>> fn_name = "add"
@@ -299,6 +303,7 @@ def test_function(
             target_fn,
             *args,
             test_compile=test_flags.test_compile,
+            precision_mode=test_flags.precision_mode,
             **kwargs,
         )
 
@@ -324,6 +329,7 @@ def test_function(
                 ) = get_ret_and_flattened_np_array(
                     backend_to_test,
                     instance.__getattribute__(fn_name),
+                    precision_mode=test_flags.precision_mode,
                     *args,
                     **kwargs,
                     out=out,
@@ -335,6 +341,7 @@ def test_function(
                 ) = get_ret_and_flattened_np_array(
                     backend_to_test,
                     ivy_backend.__dict__[fn_name],
+                    precision_mode=test_flags.precision_mode,
                     *args,
                     **kwargs,
                     out=out,
@@ -407,6 +414,7 @@ def test_function(
             gt_backend.__dict__[fn_name],
             *args,
             test_compile=test_flags.test_compile,
+            precision_mode=test_flags.precision_mode,
             **kwargs,
         )
         assert gt_backend.nested_map(
@@ -430,6 +438,7 @@ def test_function(
                 gt_backend.__dict__[fn_name],
                 *args,
                 test_compile=test_flags.test_compile,
+                precision_mode=test_flags.precision_mode,
                 **kwargs,
                 out=out_from_gt,
             )
@@ -530,6 +539,10 @@ def test_frontend_function(
     ----------
     input_dtypes
         data types of the input arguments in order.
+    test_flags
+        FunctionTestFlags object that stores all testing flags, including:
+        num_positional_args, with_out, instance_method, as_variable,
+        native_arrays, container, gradient, precision_mode
     all_aliases
         a list of strings containing all aliases for that function
         in the current frontend with their full namespaces.
@@ -655,6 +668,7 @@ def test_frontend_function(
                 create_frontend_array if test_flags.test_compile else None
             ),
             as_ivy_arrays=(not test_flags.generate_frontend_arrays),
+            precision_mode=test_flags.precision_mode,
             **kwargs_for_test,
         )
 
@@ -763,6 +777,7 @@ def test_frontend_function(
                 ret_ = get_frontend_ret(
                     frontend_fn=frontend_fn,
                     backend=backend_to_test,
+                    precision_mode=test_flags.precision_mode,
                     test_compile=test_flags.test_compile,
                     frontend_array_function=(
                         create_frontend_array if test_flags.test_compile else None
@@ -781,6 +796,7 @@ def test_frontend_function(
                 ret_ = get_frontend_ret(
                     frontend_fn=frontend_fn,
                     backend=backend_to_test,
+                    precision_mode=test_flags.precision_mode,
                     test_compile=test_flags.test_compile,
                     frontend_array_function=(
                         create_frontend_array if test_flags.test_compile else None
@@ -948,12 +964,13 @@ def gradient_test(
             )(*args, **kwargs)
             return ivy_backend.nested_map(ret, ivy_backend.mean, include_derived=True)
 
-        _, grads = ivy_backend.execute_with_gradients(
-            _grad_fn,
-            [args, kwargs, 0],
-            xs_grad_idxs=xs_grad_idxs,
-            ret_grad_idxs=ret_grad_idxs,
-        )
+        with ivy_backend.PreciseMode(test_flags.precision_mode):
+            _, grads = ivy_backend.execute_with_gradients(
+                _grad_fn,
+                [args, kwargs, 0],
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+            )
     grads_np_flat = flatten_and_to_np(backend=backend_to_test, ret=grads)
 
     with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
@@ -991,12 +1008,13 @@ def gradient_test(
             )(*args, **kwargs)
             return gt_backend.nested_map(ret, gt_backend.mean, include_derived=True)
 
-        _, grads_from_gt = gt_backend.execute_with_gradients(
-            _gt_grad_fn,
-            [args, kwargs, 1],
-            xs_grad_idxs=xs_grad_idxs,
-            ret_grad_idxs=ret_grad_idxs,
-        )
+        with gt_backend.PreciseMode(test_flags.precision_mode):
+            _, grads_from_gt = gt_backend.execute_with_gradients(
+                _gt_grad_fn,
+                [args, kwargs, 1],
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+            )
         grads_np_from_gt_flat = flatten_and_to_np(
             backend=ground_truth_backend, ret=grads_from_gt
         )
@@ -1275,6 +1293,7 @@ def test_method(
             ins.__getattribute__(method_name),
             *args_method,
             test_compile=test_compile,
+            precision_mode=method_flags.precision_mode,
             **kwargs_method,
         )
         if isinstance(ret, ivy_backend.Array):
@@ -1328,6 +1347,7 @@ def test_method(
             ins_gt.__getattribute__(method_name),
             *args_gt_method,
             test_compile=test_compile,
+            precision_mode=method_flags.precision_mode,
             **kwargs_gt_method,
         )
         assert gt_backend.nested_map(
@@ -1657,6 +1677,7 @@ def test_frontend_method(
         ret, ret_np_flat = get_ret_and_flattened_np_array(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
+            precision_mode=method_flags.precision_mode,
             *args_method,
             test_compile=method_flags.test_compile,
             **kwargs_method,
@@ -1953,7 +1974,7 @@ def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
 
 
 def get_ret_and_flattened_np_array(
-    backend_to_test: str, fn, *args, test_compile: bool = False, **kwargs
+    backend_to_test: str, fn, *args, test_compile=False, precision_mode=False, **kwargs
 ):
     """
     Run func with args and kwargs.
@@ -1964,7 +1985,8 @@ def get_ret_and_flattened_np_array(
         backend_to_test, fn, test_compile=test_compile, args=args, kwargs=kwargs
     )
     with BackendHandler.update_backend(backend_to_test) as ivy_backend:
-        ret = fn(*args, **kwargs)
+        with ivy_backend.PreciseMode(precision_mode):
+            ret = fn(*args, **kwargs)
 
         def map_fn(x):
             if _is_frontend_array(x):
@@ -1983,6 +2005,7 @@ def get_frontend_ret(
     *args,
     frontend_array_function=None,
     as_ivy_arrays=True,
+    precision_mode=False,
     test_compile: bool = False,
     **kwargs,
 ):
@@ -1994,7 +2017,8 @@ def get_frontend_ret(
             args, kwargs = ivy_backend.nested_map(
                 (args, kwargs), _frontend_array_to_ivy, include_derived={tuple: True}
             )
-        ret = frontend_fn(*args, **kwargs)
+        with ivy_backend.PreciseMode(precision_mode):
+            ret = frontend_fn(*args, **kwargs)
         if test_compile and frontend_array_function is not None:
             if as_ivy_arrays:
                 ret = ivy_backend.nested_map(
