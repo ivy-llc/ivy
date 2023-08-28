@@ -509,10 +509,6 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
-amax = max
-amin = min
-cumproduct = cumprod
-
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"0.4.14 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
@@ -564,3 +560,8 @@ def nanquantile(
     return ivy.quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )
+
+
+amax = max
+amin = min
+cumproduct = cumprod

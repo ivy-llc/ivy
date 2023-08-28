@@ -1266,7 +1266,7 @@ def test_jax_quantile(
     )
 
 
-#nanquantile
+# nanquantile
 @handle_frontend_test(
     fn_tree="jax.numpy.nanquantile",
     dtype_and_x=_statistical_dtype_values(function="nanquantile"),
