@@ -1,13 +1,12 @@
 import ivy
-import ivy.functional.frontends.torch as ivy_torch
 import numpy as np
 import torch
 
 ivy.set_backend("torch")
 
-x = np.array([[0, 0], [0, 0]], dtype=np.float64)
+x = np.array([[0, 0], [0, 0]], dtype=np.int32)
 idx = np.array([[0, 0]], dtype=np.int64)
-vals = np.array([[1, 1]], dtype=np.float64)
+vals = np.array([[1.0, 1.0]], dtype=np.int32)
 axis = 0
 
 ivy_x = ivy.array(x)
@@ -19,15 +18,21 @@ torch_x = torch.tensor(x)
 torch_idx = torch.tensor(idx)
 torch_vals = torch.tensor(vals)
 
+ret_torch = torch_x.scatter_reduce(axis, torch_idx, torch_vals, "sum")
+print(ret_torch)
 
-ivy_out = ivy.put_along_axis(ivy_x, ivy_idx, ivy_vals, axis, mode="add")
-print(ivy_out)
+ret_ivy = ivy_x.scatter_reduce(axis, ivy_idx, ivy_vals, "sum")
+print(ret_ivy)
 
-torch_out = torch.scatter_reduce(torch_x, axis, torch_idx, torch_vals, "sum")
-print(torch_out)
 
-torch_frontend_out = ivy_torch.scatter_reduce(ivy_x, axis, ivy_idx, ivy_vals, "add")
-print(torch_frontend_out)
+# ivy_out = ivy.put_along_axis(ivy_x, ivy_idx, ivy_vals, axis, mode="add")
+# print(ivy_out)
+
+# torch_out = torch.scatter_reduce(torch_x, axis, torch_idx, torch_vals, "sum")
+# print(torch_out)
+
+# torch_frontend_out = ivy_torch.scatter_reduce(ivy_x, axis, ivy_idx, ivy_vals, "add")
+# print(torch_frontend_out)
 
 
 # import hypothesis.strategies as st
