@@ -252,6 +252,32 @@ def test_mindspore_interpolate(
     )
 
 
+# hardswish
+# @handle_frontend_test(
+#      fn_tree="mindspore.ops.function.nn_func.hardswish",
+#      dtype_and_x=helpers.dtype_and_values(
+#          available_dtypes=helpers.get_dtypes("valid"),
+#      ),
+# )
+# def test_mindspore_hardswish(
+#     *,
+#     dtype_and_x,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x[0],
+#     )
+
+
 # pad
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
@@ -403,7 +429,7 @@ def _calculate_same_padding(kernel_size, stride, shape):
     count_include_pad=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_torch_avg_pool2d(
+def test_mindspore_avg_pool2d(
     dtype_x_k_s,
     count_include_pad,
     pad_mode,

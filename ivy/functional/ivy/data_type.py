@@ -518,8 +518,8 @@ def can_cast(
     /,
 ) -> bool:
     """
-    Determine if one data type can be cast to another data type according to
-    :ref:`type-promotion` rules.
+    Determine if one data type can be cast to another data type according to :ref:`type-
+    promotion` rules.
 
     Parameters
     ----------
@@ -1695,10 +1695,8 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1748,10 +1746,8 @@ def function_unsupported_dtypes(
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1845,7 +1841,7 @@ def is_bool_dtype(
             True
             if ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (bool, np.bool)) and not type(x) == int,
+                lambda x: isinstance(x, (bool, np.bool)) and x is not int,
             )
             else False
         )
@@ -1933,7 +1929,7 @@ def is_int_dtype(
                     isinstance(x, (int, np.integer))
                     or (ivy.is_array(x) and "int" in ivy.dtype(x))
                 )
-                and not type(x) == bool,
+                and x is not bool,
             )
             else False
         )
@@ -1955,7 +1951,7 @@ def check_float(x: Any) -> bool:
     ret
         "True" if the input is a float or a float-like object, otherwise "False".
     """
-    return isinstance(x, (int, float)) and not type(x) == bool
+    return isinstance(x, (int, float)) and x is not bool
 
 
 @handle_exceptions
