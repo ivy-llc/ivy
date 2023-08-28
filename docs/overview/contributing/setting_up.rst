@@ -146,7 +146,7 @@ Using miniconda
    
          pip install -r requirements/optional.txt
    
-   b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
+   b. On M1 Mac, you will need to use the optional_apple_silicon_1 and optional_apple_silicon_2 requirements files. To install dependencies.
    
       .. code-block:: none
    
@@ -224,12 +224,12 @@ This is a builtin package and doesn't require explicit installation.
         
       PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
 
-   b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
+   b. On M1 Mac, you will need to use the optional_apple_silicon_1 and optional_apple_silicon_2 requirements files. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/optional_m1_1.txt
-         pip install -r requirements/optional_m1_2.txt
+         pip install -r requirements/optional_apple_silicon_1.txt
+         pip install -r requirements/optional_apple_silicon_2.txt
 
 #. Installing array API testing dependencies.
 
@@ -349,7 +349,7 @@ If Docker's latest version causes an error, try using an earlier version by visi
 
 **Important Note**
 
-When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_m1_1.txt` and :code:`requirements/optional_m1_2.txt` instead of :code:`requirements/optional.txt`.
+When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_apple_silicon_1.txt` and :code:`requirements/optional_apple_silicon_2.txt` instead of :code:`requirements/optional.txt`.
 
 **Video**
 
