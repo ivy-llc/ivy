@@ -612,7 +612,7 @@ def softplus(
 softplus.jax_like = _softplus_jax_like
 
 
-#Softsign
+# Softsign
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -628,6 +628,7 @@ def softsign(
 ) -> ivy.Array:
     """
     Apply the softsign function element-wise.
+
     Parameters
     ----------
     x
@@ -635,10 +636,12 @@ def softsign(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
         The input array with softsign applied element-wise.
+
     Examples
     --------
     With :class:`ivy.Array` input:

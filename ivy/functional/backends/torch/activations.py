@@ -88,20 +88,8 @@ def softplus(
 
 
 # Softsign
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "float16",
-            "bfloat16"
-        )
-    },
-    backend_version
-)
-def softsign(
-        x: torch.Tensor,
-        /,
-        out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def softsign(x: torch.Tensor, /, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     # return x / (1 + torch.abs(x))
     return torch.nn.functional.softsign(x)
 

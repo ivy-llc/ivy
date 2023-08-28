@@ -79,7 +79,7 @@ def softplus(
     return res
 
 
-#Softsign
+# Softsign
 @with_supported_dtypes(
     {
         "2.13.0 and below": (
@@ -93,11 +93,7 @@ def softplus(
     },
     backend_version,
 )
-def softsign(
-        x: tf.Tensor,
-        /,
-        out: Optional[tf.Tensor] = None
-) -> tf.Tensor:
+def softsign(x: tf.Tensor, /, out: Optional[tf.Tensor] = None) -> tf.Tensor:
     return tf.nn.softsign(x)
 
 

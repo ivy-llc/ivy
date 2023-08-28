@@ -64,7 +64,7 @@ def softplus(
     return res.astype(x.dtype)
 
 
-#Softsign
+# Softsign
 def softsign(x: None, /, *, out: Optional[None] = None) -> None:
     return mx.nd.softsign(x)
 

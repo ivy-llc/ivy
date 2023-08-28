@@ -3265,7 +3265,7 @@ def test_tensorflow_Softplus(  # NOQA
     )
 
 
-#Softsign
+# Softsign
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Softsign",
     dtype_and_x=helpers.dtype_and_values(
@@ -3304,7 +3304,6 @@ def test_tensorflow_Softsign(
     ),
     test_with_out=st.just(False),
 )
-
 def test_tensorflow_Xdivy(  # NOQA
     *,
     dtype_and_x,

@@ -87,11 +87,7 @@ softplus.support_native_out = True
 
 # Softsign
 @_scalar_output_to_0d_array
-def softsign(
-        x: np.ndarray,
-        /,
-        out: Optional[np.ndarray] = None
-) -> np.ndarray:
+def softsign(x: np.ndarray, /, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.divide(x, 1 + np.abs(x), out=out).astype(x.dtype)
 
 

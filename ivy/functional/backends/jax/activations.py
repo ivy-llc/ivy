@@ -73,14 +73,8 @@ def softplus(
 
 
 # Softsign
-def softsign(
-        x: JaxArray,
-        /,
-        *,
-        out: Optional[JaxArray] = None
-) -> JaxArray:
+def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.soft_sign(x)
-
 
 
 def log_softmax(

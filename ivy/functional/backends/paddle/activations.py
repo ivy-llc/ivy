@@ -144,21 +144,12 @@ def softplus(
 
 # Softsign
 @with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below":
-            {
-                "cpu": (
-                    "float16",
-                    "bfloat16"
-                )
-            }
-    },
-    backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def softsign(
-        x: paddle.Tensor,
-        /,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return F.softsign(x)
 
