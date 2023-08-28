@@ -486,7 +486,7 @@ class Tensor:
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
 
-    ne = not_equal
+    # ne = not_equal
 
     def equal(self, other):
         return torch_frontend.equal(self, other)
@@ -495,9 +495,10 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
     def erf_(self, *, out=None):
-        self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
+        self.ivy_array = self.erf(out=out).ivy_array
+        return self
 
     def new_zeros(
         self,

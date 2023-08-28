@@ -1344,7 +1344,7 @@ def test_torch_tensor_cos_(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-            "data": list(x[0]) if type(x[0]) == int else x[0],
+            "data": list(x[0]) if isinstance(x[0], int) else x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -10471,7 +10471,7 @@ def test_torch_tensor_erf(
     init_tree="torch.tensor",
     method_name="erf_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_tensor_erf_(
