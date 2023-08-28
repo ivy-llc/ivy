@@ -1084,7 +1084,7 @@ def handle_inplace_update_norm(fn: Callable) -> Callable:
         """
         normalized, runningmean, runningvar = fn(*args, **kwargs)
 
-        if ivy.curr_backend_str() == "tensorflow":
+        if ivy.current_backend_str() == "tensorflow":
             ivy.inplace_update(args[1], runningmean)
             ivy.inplace_update(args[2], runningvar)
 
