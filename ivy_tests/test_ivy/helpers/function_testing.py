@@ -1628,40 +1628,73 @@ def test_frontend_method(
             test_flags=method_flags,
             on_device=on_device,
         )
+
+        create_frontend_array = importlib.import_module(
+            f"ivy.functional.frontends.{frontend}"
+        )._frontend_array
+
         # End Method #
 
-        args_constructor_ivy, kwargs_constructor_ivy = ivy_backend.args_to_ivy(
-            *args_constructor, **kwargs_constructor
-        )
-        args_method_ivy, kwargs_method_ivy = ivy_backend.args_to_ivy(
-            *args_method, **kwargs_method
-        )
+        if init_flags.generate_frontend_arrays:
+            args_constructor_ivy, kwargs_constructor_ivy = args_to_frontend(
+                backend_to_test,
+                *args_constructor,
+                frontend_array_fn=create_frontend_array,
+                **kwargs_constructor,
+            )
+        else:
+            args_constructor_ivy, kwargs_constructor_ivy = ivy_backend.args_to_ivy(
+                *args_constructor, **kwargs_constructor
+            )
+        if method_flags.generate_frontend_arrays:
+            args_method_ivy, kwargs_method_ivy = args_to_frontend(
+                backend_to_test,
+                *args_method,
+                frontend_array_fn=create_frontend_array,
+                **kwargs_method,
+            )
+        else:
+            args_method_ivy, kwargs_method_ivy = ivy_backend.args_to_ivy(
+                *args_method, **kwargs_method
+            )
+
+        # create NumPy args
+
+        def arrays_to_numpy_init(x):
+            if init_flags.generate_frontend_arrays:
+                return ivy_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
+            return (
+                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
+            )
+
         args_constructor_np = ivy_backend.nested_map(
             args_constructor_ivy,
-            lambda x: (
-                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
-            ),
+            arrays_to_numpy_init,
             shallow=False,
         )
         kwargs_constructor_np = ivy_backend.nested_map(
             kwargs_constructor_ivy,
-            lambda x: (
-                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
-            ),
+            arrays_to_numpy_init,
             shallow=False,
         )
+
+        # create NumPy args
+
+        def arrays_to_numpy_method(x):
+            if method_flags.generate_frontend_arrays:
+                return ivy_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
+            return (
+                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
+            )
+
         args_method_np = ivy_backend.nested_map(
             args_method_ivy,
-            lambda x: (
-                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
-            ),
+            arrays_to_numpy_method,
             shallow=False,
         )
         kwargs_method_np = ivy_backend.nested_map(
             kwargs_method_ivy,
-            lambda x: (
-                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
-            ),
+            arrays_to_numpy_method,
             shallow=False,
         )
 
@@ -1683,12 +1716,36 @@ def test_frontend_method(
             **kwargs_method,
         )
 
+        # frontend ret
+        # ret = get_frontend_ret(
+        #     backend_to_test,
+        #     ins.__getattribute__(frontend_method_data.method_name),
+        #     *args_method_ivy,
+        #     # test_compile=test_flags.test_compile,
+        #     # frontend_array_function=(
+        #     #     create_frontend_array if test_flags.test_compile else None
+        #     # ),
+        #     as_ivy_arrays=(not method_flags.generate_frontend_arrays),
+        #     precision_mode=method_flags.precision_mode,
+        #     **kwargs_method_ivy,
+        # )
+
         # ToDo: uncomment once test_frontend_method has been updated to test for
         #  frontend array arguments like test_frontend_function where
         #  test_flags.generate_frontend_arrays is being used
-        # assert ivy_backend.nested_map(
-        #     ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
-        # ), "Frontend method returned non-frontend arrays: {}".format(ret)
+        assert ivy_backend.nested_map(
+            ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
+        ), "Frontend method returned non-frontend arrays: {}".format(ret)
+
+        # create NumPy args
+        if method_flags.generate_frontend_arrays:
+            ret_np_flat = flatten_frontend_to_np(
+                ret=ret,
+                frontend_array_fn=create_frontend_array,
+                backend=backend_to_test,
+            )
+        else:
+            ret_np_flat = flatten_and_to_np(ret=ret, backend=backend_to_test)
 
     # Compute the return with the native frontend framework
     frontend_config = get_frontend_config(frontend)
