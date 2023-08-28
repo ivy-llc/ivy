@@ -1087,6 +1087,7 @@ def test_jax_clip(
         a_min=a_min,
         a_max=a_max,
     )
+    
 
 # float_power
 @handle_frontend_test(
