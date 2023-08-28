@@ -3,7 +3,7 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 
@@ -370,10 +370,17 @@ def maximum(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.maximum(x1, x2)
 
-
+@with_supported_dtypes(
+    {
+        "tensorflow": ("float", "complex"),
+        "jax": ("float", "complex"),
+        "torch": ("float", "complex"),
+        "numpy": ("float", "complex"),
+    }
+)
 @to_ivy_arrays_and_back
-def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
-    return ivy.mean(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out, where=where)
+def mean(x, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    return ivy.mean(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out, where=where)
 
 
 @to_ivy_arrays_and_back
