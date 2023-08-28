@@ -486,7 +486,7 @@ class Tensor:
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
 
-    # ne = not_equal
+    ne = not_equal
 
     def equal(self, other):
         return torch_frontend.equal(self, other)
