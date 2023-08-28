@@ -689,7 +689,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Parameters
         ----------
-        tt_matrix
+        self
                 array of 4D-arrays
                 TT-Matrix factors (known as core) of shape
                 (rank_k, left_dim_k, right_dim_k, rank_{k+1})
