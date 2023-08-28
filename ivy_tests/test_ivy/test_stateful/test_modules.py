@@ -1089,3 +1089,20 @@ def test_get_buffers(buffer):
             module.register_buffer(key, item[key])
 
     assert module.buffers == buffers
+
+
+class ModuleWithTrainEval(ivy.Module):
+    def __init__(self):
+        super().__init__()
+
+    def _forward():
+        pass
+
+
+@given(mode=st.booleans())
+def test_train_eval(mode):
+    cls = ModuleWithTrainEval()
+    cls.train(mode)
+    assert mode == cls.training
+    cls.eval()
+    assert False == cls.training
