@@ -12,7 +12,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_value=-2,
         max_value=2,
         shared_dtype=True,
-        shape=(helpers.ints(min_value=2, max_value=5))),
+        shape=(helpers.ints(min_value=2, max_value=5)),
+    ),
     normalize=st.booleans(),
 )
 def test_sklearn_accuracy_score(

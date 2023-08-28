@@ -290,12 +290,12 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.4.2 and below": (
-                    "bool",
-                    "uint8",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
             )
         },
         "paddle",
@@ -306,13 +306,13 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "float32",
-                    "float64",
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
             )
         },
         "paddle",
@@ -347,11 +347,11 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
             )
         },
         "paddle",
@@ -362,13 +362,13 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "float32",
-                    "float64",
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
             )
         },
         "paddle",
@@ -386,12 +386,12 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "uint8",
-                    "int8",
-                    "int16",
-                    "complex64",
-                    "complex128",
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
             )
         },
         "paddle",
@@ -410,13 +410,13 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "float32",
-                    "float64",
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
             )
         },
         "paddle",
@@ -431,12 +431,12 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "uint8",
-                    "int8",
-                    "int16",
-                    "complex64",
-                    "complex128",
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
             )
         },
         "paddle",
@@ -466,11 +466,11 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.5.1 and below": (
-                    "uint8",
-                    "int8",
-                    "int16",
-                    "complex64",
-                    "complex128",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
             )
         },
         "paddle",
@@ -485,12 +485,12 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.5.1 and below": (
-                    "uint8",
-                    "int8",
-                    "int16",
-                    "float16",
-                    "complex64",
-                    "complex128",
+                "uint8",
+                "int8",
+                "int16",
+                "float16",
+                "complex64",
+                "complex128",
             )
         },
         "paddle",
@@ -549,8 +549,8 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
-                    "float32",
-                    "float64",
+                "float32",
+                "float64",
             )
         },
         "paddle",
@@ -594,13 +594,13 @@ class Tensor:
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
-                    "bool",
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "float32",
-                    "float64",
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
             )
         },
         "paddle",

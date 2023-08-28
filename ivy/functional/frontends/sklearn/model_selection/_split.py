@@ -1,6 +1,7 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
+
 class BaseCrossValidator:
     def split(self, X, y=None, groups=None):
         raise NotImplementedError
@@ -35,7 +36,14 @@ class KFold(BaseCrossValidator):
 
 
 @to_ivy_arrays_and_back
-def train_test_split(*arrays, test_size=None, train_size=None, random_state=None, shuffle=True, stratify=None):
+def train_test_split(
+    *arrays,
+    test_size=None,
+    train_size=None,
+    random_state=None,
+    shuffle=True,
+    stratify=None,
+):
     # TODO: Make it concise
     # TODO: implement stratify
     if stratify is not None:
@@ -45,17 +53,23 @@ def train_test_split(*arrays, test_size=None, train_size=None, random_state=None
     if test_size is None and train_size is None:
         test_size = 0.25
     n_samples = arrays[0].shape[0]
-    n_train = ivy.floor(train_size * n_samples) if isinstance(train_size, float) \
+    n_train = (
+        ivy.floor(train_size * n_samples)
+        if isinstance(train_size, float)
         else float(train_size) if isinstance(train_size, int) else None
-    n_test = ivy.ceil(test_size * n_samples) if isinstance(test_size, float) \
+    )
+    n_test = (
+        ivy.ceil(test_size * n_samples)
+        if isinstance(test_size, float)
         else float(test_size) if isinstance(test_size, int) else None
+    )
     if train_size is None:
         n_train = n_samples - n_test
     elif test_size is None:
         n_test = n_samples - n_train
 
     n_train, n_test = int(n_train), int(n_test)
-    indices = ivy.arange(0,  n_train + n_test)
+    indices = ivy.arange(0, n_train + n_test)
     if shuffle:
         if random_state is not None:
             ivy.seed(random_state)

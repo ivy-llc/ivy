@@ -1548,9 +1548,8 @@ def test_jax_categorical(
     test_flags,
     backend_fw,
 ):
-    
-    input_dtype,key = dtype_key
-    
+    input_dtype, key = dtype_key
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
@@ -1564,6 +1563,7 @@ def test_jax_categorical(
             shape=shape,
             dtype=dtype[0],
         )
+
     ret = call()
     if not ivy.exists(ret):
         return
