@@ -15,7 +15,7 @@ from ivy.functional.ivy.layers import _deconv_length
 # Linear #
 # -------#
 @st.composite
-def x_and_linear(draw):
+def _x_and_linear(draw):
     mixed_fn_compos = draw(st.booleans())
     is_torch_backend = ivy.current_backend_str() == "torch"
     dtype = draw(
@@ -64,7 +64,7 @@ def x_and_linear(draw):
 # linear
 @handle_test(
     fn_tree="functional.ivy.linear",
-    dtype_x_weight_bias=x_and_linear(),
+    dtype_x_weight_bias=_x_and_linear(),
 )
 def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_device):
     dtype, x, weight, bias = dtype_x_weight_bias
@@ -166,7 +166,7 @@ def test_dropout(
 
 
 @st.composite
-def x_and_scaled_attention(draw, dtypes):
+def _x_and_scaled_attention(draw, dtypes):
     dtype = draw(dtypes)
     num_queries = draw(helpers.ints(min_value=2, max_value=4))
     num_keys = draw(helpers.ints(min_value=2, max_value=4))
@@ -223,7 +223,7 @@ def x_and_scaled_attention(draw, dtypes):
 # scaled_dot_product_attention
 @handle_test(
     fn_tree="functional.ivy.scaled_dot_product_attention",
-    dtype_q_k_v_mask=x_and_scaled_attention(
+    dtype_q_k_v_mask=_x_and_scaled_attention(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
     scale=st.floats(min_value=0.1, max_value=1),
@@ -511,7 +511,7 @@ def test_multi_head_attention(
 
 
 @st.composite
-def x_and_filters(
+def _x_and_filters(
     draw,
     dim: int = 2,
     transpose: bool = False,
@@ -686,7 +686,7 @@ def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
 # conv1d
 @handle_test(
     fn_tree="functional.ivy.conv1d",
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=1,
         bias=True,
         filter_format=st.sampled_from(["channel_last", "channel_first"]),
@@ -731,7 +731,7 @@ def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
 # conv1d_transpose
 @handle_test(
     fn_tree="functional.ivy.conv1d_transpose",
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=1,
         transpose=True,
         bias=True,
@@ -775,7 +775,7 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
 # conv2d
 @handle_test(
     fn_tree="functional.ivy.conv2d",
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=2,
         bias=True,
         filter_format=st.sampled_from(["channel_last", "channel_first"]),
@@ -820,7 +820,7 @@ def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
 # conv2d_transpose
 @handle_test(
     fn_tree="functional.ivy.conv2d_transpose",
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=2,
         transpose=True,
         bias=True,
@@ -865,7 +865,7 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
 # depthwise_conv2d
 @handle_test(
     fn_tree="functional.ivy.depthwise_conv2d",
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=2,
         depthwise=True,
     ),
@@ -898,7 +898,7 @@ def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
 # conv3d
 @handle_test(
     fn_tree="functional.ivy.conv3d",
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=3,
         bias=True,
         filter_format=st.sampled_from(["channel_last", "channel_first"]),
@@ -942,7 +942,7 @@ def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
 # conv3d_transpose
 @handle_test(
     fn_tree="functional.ivy.conv3d_transpose",
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=3,
         transpose=True,
         bias=True,
@@ -986,7 +986,7 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
 @handle_test(
     fn_tree="functional.ivy.conv_general_dilated",
     dims=st.shared(st.integers(1, 3), key="dims"),
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=st.shared(st.integers(1, 3), key="dims"),
         general=True,
         bias=True,
@@ -1035,7 +1035,7 @@ def test_conv_general_dilated(
 @handle_test(
     fn_tree="functional.ivy.conv_general_transpose",
     dims=st.shared(st.integers(1, 3), key="dims"),
-    x_f_d_df=x_and_filters(
+    x_f_d_df=_x_and_filters(
         dim=st.shared(st.integers(1, 3), key="dims"),
         general=True,
         transpose=True,
@@ -1083,7 +1083,7 @@ def test_conv_general_transpose(
 # filter_format not in conv_general_transpose
 # output_shape not in conv_general_dilated
 @st.composite
-def x_and_filters_and_transpose(
+def _x_and_filters_and_transpose(
     draw,
     dim: int = 2,
     general=False,
@@ -1094,7 +1094,7 @@ def x_and_filters_and_transpose(
     if not transpose:
         filter_format = st.sampled_from(["channel_last", "channel_first"])
     all_args = draw(
-        x_and_filters(
+        _x_and_filters(
             dim=dim,
             general=general,
             bias=bias,
@@ -1150,7 +1150,7 @@ def x_and_filters_and_transpose(
 @handle_test(
     fn_tree="functional.ivy.conv",
     dims=st.shared(st.integers(1, 3), key="dims"),
-    x_f_d_df_tr=x_and_filters_and_transpose(
+    x_f_d_df_tr=_x_and_filters_and_transpose(
         dim=st.shared(st.integers(1, 3), key="dims"),
         general=True,
         bias=True,
@@ -1209,7 +1209,7 @@ def test_conv(*, dims, x_f_d_df_tr, test_flags, backend_fw, fn_name, on_device):
 
 
 @st.composite
-def x_and_lstm(draw, dtypes):
+def _x_and_lstm(draw, dtypes):
     dtype = draw(dtypes)
     batch_shape = (1,)
 
@@ -1273,7 +1273,7 @@ def x_and_lstm(draw, dtypes):
 # lstm
 @handle_test(
     fn_tree="functional.ivy.lstm_update",
-    dtype_lstm=x_and_lstm(
+    dtype_lstm=_x_and_lstm(
         dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),

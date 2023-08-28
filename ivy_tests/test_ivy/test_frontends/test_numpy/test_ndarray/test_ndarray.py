@@ -3075,7 +3075,7 @@ def test_numpy___array__(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "dtype": input_dtypes[0],
+            "dtype": np.dtype(input_dtypes[0]),
         },
         init_flags=init_flags,
         method_flags=method_flags,
@@ -3091,8 +3091,7 @@ def test_numpy___array__(
     init_tree="numpy.array",
     method_name="__array_wrap__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
 )
@@ -3617,6 +3616,48 @@ def test_numpy___invert__(
         backend_to_test=backend_fw,
         method_all_as_kwargs_np={},
         frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# round
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="round",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        num_arrays=1,
+        max_value=50,
+        min_value=-50,
+    ),
+    decimals=st.integers(min_value=0, max_value=3),
+)
+def test_numpy_ndarray_round(
+    dtype_and_x,
+    decimals,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        init_all_as_kwargs_np={
+            "object": x,
+        },
+        method_all_as_kwargs_np={
+            "decimals": decimals,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
