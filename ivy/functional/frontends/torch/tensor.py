@@ -495,7 +495,7 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
-    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "bfloat16")}, "torch")
     def erf_(self, *, out=None):
         self.ivy_array = self.erf(out=out).ivy_array
         return self
