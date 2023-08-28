@@ -5,6 +5,7 @@ from typing import Optional, Union
 
 # local
 import ivy
+import numpy as np
 from ivy.func_wrapper import (
     handle_array_function,
     infer_dtype,
@@ -35,19 +36,30 @@ def _check_bounds_and_get_shape(low, high, shape):
         )
         return ivy.Shape(shape)
 
+    # use numpy.vectorize to apply a function to each element of low and high
+    # and return a boolean array indicating whether they are valid types
     valid_types = (ivy.Array,)
     if len(backend_stack) == 0:
         valid_types += (ivy.current_backend().NativeArray,)
     else:
         valid_types += (ivy.NativeArray,)
-    if isinstance(low, valid_types):
-        if isinstance(high, valid_types):
-            ivy.utils.assertions.check_equal(
-                ivy.shape(low), ivy.shape(high), as_array=False
-            )
+    is_valid = np.vectorize(lambda x: isinstance(x, valid_types))
+
+    # use numpy.logical_and to combine the boolean arrays for low and high
+    # and use numpy.any to check if any element is True
+    if np.any(np.logical_and(is_valid(low), is_valid(high))):
+        # use numpy.equal to compare the shapes of low and high
+        # and use numpy.all to check if they are equal
+        ivy.utils.assertions.check_equal(
+            np.all(np.equal(ivy.shape(low), ivy.shape(high))), True, as_array=False
+        )
         return ivy.shape(low)
-    if isinstance(high, valid_types):
-        return ivy.shape(high)
+
+    # use numpy.logical_or to check if either low or high is valid
+    # and use numpy.where to return the shape of the valid one
+    if np.any(np.logical_or(is_valid(low), is_valid(high))):
+        return np.where(is_valid(low), ivy.shape(low), ivy.shape(high))
+
     return ivy.Shape(())
 
 
