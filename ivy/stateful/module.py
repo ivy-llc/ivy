@@ -61,6 +61,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         devices=None,
         dtype=None,
         dynamic_backend=None,
+        training=True,
         **kwargs,
     ):
         """
@@ -98,6 +99,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             is raised during the compiled forward pass. Default is ``True``.
         with_partial_v
             Whether to allow partial specification of variables. Default is ``False``.
+        training
+            specifies whether the module is in training or evaluation mode. Default is
+            ``True``.
         devices
             devices on which to distribute the module's variables
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
@@ -145,6 +149,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._target = None
         self._lazy_compiled = False
         self._dynamic_backend = dynamic_backend
+        self.training = training
         if build_mode != "on_init":
             return
         if hasattr(Module, "_init_var"):
@@ -739,6 +744,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             ),
             dynamic_backend=dynamic_backend,
         )
+        created_n_found.cont_config["build_callable"] = True
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
@@ -753,7 +759,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
                 ivy.Container.cont_assert_identical_structure(
                     [created_n_found, v_from_constructor],
-                    build_callable=True,
                     assert_and_assign=True,
                 )
 
@@ -812,6 +817,18 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def register_buffer(self, var_name, value):
         """Set the buffer at any place within the class."""
         self._set_buffers({var_name: value})
+
+    def eval(self):
+        # disables training mode for child modules
+        self.train(mode=False)
+
+    def train(self, mode: bool = True):
+        # enables/disables training mode
+        self.training = mode
+        for module in self.v:
+            module = getattr(self, module, None)
+            if isinstance(module, ivy.Module):
+                module.train(mode=mode)
 
     def __repr__(self):
         return object.__repr__(self)
