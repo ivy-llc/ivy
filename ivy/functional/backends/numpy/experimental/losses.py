@@ -6,7 +6,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-
 @with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def huber_loss(
