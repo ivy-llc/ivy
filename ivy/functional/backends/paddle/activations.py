@@ -59,7 +59,8 @@ def leaky_relu(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex128", "complex64")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("complex128", "complex64", "bfloat16")}},
+    backend_version,
 )
 def gelu(
     x: paddle.Tensor,
@@ -84,6 +85,9 @@ def gelu(
     return F.gelu(x, approximate=approximate)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def sigmoid(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -114,6 +118,9 @@ def softmax(
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def softplus(
     x: paddle.Tensor,
     /,
@@ -143,7 +150,7 @@ def softplus(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def log_softmax(
     x: paddle.Tensor,
