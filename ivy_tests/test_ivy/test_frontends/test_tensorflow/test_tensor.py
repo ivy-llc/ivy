@@ -1,17 +1,17 @@
 # global
 from hypothesis import strategies as st, given, assume
 import numpy as np
+import tensorflow as tf
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.backends.tensorflow.general import _check_query
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
 )
 from ivy.functional.frontends.tensorflow import EagerTensor
-
 
 CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 
@@ -1253,37 +1253,29 @@ def test_tensorflow__rmatmul__(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
     method_name="__array__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow__array__(
     dtype_and_x,
     dtype,
     frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
     backend_fw,
-    on_device,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "value": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "dtype": np.dtype(dtype[0]),
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
+    dtype[0] = np.dtype(dtype[0])
+    ret_gt = tf.constant(x[0]).__array__(dtype[0])
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        local_importer = ivy_backend.utils.dynamic_import
+        function_module = local_importer.import_module(
+            "ivy.functional.frontends.tensorflow"
+        )
+        ret = function_module.constant(x[0]).__array__(dtype[0])
+    helpers.value_test(
+        ret_np_flat=ret.ravel(),
+        ret_np_from_gt_flat=ret_gt.ravel(),
+        ground_truth_backend="tensorflow",
+        backend=backend_fw,
     )
 
 

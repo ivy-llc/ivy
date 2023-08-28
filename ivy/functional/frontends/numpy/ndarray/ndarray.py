@@ -571,14 +571,11 @@ class ndarray:
 
     def __array__(self, dtype=None, /):
         if not dtype:
-            return self
-        return np_frontend.array(self, dtype=dtype)
+            return ivy.to_numpy(self.ivy_array)
+        return ivy.to_numpy(self.ivy_array).astype(dtype)
 
     def __array_wrap__(self, array, context=None, /):
-        if context is None:
-            return np_frontend.array(array)
-        else:
-            return np_frontend.asarray(self)
+        return np_frontend.array(array)
 
     def __getitem__(self, key, /):
         ivy_args = ivy.nested_map([self, key], _to_ivy_array)

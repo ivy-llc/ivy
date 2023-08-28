@@ -1313,6 +1313,17 @@ class Tensor:
     def __and__(self, other):
         return torch_frontend.bitwise_and(self, other)
 
+    def __array__(self, dtype=None):
+        if dtype is None:
+            return ivy.to_numpy(self.ivy_array)
+        else:
+            return ivy.to_numpy(self.ivy_array).astype(dtype, copy=False)
+
+    def __array_wrap__(self, array):
+        if array.dtype == bool:
+            array = array.astype("uint8")
+        return torch_frontend.tensor(array)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
