@@ -2,8 +2,10 @@
 
 
 # global
+import jax
 import jax.lax as jlax
 import jax.numpy as jnp
+import jax.devices as devices
 
 # local
 import ivy
@@ -130,6 +132,8 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
+    dtype: jnp,
+    device: devices,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
@@ -154,12 +158,13 @@ def conv1d_transpose(
         dilations,
         (data_format, "WIO", data_format),
         True,
+        preferred_element_type=dtype
     )
     if bias is not None:
         if data_format == "NWC":
             return jnp.add(res, bias)
         return jnp.add(res, bias[(None,) + (...,) + (None,) * 1])
-    return res
+    return jax.device_put(res, device=device)
 
 
 def conv2d(
