@@ -34,3 +34,17 @@ def copy(a, order="K", subok=False):
 @handle_numpy_dtype
 def frombuffer(buffer, dtype=float, count=-1, offset=0, *, like=None):
     return ivy.frombuffer(buffer)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def fromstring(string, dtype=float, count=-1, *, sep, like=None):
+    try:
+        split_string = string.split(sep)
+    except ValueError:
+        split_string = string
+
+    string_to_array = ivy.array(split_string, dtype=dtype)
+    bytes_string = string_to_array.tobytes("C")
+
+    return ivy.frombuffer(bytes_string, dtype=dtype, count=count)
