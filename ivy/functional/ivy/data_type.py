@@ -1851,12 +1851,9 @@ def is_bool_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
-def is_int_dtype(
-    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
-    /,
-) -> bool:
+def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number], /,) -> bool:
     """
-    Determine whether the input data type is an int data type.
+    Determine whether the input data type is an integer.
 
     Parameters
     ----------
