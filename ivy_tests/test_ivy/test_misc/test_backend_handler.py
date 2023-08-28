@@ -186,10 +186,9 @@ def test_choose_random_backend(excluded):
 # Dynamic Backend
 
 backends = list(_backend_dict.keys())
-backend_combinations = [(a, b) for a in backends for b in backends if a != b]
 
 
-@pytest.mark.parametrize("middle_backend,end_backend", backend_combinations)
+@pytest.mark.parametrize("middle_backend,end_backend", [(a, b) for a in backends for b in backends if a != b])
 def test_dynamic_backend_all_combos(middle_backend, end_backend):
     # create an ivy array, container and native container
     a = ivy.array([1, 2, 3])
