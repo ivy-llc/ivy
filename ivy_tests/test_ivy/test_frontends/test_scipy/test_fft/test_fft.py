@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
-def x_and_fft(draw, dtypes):
+def _x_and_fft(draw, dtypes):
     min_fft_points = 2
     dtype = draw(dtypes)
     x_dim = draw(
@@ -34,7 +34,7 @@ def x_and_fft(draw, dtypes):
 
 
 @st.composite
-def x_and_ifft(draw):
+def _x_and_ifft(draw):
     min_fft_points = 2
     dtype = draw(helpers.get_dtypes("complex"))
     x_dim = draw(
@@ -57,7 +57,7 @@ def x_and_ifft(draw):
 
 
 @st.composite
-def valid_dct(draw):
+def _valid_dct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
@@ -85,7 +85,7 @@ def valid_dct(draw):
 
 
 @st.composite
-def valid_idct(draw):
+def _valid_idct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=["float32", "float64"],
@@ -108,7 +108,7 @@ def valid_idct(draw):
 
 
 @st.composite
-def x_and_fft2(draw):
+def _x_and_fft2(draw):
     min_fft2_points = 2
     dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
     x, dim = draw(
@@ -129,10 +129,10 @@ def x_and_fft2(draw):
 
 
 @st.composite
-def x_and_ifftn(draw):
-    x_and_ifftn = draw(x_and_fft2())
+def _x_and_ifftn(draw):
+    _x_and_ifftn = draw(_x_and_fft2())
     workers = draw(st.integers(1, 4))
-    return x_and_ifftn + (workers,)
+    return _x_and_ifftn + (workers,)
 
 
 # Tests
@@ -142,7 +142,7 @@ def x_and_ifftn(draw):
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.fft",
-    d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
+    d_x_d_n_n=_x_and_fft(helpers.get_dtypes("complex")),
     test_with_out=st.just(False),
 )
 def test_scipy_fft(
@@ -170,7 +170,7 @@ def test_scipy_fft(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.ifft",
-    d_x_d_n_n=x_and_ifft(),
+    d_x_d_n_n=_x_and_ifft(),
     test_with_out=st.just(False),
 )
 def test_scipy_ifft(
@@ -198,7 +198,7 @@ def test_scipy_ifft(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.dct",
-    dtype_x_and_args=valid_dct(),
+    dtype_x_and_args=_valid_dct(),
     test_with_out=st.just(False),
 )
 def test_scipy_dct(
@@ -229,7 +229,7 @@ def test_scipy_dct(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.idct",
-    dtype_x_and_args=valid_idct(),
+    dtype_x_and_args=_valid_idct(),
     test_with_out=st.just(False),
 )
 def test_scipy_idct(
@@ -260,7 +260,7 @@ def test_scipy_idct(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.fft2",
-    d_x_d_s_n=x_and_fft2(),
+    d_x_d_s_n=_x_and_fft2(),
     test_with_out=st.just(False),
 )
 def test_scipy_fft2(
@@ -288,7 +288,7 @@ def test_scipy_fft2(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.ifftn",
-    d_x_d_s_n_workers=x_and_ifftn(),
+    d_x_d_s_n_workers=_x_and_ifftn(),
     test_with_out=st.just(False),
 )
 def test_scipy_ifftn(
@@ -317,7 +317,7 @@ def test_scipy_ifftn(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.fft.rfftn",
-    d_x_d_s_n_workers=x_and_ifftn(),
+    d_x_d_s_n_workers=_x_and_ifftn(),
     test_with_out=st.just(False),
 )
 def test_scipy_rfftn(
