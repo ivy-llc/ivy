@@ -372,12 +372,8 @@ def maximum(x1, x2, /):
 
 
 @with_supported_dtypes(
-    {
-        "tensorflow": ("float", "complex"),
-        "jax": ("float", "complex"),
-        "torch": ("float", "complex"),
-        "numpy": ("float", "complex"),
-    }
+    {"0.4.14 and below": ("float", "complex")},
+    "jax",
 )
 @to_ivy_arrays_and_back
 def mean(x, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
