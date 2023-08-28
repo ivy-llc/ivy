@@ -32,14 +32,14 @@ def tree_strategy(max_depth=2):
 
 
 @st.composite
-def tree_dict_strategy(draw):
+def _tree_dict_strategy(draw):
     return draw(tree_strategy())
 
 
 # tree_leaves
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_leaves",
-    tree=tree_dict_strategy(),
+    tree=_tree_dict_strategy(),
 )
 def test_jax_tree_leaves(
     *,
@@ -65,7 +65,7 @@ def test_jax_tree_leaves(
 # tree_map
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_map",
-    tree=tree_dict_strategy(),
+    tree=_tree_dict_strategy(),
 )
 def test_jax_tree_map(
     *,

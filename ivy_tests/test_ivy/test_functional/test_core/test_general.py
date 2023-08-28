@@ -473,7 +473,7 @@ def test_clip_vector_norm(
 
 
 @st.composite
-def values_and_ndindices(
+def _values_and_ndindices(
     draw,
     *,
     array_dtypes,
@@ -606,7 +606,7 @@ def test_scatter_flat(x, reduction, test_flags, backend_fw, fn_name, on_device):
 # scatter_nd
 @handle_test(
     fn_tree="functional.ivy.scatter_nd",
-    x=values_and_ndindices(
+    x=_values_and_ndindices(
         # ToDo: needs support for boolean arrays
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
