@@ -154,7 +154,7 @@ def test_torch_is_complex(
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int64"],
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
             max_num_dims=3,
             min_dim_size=2,
@@ -209,12 +209,12 @@ def test_torch_scatter(
 ):
     input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=[input_dtype, "int64", input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
         input=x,
         dim=axis,
         index=indices,
@@ -234,16 +234,17 @@ def test_torch_scatter_add(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=[input_dtype, "int64", input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
         input=x,
         dim=axis,
         index=indices,
@@ -270,12 +271,12 @@ def test_torch_scatter_reduce(
 ):
     input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=[input_dtype, "int64", input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
         input=x,
         dim=axis,
         index=indices,
