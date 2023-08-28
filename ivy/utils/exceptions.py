@@ -423,7 +423,7 @@ def _handle_inplace_mode():
         )
 
 
-def _check_inplace_update_support(ensure_in_backend, x):
+def _check_inplace_update_support(x, ensure_in_backend):
     current_backend = ivy.current_backend_str()
     is_tf_variable = current_backend == "tensorflow" and not ivy.is_ivy_array(
         x, exclusive=True

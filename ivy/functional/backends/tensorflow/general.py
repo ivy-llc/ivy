@@ -242,7 +242,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        _check_inplace_update_support(ensure_in_backend, x)
+        _check_inplace_update_support(x, ensure_in_backend)
 
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)

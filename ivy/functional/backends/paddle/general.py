@@ -331,7 +331,7 @@ def inplace_update(
     ensure_in_backend: bool = False,
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
-    _check_inplace_update_support()
+    _check_inplace_update_support(x, ensure_in_backend)
 
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)

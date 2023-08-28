@@ -167,9 +167,6 @@ invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_ver
 
 native_inplace_support = False
 
-backend = "jax"
-
-
 supports_gradients = True
 
 
