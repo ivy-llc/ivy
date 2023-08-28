@@ -22,9 +22,9 @@ def huber_loss(
     loss = np.where(abs_diff <= delta, quadratic_loss, linear_loss)
 
     if reduction == "sum":
-        return ivy.sum(loss)
+        return np.sum(loss)
     elif reduction == "mean":
-        return ivy.mean(loss)
+        return np.mean(loss)
     else:
         return loss
 
