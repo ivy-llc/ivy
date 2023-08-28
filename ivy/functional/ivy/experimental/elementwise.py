@@ -1335,3 +1335,56 @@ def digamma(
     ivy.array([-0.7549271   0.92278427  0.9988394])
     """
     return ivy.current_backend(x).digamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
+def sparsify_tensor(
+    x: Union[ivy.Array, ivy.NativeArray],
+    card: int,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Zeros out all elements in the tensor except `card` elements with maximum absolute
+    values.
+
+    Parameters
+    ----------
+    x
+        Tensor to be sparsified
+    card
+        Desired number of non-zero elements in the tensor
+    out
+        Optional output array for writing the result to.
+
+    Returns
+    -------
+    ivy.array of shape tensor.shape
+
+    Examples
+    --------
+    >>> x = ivy.arange(100)
+    >>> x = ivy.reshape(x, (10, 10))
+    >>> sparsify_tensor(x, 10)
+    ivy.array([[ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
+    """
+    if card >= ivy.prod(ivy.array(x.shape)):
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
+    _shape = ivy.shape(x)
+    x = ivy.reshape(ivy.sort(ivy.abs(x)), (-1,))
+    tensor = ivy.concat([ivy.zeros(len(x) - card, dtype=x.dtype), x[-card:]], axis=0)
+
+    return ivy.reshape(tensor, _shape, out=out)
