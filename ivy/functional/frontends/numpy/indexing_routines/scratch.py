@@ -24,7 +24,7 @@ args = [-10, 10]
 # print(res)
 
 out = np.choose(args, choices)
-out_ivy = ivy_np.choose(args, choices)
-
 print(out)
+
+out_ivy = ivy_np.choose(args, choices)
 print(out_ivy)
