@@ -325,7 +325,7 @@ def test_avg_pool3d(
 
 
 @st.composite
-def valid_dct(draw):
+def _valid_dct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
@@ -354,7 +354,7 @@ def valid_dct(draw):
 
 @handle_test(
     fn_tree="dct",
-    dtype_x_and_args=valid_dct(),
+    dtype_x_and_args=_valid_dct(),
     test_gradients=st.just(False),
 )
 def test_dct(*, dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
@@ -377,7 +377,7 @@ def test_dct(*, dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
 
 @handle_test(
     fn_tree="idct",
-    dtype_x_and_args=valid_dct(),
+    dtype_x_and_args=_valid_dct(),
     test_gradients=st.just(False),
 )
 def test_idct(dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
@@ -585,7 +585,7 @@ def test_interpolate(
 
 
 @st.composite
-def x_and_fft(draw):
+def _x_and_fft(draw):
     min_fft_points = 2
     dtype = draw(helpers.get_dtypes("valid", full=False))
     x_dim = draw(
@@ -613,7 +613,7 @@ def x_and_fft(draw):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft",
-    d_x_d_n_n=x_and_fft(),
+    d_x_d_n_n=_x_and_fft(),
     ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
@@ -793,7 +793,7 @@ def test_dropout3d(
 
 
 @st.composite
-def x_and_ifft(draw):
+def _x_and_ifft(draw):
     min_fft_points = 2
     dtype = draw(helpers.get_dtypes("complex"))
     x_dim = draw(
@@ -817,7 +817,7 @@ def x_and_ifft(draw):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.ifft",
-    d_x_d_n_n=x_and_ifft(),
+    d_x_d_n_n=_x_and_ifft(),
     test_gradients=st.just(False),
 )
 def test_ifft(*, d_x_d_n_n, test_flags, backend_fw, fn_name):
@@ -865,8 +865,8 @@ def test_embedding(
 
 @handle_test(
     fn_tree="dft",
-    d_xfft_axis_n_length=x_and_fft(),
-    d_xifft_axis_n_length=x_and_ifft(),
+    d_xfft_axis_n_length=_x_and_fft(),
+    d_xifft_axis_n_length=_x_and_ifft(),
     inverse=st.booleans(),
     onesided=st.booleans(),
 )
@@ -1089,7 +1089,7 @@ def test_reduce_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
 
 
 @st.composite
-def x_and_fft2(draw):
+def _x_and_fft2(draw):
     min_fft2_points = 2
     dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
     x_dim = draw(
@@ -1120,7 +1120,7 @@ def x_and_fft2(draw):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.fft2",
-    d_x_d_s_n=x_and_fft2(),
+    d_x_d_s_n=_x_and_fft2(),
     ground_truth_backend="numpy",
     container_flags=st.just([False]),
     test_gradients=st.just(False),
@@ -1143,7 +1143,7 @@ def test_fft2(*, d_x_d_s_n, test_flags, backend_fw, fn_name, on_device):
 
 
 @st.composite
-def x_and_ifftn(draw):
+def _x_and_ifftn(draw):
     min_fft_points = 2
     dtype = draw(helpers.get_dtypes("complex"))
     x_dim = draw(
@@ -1180,7 +1180,7 @@ def x_and_ifftn(draw):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.ifftn",
-    d_x_d_s_n=x_and_ifftn(),
+    d_x_d_s_n=_x_and_ifftn(),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )
@@ -1207,7 +1207,7 @@ def test_ifftn(
 
 
 @st.composite
-def x_and_rfftn(draw):
+def _x_and_rfftn(draw):
     min_rfftn_points = 2
     dtype = draw(helpers.get_dtypes("float"))
     x_dim = draw(
@@ -1242,7 +1242,7 @@ def x_and_rfftn(draw):
 
 @handle_test(
     fn_tree="functional.ivy.experimental.rfftn",
-    d_x_d_s_n=x_and_rfftn(),
+    d_x_d_s_n=_x_and_rfftn(),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )

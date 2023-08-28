@@ -183,7 +183,7 @@ def test_dropout_layer(
 # Attention #
 # ----------#
 @st.composite
-def x_and_mha(draw):
+def _x_and_mha(draw):
     dtype = draw(
         helpers.get_dtypes("float", full=False).filter(lambda x: x != ["float16"])
     )
@@ -254,7 +254,7 @@ def x_and_mha(draw):
 # multi_head_attention
 @handle_method(
     method_tree="MultiHeadAttention.__call__",
-    dtype_mha=x_and_mha(),
+    dtype_mha=_x_and_mha(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
     method_num_positional_args=helpers.num_positional_args(
