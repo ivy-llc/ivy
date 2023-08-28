@@ -346,7 +346,7 @@ def unique_consecutive(
 
 def fill_diagonal(
     a: tf.Tensor,
-    v: Union[int, float],
+    v: Union[int, float, tf.Tensor],
     /,
     *,
     wrap: bool = False,
@@ -363,7 +363,14 @@ def fill_diagonal(
     a = tf.reshape(a, (-1,))
     end = min(end, max_end)
     indices = [[i] for i in range(0, end, step)]
-    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
+    if isinstance(v, tf.Tensor):
+        v = tf.reshape(v, (-1,))
+        len_v = tf.shape(v)[0]
+        ups = tf.convert_to_tensor(
+            [v[n % len_v] for n in range(len(indices))], dtype=a.dtype
+        )
+    else:
+        ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
     a = tf.tensor_scatter_nd_update(a, indices, ups)
     a = tf.reshape(a, shape)
     return a
