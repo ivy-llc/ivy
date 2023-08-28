@@ -174,7 +174,7 @@ def conv1d_transpose(
     /,
     *,
     dtype: np.dtype,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    output_shape: Optional[Sequence[int]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[np.ndarray] = None,
