@@ -109,20 +109,27 @@ def reshape_(x, shape):
 @to_ivy_arrays_and_back
 def roll(x, shifts, axis=None, name=None):
     return ivy.roll(x, shifts, axis=axis)
+    
 
-@with_supported_dtypes(
+@with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": (
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-        )
+        "2.5.1 and below": {
+            "cpu": (
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "complex64",
+                "complex128",
+            )
+        },
     },
     "paddle",
 )
 @to_ivy_arrays_and_back
-def moveaxis(x, source, destination, name=None)):
+def moveaxis(x, source, destination, name=None):
     return ivy.moveaxis(x, source, destination)
 
 
