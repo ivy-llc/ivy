@@ -150,6 +150,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
             "float64",
             "int32",
             "int64",
+            "complex",
         )
     },
     backend_version,
@@ -172,7 +173,12 @@ def broadcast_to(
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
-    return paddle.broadcast_to(x, shape)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        x_real = paddle.broadcast_to(x.real(), shape)
+        x_imag = paddle.broadcast_to(x.imag(), shape)
+        return paddle.complex(x_real, x_imag)
+    else:
+        return paddle.broadcast_to(x, shape)
 
 
 @_handle_nestable_dtype_info

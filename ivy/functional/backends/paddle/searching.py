@@ -109,6 +109,7 @@ def argmin(
             "float32",
             "float64",
             "bool",
+            "complex",
         ]
     },
     backend_version,
@@ -121,7 +122,13 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor]]:
-    res = paddle.nonzero(x)
+    if paddle.is_complex(x):
+        real_idx = paddle.nonzero(x.real())
+        imag_idx = paddle.nonzero(x.imag())
+        idx = paddle.concat([real_idx, imag_idx], axis=0)
+        res = paddle.unique(idx, axis=0)
+    else:
+        res = paddle.nonzero(x)
 
     res = res.T
     if size is not None:
@@ -145,7 +152,17 @@ def nonzero(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "int32", "int64")},
+    {
+        "2.5.1 and below": (
+            "uint16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex",
+        )
+    },
     backend_version,
 )
 def where(
@@ -165,7 +182,12 @@ def where(
     condition, x1, x2 = arrays
     condition = condition.cast("bool") if condition.dtype != paddle.bool else condition
 
-    result = paddle.where(condition, x1, x2)
+    if ret_dtype in [paddle.complex64, paddle.complex128]:
+        result_real = paddle.where(condition, paddle.real(x1), paddle.real(x2))
+        result_imag = paddle.where(condition, paddle.imag(x1), paddle.imag(x2))
+        result = paddle.complex(result_real, result_imag)
+    else:
+        result = paddle.where(condition, x1, x2)
 
     return result.squeeze() if scalar_out else result
 
@@ -185,6 +207,7 @@ def where(
             "float32",
             "float64",
             "bool",
+            "complex",
         ]
     },
     backend_version,
@@ -194,4 +217,9 @@ def argwhere(
 ) -> paddle.Tensor:
     if x.ndim == 0:
         return paddle.zeros(shape=[int(bool(x.item())), 0], dtype="int64")
+    if paddle.is_complex(x):
+        real_idx = paddle.nonzero(x.real())
+        imag_idx = paddle.nonzero(x.imag())
+        idx = paddle.concat([real_idx, imag_idx], axis=0)
+        return paddle.unique(idx, axis=0)
     return paddle.nonzero(x)

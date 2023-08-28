@@ -143,7 +143,7 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64", "complex")},
     backend_version,
 )
 def shuffle(
@@ -158,4 +158,8 @@ def shuffle(
         _ = paddle.seed(seed)
     # Use Paddle's randperm function to generate shuffled indices
     indices = paddle.randperm(x.ndim, dtype="int64")
+    if paddle.is_complex(x):
+        shuffled_real = paddle.index_select(x.real(), indices, axis=axis)
+        shuffled_imag = paddle.index_select(x.imag(), indices, axis=axis)
+        return paddle.complex(shuffled_real, shuffled_imag)
     return paddle.index_select(x, indices, axis=axis)

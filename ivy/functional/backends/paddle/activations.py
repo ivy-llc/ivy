@@ -18,14 +18,18 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
 )
 def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(F.relu(x.real()), F.relu(x.imag()))
     return F.relu(x)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
 )
 def leaky_relu(
     x: paddle.Tensor,
@@ -34,11 +38,17 @@ def leaky_relu(
     alpha: float = 0.2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(
+            F.leaky_relu(x.real(), negative_slope=alpha),
+            F.leaky_relu(x.imag(), negative_slope=alpha),
+        )
     return F.leaky_relu(x, negative_slope=alpha)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
 )
 def gelu(
     x: paddle.Tensor,
@@ -47,15 +57,26 @@ def gelu(
     approximate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        if approximate:
+            return (
+                0.5
+                * x
+                * (1 + paddle_backend.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
+            )
+        return 0.5 * x * (1 + paddle_backend.erf(x / paddle_backend.sqrt(2)))
     return F.gelu(x, approximate=approximate)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
 )
 def sigmoid(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return 1 / (1 + paddle_backend.exp(-x))
     return F.sigmoid(x)
 
 
@@ -134,9 +155,12 @@ def log_softmax(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
 )
 def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
     return F.mish(x)
 
 

@@ -96,8 +96,7 @@ def flip(
             "int32",
             "int64",
             "uint16",
-            "complex64",
-            "complex128",
+            "complex",
         )
     },
     backend_version,
@@ -176,8 +175,7 @@ def reshape(
             "float64",
             "int32",
             "int64",
-            "complex64",
-            "complex128",
+            "complex",
         )
     },
     backend_version,
@@ -204,8 +202,7 @@ def roll(
             "int8",
             "int32",
             "int64",
-            "complex64",
-            "complex128",
+            "complex",
         )
     },
     backend_version,
@@ -243,6 +240,7 @@ def squeeze(
             "int32",
             "int64",
             "uint16",
+            "complex",
         )
     },
     backend_version,
@@ -270,7 +268,18 @@ def stack(
             first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype
         )
 
-    return paddle.stack(arrays, axis=axis)
+    if dtype in [
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        arrays = list(map(lambda x: x.cast(dtype), arrays))
+        real_list = list(map(lambda x: x.real(), arrays))
+        imag_list = list(map(lambda x: x.imag(), arrays))
+        re_stacked = paddle.stack(real_list, axis=axis)
+        imag_stacked = paddle.stack(imag_list, axis=axis)
+        return paddle.complex(re_stacked, imag_stacked)
+    else:
+        return paddle.stack(arrays, axis=axis)
 
 
 # Extra #
@@ -290,6 +299,7 @@ def stack(
             "int64",
             "uint8",
             "int8",
+            "complex",
         )
     },
     backend_version,
@@ -336,11 +346,15 @@ def split(
                 f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
             )
 
+    if paddle.is_complex(x):
+        imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
+        real_list = paddle.split(x.real(), num_or_size_splits, axis)
+        return [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
     return paddle.split(x, num_or_size_splits, axis)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "complex")},
     backend_version,
 )
 def repeat(
@@ -367,6 +381,11 @@ def repeat(
 
     if axis is not None:
         axis = axis % x.ndim
+    if paddle.is_complex(x):
+        return paddle.complex(
+            paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
+            paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
+        )
 
     return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
 
@@ -431,8 +450,7 @@ def tile(
             "float64",
             "int32",
             "int64",
-            "complex64",
-            "complex128",
+            "complex",
             "uint16",
         ),
     },
@@ -502,6 +520,7 @@ def clip(
             "float64",
             "int32",
             "int64",
+            "complex",
         )
     },
     backend_version,
@@ -520,8 +539,12 @@ def unstack(
         axis = axis % x.ndim
     else:
         axis = 0
-
-    ret = paddle.unbind(x, axis)
+    if paddle.is_complex(x):
+        real_list = paddle.unbind(x.real(), axis)
+        imag_list = paddle.unbind(x.imag(), axis)
+        ret = [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
+    else:
+        ret = paddle.unbind(x, axis)
     if keepdims:
         return [paddle_backend.expand_dims(r, axis=axis) for r in ret]
     return ret

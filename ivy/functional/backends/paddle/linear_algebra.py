@@ -96,7 +96,7 @@ def diagonal(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def eigh(
@@ -114,7 +114,7 @@ def eigh(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def eigvalsh(
@@ -163,8 +163,7 @@ def inv(
             "float16",
             "float32",
             "float64",
-            "complex64",
-            "complex128",
+            "complex",
         )
     },
     backend_version,
@@ -194,8 +193,8 @@ def matmul(
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
     backend_version,
 )
 def matrix_norm(
@@ -267,7 +266,7 @@ def matrix_norm(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def eig(
@@ -290,8 +289,8 @@ def matrix_power(
     return paddle.linalg.matrix_power(x, n)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
     backend_version,
 )
 def matrix_rank(
@@ -338,8 +337,7 @@ def matrix_rank(
             "int32",
             "int64",
             "uint16",
-            "complex64",
-            "complex128",
+            "complex",
         )
     },
     backend_version,
@@ -371,7 +369,7 @@ def outer(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def pinv(
@@ -572,7 +570,17 @@ def vector_norm(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "int32", "int64")},
+    {
+        "2.5.1 and below": (
+            "float16",
+            "uint16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex",
+        )
+    },
     backend_version,
 )
 def diag(
@@ -582,11 +590,15 @@ def diag(
     k: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(
+            paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
+        )
     return paddle.diag(x, offset=k)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex")}},
     backend_version,
 )
 def vander(

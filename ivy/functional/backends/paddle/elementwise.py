@@ -126,7 +126,7 @@ def equal(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64", "complex")},
     backend_version,
 )
 def less_equal(
@@ -137,6 +137,12 @@ def less_equal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        if paddle.is_complex(x1):
+            real = paddle.less_equal(x1.real(), x2.real())
+            imag = paddle.less_equal(x1.imag(), x2.imag())
+            return paddle_backend.logical_and(real, imag)
+
     return paddle.less_equal(x1, x2)
 
 
@@ -152,16 +158,24 @@ def bitwise_and(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    backend_version,
 )
 def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    x.dtype
+    if paddle.is_complex(x):
+        return paddle.complex(paddle.ceil(x.real()), paddle.ceil(x.imag()))
     return paddle.ceil(x)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    backend_version,
 )
 def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    x.dtype
+    if paddle.is_complex(x):
+        return paddle.complex(paddle.floor(x.real()), paddle.floor(x.imag()))
     return paddle.floor(x)
 
 
@@ -180,7 +194,7 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
     backend_version,
 )
 def sign(
@@ -194,9 +208,17 @@ def sign(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    backend_version,
 )
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    """Calculate the square root with type handling."""
+    if paddle.is_complex(x):
+        angle = paddle.angle(x)
+        return paddle.complex(
+            paddle.cos(angle / 2), paddle.sin(angle / 2)
+        ) * paddle.sqrt(paddle.abs(x))
+
     return paddle.sqrt(x)
 
 
@@ -208,31 +230,58 @@ def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    backend_version,
 )
 def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        base = paddle.to_tensor(10.0).squeeze()
+        return paddle_backend.divide(
+            paddle_backend.log(x), paddle_backend.log(base)
+        ).astype(x.dtype)
     return paddle.log10(x)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    backend_version,
 )
 def log2(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        base = paddle.to_tensor(2.0).squeeze()
+        return paddle_backend.divide(
+            paddle_backend.log(x), paddle_backend.log(base)
+        ).astype(x.dtype)
     return paddle.log2(x)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    backend_version,
 )
 def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(paddle.log1p(paddle.abs(x)), paddle.angle(x + 1))
     return paddle.log1p(x)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64", "uint16")},
+    {
+        "2.5.1 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "uint16",
+            "complex",
+        )
+    },
     backend_version,
 )
 def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag()))
     return paddle.isnan(x)
 
 
@@ -246,6 +295,7 @@ def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
             "int32",
             "int64",
             "uint16",
+            "complex",
         )
     },
     backend_version,
@@ -258,6 +308,11 @@ def less(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        real = paddle.less_than(x1.real(), x2.real())
+        imag = paddle.less_than(x1.imag(), x2.imag())
+        return logical_and(real, imag)
+
     return paddle.less_than(x1, x2)
 
 
@@ -290,6 +345,7 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
             "float16",
             "float32",
             "float64",
+            "complex",
         )
     },
     backend_version,
@@ -297,6 +353,10 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.logical_and(
+            paddle.logical_not(x.real()), paddle.logical_not(x.imag())
+        )
     return paddle.logical_not(x)
 
 
@@ -340,6 +400,7 @@ def fmin(
             "int32",
             "int64",
             "uint16",
+            "complex",
         )
     },
     backend_version,
@@ -352,6 +413,11 @@ def greater(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        if paddle.is_complex(x1):
+            real = paddle.greater_than(x1.real(), x2.real())
+            imag = paddle.greater_than(x1.imag(), x2.imag())
+            return paddle.logical_and(real, imag)
     return paddle.greater_than(x1, x2)
 
 
@@ -365,6 +431,7 @@ def greater(
             "int32",
             "int64",
             "uint16",
+            "complex",
         )
     },
     backend_version,
@@ -377,6 +444,11 @@ def greater_equal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        if paddle.is_complex(x1):
+            real = paddle.greater_equal(x1.real(), x2.real())
+            imag = paddle.greater_equal(x1.imag(), x2.imag())
+            return paddle.logical_and(real, imag)
     return paddle.greater_equal(x1, x2)
 
 
@@ -442,6 +514,7 @@ def logical_and(
             "float16",
             "float32",
             "float64",
+            "complex",
         )
     },
     backend_version,
@@ -450,6 +523,11 @@ def logical_or(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        return paddle.logical_or(
+            paddle.logical_or(x1.real(), x2.real()),
+            paddle.logical_or(x1.imag(), x2.imag()),
+        )
     return paddle.logical_or(x1, x2)
 
 
@@ -574,7 +652,7 @@ def square(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64", "complex")},
     backend_version,
 )
 def pow(
@@ -585,20 +663,64 @@ def pow(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
+        r = paddle.abs(x1)
+        theta = paddle.angle(x1)
+        power = x2 * paddle.complex(paddle.log(r), theta)
+        result = paddle.exp(power.real()) * paddle.complex(
+            paddle.cos(power.imag()), paddle.sin(power.imag())
+        )
+        return result
     return paddle.pow(x1, x2)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
 )
-def round(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.round(x)
+def round(
+    x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    def _np_round(x, decimals):
+        # this is a logic to mimic np.round behaviour
+        # which rounds odd numbers up and even numbers down at limits like 0.5
+        eps = 1e-6 * paddle.sign(x)
+
+        # check if the integer is even or odd
+        candidate_ints = paddle_backend.remainder(paddle_backend.trunc(x), 2.0).astype(
+            bool
+        )
+        # check if the fraction is exactly half
+        candidate_fractions = paddle_backend.equal(
+            paddle_backend.abs(paddle_backend.subtract(x, paddle_backend.trunc(x))),
+            0.5,
+        )
+        x = paddle_backend.where(
+            paddle.logical_and(~candidate_ints, candidate_fractions),
+            x - eps,
+            x,
+        )
+        factor = paddle_backend.pow(10.0, decimals).astype(x.dtype)
+        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
+        return paddle_backend.divide(
+            paddle.round(paddle_backend.multiply(x, factor)), factor_denom
+        )
+
+    if paddle.is_complex(x):
+        return paddle.complex(
+            _np_round(x.real(), decimals), _np_round(x.imag(), decimals)
+        )
+    return _np_round(x, decimals).astype(x.dtype)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
 )
 def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(paddle.trunc(x.real()), paddle.trunc(x.imag()))
     return paddle.trunc(x)
 
 
@@ -738,9 +860,12 @@ def atan2(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    backend_version,
 )
 def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(paddle.log(paddle.abs(x)), paddle.angle(x))
     return paddle.log(x)
 
 
@@ -864,7 +989,8 @@ def erf(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "complex")},
+    backend_version,
 )
 def minimum(
     x1: Union[float, paddle.Tensor],
@@ -875,11 +1001,20 @@ def minimum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        use_where = True
+
+    if use_where:
+        return paddle_backend.where(paddle_backend.less_equal(x1, x2), x1, x2).astype(
+            ret_dtype
+        )
+
     return paddle.minimum(x1, x2).astype(ret_dtype)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "complex")},
+    backend_version,
 )
 def maximum(
     x1: Union[float, paddle.Tensor],
@@ -890,6 +1025,12 @@ def maximum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        use_where = True
+    if use_where:
+        return paddle_backend.where(
+            paddle_backend.greater_equal(x1, x2), x1, x2
+        ).astype(ret_dtype)
     return paddle.maximum(x1, x2).astype(ret_dtype)
 
 
@@ -988,9 +1129,7 @@ def angle(
     return result
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
-)
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, backend_version)
 def gcd(
     x1: Union[paddle.Tensor, int, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
@@ -1002,24 +1141,7 @@ def gcd(
     return paddle.gcd(x1, x2)
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
+@with_supported_dtypes({"2.5.1 and below": "complex"}, backend_version)
 def imag(
     val: paddle.Tensor,
     /,

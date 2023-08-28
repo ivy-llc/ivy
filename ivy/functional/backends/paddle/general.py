@@ -387,7 +387,8 @@ def scatter_flat(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, backend_version
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64", "complex")},
+    backend_version,
 )
 def scatter_nd(
     indices: paddle.Tensor,
@@ -448,17 +449,30 @@ def scatter_nd(
         indices = ivy.expand_dims(indices, axis=0)._data
         updates = ivy.expand_dims(updates, axis=0)._data
     target_dtype = target.dtype
-    if reduction == "replace":
-        gathered_vals = paddle.gather_nd(target, indices)
-        # values greater than 2^24 - 1 can only be accurately represented as float64
-        if (np.abs(gathered_vals.numpy()).max() >= 2**24) or (
-            np.abs(updates.numpy()).max() >= 2**24
-        ):
-            gathered_vals = gathered_vals.cast("float64")
-            target = target.cast("float64")
-            updates = updates.cast("float64")
-        updates = paddle.subtract(updates, gathered_vals)
-    ret = paddle.scatter_nd_add(target, indices, updates).cast(target_dtype)
+    if target_dtype in [
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if reduction == "replace":
+            updates = paddle_backend.subtract(
+                updates,
+                paddle_backend.gather_nd(target, indices),
+            )
+        result_real = paddle.scatter_nd_add(target.real(), indices, updates.real())
+        result_imag = paddle.scatter_nd_add(target.imag(), indices, updates.imag())
+        ret = paddle.complex(result_real, result_imag)
+    else:
+        if reduction == "replace":
+            gathered_vals = paddle.gather_nd(target, indices)
+            # values greater than 2^24 - 1 can only be accurately represented as float64
+            if (np.abs(gathered_vals.numpy()).max() >= 2**24) or (
+                np.abs(updates.numpy()).max() >= 2**24
+            ):
+                gathered_vals = gathered_vals.cast("float64")
+                target = target.cast("float64")
+                updates = updates.cast("float64")
+            updates = paddle.subtract(updates, gathered_vals)
+        ret = paddle.scatter_nd_add(target, indices, updates).cast(target_dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
