@@ -91,40 +91,6 @@ def reshape_(x, shape):
     ret = ivy.reshape(x, shape)
     ivy.inplace_update(x, ret)
     return x
-
-
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-        )
-    },
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def moveaxis(x, source, destination):
-    if isinstance(source, list) and isinstance(destination, list):
-        if len(source) != len(destination):
-            raise ValueError("Source and destination lists must have the same length")
-        for src, dest in zip(source, destination):
-            x = moveaxis(x, src, dest)
-        return x
-    else:
-        if source == destination:
-            return x
-        if source < 0:
-            source = x.ndim + source
-        if destination < 0:
-            destination = x.ndim + destination
-        if source < 0 or source >= x.ndim or destination < 0 or destination >= x.ndim:
-            raise ValueError("Source or destination axis out of range")
-        order = list(range(x.ndim))
-        order.pop(source)
-        order.insert(destination, source)
-        return ivy.transpose(x, order)
     
 
 @with_supported_dtypes(
@@ -143,6 +109,21 @@ def moveaxis(x, source, destination):
 @to_ivy_arrays_and_back
 def roll(x, shifts, axis=None, name=None):
     return ivy.roll(x, shifts, axis=axis)
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def moveaxis(x, source, destination):
+    return ivy.moveaxis(x, source, destination)
 
 
 @with_supported_device_and_dtypes(
