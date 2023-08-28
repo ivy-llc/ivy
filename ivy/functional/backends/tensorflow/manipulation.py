@@ -344,7 +344,7 @@ def clip(
 ) -> Union[tf.Tensor, tf.Variable]:
     if x_min is None and x_max is None:
         raise ValueError("At least one of the x_min or x_max must be provided")
-    cond = x_min is None or x_max is None or x_min < x_max
+    cond = x_min is None or x_max is None or (x_min < x_max).any()
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
         promoted_type = ivy.as_native_dtype(
