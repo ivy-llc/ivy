@@ -2172,7 +2172,7 @@ def test_paddle_min(
         keepdim=False,
     )
 
-    
+
 # amin
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.amin",
@@ -2201,6 +2201,6 @@ def test_paddle_amin(
         test_flags=test_flags,
         on_device=on_device,
         x=x[0],
-        axis = axis,
-        keepdim = keepdim,
-    )    
+        axis=axis,
+        keepdim=keepdim,
+    )
