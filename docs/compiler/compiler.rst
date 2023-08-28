@@ -260,7 +260,7 @@ removed soon!
    compile function.
 2. **Non-framework-specific code**: As the compiler traces the function using the 
    functional API of the underlying framework, any piece of code inside the model that 
-   is not from said framework will not be correctly registered, this includes other 
+   is not from the said framework will not be correctly registered, this includes other 
    frameworks code (such as NumPy statements inside a torch model) or python statements 
    such as len().
 3. **Incorrectly cached parts of the graph**: There are certain cases where compilation 

@@ -822,3 +822,49 @@ def test_digamma(
         on_device=on_device,
         x=x[0],
     )
+
+
+@st.composite
+def _sparsify_tensor_stg(draw):
+    dtype, tensor, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_dim_size=1,
+            min_value=10,
+        )
+    )
+
+    size = 1
+    for dim in shape:
+        size *= dim
+
+    card = draw(st.integers(min_value=1, max_value=size))
+
+    return dtype, tensor[0], card
+
+
+# sparsify_tensor
+@handle_test(
+    fn_tree="functional.ivy.experimental.sparsify_tensor",
+    tensor_data=_sparsify_tensor_stg(),
+)
+def test_sparsify_tensor(
+    tensor_data,
+    test_flags,
+    on_device,
+    fn_name,
+    backend_fw,
+):
+    dtype, tensor, card = tensor_data
+
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_name=fn_name,
+        input_dtypes=dtype,
+        tensor=tensor,
+        card=card,
+    )
