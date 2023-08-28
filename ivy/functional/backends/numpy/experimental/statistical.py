@@ -139,12 +139,7 @@ def median(
         keepdims=keepdims,
         out=out,
     )
-    if input.dtype in [np.uint64, np.int64, np.float64]:
-        return ret.astype(np.float64)
-    elif input.dtype in [np.float16]:
-        return ret.astype(input.dtype)
-    else:
-        return ret.astype(np.float32)
+    return ret
 
 
 median.support_native_out = True
