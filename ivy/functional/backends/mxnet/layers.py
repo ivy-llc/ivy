@@ -35,12 +35,14 @@ def conv1d_transpose(
     dtype: np.dtype,
     device: Device,
     bias: Optional[ndarray.NDArray] = None,
+    data_format: str = "NWC",
     dilations: Union[(int, Tuple[int])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    inputs = mx.nd.swapaxes(x, 1, 2)
+    if data_format == "NWC":
+        x = mx.nd.swapaxes(x, 1, 2)
     outputs = ndarray.Deconvolution(
-        inputs,
+        x,
         filters,
         bias,
         filters.shape,
@@ -53,8 +55,9 @@ def conv1d_transpose(
         dtype=dtype,
         context=device
     )
-
-    return mx.nd.swapaxes(outputs, 1, 2)
+    if data_format == "NWC":
+        outputs = mx.nd.swapaxes(outputs, 1, 2)
+    return outputs
 
 
 
