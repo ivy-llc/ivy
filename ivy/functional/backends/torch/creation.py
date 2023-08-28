@@ -127,7 +127,13 @@ def asarray(
         if contain_tensor:
             ret = _stack_tensors(obj, dtype).to(device)
             return ret.clone().detach() if copy else ret
-    ret = torch.as_tensor(obj, dtype=dtype, device=device)
+    try:
+        ret = torch.as_tensor(obj, dtype=dtype, device=device)
+    except ValueError as e:
+        if "At least one stride in the given numpy array is negative" in str(e):
+            ret = torch.as_tensor(obj.copy(), dtype=dtype, device=device)
+        else:
+            raise
     return ret.clone().detach() if copy else ret
 
 
