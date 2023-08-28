@@ -5,34 +5,22 @@ import paddle.nn.functional as F
 
 # local
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")},
+    backend_version,
 )
 def logit(x: paddle.Tensor, /, *, eps: Optional[float] = None, out=None):
-    if x.dtype in [paddle.float32, paddle.float64]:
-        return paddle.logit(x, eps)
-    if eps is None:
-        nan = paddle_backend.squeeze(
-            paddle.to_tensor(float("nan"), dtype=x.dtype), axis=-1
-        )
-        x = paddle_backend.where(
-            paddle_backend.logical_or(
-                paddle_backend.greater(x, 1), paddle_backend.less(x, 0)
-            ),
-            nan,
-            x,
-        )
-    else:
-        x = paddle_backend.minimum(paddle_backend.maximum(x, eps), 1 - eps)
-    return paddle_backend.log(
-        paddle_backend.divide(x, paddle_backend.subtract(1, x))
-    ).cast(x.dtype)
+    return paddle.logit(x, eps)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")},
+    backend_version,
+)
 def thresholded_relu(
     x: paddle.Tensor,
     /,
@@ -40,38 +28,38 @@ def thresholded_relu(
     threshold: Optional[Union[int, float]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [paddle.float32, paddle.float64]:
-        return F.thresholded_relu(x, threshold=threshold)
-    return paddle_backend.where(paddle_backend.greater(x, threshold), x, 0).cast(
-        x.dtype
-    )
+    return F.thresholded_relu(x, threshold=threshold)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    backend_version,
+)
 def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [paddle.float32, paddle.float64]:
-        return F.relu6(x)
     if paddle.is_complex(x):
         return paddle.complex(F.relu6(x.real()), F.relu6(x.imag()))
-    return F.relu6(x.cast("float32")).cast(x.dtype)
+    return F.relu6(x)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float", "complex")},
+    backend_version,
+)
 def logsigmoid(
-    input: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if input.dtype in [paddle.float32, paddle.float64]:
-        return F.log_sigmoid(input)
-    if paddle.is_complex(input):
+    if paddle.is_complex(x):
         return paddle_backend.log(
-            paddle_backend.divide(
-                1.0, (paddle_backend.add(1.0, paddle_backend.exp(input)))
-            )
+            paddle_backend.divide(1.0, (paddle_backend.add(1.0, paddle_backend.exp(x))))
         )
-    return F.log_sigmoid(input.cast("float32")).cast(input.dtype)
+    return F.log_sigmoid(x)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float", "complex")},
+    backend_version,
+)
 def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [paddle.float32, paddle.float64]:
-        return F.selu(x)
     if paddle.is_complex(x):
         alpha = 1.6732632423543772848170429916717
         scale = 1.0507009873554804934193349852946
@@ -84,23 +72,26 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             ),
         )
         return ret
-    return F.selu(x.cast("float32")).cast(x.dtype)
+    return F.selu(x)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float", "uint16", "complex")},
+    backend_version,
+)
 def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [paddle.float32, paddle.float64]:
-        return F.silu(x)
     if paddle.is_complex(x):
         return x * (1.0 / (1.0 + paddle_backend.exp(-x)))
-    return F.silu(x.cast("float32")).cast(x.dtype)
+    return F.silu(x)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float", "uint16", "complex")},
+    backend_version,
+)
 def elu(
     x: paddle.Tensor, /, *, alpha: float = 1.0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if x.dtype in [paddle.float32, paddle.float64]:
-        return F.elu(x, alpha=alpha)
-
     if paddle.is_complex(x):
         ret = (
             paddle_backend.where(
@@ -110,4 +101,4 @@ def elu(
             ),
         )
         return ret
-    return F.elu(x.cast("float32"), alpha).cast(x.dtype)
+    return F.elu(x, alpha=alpha)

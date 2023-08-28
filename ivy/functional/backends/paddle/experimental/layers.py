@@ -297,6 +297,7 @@ def dct(
     raise IvyNotImplementedException()
 
 
+@with_supported_dtypes({"2.5.1 and below": "complex"}, backend_version)
 def fft(
     x: paddle.Tensor,
     dim: int,
@@ -329,11 +330,6 @@ def fft(
             f"Unrecognized normalization mode {norm}, expecting one of"
             f" {valid_norm_modes}"
         )
-
-    if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
-        x = x.cast(paddle.complex128)
-    else:
-        x = x.cast(paddle.complex64)
 
     return paddle.fft.fft(x, n, dim, norm=norm)
 

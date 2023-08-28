@@ -7,7 +7,6 @@ from paddle.device import core
 from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
 )
 
 
@@ -33,6 +32,7 @@ def _kaiser_window(window_length, beta):
 # -------------------#
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -49,6 +49,7 @@ def kaiser_window(
         return _kaiser_window(window_length + 1, beta)[:-1].cast(dtype)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
 def vorbis_window(
     window_length: paddle.Tensor,
     *,
@@ -64,6 +65,7 @@ def vorbis_window(
     )
 
 
+@with_supported_dtypes({"2.5.1 and below": "float"}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -102,7 +104,7 @@ def tril_indices(
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int32", "int64")},
+    {"2.4.2 and below": ("float16", "uint16", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def unsorted_segment_min(
@@ -154,6 +156,18 @@ def blackman_window(
     ).cast(dtype)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "bool",
+            "uint16",
+            "float",
+            "int",
+            "complex",
+        )
+    },
+    backend_version,
+)
 def unsorted_segment_sum(
     data: paddle.Tensor,
     segment_ids: paddle.Tensor,
@@ -166,39 +180,16 @@ def unsorted_segment_sum(
     ivy.utils.assertions.check_unsorted_segment_min_valid_params(
         data, segment_ids, num_segments
     )
-
-    # Sum computation in paddle does not support int32, so needs to
-    # be converted to float32
-    needs_conv = False
-    if data.dtype == paddle.int32:
-        data = paddle.cast(data, "float32")
-        needs_conv = True
-
     res = paddle.zeros((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
-
     for i in range(num_segments):
         mask_index = segment_ids == i
         if paddle.any(mask_index):
             res[i] = paddle.sum(data[mask_index], axis=0)
-
-    # condition for converting float32 back to int32
-    if needs_conv is True:
-        res = paddle.cast(res, "int32")
-
     return res
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "complex",
-            )
-        }
-    },
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
     backend_version,
 )
 def trilu(

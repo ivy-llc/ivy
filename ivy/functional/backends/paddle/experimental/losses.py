@@ -4,27 +4,12 @@ import paddle
 import paddle.nn.functional as F
 
 # local
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "float16",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
-    backend_version,
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def l1_loss(
     input: paddle.Tensor,
@@ -36,23 +21,7 @@ def l1_loss(
     return F.l1_loss(input, target, reduction=reduction)
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
+@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
 def smooth_l1_loss(
     input: paddle.Tensor,
     target: paddle.Tensor,
