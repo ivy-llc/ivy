@@ -122,11 +122,6 @@ def reshape(
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, tf.constant(shape) != 0, x.shape)
         ]
-    if copy:
-        newarr = tf.experimental.numpy.copy(x)
-        if order == "F":
-            return _reshape_fortran_tf(newarr, shape)
-        return tf.reshape(newarr, shape)
     if order == "F":
         return _reshape_fortran_tf(x, shape)
     return tf.reshape(x, shape)
