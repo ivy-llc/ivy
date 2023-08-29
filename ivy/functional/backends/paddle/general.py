@@ -409,14 +409,15 @@ def scatter_nd(
 
     # remove duplicate indices
     # necessary because we will be using scatter_nd_add
-    if indices.ndim > 1:
+    if indices.ndim > 1 and reduction != "sum":
         indices_shape = indices.shape
         indices = paddle.reshape(indices, (-1, indices.shape[-1]))
         num_indices = indices.shape[0]
+        # use flip to keep the last occurrence of each value
         indices, unique_idxs = ivy.unique_all(ivy.flip(indices, axis=[0]), axis=0, by_value=True)[:2]
         indices = indices.data
         if len(unique_idxs) < num_indices:
-            updates = paddle.reshape(updates, (-1,))
+            updates = paddle.reshape(updates, (-1, *updates.shape[len(indices_shape)-1:]))
             updates = ivy.gather(ivy.flip(updates, axis=[0]), unique_idxs, axis=0).data
             expected_shape = (
                 list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
