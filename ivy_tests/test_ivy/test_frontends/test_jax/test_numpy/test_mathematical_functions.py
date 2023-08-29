@@ -709,7 +709,7 @@ def test_jax_mean(
     keepdims,
 ):
     input_dtype, x, axis = dtype_x_axis
-    where = arrays(dtype=bool, shape=x[0].shape)
+    where = arrays(dtype=bool, shape=x[0].shape).example()
     if x[0].shape == ():
         axis = None
     helpers.test_frontend_function(
