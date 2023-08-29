@@ -6,6 +6,97 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# huber_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.huber_loss",
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    delta=helpers.floats(min_value=0.01, max_value=2.0),
+)
+def test_huber_loss(
+    dtype_and_true,
+    dtype_and_pred,
+    reduction,
+    delta,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    true_dtype, true = dtype_and_true
+    pred_dtype, pred = dtype_and_pred
+    helpers.test_function(
+        input_dtypes=true_dtype + pred_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        true=true[0],
+        pred=pred[0],
+        reduction=reduction,
+        delta=delta,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.l1_loss",
+    dtype_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=100,
+        allow_inf=False,
+    ),
+    dtype_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=100,
+        allow_inf=False,
+    ),
+    reduction=st.sampled_from(["sum", "mean", "none"]),
+)
+def test_l1_loss(
+    *,
+    dtype_input,
+    dtype_target,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype_input, input = dtype_input
+    dtype_target, target = dtype_target
+
+    helpers.test_function(
+        input_dtypes=dtype_input + dtype_target,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-02,
+        input=input[0],
+        target=target[0],
+        reduction=reduction,
+    )
+
+
 # log_poisson_loss
 @handle_test(
     fn_tree="functional.ivy.experimental.log_poisson_loss",
@@ -59,48 +150,6 @@ def test_log_poisson_loss(
     )
 
 
-@handle_test(
-    fn_tree="functional.ivy.experimental.l1_loss",
-    dtype_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-        max_value=100,
-        allow_inf=False,
-    ),
-    dtype_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-        max_value=100,
-        allow_inf=False,
-    ),
-    reduction=st.sampled_from(["sum", "mean", "none"]),
-)
-def test_l1_loss(
-    *,
-    dtype_input,
-    dtype_target,
-    reduction,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    dtype_input, input = dtype_input
-    dtype_target, target = dtype_target
-
-    helpers.test_function(
-        input_dtypes=dtype_input + dtype_target,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        atol_=1e-02,
-        input=input[0],
-        target=target[0],
-        reduction=reduction,
-    )
-
-
 # smooth_l1_loss
 # all loss functions failing for paddle backend due to
 # "There is no grad op for inputs:[0] or it's stop_gradient=True."
@@ -150,53 +199,4 @@ def test_smooth_l1_loss(
         target=target[0],
         beta=beta,
         reduction=reduction,
-    )
-
-
-# huber_loss
-@handle_test(
-    fn_tree="functional.ivy.experimental.huber_loss",
-    dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=3,
-    ),
-    dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=3,
-    ),
-    reduction=st.sampled_from(["none", "sum", "mean"]),
-    delta=helpers.floats(min_value=0.01, max_value=2.0),
-)
-def test_huber_loss(
-    dtype_and_true,
-    dtype_and_pred,
-    reduction,
-    delta,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    true_dtype, true = dtype_and_true
-    pred_dtype, pred = dtype_and_pred
-    helpers.test_function(
-        input_dtypes=true_dtype + pred_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        true=true[0],
-        pred=pred[0],
-        reduction=reduction,
-        delta=delta,
     )
