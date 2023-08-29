@@ -3,7 +3,6 @@
 # global
 import gc
 import inspect
-import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -2890,7 +2889,6 @@ set_item.mixed_backend_wrappers = {
 
 
 def _parse_query(query, x_shape):
-
     query = (query,) if not isinstance(query, tuple) else query
     query_ = tuple([q.to_numpy() if ivy.is_array(q) else q for q in query])
 

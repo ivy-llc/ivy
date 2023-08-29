@@ -6,6 +6,40 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# elu
+@handle_test(
+    fn_tree="functional.ivy.experimental.elu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    alpha=st.one_of(
+        st.floats(min_value=0.10, max_value=1.0),
+    ),
+)
+def test_elu(
+    *,
+    dtype_and_x,
+    alpha,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        alpha=alpha,
+    )
+
+
 # logit
 @handle_test(
     fn_tree="functional.ivy.experimental.logit",
@@ -28,31 +62,26 @@ def test_logit(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# thresholded_relu
+# logsigmoid
 @handle_test(
-    fn_tree="functional.ivy.experimental.thresholded_relu",
+    fn_tree="functional.ivy.experimental.logsigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        available_dtypes=helpers.get_dtypes("valid"),
         safety_factor_scale="log",
+        large_abs_safety_factor=120,
     ),
-    threshold=st.one_of(
-        st.floats(min_value=-0.10, max_value=10.0),
-    ),
+    test_with_out=st.just(False),
 )
-def test_thresholded_relu(
-    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
-):
-    dtype, x = dtype_and_x
+def test_logsigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x)
     helpers.test_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
-        threshold=threshold,
+        input=x[0],
     )
 
 
@@ -106,29 +135,6 @@ def test_relu6(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# logsigmoid
-@handle_test(
-    fn_tree="functional.ivy.experimental.logsigmoid",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        safety_factor_scale="log",
-        large_abs_safety_factor=120,
-    ),
-    test_with_out=st.just(False),
-)
-def test_logsigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    test_flags.num_positional_args = len(x)
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        input=x[0],
-    )
-
-
 # selu
 @handle_test(
     fn_tree="functional.ivy.experimental.selu",
@@ -177,27 +183,21 @@ def test_silu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# elu
+# thresholded_relu
 @handle_test(
-    fn_tree="functional.ivy.experimental.elu",
+    fn_tree="functional.ivy.experimental.thresholded_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    alpha=st.one_of(
-        st.floats(min_value=0.10, max_value=1.0),
+    threshold=st.one_of(
+        st.floats(min_value=-0.10, max_value=10.0),
     ),
 )
-def test_elu(
-    *,
-    dtype_and_x,
-    alpha,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
+def test_thresholded_relu(
+    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -207,5 +207,5 @@ def test_elu(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        alpha=alpha,
+        threshold=threshold,
     )

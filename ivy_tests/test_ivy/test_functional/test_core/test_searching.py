@@ -8,6 +8,28 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _broadcastable_trio(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    cond = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, xs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shape=shape,
+            shared_dtype=True,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    return cond, xs, dtypes
+
+
 # Helpers #
 ############
 
@@ -29,22 +51,8 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
     return dtype, x, axis
 
 
-@st.composite
-def _broadcastable_trio(draw):
-    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
-    cond = draw(helpers.array_values(dtype="bool", shape=shape))
-    dtypes, xs = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            num_arrays=2,
-            shape=shape,
-            shared_dtype=True,
-            large_abs_safety_factor=16,
-            small_abs_safety_factor=16,
-            safety_factor_scale="log",
-        )
-    )
-    return cond, xs, dtypes
+# --- Main --- #
+# ------------ #
 
 
 # Functions #
@@ -117,6 +125,24 @@ def test_argmin(
     )
 
 
+# argwhere
+@handle_test(
+    fn_tree="functional.ivy.argwhere",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    ground_truth_backend="torch",
+)
+def test_argwhere(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 @handle_test(
     fn_tree="functional.ivy.nonzero",
     dtype_and_x=helpers.dtype_and_values(
@@ -170,22 +196,4 @@ def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
         condition=cond,
         x1=xs[0],
         x2=xs[1],
-    )
-
-
-# argwhere
-@handle_test(
-    fn_tree="functional.ivy.argwhere",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
-    ground_truth_backend="torch",
-)
-def test_argwhere(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
     )

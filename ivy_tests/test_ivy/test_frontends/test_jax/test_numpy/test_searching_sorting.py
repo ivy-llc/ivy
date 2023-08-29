@@ -13,6 +13,62 @@ from ...test_numpy.test_sorting_searching_counting.test_searching import (
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+# searchsorted
+@st.composite
+def _searchsorted(draw):
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            shape=(draw(st.integers(min_value=1, max_value=10)),),
+        ),
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+        )
+    )
+
+    input_dtypes = dtype_x + dtype_v
+    xs = x + v
+    side = draw(st.sampled_from(["left", "right"]))
+    sorter = None
+    xs[0] = np.sort(xs[0], axis=-1)
+    return input_dtypes, xs, side, sorter
+
+
+# unique
+@st.composite
+def _unique_helper(draw):
+    arr_dtype, arr, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+            min_dim_size=2,
+            ret_shape=True,
+        )
+    )
+    axis = draw(st.sampled_from(list(range(len(shape))) + [None]))
+    return_index = draw(st.booleans())
+    return_inverse = draw(st.booleans())
+    return_counts = draw(st.booleans())
+    return arr_dtype, arr, return_index, return_inverse, return_counts, axis
+
+
+# --- Main --- #
+# ------------ #
+
+
 # argmax
 @handle_frontend_test(
     fn_tree="jax.numpy.argmax",
@@ -46,36 +102,6 @@ def test_jax_argmax(
         axis=axis,
         out=None,
         keepdims=keepdims,
-    )
-
-
-# argwhere
-@handle_frontend_test(
-    fn_tree="jax.numpy.argwhere",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_argwhere(
-    dtype_and_x,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        size=None,
-        fill_value=None,
     )
 
 
@@ -113,51 +139,23 @@ def test_jax_argsort(
     )
 
 
-# msort
-# @handle_frontend_test(
-#     fn_tree="jax.numpy.msort",
-#     dtype_and_x=helpers.dtype_and_values(
-#         available_dtypes=helpers.get_dtypes("numeric"),
-#         min_num_dims=2,
-#         min_dim_size=2,
-#     ),
-#     test_with_out=st.just(False),
-# )
-# def test_jax_msort(
-#     dtype_and_x,
-#     frontend,
-#     test_flags,
-#     fn_tree,
-# ):
-#     input_dtype, x = dtype_and_x
-#     helpers.test_frontend_function(
-#         input_dtypes=input_dtype,
-#         frontend=frontend,
-#         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         a=x[0],
-#     )
-# TODO : deprecated since jax 0.4.1. \
-#           Uncomment with multiversion testing pipeline enabled.
-
-
-# nonzero
+# argwhere
 @handle_frontend_test(
-    fn_tree="jax.numpy.nonzero",
-    dtype_and_a=helpers.dtype_and_values(
+    fn_tree="jax.numpy.argwhere",
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nonzero(
-    dtype_and_a,
+def test_jax_argwhere(
+    dtype_and_x,
     frontend,
     backend_fw,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, a = dtype_and_a
+    dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -165,7 +163,63 @@ def test_jax_nonzero(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=a[0],
+        a=x[0],
+        size=None,
+        fill_value=None,
+    )
+
+
+# extract
+@handle_frontend_test(
+    fn_tree="jax.numpy.extract",
+    broadcastables=_broadcastable_trio(),
+)
+def test_jax_extract(
+    broadcastables,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    cond, xs, dtype = broadcastables
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=cond,
+        arr=xs[0],
+    )
+
+
+# flatnonzero
+@handle_frontend_test(
+    fn_tree="jax.numpy.flatnonzero",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_flatnonzero(
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
     )
 
 
@@ -241,20 +295,51 @@ def test_jax_nanargmin(
     )
 
 
-# extract
+# msort
+# @handle_frontend_test(
+#     fn_tree="jax.numpy.msort",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("numeric"),
+#         min_num_dims=2,
+#         min_dim_size=2,
+#     ),
+#     test_with_out=st.just(False),
+# )
+# def test_jax_msort(
+#     dtype_and_x,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         a=x[0],
+#     )
+# TODO : deprecated since jax 0.4.1. \
+#           Uncomment with multiversion testing pipeline enabled.
+
+
+# nonzero
 @handle_frontend_test(
-    fn_tree="jax.numpy.extract",
-    broadcastables=_broadcastable_trio(),
+    fn_tree="jax.numpy.nonzero",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_with_out=st.just(False),
 )
-def test_jax_extract(
-    broadcastables,
+def test_jax_nonzero(
+    dtype_and_a,
     frontend,
     backend_fw,
     test_flags,
     fn_tree,
     on_device,
 ):
-    cond, xs, dtype = broadcastables
+    dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -262,8 +347,35 @@ def test_jax_extract(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=cond,
-        arr=xs[0],
+        a=a[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.searchsorted",
+    dtype_x_v_side_sorter=_searchsorted(),
+    test_with_out=st.just(False),
+)
+def test_jax_searchsorted(
+    dtype_x_v_side_sorter,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        v=xs[1],
+        side=side,
+        sorter=sorter,
     )
 
 
@@ -298,34 +410,6 @@ def test_jax_sort(
         on_device=on_device,
         a=x[0],
         axis=axis,
-    )
-
-
-# flatnonzero
-@handle_frontend_test(
-    fn_tree="jax.numpy.flatnonzero",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_flatnonzero(
-    dtype_and_x,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
     )
 
 
@@ -364,59 +448,23 @@ def test_jax_sort_complex(
     )
 
 
-# searchsorted
-@st.composite
-def _searchsorted(draw):
-    dtype_x, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes(
-                "numeric", full=False, key="searchsorted"
-            ),
-            shape=(draw(st.integers(min_value=1, max_value=10)),),
-        ),
-    )
-    dtype_v, v = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes(
-                "numeric", full=False, key="searchsorted"
-            ),
-            min_num_dims=1,
-        )
-    )
-
-    input_dtypes = dtype_x + dtype_v
-    xs = x + v
-    side = draw(st.sampled_from(["left", "right"]))
-    sorter = None
-    xs[0] = np.sort(xs[0], axis=-1)
-    return input_dtypes, xs, side, sorter
-
-
 @handle_frontend_test(
-    fn_tree="jax.numpy.searchsorted",
-    dtype_x_v_side_sorter=_searchsorted(),
-    test_with_out=st.just(False),
+    fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
 )
-def test_jax_searchsorted(
-    dtype_x_v_side_sorter,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
+def test_jax_unique(fn_inputs, backend_fw, frontend, test_flags, fn_tree, on_device):
+    arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=arr_dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=xs[0],
-        v=xs[1],
-        side=side,
-        sorter=sorter,
+        ar=arr[0],
+        return_index=return_index,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        axis=axis,
     )
 
 
@@ -457,44 +505,4 @@ def test_jax_where(
         y=x2,
         size=size,
         fill_value=fill_value,
-    )
-
-
-# unique
-@st.composite
-def _unique_helper(draw):
-    arr_dtype, arr, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes(
-                "numeric", full=False, key="searchsorted"
-            ),
-            min_num_dims=1,
-            min_dim_size=2,
-            ret_shape=True,
-        )
-    )
-    axis = draw(st.sampled_from(list(range(len(shape))) + [None]))
-    return_index = draw(st.booleans())
-    return_inverse = draw(st.booleans())
-    return_counts = draw(st.booleans())
-    return arr_dtype, arr, return_index, return_inverse, return_counts, axis
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
-)
-def test_jax_unique(fn_inputs, backend_fw, frontend, test_flags, fn_tree, on_device):
-    arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
-    helpers.test_frontend_function(
-        input_dtypes=arr_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        ar=arr[0],
-        return_index=return_index,
-        return_inverse=return_inverse,
-        return_counts=return_counts,
-        axis=axis,
     )

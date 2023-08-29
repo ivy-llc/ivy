@@ -7,25 +7,56 @@ from ivy_tests.test_ivy.helpers import handle_test
 import ivy
 
 
-@handle_test(
-    fn_tree="functional.ivy.experimental.l1_normalize",
-    dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
-    ),
-)
-def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device):
-    x_dtype, x, axis = dtype_values_axis
-    helpers.test_function(
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
-        input_dtypes=x_dtype,
-        x=x,
-        axis=axis,
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _group_norm_helper(draw):
+    data_format = draw(st.sampled_from(["NSC", "NCS"]))
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=4, min_dim_size=2, max_dim_size=4
+        )
     )
+    channel_size = shape[-1]
+    group_list = [*range(1, 4)]
+    group_list = list(filter(lambda x: (channel_size % x == 0), group_list))
+    num_groups = draw(st.sampled_from(group_list))
+    if data_format == "NCS":
+        shape = (shape[0], shape[-1], *shape[1:-1])
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "float",
+            ),
+            shape=shape,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+    _, offset = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(channel_size,),
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+
+    _, scale = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(channel_size,),
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
+    return x_dtype, x[0], num_groups, data_format, scale[0], offset[0], eps
 
 
 @st.composite
@@ -130,32 +161,8 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     )
 
 
-@handle_test(
-    fn_tree="functional.ivy.experimental.instance_norm",
-    data=_instance_and_batch_norm_helper(min_dims=3),
-    training=st.booleans(),
-)
-def test_instance_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
-    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
-    helpers.test_function(
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_name=fn_name,
-        on_device=on_device,
-        xs_grad_idxs=[[0, 0]],
-        rtol_=1e-1,
-        atol_=1e-1,
-        input_dtypes=x_dtype,
-        x=x,
-        mean=mean,
-        variance=variance,
-        scale=scale,
-        offset=offset,
-        eps=eps,
-        training=training,
-        momentum=momentum,
-        data_format=data_format,
-    )
+# --- Main --- #
+# ------------ #
 
 
 # batch_norm
@@ -187,54 +194,6 @@ def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_devic
     )
 
 
-@st.composite
-def _group_norm_helper(draw):
-    data_format = draw(st.sampled_from(["NSC", "NCS"]))
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=2, max_num_dims=4, min_dim_size=2, max_dim_size=4
-        )
-    )
-    channel_size = shape[-1]
-    group_list = [*range(1, 4)]
-    group_list = list(filter(lambda x: (channel_size % x == 0), group_list))
-    num_groups = draw(st.sampled_from(group_list))
-    if data_format == "NCS":
-        shape = (shape[0], shape[-1], *shape[1:-1])
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes(
-                "float",
-            ),
-            shape=shape,
-            large_abs_safety_factor=50,
-            small_abs_safety_factor=50,
-            safety_factor_scale="log",
-        )
-    )
-    _, offset = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype,
-            shape=(channel_size,),
-            large_abs_safety_factor=50,
-            small_abs_safety_factor=50,
-            safety_factor_scale="log",
-        )
-    )
-
-    _, scale = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype,
-            shape=(channel_size,),
-            large_abs_safety_factor=50,
-            small_abs_safety_factor=50,
-            safety_factor_scale="log",
-        )
-    )
-    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
-    return x_dtype, x[0], num_groups, data_format, scale[0], offset[0], eps
-
-
 # group_norm
 @handle_test(
     fn_tree="functional.ivy.experimental.group_norm",
@@ -264,4 +223,53 @@ def test_group_norm(
         offset=offset,
         eps=eps,
         data_format=data_format,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.instance_norm",
+    data=_instance_and_batch_norm_helper(min_dims=3),
+    training=st.booleans(),
+)
+def test_instance_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        xs_grad_idxs=[[0, 0]],
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=x_dtype,
+        x=x,
+        mean=mean,
+        variance=variance,
+        scale=scale,
+        offset=offset,
+        eps=eps,
+        training=training,
+        momentum=momentum,
+        data_format=data_format,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.l1_normalize",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
+    ),
+)
+def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device):
+    x_dtype, x, axis = dtype_values_axis
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=x_dtype,
+        x=x,
+        axis=axis,
     )

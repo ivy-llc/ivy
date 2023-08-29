@@ -7,6 +7,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _invert_permutation_helper(draw):
     perm = draw(
@@ -16,6 +20,10 @@ def _invert_permutation_helper(draw):
         perm = np.array(perm)
     dtype = draw(st.sampled_from(["int32", "int64"]))
     return dtype, perm
+
+
+# --- Main --- #
+# ------------ #
 
 
 # invert_permutation
