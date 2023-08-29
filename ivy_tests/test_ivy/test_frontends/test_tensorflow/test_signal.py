@@ -45,7 +45,7 @@ def test_tensorflow_kaiser_window(
 
 
 @st.composite
-def valid_idct(draw):
+def _valid_idct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=["float32", "float64"],
@@ -68,7 +68,7 @@ def valid_idct(draw):
 # idct
 @handle_frontend_test(
     fn_tree="tensorflow.signal.idct",
-    dtype_x_and_args=valid_idct(),
+    dtype_x_and_args=_valid_idct(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_idct(
@@ -111,7 +111,7 @@ def test_tensorflow_idct(
     n=helpers.ints(min_value=1, max_value=3),
     norm=st.sampled_from([None, "ortho"]),
     type=helpers.ints(min_value=1, max_value=4),
-    # dtype_x_and_args=valid_idct(),
+    # dtype_x_and_args=_valid_idct(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_dct(
