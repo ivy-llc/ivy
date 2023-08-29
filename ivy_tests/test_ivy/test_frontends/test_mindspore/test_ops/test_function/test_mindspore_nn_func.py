@@ -614,7 +614,7 @@ def test_mindspore_flatten(
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2):
+def _x_and_filters(draw, dim: int = 2):
     if not isinstance(dim, int):
         dim = draw(dim)
     strides = draw(
@@ -705,7 +705,7 @@ def x_and_filters(draw, dim: int = 2):
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="mindspore.ops.function.nn_func.Conv1d",
-    dtype_vals=x_and_filters(dim=1),
+    dtype_vals=_x_and_filters(dim=1),
 )
 def test_mindspore_conv1d(
     *,
@@ -738,7 +738,7 @@ def test_mindspore_conv1d(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="mindspore.ops.function.nn_func.Conv2d",
-    dtype_vals=x_and_filters(dim=2),
+    dtype_vals=_x_and_filters(dim=2),
 )
 def test_mindspore_conv2d(
     *,
@@ -771,7 +771,7 @@ def test_mindspore_conv2d(
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="mindspore.ops.function.nn_func.Conv3d",
-    dtype_vals=x_and_filters(dim=3),
+    dtype_vals=_x_and_filters(dim=3),
 )
 def test_mindspore_conv3d(
     *,

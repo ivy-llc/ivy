@@ -12,7 +12,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
             x=helpers.ints(min_value=2, max_value=5),
             min_size=2,
             max_size=3,
-        )),
+        ),
+    ),
     shuffle=st.booleans(),
 )
 def test_sklearn_test_train_split(
