@@ -316,8 +316,8 @@ def test_paddle_max_unpool1d(
         max_dims=3,
         min_side=1,
         max_side=4,
-        data_format="channel_first",
     ),
+    exclusive=st.booleans(),
     ceil_mode=st.just(False),
     test_with_out=st.just(False),
 )
@@ -329,6 +329,7 @@ def test_paddle_max_pool1d(
     backend_fw,
     on_device,
     fn_tree,
+    exclusive,
     ceil_mode,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p_df
@@ -349,5 +350,6 @@ def test_paddle_max_pool1d(
         kernel_size=kernel_size,
         stride=stride,
         padding=padding,
+        exclusive=exclusive,
         ceil_mode=ceil_mode,
     )
