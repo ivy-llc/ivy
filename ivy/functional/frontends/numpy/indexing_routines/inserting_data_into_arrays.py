@@ -167,6 +167,29 @@ c_ = CClass()
 
 @to_ivy_arrays_and_back
 def put(arr, ind, v, mode="raise"):
+    """
+    Set a subset of the array's elements to the given value(s).
+
+    Parameters
+    ----------
+    arr : Array
+        Input array.
+    ind : Array or int
+        Indices or index of elements to replace.
+    v : Array or scalar
+        Values to place into `arr`.
+    mode : {'raise', 'wrap', 'clip'}, optional
+        Specifies how out-of-bounds indices are handled.
+        'raise' : raise an error (default)
+        'wrap' : wrap around
+        'clip' : clip to the range of valid indices
+
+    Returns
+    -------
+    None
+    """
+
+    # Convert input arrays to numpy arrays if they're not already
     arr = ivy.array(arr)
     ind = ivy.array(ind)
     v = ivy.array(v)
@@ -174,24 +197,20 @@ def put(arr, ind, v, mode="raise"):
     if isinstance(ind, int):
         ind = [ind]
 
-    try:
-        if ind.ndim == 1:
-            if mode == "raise":
-                if (ind < 0) | (ind >= len(arr)):
-                    raise IndexError("Index out of bounds")
-            elif mode == "wrap":
-                ind %= len(arr)
-            elif mode == "clip":
-                ind = ivy.clip(ind, 0, len(arr) - 1)
-            else:
-                raise ValueError("Invalid mode")
-
-            arr[ind] = v
-
-        elif ind.ndim > 1:
-            raise ValueError("Index array cannot have more than 1 dimension")
+    if ind.ndim == 1:
+        if mode == "raise":
+            if (ind < 0) | (ind >= len(arr)):
+                raise IndexError("Index out of bounds")
+        elif mode == "wrap":
+            ind %= len(arr)
+        elif mode == "clip":
+            ind = ivy.clip(ind, 0, len(arr) - 1)
         else:
-            raise TypeError("Invalid index type")
+            raise ValueError("Invalid mode")
 
-    except (IndexError, ValueError, TypeError) as e:
-        print(f"An error occurred: {e}")
+        arr[ind] = v
+
+    elif ind.ndim > 1:
+        raise ValueError("Index array cannot have more than 1 dimension")
+    else:
+        raise TypeError("Invalid index type")
