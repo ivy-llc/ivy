@@ -15,6 +15,7 @@ from . import test_parameter_flags as pf
 from . import test_globals as t_globals
 from .pipeline_helper import BackendHandler
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
+    DynamicFlag,
     BuiltInstanceStrategy,
     BuiltAsVariableStrategy,
     BuiltNativeArrayStrategy,
@@ -46,6 +47,10 @@ cmd_line_args_lists = (
     "native_array",
     "container",
 )
+
+
+def _get_runtime_flag_value(flag):
+    return flag.strategy if isinstance(flag, DynamicFlag) else flag
 
 
 @st.composite
