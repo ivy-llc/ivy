@@ -102,6 +102,42 @@ def avg_pool2d(
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def max_pool1d(
+    x,
+    kernel_size,
+    stride=None,
+    padding=0,
+    return_mask=False,
+    ceil_mode=False,
+    name=None,
+):
+    data_format = "NWC"
+    dilation = 1
+    if stride is None:
+        stride = kernel_size
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
+
+    return ivy.maxpool1d(
+        x,
+        kernel_size,
+        stride,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=None,
+    )
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_unpool1d(
     x,
     indices,

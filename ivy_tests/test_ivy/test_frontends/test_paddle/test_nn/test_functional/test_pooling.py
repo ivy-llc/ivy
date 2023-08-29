@@ -306,3 +306,48 @@ def test_paddle_max_unpool1d(
         stride=stride,
         padding=padding,
     )
+
+
+# max_pool1d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_pool1d",
+    x_k_s_p_df=helpers.arrays_for_pooling(
+        min_dims=3,
+        max_dims=3,
+        min_side=1,
+        max_side=4,
+        data_format="channel_first",
+    ),
+    ceil_mode=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_paddle_max_pool1d(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    backend_fw,
+    on_device,
+    fn_tree,
+    ceil_mode,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p_df
+    if padding == "SAME":
+        padding = test_pooling_functions.calculate_same_padding(
+            kernel_size, stride, [x[0].shape[2]]
+        )
+    else:
+        padding = (0,)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        ceil_mode=ceil_mode,
+    )
