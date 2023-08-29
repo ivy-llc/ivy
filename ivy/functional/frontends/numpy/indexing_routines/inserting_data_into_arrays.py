@@ -31,6 +31,38 @@ def fill_diagonal(a, val, wrap=False):
     a = ivy.reshape(temp, shape)
 
 
+@to_ivy_arrays_and_back
+def put(arr, ind, v, mode="raise"):
+    arr = ivy.array(arr)
+    ind = ivy.array(ind)
+    v = ivy.array(v)
+
+    if isinstance(ind, int):
+        ind = [ind]
+
+    try:
+        if ind.ndim == 1:
+            if mode == "raise":
+                if (ind < 0) | (ind >= len(arr)):
+                    raise IndexError("Index out of bounds")
+            elif mode == "wrap":
+                ind %= len(arr)
+            elif mode == "clip":
+                ind = ivy.clip(ind, 0, len(arr) - 1)
+            else:
+                raise ValueError("Invalid mode")
+
+            arr[ind] = v
+
+        elif ind.ndim > 1:
+            raise ValueError("Index array cannot have more than 1 dimension")
+        else:
+            raise TypeError("Invalid index type")
+
+    except (IndexError, ValueError, TypeError) as e:
+        print(f"An error occurred: {e}")
+
+
 class AxisConcatenator:
     # allow ma.mr_ to override this
     concatenate = staticmethod(np_frontend.concatenate)
@@ -163,12 +195,3 @@ class CClass(AxisConcatenator):
 
 
 c_ = CClass()
-
-@to_ivy_arrays_and_back  
-def put(arr, indices, values):
-    """Inserts the value of the desired location of indices"""
-    flat_arr = ivy.flatten(arr)
-    flat_arr[indices] = values
-    reshape_arr = ivy.reshape(flat_arr,arr.shape)
-    arr[...] = reshape_arr
-    

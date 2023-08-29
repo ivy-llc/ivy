@@ -168,3 +168,41 @@ def test_numpy_c_(inputs):
     else:
         ret = ret.ivy_array
     assert np.allclose(ret, ret_gt)
+
+
+@handle_frontend_test(
+    fn_tree="numpy.put",
+    dtypes_x_array_indices=helpers.array_indices_values(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32"],
+        values_dtypes=["float"],
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    mode=st.sampled_from(["raise", "wrap", "clip"]),
+    test_with_out=st.just(False),
+)
+def test_numpy_put(
+    dtype_x_array_indices,
+    mode,  # Add mode parameter
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, x, indices, values = dtype_x_array_indices
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        arr=x,
+        ind=indices,
+        v=values,
+        mode=mode,
+    )
