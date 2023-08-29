@@ -138,22 +138,19 @@ def conv1d_transpose(
     output_shape = _output_shape(
         x.shape, filters.shape, output_shape, strides, padding, 1, dilations
     )
+    res = tf.nn.conv1d_transpose(
+        x, filters, output_shape, strides, padding, "NWC", dilations
+    )
+    res = tf.math.add(res, bias) if bias is not None else res
+
     devices = {
         "cpu": "/device:CPU:0",
         "gpu": "/device/GPU:0"
     }
-    # In Tensorflow case, we just need to specify the device in which
-    # the convolution will take place and if necessary Tensorflow will
-    # automatically copy tensors between devices if needed.
     with tf.device(devices[device]):
-        res = tf.nn.conv1d_transpose(
-            x, filters, output_shape, strides, padding, "NWC", dilations
-        )
-        res = tf.math.add(res, bias) if bias is not None else res
-    if data_format == "NCW":
-        res = tf.transpose(res, (0, 2, 1))
-
-    return tf.cast(res, dtype)
+        if data_format == "NCW":
+            res = tf.transpose(res, (0, 2, 1))
+        return tf.cast(res, dtype)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)

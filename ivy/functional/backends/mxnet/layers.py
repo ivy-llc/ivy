@@ -3,7 +3,6 @@
 import numpy as np
 import mxnet as mx
 import mxnet.ndarray as ndarray
-from mxnet.device import Device
 from typing import Optional, Tuple, Union, Sequence
 import ivy
 
@@ -33,19 +32,12 @@ def conv1d_transpose(
     /,
     *,
     dtype: np.dtype,
-    device: Device,
+    device: mx.device.Device,
     bias: Optional[ndarray.NDArray] = None,
     data_format: str = "NWC",
     dilations: Union[(int, Tuple[int])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    # Moving inputs for the convolution to the respected device
-    # On mxnet, besides the inputs being on the same device
-    # we also need to declare on what device the operation will
-    # take place
-    x.copyto(device)
-    filters.copyto(device)
-    bias.copyto(device)
     if data_format == "NWC":
         x = mx.nd.swapaxes(x, 1, 2)
     outputs = ndarray.Deconvolution(
@@ -56,15 +48,12 @@ def conv1d_transpose(
         strides,
         dilations,
         padding,
-        filters.shape[-1],
         layout="NCW",
-        out=out,
-        dtype=dtype,
-        context=device
     )
     if data_format == "NWC":
         outputs = mx.nd.swapaxes(outputs, 1, 2)
-    return outputs
+    outputs = ndarray.cast(outputs, dtype)
+    return outputs.copyto(device)
 
 
 

@@ -184,8 +184,8 @@ def conv1d_transpose(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if data_format == "NWC":
-        x = x.permute(0, 2, 1).to(device)
-    filters = filters.permute(1, 2, 0).to(device)
+        x = x.permute(0, 2, 1)
+    filters = filters.permute(1, 2, 0)
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
@@ -204,7 +204,7 @@ def conv1d_transpose(
         res = res[:, :, 0:-1]
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
-    return res.to(dtype)
+    return res.to(dtype=dtype, device=device)
 
 
 @with_unsupported_dtypes(

@@ -5,7 +5,6 @@
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
-import jax.devices as devices
 
 # local
 import ivy
@@ -132,32 +131,27 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
-    dtype: jnp,
-    device: devices,
+    dtype: jnp.dtype,
+    device: jax.devices,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    # Moving inputs to the convolution to the respected device
-    # Being the inputs on the same device, the operation
-    # will take place on that device
-    x_device = jax.device_put(x, device=device)
-    filters_device = jax.device_put(filters, device=device)
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
     if data_format == "NWC":
         x_shape = list(x.shape[1:2])
     else:
         x_shape = list(x.shape[2:])
-    filters = jnp.swapaxes(filters, -1, -2)
+    filters = jax.numpy.swapaxes(filters, -1, -2)
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, 1, dilations, output_shape
     )
     res = jlax.conv_transpose(
-        x_device,
-        filters_device,
+        x,
+        filters,
         strides,
         padding,
         dilations,
@@ -169,6 +163,7 @@ def conv1d_transpose(
         if data_format == "NWC":
             return jnp.add(res, bias)
         return jnp.add(res, bias[(None,) + (...,) + (None,) * 1])
+    res = jax.device_put(res, device=device)
     return res
 
 

@@ -168,20 +168,18 @@ def conv1d_transpose(
     /,
     *,
     dtype: paddle.dtype,
-    device: str,
+    device: str = Literal["cpu", "gpu", "xpu", "npu"],
     output_shape: Optional[Sequence[int]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    assert device.startswith(("cpu", "gpu", "xpu", "npu")), "device should be either cpu, gpu, xpu or npu"
-    paddle.set_device(device)
     if data_format == "NWC":
-        x = x.transpose([0, 2, 1]).set_device(device)
+        x = x.transpose([0, 2, 1])
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
-    filters = filters.transpose([1, 2, 0]).set_device(device)
+    filters = filters.transpose([1, 2, 0])
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 1, dilations, output_shape, filters.shape[2:]
     )
@@ -198,7 +196,8 @@ def conv1d_transpose(
         res = res[:, :, 0:-1]
     if data_format == "NWC":
         res = res.transpose([0, 2, 1])
-    return res.cast(dtype)
+    res = res.cast(dtype)
+    return res.set_device(device)
 
 
 # noinspection PyUnresolvedReferences
