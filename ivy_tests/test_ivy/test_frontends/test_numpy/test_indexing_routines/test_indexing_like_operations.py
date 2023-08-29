@@ -119,7 +119,7 @@ def test_numpy_diagonal(
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int64"],
+            available_dtypes=["float32", "float64", "int32", "int64"],
             min_num_dims=2,
             max_num_dims=3,
             min_dim_size=2,
@@ -150,7 +150,7 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype, shape=(), elements=st.integers(1, 1e3)
+        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e3)
     )
     values = draw(values_strategy)
 
@@ -173,16 +173,16 @@ def test_numpy_put_along_axis(
 ):
     dtypes, x, indices, values, axis = args
     helpers.test_frontend_function(
-        input_dtypes=[dtypes],
+        input_dtypes=[dtypes, "int64", dtypes],
         test_flags=test_flags,
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         arr=x,
         indices=indices,
-        axis=axis,
         values=values,
+        axis=axis,
     )
 
 

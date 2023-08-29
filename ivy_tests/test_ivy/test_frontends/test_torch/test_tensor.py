@@ -12534,7 +12534,7 @@ def put_along_axis_helper(draw):
     idx_shape[axis] = 1
 
     idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, 1)
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
     )
     indices = draw(idx_strategy)
 
