@@ -11,53 +11,292 @@ from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
 
 
-# --- Helpers --- #
-# --------------- #
-
-
-@st.composite
-def embedding_helper(draw, mixed_fn_compos=True):
+def matrix_is_stable(x, cond_limit=30):
     """
-    Obtain weights for embeddings, the corresponding indices, the padding indices.
+    Check if a matrix is numerically stable or not.
+
+    Used to avoid numerical instabilities in further computationally heavy calculations.
+
+    Parameters
+    ----------
+    x
+        The original matrix whose condition number is to be determined.
+    cond_limit
+        The greater the condition number, the more ill-conditioned the matrix
+        will be, the more it will be prone to numerical instabilities.
+
+        There is no rule of thumb for what the exact condition number
+        should be to consider a matrix ill-conditioned(prone to numerical errors).
+        But, if the condition number is "1", the matrix is perfectly said to be a
+        well-conditioned matrix which will not be prone to any type of numerical
+        instabilities in further calculations, but that would probably be a
+        very simple matrix.
+
+        The cond_limit should start with "30", gradually decreasing it according
+        to our use, lower cond_limit would result in more numerically stable
+        matrices but more simple matrices.
+
+        The limit should always be in the range "1-30", greater the number greater
+        the computational instability. Should not increase 30, it leads to strong
+        multi-collinearity which leads to singularity.
+
+    Returns
+    -------
+    ret
+        If True, the matrix is suitable for further numerical computations.
+    """
+    return np.all(np.linalg.cond(x.astype("float64")) <= cond_limit)
+
+
+@lru_cache(None)
+def apply_safety_factor(
+    dtype,
+    *,
+    backend: str,
+    min_value=None,
+    max_value=None,
+    abs_smallest_val=None,
+    small_abs_safety_factor=1.1,
+    large_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
+):
+    """
+    Apply safety factor scaling to numeric data type.
+
+    Parameters
+    ----------
+    dtype
+        the data type to apply safety factor scaling to.
+    min_value
+        the minimum value of the data type.
+    max_value
+        the maximum value of the data type.
+    abs_smallest_val
+        the absolute smallest representable value of the data type.
+    large_abs_safety_factor
+        the safety factor to apply to the maximum value.
+    small_abs_safety_factor
+        the safety factor to apply to the minimum value.
+    safety_factor_scale
+        the scale to apply the safety factor to, either 'linear' or 'log'.
+
+    Returns
+    -------
+        A tuple of the minimum value, maximum value and absolute smallest representable
+    """
+    assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
+    assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
+
+    if "float" in dtype or "complex" in dtype:
+        kind_dtype = "float"
+        with WithBackendContext(backend) as ivy_backend:
+            dtype_info = ivy_backend.finfo(dtype)
+    elif "int" in dtype:
+        kind_dtype = "int"
+        with WithBackendContext(backend) as ivy_backend:
+            dtype_info = ivy_backend.iinfo(dtype)
+    else:
+        raise TypeError(
+            f"{dtype} is not a valid numeric data type only integers and floats"
+        )
+
+    if min_value is None:
+        min_value = dtype_info.min
+    if max_value is None:
+        max_value = dtype_info.max
+
+    if safety_factor_scale == "linear":
+        min_value = min_value / large_abs_safety_factor
+        max_value = max_value / large_abs_safety_factor
+        if kind_dtype == "float" and not abs_smallest_val:
+            abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
+    elif safety_factor_scale == "log":
+        min_sign = math.copysign(1, min_value)
+        min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+        max_sign = math.copysign(1, max_value)
+        max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+        if kind_dtype == "float" and not abs_smallest_val:
+            m, e = math.frexp(dtype_info.smallest_normal)
+            abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
+    else:
+        raise ValueError(
+            f"{safety_factor_scale} is not a valid safety factor scale."
+            " use 'log' or 'linear'."
+        )
+    if kind_dtype == "int":
+        return int(min_value), int(max_value), None
+    return min_value, max_value, abs_smallest_val
+
+
+# Hypothesis #
+# -----------#
+
+
+# taken from
+# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
+@st.composite
+def reshape_shapes(draw, *, shape):
+    """
+    Draws a random shape with the same number of elements as the given shape.
 
     Parameters
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
+    shape
+        list/strategy/tuple of integers representing an array shape.
 
     Returns
     -------
-        A strategy for generating a tuple
+        A strategy that draws a tuple.
     """
-    dtype_weight, weight = draw(
-        array_helpers.dtype_and_values(
-            available_dtypes=[
-                x
-                for x in draw(
-                    dtype_helpers.get_dtypes("numeric", mixed_fn_compos=mixed_fn_compos)
-                )
-                if "float" in x or "complex" in x
-            ],
-            min_num_dims=2,
-            max_num_dims=2,
-            min_dim_size=1,
-            min_value=-1e04,
-            max_value=1e04,
+    if isinstance(shape, st._internal.SearchStrategy):
+        shape = draw(shape)
+    size = 1 if len(shape) == 0 else math.prod(shape)
+    rshape = draw(
+        st.lists(number_helpers.ints(min_value=0)).filter(
+            lambda s: math.prod(s) == size
         )
     )
-    num_embeddings, embedding_dim = weight[0].shape
-    dtype_indices, indices = draw(
-        array_helpers.dtype_and_values(
-            available_dtypes=["int32", "int64"],
-            min_num_dims=2,
-            min_dim_size=1,
-            min_value=0,
-            max_value=num_embeddings - 1,
-        ).filter(lambda x: x[1][0].shape[-1] == embedding_dim)
-    )
-    padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
-    return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx
+    return tuple(rshape)
+
+
+# taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
+@st.composite
+def subsets(draw, *, elements):
+    """
+    Draws a subset of elements from the given elements.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    elements
+        set of elements to be drawn from.
+
+    Returns
+    -------
+        A strategy that draws a subset of elements.
+    """
+    return tuple(e for e in elements if draw(st.booleans()))
+
+
+@st.composite
+def get_shape(
+    draw,
+    *,
+    allow_none=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    """
+    Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size
+    drawn from min_num_dims to max_num_dims. Useful for randomly drawing the shape of an
+    array.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    allow_none
+        if True, allow for the result to be None.
+    min_num_dims
+        minimum size of the tuple.
+    max_num_dims
+        maximum size of the tuple.
+    min_dim_size
+        minimum value of each integer in the tuple.
+    max_dim_size
+        maximum value of each integer in the tuple.
+
+    Returns
+    -------
+        A strategy that draws a tuple.
+    """
+    if allow_none:
+        shape = draw(
+            st.none()
+            | st.lists(
+                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                min_size=min_num_dims,
+                max_size=max_num_dims,
+            )
+        )
+    else:
+        shape = draw(
+            st.lists(
+                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+                min_size=min_num_dims,
+                max_size=max_num_dims,
+            )
+        )
+    if shape is None:
+        return shape
+    return tuple(shape)
+
+
+@st.composite
+def get_mean_std(draw, *, dtype):
+    """
+    Draws two integers representing the mean and standard deviation for a given data
+    type.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        data type.
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+    """
+    none_or_float = none_or_float = number_helpers.floats(dtype=dtype) | st.none()
+    values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
+    values[1] = abs(values[1]) if values[1] else None
+    return values[0], values[1]
+
+
+@st.composite
+def get_bounds(draw, *, dtype):
+    """
+    Draws two numbers; low and high, for a given data type such that low < high.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        data type.
+
+    Returns
+    -------
+        A strategy that draws a list of two numbers.
+    """
+    if "int" in dtype:
+        values = draw(array_helpers.array_values(dtype=dtype, shape=2))
+        values[0], values[1] = abs(values[0]), abs(values[1])
+        low, high = min(values), max(values)
+        if low == high:
+            return draw(get_bounds(dtype=dtype))
+    else:
+        none_or_float = number_helpers.floats(dtype=dtype) | st.none()
+        values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
+        if values[0] is not None and values[1] is not None:
+            low, high = min(values), max(values)
+        else:
+            low, high = values[0], values[1]
+        if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
+            return draw(get_bounds(dtype=dtype))
+    return [low, high]
 
 
 @st.composite
@@ -182,177 +421,6 @@ def get_axis(
 
 
 @st.composite
-def get_bounds(draw, *, dtype):
-    """
-    Draws two numbers; low and high, for a given data type such that low < high.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    dtype
-        data type.
-
-    Returns
-    -------
-        A strategy that draws a list of two numbers.
-    """
-    if "int" in dtype:
-        values = draw(array_helpers.array_values(dtype=dtype, shape=2))
-        values[0], values[1] = abs(values[0]), abs(values[1])
-        low, high = min(values), max(values)
-        if low == high:
-            return draw(get_bounds(dtype=dtype))
-    else:
-        none_or_float = number_helpers.floats(dtype=dtype) | st.none()
-        values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
-        if values[0] is not None and values[1] is not None:
-            low, high = min(values), max(values)
-        else:
-            low, high = values[0], values[1]
-        if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
-            return draw(get_bounds(dtype=dtype))
-    return [low, high]
-
-
-@st.composite
-def get_mean_std(draw, *, dtype):
-    """
-    Draws two integers representing the mean and standard deviation for a given data
-    type.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    dtype
-        data type.
-
-    Returns
-    -------
-    A strategy that can be used in the @given hypothesis decorator.
-    """
-    none_or_float = none_or_float = number_helpers.floats(dtype=dtype) | st.none()
-    values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
-    values[1] = abs(values[1]) if values[1] else None
-    return values[0], values[1]
-
-
-@st.composite
-def get_shape(
-    draw,
-    *,
-    allow_none=False,
-    min_num_dims=0,
-    max_num_dims=5,
-    min_dim_size=1,
-    max_dim_size=10,
-):
-    """
-    Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size] of size
-    drawn from min_num_dims to max_num_dims. Useful for randomly drawing the shape of an
-    array.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    allow_none
-        if True, allow for the result to be None.
-    min_num_dims
-        minimum size of the tuple.
-    max_num_dims
-        maximum size of the tuple.
-    min_dim_size
-        minimum value of each integer in the tuple.
-    max_dim_size
-        maximum value of each integer in the tuple.
-
-    Returns
-    -------
-        A strategy that draws a tuple.
-    """
-    if allow_none:
-        shape = draw(
-            st.none()
-            | st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
-                min_size=min_num_dims,
-                max_size=max_num_dims,
-            )
-        )
-    else:
-        shape = draw(
-            st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
-                min_size=min_num_dims,
-                max_size=max_num_dims,
-            )
-        )
-    if shape is None:
-        return shape
-    return tuple(shape)
-
-
-# Hypothesis #
-# -----------#
-
-
-# taken from
-# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
-@st.composite
-def reshape_shapes(draw, *, shape):
-    """
-    Draws a random shape with the same number of elements as the given shape.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    shape
-        list/strategy/tuple of integers representing an array shape.
-
-    Returns
-    -------
-        A strategy that draws a tuple.
-    """
-    if isinstance(shape, st._internal.SearchStrategy):
-        shape = draw(shape)
-    size = 1 if len(shape) == 0 else math.prod(shape)
-    rshape = draw(
-        st.lists(number_helpers.ints(min_value=0)).filter(
-            lambda s: math.prod(s) == size
-        )
-    )
-    return tuple(rshape)
-
-
-# taken from https://github.com/HypothesisWorks/hypothesis/issues/1115
-@st.composite
-def subsets(draw, *, elements):
-    """
-    Draws a subset of elements from the given elements.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    elements
-        set of elements to be drawn from.
-
-    Returns
-    -------
-        A strategy that draws a subset of elements.
-    """
-    return tuple(e for e in elements if draw(st.booleans()))
-
-
-@st.composite
 def x_and_filters(
     draw,
     dim: int = 2,
@@ -455,118 +523,46 @@ def x_and_filters(
     return dtype, vals, filters, dilations, data_format, strides, padding
 
 
-@lru_cache(None)
-def apply_safety_factor(
-    dtype,
-    *,
-    backend: str,
-    min_value=None,
-    max_value=None,
-    abs_smallest_val=None,
-    small_abs_safety_factor=1.1,
-    large_abs_safety_factor=1.1,
-    safety_factor_scale="linear",
-):
+@st.composite
+def embedding_helper(draw, mixed_fn_compos=True):
     """
-    Apply safety factor scaling to numeric data type.
+    Obtain weights for embeddings, the corresponding indices, the padding indices.
 
     Parameters
     ----------
-    dtype
-        the data type to apply safety factor scaling to.
-    min_value
-        the minimum value of the data type.
-    max_value
-        the maximum value of the data type.
-    abs_smallest_val
-        the absolute smallest representable value of the data type.
-    large_abs_safety_factor
-        the safety factor to apply to the maximum value.
-    small_abs_safety_factor
-        the safety factor to apply to the minimum value.
-    safety_factor_scale
-        the scale to apply the safety factor to, either 'linear' or 'log'.
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
 
     Returns
     -------
-        A tuple of the minimum value, maximum value and absolute smallest representable
+        A strategy for generating a tuple
     """
-    assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
-    assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
-
-    if "float" in dtype or "complex" in dtype:
-        kind_dtype = "float"
-        with WithBackendContext(backend) as ivy_backend:
-            dtype_info = ivy_backend.finfo(dtype)
-    elif "int" in dtype:
-        kind_dtype = "int"
-        with WithBackendContext(backend) as ivy_backend:
-            dtype_info = ivy_backend.iinfo(dtype)
-    else:
-        raise TypeError(
-            f"{dtype} is not a valid numeric data type only integers and floats"
+    dtype_weight, weight = draw(
+        array_helpers.dtype_and_values(
+            available_dtypes=[
+                x
+                for x in draw(
+                    dtype_helpers.get_dtypes("numeric", mixed_fn_compos=mixed_fn_compos)
+                )
+                if "float" in x or "complex" in x
+            ],
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=1,
+            min_value=-1e04,
+            max_value=1e04,
         )
-
-    if min_value is None:
-        min_value = dtype_info.min
-    if max_value is None:
-        max_value = dtype_info.max
-
-    if safety_factor_scale == "linear":
-        min_value = min_value / large_abs_safety_factor
-        max_value = max_value / large_abs_safety_factor
-        if kind_dtype == "float" and not abs_smallest_val:
-            abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
-    elif safety_factor_scale == "log":
-        min_sign = math.copysign(1, min_value)
-        min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
-        max_sign = math.copysign(1, max_value)
-        max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
-        if kind_dtype == "float" and not abs_smallest_val:
-            m, e = math.frexp(dtype_info.smallest_normal)
-            abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
-    else:
-        raise ValueError(
-            f"{safety_factor_scale} is not a valid safety factor scale."
-            " use 'log' or 'linear'."
-        )
-    if kind_dtype == "int":
-        return int(min_value), int(max_value), None
-    return min_value, max_value, abs_smallest_val
-
-
-def matrix_is_stable(x, cond_limit=30):
-    """
-    Check if a matrix is numerically stable or not.
-
-    Used to avoid numerical instabilities in further computationally heavy calculations.
-
-    Parameters
-    ----------
-    x
-        The original matrix whose condition number is to be determined.
-    cond_limit
-        The greater the condition number, the more ill-conditioned the matrix
-        will be, the more it will be prone to numerical instabilities.
-
-        There is no rule of thumb for what the exact condition number
-        should be to consider a matrix ill-conditioned(prone to numerical errors).
-        But, if the condition number is "1", the matrix is perfectly said to be a
-        well-conditioned matrix which will not be prone to any type of numerical
-        instabilities in further calculations, but that would probably be a
-        very simple matrix.
-
-        The cond_limit should start with "30", gradually decreasing it according
-        to our use, lower cond_limit would result in more numerically stable
-        matrices but more simple matrices.
-
-        The limit should always be in the range "1-30", greater the number greater
-        the computational instability. Should not increase 30, it leads to strong
-        multi-collinearity which leads to singularity.
-
-    Returns
-    -------
-    ret
-        If True, the matrix is suitable for further numerical computations.
-    """
-    return np.all(np.linalg.cond(x.astype("float64")) <= cond_limit)
+    )
+    num_embeddings, embedding_dim = weight[0].shape
+    dtype_indices, indices = draw(
+        array_helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=2,
+            min_dim_size=1,
+            min_value=0,
+            max_value=num_embeddings - 1,
+        ).filter(lambda x: x[1][0].shape[-1] == embedding_dim)
+    )
+    padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
+    return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx

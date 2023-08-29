@@ -3,14 +3,42 @@ from hypothesis import strategies as st
 from . import globals as test_globals
 from .pipeline_helper import BackendHandler
 
-BuiltCompileStrategy = st.just(False)
-BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltFrontendArrayStrategy = st.booleans()
-BuiltInplaceStrategy = st.just(False)
-BuiltInstanceStrategy = st.booleans()
+
+@st.composite
+def _gradient_strategy(draw):
+    if test_globals.CURRENT_BACKEND == "numpy":
+        return draw(st.just(False))
+    return draw(st.booleans())
+
+
+@st.composite
+def _as_varaible_strategy(draw):
+    if (
+        test_globals.CURRENT_BACKEND is not test_globals._Notsetval
+        and test_globals.CURRENT_BACKEND == "numpy"
+    ):
+        return draw(st.just([False]))
+    if not test_globals.CURRENT_FRONTEND_STR:
+        if (
+            test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
+            and test_globals.CURRENT_FRONTEND == "numpy"
+        ):
+            return draw(st.just([False]))
+    return draw(st.lists(st.booleans(), min_size=1, max_size=1))
+
+
 BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltPrecisionModeStrategy = st.booleans()
+BuiltAsVariableStrategy = _as_varaible_strategy()
+BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
+BuiltInstanceStrategy = st.booleans()
+BuiltInplaceStrategy = st.just(False)
+BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
+BuiltCompileStrategy = st.just(False)
+BuiltFrontendArrayStrategy = st.booleans()
+BuiltPrecisionModeStrategy = st.booleans()
+
+
 flags_mapping = {
     "native_array": "BuiltNativeArrayStrategy",
     "as_variable": "BuiltAsVariableStrategy",
@@ -22,6 +50,16 @@ flags_mapping = {
     "test_compile": "BuiltCompileStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
 }
+
+
+def build_flag(key: str, value: bool):
+    if value is not None:
+        value = st.just(value)
+    # Prevent silently passing if variables names were changed
+    assert (
+        flags_mapping[key] in globals().keys()
+    ), f"{flags_mapping[key]} is not a valid flag variable."
+    globals()[flags_mapping[key]] = value
 
 
 # Strategy Helpers #
@@ -89,6 +127,38 @@ class FunctionTestFlags(TestFlags):
         return self.__str__()
 
 
+@st.composite
+def function_flags(
+    draw,
+    *,
+    ground_truth_backend,
+    num_positional_args,
+    instance_method,
+    with_out,
+    test_gradients,
+    test_compile,
+    as_variable,
+    native_arrays,
+    container_flags,
+    precision_mode,
+):
+    return draw(
+        st.builds(
+            FunctionTestFlags,
+            ground_truth_backend=ground_truth_backend,
+            num_positional_args=num_positional_args,
+            with_out=with_out,
+            instance_method=instance_method,
+            test_gradients=test_gradients,
+            test_compile=test_compile,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
+            container=container_flags,
+            precision_mode=precision_mode,
+        )
+    )
+
+
 class FrontendFunctionTestFlags(TestFlags):
     def __init__(
         self,
@@ -138,6 +208,34 @@ class FrontendFunctionTestFlags(TestFlags):
         return self.__str__()
 
 
+@st.composite
+def frontend_function_flags(
+    draw,
+    *,
+    num_positional_args,
+    with_out,
+    inplace,
+    as_variable,
+    native_arrays,
+    test_compile,
+    generate_frontend_arrays,
+    precision_mode,
+):
+    return draw(
+        st.builds(
+            FrontendFunctionTestFlags,
+            num_positional_args=num_positional_args,
+            with_out=with_out,
+            inplace=inplace,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
+            test_compile=test_compile,
+            generate_frontend_arrays=generate_frontend_arrays,
+            precision_mode=precision_mode,
+        )
+    )
+
+
 class InitMethodTestFlags(TestFlags):
     def __init__(
         self,
@@ -173,6 +271,26 @@ class InitMethodTestFlags(TestFlags):
 
     def __repr__(self):
         return self.__str__()
+
+
+@st.composite
+def init_method_flags(
+    draw,
+    *,
+    num_positional_args,
+    as_variable,
+    native_arrays,
+    precision_mode,
+):
+    return draw(
+        st.builds(
+            InitMethodTestFlags,
+            num_positional_args=num_positional_args,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
+            precision_mode=precision_mode,
+        )
+    )
 
 
 class MethodTestFlags(TestFlags):
@@ -217,6 +335,28 @@ class MethodTestFlags(TestFlags):
         return self.__str__()
 
 
+@st.composite
+def method_flags(
+    draw,
+    *,
+    num_positional_args,
+    as_variable,
+    native_arrays,
+    container_flags,
+    precision_mode,
+):
+    return draw(
+        st.builds(
+            MethodTestFlags,
+            num_positional_args=num_positional_args,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
+            container_flags=container_flags,
+            precision_mode=precision_mode,
+        )
+    )
+
+
 class FrontendMethodTestFlags(TestFlags):
     def __init__(
         self,
@@ -257,61 +397,6 @@ class FrontendMethodTestFlags(TestFlags):
         return self.__str__()
 
 
-# --- Helpers --- #
-# --------------- #
-
-
-@st.composite
-def _as_varaible_strategy(draw):
-    if (
-        test_globals.CURRENT_BACKEND is not test_globals._Notsetval
-        and test_globals.CURRENT_BACKEND == "numpy"
-    ):
-        return draw(st.just([False]))
-    if not test_globals.CURRENT_FRONTEND_STR:
-        if (
-            test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
-            and test_globals.CURRENT_FRONTEND == "numpy"
-        ):
-            return draw(st.just([False]))
-    return draw(st.lists(st.booleans(), min_size=1, max_size=1))
-
-
-@st.composite
-def _gradient_strategy(draw):
-    if test_globals.CURRENT_BACKEND == "numpy":
-        return draw(st.just(False))
-    return draw(st.booleans())
-
-
-@st.composite
-def frontend_function_flags(
-    draw,
-    *,
-    num_positional_args,
-    with_out,
-    inplace,
-    as_variable,
-    native_arrays,
-    test_compile,
-    generate_frontend_arrays,
-    precision_mode,
-):
-    return draw(
-        st.builds(
-            FrontendFunctionTestFlags,
-            num_positional_args=num_positional_args,
-            with_out=with_out,
-            inplace=inplace,
-            as_variable=as_variable,
-            native_arrays=native_arrays,
-            test_compile=test_compile,
-            generate_frontend_arrays=generate_frontend_arrays,
-            precision_mode=precision_mode,
-        )
-    )
-
-
 @st.composite
 def frontend_method_flags(
     draw,
@@ -332,95 +417,3 @@ def frontend_method_flags(
             test_compile=test_compile,
         )
     )
-
-
-@st.composite
-def function_flags(
-    draw,
-    *,
-    ground_truth_backend,
-    num_positional_args,
-    instance_method,
-    with_out,
-    test_gradients,
-    test_compile,
-    as_variable,
-    native_arrays,
-    container_flags,
-    precision_mode,
-):
-    return draw(
-        st.builds(
-            FunctionTestFlags,
-            ground_truth_backend=ground_truth_backend,
-            num_positional_args=num_positional_args,
-            with_out=with_out,
-            instance_method=instance_method,
-            test_gradients=test_gradients,
-            test_compile=test_compile,
-            as_variable=as_variable,
-            native_arrays=native_arrays,
-            container=container_flags,
-            precision_mode=precision_mode,
-        )
-    )
-
-
-@st.composite
-def init_method_flags(
-    draw,
-    *,
-    num_positional_args,
-    as_variable,
-    native_arrays,
-    precision_mode,
-):
-    return draw(
-        st.builds(
-            InitMethodTestFlags,
-            num_positional_args=num_positional_args,
-            as_variable=as_variable,
-            native_arrays=native_arrays,
-            precision_mode=precision_mode,
-        )
-    )
-
-
-@st.composite
-def method_flags(
-    draw,
-    *,
-    num_positional_args,
-    as_variable,
-    native_arrays,
-    container_flags,
-    precision_mode,
-):
-    return draw(
-        st.builds(
-            MethodTestFlags,
-            num_positional_args=num_positional_args,
-            as_variable=as_variable,
-            native_arrays=native_arrays,
-            container_flags=container_flags,
-            precision_mode=precision_mode,
-        )
-    )
-
-
-# --- Main --- #
-# ------------ #
-
-
-def build_flag(key: str, value: bool):
-    if value is not None:
-        value = st.just(value)
-    # Prevent silently passing if variables names were changed
-    assert (
-        flags_mapping[key] in globals().keys()
-    ), f"{flags_mapping[key]} is not a valid flag variable."
-    globals()[flags_mapping[key]] = value
-
-
-BuiltAsVariableStrategy = _as_varaible_strategy()
-BuiltGradientStrategy = _gradient_strategy()

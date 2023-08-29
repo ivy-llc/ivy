@@ -1,10 +1,5 @@
 from importlib.util import find_spec
 
-
-# --- Helpers --- #
-# --------------- #
-
-
 # A list of available backends that can be used for testing.
 
 

@@ -28,10 +28,6 @@ _dtype_kind_keys = {
 }
 
 
-# --- Helpers --- #
-# --------------- #
-
-
 def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"):
     all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
         framework
@@ -91,6 +87,152 @@ def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
         )
 
     raise RuntimeError("{} is an unknown kind!".format(kind))
+
+
+@st.composite
+def get_dtypes(
+    draw,
+    kind="valid",
+    index=0,
+    mixed_fn_compos=True,
+    full=True,
+    none=False,
+    key=None,
+    prune_function=True,
+):
+    """
+    Draws a valid dtypes for the test function. For frontend tests, it draws the data
+    types from the intersection between backend framework data types and frontend
+    framework dtypes, otherwise, draws it from backend framework data types.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    kind
+        Supported types are integer, float, valid, numeric, signed_integer, complex,
+        real_and_complex, float_and_complex, bool, and unsigned
+    index
+        list indexing incase a test needs to be skipped for a particular dtype(s)
+    mixed_fn_compos
+        boolean if True, the function will return the dtypes of the compositional
+        implementation for mixed partial functions and if False, it will return
+        the dtypes of the primary implementation.
+    full
+        returns the complete list of valid types
+    none
+        allow none in the list of valid types
+    key
+        if provided, a shared value will be drawn from the strategy and passed to the
+        function as the keyword argument with the given name.
+    prune_function
+        if True, the function will prune the data types to only include the ones that
+        are supported by the current backend. If False, the function will return all
+        the data types supported by the current backend.
+
+    Returns
+    -------
+    ret
+        A strategy that draws dtype strings
+
+    Examples
+    --------
+    >>> get_dtypes()
+    ['float16',
+        'uint8',
+        'complex128',
+        'bool',
+        'uint32',
+        'float64',
+        'int8',
+        'int16',
+        'complex64',
+        'float32',
+        'int32',
+        'uint16',
+        'int64',
+        'uint64']
+
+    >>> get_dtypes(kind='valid', full=False)
+    ['int16']
+
+    >>> get_dtypes(kind='valid', full=False)
+    ['uint16']
+
+    >>> get_dtypes(kind='numeric', full=False)
+    ['complex64']
+
+    >>> get_dtypes(kind='float', full=False, key="leaky_relu")
+    ['float16']
+
+    >>> get_dtypes(kind='float', full=False, key="searchsorted")
+    ['bfloat16']
+
+    >>> get_dtypes(kind='float', full=False, key="dtype")
+    ['float32']
+
+    >>> get_dtypes("numeric", prune_function=False)
+    ['int16']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['uint32']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['complex128']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['bool']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['float16']
+    """
+    mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
+    if prune_function:
+        retrieval_fn = _get_fn_dtypes
+        if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
+            valid_dtypes = set(
+                retrieval_fn(
+                    test_globals.CURRENT_BACKEND,
+                    mixed_fn_dtypes=mixed_fn_dtypes,
+                    kind=kind,
+                )
+            )
+        else:
+            raise RuntimeError(
+                "No function is set to prune, calling "
+                "prune_function=True without a function is redundant."
+            )
+    else:
+        retrieval_fn = _get_type_dict
+        valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
+
+    # The function may be called from a frontend test or an Ivy API test
+    # In the case of an Ivy API test, the function should make sure it returns a valid
+    # dtypes for the backend and also for the ground truth backend, if it is called from
+    # a frontend test, we should also count for the frontend support data types
+    # In conclusion, the following operations will get the intersection of
+    # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
+
+    # If being called from a frontend test
+
+    # Make sure we return dtypes that are compatible with ground truth backend
+    ground_truth_is_set = (
+        test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
+    )
+    if ground_truth_is_set:
+        valid_dtypes = valid_dtypes.intersection(
+            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
+        )
+
+    valid_dtypes = list(valid_dtypes)
+    if none:
+        valid_dtypes.append(None)
+    if full:
+        return valid_dtypes[index:]
+    if key is None:
+        return [draw(st.sampled_from(valid_dtypes[index:]))]
+    return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]
 
 
 @st.composite
@@ -265,149 +407,3 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
         if x is None:
             return dtype, cast_dtype
         return dtype, x, cast_dtype
-
-
-@st.composite
-def get_dtypes(
-    draw,
-    kind="valid",
-    index=0,
-    mixed_fn_compos=True,
-    full=True,
-    none=False,
-    key=None,
-    prune_function=True,
-):
-    """
-    Draws a valid dtypes for the test function. For frontend tests, it draws the data
-    types from the intersection between backend framework data types and frontend
-    framework dtypes, otherwise, draws it from backend framework data types.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    kind
-        Supported types are integer, float, valid, numeric, signed_integer, complex,
-        real_and_complex, float_and_complex, bool, and unsigned
-    index
-        list indexing incase a test needs to be skipped for a particular dtype(s)
-    mixed_fn_compos
-        boolean if True, the function will return the dtypes of the compositional
-        implementation for mixed partial functions and if False, it will return
-        the dtypes of the primary implementation.
-    full
-        returns the complete list of valid types
-    none
-        allow none in the list of valid types
-    key
-        if provided, a shared value will be drawn from the strategy and passed to the
-        function as the keyword argument with the given name.
-    prune_function
-        if True, the function will prune the data types to only include the ones that
-        are supported by the current backend. If False, the function will return all
-        the data types supported by the current backend.
-
-    Returns
-    -------
-    ret
-        A strategy that draws dtype strings
-
-    Examples
-    --------
-    >>> get_dtypes()
-    ['float16',
-        'uint8',
-        'complex128',
-        'bool',
-        'uint32',
-        'float64',
-        'int8',
-        'int16',
-        'complex64',
-        'float32',
-        'int32',
-        'uint16',
-        'int64',
-        'uint64']
-
-    >>> get_dtypes(kind='valid', full=False)
-    ['int16']
-
-    >>> get_dtypes(kind='valid', full=False)
-    ['uint16']
-
-    >>> get_dtypes(kind='numeric', full=False)
-    ['complex64']
-
-    >>> get_dtypes(kind='float', full=False, key="leaky_relu")
-    ['float16']
-
-    >>> get_dtypes(kind='float', full=False, key="searchsorted")
-    ['bfloat16']
-
-    >>> get_dtypes(kind='float', full=False, key="dtype")
-    ['float32']
-
-    >>> get_dtypes("numeric", prune_function=False)
-    ['int16']
-
-    >>> get_dtypes("valid", prune_function=False)
-    ['uint32']
-
-    >>> get_dtypes("valid", prune_function=False)
-    ['complex128']
-
-    >>> get_dtypes("valid", prune_function=False)
-    ['bool']
-
-    >>> get_dtypes("valid", prune_function=False)
-    ['float16']
-    """
-    mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
-    if prune_function:
-        retrieval_fn = _get_fn_dtypes
-        if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(
-                retrieval_fn(
-                    test_globals.CURRENT_BACKEND,
-                    mixed_fn_dtypes=mixed_fn_dtypes,
-                    kind=kind,
-                )
-            )
-        else:
-            raise RuntimeError(
-                "No function is set to prune, calling "
-                "prune_function=True without a function is redundant."
-            )
-    else:
-        retrieval_fn = _get_type_dict
-        valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
-
-    # The function may be called from a frontend test or an Ivy API test
-    # In the case of an Ivy API test, the function should make sure it returns a valid
-    # dtypes for the backend and also for the ground truth backend, if it is called from
-    # a frontend test, we should also count for the frontend support data types
-    # In conclusion, the following operations will get the intersection of
-    # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
-
-    # If being called from a frontend test
-
-    # Make sure we return dtypes that are compatible with ground truth backend
-    ground_truth_is_set = (
-        test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
-    )
-    if ground_truth_is_set:
-        valid_dtypes = valid_dtypes.intersection(
-            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
-        )
-
-    valid_dtypes = list(valid_dtypes)
-    if none:
-        valid_dtypes.append(None)
-    if full:
-        return valid_dtypes[index:]
-    if key is None:
-        return [draw(st.sampled_from(valid_dtypes[index:]))]
-    return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]
