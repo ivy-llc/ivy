@@ -380,4 +380,3 @@ def multi_label_soft_margin_loss(
     loss = ivy.mean(loss, axis=-1)
     ret = reduction(loss).astype(input.dtype)
     return ret
-
