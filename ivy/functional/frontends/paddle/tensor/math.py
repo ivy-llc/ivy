@@ -137,12 +137,12 @@ def cosh(x, name=None):
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-            "complex64",
-            "complex128",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
         )
     },
     "paddle",
@@ -367,6 +367,12 @@ def outer(x, y, name=None):
     return ivy.outer(x, y)
 
 
+@with_supported_dtypes({"2.5.1 and below": ('float16', 'float32', 'float64', 'int64')}, "paddle")
+@to_ivy_arrays_and_back
+def sum(x, axis=None, keepdim=False, dtype=None, name=None):
+    return ivy.sum(x, axis=axis, dtype=dtype, keepdims=keepdim)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def pow(x, y, name=None):
@@ -481,10 +487,10 @@ def subtract(x, y, name=None):
 )
 @to_ivy_arrays_and_back
 def take(
-    x,
-    index,
-    mode="raise",
-    name=None,
+        x,
+        index,
+        mode="raise",
+        name=None,
 ):
     if mode not in ["raise", "wrap", "clip"]:
         raise ValueError(
