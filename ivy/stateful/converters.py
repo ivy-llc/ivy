@@ -410,7 +410,7 @@ class ModuleConverters:
             The new trainable ivy.Module instance.
         """
         try:
-            pass
+            import torch
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
                 "`torch` was not found installed on your system. Please proceed "
