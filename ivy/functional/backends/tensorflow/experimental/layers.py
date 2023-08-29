@@ -1051,6 +1051,8 @@ def fft2(
         result = tf.signal.fft2d(x_complex)
 
     result = _fft2_norm(result, s, dim, norm)
+    if x.dtype == tf.complex64:
+        result = tf.cast(result, dtype=tf.complex128)
     return result
 
 
