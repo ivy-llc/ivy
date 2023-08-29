@@ -77,16 +77,16 @@ def baddbmm(input, batch1, batch2, *, beta=1, alpha=1, out=None):
 
 
 @to_ivy_arrays_and_back
-def chain_matmul(*matrices, out=None):
-    return ivy.multi_dot(matrices, out=out)
-
-
-@to_ivy_arrays_and_back
 def bmm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 3 or len(ivy.shape(mat2)) != 3:
         raise RuntimeError("input must be 3D matrices")
     input, mat2 = torch_frontend.promote_types_of_torch_inputs(input, mat2)
     return ivy.matmul(input, mat2, out=out)
+
+
+@to_ivy_arrays_and_back
+def chain_matmul(*matrices, out=None):
+    return ivy.multi_dot(matrices, out=out)
 
 
 @to_ivy_arrays_and_back
