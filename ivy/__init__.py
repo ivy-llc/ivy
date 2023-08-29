@@ -91,7 +91,7 @@ class Device(str):
                 # ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
-                    message="{} must be numeric".format(dev_str[4:]),
+                    message=f"{dev_str[4:]} must be numeric",
                 )
         return str.__new__(cls, dev_str)
 
@@ -429,7 +429,7 @@ class Shape(Sequence):
     def assert_same_rank(self, other):
         other = Shape(other)
         if self.rank != other.rank:
-            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+            raise ValueError(f"Shapes {self} and {other} must have the same rank")
 
     def assert_has_rank(self, rank):
         if self.rank not in (None, rank):
@@ -439,7 +439,7 @@ class Shape(Sequence):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
         if kwargs:
-            raise TypeError("Unknown argument: %s" % kwargs)
+            raise TypeError(f"Unknown argument: {kwargs}")
         if rank is None:
             return Shape(None)
         else:
@@ -495,7 +495,7 @@ class Shape(Sequence):
     @property
     def assert_is_fully_defined(self):
         if not self.is_fully_defined():
-            raise ValueError("Shape %s is not fully defined" % self)
+            raise ValueError(f"Shape {self} is not fully defined")
 
     def as_list(self):
         if self._shape is None:

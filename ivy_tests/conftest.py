@@ -55,7 +55,7 @@ def pytest_terminal_summary(terminalreporter):
         return
 
     passed_ratio = 1 - (session.testsfailed / session.testscollected)
-    text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
+    text = f" {passed_ratio:.1%} of {session.testscollected} passed "
     text = text.center(terminalreporter._screen_width, "=")
     terminalreporter.write(content=Fore.GREEN + text)
 

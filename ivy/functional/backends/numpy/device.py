@@ -102,7 +102,7 @@ class Profiler(BaseProfiler):
     def stop(self):
         time_taken = time.perf_counter() - self._start_time
         with open(os.path.join(self._save_dir, "profile.log"), "w+") as f:
-            f.write("took {} seconds to complete".format(time_taken))
+            f.write(f"took {time_taken} seconds to complete")
 
     def __enter__(self):
         self.start()

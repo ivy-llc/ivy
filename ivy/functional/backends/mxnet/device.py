@@ -50,7 +50,7 @@ def as_native_dev(device: str, /):
     elif device.find("gpu") != -1:
         mx_dev = "gpu"
     else:
-        raise Exception("dev input {} not supported.".format(device))
+        raise Exception(f"dev input {device} not supported.")
     if device.find(":") != -1:
         mx_dev_id = int(device[device.find(":") + 1 :])
     else:

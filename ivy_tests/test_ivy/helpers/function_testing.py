@@ -310,7 +310,7 @@ def test_function(
         assert ivy_backend.nested_map(
             ret_from_target,
             lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
-        ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
+        ), f"Ivy function returned non-ivy arrays: {ret_from_target}"
 
         # Assert indices of return if the indices of the out array provided
         if test_flags.with_out and not test_flags.test_compile:
@@ -420,7 +420,7 @@ def test_function(
         assert gt_backend.nested_map(
             ret_from_gt,
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
-        ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
+        ), f"Ground-truth function returned non-ivy arrays: {ret_from_gt}"
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
                 ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
@@ -677,7 +677,7 @@ def test_frontend_function(
             assert ivy_backend.nested_map(
                 ret,
                 lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
-            ), "Frontend function returned non-frontend arrays: {}".format(ret)
+            ), f"Frontend function returned non-frontend arrays: {ret}"
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
@@ -1304,7 +1304,7 @@ def test_method(
         assert ivy_backend.nested_map(
             ret,
             lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
-        ), "Ivy method returned non-ivy arrays: {}".format(ret)
+        ), f"Ivy method returned non-ivy arrays: {ret}"
 
     # Compute the return with a Ground Truth backend
 
@@ -1353,7 +1353,7 @@ def test_method(
         assert gt_backend.nested_map(
             ret_from_gt,
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
-        ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
+        ), f"Ground-truth method returned non-ivy arrays: {ret_from_gt}"
 
         # TODO optimize or cache
         # Exhuastive replication for all examples

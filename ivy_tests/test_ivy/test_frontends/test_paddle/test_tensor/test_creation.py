@@ -480,7 +480,7 @@ def test_paddle_meshgrid(
     args = {}
     i = 0
     for x_ in arrays:
-        args["x{}".format(i)] = x_
+        args[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_frontend_function(

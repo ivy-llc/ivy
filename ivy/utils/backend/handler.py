@@ -228,7 +228,7 @@ def current_backend(*args, **kwargs):
     if backend_stack:
         f = backend_stack[-1]
         if verbosity.level > 0:
-            verbosity.cprint("Using backend from stack: {}".format(f))
+            verbosity.cprint(f"Using backend from stack: {f}")
         return f
 
     # if no global backend exists, we try to infer
@@ -238,7 +238,7 @@ def current_backend(*args, **kwargs):
         implicit_backend = f.current_backend_str()
         return f
     if verbosity.level > 0:
-        verbosity.cprint("Using backend from type: {}".format(f))
+        verbosity.cprint(f"Using backend from type: {f}")
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
@@ -419,7 +419,7 @@ def set_backend(backend: str, dynamic: bool = False):
     """  # noqa
     ivy.utils.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
-        "backend must be one from {}".format(list(_backend_dict.keys())),
+        f"backend must be one from {list(_backend_dict.keys())}",
     )
 
     variable_ids = set()  # create an empty set to store variable object ids
@@ -463,7 +463,7 @@ def set_backend(backend: str, dynamic: bool = False):
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
 
         if verbosity.level > 0:
-            verbosity.cprint("backend stack: {}".format(backend_stack))
+            verbosity.cprint(f"backend stack: {backend_stack}")
 
     return ivy
 
@@ -585,7 +585,7 @@ def previous_backend():
             if k in ivy.functional.__dict__ and not k.startswith("__"):
                 ivy.functional.__dict__[k] = v
     if verbosity.level > 0:
-        verbosity.cprint("backend stack: {}".format(backend_stack))
+        verbosity.cprint(f"backend stack: {backend_stack}")
     return backend
 
 
@@ -614,7 +614,7 @@ def choose_random_backend(excluded=None):
             excluded.append(f)
             continue
         else:
-            print("\nselected backend: {}\n".format(f))
+            print(f"\nselected backend: {f}\n")
             return f
 
 

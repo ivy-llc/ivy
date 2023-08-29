@@ -343,7 +343,7 @@ def check_docstring_examples_run(
                 "\n",
             )
             ivy.warn(
-                "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
+                f"Output is unequal to the docstrings output: {fn_name}", stacklevel=0
             )
             break
     return docstr_result

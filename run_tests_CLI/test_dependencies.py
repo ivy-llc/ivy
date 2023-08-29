@@ -35,7 +35,7 @@ def test_imports(fname, assert_version, update_versions):
     global WARN_MSG
     global PRINT_MSG
     versions_to_update = dict()
-    msg = "\nasserting imports work for: {}\n\n".format(fname)
+    msg = f"\nasserting imports work for: {fname}\n\n"
     PRINT_MSG += msg
     ERROR_MSG += msg
     WARN_MSG += msg
@@ -48,7 +48,7 @@ def test_imports(fname, assert_version, update_versions):
             mod = importlib.import_module(mod_name)
         except Exception as e:
             ERROR = True
-            msg = "{} could not be imported: {}\n".format(mod_name, e)
+            msg = f"{mod_name} could not be imported: {e}\n"
             ERROR_MSG += msg
             PRINT_MSG += msg
             continue
@@ -65,9 +65,7 @@ def test_imports(fname, assert_version, update_versions):
             detected_version = None
         if detected_version and expected_version:
             if detected_version == expected_version:
-                msg = "{} detected correct version: {}\n".format(
-                    mod_name, detected_version
-                )
+                msg = f"{mod_name} detected correct version: {detected_version}\n"
             else:
                 msg = (
                     "expected version {} for module {}, but detected version "

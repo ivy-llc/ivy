@@ -76,12 +76,10 @@ def assert_same_type_and_shape(values, this_key_chain=None):
             y_d = str(y.dtype).replace("longlong", "int64")
             assert (
                 x.shape == y.shape
-            ), "returned shape = {}, ground-truth returned shape = {}".format(
-                x.shape, y.shape
-            )
+            ), f"returned shape = {x.shape}, ground-truth returned shape = {y.shape}"
             assert (
                 x_d == y_d
-            ), "returned dtype = {}, ground-truth returned dtype = {}".format(x_d, y_d)
+            ), f"returned dtype = {x_d}, ground-truth returned dtype = {y_d}"
 
 
 def value_test(
