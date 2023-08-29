@@ -108,7 +108,7 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def ceil_(self):
         self.ivy_array = self.ceil().ivy_array
         return self
