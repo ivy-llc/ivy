@@ -3,10 +3,6 @@ import scipy
 import numpy as np
 
 
-def get_config():
-    return ScipyFrontendConfig()
-
-
 class ScipyFrontendConfig(FrontendConfig):
     Dtype = scipy.dtype
     Device = str
@@ -136,3 +132,7 @@ class ScipyFrontendConfig(FrontendConfig):
 
     def isscalar(self, x):
         return np.isscalar(x)
+
+
+def get_config():
+    return ScipyFrontendConfig()
