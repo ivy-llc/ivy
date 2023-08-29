@@ -710,7 +710,7 @@ def test_jax_mean(
 ):
     input_dtype, x, axis = dtype_x_axis
     where = arrays(dtype=bool, shape=x[0].shape)
-    if len(x[0]) == 1:
+    if x[0].shape == (1,):
         axis = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
