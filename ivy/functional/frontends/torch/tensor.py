@@ -1996,7 +1996,7 @@ class Tensor:
     )
     def xlogy(self, *, other, out=None):
         return torch_frontend.xlogy(self, other, out=out)
-    
+
 
     @with_unsupported_dtypes(
         {
