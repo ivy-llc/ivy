@@ -28,33 +28,15 @@ def min(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret_dtype = x.dtype
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bfloat16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-            imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
-            ret = paddle.complex(real, imag)
-        else:
-            ret = paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.amin(x, axis=axis, keepdim=keepdims)
+    ret = paddle_backend.to_and_back(paddle.amin)(x, axis=axis, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
         if len(axis) == x.ndim:
             axis = None
     if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = ret.squeeze()
-    return ret.astype(ret_dtype)
+        ret = paddle_backend.to_and_back(paddle.squeeze)(ret)
+    return ret
 
 
 def max(
@@ -137,9 +119,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-    # TODO:prod causes segmentation fault
-    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    return paddle_backend.to_and_back(paddle.prod)(x, axis=axis, keepdim=keepdims, dtype=dtype)
 
 
 def _std(x, axis, correction, keepdim):

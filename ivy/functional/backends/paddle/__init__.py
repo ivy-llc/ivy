@@ -1,4 +1,5 @@
 # global
+import functools
 import sys
 import paddle as paddle
 
@@ -233,3 +234,78 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+
+
+def _get_dtype_max(dtype):
+    dtype = str(dtype)
+    dtype = 'uint8' if dtype == 'bool' else dtype
+    if "float" in dtype or "complex" in dtype:
+        return paddle_backend.finfo(dtype).max
+    else:
+        return paddle_backend.iinfo(dtype).max
+
+
+def to_and_back(
+        fn: Callable,
+        supported_dtypes: Sequence[str] = ('int32', 'int64', 'float32', 'float64'),
+) -> Callable:
+    @functools.wraps(fn)
+    def _to_and_back(*args, **kwargs):
+        """
+        To be used on native paddle functions that do not have Kernels for all the
+        required dtypes. Casts the fn arguments to a supported dtype and then the fn
+        result back to the required dtype.
+        ......
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        supported_dtypes
+            The list of the supported dtypes.
+
+        Returns
+        -------
+            The return of the function if the current
+            backend matches the argument backend.
+            If not, it raises an InvalidBackendException
+        """
+
+        if not ivy.is_array(args[0]):
+            assert ivy.is_array(args[0]), "`to_and_back` should be used on fn calls " \
+                                          "that have an array as their first argument"
+
+        arr_dtype = str(ivy.as_ivy_dtype(args[0].dtype))
+
+        if arr_dtype in supported_dtypes:
+            return fn(*args, **kwargs)
+
+        dtypes = sorted(list(supported_dtypes), key=_get_dtype_max)
+
+        for dtype in dtypes:
+            if _get_dtype_max(arr_dtype) <= _get_dtype_max(dtype):
+                mid_dtype = dtype
+                break
+
+        if 'dtype' in kwargs:
+            ret_dtype = kwargs['dtype']
+            kwargs['dtype'] = mid_dtype
+        else:
+            ret_dtype = arr_dtype
+
+        if 'complex' in arr_dtype:
+            ret = paddle.complex(
+                fn(args[0].real(), *args[1:], **kwargs),
+                fn(args[0].imag(), *args[1:], **kwargs)
+            )
+        else:
+            ret = fn(args[0].cast(mid_dtype), *args[1:], **kwargs)
+
+        return ret.cast(ret_dtype)
+
+    _to_and_back.to_and_back = True
+    return _to_and_back
