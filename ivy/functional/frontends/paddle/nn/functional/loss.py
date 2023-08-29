@@ -9,6 +9,10 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 # helpers
 def _get_reduction_func(reduction):
     if reduction == "none":
@@ -36,6 +40,10 @@ def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
     return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
 
 
+# --- Main --- #
+# ------------ #
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32",)},
     "paddle",
@@ -57,19 +65,6 @@ def binary_cross_entropy_with_logits(
         ret = ivy.multiply(weight, ret)
     ret = reduction(ret).astype(label.dtype)
     return paddle.to_tensor(ivy.atleast_1d(ret))
-
-
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
-@inputs_to_ivy_arrays
-def mse_loss(input, label, reduction="mean", name=None):
-    reduction = _get_reduction_func(reduction)
-    ret = ivy.square(input - label)
-    ret = reduction(ret)
-
-    if ret.shape == ():
-        ret = ret.expand_dims()
-
-    return paddle.to_tensor(ret)
 
 
 @handle_exceptions
@@ -115,6 +110,45 @@ def cosine_embedding_loss(
     return out
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def dice_loss(input, label, epsilon=0.00001, name=None):
+    ivy.assertions.check_true(
+        len(input.shape) >= 2,
+        message="The rank of input should be greater than or equal to 2.",
+    )
+    ivy.assertions.check_true(
+        len(input.shape) == len(label.shape),
+        message=str(
+            "The rank of input and label should be equal, "
+            "but received input: %d, label: %d." % (len(input.shape), len(label.shape))
+        ),
+    )
+    ivy.assertions.check_true(
+        label.shape[-1] == 1,
+        message=str(
+            "The last dimension of label should be 1, but received %d."
+            % label.shape[-1]
+        ),
+    )
+    ivy.assertions.check_true(
+        tuple(input.shape[:-1]) == tuple(label.shape[:-1]),
+        message="All dimensions should be equal except the last one.",
+    )
+    ivy.assertions.check_true(
+        input.size > 0 and label.size > 0,
+        message="Any dimension of input and label cannot be equal to 0.",
+    )
+    label = ivy.squeeze(label, axis=-1)
+    label = ivy.one_hot(label, input.shape[-1])
+    reduce_dim = list(range(1, len(input.shape)))
+    intersect = ivy.multiply(input, label)
+    inse = ivy.sum(intersect, axis=reduce_dim)
+    dice_denominator = ivy.sum(input, axis=reduce_dim) + ivy.sum(label, axis=reduce_dim)
+    dice_score = 1 - inse * 2 / (dice_denominator + epsilon)
+    return ivy.mean(dice_score)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32",)},
     "paddle",
@@ -138,59 +172,6 @@ def hinge_embedding_loss(input, label, margin=1.0, reduction="mean"):
         return ivy.sum(loss)
     elif reduction == "none":
         return loss
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32",)},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def log_loss(input, label, epsilon=0.0001, name=None):
-    out = -label * ivy.log(input + epsilon) - (
-        (1 - label) * ivy.log(1 - input + epsilon)
-    )
-    return out
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def smooth_l1_loss(
-    input,
-    label,
-    reduction="mean",
-    delta=1.0,
-    name=None,
-):
-    sum_diff = ivy.abs(input - label).astype(label.dtype)
-    condition = sum_diff <= delta
-    out = ivy.where(
-        condition,
-        0.5 * ivy.pow(ivy.abs(input - label), 2).astype(label.dtype),
-        (delta * ivy.abs(ivy.abs(input - label))).astype(label.dtype)
-        - (0.5 * ivy.pow(delta, 2)).astype(label.dtype),
-    )
-    if reduction == "none":
-        pass
-    elif reduction == "mean":
-        out = ivy.mean(out)
-    elif reduction == "sum":
-        out = ivy.sum(out)
-    return out.astype(label.dtype)
-
-
-@inputs_to_ivy_arrays
-def l1_loss(
-    input,
-    label,
-    reduction="mean",
-    name=None,
-):
-    sum_diff = ivy.abs(input - label)
-    reduction = _get_reduction_func(reduction)
-    out = reduction(sum_diff)
-    if out.shape == ():
-        out = out.expand_dims()
-    return paddle.to_tensor(out)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -224,6 +205,33 @@ def kl_div(
     return out.astype(label.dtype)
 
 
+@inputs_to_ivy_arrays
+def l1_loss(
+    input,
+    label,
+    reduction="mean",
+    name=None,
+):
+    sum_diff = ivy.abs(input - label)
+    reduction = _get_reduction_func(reduction)
+    out = reduction(sum_diff)
+    if out.shape == ():
+        out = out.expand_dims()
+    return paddle.to_tensor(out)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32",)},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def log_loss(input, label, epsilon=0.0001, name=None):
+    out = -label * ivy.log(input + epsilon) - (
+        (1 - label) * ivy.log(1 - input + epsilon)
+    )
+    return out
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=None):
@@ -242,6 +250,78 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     out = ivy.atleast_1d(out)
 
     return out
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@inputs_to_ivy_arrays
+def mse_loss(input, label, reduction="mean", name=None):
+    reduction = _get_reduction_func(reduction)
+    ret = ivy.square(input - label)
+    ret = reduction(ret)
+
+    if ret.shape == ():
+        ret = ret.expand_dims()
+
+    return paddle.to_tensor(ret)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def nll_loss(
+    input,
+    label,
+    weight=None,
+    ignore_index=-100,
+    reduction="mean",
+):
+    """Refer
+    https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for
+    more on NLL(Negative log likelihood) Loss."""
+    if weight is None:
+        weight = ivy.ones(ivy.shape(input[0]))
+    input = ivy.log(input)
+    loss = ivy.zeros(ivy.shape(label))
+    den = 0
+    for i in range(0, ivy.shape(loss)[0]):
+        den = den + weight[label[i]]
+        loss[i] = -weight[label[i]] * input[i][label[i]]
+    output = 0.0
+    if reduction == "sum":
+        output = ivy.sum(loss)
+        if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
+            output = output - loss[ignore_index]
+        return output
+    num = ivy.sum(loss)
+    output = num / den
+    if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
+        output = output - loss[ignore_index] / den
+    return output
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def smooth_l1_loss(
+    input,
+    label,
+    reduction="mean",
+    delta=1.0,
+    name=None,
+):
+    sum_diff = ivy.abs(input - label).astype(label.dtype)
+    condition = sum_diff <= delta
+    out = ivy.where(
+        condition,
+        0.5 * ivy.pow(ivy.abs(input - label), 2).astype(label.dtype),
+        (delta * ivy.abs(ivy.abs(input - label))).astype(label.dtype)
+        - (0.5 * ivy.pow(delta, 2)).astype(label.dtype),
+    )
+    if reduction == "none":
+        pass
+    elif reduction == "mean":
+        out = ivy.mean(out)
+    elif reduction == "sum":
+        out = ivy.sum(out)
+    return out.astype(label.dtype)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -282,36 +362,3 @@ def triplet_margin_loss(
 
     loss = reduction(loss).astype(input.dtype)
     return loss
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def nll_loss(
-    input,
-    label,
-    weight=None,
-    ignore_index=-100,
-    reduction="mean",
-):
-    """Refer
-    https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for
-    more on NLL(Negative log likelihood) Loss."""
-    if weight is None:
-        weight = ivy.ones(ivy.shape(input[0]))
-    input = ivy.log(input)
-    loss = ivy.zeros(ivy.shape(label))
-    den = 0
-    for i in range(0, ivy.shape(loss)[0]):
-        den = den + weight[label[i]]
-        loss[i] = -weight[label[i]] * input[i][label[i]]
-    output = 0.0
-    if reduction == "sum":
-        output = ivy.sum(loss)
-        if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
-            output = output - loss[ignore_index]
-        return output
-    num = ivy.sum(loss)
-    output = num / den
-    if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
-        output = output - loss[ignore_index] / den
-    return output

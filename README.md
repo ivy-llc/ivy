@@ -94,11 +94,11 @@
 ------------------------------------------------------------------------
 
 Ivy is both an ML transpiler and a framework, currently supporting JAX,
-TensorFlow, PyTorch and Numpy.
+TensorFlow, PyTorch, and Numpy.
 
 Ivy unifies all ML frameworks 💥 enabling you not only to **write code
 that can be used with any of these frameworks as the backend**, but also
-to **convert 🔄 any function, model or library written in any of them to
+to **convert 🔄 any function, model, or library written in any of them to
 your preferred framework!**
 
 You can check out [Ivy as a transpiler](#ivy-as-a-transpiler) and [Ivy
@@ -211,7 +211,7 @@ All of the functionalities in Ivy are exposed through the
 `Ivy functional API` and the `Ivy stateful API`. All functions in the
 [Functional
 API](https://unify.ai/docs/ivy/overview/design/building_blocks.html#ivy-functional-api)
-are **Framework Agnostic Functions**, which mean that we can use them
+are **Framework Agnostic Functions**, which means that we can use them
 like this:
 
 ``` python
@@ -263,7 +263,7 @@ class Regressor(ivy.Module):
 
 If we put it all together, we\'ll have something like this. This example
 uses PyTorch as the backend, but this can easily be changed to your
-favorite framework, such as TensorFlow, or JAX.
+favorite frameworks, such as TensorFlow, or JAX.
 
 ``` python
 import ivy
@@ -322,7 +322,7 @@ The model\'s output can be visualized as follows:
    <img width="50%" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/regressor_lq.gif">
 </div>
 
-Last but not least, we are also working on specific extension totally
+Last but not least, we are also working on specific extensions totally
 written in Ivy and therefore usable within any framework, covering
 topics like [Mechanics](https://github.com/unifyai/mech), [Computer
 Vision](https://github.com/unifyai/vision),
@@ -1399,7 +1399,7 @@ out = np_loss(p, t)
 </blockquote>
 </details>
 
-<h3>I'm using Ivy&ensp;<img class="dark-light" style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/logos/ivy_logo_only.svg"></h3>
+<h3>I'm using Ivy&ensp;<img height="25px" width="25px" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/logos/ivy_logo_only.svg"></h3>
 
 Or you can use Ivy as a framework, breaking yourself (and your code)
 free from deciding which community to support, allowing anyone to run
@@ -1408,7 +1408,7 @@ your code in their framework of choice!
 ``` python
 import ivy
 
-# a simple image classification model
+# A simple image classification model
 class IvyNet(ivy.Module):
     def __init__(
         self,
@@ -1438,7 +1438,7 @@ class IvyNet(ivy.Module):
         )
 
         self.classifier = ivy.Sequential(
-            # since padding is "SAME", this would be image_height x image_width x output_channels
+            # Since the padding is "SAME", this would be image_height x image_width x output_channels
             ivy.Linear(self.h_w[0] * self.h_w[1] * self.output_channels, 512),
             ivy.GELU(),
             ivy.Linear(512, self.num_classes),
@@ -1562,7 +1562,7 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
             if device != "cpu":
                 xbatch, ybatch = xbatch.to_device("gpu:0"), ybatch.to_device("gpu:0")
 
-            # since the cross entropy function expects the target classes to be in one-hot encoded format
+            # Since the cross entropy function expects the target classes to be in one-hot encoded format
             ybatch_encoded = ivy.one_hot(ybatch, num_classes)
 
             # update model params
