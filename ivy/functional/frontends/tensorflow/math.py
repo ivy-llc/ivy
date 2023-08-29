@@ -64,20 +64,7 @@ def angle(input, name=None):
 def approx_max_k(input_tensor, k, recall_target = 0.95, 
                  reduction_dimension = -1, reduction_input_size_override = -1,
                  aggregate_to_topk = True, name = None):
-    """
-    Args:
-        input_tensor (tf.Tensor): Input tensor to select top-k elements from.
-        k (int): Number of top elements to select.
-        recall_target (float): Target recall rate.
-        reduction_dimension (int): Dimension to reduce.
-        reduction_input_size_override (int): If not -1, use this size for reduction dimension.
-        aggregate_to_topk (bool): Whether to aggregate to top-k.
-        name (str): Name for the operation.
-
-    Returns:
-        tf.Tensor: Top-k values.
-        tf.Tensor: Top-k indices.
-    """
+    
 
     original_shape = ivy.shape(input_tensor)
     rank = len(input_tensor.shape)
