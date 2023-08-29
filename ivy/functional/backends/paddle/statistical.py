@@ -7,7 +7,10 @@ from typing import Union, Optional, Sequence
 import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
@@ -134,9 +137,17 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-    # TODO:prod causes segmentation fault
-    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    x_dtype= x.dtype
+    supported_dtypes = ['int32', 'int64', 'float32', 'float64']
+    if str(x_dtype) not in supported_dtypes:
+        x = x.cast("float32")
+    dtype_ = dtype
+    if str(dtype) not in supported_dtypes:
+        dtype = None
+    ret = paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    if ret.dtype != dtype_:
+        ret = ret.cast(dtype_)
+    return ret
 
 
 def _std(x, axis, correction, keepdim):
@@ -210,8 +221,12 @@ def var(
 
 # Extra #
 # ----- #
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int16")}},
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int32", "int64", "float64", "complex128", "float32", "complex64")
+        }
+    },
     backend_version,
 )
 def cumprod(
