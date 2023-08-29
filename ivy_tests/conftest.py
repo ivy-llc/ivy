@@ -9,6 +9,10 @@ from hypothesis.database import (
     DirectoryBasedExampleDatabase,
 )
 from hypothesis.extra.redis import RedisExampleDatabase
+from ivy_tests.test_ivy.helpers.pipeline_helper import (
+    BackendHandler,
+    BackendHandlerMode,
+)
 
 
 hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
@@ -46,6 +50,10 @@ def is_db_available(master=False, credentials=None):
 
 def pytest_terminal_summary(terminalreporter):
     session = terminalreporter._session
+
+    if session.testscollected == 0:
+        return
+
     passed_ratio = 1 - (session.testsfailed / session.testscollected)
     text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
     text = text.center(terminalreporter._screen_width, "=")
@@ -76,6 +84,12 @@ def pytest_addoption(parser):
         help="ivy traceback",
     )
     parser.addoption(
+        "--reuse-only",
+        default=False,
+        action="store_true",
+        help="Only reuse stored examples from database",
+    )
+    parser.addoption(
         "-R",
         "--robust",
         action="store_true",
@@ -86,11 +100,21 @@ def pytest_addoption(parser):
             "this mode should be only used during development on the testing pipeline."
         ),
     )
+    parser.addoption(
+        "--set-backend",
+        action="store_true",
+        default=False,
+        help="Force the testing pipeline to use ivy.set_backend for backend setting",
+    )
 
 
 def pytest_configure(config):
     profile_settings = {}
     getopt = config.getoption
+
+    if getopt("--set-backend"):
+        BackendHandler._update_context(BackendHandlerMode.SetBackend)
+
     max_examples = getopt("--num-examples")
     deadline = getopt("--deadline")
     if (
@@ -126,6 +150,9 @@ def pytest_configure(config):
         profile_settings["max_examples"] = max_examples
     if deadline:
         profile_settings["deadline"] = deadline
+
+    if getopt("--reuse-only"):
+        profile_settings["phases"] = [Phase.explicit, Phase.reuse]
 
     settings.register_profile(
         "ivy_profile",

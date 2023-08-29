@@ -11,10 +11,21 @@ Devices
 .. _`ivy.dev_util`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L600
 .. _`ivy.num_cpu_cores`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L659
 .. _`ivy.default_device`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720
+.. _`ivy.set_soft_device_mode`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L292
+.. _`@handle_device_shifting`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/func_wrapper.py#L797
+.. _`ivy.functional.ivy`: https://github.com/unifyai/ivy/tree/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy
+.. _`tensorflow soft device handling function`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/backends/tensorflow/device.py#L102
+.. _`numpy soft device handling function`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/backends/numpy/device.py#L88
+.. _`ivy implementation`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L138
+.. _`tf.device`: https://www.tensorflow.org/api_docs/python/tf/device
+.. _`ivy.DefaultDevice`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L52
+.. _`__enter__`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L76
+.. _`__exit__`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L98
+.. _`ivy.unset_soft_device_mode()`: https://github.com/unifyai/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L317
+.. _`ivy.unset_default_device()`: https://github.com/unifyai/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L869
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
-.. _`devices forum`: https://discord.com/channels/799879767196958751/1028297346662015057
 
 The devices currently supported by Ivy are as follows:
 
@@ -135,11 +146,131 @@ This makes it clear that these backend-specific functions are only enterred into
 
 However, the :code:`device` argument for functions without the :code:`@infer_device` decorator is **not** handled by `infer_device`_, and so these defaults must be handled by the backend-specific implementations themselves, by calling :func:`ivy.default_device` internally.
 
+Device handling
+---------------
+
+Different frameworks handle devices differently while performing an operation. For example, torch expects
+all the tensors to be on the same device while performing an operation, or else, it throws a device exception. On the other hand, tensorflow
+doesn't care about this, it moves all the tensors to the same device before performing an operation.
+
+**Controlling Device Handling Behaviour**
+
+In Ivy, users can control the device on which the operation is to be executed using `ivy.set_soft_device_mode`_ flag. There are two cases for this, 
+either the soft device mode is set to :code:`True` or :code:`False`.
+
+**When ivy.set_soft_device_mode(True)**:
+
+a. All the input arrays are moved to :code:`ivy.default_device()` while performing an operation. If the array is already present
+in the default device, no device shifting is done.
+
+In the example below, even though the input arrays :code:`x` and :code:`y` are created on different devices('cpu' and 'gpu:0'), the arrays
+are moved to :code:`ivy.default_device()` while performing :code:`ivy.add` operation, and the output array will be on this device.
+
+.. code-block:: python
+    
+    ivy.set_backend("torch")
+    ivy.set_soft_device_mode(True)
+    x = ivy.array([1], device="cpu")
+    y = ivy.array([34], device="gpu:0")
+    ivy.add(x, y)
+
+The priority of device shifting is following in this mode:
+
+#. The ``device`` argument.
+#. device the arrays are on.
+#. :code:`default_device`
+
+
+**When ivy.set_soft_device_mode(False)**:
+
+a. If any of the input arrays are on a different device, a device exception is raised.
+
+In the example below, since the input arrays are on different devices('cpu' and 'gpu:0'), an :code:`IvyBackendException` is raised while performing :code:`ivy.add`.
+
+.. code-block:: python
+
+    ivy.set_backend("torch")
+    ivy.set_soft_device_mode(False)
+    x = ivy.array([1], device="cpu")
+    y = ivy.array([34], device="gpu:0")
+    ivy.add(x, y)
+
+This is the exception you will get while running the code above:
+
+.. code-block:: python
+
+    IvyBackendException: torch: add:   File "/content/ivy/ivy/utils/exceptions.py", line 210, in _handle_exceptions
+        return fn(*args, **kwargs)
+    File "/content/ivy/ivy/func_wrapper.py", line 1013, in _handle_nestable
+        return fn(*args, **kwargs)
+    File "/content/ivy/ivy/func_wrapper.py", line 905, in _handle_out_argument
+        return fn(*args, out=out, **kwargs)
+    File "/content/ivy/ivy/func_wrapper.py", line 441, in _inputs_to_native_arrays
+        return fn(*new_args, **new_kwargs)
+    File "/content/ivy/ivy/func_wrapper.py", line 547, in _outputs_to_ivy_arrays
+        ret = fn(*args, **kwargs)
+    File "/content/ivy/ivy/func_wrapper.py", line 358, in _handle_array_function
+        return fn(*args, **kwargs)
+    File "/content/ivy/ivy/func_wrapper.py", line 863, in _handle_device_shifting
+        raise ivy.utils.exceptions.IvyException(
+    During the handling of the above exception, another exception occurred:
+    Expected all input arrays to be on the same device, but found atleast two devices - ('cpu', 'gpu:0'), 
+    set `ivy.set_soft_device_mode(True)` to handle this problem.
+
+b. If all the input arrays are on the same device, the operation is executed without raising any device exceptions.
+
+The example below runs without issues since both the input arrays are on 'gpu:0' device:
+
+.. code-block:: python
+
+    ivy.set_backend("torch")
+    ivy.set_soft_device_mode(False)
+    x = ivy.array([1], device="gpu:0")
+    y = ivy.array([34], device="gpu:0")
+    ivy.add(x, y)
+
+The code to handle all these cases are present inside `@handle_device_shifting`_ decorator, which is wrapped around
+all the functions that accept at least one array as input(except mixed and compositional functions) in `ivy.functional.ivy`_ submodule. The decorator calls
+:code:`ivy.handle_soft_device_variable` function under the hood to handle device shifting for each backend.
+
+The priority of device shifting is following in this mode:
+
+#. The ``device`` argument.
+#. :code:`default_device`
+
+**Soft Device Handling Function**
+
+This is a function which plays a crucial role in the :code:`handle_device_shifting` decorator. The purpose of this function is to ensure that the function :code:`fn` passed to it is executed on the device passed in :code:`device_shifting_dev` argument. If it is passed as :code:`None`, then the function will be executed on the default device.
+
+Most of the backend implementations are very similar, first they move all the arrays to the desired device using :code:`ivy.nested_map` and then execute the function inside the device handling context manager from that native framework. The prupose of executing the function inside the context manager is to handle the functions that do not accept any arrays, the only way in that case to let the native framework know on which device we want the function to be executed on is through the context manager. This approach is used in most backend implementations with the exceptions being tensorflow, where we dont have to move all the tensors to the desired device because just using its context manager is enough, it moves all the tensors itself internally, and numpy, since it only accepts `cpu` as device.
+
+**Forcing Operations on User Specified Device**
+
+The `ivy.DefaultDevice`_ context manager can be used to force the operations to be performed on to a specific device. For example,
+in the code below, both :code:`x` and :code:`y` will be moved from 'gpu:0' to 'cpu' device and :code:`ivy.add` operation will be performed on 'cpu' device:
+
+.. code-block:: python
+
+    x = ivy.array([1], device="gpu:0")
+    y = ivy.array([34], device="gpu:0")
+    with ivy.DefaultDevice("cpu"):
+        z = ivy.add(x, y)
+
+On entering :code:`ivy.DefaultDevice("cpu")` context manager, under the hood, the default device is set to 'cpu' and soft device
+mode is turned on. All these happens under the `__enter__`_ method of the
+context manager. So from now on, all the operations will be executed on 'cpu' device.
+
+On exiting the context manager(`__exit__`_ method), the default device and soft device mode is reset to the previous state using `ivy.unset_default_device()`_ and
+`ivy.unset_soft_device_mode()`_ respectively, to move back to the previous state.
+
+There are some functions(mostly creation function) which accept a :code:`device` argument. This is for specifying on which device the function is executed on and the device of the returned array. :code:`handle_device_shifting` deals with this argument by first checking if it exists and then setting :code:`device_shifting_dev` to that which is then passed to the :code:`handle_soft_device_variable` function depending on the :code:`soft_device` mode.
+
+
 **Round Up**
 
 This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `devices channel`_ or in the `devices forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `devices channel`_!
 
 
 **Video**

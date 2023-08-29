@@ -25,7 +25,7 @@ The tasks currently open are:
 
 We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks channel`_!
 
-Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy-core`.
+Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy`.
 
 Function Formatting
 -------------------
@@ -37,7 +37,6 @@ The updates should be applied for the:
 
 #. ivy API
 #. all backend APIs
-#. container static methods
 #. array instance methods
 #. container instance methods
 #. array operators
@@ -59,7 +58,7 @@ However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
 #. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
-#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
+#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
 #. Correct all of the :ref:`Function Arguments` and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
 #. Add the correct :ref:`Docstrings` to every function **and** its *relevant methods*, including those you did not implement yourself.
@@ -73,7 +72,7 @@ After creating your Pull Request on github, you should then produce the checklis
 1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
    An example of this is shown below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
    :width: 420
 
 Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist.
@@ -81,18 +80,18 @@ These updates might take a few moments to take effect, so please be patient 🙂
 
 2. After adding the checklist to your PR, you should then modify this checklist with the status of each item according to the symbols(emojis) within the LEGEND section.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
    :width: 420
 
 3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for your PR and we will start checking your implementation and marking the items as complete using the checkboxes next to them.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
    :width: 420
 
 4. In case you are stuck or need help with one of the checklist items, please add the 🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating on your point of struggle with this item.
 The PR assignee will then see this comment and address your issues.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
    :width: 420
 
 **Notes**: 
@@ -143,14 +142,14 @@ There are a few other points to take note of when working on your chosen fronten
 #. You should only implement **one** frontend function.
 #. The frontend function is framework-specific, thus it should be implemented in its respective frontend framework only.
 #. Each frontend function should be tested on all backends to ensure that conversions are working correctly.
-#. Type hints, docstrings and examples are not required for frontend functions.
+#. Type hints, docstrings, and examples are not required for frontend functions.
 #. Some frontend functions shown in the ToDo list issues are aliases of other functions.
    If you detect that this is the case, then you should add all aliases in your PR, with a single implementation and then simple bindings to this implementation, such as :code:`<alias_name> = <function_name>`.
    If you notice that an alias function has already been implemented and pushed, then you can simply add this one-liner binding and get this very simple PR merged.
 
 In the case where your chosen function exists in all frameworks by default, but is not implemented in Ivy's functional API, please convert your existing GitHub issue to request for the function to be added to Ivy.
 Meanwhile, you can select another frontend function to work on from the ToDo list!
-If you're stuck on a function which requires complex compositions, you're allowed to reselect a function too!
+If you're stuck on a function that requires complex compositions, you're allowed to reselect a function too!
 
 Where to place a frontend function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -181,7 +180,7 @@ Taking :code:`numpy.inner` as an example, we can see that there are a few :code:
     ufunc
 
 There is a :code:`linalg` sub-directory, so we choose this.
-Then we need to choose from the files at this hierarchy:
+Then we need to choose from the files in this hierarchy:
 
 .. code-block:: bash
     :emphasize-lines: 3
@@ -245,33 +244,44 @@ A few points to keep in mind while doing this:
 #. Make sure all the positional arguments are positional-only and optional arguments are keyword-only.
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
-If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function 
+
+Extending the Ivy API
+~~~~~~~~~~~~~~~~~~~~~~~
+
+We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
+
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
+
+In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
+
+We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
 
 Where to place a backend function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The placement of the backend function should be in the proper location to follow the proper structure as guided below.
 
-There are multiple types of backend functions as discussed above, we will go through 3 of those which you will encounter while adding a backend function in our Funcional API:
+There are multiple types of backend functions as discussed above, we will go through 3 of those which you will encounter while adding a backend function in our Functional API:
 
 **Primary Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation
-(where ivy.current_backend(x).function_name() is called), refer the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
+(where ivy.current_backend(x).function_name() is called), refer to the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
 to get a clearer picture of how this must be done. Then, implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`,
-you can refer the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
+you can refer to the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
 
 **Compositional Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, we will not use the primary function approach in this
-case, the implementaion will be a composition of functions from Ivy's functional API. You can refer to
-`Compostional Functions Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#compositional-functions>`_ for a better understanding of this.
+case, the implementation will be a composition of functions from Ivy's functional API. You can refer to
+`Compositional Functions Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#compositional-functions>`_ for a better understanding of this.
 You don't need to add any implementation in any other file in this case.
 
 **Mixed Functions**
 
 Sometimes, a function may only be provided by some of the supported backends. In this case, we have to take a mixed approach. You can say that this is a mix of both
-primary and a compositional function. For this, you have to implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, where the implementaion
+primary and a compositional function. For this, you have to implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, where the implementation
 will be a composition of functions from Ivy's functional API. After you are done with this, you then have to implement the functions in each of the backend files
 :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`.
 
@@ -291,9 +301,9 @@ Creating an Issue on Ivy's GitHub using a Template
    * Bug Report:
       In case you find a bug in our API, you have to provide details in the form and the issue will be assigned to one of our team members to look into.
    * Feature request:
-      If you want to suggest an idea for our project, our team is always open for suggestions.
+      If you want to suggest an idea for our project, our team is always open to suggestions.
    * Missing Function Suggestion:
-      In case you find a function which the other frameworks have and is missing in our API or we have some functionality missing which the other frameworks support(superset behavior).
+      In case you find a function that the other frameworks have and is missing in our API or we have some functionality missing that the other frameworks support(superset behavior).
    * Sub-Task:
       Reserve a sub-task from a ToDo list issue.
    * Questions:

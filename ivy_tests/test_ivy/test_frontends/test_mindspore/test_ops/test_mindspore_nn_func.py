@@ -1,4 +1,8 @@
+# ToDo: Uncomment this after we sort out a way of installing mindspore
+# using pip and after added it to the development requirements.
+
 # global
+import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -6,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # softsign
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="mindspore.ops.softsign",
     dtype_and_x=helpers.dtype_and_values(

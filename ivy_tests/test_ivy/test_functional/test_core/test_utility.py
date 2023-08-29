@@ -25,7 +25,7 @@ def test_all(dtype_x_axis, keepdims, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -51,7 +51,7 @@ def test_any(dtype_x_axis, keepdims, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],

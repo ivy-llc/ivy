@@ -5,12 +5,10 @@ from typing import Dict
 
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy import DefaultDevice
 from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks  # noqa
 
-available_frameworks = available_frameworks()
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
@@ -83,7 +81,7 @@ def pytest_configure(config):
                     TEST_PARAMS_CONFIG.append(
                         (
                             device,
-                            test_globals.FWS_DICT[backend_str](),
+                            backend_str,
                             compile_graph,
                             implicit,
                         )
@@ -94,31 +92,28 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
-    ivy_test = hasattr(request.function, "_ivy_test")
-    if ivy_test:
-        try:
-            test_globals.setup_api_test(
-                backend_fw.backend,
-                (
-                    request.function.ground_truth_backend
-                    if hasattr(request.function, "ground_truth_backend")
-                    else None
-                ),
-                on_device,
-                (
-                    request.function.test_data
-                    if hasattr(request.function, "test_data")
-                    else None
-                ),
-            )
-        except Exception as e:
-            test_globals.teardown_api_test()
-            raise RuntimeError(f"Setting up test for {request.function} failed.") from e
-    with backend_fw.use:
-        with DefaultDevice(on_device):
-            yield
-    if ivy_test:
+    try:
+        test_globals.setup_api_test(
+            backend_fw,
+            (
+                request.function.ground_truth_backend
+                if hasattr(request.function, "ground_truth_backend")
+                else None
+            ),
+            on_device,
+            (
+                request.function.test_data
+                if hasattr(request.function, "test_data")
+                else None
+            ),
+        )
+
+    except Exception as e:
         test_globals.teardown_api_test()
+        raise RuntimeError(f"Setting up test for {request.function} failed.") from e
+
+    yield
+    test_globals.teardown_api_test()
 
 
 def pytest_generate_tests(metafunc):
@@ -129,7 +124,8 @@ def pytest_generate_tests(metafunc):
         test_paramters = TEST_PARAMS_CONFIG.copy()
         # Find the entries that contains the ground truth backend as it's backend
         for entry in test_paramters.copy():
-            if entry[1].backend == metafunc.function.ground_truth_backend:
+            # Entry 1 is backend_fw
+            if entry[1] == metafunc.function.ground_truth_backend:
                 test_paramters.remove(entry)
         metafunc.parametrize(
             "on_device,backend_fw,compile_graph,implicit", test_paramters
@@ -169,6 +165,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-gradient-testing"),
             getopt("--with-gradient-testing"),
         ),
+        "test_compile": (
+            getopt("--skip-compile-testing"),
+            getopt("--with-compile-testing"),
+        ),
     }
 
     # final mapping for hypothesis value generation
@@ -206,6 +206,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-nestable-testing", action="store_true")
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
+    parser.addoption("--skip-compile-testing", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -213,6 +214,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-nestable-testing", action="store_true")
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
+    parser.addoption("--with-compile-testing", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",

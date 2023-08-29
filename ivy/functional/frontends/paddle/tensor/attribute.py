@@ -6,13 +6,13 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
-def is_complex(x):
-    return ivy.is_complex_dtype(x)
+def imag(x):
+    return ivy.imag(x)
 
 
 @to_ivy_arrays_and_back
-def is_integer(x):
-    return ivy.is_int_dtype(x)
+def is_complex(x):
+    return ivy.is_complex_dtype(x)
 
 
 @to_ivy_arrays_and_back
@@ -21,10 +21,15 @@ def is_floating_point(x):
 
 
 @to_ivy_arrays_and_back
-def real(x):
-    return ivy.real(x)
+def is_integer(x):
+    return ivy.is_int_dtype(x)
 
 
 @to_ivy_arrays_and_back
-def imag(x):
-    return ivy.imag(x)
+def rank(input):
+    return ivy.get_num_dims(input)
+
+
+@to_ivy_arrays_and_back
+def real(x):
+    return ivy.real(x)

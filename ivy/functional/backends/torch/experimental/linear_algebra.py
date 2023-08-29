@@ -155,6 +155,7 @@ def adjoint(
     return torch.adjoint(x).resolve_conj()
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def multi_dot(
     x: Sequence[torch.Tensor],
     /,
@@ -189,3 +190,16 @@ def lu_factor(
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor]:
     raise IvyNotImplementedException()
+
+
+def dot(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.matmul(a, b)
+
+
+dot.support_native_out = True

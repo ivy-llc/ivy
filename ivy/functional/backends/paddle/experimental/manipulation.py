@@ -8,6 +8,7 @@ from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_supported_device_and_dtypes
 
 # Code from cephes for i0
 
@@ -93,7 +94,7 @@ def moveaxis(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -124,15 +125,13 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if copy:
-        m = m.clone()
     if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.flip(m.cast("float32"), axis=0).cast(m.dtype)
     return paddle.flip(m, axis=0)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int16", "float16")}},
+    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -161,6 +160,21 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and above": {
+            "cpu": (
+                "bool",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            ),
+            "gpu": ("float16",),
+        },
+    },
+    backend_version,
+)
 def rot90(
     m: paddle.Tensor,
     /,
@@ -170,15 +184,13 @@ def rot90(
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if copy:
-        m = m.clone()
     if (k % 4) and m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.rot90(m.cast("float32"), k=k, axes=axes).cast(m.dtype)
     return paddle.rot90(m, k=k, axes=axes)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -211,8 +223,6 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if copy:
-        m = m.clone()
     if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.flip(m.cast("float32"), axis=1).cast(m.dtype)
     return paddle.flip(m, axis=1)
@@ -268,8 +278,6 @@ def flatten(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
-    if copy:
-        x = x.clone()
     if x.ndim == 0:
         return x
 
@@ -375,7 +383,7 @@ def atleast_2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}},
+    {"2.5.1 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def atleast_3d(
@@ -400,7 +408,11 @@ def atleast_3d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8",)}},
+    {"2.5.1 and below": {"cpu": ("int8",)}},
+    backend_version,
+)
+@with_supported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int32", "int64", "float32", "float64")}},
     backend_version,
 )
 def take_along_axis(
@@ -534,7 +546,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,
@@ -597,7 +609,7 @@ def unique_consecutive(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def fill_diagonal(
     a: paddle.Tensor,
