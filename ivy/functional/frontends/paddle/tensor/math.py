@@ -487,10 +487,10 @@ def subtract(x, y, name=None):
 )
 @to_ivy_arrays_and_back
 def take(
-        x,
-        index,
-        mode="raise",
-        name=None,
+    x,
+    index,
+    mode="raise",
+    name=None,
 ):
     if mode not in ["raise", "wrap", "clip"]:
         raise ValueError(
