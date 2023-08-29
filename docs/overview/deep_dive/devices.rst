@@ -158,7 +158,7 @@ doesn't care about this, it moves all the tensors to the same device before perf
 In Ivy, users can control the device on which the operation is to be executed using `ivy.set_soft_device_mode`_ flag. There are two cases for this, 
 either the soft device mode is set to :code:`True` or :code:`False`.
 
-1. When :code:`ivy.set_soft_device_mode(True)`:
+**When ivy.set_soft_device_mode(True)**:
 
 a. All the input arrays are moved to :code:`ivy.default_device()` while performing an operation. If the array is already present
 in the default device, no device shifting is done.
@@ -174,7 +174,14 @@ are moved to :code:`ivy.default_device()` while performing :code:`ivy.add` opera
     y = ivy.array([34], device="gpu:0")
     ivy.add(x, y)
 
-2. When :code:`ivy.set_soft_device_mode(False)`:
+The priority of device shifting is following in this mode:
+
+#. The ``device`` argument.
+#. device the arrays are on.
+#. :code:`default_device`
+
+
+**When ivy.set_soft_device_mode(False)**:
 
 a. If any of the input arrays are on a different device, a device exception is raised.
 
@@ -226,18 +233,16 @@ The code to handle all these cases are present inside `@handle_device_shifting`_
 all the functions that accept at least one array as input(except mixed and compositional functions) in `ivy.functional.ivy`_ submodule. The decorator calls
 :code:`ivy.handle_soft_device_variable` function under the hood to handle device shifting for each backend.
 
+The priority of device shifting is following in this mode:
+
+#. The ``device`` argument.
+#. :code:`default_device`
+
 **Soft Device Handling Function**
 
-There is a backend specific implementation of :code:`ivy.handle_soft_device_variable` function for numpy and tensorflow. The reason being, for numpy there 
-is no need for device shifting as it only support 'cpu' device, whereas, tensorflow automatically moves the inputs to 'gpu' if one is available and there is no way to turn this
-off globally.
+This is a function which plays a crucial role in the :code:`handle_device_shifting` decorator. The purpose of this function is to ensure that the function :code:`fn` passed to it is executed on the device passed in :code:`device_shifting_dev` argument. If it is passed as :code:`None`, then the function will be executed on the default device.
 
-The `numpy soft device handling function`_ just returns the inputs of the operation as it is without making any changes.
-Whereas the `tensorflow soft device handling function`_ move the input arrays to :code:`ivy.default_device()` using 
-`tf.device`_ context manager.
-
-For the rest of the frameworks, the `ivy implementation`_ of soft device handling function is used, which loops through
-the inputs of the function and move the arrays to :code:`ivy.default_device()`, if not already on that device.
+Most of the backend implementations are very similar, first they move all the arrays to the desired device using :code:`ivy.nested_map` and then execute the function inside the device handling context manager from that native framework. The prupose of executing the function inside the context manager is to handle the functions that do not accept any arrays, the only way in that case to let the native framework know on which device we want the function to be executed on is through the context manager. This approach is used in most backend implementations with the exceptions being tensorflow, where we dont have to move all the tensors to the desired device because just using its context manager is enough, it moves all the tensors itself internally, and numpy, since it only accepts `cpu` as device.
 
 **Forcing Operations on User Specified Device**
 
@@ -257,6 +262,9 @@ context manager. So from now on, all the operations will be executed on 'cpu' de
 
 On exiting the context manager(`__exit__`_ method), the default device and soft device mode is reset to the previous state using `ivy.unset_default_device()`_ and
 `ivy.unset_soft_device_mode()`_ respectively, to move back to the previous state.
+
+There are some functions(mostly creation function) which accept a :code:`device` argument. This is for specifying on which device the function is executed on and the device of the returned array. :code:`handle_device_shifting` deals with this argument by first checking if it exists and then setting :code:`device_shifting_dev` to that which is then passed to the :code:`handle_soft_device_variable` function depending on the :code:`soft_device` mode.
+
 
 **Round Up**
 

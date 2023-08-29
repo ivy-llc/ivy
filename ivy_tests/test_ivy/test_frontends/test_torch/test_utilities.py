@@ -6,35 +6,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-@handle_frontend_test(
-    fn_tree="torch.result_type",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_torch_result_type(
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        tensor=x[0],
-        other=x[1],
-    )
-
-
 # ToDo: Fix this test after torch overide of assert is implemented
 # @handle_frontend_test(
 #     fn_tree="torch._assert",
@@ -100,4 +71,33 @@ def test_torch_bincount(
         x=x[0],
         weights=None,
         minlength=0,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.result_type",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_result_type(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        other=x[1],
     )
