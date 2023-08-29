@@ -173,3 +173,25 @@ def test_paddle_hflip(
         backend_to_test=backend_fw,
         img=x[0],
     )
+
+def test_paddle_resize(
+    *,
+    dtype_and_x,
+    size,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        img=x[0],
+        size=(size, size),
+    )
