@@ -1,69 +1,11 @@
 # local
 
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.utils.assertions import check_equal
-
-
-@to_ivy_arrays_and_back
-def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
-    input_shape = ivy.shape(x)
-    check_equal(
-        len(input_shape),
-        4,
-        message="pixel shuffle requires a 4D input, but got input size {}".format(
-            input_shape
-        ),
-    )
-
-    if not isinstance(upscale_factor, int):
-        raise ValueError("upscale factor must be int type")
-
-    if data_format not in ["NCHW", "NHWC"]:
-        raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'."
-            "But recevie Attr(data_format): {} ".format(data_format)
-        )
-
-    b = input_shape[0]
-    c = input_shape[1] if data_format == "NCHW" else input_shape[3]
-    h = input_shape[2] if data_format == "NCHW" else input_shape[1]
-    w = input_shape[3] if data_format == "NCHW" else input_shape[2]
-
-    upscale_factor_squared = upscale_factor**2
-
-    check_equal(
-        c % upscale_factor_squared,
-        0,
-        message=(
-            "pixel shuffle expects input channel to be divisible by square of upscale"
-            " factor, but got input with sizes {}, upscale factor={}, and"
-            " self.size(1)={}, is not divisible by {}".format(
-                input_shape, upscale_factor, c, upscale_factor_squared
-            )
-        ),
-        as_array=False,
-    )
-
-    oc = int(c / upscale_factor_squared)
-    oh = h * upscale_factor
-    ow = w * upscale_factor
-
-    if data_format == "NCHW":
-        input_reshaped = ivy.reshape(x, (b, oc, upscale_factor, upscale_factor, h, w))
-    else:
-        input_reshaped = ivy.reshape(x, (b, h, w, upscale_factor, upscale_factor, oc))
-
-    if data_format == "NCHW":
-        return ivy.reshape(
-            ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oc, oh, ow)
-        )
-    return ivy.reshape(
-        ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
-    )
 
 
 @to_ivy_arrays_and_back
@@ -135,3 +77,96 @@ def affine_grid(theta, out_shape, align_corners=True):
             base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
             grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
             return grid.view((N, D, H, W, 3))
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def channel_shuffle(x, groups, data_format="NCHW", name=None):
+    if len(ivy.shape(x)) != 4:
+        raise ValueError(
+            "Input x should be 4D tensor, but received x with the shape of {}".format(
+                ivy.shape(x)
+            )
+        )
+
+    if not isinstance(groups, int):
+        raise TypeError("groups must be int type")
+
+    if groups <= 0:
+        raise ValueError("groups must be positive")
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "Attr(data_format) should be 'NCHW' or 'NHWC'."
+            "But recevie Attr(data_format): {} ".format(data_format)
+        )
+
+    if data_format == "NCHW":
+        b, c, h, w = ivy.shape(x)
+        x = ivy.reshape(x, (b, groups, c // groups, h, w))
+        x = ivy.permute_dims(x, (0, 2, 1, 3, 4))
+        x = ivy.reshape(x, (b, c, h, w))
+    else:
+        b, h, w, c = ivy.shape(x)
+        x = ivy.reshape(x, (b, h, w, groups, c // groups))
+        x = ivy.permute_dims(x, (0, 1, 2, 4, 3))
+        x = ivy.reshape(x, (b, h, w, c))
+    return x
+
+
+@to_ivy_arrays_and_back
+def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
+    input_shape = ivy.shape(x)
+    check_equal(
+        len(input_shape),
+        4,
+        message="pixel shuffle requires a 4D input, but got input size {}".format(
+            input_shape
+        ),
+    )
+
+    if not isinstance(upscale_factor, int):
+        raise ValueError("upscale factor must be int type")
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "Attr(data_format) should be 'NCHW' or 'NHWC'."
+            "But recevie Attr(data_format): {} ".format(data_format)
+        )
+
+    b = input_shape[0]
+    c = input_shape[1] if data_format == "NCHW" else input_shape[3]
+    h = input_shape[2] if data_format == "NCHW" else input_shape[1]
+    w = input_shape[3] if data_format == "NCHW" else input_shape[2]
+
+    upscale_factor_squared = upscale_factor**2
+
+    check_equal(
+        c % upscale_factor_squared,
+        0,
+        message=(
+            "pixel shuffle expects input channel to be divisible by square of upscale"
+            " factor, but got input with sizes {}, upscale factor={}, and"
+            " self.size(1)={}, is not divisible by {}".format(
+                input_shape, upscale_factor, c, upscale_factor_squared
+            )
+        ),
+        as_array=False,
+    )
+
+    oc = int(c / upscale_factor_squared)
+    oh = h * upscale_factor
+    ow = w * upscale_factor
+
+    if data_format == "NCHW":
+        input_reshaped = ivy.reshape(x, (b, oc, upscale_factor, upscale_factor, h, w))
+    else:
+        input_reshaped = ivy.reshape(x, (b, h, w, upscale_factor, upscale_factor, oc))
+
+    if data_format == "NCHW":
+        return ivy.reshape(
+            ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oc, oh, ow)
+        )
+    return ivy.reshape(
+        ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
+    )

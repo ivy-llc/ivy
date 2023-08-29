@@ -4,8 +4,8 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
-def _compute_threshold(input, threshold, value):
-    return ivy.where(ivy.greater(input, threshold), input, value)
+# --- Helpers --- #
+# --------------- #
 
 
 def _compute_elu(input, alpha=1.0):
@@ -14,6 +14,22 @@ def _compute_elu(input, alpha=1.0):
         ivy.subtract(ivy.exp(input), 1),
     )
     return ivy.where(ivy.greater(input, 0), input, prod)
+
+
+def _compute_threshold(input, threshold, value):
+    return ivy.where(ivy.greater(input, threshold), input, value)
+
+
+def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False):
+    if training:
+        # alpha = ivy.random_uniform(low=lower, high=upper)
+        # ToDo implement alpha correctly after fixing ivy.random_uniform
+        pass
+    else:
+        alpha = (lower + upper) / 2
+    return ivy.subtract(
+        ivy.relu(input), ivy.multiply(alpha, ivy.relu(ivy.negative(input)))
+    )
 
 
 def _selu_with_inplace(input):
@@ -37,36 +53,32 @@ def _selu_with_inplace(input):
     return ivy.add(min_, max_)
 
 
-def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False):
-    if training:
-        # alpha = ivy.random_uniform(low=lower, high=upper)
-        # ToDo implement alpha correctly after fixing ivy.random_uniform
-        pass
-    else:
-        alpha = (lower + upper) / 2
-    return ivy.subtract(
-        ivy.relu(input), ivy.multiply(alpha, ivy.relu(ivy.negative(input)))
+# --- Main --- #
+# ------------ #
+
+
+@to_ivy_arrays_and_back
+def celu(input, alpha=1.0, inplace=False):
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(ivy.divide(input, alpha)),
+            1,
+        ),
+    )
+    return ivy.add(
+        ivy.maximum(0, input),
+        ivy.minimum(0, prod),
     )
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def sigmoid(input):
-    return ivy.sigmoid(input)
+def elu(input, alpha=1.0, inplace=False):
+    return _compute_elu(input, alpha)
 
 
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def leaky_relu(input, negative_slope=0.01, inplace=False):
-    return ivy.leaky_relu(input, alpha=negative_slope)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def softmax(input, dim=None, _stacklevel=3, dtype=None):
-    if dtype:
-        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
-    return ivy.softmax(input, axis=dim)
+def elu_(input, alpha=1.0):
+    return elu(input, alpha=alpha, inplace=True)
 
 
 @to_ivy_arrays_and_back
@@ -91,110 +103,29 @@ def gelu(input, *, approximate="none"):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def tanh(input):
-    return ivy.tanh(input)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
-def logsigmoid(input):
-    return ivy.logsigmoid(input)
+def glu(input, dim=-1):
+    a, b = ivy.split(input, num_or_size_splits=2, axis=dim)
+    return ivy.multiply(a, ivy.sigmoid(b))
 
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def softmin(input, dim=None, dtype=None):
-    if dtype:
-        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
-    return ivy.softmax(-input, axis=dim)
+def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
+    gumbels = -ivy.empty_like(logits).exponential().log()
+    gumbels = (logits + gumbels) / tau
+    y_soft = ivy.softmax(x=gumbels, axis=dim)
 
+    if hard:
+        indices = y_soft.max(axis=dim, keepdims=True)[1]
+        y_hard = ivy.zeros_like(logits)
+        updates = ivy.ones_like(indices)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
 
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def threshold(input, threshold, value, inplace=False):
-    return _compute_threshold(input, threshold, value)
+        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
+    else:
+        ret = y_soft
 
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def threshold_(input, threshold, value):
-    return threshold(input, threshold, value, inplace=True)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
-def relu6(input, inplace=False):
-    return ivy.relu6(input)
-
-
-@to_ivy_arrays_and_back
-def elu(input, alpha=1.0, inplace=False):
-    return _compute_elu(input, alpha)
-
-
-def elu_(input, alpha=1.0):
-    return elu(input, alpha=alpha, inplace=True)
-
-
-@to_ivy_arrays_and_back
-def celu(input, alpha=1.0, inplace=False):
-    prod = ivy.multiply(
-        alpha,
-        ivy.subtract(
-            ivy.exp(ivy.divide(input, alpha)),
-            1,
-        ),
-    )
-    return ivy.add(
-        ivy.maximum(0, input),
-        ivy.minimum(0, prod),
-    )
-
-
-@to_ivy_arrays_and_back
-def mish(input, inplace=False):
-    return ivy.multiply(
-        input,
-        ivy.tanh(ivy.softplus(input)),
-    )
-
-
-@to_ivy_arrays_and_back
-def relu(input, inplace=False):
-    return ivy.relu(input)
-
-
-def relu_(input):
-    return relu(input, inplace=True)
-
-
-@to_ivy_arrays_and_back
-def selu(input, inplace=False):
-    return ivy.selu(input)
-
-
-@to_ivy_arrays_and_back
-def prelu(input, weight):
-    return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
-    return _rrelu(input, lower, upper, training)
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def rrelu_(input, lower=1.0 / 8, upper=1.0 / 3, training=False):
-    return rrelu(input, lower=lower, upper=upper, training=training, inplace=True)
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -204,62 +135,14 @@ def hardshrink(input, lambd=0.5):
 
 
 @to_ivy_arrays_and_back
-def softsign(input):
-    return ivy.divide(input, ivy.add(1, ivy.abs(input)))
-
-
-@to_ivy_arrays_and_back
-def softshrink(input, lambd=0.5):
-    low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
-    up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
-    return ivy.add(low, up)
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-@to_ivy_arrays_and_back
-def silu(input, inplace=False):
-    return ivy.multiply(input, ivy.sigmoid(input))
-
-
-@to_ivy_arrays_and_back
-def glu(input, dim=-1):
-    a, b = ivy.split(input, num_or_size_splits=2, axis=dim)
-    return ivy.multiply(a, ivy.sigmoid(b))
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def log_softmax(input, dim=None, _stacklevel=3, dtype=None):
-    if dtype:
-        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
-    if dim is None:
-        dim = -1
-    return ivy.log_softmax(input, axis=dim)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def tanhshrink(input):
-    return ivy.subtract(input, ivy.tanh(input))
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def leaky_relu_(input, negative_slope=0.01):
-    ret = ivy.leaky_relu(input, alpha=negative_slope)
-    ivy.inplace_update(input, ret)
-    return input
+def hardsigmoid(input, inplace=False):
+    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
 
 
 @to_ivy_arrays_and_back
 def hardswish(input, inplace=False):
     relu6_val = ivy.relu6(ivy.add(input, 3))
     return ivy.multiply(input, ivy.divide(relu6_val, 6))
-
-
-@to_ivy_arrays_and_back
-def hardsigmoid(input, inplace=False):
-    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
 
 
 @to_ivy_arrays_and_back
@@ -275,12 +158,17 @@ def hardtanh_(input, min_val=-1.0, max_val=1.0):
 
 
 @to_ivy_arrays_and_back
-def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
-    abs_square = ivy.pow(ivy.abs(input), p)
-    sum_ = ivy.sum(abs_square, axis=dim, keepdims=True)
-    pnorm_res = ivy.pow(sum_, 1.0 / p)
-    max_ = ivy.maximum(pnorm_res, eps)
-    return ivy.divide(input, max_, out=out)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def leaky_relu(input, negative_slope=0.01, inplace=False):
+    return ivy.leaky_relu(input, alpha=negative_slope)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def leaky_relu_(input, negative_slope=0.01):
+    ret = ivy.leaky_relu(input, alpha=negative_slope)
+    ivy.inplace_update(input, ret)
+    return input
 
 
 @to_ivy_arrays_and_back
@@ -318,6 +206,16 @@ def local_response_norm(input, size, alpha=0.0001, beta=0.75, k=1.0):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def log_softmax(input, dim=None, _stacklevel=3, dtype=None):
+    if dtype:
+        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+    if dim is None:
+        dim = -1
+    return ivy.log_softmax(input, axis=dim)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
@@ -327,43 +225,15 @@ def local_response_norm(input, size, alpha=0.0001, beta=0.75, k=1.0):
     },
     "torch",
 )
-def softplus(input, beta=1, threshold=20):
-    return ivy.softplus(input, beta=beta, threshold=threshold)
+def logsigmoid(input):
+    return ivy.logsigmoid(input)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
-    gumbels = -ivy.empty_like(logits).exponential().log()
-    gumbels = (logits + gumbels) / tau
-    y_soft = ivy.softmax(x=gumbels, axis=dim)
-
-    if hard:
-        indices = y_soft.max(axis=dim, keepdims=True)[1]
-        y_hard = ivy.zeros_like(logits)
-        updates = ivy.ones_like(indices)
-        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
-
-        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
-    else:
-        ret = y_soft
-
-    return ret
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
-def scaled_dot_product_attention(
-    query, key, value, attn_mask=None, dropout_p=0.0, is_causal=False, scale=None
-):
-    return ivy.scaled_dot_product_attention(
-        query,
-        key,
-        value,
-        scale=scale,
-        mask=attn_mask,
-        dropout_p=dropout_p,
-        is_causal=is_causal,
+def mish(input, inplace=False):
+    return ivy.multiply(
+        input,
+        ivy.tanh(ivy.softplus(input)),
     )
 
 
@@ -533,3 +403,141 @@ def multi_head_attention_forward(
         return (attn_output, attn_weights)
     else:
         return (attn_output,)
+
+
+@to_ivy_arrays_and_back
+def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
+    abs_square = ivy.pow(ivy.abs(input), p)
+    sum_ = ivy.sum(abs_square, axis=dim, keepdims=True)
+    pnorm_res = ivy.pow(sum_, 1.0 / p)
+    max_ = ivy.maximum(pnorm_res, eps)
+    return ivy.divide(input, max_, out=out)
+
+
+@to_ivy_arrays_and_back
+def prelu(input, weight):
+    return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
+
+
+@to_ivy_arrays_and_back
+def relu(input, inplace=False):
+    return ivy.relu(input)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+def relu6(input, inplace=False):
+    return ivy.relu6(input)
+
+
+def relu_(input):
+    return relu(input, inplace=True)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
+    return _rrelu(input, lower, upper, training)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def rrelu_(input, lower=1.0 / 8, upper=1.0 / 3, training=False):
+    return rrelu(input, lower=lower, upper=upper, training=training, inplace=True)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def scaled_dot_product_attention(
+    query, key, value, attn_mask=None, dropout_p=0.0, is_causal=False, scale=None
+):
+    return ivy.scaled_dot_product_attention(
+        query,
+        key,
+        value,
+        scale=scale,
+        mask=attn_mask,
+        dropout_p=dropout_p,
+        is_causal=is_causal,
+    )
+
+
+@to_ivy_arrays_and_back
+def selu(input, inplace=False):
+    return ivy.selu(input)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def sigmoid(input):
+    return ivy.sigmoid(input)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def silu(input, inplace=False):
+    return ivy.multiply(input, ivy.sigmoid(input))
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def softmax(input, dim=None, _stacklevel=3, dtype=None):
+    if dtype:
+        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+    return ivy.softmax(input, axis=dim)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def softmin(input, dim=None, dtype=None):
+    if dtype:
+        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+    return ivy.softmax(-input, axis=dim)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+def softplus(input, beta=1, threshold=20):
+    return ivy.softplus(input, beta=beta, threshold=threshold)
+
+
+@to_ivy_arrays_and_back
+def softshrink(input, lambd=0.5):
+    low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
+    up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
+    return ivy.add(low, up)
+
+
+@to_ivy_arrays_and_back
+def softsign(input):
+    return ivy.divide(input, ivy.add(1, ivy.abs(input)))
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def tanh(input):
+    return ivy.tanh(input)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def tanhshrink(input):
+    return ivy.subtract(input, ivy.tanh(input))
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def threshold(input, threshold, value, inplace=False):
+    return _compute_threshold(input, threshold, value)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def threshold_(input, threshold, value):
+    return threshold(input, threshold, value, inplace=True)
