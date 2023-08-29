@@ -375,6 +375,50 @@ def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-) 
-def lstsq(A, B, rcond=None, driver=None):
-    return ivy.lstsq(A, B, rcond=rcond, driver=driver)
+)
+def lstsq(a, b, rcond=None):
+    if a.shape[0] != b.shape[0]:
+        raise ValueError("Leading dimensions of input arrays must match")
+    b_orig_ndim = b.get_num_dims()
+    if b_orig_ndim == 1:
+        b = b[:, None]
+    if a.get_num_dims() != 2:
+        raise TypeError(
+            f"{a.get_num_dims()}-dimensional array given. Array must be two-dimensional")
+    if b.get_num_dims() != 2:
+        raise TypeError(
+            f"{b.get_num_dims()}-dimensional array given. Array must be one or two-dimensional")
+    m, n = a.shape
+    dtype = a.dtype
+    if a.size == 0:
+        s = ivy.empty(0, dtype=dtype)
+        rank = ivy.array(0, dtype=int)
+        x = ivy.empty((n, *b.shape[1:]), dtype=dtype)
+    else:
+        if rcond is None:
+            rcond = ivy.finfo(dtype).eps * max(n, m)
+        else:
+            rcond = ivy.where(rcond < 0, ivy.finfo(dtype).eps, rcond)
+        u, s, vt = ivy.svd(a)
+        mask = s >= rcond * s[0]
+        rank = mask.sum()
+        safe_s = ivy.where(mask, s, 1)
+        safe_s = ivy.astype(safe_s , dtype)
+        s_inv = ivy.where(mask, 1 / safe_s, 0)[:, None]
+        uTb = ivy.matmul(u.conj().T, b)
+        x = ivy.matmul(vt.conj().T, s_inv * uTb)
+    # b_estimate = ivy.matmul(a, x)
+    # resid = ivy.norm(b - b_estimate, p=2, dim=0) ** 2
+    resid = ivy.array([])
+    resid = ivy.astype(resid, dtype)
+    s = ivy.array([])
+    s = ivy.astype(s, dtype)
+    if b_orig_ndim == 1:
+        x = x.ravel()
+    x = ivy.astype(x , dtype)
+    if dtype =="float64" or dtype=="complex64" or dtype =="complex128" :
+        rank = ivy.astype(rank , ivy.int64)
+    else :
+        rank = ivy.astype(rank, ivy.int32)
+    return x, resid, rank, s
+

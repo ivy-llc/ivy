@@ -1289,3 +1289,60 @@ def test_torch_cholesky_ex(
         input=x,
         upper=upper,
     )
+
+
+@st.composite
+def _get_dtype_and_same_dim_matrix(draw):
+    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("valid")))))
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
+    batch_shape = draw(helpers.get_shape(max_num_dims=2))
+    num_independnt_vals = int((random_size ** 2) / 2 + random_size / 2)
+    array_vals_flat = np.array(
+        draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=tuple(list(batch_shape) + [num_independnt_vals]),
+                min_value=2,
+                max_value=5,
+            )
+        )
+    )
+    array_vals = np.zeros(batch_shape + (random_size, random_size))
+    c = 0
+    for i in range(random_size):
+        for j in range(random_size):
+            if j < i:
+                continue
+            array_vals[..., i, j] = array_vals_flat[..., c]
+            array_vals[..., j, i] = array_vals_flat[..., c]
+            c += 1
+    return [input_dtype], array_vals, array_vals
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lstsq",
+    a_and_b=_get_dtype_and_same_dim_matrix(),
+)
+def test_torch_lstsq(
+    *,
+    a_and_b,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, a, b = a_and_b
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=0.1,
+        atol=1e-02,
+        a=a,
+        b=b,
+    )
+
