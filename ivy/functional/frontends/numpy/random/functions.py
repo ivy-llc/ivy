@@ -119,42 +119,6 @@ def multinomial(n, pvals, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def permutation(x, /):
-    if isinstance(x, int):
-        x = ivy.arange(x)
-    return ivy.shuffle(x)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def shuffle(x, axis=0, /):
-    if isinstance(x, int):
-        x = ivy.arange(x)
-    return ivy.shuffle(x, axis)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def standard_normal(size=None):
-    return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def standard_gamma(shape, size=None):
-    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def standard_t(df, size=None):
-    numerator = ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
-    denominator = ivy.gamma(df / 2, 1.0, shape=size, dtype="float64")
-    return ivy.sqrt(df / 2) * ivy.divide(numerator, ivy.sqrt(denominator))
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def negative_binomial(n, p, size=None):
     if p <= 0 or p >= 1:
         raise ValueError("p must be in the interval (0, 1)")
@@ -186,6 +150,14 @@ def pareto(a, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def permutation(x, /):
+    if isinstance(x, int):
+        x = ivy.arange(x)
+    return ivy.shuffle(x)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def poisson(lam=1.0, size=None):
     return ivy.poisson(lam=lam, shape=size)
 
@@ -207,9 +179,37 @@ def rayleigh(scale, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def shuffle(x, axis=0, /):
+    if isinstance(x, int):
+        x = ivy.arange(x)
+    return ivy.shuffle(x, axis)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def standard_cauchy(size=None):
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.tan(ivy.pi * (u - 0.5))
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_normal(size=None):
+    return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_t(df, size=None):
+    numerator = ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
+    denominator = ivy.gamma(df / 2, 1.0, shape=size, dtype="float64")
+    return ivy.sqrt(df / 2) * ivy.divide(numerator, ivy.sqrt(denominator))
 
 
 @to_ivy_arrays_and_back
