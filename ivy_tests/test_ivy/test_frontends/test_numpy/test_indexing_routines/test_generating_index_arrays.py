@@ -7,8 +7,35 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# --- Helpers --- #
-# --------------- #
+@handle_frontend_test(
+    fn_tree="numpy.indices",
+    dimensions=helpers.get_shape(min_num_dims=1),
+    dtype=helpers.get_dtypes(kind="float", full=False),
+    sparse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_numpy_indices(
+    *,
+    dimensions,
+    dtype,
+    sparse,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dimensions=dimensions,
+        dtype=dtype[0],
+        sparse=sparse,
+    )
 
 
 # unravel_index
@@ -30,6 +57,34 @@ def max_value_as_shape_prod(draw):
         )
     )
     return dtype_and_x, shape
+
+
+@handle_frontend_test(
+    fn_tree="numpy.unravel_index",
+    dtype_x_shape=max_value_as_shape_prod(),
+    test_with_out=st.just(False),
+)
+def test_numpy_unravel_index(
+    *,
+    dtype_x_shape,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype_and_x, shape = dtype_x_shape
+    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        indices=x[0],
+        shape=shape,
+    )
 
 
 @handle_frontend_test(
@@ -62,37 +117,6 @@ def test_numpy_diag_indices(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.indices",
-    dimensions=helpers.get_shape(min_num_dims=1),
-    dtype=helpers.get_dtypes(kind="float", full=False),
-    sparse=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_numpy_indices(
-    *,
-    dimensions,
-    dtype,
-    sparse,
-    test_flags,
-    frontend,
-    backend_fw,
-    fn_tree,
-    on_device,
-):
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        dimensions=dimensions,
-        dtype=dtype[0],
-        sparse=sparse,
-    )
-
-
-@handle_frontend_test(
     fn_tree="numpy.tril_indices",
     n=helpers.ints(min_value=1, max_value=10),
     m=helpers.ints(min_value=1, max_value=10),
@@ -120,32 +144,4 @@ def test_numpy_tril_indices(
         n=n,
         k=k,
         m=m,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.unravel_index",
-    dtype_x_shape=max_value_as_shape_prod(),
-    test_with_out=st.just(False),
-)
-def test_numpy_unravel_index(
-    *,
-    dtype_x_shape,
-    test_flags,
-    frontend,
-    backend_fw,
-    fn_tree,
-    on_device,
-):
-    dtype_and_x, shape = dtype_x_shape
-    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        indices=x[0],
-        shape=shape,
     )

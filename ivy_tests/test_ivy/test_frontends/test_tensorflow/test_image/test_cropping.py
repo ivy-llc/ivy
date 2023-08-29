@@ -9,10 +9,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
 )
 
 
-# --- Helpers --- #
-# --------------- #
-
-
 @st.composite
 def _extract_patches_helper(draw):
     sizes = [
@@ -50,10 +46,6 @@ def _extract_patches_helper(draw):
     ]
     padding = draw(st.sampled_from(["VALID", "SAME"]))
     return dtype_x, sizes, strides, rates, padding
-
-
-# --- Main --- #
-# ------------ #
 
 
 # extract_patches
