@@ -2162,6 +2162,7 @@ def test_torch_tensor_log_(
         on_device=on_device,
     )
 
+
 # log2_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2196,7 +2197,6 @@ def test_torch_tensor_log2_(
         frontend=frontend,
         on_device=on_device,
     )
-
 
 
 # log2
