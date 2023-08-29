@@ -988,7 +988,7 @@ def _handle_reduction_op(reduction, arr, indices, values):
     elif reduction in ["add", "sum"]:
         arr[indices] += values
     elif reduction == "mean":
-        arr[indices] = (arr[indices] + values) // 2
+        arr[indices] = (arr[indices] + values) / 2
     elif reduction == "amax":
         arr[indices] = ivy.maximum(values, arr[indices])
     elif reduction == "amin":

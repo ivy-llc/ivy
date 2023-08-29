@@ -1,59 +1,14 @@
 # Testing Function
 # global
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as nph
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
-
-# --- Helpers --- #
-# --------------- #
-
-
-@st.composite
-def put_along_axis_helper(draw):
-    input_dtype, x, axis, shape = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=["float32", "float64", "int32", "int64"],
-            min_num_dims=2,
-            max_num_dims=3,
-            min_dim_size=2,
-            max_dim_size=5,
-            min_value=-1e2,
-            max_value=1e2,
-            valid_axis=True,
-            force_int_axis=True,
-            ret_shape=True,
-            min_axis=0,
-        )
-    )
-
-    x = x[0] if isinstance(x, list) else x
-    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
-
-    # TODO: helpers.dtype_and_values draws
-    #  unwantend axis values
-    if axis < 0:
-        axis = 0
-
-    idx_shape = list(shape)
-    idx_shape[axis] = 1
-
-    idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
-    )
-    indices = draw(idx_strategy)
-
-    values_strategy = nph.arrays(
-        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e3)
-    )
-    values = draw(values_strategy)
-
-    return input_dtype, x, indices, values, axis
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
+    put_along_axis_helper,
+)
 
 
 @handle_frontend_test(
