@@ -181,3 +181,38 @@ def test_paddle_vflip(
         img=x[0],
         backend_to_test=backend_fw,
     )
+
+
+# center_crop
+@handle_frontend_test(
+    fn_tree="paddle.vision.transforms.center_crop",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
+    output_size=helpers.ints(min_value=1, max_value=100),
+)
+def test_paddle_center_crop(
+    *,
+    dtype_and_x,
+    output_size,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        img=x[0],
+        output_size=output_size,
+        backend_to_test=backend_fw,
+    )
