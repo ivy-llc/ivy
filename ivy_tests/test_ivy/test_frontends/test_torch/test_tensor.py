@@ -44,7 +44,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
     _statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor_functions import (
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
     put_along_axis_helper,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
