@@ -1492,7 +1492,7 @@ def test_torch_multi_head_attention_forward(
 
 
 @st.composite
-def x_and_scaled_attention(draw, dtypes):
+def _x_and_scaled_attention(draw, dtypes):
     dtype = draw(dtypes)
     num_queries = draw(helpers.ints(min_value=2, max_value=4))
     num_keys = draw(helpers.ints(min_value=2, max_value=4))
@@ -1549,7 +1549,7 @@ def x_and_scaled_attention(draw, dtypes):
 # scaled_dot_product_attention
 @handle_frontend_test(
     fn_tree="torch.nn.functional.scaled_dot_product_attention",
-    dtype_q_k_v_mask=x_and_scaled_attention(
+    dtype_q_k_v_mask=_x_and_scaled_attention(
         dtypes=helpers.get_dtypes("float"),
     ),
     dropout_p=st.floats(min_value=0, max_value=0.99),
