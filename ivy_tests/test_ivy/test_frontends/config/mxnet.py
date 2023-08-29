@@ -2,10 +2,6 @@ from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 import mxnet as mx
 
 
-def get_config():
-    return MXNetFrontendConfig()
-
-
 class MXNetFrontendConfig(FrontendConfig):
     Dtype = mx.numpy.dtype
     Device = mx.Context
@@ -124,3 +120,7 @@ class MXNetFrontendConfig(FrontendConfig):
 
     def isscalar(self, x):
         return x.ndim == 0
+
+
+def get_config():
+    return MXNetFrontendConfig()

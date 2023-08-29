@@ -4,11 +4,6 @@ import ivy
 import importlib
 
 
-class BackendHandlerMode(Enum):
-    WithBackend = 0
-    SetBackend = 1
-
-
 class WithBackendContext:
     def __init__(self, backend) -> None:
         self.backend = backend
@@ -38,6 +33,11 @@ class BackendHandler:
     @classmethod
     def update_backend(cls, backend):
         return cls._context(backend)
+
+
+class BackendHandlerMode(Enum):
+    WithBackend = 0
+    SetBackend = 1
 
 
 def get_frontend_config(frontend: str):

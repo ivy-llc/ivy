@@ -84,6 +84,146 @@ def assert_same_type_and_shape(values, this_key_chain=None):
             ), "returned dtype = {}, ground-truth returned dtype = {}".format(x_d, y_d)
 
 
+def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
+    """
+    Check whether a function does not support a given device.
+
+    Parameters
+    ----------
+    fn
+        The function to check.
+    input_device
+        The backend device.
+    all_as_kwargs_np
+        All arguments in Numpy Format, to check for the presence of dtype argument.
+
+    Returns
+    -------
+    True if the function does not support the given device, False otherwise.
+    """
+    test_unsupported = False
+    unsupported_devices_fn = ivy.function_unsupported_devices(fn)
+    supported_devices_fn = ivy.function_supported_devices(fn)
+    if unsupported_devices_fn:
+        if input_device in unsupported_devices_fn:
+            test_unsupported = True
+        if (
+            "device" in all_as_kwargs_np
+            and all_as_kwargs_np["device"] in unsupported_devices_fn
+        ):
+            test_unsupported = True
+    if supported_devices_fn and not test_unsupported:
+        if input_device not in supported_devices_fn:
+            test_unsupported = True
+        if (
+            "device" in all_as_kwargs_np
+            and all_as_kwargs_np["device"] not in supported_devices_fn
+        ):
+            test_unsupported = True
+    return test_unsupported
+
+
+def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
+    """
+    Check whether a function does not support a given device or data types.
+
+    Parameters
+    ----------
+    fn
+        The function to check.
+    device
+        The backend device to check.
+    input_dtypes
+        data-types of the input arguments and keyword-arguments.
+    all_as_kwargs_np
+        All arguments in Numpy Format, to check for the presence of dtype argument.
+
+    Returns
+    -------
+    True if the function does not support both the device and any data type, False
+    otherwise.
+    """
+    unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
+
+    if device in unsupported_devices_dtypes_fn:
+        for d in input_dtypes:
+            if d in unsupported_devices_dtypes_fn[device]:
+                return True
+
+    if "device" in all_as_kwargs_np and "dtype" in all_as_kwargs_np:
+        dev = all_as_kwargs_np["device"]
+        dtype = all_as_kwargs_np["dtype"]
+        if dtype in unsupported_devices_dtypes_fn.get(dev, []):
+            return True
+
+    return False
+
+
+def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
+    """
+    Check whether a function does not support the input data types or the output data
+    type.
+
+    Parameters
+    ----------
+    fn
+        The function to check.
+    input_dtypes
+        data-types of the input arguments and keyword-arguments.
+    all_as_kwargs_np
+        All arguments in Numpy Format, to check for the presence of dtype argument.
+
+    Returns
+    -------
+    True if the function does not support the given input or output data types, False
+    otherwise.
+    """
+    test_unsupported = False
+    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
+    supported_dtypes_fn = ivy.function_supported_dtypes(fn)
+    if unsupported_dtypes_fn:
+        for d in input_dtypes:
+            if d in unsupported_dtypes_fn:
+                test_unsupported = True
+                break
+        if (
+            "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] in unsupported_dtypes_fn
+        ):
+            test_unsupported = True
+    if supported_dtypes_fn and not test_unsupported:
+        for d in input_dtypes:
+            if d not in supported_dtypes_fn:
+                test_unsupported = True
+                break
+        if (
+            "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] not in supported_dtypes_fn
+        ):
+            test_unsupported = True
+    return test_unsupported
+
+
+def test_unsupported_function(*, fn, args, kwargs):
+    """
+    Test a function with an unsupported datatype to raise an exception.
+
+    Parameters
+    ----------
+    fn
+        callable function to test.
+    args
+        arguments to the function.
+    kwargs
+        keyword-arguments to the function.
+    """
+    try:
+        fn(*args, **kwargs)
+        assert False
+    except:  # noqa
+        return
+
+
 def value_test(
     *,
     ret_np_flat,
@@ -174,143 +314,3 @@ def value_test(
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
             )
-
-
-def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
-    """
-    Check whether a function does not support the input data types or the output data
-    type.
-
-    Parameters
-    ----------
-    fn
-        The function to check.
-    input_dtypes
-        data-types of the input arguments and keyword-arguments.
-    all_as_kwargs_np
-        All arguments in Numpy Format, to check for the presence of dtype argument.
-
-    Returns
-    -------
-    True if the function does not support the given input or output data types, False
-    otherwise.
-    """
-    test_unsupported = False
-    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
-    supported_dtypes_fn = ivy.function_supported_dtypes(fn)
-    if unsupported_dtypes_fn:
-        for d in input_dtypes:
-            if d in unsupported_dtypes_fn:
-                test_unsupported = True
-                break
-        if (
-            "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["dtype"] in unsupported_dtypes_fn
-        ):
-            test_unsupported = True
-    if supported_dtypes_fn and not test_unsupported:
-        for d in input_dtypes:
-            if d not in supported_dtypes_fn:
-                test_unsupported = True
-                break
-        if (
-            "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["dtype"] not in supported_dtypes_fn
-        ):
-            test_unsupported = True
-    return test_unsupported
-
-
-def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
-    """
-    Check whether a function does not support a given device.
-
-    Parameters
-    ----------
-    fn
-        The function to check.
-    input_device
-        The backend device.
-    all_as_kwargs_np
-        All arguments in Numpy Format, to check for the presence of dtype argument.
-
-    Returns
-    -------
-    True if the function does not support the given device, False otherwise.
-    """
-    test_unsupported = False
-    unsupported_devices_fn = ivy.function_unsupported_devices(fn)
-    supported_devices_fn = ivy.function_supported_devices(fn)
-    if unsupported_devices_fn:
-        if input_device in unsupported_devices_fn:
-            test_unsupported = True
-        if (
-            "device" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] in unsupported_devices_fn
-        ):
-            test_unsupported = True
-    if supported_devices_fn and not test_unsupported:
-        if input_device not in supported_devices_fn:
-            test_unsupported = True
-        if (
-            "device" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] not in supported_devices_fn
-        ):
-            test_unsupported = True
-    return test_unsupported
-
-
-def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
-    """
-    Check whether a function does not support a given device or data types.
-
-    Parameters
-    ----------
-    fn
-        The function to check.
-    device
-        The backend device to check.
-    input_dtypes
-        data-types of the input arguments and keyword-arguments.
-    all_as_kwargs_np
-        All arguments in Numpy Format, to check for the presence of dtype argument.
-
-    Returns
-    -------
-    True if the function does not support both the device and any data type, False
-    otherwise.
-    """
-    unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
-
-    if device in unsupported_devices_dtypes_fn:
-        for d in input_dtypes:
-            if d in unsupported_devices_dtypes_fn[device]:
-                return True
-
-    if "device" in all_as_kwargs_np and "dtype" in all_as_kwargs_np:
-        dev = all_as_kwargs_np["device"]
-        dtype = all_as_kwargs_np["dtype"]
-        if dtype in unsupported_devices_dtypes_fn.get(dev, []):
-            return True
-
-    return False
-
-
-def test_unsupported_function(*, fn, args, kwargs):
-    """
-    Test a function with an unsupported datatype to raise an exception.
-
-    Parameters
-    ----------
-    fn
-        callable function to test.
-    args
-        arguments to the function.
-    kwargs
-        keyword-arguments to the function.
-    """
-    try:
-        fn(*args, **kwargs)
-        assert False
-    except:  # noqa
-        return

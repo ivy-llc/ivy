@@ -48,116 +48,8 @@ cmd_line_args_lists = (
 )
 
 
-@st.composite
-def num_positional_args_method(draw, *, method):
-    """
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given method can take.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    method
-        callable method
-
-    Returns
-    -------
-    A strategy that can be used in the @given hypothesis decorator.
-    """
-    total, num_positional_only, num_keyword_only = (0, 0, 0)
-    for param in inspect.signature(method).parameters.values():
-        if param.name == "self":
-            continue
-        total += 1
-        if param.kind == param.POSITIONAL_ONLY:
-            num_positional_only += 1
-        elif param.kind == param.KEYWORD_ONLY:
-            num_keyword_only += 1
-        elif param.kind == param.VAR_KEYWORD:
-            num_keyword_only += 1
-    return draw(
-        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
-    )
-
-
-@st.composite
-def num_positional_args(draw, *, fn_name: str = None):
-    """
-    Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given function can take.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a
-        given data-set (ex. list).
-    fn_name
-        name of the function.
-
-    Returns
-    -------
-    A strategy that can be used in the @given hypothesis decorator.
-
-    Examples
-    --------
-    @given(
-        num_positional_args=num_positional_args(fn_name="floor_divide")
-    )
-    @given(
-        num_positional_args=num_positional_args(fn_name="add")
-    )
-    """
-    num_positional_only = 0
-    num_keyword_only = 0
-    total = 0
-    fn = None
-    with BackendHandler.update_backend(t_globals.CURRENT_BACKEND) as ivy_backend:
-        ivy_backend.utils.dynamic_import.import_module(fn_name.rpartition(".")[0])
-        for i, fn_name_key in enumerate(fn_name.split(".")):
-            if i == 0:
-                fn = ivy_backend.__dict__[fn_name_key]
-            else:
-                fn = fn.__dict__[fn_name_key]
-    for param in inspect.signature(fn).parameters.values():
-        if param.name == "self":
-            continue
-        total += 1
-        if param.kind == param.POSITIONAL_ONLY:
-            num_positional_only += 1
-        elif param.kind == param.KEYWORD_ONLY:
-            num_keyword_only += 1
-        elif param.kind == param.VAR_KEYWORD:
-            num_keyword_only += 1
-    return draw(
-        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
-    )
-
-
-# Decorators helpers
-
-
-def _import_fn(fn_tree: str):
-    """
-    Import a function from function tree string.
-
-    Parameters
-    ----------
-    fn_tree
-        Full function tree without "ivy" root
-        example: "functional.backends.jax.creation.arange".
-
-    Returns
-    -------
-    Returns fn_name, imported module, callable function
-    """
-    split_index = fn_tree.rfind(".")
-    fn_name = fn_tree[split_index + 1 :]
-    module_to_import = fn_tree[:split_index]
-    mod = importlib.import_module(module_to_import)
-    callable_fn = mod.__dict__[fn_name]
-    return callable_fn, fn_name, module_to_import
+# --- Helpers --- #
+# --------------- #
 
 
 def _get_method_supported_devices_dtypes(
@@ -267,6 +159,42 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     return supported_device_dtypes
 
 
+# Decorators helpers
+
+
+def _import_fn(fn_tree: str):
+    """
+    Import a function from function tree string.
+
+    Parameters
+    ----------
+    fn_tree
+        Full function tree without "ivy" root
+        example: "functional.backends.jax.creation.arange".
+
+    Returns
+    -------
+    Returns fn_name, imported module, callable function
+    """
+    split_index = fn_tree.rfind(".")
+    fn_name = fn_tree[split_index + 1 :]
+    module_to_import = fn_tree[:split_index]
+    mod = importlib.import_module(module_to_import)
+    callable_fn = mod.__dict__[fn_name]
+    return callable_fn, fn_name, module_to_import
+
+
+def _import_method(method_tree: str):
+    split_index = method_tree.rfind(".")
+    class_tree, method_name = method_tree[:split_index], method_tree[split_index + 1 :]
+    split_index = class_tree.rfind(".")
+    mod_to_import, class_name = class_tree[:split_index], class_tree[split_index + 1 :]
+    _mod = importlib.import_module(mod_to_import)
+    _class = _mod.__getattribute__(class_name)
+    _method = getattr(_class, method_name)
+    return _method, method_name, _class, class_name, _mod
+
+
 def _partition_dtypes_into_kinds(framework: str, dtypes):
     partitioned_dtypes = {}
     for kind in _dtype_kind_keys:
@@ -276,110 +204,200 @@ def _partition_dtypes_into_kinds(framework: str, dtypes):
     return partitioned_dtypes
 
 
-# Decorators
-
-
-def handle_test(
-    *,
-    fn_tree: str = None,
-    ground_truth_backend: str = "tensorflow",
-    number_positional_args=None,
-    test_instance_method=BuiltInstanceStrategy,
-    test_with_out=BuiltWithOutStrategy,
-    test_gradients=BuiltGradientStrategy,
-    test_compile=BuiltCompileStrategy,
-    precision_mode=BuiltPrecisionModeStrategy,
-    as_variable_flags=BuiltAsVariableStrategy,
-    native_array_flags=BuiltNativeArrayStrategy,
-    container_flags=BuiltContainerStrategy,
-    **_given_kwargs,
-):
+@st.composite
+def num_positional_args(draw, *, fn_name: str = None):
     """
-    Test wrapper for Ivy functions.
-
-    The wrapper sets the required test globals and creates test flags strategies.
+    Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given function can take.
 
     Parameters
     ----------
-    fn_tree
-        Full function import path
+    draw
+        special function that draws data randomly (but is reproducible) from a
+        given data-set (ex. list).
+    fn_name
+        name of the function.
 
-    ground_truth_backend
-        The framework to assert test results are equal to
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
 
-    number_positional_args
-        A search strategy for determining the number of positional arguments to be
-        passed to the function
-
-    test_instance_method
-        A search strategy that generates a boolean to test instance methods
-
-    test_with_out
-        A search strategy that generates a boolean to test the function with an `out`
-        parameter
-
-    test_gradients
-        A search strategy that generates a boolean to test the function with arrays as
-        gradients
-
-    test_compile
-        A search strategy that generates a boolean to graph compile and test the
-        function
-
-    precision_mode
-        A search strategy that generates a boolean to switch between two different
-        precision modes supported by numpy and (torch, jax) and test the function
-
-    as_variable_flags
-        A search strategy that generates a list of boolean flags for array inputs to be
-        passed as a Variable array
-
-    native_array_flags
-        A search strategy that generates a list of boolean flags for array inputs to be
-        passed as a native array
-
-    container_flags
-        A search strategy that generates a list of boolean flags for array inputs to be
-        passed as a Container
+    Examples
+    --------
+    @given(
+        num_positional_args=num_positional_args(fn_name="floor_divide")
+    )
+    @given(
+        num_positional_args=num_positional_args(fn_name="add")
+    )
     """
-    is_fn_tree_provided = fn_tree is not None
-    if is_fn_tree_provided:
-        fn_tree = "ivy." + fn_tree
+    num_positional_only = 0
+    num_keyword_only = 0
+    total = 0
+    fn = None
+    with BackendHandler.update_backend(t_globals.CURRENT_BACKEND) as ivy_backend:
+        ivy_backend.utils.dynamic_import.import_module(fn_name.rpartition(".")[0])
+        for i, fn_name_key in enumerate(fn_name.split(".")):
+            if i == 0:
+                fn = ivy_backend.__dict__[fn_name_key]
+            else:
+                fn = fn.__dict__[fn_name_key]
+    for param in inspect.signature(fn).parameters.values():
+        if param.name == "self":
+            continue
+        total += 1
+        if param.kind == param.POSITIONAL_ONLY:
+            num_positional_only += 1
+        elif param.kind == param.KEYWORD_ONLY:
+            num_keyword_only += 1
+        elif param.kind == param.VAR_KEYWORD:
+            num_keyword_only += 1
+    return draw(
+        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
+    )
+
+
+@st.composite
+def num_positional_args_method(draw, *, method):
+    """
+    Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given method can take.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    method
+        callable method
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+    """
+    total, num_positional_only, num_keyword_only = (0, 0, 0)
+    for param in inspect.signature(method).parameters.values():
+        if param.name == "self":
+            continue
+        total += 1
+        if param.kind == param.POSITIONAL_ONLY:
+            num_positional_only += 1
+        elif param.kind == param.KEYWORD_ONLY:
+            num_keyword_only += 1
+        elif param.kind == param.VAR_KEYWORD:
+            num_keyword_only += 1
+    return draw(
+        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
+    )
+
+
+@st.composite
+def seed(draw):
+    return draw(st.integers(min_value=0, max_value=2**8 - 1))
+
+
+# --- Main --- #
+# ------------ #
+
+
+def handle_frontend_method(
+    *,
+    class_tree: str,
+    init_tree: str,
+    method_name: str,
+    init_num_positional_args=None,
+    init_native_arrays=BuiltNativeArrayStrategy,
+    init_as_variable_flags=BuiltAsVariableStrategy,
+    test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
+    method_num_positional_args=None,
+    method_native_arrays=BuiltNativeArrayStrategy,
+    method_as_variable_flags=BuiltAsVariableStrategy,
+    **_given_kwargs,
+):
+    """
+    Test wrapper for Ivy frontends methods.
+
+    The wrapper sets the required test globals and creates
+    test flags strategies.
+
+    Parameters
+    ----------
+    class_tree
+        Full class import path
+
+    init_tree
+        Full import path for the function used to create the class
+
+    method_name
+        Name of the method
+    """
+    split_index = init_tree.rfind(".")
+    framework_init_module = init_tree[:split_index]
+    ivy_init_module = f"ivy.functional.frontends.{init_tree[:split_index]}"
+    init_name = init_tree[split_index + 1 :]
+    init_tree = f"ivy.functional.frontends.{init_tree}"
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    possible_arguments = {}
-    if is_hypothesis_test and is_fn_tree_provided:
-        # Use the default strategy
-        if number_positional_args is None:
-            number_positional_args = num_positional_args(fn_name=fn_tree)
-        # Generate the test flags strategy
-        possible_arguments["test_flags"] = pf.function_flags(
-            ground_truth_backend=st.just(ground_truth_backend),
-            num_positional_args=number_positional_args,
-            instance_method=test_instance_method,
-            with_out=test_with_out,
-            test_gradients=test_gradients,
-            test_compile=test_compile,
-            as_variable=as_variable_flags,
-            native_arrays=native_array_flags,
-            container_flags=container_flags,
-            precision_mode=precision_mode,
-        )
+    split_index = class_tree.rfind(".")
+    class_module_path, class_name = (
+        class_tree[:split_index],
+        class_tree[split_index + 1 :],
+    )
+    class_module = importlib.import_module(class_module_path)
+    method_class = getattr(class_module, class_name)
+
+    if is_hypothesis_test:
+        callable_method = getattr(method_class, method_name)
+        if init_num_positional_args is None:
+            init_num_positional_args = num_positional_args(fn_name=init_tree)
+
+        if method_num_positional_args is None:
+            method_num_positional_args = num_positional_args_method(
+                method=callable_method
+            )
 
     def test_wrapper(test_fn):
-        if is_fn_tree_provided:
-            callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-            supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
-            possible_arguments["fn_name"] = st.just(fn_name)
+        supported_device_dtypes = _get_method_supported_devices_dtypes(
+            method_name, class_module, class_name
+        )
 
-        # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            # Check if these arguments are being asked for
+            init_flags = pf.frontend_method_flags(
+                num_positional_args=init_num_positional_args,
+                as_variable=init_as_variable_flags,
+                native_arrays=init_native_arrays,
+                test_compile=test_compile,
+                precision_mode=precision_mode,
+            )
+
+            method_flags = pf.frontend_method_flags(
+                num_positional_args=method_num_positional_args,
+                as_variable=method_as_variable_flags,
+                native_arrays=method_native_arrays,
+                test_compile=test_compile,
+                precision_mode=precision_mode,
+            )
+            ivy_init_modules = str(ivy_init_module)
+            framework_init_modules = str(framework_init_module)
+            frontend_helper_data = FrontendMethodData(
+                ivy_init_module=ivy_init_modules,
+                framework_init_module=framework_init_modules,
+                init_name=init_name,
+                method_name=method_name,
+            )
+
+            possible_arguments = {
+                "init_flags": init_flags,
+                "method_flags": method_flags,
+                "frontend_method_data": st.just(frontend_helper_data),
+            }
+
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
+                # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
-            # Wrap the test with the @given decorator
 
             hypothesis_test_fn = given(**_given_kwargs)(test_fn)
 
@@ -398,16 +416,13 @@ def handle_test(
         else:
             wrapped_test = test_fn
 
-        # Set the test data to be used by test helpers
-        if is_fn_tree_provided:
-            wrapped_test.test_data = TestData(
-                test_fn=wrapped_test,
-                fn_tree=fn_tree,
-                fn_name=fn_name,
-                supported_device_dtypes=supported_device_dtypes,
-            )
-        wrapped_test._ivy_test = True
-        wrapped_test.ground_truth_backend = ground_truth_backend
+        wrapped_test.test_data = TestData(
+            test_fn=wrapped_test,
+            fn_tree=f"{init_tree}.{method_name}",
+            fn_name=method_name,
+            supported_device_dtypes=supported_device_dtypes,
+            is_method=[method_name, class_tree, split_index],
+        )
 
         return wrapped_test
 
@@ -546,17 +561,6 @@ def handle_frontend_test(
     return test_wrapper
 
 
-def _import_method(method_tree: str):
-    split_index = method_tree.rfind(".")
-    class_tree, method_name = method_tree[:split_index], method_tree[split_index + 1 :]
-    split_index = class_tree.rfind(".")
-    mod_to_import, class_name = class_tree[:split_index], class_tree[split_index + 1 :]
-    _mod = importlib.import_module(mod_to_import)
-    _class = _mod.__getattribute__(class_name)
-    _method = getattr(_class, method_name)
-    return _method, method_name, _class, class_name, _mod
-
-
 def handle_method(
     *,
     init_tree: str = "",
@@ -676,104 +680,110 @@ def handle_method(
     return test_wrapper
 
 
-def handle_frontend_method(
+# Decorators
+
+
+def handle_test(
     *,
-    class_tree: str,
-    init_tree: str,
-    method_name: str,
-    init_num_positional_args=None,
-    init_native_arrays=BuiltNativeArrayStrategy,
-    init_as_variable_flags=BuiltAsVariableStrategy,
+    fn_tree: str = None,
+    ground_truth_backend: str = "tensorflow",
+    number_positional_args=None,
+    test_instance_method=BuiltInstanceStrategy,
+    test_with_out=BuiltWithOutStrategy,
+    test_gradients=BuiltGradientStrategy,
     test_compile=BuiltCompileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
-    method_num_positional_args=None,
-    method_native_arrays=BuiltNativeArrayStrategy,
-    method_as_variable_flags=BuiltAsVariableStrategy,
+    as_variable_flags=BuiltAsVariableStrategy,
+    native_array_flags=BuiltNativeArrayStrategy,
+    container_flags=BuiltContainerStrategy,
     **_given_kwargs,
 ):
     """
-    Test wrapper for Ivy frontends methods.
+    Test wrapper for Ivy functions.
 
-    The wrapper sets the required test globals and creates
-    test flags strategies.
+    The wrapper sets the required test globals and creates test flags strategies.
 
     Parameters
     ----------
-    class_tree
-        Full class import path
+    fn_tree
+        Full function import path
 
-    init_tree
-        Full import path for the function used to create the class
+    ground_truth_backend
+        The framework to assert test results are equal to
 
-    method_name
-        Name of the method
+    number_positional_args
+        A search strategy for determining the number of positional arguments to be
+        passed to the function
+
+    test_instance_method
+        A search strategy that generates a boolean to test instance methods
+
+    test_with_out
+        A search strategy that generates a boolean to test the function with an `out`
+        parameter
+
+    test_gradients
+        A search strategy that generates a boolean to test the function with arrays as
+        gradients
+
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
+    precision_mode
+        A search strategy that generates a boolean to switch between two different
+        precision modes supported by numpy and (torch, jax) and test the function
+
+    as_variable_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a Variable array
+
+    native_array_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a native array
+
+    container_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a Container
     """
-    split_index = init_tree.rfind(".")
-    framework_init_module = init_tree[:split_index]
-    ivy_init_module = f"ivy.functional.frontends.{init_tree[:split_index]}"
-    init_name = init_tree[split_index + 1 :]
-    init_tree = f"ivy.functional.frontends.{init_tree}"
+    is_fn_tree_provided = fn_tree is not None
+    if is_fn_tree_provided:
+        fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    split_index = class_tree.rfind(".")
-    class_module_path, class_name = (
-        class_tree[:split_index],
-        class_tree[split_index + 1 :],
-    )
-    class_module = importlib.import_module(class_module_path)
-    method_class = getattr(class_module, class_name)
-
-    if is_hypothesis_test:
-        callable_method = getattr(method_class, method_name)
-        if init_num_positional_args is None:
-            init_num_positional_args = num_positional_args(fn_name=init_tree)
-
-        if method_num_positional_args is None:
-            method_num_positional_args = num_positional_args_method(
-                method=callable_method
-            )
-
-    def test_wrapper(test_fn):
-        supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, class_module, class_name
+    possible_arguments = {}
+    if is_hypothesis_test and is_fn_tree_provided:
+        # Use the default strategy
+        if number_positional_args is None:
+            number_positional_args = num_positional_args(fn_name=fn_tree)
+        # Generate the test flags strategy
+        possible_arguments["test_flags"] = pf.function_flags(
+            ground_truth_backend=st.just(ground_truth_backend),
+            num_positional_args=number_positional_args,
+            instance_method=test_instance_method,
+            with_out=test_with_out,
+            test_gradients=test_gradients,
+            test_compile=test_compile,
+            as_variable=as_variable_flags,
+            native_arrays=native_array_flags,
+            container_flags=container_flags,
+            precision_mode=precision_mode,
         )
 
+    def test_wrapper(test_fn):
+        if is_fn_tree_provided:
+            callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+            supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+            possible_arguments["fn_name"] = st.just(fn_name)
+
+        # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            init_flags = pf.frontend_method_flags(
-                num_positional_args=init_num_positional_args,
-                as_variable=init_as_variable_flags,
-                native_arrays=init_native_arrays,
-                test_compile=test_compile,
-                precision_mode=precision_mode,
-            )
-
-            method_flags = pf.frontend_method_flags(
-                num_positional_args=method_num_positional_args,
-                as_variable=method_as_variable_flags,
-                native_arrays=method_native_arrays,
-                test_compile=test_compile,
-                precision_mode=precision_mode,
-            )
-            ivy_init_modules = str(ivy_init_module)
-            framework_init_modules = str(framework_init_module)
-            frontend_helper_data = FrontendMethodData(
-                ivy_init_module=ivy_init_modules,
-                framework_init_module=framework_init_modules,
-                init_name=init_name,
-                method_name=method_name,
-            )
-
-            possible_arguments = {
-                "init_flags": init_flags,
-                "method_flags": method_flags,
-                "frontend_method_data": st.just(frontend_helper_data),
-            }
-
+            # Check if these arguments are being asked for
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
-                # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
+            # Wrap the test with the @given decorator
 
             hypothesis_test_fn = given(**_given_kwargs)(test_fn)
 
@@ -792,19 +802,17 @@ def handle_frontend_method(
         else:
             wrapped_test = test_fn
 
-        wrapped_test.test_data = TestData(
-            test_fn=wrapped_test,
-            fn_tree=f"{init_tree}.{method_name}",
-            fn_name=method_name,
-            supported_device_dtypes=supported_device_dtypes,
-            is_method=[method_name, class_tree, split_index],
-        )
+        # Set the test data to be used by test helpers
+        if is_fn_tree_provided:
+            wrapped_test.test_data = TestData(
+                test_fn=wrapped_test,
+                fn_tree=fn_tree,
+                fn_name=fn_name,
+                supported_device_dtypes=supported_device_dtypes,
+            )
+        wrapped_test._ivy_test = True
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 
     return test_wrapper
-
-
-@st.composite
-def seed(draw):
-    return draw(st.integers(min_value=0, max_value=2**8 - 1))
