@@ -326,6 +326,14 @@ def maximum(x, y, name=None):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
+def min(x, axis=None, keepdim=False, name=None):
+    return ivy.min(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
