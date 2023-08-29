@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 
 
+def get_config():
+    return PandasFrontendConfig()
+
+
 class PandasFrontendConfig(FrontendConfig):
     PandasArray = pd.core.arrays.numpy_.PandasArray
     Dtype = np.dtype
@@ -121,7 +125,3 @@ class PandasFrontendConfig(FrontendConfig):
 
     def isscalar(self, x):
         return pd.api.types.is_scalar(x)
-
-
-def get_config():
-    return PandasFrontendConfig()

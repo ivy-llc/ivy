@@ -7,10 +7,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-# --- Helpers --- #
-# --------------- #
-
-
 @st.composite
 def _reduce_helper(draw):
     # ToDo: remove the filtering when supported dtypes are fixed for mixed functions
@@ -37,10 +33,6 @@ def _reduce_helper(draw):
     )
     axes = draw(helpers.get_axis(shape=shape))
     return dtype, operand[0], init_value[0], func, axes
-
-
-# --- Main --- #
-# ------------ #
 
 
 # reduce
