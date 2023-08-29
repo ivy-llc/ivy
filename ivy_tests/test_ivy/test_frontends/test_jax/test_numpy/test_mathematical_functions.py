@@ -695,7 +695,7 @@ def test_jax_dot(
         small_abs_safety_factor=1.5,
     ),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("float_and_complex"),
+    dtype=helpers.get_dtypes("float_and_complex", full=False)[0],
     test_with_out=st.just(False),
 )
 def test_jax_mean(
