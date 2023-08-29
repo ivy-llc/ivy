@@ -694,10 +694,8 @@ def test_jax_dot(
         large_abs_safety_factor=1.5,
         small_abs_safety_factor=1.5,
     ),
-    where=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
-    ),
     keepdims=st.booleans(),
+    dtype=helpers.get_dtypes("float_and_complex"),
     test_with_out=st.just(False),
 )
 def test_jax_mean(
@@ -709,7 +707,7 @@ def test_jax_mean(
     backend_fw,
     test_flags,
     keepdims,
-    where,
+    dtype,
 ):
     input_dtype, x, axis = dtype_x_axis
     if x[0].shape == ():
@@ -724,7 +722,7 @@ def test_jax_mean(
         a=x[0],
         axis=axis,
         keepdims=keepdims,
-        where=where,
+        dtype=dtype[0],
     )
 
 
