@@ -62,8 +62,19 @@ def divide(input, other, *, rounding_mode=None, out=None):
     return ivy.divide(input, other, out=out)
 
 @to_ivy_arrays_and_back
-def lstsq(A, B, rcond=None, *, driver=None):
-    return torch_frontend.lstsq(A, B, rcond=rcond, driver=driver)
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
+def lstsq(a, b, rcond="warn"):
+    q, r = ivy.qr(a)
+    r_inv = ivy.pinv(r)
+    solution = ivy.matmul(ivy.matmul(r_inv, ivy.matrix_transpose(q)), b)
+    
+    _, s, _ = ivy.svd(a)
+    rank = ivy.sum(ivy.greater(s, rcond * ivy.max(s)))
+    residuals = ivy.sum((b - ivy.matmul(a, solution)) ** 2, axis=-1)
+    
+    return solution, residuals, rank, s
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")

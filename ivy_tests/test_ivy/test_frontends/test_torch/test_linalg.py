@@ -583,6 +583,48 @@ def test_torch_eigvalsh(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.linalg.lstsq",
+    dtype_and_x=_get_dtype_and_matrix(dtype="valid", square=False, invertible=False, batch=False),
+    dtype_and_b=_get_dtype_and_matrix(dtype="valid", square=False, invertible=False, batch=False),
+    rcond=st.sampled_from([None, "warn", 1e-5])
+)
+def test_torch_lstsq(
+    *,
+    dtype_and_x,
+    dtype_and_b,
+    rcond,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype_x, x = dtype_and_x
+    dtype_b, b = dtype_and_b
+
+    # Ensure the matrices are compatible for lstsq
+    assume(x.shape[-1] == b.shape[-1])
+
+    # Convert to ivy array
+    x_ivy = ivy.array(x, dtype=dtype_x[0])
+    b_ivy = ivy.array(b, dtype=dtype_b[0])
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype_x, dtype_b],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-03,
+        A=x_ivy,
+        B=b_ivy,
+        rcond=rcond
+    )
+
+
 # inv
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
