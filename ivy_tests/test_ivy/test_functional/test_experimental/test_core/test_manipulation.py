@@ -396,7 +396,7 @@ def _st_tuples_or_int(n_pairs, min_val=0):
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int64", "int32", "float32", "float64"],
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
             max_num_dims=3,
             min_dim_size=2,

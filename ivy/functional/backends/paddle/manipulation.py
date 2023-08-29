@@ -484,7 +484,9 @@ def unstack(
     return ret
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
 def put_along_axis(
     arr: paddle.Tensor,
     indices: paddle.Tensor,

@@ -17,6 +17,10 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_supported_dtypes
+
+# noinspection PyProtectedMember
+from . import backend_version
 
 
 def moveaxis(
@@ -485,6 +489,9 @@ def fill_diagonal(
     return a
 
 
+@with_supported_dtypes(
+    {"1.25.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
 def put_along_axis(
     arr: np.ndarray,
     indices: np.ndarray,
