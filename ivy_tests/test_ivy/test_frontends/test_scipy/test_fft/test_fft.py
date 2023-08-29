@@ -6,6 +6,8 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
@@ -83,39 +85,6 @@ def _x_and_fft(draw, dtypes):
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     n = draw(st.integers(min_fft_points, 256))
     return dtype, x, dim, norm, n
-  
-@st.composite
-def _x_and_rfftn(draw):
-    min_rfftn_points = 2
-    dtype = draw(helpers.get_dtypes("float"))
-    x_dim = draw(
-        helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=3
-        )
-    )
-    x = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=tuple(x_dim),
-            min_value=-1e10,
-            max_value=1e10,
-            large_abs_safety_factor=2.5,
-            small_abs_safety_factor=2.5,
-            safety_factor_scale="log",
-        )
-    )
-    axes = draw(
-        st.lists(
-            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
-        )
-    )
-    s = draw(
-        st.lists(
-            st.integers(min_rfftn_points, 256), min_size=len(axes), max_size=len(axes)
-        )
-    )
-    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
-    return dtype, x, s, axes, norm
 
 
 @st.composite
@@ -167,6 +136,40 @@ def _x_and_ifftn(draw):
     _x_and_ifftn = draw(_x_and_fft2())
     workers = draw(st.integers(1, 4))
     return _x_and_ifftn + (workers,)
+
+
+@st.composite
+def _x_and_rfftn(draw):
+    min_rfftn_points = 2
+    dtype = draw(helpers.get_dtypes("float"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=3
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e10,
+            max_value=1e10,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
+        )
+    )
+    axes = draw(
+        st.lists(
+            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    s = draw(
+        st.lists(
+            st.integers(min_rfftn_points, 256), min_size=len(axes), max_size=len(axes)
+        )
+    )
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    return dtype, x, s, axes, norm
 
 
 # --- Main --- #
