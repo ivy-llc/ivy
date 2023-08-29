@@ -2861,6 +2861,8 @@ def set_item(
     """
     if copy:
         x = ivy.copy_array(x)
+    if not ivy.is_array(val):
+        val = ivy.array(val)
     if 0 in x.shape or 0 in val.shape:
         return x
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
