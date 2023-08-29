@@ -61,7 +61,7 @@ def _get_axis_and_p(draw, kind="valid"):
     else:
         dtype = input_dtype[0]
 
-    return p, dtype_x_axis, dtype
+    return p, input_dtype, x, axis, dtype
 
 
 # --- Main --- #
