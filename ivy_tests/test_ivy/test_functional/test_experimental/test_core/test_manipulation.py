@@ -1018,7 +1018,7 @@ def test_fill_diagonal(
     fn_name,
     on_device,
 ):
-    if backend_fw not in ["torch", "paddle", "tensorflow"]:
+    if backend_fw not in ["torch", "paddle", "tensorflow", "jax", "numpy"]:
         return
     dt, a = dt_a
     if v_is_array_like:

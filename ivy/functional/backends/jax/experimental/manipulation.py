@@ -399,7 +399,7 @@ def unique_consecutive(
 
 def fill_diagonal(
     a: JaxArray,
-    v: Union[int, float],
+    v: Union[int, float, JaxArray],
     /,
     *,
     wrap: bool = False,
@@ -413,6 +413,9 @@ def fill_diagonal(
     else:
         step = 1 + (jnp.cumprod(shape[:-1])).sum()
     a = jnp.reshape(a, (-1,))
+    if isinstance(v, JaxArray):
+        v = v.reshape((-1,))
+        v = jnp.tile(v, reps=int(jnp.ceil(min(shape[:-1]) / len(v))))[: min(shape[:-1])]
     a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
     a = jnp.reshape(a, shape)
     return a
