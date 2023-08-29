@@ -405,7 +405,7 @@ def scatter_nd(
         if ivy.exists(out)
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
-    updates = _broadcast_to(updates, expected_shape)._data
+    updates = _broadcast_to(updates, expected_shape).data
 
     if indices.ndim > 1:
         indices, unique_idxs = ivy.unique_all(indices, axis=0)[:2]
@@ -415,7 +415,7 @@ def scatter_nd(
     # implementation
     target_given = ivy.exists(out)
     if target_given:
-        target = out._data
+        target = out.data
     else:
         shape = list(shape) if ivy.exists(shape) else out.shape
         target = paddle.zeros(shape=shape).astype(updates.dtype)
@@ -429,14 +429,14 @@ def scatter_nd(
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if reduction == "min":
-        updates = ivy.minimum(ivy.gather_nd(target, indices), updates)._data
+        updates = ivy.minimum(ivy.gather_nd(target, indices), updates).data
         reduction = "replace"
     elif reduction == "max":
-        updates = ivy.maximum(ivy.gather_nd(target, indices), updates)._data
+        updates = ivy.maximum(ivy.gather_nd(target, indices), updates).data
         reduction = "replace"
     if indices.ndim <= 1:
-        indices = ivy.expand_dims(indices, axis=0)._data
-        updates = ivy.expand_dims(updates, axis=0)._data
+        indices = ivy.expand_dims(indices, axis=0).data
+        updates = ivy.expand_dims(updates, axis=0).data
     target_dtype = target.dtype
     if target_dtype in [
         paddle.complex64,
