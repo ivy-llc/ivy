@@ -12903,4 +12903,3 @@ def test_torch_triu(
         frontend=frontend,
         on_device=on_device,
     )
-    
