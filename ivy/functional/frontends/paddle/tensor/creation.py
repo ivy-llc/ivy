@@ -29,6 +29,14 @@ def assign(x, output=None):
     return ret
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "uint16", "uint32", "uint64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def clone(x):
+    return ivy.copy_array(x)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64")},
     "paddle",
