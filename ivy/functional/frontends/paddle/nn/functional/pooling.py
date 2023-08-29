@@ -124,7 +124,7 @@ def max_pool1d(
     else:
         padding = "VALID"
 
-    return ivy.maxpool_1d(
+    return ivy.max_pool1d(
         x,
         kernel_size,
         stride,
