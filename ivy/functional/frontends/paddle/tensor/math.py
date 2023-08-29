@@ -58,6 +58,14 @@ def amax(x, axis=None, keepdims=False):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amin(x, axis=None, keepdim=False, name=None):
+    return ivy.min(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128", "float32", "float64")},
     "paddle",
 )
@@ -318,6 +326,14 @@ def maximum(x, y, name=None):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
+def min(x, axis=None, keepdim=False, name=None):
+    return ivy.min(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
@@ -403,7 +419,7 @@ def rsqrt(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def rsqrt_(x, name=None):
-    return ivy.inplace_update(x, ivy.reciprocal(ivy.inplace_update(x, ivy.sqrt(x))))
+    return ivy.inplace_update(x, reciprocal(sqrt(x)))
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
