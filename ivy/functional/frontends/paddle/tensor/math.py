@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy import sigmoid
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
@@ -240,17 +241,7 @@ def erf(x, name=None):
 
 
 @with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-                "int32",
-                "int64",
-                "float32",
-                "float64",
-                "complex64",
-                "complex128",
-        )
-    },
-    "paddle",
+    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def cumprod(x, dim=None, dtype=None, name=None):
