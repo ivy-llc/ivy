@@ -8,6 +8,28 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 inf = float("inf")
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def get_dtype_num_classes(draw):
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            num_arrays=1,
+            min_value=1,
+            max_value=10,
+            max_num_dims=0,
+        )
+    )
+    input_dtype, x = dtype_and_x
+    print(max(x))
+    num_classes = draw(st.integers(min_value=max(x) + 1, max_value=10))
+
+    return (num_classes, dtype_and_x)
+
+
 # embedding
 @handle_frontend_test(
     fn_tree="torch.nn.functional.embedding",
@@ -45,24 +67,6 @@ def test_torch_embedding(
         max_norm=max_norm,
         norm_type=p,
     )
-
-
-@st.composite
-def get_dtype_num_classes(draw):
-    dtype_and_x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("integer"),
-            num_arrays=1,
-            min_value=1,
-            max_value=10,
-            max_num_dims=0,
-        )
-    )
-    input_dtype, x = dtype_and_x
-    print(max(x))
-    num_classes = draw(st.integers(min_value=max(x) + 1, max_value=10))
-
-    return (num_classes, dtype_and_x)
 
 
 # one_hot
