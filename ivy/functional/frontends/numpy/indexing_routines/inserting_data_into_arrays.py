@@ -167,29 +167,6 @@ c_ = CClass()
 
 @to_ivy_arrays_and_back
 def put(arr, ind, v, mode="raise"):
-    """
-    Set a subset of the array's elements to the given value(s).
-
-    Parameters
-    ----------
-    arr : Array
-        Input array.
-    ind : Array or int
-        Indices or index of elements to replace.
-    v : Array or scalar
-        Values to place into `arr`.
-    mode : {'raise', 'wrap', 'clip'}, optional
-        Specifies how out-of-bounds indices are handled.
-        'raise' : raise an error (default)
-        'wrap' : wrap around
-        'clip' : clip to the range of valid indices
-
-    Returns
-    -------
-    None
-    """
-
-    # Convert input arrays to numpy arrays if they're not already
     arr = ivy.array(arr)
     ind = ivy.array(ind)
     v = ivy.array(v)
