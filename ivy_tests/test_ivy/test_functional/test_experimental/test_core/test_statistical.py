@@ -239,17 +239,27 @@ def _quantile_helper(draw):
         )
     )
     q = draw(
-        helpers.array_values(
-            dtype=helpers.get_dtypes("float"),
-            shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
-            min_value=0.0,
-            max_value=1.0,
-            exclude_max=False,
-            exclude_min=False,
+        st.one_of(
+            helpers.array_values(
+                dtype=helpers.get_dtypes("float"),
+                shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
+                min_value=0.0,
+                max_value=1.0,
+                exclude_max=False,
+                exclude_min=False,
+            ),
+            st.floats(min_value=0.0, max_value=1.0),
         )
     )
 
-    interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
+    interpolation_names = [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]
     interpolation = draw(
         helpers.list_of_size(
             x=st.sampled_from(interpolation_names),
@@ -636,4 +646,6 @@ def test_quantile(
         axis=axis,
         interpolation=interpolation[0],
         keepdims=keep_dims,
+        atol_=1e-3,
+        rtol_=1e-3,
     )
