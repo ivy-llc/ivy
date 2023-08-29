@@ -1,5 +1,12 @@
 from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 
+# import onnx
+# import onnxruntime as ort
+
+
+def get_config():
+    return ONNXFrontendConfig()
+
 
 class ONNXFrontendConfig(FrontendConfig):
     # Dtype = mx.numpy.dtype
@@ -102,10 +109,20 @@ class ONNXFrontendConfig(FrontendConfig):
             invalid_complex_dtypes=self.invalid_complex_dtypes,
         )
 
+    # def native_array(self, x):
+    #     return mx.np.array(x)
 
-# import onnx
-# import onnxruntime as ort
+    # def is_native_array(self, x):
+    #     return isinstance(x, (mx.np.ndarray, mx.gluon.Parameter))
 
+    # def to_numpy(self, x):
+    #     return x.asnumpy()
 
-def get_config():
-    return ONNXFrontendConfig()
+    # def as_native_dtype(self, dtype: str):
+    #     return mx.np.array([], dtype=dtype).dtype
+
+    # def as_native_device(self, device: str):
+    #     return mx.Context(device)
+
+    # def isscalar(self, x):
+    #     return x.ndim == 0

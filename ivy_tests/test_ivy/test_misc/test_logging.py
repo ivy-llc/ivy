@@ -3,11 +3,6 @@ import logging
 import ivy
 
 
-def test_invalid_logging_mode():
-    with pytest.raises(AssertionError):
-        ivy.set_logging_mode("INVALID")
-
-
 def test_set_logging_mode():
     ivy.set_logging_mode("DEBUG")
     assert logging.getLogger().level == logging.DEBUG
@@ -27,3 +22,8 @@ def test_unset_logging_mode():
     ivy.set_logging_mode("INFO")
     ivy.unset_logging_mode()
     assert logging.getLogger().level == logging.DEBUG
+
+
+def test_invalid_logging_mode():
+    with pytest.raises(AssertionError):
+        ivy.set_logging_mode("INVALID")
