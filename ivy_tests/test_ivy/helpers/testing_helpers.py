@@ -24,6 +24,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInplaceStrategy,
     BuiltCompileStrategy,
     BuiltFrontendArrayStrategy,
+    BuiltPrecisionModeStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -38,6 +39,7 @@ cmd_line_args = (
     "instance_method",
     "test_gradients",
     "test_compile",
+    "precision_mode",
 )
 cmd_line_args_lists = (
     "as_variable",
@@ -286,6 +288,7 @@ def handle_test(
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
     test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     container_flags=BuiltContainerStrategy,
@@ -323,6 +326,10 @@ def handle_test(
         A search strategy that generates a boolean to graph compile and test the
         function
 
+    precision_mode
+        A search strategy that generates a boolean to switch between two different
+        precision modes supported by numpy and (torch, jax) and test the function
+
     as_variable_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a Variable array
@@ -356,6 +363,7 @@ def handle_test(
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
             container_flags=container_flags,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
@@ -409,13 +417,16 @@ def handle_test(
 def handle_frontend_test(
     *,
     fn_tree: str,
+    gt_fn_tree: str = None,
     aliases: List[str] = None,
     number_positional_args=None,
     test_with_out=BuiltWithOutStrategy,
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
+    test_compile=BuiltCompileStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     **_given_kwargs,
 ):
     """
@@ -427,7 +438,9 @@ def handle_frontend_test(
     ----------
     fn_tree
         Full function import path
-
+    gt_fn_tree
+        Full function import path for the ground truth function, by default will be
+        the same as fn_tree
     number_positional_args
         A search strategy for determining the number of positional arguments to be
         passed to the function
@@ -440,6 +453,10 @@ def handle_frontend_test(
         A search strategy that generates a boolean to test the function with an `out`
         parameter
 
+    precision_mode
+        A search strategy that generates a boolean to switch between two different
+        precision modes supported by numpy and (torch, jax) and test the function
+
     as_variable_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a Variable array
@@ -447,6 +464,10 @@ def handle_frontend_test(
     native_array_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
+
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
 
     generate_frontend_arrays
         A search strategy that generates a list of boolean flags for array inputs to
@@ -469,7 +490,9 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
+            test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
@@ -487,6 +510,7 @@ def handle_frontend_test(
                     if aliases is not None
                     else st.just(fn_tree)
                 ),
+                "gt_fn_tree": st.just(gt_fn_tree),
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
@@ -540,6 +564,7 @@ def handle_method(
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
@@ -562,6 +587,7 @@ def handle_method(
     ground_truth_backend
         The framework to assert test results are equal to
     """
+    # need to fill up the docstring
     is_method_tree_provided = method_tree is not None
     if is_method_tree_provided:
         method_tree = "ivy." + method_tree
@@ -570,6 +596,7 @@ def handle_method(
         "ground_truth_backend": st.just(ground_truth_backend),
         "test_gradients": test_gradients,
         "test_compile": test_compile,
+        "precision_mode": precision_mode,
     }
 
     if is_hypothesis_test and is_method_tree_provided:
@@ -584,6 +611,7 @@ def handle_method(
             num_positional_args=init_num_positional_args,
             as_variable=init_as_variable_flags,
             native_arrays=init_native_arrays,
+            precision_mode=precision_mode,
         )
 
         if method_num_positional_args is None:
@@ -596,6 +624,7 @@ def handle_method(
             as_variable=method_as_variable_flags,
             native_arrays=method_native_arrays,
             container_flags=method_container_flags,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
@@ -655,6 +684,8 @@ def handle_frontend_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
+    test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
@@ -713,12 +744,16 @@ def handle_frontend_method(
                 num_positional_args=init_num_positional_args,
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
+                test_compile=test_compile,
+                precision_mode=precision_mode,
             )
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
+                test_compile=test_compile,
+                precision_mode=precision_mode,
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
