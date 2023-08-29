@@ -419,7 +419,7 @@ def rsqrt(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def rsqrt_(x, name=None):
-    return ivy.inplace_update(x, ivy.reciprocal(ivy.inplace_update(x, ivy.sqrt(x))))
+    return ivy.inplace_update(x, reciprocal(sqrt(x)))
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
