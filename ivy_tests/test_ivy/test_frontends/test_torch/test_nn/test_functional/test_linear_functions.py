@@ -6,6 +6,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
@@ -32,6 +36,10 @@ def _x_and_linear(draw, dtypes):
         helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
     )
     return dtype, x, weight, bias
+
+
+# --- Main --- #
+# ------------ #
 
 
 # linear
