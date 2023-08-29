@@ -10,39 +10,90 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def put_along_axis_helper(draw):
+    input_dtype, x, axis, shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=["float32", "float64", "int32", "int64"],
+            min_num_dims=2,
+            max_num_dims=3,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=-1e2,
+            max_value=1e2,
+            valid_axis=True,
+            force_int_axis=True,
+            ret_shape=True,
+            min_axis=0,
+        )
+    )
+
+    x = x[0] if isinstance(x, list) else x
+    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
+
+    # TODO: helpers.dtype_and_values draws
+    #  unwantend axis values
+    if axis < 0:
+        axis = 0
+
+    idx_shape = list(shape)
+    idx_shape[axis] = 1
+
+    idx_strategy = nph.arrays(
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
+    )
+    indices = draw(idx_strategy)
+
+    values_strategy = nph.arrays(
+        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e3)
+    )
+    values = draw(values_strategy)
+
+    return input_dtype, x, indices, values, axis
+
+
 @handle_frontend_test(
-    fn_tree="numpy.take_along_axis",
-    dtype_x_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
+    fn_tree="numpy.compress",
+    dtype_arr_ax=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        indices_same_dims=True,
+        min_dim_size=10,
+        max_dim_size=100,
+        valid_axis=True,
+        force_int_axis=True,
     ),
-    test_with_out=st.just(False),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
 )
-def test_numpy_take_along_axis(
-    *,
-    dtype_x_indices_axis,
-    test_flags,
+def test_numpy_compress(
+    dtype_arr_ax,
+    condition,
     frontend,
+    test_flags,
     backend_fw,
     fn_tree,
     on_device,
 ):
-    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    dtype, arr, ax = dtype_arr_ax
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=dtype,
+        frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
-        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x,
-        indices=indices,
-        axis=axis,
+        condition=condition,
+        a=arr[0],
+        axis=ax,
     )
 
 
@@ -115,48 +166,6 @@ def test_numpy_diagonal(
     )
 
 
-@st.composite
-def put_along_axis_helper(draw):
-    input_dtype, x, axis, shape = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=["float32", "float64", "int32", "int64"],
-            min_num_dims=2,
-            max_num_dims=3,
-            min_dim_size=2,
-            max_dim_size=5,
-            min_value=-1e2,
-            max_value=1e2,
-            valid_axis=True,
-            force_int_axis=True,
-            ret_shape=True,
-            min_axis=0,
-        )
-    )
-
-    x = x[0] if isinstance(x, list) else x
-    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
-
-    # TODO: helpers.dtype_and_values draws
-    #  unwantend axis values
-    if axis < 0:
-        axis = 0
-
-    idx_shape = list(shape)
-    idx_shape[axis] = 1
-
-    idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
-    )
-    indices = draw(idx_strategy)
-
-    values_strategy = nph.arrays(
-        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e3)
-    )
-    values = draw(values_strategy)
-
-    return input_dtype, x, indices, values, axis
-
-
 @handle_frontend_test(
     fn_tree="numpy.put_along_axis",
     args=put_along_axis_helper(),
@@ -187,41 +196,36 @@ def test_numpy_put_along_axis(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.compress",
-    dtype_arr_ax=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+    fn_tree="numpy.take_along_axis",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=10,
-        max_dim_size=100,
-        valid_axis=True,
-        force_int_axis=True,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
     ),
-    condition=helpers.array_values(
-        dtype=helpers.get_dtypes("bool"),
-        shape=helpers.get_shape(
-            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
-        ),
-    ),
+    test_with_out=st.just(False),
 )
-def test_numpy_compress(
-    dtype_arr_ax,
-    condition,
-    frontend,
+def test_numpy_take_along_axis(
+    *,
+    dtype_x_indices_axis,
     test_flags,
+    frontend,
     backend_fw,
     fn_tree,
     on_device,
 ):
-    dtype, arr, ax = dtype_arr_ax
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
+        input_dtypes=dtypes,
         backend_to_test=backend_fw,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        condition=condition,
-        a=arr[0],
-        axis=ax,
+        arr=x,
+        indices=indices,
+        axis=axis,
     )
