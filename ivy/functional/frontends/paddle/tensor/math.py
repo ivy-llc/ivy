@@ -367,19 +367,6 @@ def outer(x, y, name=None):
     return ivy.outer(x, y)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ('float16', 'float32', 'float64', 'int64')}, "paddle"
-)
-@to_ivy_arrays_and_back
-def sum(x, axis=None, keepdim=False, dtype=None, name=None):
-    return ivy.sum(
-        x,
-        axis=axis,
-        keepdims=keepdim,
-        dtype=dtype,
-    )
-
-
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def pow(x, y, name=None):
@@ -487,6 +474,19 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
     return ivy.subtract(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def sum(x, axis=None, keepdim=False, dtype=None, name=None):
+    return ivy.sum(
+        x,
+        axis=axis,
+        keepdims=keepdim,
+        dtype=dtype,
+    )
 
 
 @with_supported_dtypes(
