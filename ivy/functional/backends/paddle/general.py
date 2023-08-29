@@ -407,10 +407,24 @@ def scatter_nd(
     )
     updates = _broadcast_to(updates, expected_shape).data
 
+    # remove duplicate indices
+    # necessary because we will be using scatter_nd_add
     if indices.ndim > 1:
-        indices, unique_idxs = ivy.unique_all(indices, axis=0)[:2]
-        indices, unique_idxs = indices.data, unique_idxs.data
-        updates = ivy.gather(updates, unique_idxs, axis=0).data
+        indices_shape = indices.shape
+        indices = paddle.reshape(indices, (-1, indices.shape[-1]))
+        num_indices = indices.shape[0]
+        indices, unique_idxs = ivy.unique_all(ivy.flip(indices, axis=[0]), axis=0, by_value=True)[:2]
+        indices = indices.data
+        if len(unique_idxs) < num_indices:
+            updates = paddle.reshape(updates, (-1,))
+            updates = ivy.gather(ivy.flip(updates, axis=[0]), unique_idxs, axis=0).data
+            expected_shape = (
+                list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
+                if ivy.exists(out)
+                else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
+            )
+        else:
+            indices = paddle.reshape(indices, indices_shape)
 
     # implementation
     target_given = ivy.exists(out)
