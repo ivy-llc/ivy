@@ -3,7 +3,7 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
 )
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 
@@ -371,16 +371,8 @@ def maximum(x1, x2, /):
     return ivy.maximum(x1, x2)
 
 
-@with_supported_dtypes(
-    {"0.4.14 and below": ("float", "complex")},
-    "jax",
-)
 @to_ivy_arrays_and_back
 def mean(x, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
-    if axis is not None and x.shape == (1,):
-        raise IndexError(
-            f"An axis value of {axis} is not valid for a 0-dimensional array"
-        )
     if dtype is None:
         if where is None:
             return ivy.mean(x, axis=axis, keepdims=keepdims, out=out)

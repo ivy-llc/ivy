@@ -691,7 +691,7 @@ def test_jax_dot(
 @handle_frontend_test(
     fn_tree="jax.numpy.mean",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=1.5,
         small_abs_safety_factor=1.5,
     ),
@@ -710,6 +710,8 @@ def test_jax_mean(
 ):
     input_dtype, x, axis = dtype_x_axis
     where = arrays(dtype=bool, shape=x[0].shape)
+    if len(x[0]) == 1:
+        axis = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
