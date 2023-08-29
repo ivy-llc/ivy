@@ -375,6 +375,14 @@ class Tensor:
         self.ivy_array = self.log2().ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
+    def copy_(self, other, non_blocking=False):
+        ivy.utils.assertions.check_one_way_broadcastable(
+            self.ivy_array.shape, torch_frontend.tensor(other).ivy_array.shape
+        )
+        self._ivy_array = torch_frontend.tensor(other).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arccosh(self):
         return torch_frontend.arccosh(self)
@@ -487,9 +495,12 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "bfloat16")}, "torch"
+    )
     def erf_(self, *, out=None):
-        self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
+        self.ivy_array = self.erf(out=out).ivy_array
+        return self
 
     def new_zeros(
         self,
@@ -545,6 +556,7 @@ class Tensor:
                         [
                             "cpu",
                             "cuda",
+                            "mps",
                             "xpu",
                             "mkldnn",
                             "opengl",
@@ -883,6 +895,11 @@ class Tensor:
     def neg(self):
         return torch_frontend.negative(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
+    def neg_(self):
+        self.ivy_array = torch_frontend.negative(self).ivy_array
+        return self
+
     __neg__ = neg
 
     def int(self, memory_format=None):
@@ -1087,6 +1104,9 @@ class Tensor:
 
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
+
+    def msort(self):
+        return torch_frontend.msort(self)
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16", "complex")}, "torch"
@@ -1296,6 +1316,17 @@ class Tensor:
     def __and__(self, other):
         return torch_frontend.bitwise_and(self, other)
 
+    def __array__(self, dtype=None):
+        if dtype is None:
+            return ivy.to_numpy(self.ivy_array)
+        else:
+            return ivy.to_numpy(self.ivy_array).astype(dtype, copy=False)
+
+    def __array_wrap__(self, array):
+        if array.dtype == bool:
+            array = array.astype("uint8")
+        return torch_frontend.tensor(array)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
@@ -1371,6 +1402,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def round_(self, *, decimals=0):
+        self.ivy_array = self.round(decimals=decimals).ivy_array
+        return self
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
@@ -1523,6 +1559,13 @@ class Tensor:
     def copysign(self, other, *, out=None):
         return torch_frontend.copysign(self, other, out=out)
 
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float16", "float32", "float64")}, "torch"
+    )
+    def copysign_(self, other, *, out=None):
+        self.ivy_array = self.copysign(other, out=out).ivy_array
+        return self
+
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
     )
@@ -1611,9 +1654,12 @@ class Tensor:
             return strides[dim]
         return strides
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "bfloat16")}, "torch"
+    )
     def log1p(self):
-        return torch_frontend.log1p(self)
+        promoted_type = ivy.promote_types(self.dtype, "float32")
+        return torch_frontend.log1p(self).to(promoted_type)
 
     @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
     def log1p_(self):
@@ -1774,6 +1820,24 @@ class Tensor:
     )
     def lcm(self, other, *, out=None):
         return torch_frontend.lcm(self, other, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "int16",
+                "complex128",
+                "complex64",
+                "bool",
+            )
+        },
+        "torch",
+    )
+    def triu_(self, diagonal=0):
+        self.ivy_array = torch_frontend.triu(self, diagonal).ivy_array
+        return self
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16")},

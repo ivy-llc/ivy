@@ -4,15 +4,14 @@ import ivy
 import sys
 from hypothesis import strategies as st
 import numpy as np
-import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# Helpers #
-# ------- #
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
@@ -114,178 +113,11 @@ def _norm_helper(draw):
     return _matrix_norm_example()
 
 
-# Tests #
-# ----- #
-
-
-# tril
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="scipy.linalg.tril",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    k=helpers.ints(min_value=-10, max_value=10),
-    test_with_out=st.just(False),
-)
-def test_scipy_tril(
-    dtype_and_x,
-    k,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        m=x[0],
-        k=k,
-    )
-
-
-# triu
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="scipy.linalg.triu",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    k=helpers.ints(min_value=-10, max_value=10),
-    test_with_out=st.just(False),
-)
-def test_scipy_triu(
-    dtype_and_x,
-    k,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        m=x[0],
-        k=k,
-    )
-
-
-# inv
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="scipy.linalg.inv",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
-    test_with_out=st.just(False),
-)
-def test_scipy_inv(
-    dtype_and_x,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-    )
-
-
-# pinv
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="scipy.linalg.pinv",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_scipy_pinv(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-    )
-
-
-# kron
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="scipy.linalg.kron",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=10,
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_scipy_kron(dtype_and_x, frontend, test_flags, fn_tree, on_device, backend_fw):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        b=x[1],
-    )
+# --- Main --- #
+# ------------ #
 
 
 # eigh_tridiagonal
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.eigh_tridiagonal",
     all_args=_generate_eigh_tridiagonal_args(),
@@ -316,8 +148,104 @@ def test_scipy_eigh_tridiagonal(
     )
 
 
+# inv
+@handle_frontend_test(
+    fn_tree="scipy.linalg.inv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    test_with_out=st.just(False),
+)
+def test_scipy_inv(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
+# kron
+@handle_frontend_test(
+    fn_tree="scipy.linalg.kron",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_scipy_kron(dtype_and_x, frontend, test_flags, fn_tree, on_device, backend_fw):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        b=x[1],
+    )
+
+
+# lu_factor
+@handle_frontend_test(
+    fn_tree="scipy.linalg.lu_factor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        min_num_dims=2,
+    ),
+    overwrite_a=st.booleans(),
+    check_finite=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_scipy_lu_factor(
+    dtype_and_x,
+    overwrite_a,
+    check_finite,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        test_values=False,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        overwrite_a=overwrite_a,
+        check_finite=check_finite,
+    )
+
+
 # norm
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.norm",
     dtype_values=_norm_helper(),
@@ -348,8 +276,37 @@ def test_scipy_norm(
     )
 
 
+# pinv
+@handle_frontend_test(
+    fn_tree="scipy.linalg.pinv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_scipy_pinv(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
 # svd
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
@@ -395,7 +352,6 @@ def test_scipy_svd(
 
 
 # svdvals
-@pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="scipy.linalg.svdvals",
     dtype_x=helpers.dtype_and_values(
@@ -426,24 +382,27 @@ def test_scipy_svdvals(
     )
 
 
-# lu_factor
-@pytest.mark.skip("Testing pipeline not yet implemented")
+# Tests #
+# ----- #
+
+
+# tril
 @handle_frontend_test(
-    fn_tree="scipy.linalg.lu_factor",
+    fn_tree="scipy.linalg.tril",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
         min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
     ),
-    overwrite_a=st.booleans(),
-    check_finite=st.booleans(),
+    k=helpers.ints(min_value=-10, max_value=10),
     test_with_out=st.just(False),
 )
-def test_scipy_lu_factor(
+def test_scipy_tril(
     dtype_and_x,
-    overwrite_a,
-    check_finite,
+    k,
     frontend,
     test_flags,
     fn_tree,
@@ -456,10 +415,44 @@ def test_scipy_lu_factor(
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
-        test_values=False,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
-        overwrite_a=overwrite_a,
-        check_finite=check_finite,
+        m=x[0],
+        k=k,
+    )
+
+
+# triu
+@handle_frontend_test(
+    fn_tree="scipy.linalg.triu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_scipy_triu(
+    dtype_and_x,
+    k,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        m=x[0],
+        k=k,
     )
