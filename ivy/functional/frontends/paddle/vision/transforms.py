@@ -170,6 +170,21 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
         raise ValueError("Unsupported input format")
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def center_crop(img, output_size):
+    h, w = ivy.shape(img)[-2:]
+
+    if isinstance(output_size, int):
+        output_size = (output_size, output_size)
+        
+    th, tw = output_size
+    i = (h - th) // 2
+    j = (w - tw) // 2
+
+    return img[..., i:i+th, j:j+tw]
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
