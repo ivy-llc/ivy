@@ -1354,7 +1354,7 @@ def test_soft_thresholding(*, data, test_flags, backend_fw, fn_name, on_device):
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int64"],
+            available_dtypes=["int64", "int32", "float32", "float64"],
             min_num_dims=2,
             max_num_dims=3,
             min_dim_size=2,
@@ -1377,7 +1377,7 @@ def put_along_axis_helper(draw):
     idx_shape[axis] = 1
 
     idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, 1)
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
     )
     indices = draw(idx_strategy)
 
@@ -1410,7 +1410,7 @@ def test_put_along_axis(
 ):
     dtype, x, indices, values, axis = args
     helpers.test_function(
-        input_dtypes=[dtype],
+        input_dtypes=[dtype, "int64", dtype],
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test="torch",
