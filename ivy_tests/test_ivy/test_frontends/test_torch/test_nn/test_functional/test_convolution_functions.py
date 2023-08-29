@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2, transpose: bool = False):
+def _x_and_filters(draw, dim: int = 2, transpose: bool = False):
     if not isinstance(dim, int):
         dim = draw(dim)
     strides = draw(
@@ -139,7 +139,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv1d",
-    dtype_vals=x_and_filters(dim=1),
+    dtype_vals=_x_and_filters(dim=1),
 )
 def test_torch_conv1d(
     *,
@@ -170,7 +170,7 @@ def test_torch_conv1d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv2d",
-    dtype_vals=x_and_filters(dim=2),
+    dtype_vals=_x_and_filters(dim=2),
 )
 def test_torch_conv2d(
     *,
@@ -201,7 +201,7 @@ def test_torch_conv2d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv3d",
-    dtype_vals=x_and_filters(dim=3),
+    dtype_vals=_x_and_filters(dim=3),
 )
 def test_torch_conv3d(
     *,
@@ -251,7 +251,7 @@ def _output_shape(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose1d",
-    dtype_vals=x_and_filters(dim=1, transpose=True),
+    dtype_vals=_x_and_filters(dim=1, transpose=True),
 )
 def test_torch_conv_tranpose1d(
     *,
@@ -292,7 +292,7 @@ def test_torch_conv_tranpose1d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose2d",
-    dtype_vals=x_and_filters(dim=2, transpose=True),
+    dtype_vals=_x_and_filters(dim=2, transpose=True),
 )
 def test_torch_conv_tranpose2d(
     *,
@@ -333,7 +333,7 @@ def test_torch_conv_tranpose2d(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose3d",
-    dtype_vals=x_and_filters(dim=3, transpose=True),
+    dtype_vals=_x_and_filters(dim=3, transpose=True),
 )
 def test_torch_conv_tranpose3d(
     *,

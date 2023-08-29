@@ -2032,7 +2032,7 @@ def test_jax_dot_general(
 
 
 @st.composite
-def x_and_filters(draw, dim=2, transpose=False, general=False):
+def _x_and_filters(draw, dim=2, transpose=False, general=False):
     if not isinstance(dim, int):
         dim = draw(dim)
     batch_size = draw(st.integers(1, 5))
@@ -2156,7 +2156,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv",
-    x_f_d_other=x_and_filters(),
+    x_f_d_other=_x_and_filters(),
     test_with_out=st.just(False),
 )
 def test_jax_conv(
@@ -2188,7 +2188,7 @@ def test_jax_conv(
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv_transpose",
-    x_f_d_other=x_and_filters(general=True, transpose=True),
+    x_f_d_other=_x_and_filters(general=True, transpose=True),
     test_with_out=st.just(False),
 )
 def test_jax_conv_transpose(
@@ -2223,7 +2223,7 @@ def test_jax_conv_transpose(
 
 @handle_frontend_test(
     fn_tree="jax.lax.conv_general_dilated",
-    x_f_d_other=x_and_filters(general=True),
+    x_f_d_other=_x_and_filters(general=True),
     test_with_out=st.just(False),
 )
 def test_jax_conv_general_dilated(
