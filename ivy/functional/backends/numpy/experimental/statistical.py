@@ -318,9 +318,12 @@ def corrcoef(
     *,
     y: Optional[np.ndarray] = None,
     rowvar: bool = True,
+    dtype: np.dtype = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
+    dtype = dtype if dtype is not None else np.float64
+
+    return np.corrcoef(x, y=y, rowvar=rowvar, dtype=dtype)
 
 
 @with_unsupported_dtypes(
@@ -376,9 +379,6 @@ def cov(
     aweights: Optional[np.ndarray] = None,
     dtype: Optional[np.dtype] = None,
 ) -> np.ndarray:
-    if fweights is not None:
-        fweights = fweights.astype(np.int64)
-
     return np.cov(
         m=x1,
         y=x2,
@@ -444,7 +444,7 @@ def __find_cummax_indices(
     axis: int = 0,
 ) -> np.ndarray:
     indices = []
-    if type(x[0]) == np.ndarray:
+    if x[0] is np.ndarray:
         if axis >= 1:
             for ret1 in x:
                 indice = __find_cummax_indices(ret1, axis=axis - 1)

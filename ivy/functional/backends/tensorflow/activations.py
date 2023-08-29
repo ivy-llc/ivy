@@ -29,7 +29,6 @@ def leaky_relu(
     return tf.nn.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
@@ -48,7 +47,17 @@ def softmax(
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "bfloat16", "float32", "float64")}, backend_version
+    {
+        "2.13.0 and below": (
+            "float16",
+            "bfloat16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
 )
 def softplus(
     x: Tensor,
@@ -57,6 +66,7 @@ def softplus(
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[Tensor] = None,
+    complex_mode="jax",
 ) -> Tensor:
     if beta is not None and beta != 1:
         x_beta = x * beta

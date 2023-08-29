@@ -183,7 +183,7 @@ def test_dropout_layer(
 # Attention #
 # ----------#
 @st.composite
-def x_and_mha(draw):
+def _x_and_mha(draw):
     dtype = draw(
         helpers.get_dtypes("float", full=False).filter(lambda x: x != ["float16"])
     )
@@ -254,7 +254,7 @@ def x_and_mha(draw):
 # multi_head_attention
 @handle_method(
     method_tree="MultiHeadAttention.__call__",
-    dtype_mha=x_and_mha(),
+    dtype_mha=_x_and_mha(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
     method_num_positional_args=helpers.num_positional_args(
@@ -1590,5 +1590,52 @@ def test_embedding_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+# Identity
+@handle_method(
+    method_tree="Identity.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+    ),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+)
+def test_identity_layer(
+    *,
+    dtype_and_x,
+    init_with_v,
+    method_with_v,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "device": on_device,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        rtol_=1e-03,
+        atol_=1e-03,
+        test_gradients=test_gradients,
         on_device=on_device,
     )

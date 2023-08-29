@@ -8,8 +8,40 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def random_sample(size=None):
-    return ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+def beta(a, b, size=None):
+    return ivy.beta(a, b, shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def binomial(n, p, size=None):
+    if p < 0 or p > 1:
+        raise ValueError("p must be in the interval (0, 1)")
+    if n < 0:
+        raise ValueError("n must be strictly positive")
+    if size is None:
+        size = 1
+    else:
+        size = size
+    if isinstance(size, int):
+        size = (size,)
+    lambda_ = ivy.multiply(n, p)
+    return ivy.poisson(lambda_, shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def chisquare(df, size=None):
+    df = ivy.array(df)  # scalar ints and floats are also array_like
+    if ivy.any(df <= 0):
+        raise ValueError("df <= 0")
+
+    # ivy.gamma() throws an error if both alpha is an array and a shape is passed
+    # so this part broadcasts df into the shape of `size`` first to keep it happy.
+    if size is not None:
+        df = df * ivy.ones(size)
+
+    return ivy.gamma(df / 2, 2, dtype="float64")
 
 
 @to_ivy_arrays_and_back
@@ -20,8 +52,19 @@ def dirichlet(alpha, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def uniform(low=0.0, high=1.0, size=None):
-    return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
+def f(dfn, dfd, size=None):
+    # Generate samples from the uniform distribution
+    x1 = ivy.gamma(ivy.to_scalar(ivy.divide(dfn, 2)), 2.0, shape=size, dtype="float64")
+    x2 = ivy.gamma(ivy.to_scalar(ivy.divide(dfd, 2)), 2.0, shape=size, dtype="float64")
+    # Calculate the F-distributed samples
+    samples = ivy.divide(ivy.divide(x1, ivy.array(dfn)), ivy.divide(x2, ivy.array(dfd)))
+    return samples
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def gamma(shape, scale=1.0, size=None):
+    return ivy.gamma(shape, scale, shape=size, dtype="float64")
 
 
 @to_ivy_arrays_and_back
@@ -37,14 +80,25 @@ def geometric(p, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def normal(loc=0.0, scale=1.0, size=None):
-    return ivy.random_normal(mean=loc, std=scale, shape=size, dtype="float64")
+def gumbel(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    x = loc - scale * ivy.log(-ivy.log(u))
+    return x
 
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def poisson(lam=1.0, size=None):
-    return ivy.poisson(lam=lam, shape=size)
+def logistic(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    x = loc + scale * ivy.log(u / (1 - u))
+    return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def lognormal(mean=0.0, sigma=1.0, size=None):
+    ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -107,45 +161,6 @@ def standard_t(df, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def binomial(n, p, size=None):
-    if p < 0 or p > 1:
-        raise ValueError("p must be in the interval (0, 1)")
-    if n < 0:
-        raise ValueError("n must be strictly positive")
-    if size is None:
-        size = 1
-    else:
-        size = size
-    if isinstance(size, int):
-        size = (size,)
-    lambda_ = ivy.multiply(n, p)
-    return ivy.poisson(lambda_, shape=size)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def chisquare(df, size=None):
-    df = ivy.array(df)  # scalar ints and floats are also array_like
-    if ivy.any(df <= 0):
-        raise ValueError("df <= 0")
-
-    # ivy.gamma() throws an error if both alpha is an array and a shape is passed
-    # so this part broadcasts df into the shape of `size`` first to keep it happy.
-    if size is not None:
-        df = df * ivy.ones(size)
-
-    return ivy.gamma(df / 2, 2, dtype="float64")
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def lognormal(mean=0.0, sigma=1.0, size=None):
-    ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
-    return ret
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def negative_binomial(n, p, size=None):
     if p <= 0 or p >= 1:
         raise ValueError("p must be in the interval (0, 1)")
@@ -162,18 +177,37 @@ def negative_binomial(n, p, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def weibull(a, size=None):
-    if a < 0:
-        return 0
-    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    return ivy.pow(-ivy.log(1 - u), 1 / a)
+def normal(loc=0.0, scale=1.0, size=None):
+    return ivy.random_normal(mean=loc, std=scale, shape=size, dtype="float64")
 
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def standard_cauchy(size=None):
-    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    return ivy.tan(ivy.pi * (u - 0.5))
+def pareto(a, size=None):
+    if a < 0:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    return ivy.pow(1 / (1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def permutation(x, /):
+    if isinstance(x, int):
+        x = ivy.arange(x)
+    return ivy.shuffle(x)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def poisson(lam=1.0, size=None):
+    return ivy.poisson(lam=lam, shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def random_sample(size=None):
+    return ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
 
 
 @to_ivy_arrays_and_back
@@ -187,24 +221,29 @@ def rayleigh(scale, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def gumbel(loc=0.0, scale=1.0, size=None):
+def shuffle(x, axis=0, /):
+    if isinstance(x, int):
+        x = ivy.arange(x)
+    return ivy.shuffle(x, axis)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_cauchy(size=None):
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    x = loc - scale * ivy.log(-ivy.log(u))
-    return x
+    return ivy.tan(ivy.pi * (u - 0.5))
 
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def gamma(shape, scale=1.0, size=None):
-    return ivy.gamma(shape, scale, shape=size, dtype="float64")
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def logistic(loc=0.0, scale=1.0, size=None):
-    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
-    x = loc + scale * ivy.log(u / (1 - u))
-    return x
+def standard_normal(size=None):
+    return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
 
 
 @to_ivy_arrays_and_back
@@ -221,3 +260,37 @@ def triangular(left, mode, right, size=None):
         right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
     )
     return ivy.where(condition, values1, values2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def uniform(low=0.0, high=1.0, size=None):
+    return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def wald(mean, scale, size=None):
+    if size is None:
+        size = 1
+    mu_2l = mean / (2 * scale)
+    Y = ivy.random_normal(mean=0, std=1, shape=size, dtype="float64")
+    U = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+
+    Y = mean * ivy.square(Y)
+    X = mean + mu_2l * (Y - ivy.sqrt(((4 * scale) * Y) + ivy.square(Y)))
+
+    condition = U <= mean / (mean + X)
+    value1 = X
+    value2 = mean * mean / X
+
+    return ivy.where(condition, value1, value2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def weibull(a, size=None):
+    if a < 0:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.pow(-ivy.log(1 - u), 1 / a)
