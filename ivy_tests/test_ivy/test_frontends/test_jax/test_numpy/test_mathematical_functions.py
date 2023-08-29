@@ -688,7 +688,7 @@ def test_jax_dot(
 
 
 # mean
-@given(st.data())
+@given(where_drawer=st.data())
 @handle_frontend_test(
     fn_tree="jax.numpy.mean",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -709,9 +709,10 @@ def test_jax_mean(
     backend_fw,
     test_flags,
     keepdims,
+    where_drawer,
 ):
     input_dtype, x, axis = dtype_x_axis
-    where = data.draw(arrays(dtype=bool, shape=x[0].shape))
+    where = where_drawer.draw(arrays(dtype=bool, shape=x[0].shape))
     if x[0].shape == ():
         axis = None
     helpers.test_frontend_function(
