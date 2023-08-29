@@ -267,7 +267,7 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
+    return np.clip(x, x_min, x_max, out=out)
 
 
 clip.support_native_out = True

@@ -324,18 +324,12 @@ def clip(
     if x_min is None and x_max is None:
         raise ValueError("At least one of the x_min or x_max must be provided")
 
-    if x_min is not None and hasattr(x_min, "dtype"):
-        x_min = torch.as_tensor(x_min, device=x.device)
-    if x_max is not None and hasattr(x_max, "dtype"):
-        x_max = torch.as_tensor(x_max, device=x.device)
-
-    if x_min is not None and x_max is not None:
-        promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
-        promoted_type = torch.promote_types(promoted_type, x.dtype)
-        x_min = x_min.to(promoted_type)
-        x_max = x_max.to(promoted_type)
-        x = x.to(promoted_type)
-
+    promoted_type = x.dtype
+    if x_min is not None:
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(promoted_type, x_max.dtype))
+    x = x.to(promoted_type)
     return torch.clamp(x, min=x_min, max=x_max, out=out)
 
 

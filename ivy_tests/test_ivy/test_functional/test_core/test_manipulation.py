@@ -333,36 +333,36 @@ def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_devic
 
 
 @st.composite
-def _basic_min_x_max(draw):
-    dtype, value = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-        )
-    )
-    min_val = draw(
-        st.one_of(st.just(None), helpers.array_values(dtype=dtype[0], shape=()))
-    )
-    max_val = draw(
-        st.one_of(st.just(None), helpers.array_values(dtype=dtype[0], shape=()))
-    )
+def _broadcastable_arrays(draw):
+    shapes = draw(helpers.mutually_broadcastable_shapes(num_shapes=3))
+    dtypes, values = draw(helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]))
+    min_val = draw(st.one_of(st.just(None),
+                             helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[1])  ))
+    max_val = draw(st.one_of(st.just(None),
+                             helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[2])  ))
     if min_val is None and max_val is None:
         generate_max = draw(st.booleans())
         if generate_max:
-            max_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
+            max_val = draw(helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]))
         else:
-            min_val = draw(helpers.array_values(dtype=dtype[0], shape=()))
-    return [dtype], (value[0], min_val, max_val)
-
+            min_val = draw(helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]))
+    if min_val is not None:
+        dtypes.append(min_val[0][0])
+        min_val = min_val[1][0]
+    if max_val is not None:
+        dtypes.append(max_val[0][0])
+        max_val = max_val[1][0]
+    return dtypes, values[0], min_val, max_val
 
 # clip
 @handle_test(
     fn_tree="functional.ivy.clip",
-    dtype_x_min_max=_basic_min_x_max(),
+    dtype_x_min_max=_broadcastable_arrays(),
 )
 def test_clip(*, dtype_x_min_max, test_flags, backend_fw, fn_name, on_device):
-    dtypes, (x_list, min_val, max_val) = dtype_x_min_max
+    dtypes, x_list, min_val, max_val = dtype_x_min_max
     helpers.test_function(
-        input_dtypes=dtypes[0],
+        input_dtypes=dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,

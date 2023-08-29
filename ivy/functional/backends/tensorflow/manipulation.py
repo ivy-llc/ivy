@@ -339,30 +339,33 @@ def clip(
 ) -> Union[tf.Tensor, tf.Variable]:
     if x_min is None and x_max is None:
         raise ValueError("At least one of the x_min or x_max must be provided")
-    cond = x_min is None or x_max is None or (x_min < x_max).any()
-    if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
+    if tf.size(x) == 0:
+        return x
+    promoted_type = x.dtype
+    if x_min is not None:
         promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
-        promoted_type = ivy.as_native_dtype(
-            ivy.promote_types(promoted_type, x_max.dtype)
-        )
-        x = tf.cast(x, promoted_type)
-        if x_min is not None:
-            x_min = tf.cast(x_min, promoted_type)
-        if x_max is not None:
-            x_max = tf.cast(x_max, promoted_type)
-
+    if x_max is not None:
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(promoted_type, x_max.dtype))
+    if promoted_type == bool:
+        final_type = tf.bool
+        promoted_type = tf.int8
+    else:
+        final_type = promoted_type
+    x = tf.cast(x, promoted_type)
+    cond = True
+    if x_max is not None:
+        x_max = tf.cast(x_max, promoted_type)
+    if x_min is not None:
+        x_min = tf.cast(x_min, promoted_type)
+    if x_min is not None and x_max is not None:
+        if tf.math.reduce_any(x_min > x_max):
+            cond = False
     if cond:
-        if tf.size(x) == 0:
-            ret = x
-        elif x.dtype == tf.bool:
-            ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
-            ret = tf.cast(ret, x.dtype)
-        else:
-            ret = tf.experimental.numpy.clip(x, x_min, x_max)
+        ret = tf.experimental.numpy.clip(x, x_min, x_max)
     else:
         ret = tf.math.minimum(x_max, tf.math.maximum(x, x_min))
 
-    return ret
+    return tf.cast(ret, final_type)
 
 
 def unstack(

@@ -211,49 +211,14 @@ def clip(
 ) -> JaxArray:
     if x_min is None and x_max is None:
         raise ValueError("At least one of the x_min or x_max must be provided")
-
-    if (
-        x_min is not None
-        and hasattr(x_min, "dtype")
-        and x_max is not None
-        and hasattr(x_max, "dtype")
-        and (x.dtype != x_min.dtype or x.dtype != x_max.dtype)
-    ):
-        if (jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)) and (
-            jnp.int16 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.uint16 in (x.dtype, x_min.dtype, x_max.dtype)
-        ):
-            promoted_type = jnp.promote_types(x.dtype, jnp.float32)
-            promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
-            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = x.astype(promoted_type)
-        elif (
-            jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.float32 in (x.dtype, x_min.dtype, x_max.dtype)
-        ) and (
-            jnp.int32 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.uint32 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.uint64 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.int64 in (x.dtype, x_min.dtype, x_max.dtype)
-        ):
-            promoted_type = jnp.promote_types(x.dtype, jnp.float64)
-            promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
-            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = x.astype(promoted_type)
-        else:
-            promoted_type = jnp.promote_types(
-                x.dtype, x_min.dtype if x_min is not None else x.dtype
-            )
-            promoted_type = jnp.promote_types(
-                promoted_type, x_max.dtype if x_max is not None else x.dtype
-            )
-            x = x.astype(promoted_type)
-
+    promoted_type = x.dtype
     # jnp.clip isn't used because of inconsistent gradients
     if x_min is not None:
-        x = jnp.where(x < x_min, x_min, x)
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        x = jnp.where(x < x_min, x_min, x.astype(promoted_type))
     if x_max is not None:
-        x = jnp.where(x > x_max, x_max, x)
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(promoted_type, x_max.dtype))
+        x = jnp.where(x > x_max, x_max, x.astype(promoted_type))
 
     return x
 
