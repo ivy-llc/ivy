@@ -40,6 +40,41 @@ def test_jax_can_cast(
     )
 
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.finfo",
+    dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_finfo(*, dtype, test_flags, on_device, fn_tree, frontend, backend_fw):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dtype=dtype[0],
+        backend_to_test=backend_fw,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.iinfo",
+    dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+)
+@settings(max_examples=200)
+def test_jax_iinfo(*, dtype, test_flags, on_device, fn_tree, frontend, backend_fw):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        int_type=dtype[0],
+        backend_to_test=backend_fw,
+    )
+
+
 # promote_types
 @handle_frontend_test(
     fn_tree="jax.numpy.promote_types",
@@ -100,39 +135,4 @@ def test_jax_result_type(
         on_device=on_device,
         test_values=False,
         **kw,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.iinfo",
-    dtype=helpers.get_dtypes("numeric", full=False),
-    test_with_out=st.just(False),
-)
-@settings(max_examples=200)
-def test_jax_iinfo(*, dtype, test_flags, on_device, fn_tree, frontend, backend_fw):
-    helpers.test_frontend_function(
-        input_dtypes=[],
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        int_type=dtype[0],
-        backend_to_test=backend_fw,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.finfo",
-    dtype=helpers.get_dtypes("numeric", full=False),
-    test_with_out=st.just(False),
-)
-def test_jax_finfo(*, dtype, test_flags, on_device, fn_tree, frontend, backend_fw):
-    helpers.test_frontend_function(
-        input_dtypes=[],
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        dtype=dtype[0],
-        backend_to_test=backend_fw,
     )
