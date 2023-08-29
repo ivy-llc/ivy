@@ -1,6 +1,6 @@
 """Collection of Paddle network layers, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional, Tuple, Union, Sequence, Literal
 
 # global
 import paddle
@@ -167,17 +167,21 @@ def conv1d_transpose(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    device: str,
+    output_shape: Optional[Sequence[int]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
-):
+) -> paddle.Tensor:
+    assert device.startswith(("cpu", "gpu", "xpu", "npu")), "device should be either cpu, gpu, xpu or npu"
+    paddle.set_device(device)
     if data_format == "NWC":
-        x = x.transpose([0, 2, 1])
+        x = x.transpose([0, 2, 1]).set_device(device)
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
-    filters = filters.transpose([1, 2, 0])
+    filters = filters.transpose([1, 2, 0]).set_device(device)
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 1, dilations, output_shape, filters.shape[2:]
     )
@@ -194,7 +198,7 @@ def conv1d_transpose(
         res = res[:, :, 0:-1]
     if data_format == "NWC":
         res = res.transpose([0, 2, 1])
-    return res
+    return res.cast(dtype)
 
 
 # noinspection PyUnresolvedReferences
