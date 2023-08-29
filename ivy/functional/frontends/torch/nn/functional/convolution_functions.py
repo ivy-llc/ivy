@@ -212,7 +212,7 @@ def conv_transpose1d(
 @to_ivy_arrays_and_back
 def conv_transpose2d(
     input,
-    filters,
+    weight,
     strides=1,
     padding="SAME",
     output_shape=None,
@@ -222,7 +222,7 @@ def conv_transpose2d(
 ):
     return ivy.conv2d_transpose(
         input,
-        filters,
+        weight,
         strides,
         padding,
         output_shape=output_shape,

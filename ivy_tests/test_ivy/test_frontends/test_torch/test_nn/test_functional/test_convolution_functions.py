@@ -17,14 +17,16 @@ def _x_and_filters(
     dtypes,
     data_format,
     padding,
+    dim=2,
     stride_min=1,
     stride_max=4,
-    dilation_min=1,
+    dilation_min=2,
     dilation_max=4,
     type: str = "2d",
     transpose=False,
-    atrous=False,
+    atrous=False
 ):
+    
     data_format = draw(data_format)
     dtype = draw(dtypes)
     padding = draw(padding)
@@ -51,17 +53,14 @@ def _x_and_filters(
             padding = [1, 1, 1, 1] + padding
         else:
             padding = [0, 0] + padding + [0, 0]
-    if atrous:
-        dilations = draw(st.integers(dilation_min, dilation_max))
-    else:
-        dilations = draw(
-            st.one_of(
-                st.integers(dilation_min, dilation_max),
-                st.lists(
-                    st.integers(dilation_min, dilation_max), min_size=dim, max_size=dim
-                ),
-            )
+    # import pdb;pdb.set_trace()
+    dilations = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=dilation_min, max_value=dilation_max), min_size=dim, max_size=dim),
+            st.integers(min_value=dilation_min, max_value=dilation_max),
         )
+    )
+    # dilations = draw(st.lists(st.integers(min_value=dilation_min, max_value=dilation_max), min_size=dim, max_size=dim))
     fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if atrous:
         stride = 1
@@ -303,7 +302,7 @@ def _x_and_filters(
                 dilations = [1, *dilations, 1]
     if not transpose:
         return dtype, x, filters, dilations, data_format, stride, padding
-    return dtype, x, filters, dilations, data_format, stride, padding, output_shape
+    return dtype, x, filters, fdilations, data_format, fstride, padding, output_shape
 
 @st.composite
 def _x_and_filters(draw, dim: int = 2, transpose: bool = False):
@@ -629,12 +628,12 @@ def test_torch_conv_tranpose2d(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
-        filters=filters,
+        weight=filters,
         strides=stride,
         padding=padding,
         output_shape=output_shape,
         data_format=data_format,
-        dilation=dilation,
+        dilations=dilation,
     )
 
 
