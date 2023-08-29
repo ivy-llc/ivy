@@ -317,7 +317,6 @@ def test_paddle_max_unpool1d(
         min_side=1,
         max_side=4,
     ),
-    exclusive=st.booleans(),
     ceil_mode=st.just(False),
     test_with_out=st.just(False),
 )
