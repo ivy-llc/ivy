@@ -1985,6 +1985,18 @@ class Tensor:
     )
     def cummax(self, dim):
         return torch_frontend.cummax(self, dim)
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def xlogy(self, *, other, out=None):
+        return torch_frontend.xlogy(self, other, out=out)
+    
 
     @with_unsupported_dtypes(
         {
