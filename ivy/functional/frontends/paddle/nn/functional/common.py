@@ -193,5 +193,5 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     elif data_format == "NHWC":
         padding = ((0, 0), (padding[2], padding[3]), (padding[0], padding[1]), (0, 0))
     else:
-        raise ValueError("Unknown data_format: {}".format(data_format))
+        raise ValueError(f"Unknown data_format: {data_format}")
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)

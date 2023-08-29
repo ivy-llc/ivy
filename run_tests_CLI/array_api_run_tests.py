@@ -11,9 +11,10 @@ result_config = {
 
 
 def make_clickable(url, name):
-    return '<a href="{}" rel="noopener noreferrer" '.format(
-        url
-    ) + 'target="_blank"><img src={}></a>'.format(name)
+    return (
+        '<a href="{}" rel="noopener noreferrer" '.format(url)
+        + f'target="_blank"><img src={name}></a>'
+    )
 
 
 def get_submodule(test_path):

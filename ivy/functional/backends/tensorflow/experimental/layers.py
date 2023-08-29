@@ -1027,9 +1027,7 @@ def fft2(
 def fft_input_validation(x):
     if not x.dtype.is_complex:
         raise TypeError(
-            "Invalid FFT input: `x` must be of a complex dtype. Received: {}".format(
-                x.dtype
-            )
+            f"Invalid FFT input: `x` must be of a complex dtype. Received: {x.dtype}"
         )
     return x
 
@@ -1064,16 +1062,12 @@ def shape_and_axes_validation(shape, axes, input_rank_tensor):
             tf.debugging.assert_less(
                 axes,
                 input_rank_tensor,
-                message=(
-                    "Argument `axes` contains invalid indices. Received: {}"
-                ).format(axes),
+                message=f"Argument `axes` contains invalid indices. Received: {axes}",
             ),
             tf.debugging.assert_greater_equal(
                 axes,
                 -input_rank_tensor,
-                message=(
-                    "Argument `axes` contains invalid indices. Received: {}"
-                ).format(axes),
+                message=f"Argument `axes` contains invalid indices. Received: {axes}",
             ),
         ]
         with tf.control_dependencies(checks_axes):
@@ -1302,9 +1296,7 @@ RFFTN Function
 def rfft_input_validation(x):
     if not x.dtype.is_floating:
         raise TypeError(
-            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
-                x.dtype
-            )
+            f"Invalid FFT input: `x` must be of a real dtype. Received: {x.dtype}"
         )
     return x
 

@@ -339,9 +339,7 @@ def legalise_einsum_expr(*operands: Any) -> str:
     # Make sure output subscripts are in the input
     for char in output_subscript:
         if char not in input_subscripts:
-            raise ValueError(
-                "Output character '{}' did not appear in the input".format(char)
-            )
+            raise ValueError(f"Output character '{char}' did not appear in the input")
 
     # Make sure number operands is equivalent to the number of terms
     if len(input_subscripts.split(",")) != len(operands):

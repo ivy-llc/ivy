@@ -23,7 +23,7 @@ def _get_reduction_func(reduction):
         ret = ivy.sum
     else:
         raise ivy.utils.exceptions.IvyException(
-            "{} is not a valid value for reduction".format(reduction)
+            f"{reduction} is not a valid value for reduction"
         )
     return ret
 

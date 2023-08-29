@@ -34,14 +34,12 @@ def check_less(x1, x2, allow_equal=False, message="", as_array=True):
     # less_equal
     if allow_equal and gt:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be lesser than or equal to {}".format(x1, x2)
-            if message == ""
-            else message
+            f"{x1} must be lesser than or equal to {x2}" if message == "" else message
         )
     # less
     elif not allow_equal and gt_eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be lesser than {}".format(x1, x2) if message == "" else message
+            f"{x1} must be lesser than {x2}" if message == "" else message
         )
 
 
@@ -57,14 +55,12 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
     # greater_equal
     if allow_equal and lt:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be greater than or equal to {}".format(x1, x2)
-            if message == ""
-            else message
+            f"{x1} must be greater than or equal to {x2}" if message == "" else message
         )
     # greater
     elif not allow_equal and lt_eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be greater than {}".format(x1, x2) if message == "" else message
+            f"{x1} must be greater than {x2}" if message == "" else message
         )
 
 
@@ -78,21 +74,19 @@ def check_equal(x1, x2, inverse=False, message="", as_array=True):
     eq = comp_fn(x1, x2)
     if inverse and eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must not be equal to {}".format(x1, x2) if message == "" else message
+            f"{x1} must not be equal to {x2}" if message == "" else message
         )
     # equal
     elif not inverse and eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be equal to {}".format(x1, x2) if message == "" else message
+            f"{x1} must be equal to {x2}" if message == "" else message
         )
 
 
 def check_isinstance(x, allowed_types, message=""):
     if not isinstance(x, allowed_types):
         raise ivy.utils.exceptions.IvyException(
-            "type of x: {} must be one of the allowed types: {}".format(
-                type(x), allowed_types
-            )
+            f"type of x: {type(x)} must be one of the allowed types: {allowed_types}"
             if message == ""
             else message
         )
@@ -114,11 +108,11 @@ def check_exists(x, inverse=False, message=""):
 def check_elem_in_list(elem, list, inverse=False, message=""):
     if inverse and elem in list:
         raise ivy.utils.exceptions.IvyException(
-            message if message != "" else "{} must not be one of {}".format(elem, list)
+            message if message != "" else f"{elem} must not be one of {list}"
         )
     elif not inverse and elem not in list:
         raise ivy.utils.exceptions.IvyException(
-            message if message != "" else "{} must be one of {}".format(elem, list)
+            message if message != "" else f"{elem} must be one of {list}"
         )
 
 
@@ -206,9 +200,7 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
         )
     ):
         raise ivy.utils.exceptions.IvyException(
-            "the fill_value: {} and data type: {} are not compatible".format(
-                fill_value, dtype
-            )
+            f"the fill_value: {fill_value} and data type: {dtype} are not compatible"
         )
 
 
@@ -263,16 +255,12 @@ def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
 def check_gather_input_valid(params, indices, axis, batch_dims):
     if batch_dims > axis:
         raise ivy.utils.exceptions.IvyException(
-            "batch_dims ({}) must be less than or equal to axis ({}).".format(
-                batch_dims, axis
-            )
+            f"batch_dims ({batch_dims}) must be less than or equal to axis ({axis})."
         )
     if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
         raise ivy.utils.exceptions.IvyException(
             "batch dimensions must match in `params` and `indices`;"
-            + " saw {} vs. {}".format(
-                params.shape[0:batch_dims], indices.shape[0:batch_dims]
-            )
+            + f" saw {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
         )
 
 
@@ -292,9 +280,7 @@ def check_gather_nd_input_valid(params, indices, batch_dims):
     if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
         raise ivy.utils.exceptions.IvyException(
             "batch dimensions must match in `params` and `indices`;"
-            + " saw {} vs. {}".format(
-                params.shape[0:batch_dims], indices.shape[0:batch_dims]
-            )
+            + f" saw {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
         )
     if indices.shape[-1] > (len(params.shape[batch_dims:])):
         raise ivy.utils.exceptions.IvyException(
@@ -328,7 +314,7 @@ def check_inplace_sizes_valid(var, data):
 def check_shapes_broadcastable(var, data):
     if not check_one_way_broadcastable(var, data):
         raise ivy.utils.exceptions.IvyBroadcastShapeError(
-            "Could not broadcast shape {} to shape {}.".format(data, var)
+            f"Could not broadcast shape {data} to shape {var}."
         )
 
 
@@ -336,7 +322,7 @@ def check_dimensions(x):
     if len(x.shape) <= 1:
         raise ivy.utils.exceptions.IvyException(
             "input must have greater than one dimension; "
-            + " {} has {} dimensions".format(x, len(x.shape))
+            + f" {x} has {len(x.shape)} dimensions"
         )
 
 

@@ -530,7 +530,7 @@ class ModuleHelpers(abc.ABC):
                     -2 if isinstance(sco[chosen_kc], np.ndarray) else -1
                 ].split("_")[-1]
             )
-            new_key = final_key + "_{}".format(max_key_idx + 1)
+            new_key = final_key + f"_{max_key_idx + 1}"
         else:
             new_key = final_key + "_0"
         if self._is_submod_leaf():
