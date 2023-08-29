@@ -1881,6 +1881,7 @@ def dtype_array_query(
                     min_value=-s + 1,
                     max_value=s - 1,
                     dtype=["int64"],
+                    max_num_dims=4,
                 )
             )
             new_index = new_index[0]
