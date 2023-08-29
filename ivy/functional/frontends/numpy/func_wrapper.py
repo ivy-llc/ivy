@@ -108,9 +108,9 @@ def _assert_scalar(args, dtype):
     if args and dtype:
         assert_fn = None
         if ivy.is_int_dtype(dtype):
-            assert_fn = lambda x: type(x) != float
+            assert_fn = lambda x: not isinstance(x, float)
         elif ivy.is_bool_dtype(dtype):
-            assert_fn = lambda x: type(x) == bool
+            assert_fn = lambda x: isinstance(x, bool)
 
         if assert_fn:
             ivy.utils.assertions.check_all_or_any_fn(

@@ -1105,4 +1105,4 @@ def test_train_eval(mode):
     cls.train(mode)
     assert mode == cls.training
     cls.eval()
-    assert False == cls.training
+    assert False == cls.training  # noqa: E712

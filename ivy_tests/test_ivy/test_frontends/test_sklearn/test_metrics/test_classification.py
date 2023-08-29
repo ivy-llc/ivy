@@ -25,7 +25,7 @@ def test_sklearn_accuracy_score(
     backend_fw,
     normalize,
 ):
-    # todo: limit array generation to classification instead of regression (contrinuous values)
+    # todo: limit array generation to classification instead of regression (contrinuous values) # noqa: E501
     dtypes, values = arrays_and_dtypes
     helpers.test_frontend_function(
         input_dtypes=dtypes,
