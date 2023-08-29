@@ -5,8 +5,8 @@ from ..base import (
     MultiOutputMixin,
 )
 
-class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
 
+class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
     @abstractmethod
     def __init__(
         self,
@@ -39,19 +39,15 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
 
     def get_depth(self):
         raise NotImplementedError
-        
 
     def get_n_leaves(self):
         raise NotImplementedError
 
-
     def _support_missing_values(self, X):
         raise NotImplementedError
 
-
     def _compute_missing_values_in_feature_mask(self, X):
         raise NotImplementedError
-
 
     def _fit(
         self,
@@ -63,29 +59,23 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
     ):
         raise NotImplementedError
 
-
     def _validate_X_predict(self, X, check_input):
         raise NotImplementedError
 
-
     def predict(self, X, check_input=True):
         raise NotImplementedError
-    
+
     def apply(self, X, check_input=True):
         raise NotImplementedError
-    
 
     def decision_path(self, X, check_input=True):
         raise NotImplementedError
 
-
     def _prune_tree(self):
         raise NotImplementedError
 
-
     def cost_complexity_pruning_path(self, X, y, sample_weight=None):
         raise NotImplementedError
-
 
     @property
     def feature_importances_(self):
@@ -93,7 +83,6 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
 
 
 class DecisionTreeClassifier(ClassifierMixin, BaseDecisionTree):
-
     def __init__(
         self,
         *,
@@ -126,7 +115,6 @@ class DecisionTreeClassifier(ClassifierMixin, BaseDecisionTree):
         )
 
     def fit(self, X, y, sample_weight=None, check_input=True):
-
         super()._fit(
             X,
             y,
