@@ -700,7 +700,6 @@ def test_jax_dot(
     test_with_out=st.just(False),
 )
 def test_jax_mean(
-    data,
     *,
     dtype_x_axis,
     on_device,
