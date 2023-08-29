@@ -96,8 +96,10 @@ def num_gpus() -> int:
 
 def gpu_is_available() -> bool:
     if hasattr(torch.backends, "mps"):
-        return torch.backends.mps.is_available()
-    return torch.cuda.is_available()
+        return torch.backends.mps.is_available() or torch.cuda.is_available()
+    elif torch.cuda.is_available():
+        return True
+    return False
 
 
 # noinspection PyUnresolvedReferences
