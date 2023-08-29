@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st, assume, given
 from hypothesis.extra.numpy import arrays
 import numpy as np
 import ivy
@@ -688,6 +688,7 @@ def test_jax_dot(
 
 
 # mean
+@given(st.data())
 @handle_frontend_test(
     fn_tree="jax.numpy.mean",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -707,9 +708,10 @@ def test_jax_mean(
     backend_fw,
     test_flags,
     keepdims,
+    data,
 ):
     input_dtype, x, axis = dtype_x_axis
-    where = arrays(dtype=bool, shape=x[0].shape).example()
+    where = data.draw(arrays(dtype=bool, shape=x[0].shape))
     if x[0].shape == ():
         axis = None
     helpers.test_frontend_function(
