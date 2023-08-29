@@ -1556,6 +1556,13 @@ class Tensor:
     def copysign(self, other, *, out=None):
         return torch_frontend.copysign(self, other, out=out)
 
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float16", "float32", "float64")}, "torch"
+    )
+    def copysign_(self, other, *, out=None):
+        self.ivy_array = self.copysign(other, out=out).ivy_array
+        return self
+
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
     )
