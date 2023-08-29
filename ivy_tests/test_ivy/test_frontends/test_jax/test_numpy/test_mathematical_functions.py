@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st, assume
+from hypothesis.extra.numpy import arrays
 import numpy as np
 import ivy
 
@@ -689,24 +690,26 @@ def test_jax_dot(
 # mean
 @handle_frontend_test(
     fn_tree="jax.numpy.mean",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=1.5,
         small_abs_safety_factor=1.5,
     ),
-    test_with_out=st.just(True),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_jax_mean(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     on_device,
     fn_tree,
     frontend,
     backend_fw,
     test_flags,
-    **kwargs,
+    keepdims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
+    where = arrays(dtype=bool, shape=x[0].shape)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -715,7 +718,9 @@ def test_jax_mean(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        **kwargs,
+        axis=axis,
+        keepdims=keepdims,
+        where=where,
     )
 
 
