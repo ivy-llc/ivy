@@ -1010,6 +1010,8 @@ def conv1d_transpose(
     padding: str,
     /,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
@@ -1030,6 +1032,10 @@ def conv1d_transpose(
     padding
         Either ‘SAME’ (padding so that the output's shape is the same as the
         input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
+    dtype
+        Array data type of the convolution operation
+    device
+        Device in which the convolution operation output is to be placed
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1133,6 +1139,8 @@ def conv1d_transpose(
         filters,
         strides,
         padding,
+        dtype=dtype,
+        device=device,
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
