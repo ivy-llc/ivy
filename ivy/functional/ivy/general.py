@@ -2915,7 +2915,7 @@ def _parse_query(query, x_shape):
 
 def _numel(shape):
     shape = tuple(shape)
-    return math.prod(shape) if shape != () else 1
+    return ivy.prod(shape).to_scalar() if shape != () else 1
 
 
 def _broadcast_to(input, target_shape):
