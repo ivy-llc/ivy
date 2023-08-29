@@ -28,14 +28,14 @@ def min(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret = paddle_backend.to_and_back(paddle.amin)(x, axis=axis, keepdim=keepdims)
+    ret = paddle_backend.to_dtype_and_back(paddle.amin)(x, axis=axis, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
         if len(axis) == x.ndim:
             axis = None
     if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = paddle_backend.to_and_back(paddle.squeeze)(ret)
+        ret = paddle_backend.to_dtype_and_back(paddle.squeeze)(ret)
     return ret
 
 
@@ -119,7 +119,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle_backend.to_and_back(paddle.prod)(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    return paddle_backend.to_dtype_and_back(paddle.prod)(x, axis=axis, keepdim=keepdims, dtype=dtype)
 
 
 def _std(x, axis, correction, keepdim):

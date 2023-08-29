@@ -245,12 +245,12 @@ def _get_dtype_max(dtype):
         return paddle_backend.iinfo(dtype).max
 
 
-def to_and_back(
+def to_dtype_and_back(
         fn: Callable,
         supported_dtypes: Sequence[str] = ('int32', 'int64', 'float32', 'float64'),
 ) -> Callable:
     @functools.wraps(fn)
-    def _to_and_back(*args, **kwargs):
+    def _to_dtype_and_back(*args, **kwargs):
         """
         To be used on native paddle functions that do not have Kernels for all the
         required dtypes. Casts the fn arguments to a supported dtype and then the fn
@@ -307,5 +307,5 @@ def to_and_back(
 
         return ret.cast(ret_dtype)
 
-    _to_and_back.to_and_back = True
-    return _to_and_back
+    _to_dtype_and_back.to_dtype_and_back = True
+    return _to_dtype_and_back
