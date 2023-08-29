@@ -55,10 +55,9 @@ def test_paddle_layer_norm(
 )
 def test_paddle_instance_norm(
     *,
-    values_tuple,
-    normalized_shape,
     eps,
     test_flags,
+    values_tuple,
     frontend,
     on_device,
     fn_tree,
