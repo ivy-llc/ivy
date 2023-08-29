@@ -491,17 +491,12 @@ def _elu_jax_like(
     alpha: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    safe_x = ivy.where(
-        ivy.logical_or(
-            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
-        ),
-        x,
-        0.0,
+    cond = ivy.logical_or(
+        ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
     )
+    safe_x = ivy.where(cond, x, 0.0)
     return ivy.where(
-        ivy.logical_or(
-            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
-        ),
+        cond,
         ivy.astype(ivy.multiply(alpha, ivy.expm1(safe_x)), x.dtype),
         x,
     )
