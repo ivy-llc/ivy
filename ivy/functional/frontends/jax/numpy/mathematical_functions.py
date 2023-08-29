@@ -378,7 +378,7 @@ def mean(x, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
             return ivy.mean(x, axis=axis, keepdims=keepdims, out=out)
         filtered_x = x[where]
         return ivy.mean(filtered_x, axis=axis, keepdims=keepdims, out=out)
-    casted_x = x.astype(dtype, copy=False)
+    casted_x = x.astype(ivy.Dtype(dtype), copy=False)
     if where is None:
         return ivy.mean(casted_x, axis=axis, keepdims=keepdims, out=out)
     filtered_casted_x = casted_x[where]
