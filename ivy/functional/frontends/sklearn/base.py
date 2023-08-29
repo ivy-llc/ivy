@@ -26,3 +26,8 @@ class RegressorMixin:
 
     def predict(self, X):
         raise NotImplementedError
+
+
+class MultiOutputMixin:
+    def _more_tags(self):
+        return {"multioutput": True}
