@@ -267,7 +267,13 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.clip(x, x_min, x_max, out=out)
+    promoted_type = x.dtype
+    if x_min is not None:
+        promoted_type = ivy.promote_types(promoted_type, x_min.dtype)
+    if x_max is not None:
+        promoted_type = ivy.promote_types(promoted_type, x_max.dtype)
+
+    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype= promoted_type)
 
 
 clip.support_native_out = True
