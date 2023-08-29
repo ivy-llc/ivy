@@ -137,12 +137,12 @@ def cosh(x, name=None):
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-                "int32",
-                "int64",
-                "float32",
-                "float64",
-                "complex64",
-                "complex128",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
         )
     },
     "paddle",
