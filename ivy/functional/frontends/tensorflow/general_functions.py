@@ -142,7 +142,7 @@ def constant(value, dtype=None, shape=None, name=None):
 
 
 @handle_tf_dtype
-def constant_initializer(value):
+def constant_initializer(value, dtype=None, shape=None, name=None):
     return EagerTensor(value)
 
 
