@@ -701,6 +701,7 @@ def test_jax_dot(
 )
 def test_jax_mean(
     *,
+    data,
     dtype_x_axis,
     on_device,
     fn_tree,
@@ -708,7 +709,6 @@ def test_jax_mean(
     backend_fw,
     test_flags,
     keepdims,
-    data,
 ):
     input_dtype, x, axis = dtype_x_axis
     where = data.draw(arrays(dtype=bool, shape=x[0].shape))
