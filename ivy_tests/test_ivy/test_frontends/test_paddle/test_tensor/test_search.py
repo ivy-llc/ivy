@@ -11,6 +11,25 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --------------- #
 
 
+# test_where
+@st.composite
+def _broadcastable_trio(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    cond = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, xs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shape=shape,
+            shared_dtype=True,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    return cond, xs, dtypes
+
+
 # masked_select
 @st.composite
 def _dtypes_input_mask(draw):
@@ -305,25 +324,6 @@ def test_paddle_topk(
         sorted=sorted,
         test_values=False,
     )
-
-
-# test_where
-@st.composite
-def _broadcastable_trio(draw):
-    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
-    cond = draw(helpers.array_values(dtype="bool", shape=shape))
-    dtypes, xs = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            num_arrays=2,
-            shape=shape,
-            shared_dtype=True,
-            large_abs_safety_factor=16,
-            small_abs_safety_factor=16,
-            safety_factor_scale="log",
-        )
-    )
-    return cond, xs, dtypes
 
 
 @handle_frontend_test(
