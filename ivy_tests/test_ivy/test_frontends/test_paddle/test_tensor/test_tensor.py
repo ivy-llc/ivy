@@ -3048,8 +3048,8 @@ def test_torch_tensor_sqrt_(
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
