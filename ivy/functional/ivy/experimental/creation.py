@@ -873,7 +873,6 @@ def random_tr(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     full: Optional[bool] = False,
     seed: Optional[int] = None,
-    **context,
 ) -> Union[ivy.TRTensor, ivy.Array]:
     """
     Generate a random TR tensor.
@@ -896,7 +895,7 @@ def random_tr(
 
     Returns
     -------
-    ivy.TRTensor
+    ivy.TRTensor or ivy.Array if full is True
     """
     rank = ivy.TRTensor.validate_tr_rank(shape, rank)
 
