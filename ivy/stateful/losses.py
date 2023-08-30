@@ -39,9 +39,6 @@ class LogPoissonLoss(Module):
             ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed. Default: ``'none'``.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
 
         Returns
         -------
@@ -88,9 +85,6 @@ class CrossEntropyLoss(Module):
             ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed. Default: ``'sum'``.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
 
         Returns
         -------
@@ -103,4 +97,67 @@ class CrossEntropyLoss(Module):
             axis=ivy.default(axis, self._axis),
             epsilon=ivy.default(epsilon, self._epsilon),
             reduction=ivy.default(reduction, self._reduction),
+        )
+
+
+class BinaryCrossEntropyLoss(Module):
+    def __init__(
+        self,
+        *,
+        from_logits: bool = False,
+        epsilon: float = 0.0,
+        reduction: str = "none",
+    ):
+        self._from_logits = from_logits
+        self._epsilon = epsilon
+        self._reduction = reduction
+        Module.__init__(self)
+
+    def _forward(
+        self,
+        true,
+        pred,
+        *,
+        from_logits=None,
+        epsilon=None,
+        reduction=None,
+        pos_weight=None,
+        axis=None,
+    ):
+        """
+        Parameters
+        ----------
+        true
+            input array containing true labels.
+        pred
+            input array containing Predicted labels.
+        from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal to the
+            number of classes.
+        axis
+            Axis along which to compute crossentropy.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy between the given distributions.
+        """
+        return ivy.binary_cross_entropy(
+            true,
+            pred,
+            from_logits=ivy.default(from_logits, self._from_logits),
+            epsilon=ivy.default(epsilon, self._epsilon),
+            reduction=ivy.default(reduction, self._reduction),
+            pos_weight=pos_weight,
+            axis=axis,
         )
