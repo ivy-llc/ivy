@@ -445,9 +445,7 @@ def test_numpy_lognormal(
     p=st.floats(
         allow_nan=False,
         allow_infinity=False,
-        width=32,
         min_value=0,
-        exclude_min=True,
         max_value=1,
         exclude_max=True,
     ),
