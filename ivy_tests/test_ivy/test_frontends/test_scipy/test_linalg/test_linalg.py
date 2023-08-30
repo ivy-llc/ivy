@@ -391,7 +391,7 @@ def test_scipy_svd(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0.1,
-        max_value=10,
+        max_value=50,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
     check_finite=st.booleans(),
