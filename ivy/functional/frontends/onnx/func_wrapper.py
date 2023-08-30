@@ -5,6 +5,10 @@ import ivy
 import ivy.functional.frontends.onnx as onnx_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _from_ivy_array_to_onnx_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
@@ -22,20 +26,24 @@ def _ivy_array_to_onnx(x):
     return x
 
 
-def _onnx_frontend_array_to_ivy(x):
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    return x
-
-
 def _native_to_ivy_array(x):
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
 
+def _onnx_frontend_array_to_ivy(x):
+    if hasattr(x, "ivy_array"):
+        return x.ivy_array
+    return x
+
+
 def _to_ivy_array(x):
     return _onnx_frontend_array_to_ivy(_native_to_ivy_array(x))
+
+
+# --- Main --- #
+# ------------ #
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
