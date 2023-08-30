@@ -3,8 +3,8 @@ Get Started
 
 ..
 
-   If you want to use **Ivy's compiler and transpiler**, make sure to follow the 
-   `setting up instructions for the API key <https://unify.ai/docs/ivy/compiler/setting_up.html>`_ 
+   If you want to use **Ivy's tracer and transpiler**, make sure to follow the 
+   `setting up instructions for the API key <https://unify.ai/docs/ivy/tracer/setting_up.html>`_ 
    after installing Ivy!
 
 

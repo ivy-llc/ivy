@@ -11,7 +11,7 @@ Ivy Frontend Tests
 .. _`Ivy Tests`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
 .. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
-.. _`setting up`: https://unify.ai/docs/ivy/compiler/setting_up.html#setting-up-testing
+.. _`setting up`: https://unify.ai/docs/ivy/tracer/setting_up.html#setting-up-testing
 
 
 Introduction

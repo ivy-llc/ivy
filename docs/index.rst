@@ -39,9 +39,9 @@
   :maxdepth: -1
   :caption: Compiling and Transpiling
 
-  compiler/setting_up.rst
-  compiler/compiler.rst
-  compiler/transpiler.rst
+  tracer/setting_up.rst
+  tracer/tracer.rst
+  tracer/transpiler.rst
 
 
 .. autosummary::

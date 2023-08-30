@@ -1,7 +1,7 @@
 Setting Up
 ==========
 
-To use Ivy's compiler and transpiler, you'll need an **API key**. We are starting to 
+To use Ivy's tracer and transpiler, you'll need an **API key**. We are starting to 
 grant pilot access to certain users, so you can `join the waitlist <https://console.unify.ai/>`_ 
 if you want to get one! 
 
@@ -26,8 +26,8 @@ For reference, this would be equivalent to:
 Issues and Questions
 --------------------
 
-If you find any issue or bug while using the compiler and/or the transpiler, please
-raise an `issue in GitHub <https://github.com/unifyai/ivy/issues>`_ and add the ``compiler`` 
+If you find any issue or bug while using the tracer and/or the transpiler, please
+raise an `issue in GitHub <https://github.com/unifyai/ivy/issues>`_ and add the ``tracer`` 
 or the ``transpiler`` label accordingly. A member of the team will get back to you ASAP!
 
 Otherwise, if you haven't found a bug but want to ask a question, suggest something, or get help 

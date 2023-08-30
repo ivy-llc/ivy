@@ -1,7 +1,7 @@
 Ivy as a Framework
 ==================
 
-On the :ref:`Building Blocks` page, we explored the role of the backend functional APIs, the Ivy functional API, the framework handler, and the graph compiler.
+On the :ref:`Building Blocks` page, we explored the role of the Backend functional APIs, the Ivy functional API, the Backend handler, and the Tracer.
 These are parts labeled as (a) in the image below.
 
 On the :ref:`Ivy as a Transpiler` page, we explained the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks.
