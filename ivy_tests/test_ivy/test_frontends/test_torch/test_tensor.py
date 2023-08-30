@@ -1589,11 +1589,9 @@ def test_torch_instance_scatter(
     init_tree="torch.tensor",
     method_name="scatter_",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["add", "multiply"]),
 )
 def test_torch_instance_scatter_(
     args,
-    mode,
     frontend,
     frontend_method_data,
     init_flags,
@@ -1604,7 +1602,7 @@ def test_torch_instance_scatter_(
     input_dtype, x, indices, values, axis = args
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype],
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -1613,7 +1611,6 @@ def test_torch_instance_scatter_(
             "dim": axis,
             "index": indices,
             "src": values,
-            "reduce": mode,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,

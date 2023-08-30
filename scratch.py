@@ -6,7 +6,7 @@ ivy.set_backend("torch")
 
 x = np.array([[0, 0], [0, 0]], dtype=np.int32)
 idx = np.array([[0, 0]], dtype=np.int64)
-vals = np.array([[1.0, 1.0]], dtype=np.int32)
+vals = np.array([[1, 1]], dtype=np.int32)
 axis = 0
 
 ivy_x = ivy.array(x)

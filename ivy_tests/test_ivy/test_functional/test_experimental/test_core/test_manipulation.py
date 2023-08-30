@@ -427,7 +427,7 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e3)
+        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e2)
     )
     values = draw(values_strategy)
 

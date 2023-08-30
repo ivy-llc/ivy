@@ -1696,7 +1696,7 @@ class Tensor:
     @with_supported_dtypes(
         {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
-    def scatter_(self, dim, index, src, reduce=None):
+    def scatter_(self, dim, index, src, *, reduce=None):
         if reduce is None:
             reduce = "assign"
         self.ivy_array = ivy.put_along_axis(
@@ -1728,7 +1728,7 @@ class Tensor:
     @with_supported_dtypes(
         {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
-    def scatter_reduce(self, dim, index, src, reduce=None):
+    def scatter_reduce(self, dim, index, src, reduce, *, include_self=True):
         return torch_frontend.scatter_reduce(self, dim, index, src, reduce=reduce)
 
     def take_along_dim(self, indices, dim):
