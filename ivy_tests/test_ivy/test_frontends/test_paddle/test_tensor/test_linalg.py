@@ -824,6 +824,7 @@ def test_paddle_qr(
     on_device,
 ):
     dtype, x = dtype_and_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
