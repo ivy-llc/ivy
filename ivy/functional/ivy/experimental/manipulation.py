@@ -1148,12 +1148,9 @@ def pad(
     )
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return padded
+        if not ivy.is_array(constant_values) or constant_values.dtype != input.dtype:
+            constant_values = ivy.asarray(constant_values, dtype=input.dtype)
+        return _interior_pad(input, constant_values, pad_width)
     pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
@@ -1946,7 +1943,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = ivy.full(new_shape, padding_value)
+            new_array = ivy.full(new_shape, ivy.to_scalar(padding_value), dtype=operand.dtype)
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim

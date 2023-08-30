@@ -3083,8 +3083,8 @@ def greater(
 @handle_array_function
 @handle_device_shifting
 def greater_equal(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -3148,30 +3148,6 @@ def greater_equal(
     ivy.array([[[0.],
             [1.],
             [0.]]])
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.native_array([4, 5, 0])
-    >>> z = ivy.greater_equal(x, y)
-    >>> print(z)
-    ivy.array([False, False,  True])
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
-    ...                   b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.greater_equal(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[True, False, False],
-                      [True, False, False],
-                      [False, False, False]]),
-        b: ivy.array([[True, False, False],
-                      [False, False, False],
-                      [False, False, False]])
-    }
 
     With :class:`ivy.Container` input:
 
