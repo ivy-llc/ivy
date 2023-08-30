@@ -2186,34 +2186,6 @@ def test_paddle_tanh(
     )
 
 
-# trunc
-@handle_frontend_test(
-    fn_tree="paddle.trunc",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", "int"),
-    ),
-)
-def test_paddle_trunc(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # inner
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.inner",
@@ -2244,4 +2216,32 @@ def test_paddle_inner(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+    
+# trunc
+@handle_frontend_test(
+    fn_tree="paddle.trunc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", "int"),
+    ),
+)
+def test_paddle_trunc(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
