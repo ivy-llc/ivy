@@ -803,54 +803,6 @@ def test_jax_deg2rad(
     )
 
 
-# mean
-@handle_frontend_test(
-    fn_tree="jax.numpy.mean",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
-        large_abs_safety_factor=1.5,
-        small_abs_safety_factor=1.5,
-    ),
-    keepdims=st.booleans(),
-    dtype=st.sampled_from(
-        (
-            "float16",
-            "float32",
-            "float64",
-            "complex64",
-            "complex128",
-        )
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_mean(
-    *,
-    dtype_x_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-    keepdims,
-    dtype,
-):
-    input_dtype, x, axis = dtype_x_axis
-    if x[0].shape == ():
-        axis = None
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        axis=axis,
-        keepdims=keepdims,
-        dtype=dtype,
-    )
-
-    
 # degrees
 @handle_frontend_test(
     fn_tree="jax.numpy.degrees",
@@ -2046,6 +1998,54 @@ def test_jax_maximum(
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# mean
+@handle_frontend_test(
+    fn_tree="jax.numpy.mean",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=1.5,
+        small_abs_safety_factor=1.5,
+    ),
+    keepdims=st.booleans(),
+    dtype=st.sampled_from(
+        (
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_mean(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+    keepdims,
+    dtype,
+):
+    input_dtype, x, axis = dtype_x_axis
+    if x[0].shape == ():
+        axis = None
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keepdims,
+        dtype=dtype,
     )
 
 
