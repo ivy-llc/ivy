@@ -695,7 +695,15 @@ def test_jax_dot(
         small_abs_safety_factor=1.5,
     ),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("float_and_complex", full=False)[0],
+    dtype=st.sampled_from(
+        (
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_mean(
@@ -722,7 +730,7 @@ def test_jax_mean(
         a=x[0],
         axis=axis,
         keepdims=keepdims,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
