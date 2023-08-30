@@ -98,3 +98,31 @@ def compress(condition, a, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@to_ivy_arrays_and_back
+def put(arr, ind, v, mode="raise"):
+    arr = ivy.array(arr)
+    ind = ivy.array(ind)
+    v = ivy.array(v)
+
+    if isinstance(ind, int):
+        ind = [ind]
+
+    if ind.ndim == 1:
+        if mode == "raise":
+            if (ind < 0) | (ind >= len(arr)):
+                raise IndexError("Index out of bounds")
+        elif mode == "wrap":
+            ind %= len(arr)
+        elif mode == "clip":
+            ind = ivy.clip(ind, 0, len(arr) - 1)
+        else:
+            raise ValueError("Invalid mode")
+
+        arr[ind] = v
+
+    elif ind.ndim > 1:
+        raise ValueError("Index array cannot have more than 1 dimension")
+    else:
+        raise TypeError("Invalid index type")
