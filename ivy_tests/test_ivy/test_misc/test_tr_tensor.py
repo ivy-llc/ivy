@@ -17,7 +17,7 @@ import pytest
         )
     ],
 )
-def test_validate_cp_tensor(true_shape, true_rank):
+def test_validate_tr_tensor(true_shape, true_rank):
     factors = ivy.random_tr(true_shape, true_rank).factors
 
     # Check correct rank and shapes are returned
