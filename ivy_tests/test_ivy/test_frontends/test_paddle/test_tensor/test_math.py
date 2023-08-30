@@ -5,6 +5,8 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+from hypothesis import reproduce_failure
+
 
 # sin
 @handle_frontend_test(
@@ -951,7 +953,7 @@ def test_paddle_lgamma(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1E-4,
+        atol=1e-4,
         x=x[0],
     )
 
@@ -1866,22 +1868,35 @@ def test_paddle_diff(
     )
 
 
+# increment
+@reproduce_failure("6.82.7", b"AXicY2BkAAE4CWEAAABJAAU=")
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.increment",
+    dtype_and_x_and_value=helpers.dtype_and_values(
+        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+)
 def test_paddle_increment(
     *,
-    dtype_and_input_and_label,
+    dtype_and_x_and_value,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
 ):
-    input_dtypes, input_and_label = dtype_and_input_and_label
-    input, label = input_and_label
+    input_dtypes, x_and_value = dtype_and_x_and_value
+    value = x_and_value[1]
+    # Get a single element from the array to use as value parameter
+    value_first_element = value[0].item()
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        input=input,
-        label=label,
+        x=x_and_value[0],
+        value=value_first_element,
     )
