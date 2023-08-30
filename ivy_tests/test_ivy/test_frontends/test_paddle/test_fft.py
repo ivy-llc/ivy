@@ -146,7 +146,6 @@ def test_paddle_ifftshift(
         axes=axes,
     )
 
-
 @handle_frontend_test(
     fn_tree="paddle.fft.irfft",
     dtype_x_axis=helpers.dtype_values_axis(
