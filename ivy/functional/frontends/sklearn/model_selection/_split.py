@@ -37,7 +37,19 @@ class KFold(BaseCrossValidator):
         raise NotImplementedError
 
     def _iter_test_indices(self, X=None, y=None, groups=None):
-        raise NotImplementedError
+        n_samples = X.shape[0]
+        indices = ivy.arange(n_samples)
+        if self.shuffle:
+            indices = ivy.shuffle(indices, seed=self.random_state)
+
+        n_splits = self.n_splits
+        fold_sizes = ivy.full(n_splits, n_samples // n_splits, dtype=ivy.default_int_dtype())
+        fold_sizes[: n_samples % n_splits] += 1
+        current = 0
+        for fold_size in fold_sizes:
+            start, stop = current, current + fold_size
+            yield indices[start:stop]
+            current = stop
 
 
 @to_ivy_arrays_and_back
