@@ -219,6 +219,14 @@ def _histogram_helper(draw):
     )
 
 
+# nanmax
+@st.composite
+def _nanmax_helper(draw):
+    dtype_x_axis = draw(_statistical_dtype_values(function="nanmax"))
+    keep_dims = draw(st.booleans())
+    return dtype_x_axis, keep_dims
+
+
 @st.composite
 def _quantile_helper(draw):
     large_abs_safety_factor = 2
@@ -559,6 +567,31 @@ def test_median(*, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_
         input=x[0],
         axis=axis,
         keepdims=keep_dims,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.nanmax",
+    dtype_x_axis=_nanmax_helper(),
+    keep_dims=st.booleans(),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_gradients=st.just(False),
+)
+def test_nanmax(
+    *, dtype_x_axis, keep_dims, dtype, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        atol_=1e-02,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+        dtype=dtype[0],
     )
 
 
