@@ -170,7 +170,7 @@ def _interp_args(draw, mode=None, mode_list=None):
 
 @st.composite
 def _reduce_window_helper(draw, get_func_st):
-    dtype = draw(helpers.get_dtypes("valid", full=False))
+    dtype = draw(helpers.get_dtypes("valid", full=False, index=2))
     py_func = draw(get_func_st(dtype[0]))
     init_value = draw(
         helpers.dtype_and_values(
