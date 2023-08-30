@@ -111,7 +111,7 @@ def hfft(x, n=None, axis=-1, norm="backward", name=None):
     """Compute the FFT of a signal that has Hermitian symmetry, resulting in a real
     spectrum."""
     # Determine the input shape and axis length
-input_shape = x.shape
+    input_shape = x.shape
     input_len = input_shape[axis]
 
     # Calculate n if not provided
