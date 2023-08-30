@@ -2245,4 +2245,3 @@ def test_paddle_inner(
         x=x[0],
         y=x[1],
     )
-    
