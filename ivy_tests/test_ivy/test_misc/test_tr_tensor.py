@@ -49,12 +49,22 @@ def test_validate_tr_tensor(true_shape, true_rank):
         ivy.TRTensor.validate_tr_tensor(factors)
 
 
-def test_tr_to_tensor():
+@pytest.mark.parametrize(
+    "shape1, shape2, shape3",
+    [
+        (
+            (2, 4, 3),
+            (3, 5, 2),
+            (2, 6, 2),
+        )
+    ],
+)
+def test_tr_to_tensor(shape1, shape2, shape3):
     # Create ground truth TR factors
     factors = [
-        ivy.random_uniform(shape=(2, 4, 3)),
-        ivy.random_uniform(shape=(3, 5, 2)),
-        ivy.random_uniform(shape=(2, 6, 2)),
+        ivy.random_uniform(shape=shape1),
+        ivy.random_uniform(shape=shape2),
+        ivy.random_uniform(shape=shape3),
     ]
 
     # Create tensor
@@ -64,7 +74,11 @@ def test_tr_to_tensor():
     assert np.allclose(tensor, ivy.TRTensor.tr_to_tensor(factors), atol=1e-6, rtol=1e-6)
 
 
-def test_validate_tr_rank():
+@pytest.mark.parametrize(
+    "rank1, rank2",
+    [((2, 3, 4, 2), (2, 3, 4, 2, 3))],
+)
+def test_validate_tr_rank(rank1, rank2):
     tensor_shape = tuple(np.random.randint(1, 100, size=4))
     n_param_tensor = np.prod(tensor_shape)
 
@@ -80,7 +94,7 @@ def test_validate_tr_rank():
 
     # Integer rank
     with np.testing.assert_raises(ValueError):
-        ivy.TRTensor.validate_tr_rank(tensor_shape, rank=(2, 3, 4, 2))
+        ivy.TRTensor.validate_tr_rank(tensor_shape, rank=rank1)
 
     with np.testing.assert_raises(ValueError):
-        ivy.TRTensor.validate_tr_rank(tensor_shape, rank=(2, 3, 4, 2, 3))
+        ivy.TRTensor.validate_tr_rank(tensor_shape, rank=rank2)
