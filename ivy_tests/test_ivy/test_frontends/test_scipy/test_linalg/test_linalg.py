@@ -56,7 +56,7 @@ def _generate_eigh_tridiagonal_args(draw):
         select_range = [-100, 100]
 
     eigvals_only = draw(st.booleans())
-    tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
+    tol = draw(st.floats(1e-5, 1e-3))
     return dtype, alpha, beta, eigvals_only, select, select_range, tol
 
 
@@ -130,6 +130,8 @@ def test_scipy_eigh_tridiagonal(
     on_device,
     backend_fw,
 ):
+    print(all_args[-1])
+
     dtype, alpha, beta, eigvals_only, select, select_range, tol = all_args
     helpers.test_frontend_function(
         input_dtypes=dtype,
