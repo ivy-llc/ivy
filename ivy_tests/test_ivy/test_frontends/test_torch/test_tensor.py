@@ -554,40 +554,6 @@ def test_torch___array_wrap__(
     )
 
 
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="__array_wrap__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-    ),
-)
-def test_torch___array_wrap__(
-    dtype_and_x,
-    backend_fw,
-    frontend,
-):
-    input_dtypes, x = dtype_and_x
-    if x[1].dtype == "bfloat16":
-        return
-    if x[0].dtype == "bfloat16":
-        ret_gt = torch.tensor(x[0].tolist(), dtype=torch.bfloat16).__array_wrap__(x[1])
-    else:
-        ret_gt = torch.tensor(x[0]).__array_wrap__(x[1])
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        local_importer = ivy_backend.utils.dynamic_import
-        function_module = local_importer.import_module("ivy.functional.frontends.torch")
-        ret = function_module.tensor(x[0]).__array_wrap__(x[1])
-        assert isinstance(ret, function_module.Tensor)
-    helpers.value_test(
-        ret_np_flat=np.array(ret.ivy_array).ravel(),
-        ret_np_from_gt_flat=ret_gt.numpy().ravel(),
-        ground_truth_backend="torch",
-        backend=backend_fw,
-    )
-
-
 # __bool__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1447,37 +1413,6 @@ def test_torch___truediv__(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="__array__",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    dtype=helpers.get_dtypes("valid", full=False),
-)
-def test_torch__array__(
-    dtype_and_x,
-    dtype,
-    frontend,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    if x[0].dtype == "bfloat16":
-        return
-    dtype[0] = np.dtype(dtype[0])
-    ret_gt = torch.tensor(x[0]).__array__(dtype[0])
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        local_importer = ivy_backend.utils.dynamic_import
-        function_module = local_importer.import_module("ivy.functional.frontends.torch")
-        ret = function_module.tensor(x[0]).__array__(dtype[0])
-
-    helpers.value_test(
-        ret_np_flat=ret.ravel(),
-        ret_np_from_gt_flat=ret_gt.ravel(),
-        ground_truth_backend="torch",
-        backend=backend_fw,
     )
 
 
