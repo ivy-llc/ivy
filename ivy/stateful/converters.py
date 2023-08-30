@@ -117,7 +117,7 @@ class ModuleConverters:
             )
 
         try:
-            pass
+            from haiku._src.data_structures import FlatMapping
         except (ImportError, AttributeError):
             raise ImportError(
                 "Unable to import `FlatMapping` from `haiku`. Please check if the "
@@ -203,7 +203,7 @@ class ModuleConverters:
             The new trainable ivy.Module instance.
         """
         try:
-            pass
+            import flax
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
                 "`flax` was not found installed on your system. Please proceed "
