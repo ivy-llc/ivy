@@ -167,7 +167,7 @@ With regards to both of these points, Ivy provides the generalized superset impl
 
 However, as discussed above, :func:`np.logical_and` also supports the :code:`where` argument, which we opt to **not** support in Ivy.
 This is because the behaviour can easily be created as a composition like so :code:`ivy.where(mask, ivy.logical_and(x, y), ivy.zeros_like(mask))`, and we prioritize the simplicity, clarity, and function uniqueness in Ivy's API in this case, which comes at the cost of reduced runtime efficiency for some functions when using a NumPy backend.
-However, in future releases our automatic graph compilation and graph simplification processes will alleviate these minor inefficiencies entirely from the final computation graph, by fusing multiple operations into one at the API level where possible.
+However, in future releases our automatic graph tracing and graph simplification processes will alleviate these minor inefficiencies entirely from the final computation graph, by fusing multiple operations into one at the API level where possible.
 
 Maximizing Usage of Native Functionality
 ----------------------------------------
