@@ -1,19 +1,24 @@
+from abc import ABCMeta, abstractmethod
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
-class BaseCrossValidator:
+class BaseCrossValidator(metaclass=ABCMeta):
     def split(self, X, y=None, groups=None):
         raise NotImplementedError
 
     def _iter_test_masks(self, X=None, y=None, groups=None):
         for test_index in self._iter_test_indices(X, y, groups):
-            test_mask = ivy.zeros(X.shape[0], dtype=bool)
+            test_mask = ivy.zeros(X.shape[0], dtype="bool")
             test_mask[test_index] = True
             yield test_mask
 
     def _iter_test_indices(self, X=None, y=None, groups=None):
         raise NotImplementedError
+
+    @abstractmethod
+    def get_n_splits(self, X=None, y=None, groups=None):
+        pass
 
 
 class KFold(BaseCrossValidator):
