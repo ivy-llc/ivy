@@ -486,8 +486,6 @@ class Tensor:
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
 
-    ne = not_equal
-
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -772,6 +770,22 @@ class Tensor:
     @numpy_to_torch_style_args
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self, dim=dim, keepdim=keepdim)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "complex",
+                "bfloat16",
+                "bool",
+                "uint16",
+                "uint32",
+                "uint64",
+            )
+        },
+        "torch",
+    )
+    def maximum(self, other, *, out=None):
+        return torch_frontend.maximum(self, other=other, out=out)
 
     @property
     def is_quantized(self):
