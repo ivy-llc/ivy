@@ -33,9 +33,6 @@ class KFold(BaseCrossValidator):
         self.shuffle = shuffle
         self.random_state = random_state
 
-    def split(self, X, y=None, groups=None):
-        raise NotImplementedError
-
     def _iter_test_indices(self, X=None, y=None, groups=None):
         n_samples = X.shape[0]
         indices = ivy.arange(n_samples)
