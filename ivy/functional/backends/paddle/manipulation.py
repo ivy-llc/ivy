@@ -70,7 +70,7 @@ def expand_dims(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64", "bool")},
+    {"2.5.1 and below": ("float", "int32", "int64", "bool")},
     backend_version,
 )
 def flip(
@@ -90,9 +90,7 @@ def flip(
     {
         "2.5.1 and below": (
             "bool",
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "uint16",
@@ -169,10 +167,8 @@ def reshape(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "float16",
-            "float32",
+            "float",
             "uint16",
-            "float64",
             "int32",
             "int64",
             "complex",
@@ -194,10 +190,8 @@ def roll(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "float16",
             "uint16",
-            "float32",
-            "float64",
+            "float",
             "bool",
             "int8",
             "int32",
@@ -234,9 +228,7 @@ def squeeze(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "uint16",
@@ -291,10 +283,8 @@ def stack(
         "2.5.1 and below": (
             "bool",
             "bfloat16",
-            "float16",
             "uint16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "uint8",
@@ -394,10 +384,8 @@ def repeat(
     {
         "2.5.1 and below": (
             "bool",
-            "float16",
             "uint16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
         )
@@ -445,9 +433,7 @@ def tile(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "complex",
@@ -514,10 +500,8 @@ def clip(
     {
         "2.5.1 and below": (
             "bool",
-            "float16",
             "uint16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "complex",

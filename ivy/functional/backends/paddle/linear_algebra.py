@@ -59,9 +59,7 @@ def cross(
     return _cross(x1, x2, axisa, axisb, axisc, axis)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64")}, backend_version
-)
+@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     ret = paddle.linalg.det(x)
     if x.ndim == 2:
@@ -128,7 +126,7 @@ def eigvalsh(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64")},
+    {"2.5.1 and below": ("float",)},
     backend_version,
 )
 def inner(
@@ -160,9 +158,7 @@ def inv(
     {
         "2.5.1 and below": (
             "uint16",
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "complex",
         )
     },
@@ -331,9 +327,7 @@ def matrix_rank(
     {
         "2.5.1 and below": (
             "bool",
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "uint16",
@@ -358,7 +352,7 @@ def matrix_transpose(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64")},
+    {"2.5.1 and below": ("float",)},
     backend_version,
 )
 def outer(
@@ -487,7 +481,7 @@ def svdvals(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64")},
+    {"2.5.1 and below": ("float",)},
     backend_version,
 )
 def tensordot(
@@ -504,7 +498,13 @@ def tensordot(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float16", "float32", "float64")},
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float",
+        )
+    },
     backend_version,
 )
 def trace(
@@ -572,10 +572,8 @@ def vector_norm(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "float16",
             "uint16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "complex",

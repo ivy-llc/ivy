@@ -11,9 +11,7 @@ from . import backend_version
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "int16",
             "int32",
             "int64",

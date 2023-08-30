@@ -18,7 +18,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float", "uint16", "complex")},
     backend_version,
 )
 def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -28,7 +28,7 @@ def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float", "uint16", "complex")},
     backend_version,
 )
 def leaky_relu(
@@ -47,7 +47,7 @@ def leaky_relu(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float", "uint16", "complex")},
     backend_version,
 )
 def gelu(
@@ -69,7 +69,7 @@ def gelu(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float", "uint16", "complex")},
     backend_version,
 )
 def sigmoid(
@@ -155,7 +155,7 @@ def log_softmax(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float", "uint16", "complex")},
     backend_version,
 )
 def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -164,9 +164,7 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.mish(x)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")}, backend_version
-)
+@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
 def hardswish(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:

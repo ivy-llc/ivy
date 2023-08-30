@@ -16,9 +16,7 @@ from .elementwise import _elementwise_helper
     {
         "2.5.1 and below": (
             "uint16",
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "int16",
             "int32",
             "int64",

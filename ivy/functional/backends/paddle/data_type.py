@@ -145,9 +145,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
         "2.5.1 and below": (
             "bool",
             "uint16",
-            "float16",
-            "float32",
-            "float64",
+            "float",
             "int32",
             "int64",
             "complex",
