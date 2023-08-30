@@ -1405,8 +1405,8 @@ def stft(
     /,
     *,
     fft_length: Optional[int] = None,
-    window_fn: Optional[Callable] = tf.signal.hann_window,
-    pad_end: bool = False,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
     name: Optional[str] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

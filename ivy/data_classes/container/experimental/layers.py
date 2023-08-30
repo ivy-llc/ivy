@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence
+from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -2278,5 +2278,63 @@ class _ContainerWithLayersExperimental(ContainerBase):
             s=s,
             axes=axes,
             norm=norm,
+            out=out,
+        )
+
+    @staticmethod
+    def static_stft(
+            signals: ivy.Container,
+            frame_length: Union[int, ivy.Container],
+            frame_step: Union[int, ivy.Container],
+            /,
+            *,
+            fft_length: Optional[Union[int, ivy.Container]] = None,
+            window_fn: Optional[Union[Callable, ivy.Container]] = None,
+            pad_end: Optional[Union[bool, ivy.Container]] = False,
+            name: Optional[Union[str, ivy.Container]] = None,
+            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+            to_apply: Union[bool, ivy.Container] = True,
+            prune_unapplied: Union[bool, ivy.Container] = False,
+            map_sequences: Union[bool, ivy.Container] = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+
+        return ContainerBase.cont_multi_map_in_function(
+            "stft",
+            signals,
+            frame_length,
+            frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def stft(
+            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            frame_length: Union[int, ivy.Container],
+            frame_step: Union[int, ivy.Container],
+            /,
+            *,
+            fft_length: Optional[Union[int, ivy.Container]] = None,
+            window_fn: Optional[Union[Callable, ivy.Container]] = None,
+            pad_end: Optional[Union[bool, ivy.Container]] = False,
+            name: Optional[Union[str, ivy.Container]] = None,
+            out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Container:
+
+        return self.static_stft(
+            self,
+            frame_length,
+            frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name,
             out=out,
         )
