@@ -186,8 +186,6 @@ def test_paddle_irfft(
         valid_axis=True,
         force_int_axis=True,
     )
-
-
 @handle_frontend_test(
     fn_tree="paddle.fft.hfft",
     dtype_x_axis=helpers.dtype_values_axis(
