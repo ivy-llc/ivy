@@ -1626,6 +1626,8 @@ def _get_dtype_and_square_matrix(draw):
         )
     )
     return dtype, mat
+
+
 # von_entropy
 @handle_test(
     fn_tree="functional.ivy.experimental.vonneumann_entropy",
