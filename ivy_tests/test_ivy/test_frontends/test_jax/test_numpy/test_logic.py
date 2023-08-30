@@ -700,6 +700,7 @@ def test_jax_isin(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     x_and_dtype = assume_unique_and_dtype_and_x
     dtypes, values = x_and_dtype
@@ -713,6 +714,7 @@ def test_jax_isin(
         element=elements,
         test_elements=test_elements,
         invert=invert,
+        backend_to_test=backend_fw,
     )
 
 
@@ -832,6 +834,7 @@ def test_jax_logical_or(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        backend_to_test=backend_fw,
     )
 
 
@@ -1131,6 +1134,7 @@ def test_jax_numpy_packbits(
     *,
     fn_tree,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -1142,4 +1146,59 @@ def test_jax_numpy_packbits(
         x=x[0],
         axis=axis,
         bitorder=bitorder,
+        backend_to_test=backend_fw,
+    )
+
+
+@st.composite
+def _func_and_shape_dtype_helper(draw):
+    # here assumption is that the input func will take the len(shape) no of parameters
+    def add_numbers(*args):
+        total = 0
+        for num in args:
+            total += num
+        return total
+
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
+
+    dtype = draw(helpers.get_dtypes("valid"))
+
+    return add_numbers, shape, dtype[0]
+
+
+# fromfunction
+@handle_frontend_test(
+    fn_tree="jax.numpy.fromfunction",
+    input_dtype=helpers.get_dtypes("valid"),
+    function_and_shape_and_dtype=_func_and_shape_dtype_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_fromfunction(
+    input_dtype,
+    function_and_shape_and_dtype,
+    backend_fw,
+    frontend,
+    on_device,
+    fn_tree,
+    test_flags,
+):
+    function, shape, dtype = function_and_shape_and_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        function=function,
+        shape=shape,
+        dtype=dtype,
     )

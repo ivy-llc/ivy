@@ -35,6 +35,10 @@ from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks  # noqa
 from ivy_tests.test_ivy.helpers.multiprocessing import backend_proc, frontend_proc
+from ivy_tests.test_ivy.helpers.pipeline_helper import (
+    BackendHandler,
+    BackendHandlerMode,
+)
 
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
@@ -76,6 +80,9 @@ def pytest_report_header(config):
 def pytest_configure(config):
     global available_frameworks
     global multiprocessing_flag
+    if config.getoption("--set-backend"):
+        BackendHandler._update_context(BackendHandlerMode.SetBackend)
+
     # Ivy Exception traceback
     set_exception_trace_mode(config.getoption("--ivy-tb"))
 
@@ -103,6 +110,8 @@ def pytest_configure(config):
         found_backends = set()
         for fw in backend_strs:
             if "/" in fw:
+                # set backend to be used
+                BackendHandler._update_context(BackendHandlerMode.SetBackend)
                 multiprocessing_flag = True
                 # spin up multiprocessing
                 # build mp process, queue, initiation etc
@@ -292,6 +301,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-gradient-testing"),
             getopt("--with-gradient-testing"),
         ),
+        "test_compile": (
+            getopt("--skip-compile-testing"),
+            getopt("--with-compile-testing"),
+        ),
     }
 
     # final mapping for hypothesis value generation
@@ -317,6 +330,13 @@ def process_cl_flags(config) -> Dict[str, bool]:
 
 def pytest_addoption(parser):
     parser.addoption("--no-mp", action="store", default=None)
+    parser.addoption(
+        "--set-backend",
+        action="store_true",
+        default=False,
+        help="Force the testing pipeline to use ivy.set_backend for backend setting",
+    )
+
     parser.addoption("--device", action="store", default="cpu")
     parser.addoption("-B", "--backend", action="store", default="all")
     parser.addoption("--compile_graph", action="store_true")
@@ -330,6 +350,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-nestable-testing", action="store_true")
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
+    parser.addoption("--skip-compile-testing", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -337,6 +358,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-nestable-testing", action="store_true")
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
+    parser.addoption("--with-compile-testing", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",

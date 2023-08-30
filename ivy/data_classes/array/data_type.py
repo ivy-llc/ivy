@@ -18,8 +18,9 @@ class _ArrayWithDataTypes(abc.ABC):
         copy: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Copy an array to a specified data type irrespective of
-        :ref:`type-promotion` rules.
+        """
+        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        rules.
 
         .. note::
         Casting floating-point ``NaN`` and ``infinity`` values to integral data types
@@ -169,6 +170,7 @@ class _ArrayWithDataTypes(abc.ABC):
         >>> print(x.dtype)
         float32
 
+        >>> x = ivy.array([4., 5., 6.])
         >>> print(x.can_cast(ivy.float64))
         True
         """
