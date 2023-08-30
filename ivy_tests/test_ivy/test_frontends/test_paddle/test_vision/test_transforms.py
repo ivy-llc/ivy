@@ -181,3 +181,51 @@ def test_paddle_vflip(
         img=x[0],
         backend_to_test=backend_fw,
     )
+
+
+# pad
+@handle_frontend_test(
+    fn_tree="paddle.vision.transforms.pad",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int32"],
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=5
+    ),
+    padding=st.sampled_from([
+        1,
+        (1, 2),
+        (1, 2, 3, 4)
+    ]),
+    fill=st.sampled_from([
+        1,
+        #(1, 2),
+        #(1, 2, 3)
+    ])
+
+
+)
+def test_paddle_pad(
+    *,
+    dtype_and_x,
+    padding,
+    fill,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        img=x[0],
+        padding=padding,
+        fill=fill,
+        backend_to_test=backend_fw,
+    )

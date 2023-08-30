@@ -194,3 +194,63 @@ def vflip(img, data_format="CHW"):
     elif data_format.lower() == "hwc":
         axis = -3
     return ivy.flip(img, axis=axis)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
+        }
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def pad(img, padding, fill=0, padding_mode='constant'):
+    img = ivy.array(img)
+    dim_size = img.ndim
+    if not hasattr(padding, '__len__'):
+        if dim_size == 2:
+            padding = ((padding, padding), (padding, padding))
+        elif dim_size == 3:
+            padding = ((0, 0), (padding, padding), (padding, padding))
+    elif len(padding) == 2:
+        if dim_size == 2:
+            padding = ((padding[1], padding[1]), (padding[0], padding[0]))
+        elif dim_size == 3:
+            padding = ((0, 0), (padding[1], padding[1]), (padding[0], padding[0]))
+    elif len(padding) == 4:
+        if dim_size == 2:
+            padding = ((padding[1], padding[3]), (padding[0], padding[2]))
+        elif dim_size == 3:
+            padding = ((0, 0), (padding[1], padding[3]), (padding[0], padding[2]))
+
+    if padding_mode == 'edge' or padding_mode == 'reflect' or padding_mode == 'symmetric':
+        return ivy.pad(img, padding, mode=padding_mode)
+
+    elif padding_mode == 'constant' and dim_size == 2:
+        return ivy.pad(img, padding, constant_values=fill)
+
+    elif padding_mode == 'constant' and dim_size == 3:
+        new_fill = [0, 0, 0]
+        if hasattr(fill, '__len__'):
+            for i in range(len(fill)):
+                new_fill[i] = fill[i]
+        else:
+            new_fill[0] = fill
+            new_fill[1] = fill
+            new_fill[2] = fill
+        padded_img = ivy.pad(img, padding)
+        for row in range(0, padded_img.shape[0]):
+            if row < padding[1][0] or row >= padded_img.shape[0] - padding[1][1]:
+                print(padded_img.shape)
+                for col in range(0, padded_img.shape[2]):
+                    padded_img[row, col, 0] = new_fill[0]
+                    padded_img[row, col, 1] = new_fill[1]
+                    padded_img[row, col, 2] = new_fill[2]
+            else:
+                for col in set(range(0, padding[2][0])).union(range(padded_img.shape[1]-padding[2][1], padded_img.shape[1])):
+                    padded_img[row, col, 0] = new_fill[0]
+                    padded_img[row, col, 1] = new_fill[1]
+                    padded_img[row, col, 2] = new_fill[2]
+        return padded_img
+
