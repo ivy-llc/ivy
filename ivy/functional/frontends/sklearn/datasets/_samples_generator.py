@@ -15,8 +15,6 @@ def make_circles(
     outer_circ_x = ivy.cos(
         ivy.linspace(0, 2 * ivy.pi, num=n_samples_out, endpoint=False)
     )
-    outer_circ_x = ivy.cos(ivy.linspace(0, ivy.pi, n_samples_out))
-
     outer_circ_y = ivy.sin(
         ivy.linspace(0, 2 * ivy.pi, num=n_samples_out, endpoint=False)
     )
