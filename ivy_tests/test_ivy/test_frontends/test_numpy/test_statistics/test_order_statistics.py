@@ -11,38 +11,6 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# ptp
-@handle_frontend_test(
-    fn_tree="numpy.ptp",
-    dtype_values_axis=_statistical_dtype_values(function="ptp"),
-    keep_dims=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_numpy_ptp(
-    dtype_values_axis,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    keep_dims,
-):
-    input_dtypes, values, axis = dtype_values_axis
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
-    helpers.test_frontend_function(
-        a=values[0],
-        axis=axis,
-        out=None,
-        keepdims=keep_dims,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        input_dtypes=input_dtypes,
-    )
-
-
 # nanpercentile
 @handle_frontend_test(
     fn_tree="numpy.nanpercentile",
@@ -81,6 +49,38 @@ def test_numpy_nanpercentile(
         keepdims=keep_dims,
         interpolation=None,
         frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        input_dtypes=input_dtypes,
+    )
+
+
+# ptp
+@handle_frontend_test(
+    fn_tree="numpy.ptp",
+    dtype_values_axis=_statistical_dtype_values(function="ptp"),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_numpy_ptp(
+    dtype_values_axis,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    keep_dims,
+):
+    input_dtypes, values, axis = dtype_values_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    helpers.test_frontend_function(
+        a=values[0],
+        axis=axis,
+        out=None,
+        keepdims=keep_dims,
+        frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         input_dtypes=input_dtypes,
