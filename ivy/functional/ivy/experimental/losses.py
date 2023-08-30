@@ -159,6 +159,71 @@ def l1_loss(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+def huber_loss(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    delta: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the Huber loss (smooth L1 loss) between true and predicted values.
+
+    Parameters
+    ----------
+    true: array_like
+        The true (ground truth) values.
+    pred : array_like
+        The predicted values by the model.
+    delta : float, optional
+        The threshold parameter that determines the point where the loss transitions fro
+        -m
+        squared error to absolute error. Default is 1.0.
+    reduction : str, optional
+        The type of reduction to apply to the loss. Possible values are "mean" (default)
+        and "sum".
+    out : array_like, optional
+        Optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array_like
+        The Huber loss between the true and predicted values.
+
+    Examples
+    --------
+    >>> true = ivy.array([2, 4, 7, 1])
+    >>> pred = ivy.array([2.5, 3.5, 8, 0.8])
+    >>> huber_loss(true, pred, delta=1.0)
+    ivy.array([0.125, 0.125, 0.5  , 0.125])
+
+    >>> huber_loss(true, pred, delta=2.0)
+    ivy.array([0.125, 0.125, 0.5  , 0.2  ])
+
+    >>> huber_loss(true, pred, delta=0.5)
+    ivy.array([0.25 , 0.25 , 0.   , 0.125])
+    """
+    abs_diff = ivy.abs(true - pred)
+    quadratic_loss = 0.5 * (abs_diff**2)
+    linear_loss = delta * (abs_diff - 0.5 * delta)
+    loss = ivy.where(abs_diff <= delta, quadratic_loss, linear_loss)
+
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def smooth_l1_loss(
     input: Union[ivy.Array, ivy.NativeArray],
     target: Union[ivy.Array, ivy.NativeArray],
