@@ -27,15 +27,15 @@ Tracer API
 .. py:function:: ivy.trace(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to = None, include_generators = True, array_caching = True, return_backend_traced_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
     
     Traces a ``Callable`` or set of them into an Ivy graph. If ``args`` or ``kwargs`` are specified, 
-    compilation is performed eagerly, otherwise, compilation will happen lazily.
+    tracing is performed eagerly, otherwise, tracing will happen lazily.
     
     :param objs: Callable(s) to trace and create a graph of.
     :type objs: ``Callable``
-    :param stateful: List of instances to be considered stateful during the graph compilation.
+    :param stateful: List of instances to be considered stateful during the graph tracing.
     :type stateful: ``Optional[List]``
-    :param arg_stateful_idxs: Positional arguments to be considered stateful during the graph compilation.
+    :param arg_stateful_idxs: Positional arguments to be considered stateful during the graph tracing.
     :type arg_stateful_idxs: ``Optional[List]``
-    :param kwarg_stateful_idxs: Keyword arguments to be considered stateful during the graph compilation.
+    :param kwarg_stateful_idxs: Keyword arguments to be considered stateful during the graph tracing.
     :type kwarg_stateful_idxs: ``Optional[List]``
     :param to: Backend that the graph will be traced to. If not specified, the current backend will be used.
     :type to: ``Optional[str]``
@@ -43,7 +43,7 @@ Tracer API
     :type include_generators: ``bool``
     :param array_caching: Cache the constant arrays that appear as arguments to the functions in the graph.
     :type array_caching: ``bool``
-    :param return_backend_traced_fn: Whether to apply the native tracers, i.e. tf.function, after ivy's compilation.
+    :param return_backend_traced_fn: Whether to apply the native tracers, i.e. tf.function, after ivy's tracing.
     :type return_backend_traced_fn: ``bool``
     :param static_argnums: For jax's jit compilation.
     :type static_argnums: ``Optional[Union[int, Iterable[int]]]``
@@ -93,7 +93,7 @@ From the graph, we can observe that:
 1. As ``x`` and ``y`` are the only variables used when calculating the returned value ``z``,
    the non-contributing variable(s), ``k`` was not included in the graph. Function calls that 
    don't contribute to the output like the ``print`` function were also excluded.
-2. As we set the backend to ``torch`` during the compilation process, the traced 
+2. As we set the backend to ``torch`` during the tracing process, the traced 
    functions are torch functions, and the input and output types are torch tensors.
 3. The tensor shape in the graph only indicates the shape of the inputs the graph was 
    traced with. The tracer doesn't impose additional restrictions on the shape or 
@@ -111,11 +111,11 @@ From the graph, we can observe that:
     # New set of inputs
     out = traced_fn(a, b)
 
-Eager vs lazy Compilation
+Eager vs lazy Tracing
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The tracer runs the original function under the hood and tracks its computation 
-to create the traced graph. The **eager compilation** method traces the graph in the 
+to create the traced graph. The **eager tracing** method traces the graph in the 
 corresponding function call with the specified inputs before we use the traced 
 function.
 
@@ -129,16 +129,16 @@ use the traced function to compute the outputs directly.
 
 .. code-block:: python
 
-    # Trace the function eagerly (compilation happens here)
+    # Trace the function eagerly (tracing happens here)
     eager_graph = ivy.trace(fn, args=(x, y))
 
-    # Trace the function lazily (compilation does not happen here)
+    # Trace the function lazily (tracing does not happen here)
     lazy_graph = ivy.trace(fn)
 
     # Trace and return the output
     out = lazy_graph(x, y)
 
-To sum up, lazy compilation enables you to delay the compilation process until you have 
+To sum up, lazy tracing enables you to delay the tracing process until you have 
 the necessary inputs during execution. This is particularly useful in cases like 
 compiling libraries, where it’s not feasible to provide valid arguments for every 
 function call.
@@ -150,7 +150,7 @@ Array caching
 ~~~~~~~~~~~~~
 
 The tracer is able to cache constant arrays and their operations through the 
-``array_caching`` flag, reducing computation time after compilation.
+``array_caching`` flag, reducing computation time after tracing.
 
 .. code-block:: python
 
@@ -263,7 +263,7 @@ removed soon!
    is not from the said framework will not be correctly registered, this includes other 
    frameworks code (such as NumPy statements inside a torch model) or python statements 
    such as len().
-3. **Incorrectly cached parts of the graph**: There are certain cases where compilation 
+3. **Incorrectly cached parts of the graph**: There are certain cases where tracing 
    can succeed but hide some cached parts of the graph which shouldn't really be cached.
    To check this, it's recommended to trace with a noise array of the same shape and 
    then check if the output of the original function and the traced graph with another

@@ -47,9 +47,9 @@ Type and Shape Checking
 
 **Q:** What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of `dex`_.
 
-**A:**  The checks performed during graph compilation will remain backend-specific.
-The function :func:`ivy.trace` wraps the backend compilation functions, for example :func:`jax.jit`, :func:`tf.function`, :func:`torch.jit.script` and :func:`torch.jit.trace`.
-For some backends, shape-checking will be performed during the compilation phase and for others it will not.
+**A:**  The checks performed during tracing will remain backend-specific.
+The function :func:`ivy.trace` wraps the backend tracing functions, for example :func:`jax.jit`, :func:`tf.function`, :func:`torch.jit.script` and :func:`torch.jit.trace`.
+For some backends, shape-checking will be performed during the tracing phase and for others it will not.
 
 GPU handling
 ------------
@@ -81,7 +81,7 @@ Will Ivy parse python ASTs?
 **A:** For now, Ivy will not support dynamic control flow by parsing ASTs.
 The dynamism of :code:`for` loops and :code:`while` loops will be ignored during tracing, and just the static trace which chains the array operations performed during the forward pass at compile time will be preserved.
 
-However, Ivy will support the compilation of looping and branching methods such as :code:`lax.scan`, :code:`lax.while`, :code:`tf.while`, :code:`tf.cond` etc.
+However, Ivy will support the tracing of looping and branching methods such as :code:`lax.scan`, :code:`lax.while`, :code:`tf.while`, :code:`tf.cond` etc.
 In cases where there is not an associated compilable method in other backends, we will strive to implement this as a composition of existing compilable operations.
 If such a composition is not possible, then we will instead convert these to compositions of pure Python :code:`for`, :code:`while` and :code:`if` statements (when using a PyTorch backend for example).
 

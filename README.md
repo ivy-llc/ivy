@@ -142,8 +142,8 @@ ivy.unify()
 ```
 
 These functions can be used eagerly or lazily. If you pass the necessary
-arguments for function tracing, the compilation/transpilation step will
-happen instantly (eagerly). Otherwise, the compilation/transpilation
+arguments for function tracing, the tracing/transpilation step will
+happen instantly (eagerly). Otherwise, the tracing/transpilation
 will happen only when the returned function is first invoked.
 
 ``` python

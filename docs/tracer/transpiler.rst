@@ -45,7 +45,7 @@ Transpiler API
   :type source: ``Optional[str]``
   :param to: The target framework to transpile ``obj`` to.
   :type to: ``Optional[str]``
-  :param debug_mode: Whether to transpile to ivy first, before the final compilation to
+  :param debug_mode: Whether to transpile to ivy first, before the final tracing to
                      the target framework. If the target is ivy, then this flag makes no
                      difference.
   :type debug_mode: ``bool``

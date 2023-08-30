@@ -13,7 +13,7 @@ Graph tracers enable acyclic directed computation graphs to be extracted from fu
 There is inevitably some overlap with the role of the lower level compilers here, but for the purpose of this discussion, we consider tracers as being any tool which executes the function to be traced and produces a computation graph consisting solely of the lowest level functions defined within the framework itself, without going any lower.
 In this light, the tracer does not need to know about the hardware, the compiler instruction set, or anything else lower level.
 It simply creates an acyclic directed graph which maps the inputs of a function to the outputs of a function, as a composition of the low level functions defined within the framework.
-This is a very useful representation which can then make subsequent compilation simpler, and so this graph representation often sits between the raw source code and the lower level compilers which compile to specific hardware.
+This is a very useful representation which can then make subsequent tracing simpler, and so this graph representation often sits between the raw source code and the lower level compilers which compile to specific hardware.
 
 tf.Graph
 --------
