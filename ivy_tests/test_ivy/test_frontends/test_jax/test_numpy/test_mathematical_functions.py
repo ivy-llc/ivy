@@ -2008,6 +2008,7 @@ def test_jax_maximum(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=1.5,
         small_abs_safety_factor=1.5,
+        valid_axis=True,
     ),
     keepdims=st.booleans(),
     dtype=st.sampled_from(
@@ -2044,7 +2045,6 @@ def test_jax_mean(
         on_device=on_device,
         a=x[0],
         axis=axis,
-        keepdims=keepdims,
         dtype=dtype,
     )
 

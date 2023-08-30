@@ -372,17 +372,19 @@ def maximum(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-def mean(x, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    if a.shape == ():
+        return ivy.Array(a)
     if dtype is None:
         if where is None:
-            return ivy.mean(x, axis=axis, keepdims=keepdims, out=out)
-        filtered_x = x[where]
-        return ivy.mean(filtered_x, axis=axis, keepdims=keepdims, out=out)
-    casted_x = ivy.astype(x, dtype)
+            return ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
+        filtered_a = a[where]
+        return ivy.mean(filtered_a, axis=axis, keepdims=keepdims, out=out)
+    casted_a = a.astype(dtype)
     if where is None:
-        return ivy.mean(casted_x, axis=axis, keepdims=keepdims, out=out)
-    filtered_casted_x = casted_x[where]
-    return ivy.mean(filtered_casted_x, axis=axis, keepdims=keepdims, out=out)
+        return ivy.mean(casted_a, axis=axis, keepdims=keepdims, out=out)
+    filtered_casted_a = casted_a[where]
+    return ivy.mean(filtered_casted_a, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_ivy_arrays_and_back
