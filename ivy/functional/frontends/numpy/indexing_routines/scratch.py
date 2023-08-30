@@ -1,9 +1,13 @@
 import ivy.functional.frontends.numpy as ivy_np
 import numpy as np
+import ivy
 
-choices = [[1, 0, 1], [0, 1, 0], [1, 0, 1]]
+ivy.set_backend("numpy")
 
-args = [-10, 10]
+choices = [[0, 1, 2, 3], [10, 11, 12, 13],
+  [20, 21, 22, 23], [30, 31, 32, 33]]
+
+args = [2, 3, 1, 0]
 
 # choices = np.array(choices)
 # args = np.array(args)

@@ -483,3 +483,14 @@ def fill_diagonal(
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def choose(
+    a: np.ndarray,
+    choices: Union[np.ndarray, List[np.ndarray]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+    mode: str = "raise",
+) -> np.ndarray:
+    return np.choose(a, choices, out=out, mode=mode)

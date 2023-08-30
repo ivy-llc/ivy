@@ -1,11 +1,54 @@
 # Testing Function
 # global
 from hypothesis import strategies as st
+import numpy as np
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+@handle_frontend_test(
+    fn_tree="numpy.choose",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=10,
+    ),
+    out = st.none(),
+    mode = st.sampled_from(["raise", "wrap", "clip"]),
+    test_with_out=st.just(False),
+)
+def test_numpy_choose(
+    *,
+    dtype_and_a,
+    out,
+    mode,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, a = dtype_and_a
+    choices = ivy.array(
+        [np.random.randint(0, 10, size=a[0].shape) for _ in range(len(input_dtype))]
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        backend_to_test="numpy",
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        a=a[0],
+        choices=choices,
+        mode=mode,
+    )
+
 
 
 @handle_frontend_test(
