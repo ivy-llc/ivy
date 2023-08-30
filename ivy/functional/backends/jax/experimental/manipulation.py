@@ -179,7 +179,7 @@ def pad(
     input_dtype = input.dtype
 
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input_dtype:
+        if not ivy.is_array(constant_values) or constant_values.dtype != input_dtype:
             padding_value = ivy.native_array(constant_values, dtype=input_dtype)
         else:
             padding_value = constant_values
