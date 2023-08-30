@@ -188,11 +188,13 @@ def test_scipy_dct(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, _type, n, axis, norm = dtype_x_and_args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -221,11 +223,13 @@ def test_scipy_fft(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x, dim, norm, n = d_x_d_n_n
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -248,11 +252,13 @@ def test_scipy_fft2(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x, s, ax, norm = d_x_d_s_n
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -275,11 +281,13 @@ def test_scipy_idct(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, _type, n, axis, norm = dtype_x_and_args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -305,16 +313,18 @@ def test_scipy_ifft(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x, dim, norm, n = d_x_d_n_n
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x,
-        dim=dim,
+        axis=dim,
         norm=norm,
         n=n,
     )
@@ -332,12 +342,14 @@ def test_scipy_ifftn(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x, s, ax, norm, workers = d_x_d_s_n_workers
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
