@@ -15,7 +15,7 @@ import importlib
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.jax.device import _to_device, _to_array
+from ivy.functional.backends.jax.device import _to_array, _to_device
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.functional.backends.jax import JaxArray, NativeArray
 from ivy.utils.exceptions import _check_inplace_update_support
@@ -94,7 +94,7 @@ def set_item(
     ret = x.at[query].set(val)
     if copy:
         return ret
-    return ivy.inplace_update(x, ret)
+    return ivy.inplace_update(x, _to_device(ret))
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
@@ -149,7 +149,7 @@ def gather(
             result.append(r)
         result = jnp.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def gather_nd_helper(params, indices):
@@ -210,7 +210,7 @@ def gather_nd(
             result.append(r)
         result = jnp.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, int]:
@@ -388,8 +388,8 @@ def scatter_nd(
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))
-    return _to_device(target)
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_nd.support_native_out = True
