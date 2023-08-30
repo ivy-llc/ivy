@@ -379,6 +379,19 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
         parameters = list(type_hints.keys())
         annotations = [param.annotation for param in type_hints.values()]
 
+        # When new arrays are created, they should be created on the same device as
+        # existing array inputs. If a device is specified as a kwarg, create them there
+        # If not, scan for any other inputs which are already arrays and use the device
+        # of the first one found.
+        device = None
+        if "device" in kwargs:
+            device = device
+        else:
+            for arg in args + list(kwargs.values()):
+                if ivy.is_array(arg):
+                    device = ivy.default_device(item=arg, as_native=True)
+                    break
+
         for i, (annotation, parameter, arg) in enumerate(
             zip(annotations, parameters, args)
         ):
@@ -398,11 +411,11 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                     if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
                         continue
                     if not ivy.is_array(arg):
-                        args[i] = ivy.array(arg)
+                        args[i] = ivy.array(arg, device=device)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
                     if not ivy.is_array(kwarg):
-                        kwargs[parameter] = ivy.array(kwarg)
+                        kwargs[parameter] = ivy.array(kwarg, device=device)
 
         return fn(*args, **kwargs)
 
