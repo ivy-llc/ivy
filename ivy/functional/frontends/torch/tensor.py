@@ -1871,6 +1871,23 @@ class Tensor:
         arr = torch_frontend.moveaxis(self, 0, dim)
         return arr
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
+    )
+    def cummax(self, dim):
+        return torch_frontend.cummax(self, dim)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
