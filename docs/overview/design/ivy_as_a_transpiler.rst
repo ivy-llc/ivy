@@ -167,7 +167,7 @@ Again, by chaining these methods together, we can now call :func:`tf.math.cumpro
 Role of the Tracer 🚧
 -----------------------------
 
-The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the graph tracer plays a vital role.
+The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the tracer plays a vital role.
 The tracer can convert any code into its constituent functions at the functional API level for any ML framework.
 
 For example, let’s take the following PyTorch code and run it using JAX:
