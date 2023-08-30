@@ -2236,12 +2236,12 @@ def test_paddle_nansum(
 ):
     input_dtype, x, axis=dtype_and_x
     helpers.test_frontend_function(
-        input_dtype=input_dtype,
+        input_dtypes=input_dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        axis=axis,
+        axis=axis
     )
