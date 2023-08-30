@@ -7,7 +7,6 @@ class BaseEstimator:
 
 
 class ClassifierMixin:
-
     def score(self, X, y, sample_weight=None):
         raise NotImplementedError
 
@@ -19,7 +18,6 @@ class ClassifierMixin:
 
 
 class RegressorMixin:
-
     def score(self, X, y, sample_weight=None):
         raise NotImplementedError
 
@@ -28,3 +26,8 @@ class RegressorMixin:
 
     def predict(self, X):
         raise NotImplementedError
+
+
+class MultiOutputMixin:
+    def _more_tags(self):
+        return {"multioutput": True}
