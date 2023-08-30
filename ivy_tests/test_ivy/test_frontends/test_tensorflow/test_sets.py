@@ -1,17 +1,11 @@
-# global
-import hypothesis.strategies as st
-import tensorflow as tf
-
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    _statistical_dtype_values,
-)
+import ivy
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
+import hypothesis.strategies as st
+from hypothesis import given
+import tensorflow
 
 @handle_frontend_test(
-    fn_tree="tf.sets.intersection",
+    fn_tree="tensorflow.sets.intersection",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float")
     ),
@@ -27,6 +21,11 @@ def test_tensorflow_intersection(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+
+    # Generate the arrays using the num_arrays parameter from dtype_and_x
+    x_arrays = [helpers.generate_array(dtype=input_dtype) for _ in range(dtype_and_x.num_arrays)]
+
+    # Call the test_frontend_function with both arrays
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -34,5 +33,6 @@ def test_tensorflow_intersection(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        x=x_arrays[0],
+        y=x_arrays[1]
     )
