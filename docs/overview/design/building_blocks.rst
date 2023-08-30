@@ -409,7 +409,7 @@ For all existing ML frameworks, the functional API is the backbone that underpin
 This means that under the hood, any code can be expressed as a composition of ops in the functional API.
 The same is true for Ivy.
 Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded.
-For example, the following 3 pieces of code all trace to the exact same computation graph as shown:
+For example, the following 3 pieces of code all result in the exact same computation graph when traced as shown:
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
@@ -488,7 +488,7 @@ Jax:
 |
 
 The example above further emphasizes that the tracer creates a computation graph consisting of backend functions, not Ivy functions.
-Specifically, the same Ivy code traces to different graphs depending on the selected backend.
+Specifically, the same Ivy code is traced to different graphs depending on the selected backend.
 However, when compiling native framework code, we are only able to trace a graph for that same framework.
 For example, we cannot take torch code and trace this into tensorflow code.
 However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
@@ -500,14 +500,14 @@ Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported fo
 .. code-block:: python
 
     # ivy/functional/backends/tensorflow/compilation.py
-    trace = lambda fn, dynamic=True, example_inputs=None,\
+    compile = lambda fn, dynamic=True, example_inputs=None,\
     static_argnums=None, static_argnames=None:\
         tf.function(fn)
 
 .. code-block:: python
 
     # ivy/functional/backends/torch/compilation.py
-    def trace(fn, dynamic=True, example_inputs=None,
+    def compile(fn, dynamic=True, example_inputs=None,
             static_argnums=None, static_argnames=None):
     if dynamic:
         return torch.jit.script(fn)
@@ -516,7 +516,7 @@ Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported fo
 .. code-block:: python
 
     # ivy/functional/backends/jax/compilation.py
-    trace = lambda fn, dynamic=True, example_inputs=None,\
+    compile = lambda fn, dynamic=True, example_inputs=None,\
                 static_argnums=None, static_argnames=None:\
     jax.jit(fn, static_argnums=static_argnums,
             static_argnames=static_argnames)

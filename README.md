@@ -131,7 +131,7 @@ deploy systems. Feel free to head over to the docs for the full API
 reference, but the functions you\'d most likely want to use are:
 
 ``` python
-# Traces a function into an efficient fully-functional graph, removing all wrapping and redundant code
+# Traces an efficient fully-functional graph from a function, removing all wrapping and redundant code
 ivy.trace()
 
 # Converts framework-specific code to a different framework
