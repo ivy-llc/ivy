@@ -1803,7 +1803,7 @@ class Tensor:
     )
     def isnan(self):
         return torch_frontend.isnan(self)
-        
+
     def char(self):
         self.ivy_array = ivy.asarray(self.ivy_array, dtype=torch_frontend.char)
         return self
