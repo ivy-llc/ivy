@@ -895,7 +895,7 @@ def random_tr(
 
     Returns
     -------
-    ivy.TRTensor
+    ivy.TRTensor or ivy.Array if full is True
     """
     rank = ivy.TRTensor.validate_tr_rank(shape, rank)
 
