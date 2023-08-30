@@ -7,7 +7,10 @@ class BaseCrossValidator:
         raise NotImplementedError
 
     def _iter_test_masks(self, X=None, y=None, groups=None):
-        raise NotImplementedError
+        for test_index in self._iter_test_indices(X, y, groups):
+            test_mask = ivy.zeros(X.shape[0], dtype=bool)
+            test_mask[test_index] = True
+            yield test_mask
 
     def _iter_test_indices(self, X=None, y=None, groups=None):
         raise NotImplementedError
@@ -26,9 +29,6 @@ class KFold(BaseCrossValidator):
         self.random_state = random_state
 
     def split(self, X, y=None, groups=None):
-        raise NotImplementedError
-
-    def _iter_test_masks(self, X=None, y=None, groups=None):
         raise NotImplementedError
 
     def _iter_test_indices(self, X=None, y=None, groups=None):
