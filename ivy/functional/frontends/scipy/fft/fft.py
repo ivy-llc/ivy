@@ -45,4 +45,4 @@ def ifftn(
 def rfftn(
     x, s=None, axes=None, norm=None, overwrite_x=False, workers=None, *, plan=None
 ):
-    return ivy.rfftn(x, s=s, dim=axes, norm=norm)
+    return ivy.rfftn(x, s=s, axes=axes, norm=norm)
