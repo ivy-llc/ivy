@@ -74,14 +74,6 @@ _i0B = [
 ]
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and above": {
-            "cpu": ("bfloat16", "uint8")
-        },
-    },
-    backend_version,
-)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
@@ -95,9 +87,20 @@ def moveaxis(
         source = list(source)
     if isinstance(destination, tuple):
         source = list(destination)
-    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
-        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
-    return paddle.moveaxis(a, source, destination)
+
+    if a.ndim < len(source) + len(destination):
+        raise ivy.exceptions.IvyError(
+            f"The array has too few dimensions for the given source and destination axes: {a.ndim} < {len(source) + len(destination)}"
+        )
+
+    # Create a mapping from the original axes to the new axes.
+
+    axis_map = {
+        i: destination.pop(0) if i in destination else (len(destination) - len(source)) + i
+        for i in source
+    }
+
+    return ivy.moveaxis(a, axis_map, copy=copy)
 
 
 @with_unsupported_device_and_dtypes(
