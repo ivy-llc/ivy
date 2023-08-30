@@ -163,6 +163,7 @@ def test_torch_pinv(
     fn_tree,
     backend_fw,
     on_device,
+    hermitian
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -175,6 +176,7 @@ def test_torch_pinv(
         input=x[0],
         atol=1e-02,
         rtol=1e-02,
+        hermitian=hermitian
     )
 
 

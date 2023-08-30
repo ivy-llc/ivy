@@ -191,6 +191,23 @@ def multi_dot(tensors, *, out=None):
 )
 def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
     # TODO: add handling for hermitian
+    # If hermitian is `False`, This function uses ivy.linalg.svd() 
+    # If hermitian is  `True`, This function uses ivy.linalg.eigh()
+    if hermitian:
+        eigenvalues, eigenvectors = ivy.linalg.eigh(input)
+        threshold = 1e-10
+
+        # Inverse the non-zero eigenvalues and calculate the Hermitian pseudoinverse
+        inverse_eigenvalues = ivy.where(
+            abs(eigenvalues) > threshold,
+            1.0 / eigenvalues,
+            ivy.zeros_like(eigenvalues)
+        )
+    
+        # Construct the Hermitian pseudoinverse using eigenvectors and inverse eigenvalues
+        pseudoinverse = eigenvectors @ ivy.diag(inverse_eigenvalues) @ eigenvectors.conj().T
+        return pseudoinverse
+             
     if atol is None:
         return ivy.pinv(input, rtol=rtol, out=out)
     else:
