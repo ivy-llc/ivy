@@ -164,7 +164,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = np.full(new_shape, padding_value)
+            new_array = np.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = np.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -224,8 +224,6 @@ def pad(
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if mode == "dilated":
-        if not ivy.is_array(constant_values) or constant_values.dtype != input.dtype:
-            constant_values = np.array(constant_values, dtype=input.dtype)
         return _interior_pad(input, constant_values, pad_width)
     if callable(mode):
         return np.pad(
