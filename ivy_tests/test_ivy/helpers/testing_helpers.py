@@ -361,14 +361,14 @@ def handle_test(
         possible_arguments["test_flags"] = pf.function_flags(
             ground_truth_backend=st.just(ground_truth_backend),
             num_positional_args=number_positional_args,
-            instance_method=test_instance_method,
-            with_out=test_with_out,
-            test_gradients=test_gradients,
-            test_compile=test_compile,
-            as_variable=as_variable_flags,
-            native_arrays=native_array_flags,
-            container_flags=container_flags,
-            precision_mode=precision_mode,
+            instance_method=_get_runtime_flag_value(test_instance_method),
+            with_out=_get_runtime_flag_value(test_with_out),
+            test_gradients=_get_runtime_flag_value(test_gradients),
+            test_compile=_get_runtime_flag_value(test_compile),
+            as_variable=_get_runtime_flag_value(as_variable_flags),
+            native_arrays=_get_runtime_flag_value(native_array_flags),
+            container_flags=_get_runtime_flag_value(container_flags),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
     def test_wrapper(test_fn):
