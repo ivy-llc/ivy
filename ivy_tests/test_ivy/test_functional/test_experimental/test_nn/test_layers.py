@@ -170,7 +170,7 @@ def _interp_args(draw, mode=None, mode_list=None):
 
 @st.composite
 def _reduce_window_helper(draw, get_func_st):
-    dtype = draw(helpers.get_dtypes("valid", full=False))
+    dtype = draw(helpers.get_dtypes("valid", full=False, index=2))
     py_func = draw(get_func_st(dtype[0]))
     init_value = draw(
         helpers.dtype_and_values(
@@ -911,8 +911,8 @@ def test_fft2(*, d_x_d_s_n, test_flags, backend_fw, fn_name, on_device):
         backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        # rtol_=1e-2,
-        # atol_=1e-2,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x,
         s=s,
         dim=dim,

@@ -324,6 +324,12 @@ def smooth_l1_loss(
     return out.astype(label.dtype)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32",)}, "paddle")
+@to_ivy_arrays_and_back
+def square_error_cost(input, label):
+    return ivy.square(ivy.subtract(input, label))
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def triplet_margin_loss(
