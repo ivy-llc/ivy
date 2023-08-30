@@ -1,4 +1,5 @@
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class DMatrix:
@@ -74,8 +75,10 @@ class DMatrix:
         )
         self.enable_categorical = enable_categorical
 
+    @with_unsupported_dtypes({"1.7.6 and below": ("bfloat16", "complex64", "complex128")}, "xgboost")
     def num_row(self):
         return ivy.shape(self.data)[0]
 
+    @with_unsupported_dtypes({"1.7.6 and below": ("bfloat16", "complex64", "complex128")}, "xgboost")
     def num_col(self):
         return ivy.shape(self.data)[1]
