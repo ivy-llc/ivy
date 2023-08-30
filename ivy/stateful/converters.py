@@ -117,7 +117,7 @@ class ModuleConverters:
             )
 
         try:
-            from haiku._src.data_structures import FlatMapping
+            from haiku._src.data_structures import FlatMapping  # noqa
         except (ImportError, AttributeError):
             raise ImportError(
                 "Unable to import `FlatMapping` from `haiku`. Please check if the "
@@ -203,7 +203,7 @@ class ModuleConverters:
             The new trainable ivy.Module instance.
         """
         try:
-            import flax
+            import flax  # noqa
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
                 "`flax` was not found installed on your system. Please proceed "
@@ -410,7 +410,7 @@ class ModuleConverters:
             The new trainable ivy.Module instance.
         """
         try:
-            import torch
+            import torch  # noqa
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
                 "`torch` was not found installed on your system. Please proceed "
