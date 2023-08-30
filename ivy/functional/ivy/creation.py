@@ -349,8 +349,8 @@ def arange(
 
     Examples
     --------
-    >>> start = 5
-    >>> x = ivy.arange(start)
+    >>> stop = 5
+    >>> x = ivy.arange(stop)
     >>> print(x)
     ivy.array([0, 1, 2, 3, 4])
 
