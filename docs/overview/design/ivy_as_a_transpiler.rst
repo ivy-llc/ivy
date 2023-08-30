@@ -192,7 +192,7 @@ For example, let’s take the following PyTorch code and run it using JAX:
 We cannot simply :code:`import ivy.frontends.torch` in place of :code:`import torch` as we did in the previous examples.
 This is because the Ivy frontend only supports the functional API for each framework, whereas the code above makes use of higher level classes through the use of the :mod:`torch.nn` namespace.
 
-In general, the way we convert code is by first compiling the code into its constituent functions in the core API using Ivy’s tracer, and then we convert this executable graph into the new framework.
+In general, the way we convert code is by first decomposing the code into its constituent functions in the core API using Ivy’s tracer, and then we convert this executable graph into the new framework.
 For the example above, this would look like:
 
 .. code-block:: python
@@ -219,7 +219,7 @@ In order to convert a model from PyTorch to JAX, we first must convert the :clas
    net = ivy.to_ivy_module(net)
 
 In its current form, the :class:`ivy.Module` instance thinly wraps the PyTorch model into the :class:`ivy.Module` interface, whilst preserving the pure PyTorch backend.
-We can trace this network into a graph using Ivy’s tracer like so:
+We can trace a graph of this network using Ivy’s tracer like so:
 
 .. code-block:: python
 

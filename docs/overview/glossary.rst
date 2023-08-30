@@ -33,7 +33,7 @@ All of these new words can get confusing! We've created a glossary to help nail 
         Tracers map the high-level computational graph coming from frameworks to operations that are executable on a specific device.
 
     Ivy Tracer
-        Ivy's Tracer traces the graph as a composition of functions in the functional API in Python.
+        Ivy's Tracer creates a graph as a composition of functions in the functional API in Python.
 
     Ivy Functional API
         Is used for defining complex models, the Ivy functional API does not implement its own backend but wraps around other frameworks functional APIs and brings them into alignment.
