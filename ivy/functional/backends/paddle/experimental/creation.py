@@ -7,6 +7,7 @@ from paddle.device import core
 from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
 )
 
 
@@ -133,8 +134,6 @@ def unsorted_segment_min(
     return res
 
 
-
-
 def blackman_window(
     size: int,
     /,
@@ -153,6 +152,7 @@ def blackman_window(
         (0.42 - 0.5 * paddle.cos(2 * math.pi * count))
         + (0.08 * paddle.cos(2 * math.pi * 2 * count))
     ).cast(dtype)
+
 
 def unsorted_segment_sum(
     data: paddle.Tensor,
@@ -187,3 +187,28 @@ def unsorted_segment_sum(
 
     return res
 
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "complex",
+            )
+        }
+    },
+    backend_version,
+)
+def trilu(
+    x: paddle.Tensor,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if upper:
+        return paddle.triu(x=x, diagonal=k)
+    return paddle.tril(x=x, diagonal=k)
