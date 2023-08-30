@@ -32,7 +32,7 @@ With Ivy, this process becomes:
 
 We have turned a 4-step process which can take 100s of hours into a 1-step process which takes a few seconds.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/why_unify/perceiver_effort.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/why_unify/perceiver_effort.png?raw=true
    :align: center
    :width: 100%
 
@@ -52,21 +52,21 @@ What about the next framework that gets released in a few years from now, must w
 
 With Ivy, you can write your code **once**, and then it will support all future ML frameworks with **zero** changes needed.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/why_unify/future_proof.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/why_unify/future_proof.png?raw=true
    :align: center
    :width: 80%
 
 The same can be said about high-level code for: Modules, Optimizers and Trainers etc.
 Currently, the status quo is to continue implementing new high-level libraries for each new framework, with examples being: (a) `Sonnet <https://github.com/deepmind/sonnet>`_, `Keras <https://github.com/keras-team/keras>`_ and `Dopamine <https://github.com/google/dopamine>`_ for TensorFlow (b) `Ignite <https://github.com/pytorch/ignite>`_, `Catalyst <https://github.com/catalyst-team/catalyst>`_, `Lightning <https://github.com/PyTorchLightning/pytorch-lightning>`_, and `FastAI <https://github.com/fastai/fastai>`_ for PyTorch, and (c) `Haiku <https://github.com/deepmind/dm-haiku>`_, `Flax <https://github.com/google/flax>`_, `Trax <https://github.com/google/trax>`_ and `Objax <https://github.com/google/objax>`_ for JAX.
 
-With Ivy, we have implemented Modules, Optimizers and Trainers **once** with simultaneous support for all **current** and **future** frameworks.
+With Ivy, we have implemented Modules, Optimizers, and Trainers **once** with simultaneous support for all **current** and **future** frameworks.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/why_unify/reinvented_wheels.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/why_unify/reinvented_wheels.png?raw=true
    :align: center
    :width: 100%
 
 **Round Up**
 
-Hopefully this has given you some idea of the many benefits that a fully unified ML framework could offer 🙂
+Hopefully, this has given you some idea of the many benefits that a fully unified ML framework could offer 🙂
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

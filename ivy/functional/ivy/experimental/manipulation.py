@@ -60,12 +60,10 @@ def flatten(
     x
         input array to flatten.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     start_dim
         first dim to flatten. If not set, defaults to 0.
     end_dim
@@ -151,8 +149,6 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    if copy:
-        x = ivy.copy_array(x)
     if x.shape == ():
         x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
@@ -224,12 +220,10 @@ def moveaxis(
         Destination positions for each of the original axes.
         These must also be unique.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -321,12 +315,10 @@ def flipud(
     m
         The array to be flipped.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -459,12 +451,10 @@ def rot90(
     m
         Input array of two or more dimensions.
     copy
-        boolean indicating whether to copy the input array.
-        If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        boolean indicating whether or not to copy the input array. 
+        If True, the function must always copy. 
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     k
         Number of times the array is rotated by 90 degrees.
     axes
@@ -629,12 +619,10 @@ def fliplr(
     m
         The array to be flipped. Must be at least 2-D.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -723,7 +711,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
     if width_pair[0] > 0:
         left_ramp = ivy.linspace(
             end_value_pair[0],
-            ivy.array(edge_pair[0].squeeze(axis)),
+            ivy.array(edge_pair[0].squeeze(axis=axis)),
             num=width_pair[0],
             endpoint=False,
             dtype=ivy.Dtype(str(padded.dtype)),
@@ -735,7 +723,7 @@ def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
         right_ramp = ivy.flip(
             ivy.linspace(
                 end_value_pair[1],
-                ivy.array(edge_pair[1].squeeze(axis)),
+                ivy.array(edge_pair[1].squeeze(axis=axis)),
                 num=width_pair[1],
                 endpoint=False,
                 dtype=ivy.Dtype(str(padded.dtype)),
@@ -849,13 +837,16 @@ def _set_wrap_both(padded, axis, width_pair):
 
 def _pad_simple(array, pad_width, fill_value=None):
     new_shape = tuple(
-        left + size + right for size, (left, right) in zip(array.shape, pad_width)
+        [left + size + right for size, (left, right) in zip(array.shape, pad_width)]
     )
     padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
         padded = ivy.ones_like(padded) * fill_value
     original_area_slice = tuple(
-        slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
+        [
+            slice(left, left + size)
+            for size, (left, right) in zip(array.shape, pad_width)
+        ]
     )
     padded[original_area_slice] = array
     return padded, original_area_slice
@@ -1269,12 +1260,10 @@ def vsplit(
         If indices_or_sections is a sequence of ints or 1-D array,
         then input is split at each of the indices.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1325,12 +1314,10 @@ def dsplit(
         If indices_or_sections is a sequence of ints or 1-D array,
         then input is split at each of the indices.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1371,12 +1358,10 @@ def atleast_1d(
     arys
         One or more input arrays.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1461,12 +1446,10 @@ def atleast_2d(
         converted to arrays. Arrays that already have two or more
         dimensions are preserved.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1509,12 +1492,10 @@ def atleast_3d(
         converted to arrays. Arrays that already have three or more
         dimensions are preserved.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1625,12 +1606,10 @@ def hsplit(
         If indices_or_sections is a tuple of ints, then input is split at each of
         the indices in the tuple.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
 
     Returns
     -------
@@ -1714,12 +1693,10 @@ def expand(
         A 1-D Array indicates the shape you want to expand to,
         following the broadcast rule.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to.
 
@@ -2109,7 +2086,8 @@ def unique_consecutive(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """Eliminates all but the first element from every consecutive group of equivalent
+    """
+    Eliminates all but the first element from every consecutive group of equivalent
     elements in ``x``.
 
     Parameters
@@ -2175,3 +2153,430 @@ def fill_diagonal(
         Array with the diagonal filled.
     """
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def unfold(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: Optional[int] = 0,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
+
+    Parameters
+    ----------
+    x
+        input tensor to be unfolded
+    mode
+        indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        unfolded_tensor of shape ``(tensor.shape[mode], -1)``
+    """
+    return ivy.reshape(ivy.moveaxis(x, mode, 0), (x.shape[mode], -1), out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def fold(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: int,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Refolds the mode-`mode` unfolding into a tensor of shape `shape` In other words,
+    refolds the n-mode unfolded tensor into the original tensor of the specified shape.
+
+    Parameters
+    ----------
+    input
+        unfolded tensor of shape ``(shape[mode], -1)``
+    mode
+        the mode of the unfolding
+    shape
+        shape of the original tensor before unfolding
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        folded_tensor of shape `shape`
+    """
+    full_shape = list(shape)
+    mode_dim = full_shape.pop(mode)
+    full_shape.insert(0, mode_dim)
+    return ivy.moveaxis(ivy.reshape(x, full_shape), 0, mode, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def partial_unfold(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: Optional[int] = 0,
+    skip_begin: Optional[int] = 1,
+    skip_end: Optional[int] = 0,
+    ravel_tensors: Optional[bool] = False,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Partial unfolding of a tensor while ignoring the specified number of dimensions at
+    the beginning and the end. For instance, if the first dimension of the tensor is the
+    number of samples, to unfold each sample, set skip_begin=1. This would, for each i
+    in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
+
+    Parameters
+    ----------
+    x
+        tensor of shape n_samples x n_1 x n_2 x ... x n_i
+    mode
+        indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+    skip_begin
+        number of dimensions to leave untouched at the beginning
+    skip_end
+        number of dimensions to leave untouched at the end
+    ravel_tensors
+        if True, the unfolded tensors are also flattened
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        partially unfolded tensor
+    """
+    if ravel_tensors:
+        new_shape = [-1]
+    else:
+        new_shape = [x.shape[mode + skip_begin], -1]
+
+    if skip_begin:
+        new_shape = [x.shape[i] for i in range(skip_begin)] + new_shape
+
+    if skip_end:
+        new_shape += [x.shape[-i] for i in range(1, 1 + skip_end)]
+
+    return ivy.reshape(
+        ivy.moveaxis(x, mode + skip_begin, skip_begin), new_shape, out=out
+    )
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def partial_fold(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: int,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    skip_begin: Optional[int] = 1,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Re-folds a partially unfolded tensor.
+
+    Parameters
+    ----------
+    x
+        a partially unfolded tensor
+    mode
+        indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+    shape
+        the shape of the original full tensor (including skipped dimensions)
+    skip_begin
+        number of dimensions left untouched at the beginning
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        partially re-folded tensor
+    """
+    transposed_shape = list(shape)
+    mode_dim = transposed_shape.pop(skip_begin + mode)
+    transposed_shape.insert(skip_begin, mode_dim)
+    return ivy.moveaxis(
+        ivy.reshape(x, transposed_shape), skip_begin, skip_begin + mode, out=out
+    )
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def partial_tensor_to_vec(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    skip_begin: Optional[int] = 1,
+    skip_end: Optional[int] = 0,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Partial vectorization of a tensor while ignoring the specified dimension at the
+    beginning and the end.
+
+    Parameters
+    ----------
+    x
+        tensor to partially vectorise
+    skip_begin
+        number of dimensions to leave untouched at the beginning
+    skip_end
+        number of dimensions to leave untouched at the end
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        partially vectorised tensor with the
+        `skip_begin` first and `skip_end` last dimensions untouched
+    """
+    return partial_unfold(
+        x,
+        mode=0,
+        skip_begin=skip_begin,
+        skip_end=skip_end,
+        ravel_tensors=True,
+        out=out,
+    )
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def partial_vec_to_tensor(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    skip_begin: Optional[int] = 1,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Refolds a partially vectorised tensor into a full one.
+
+    Parameters
+    ----------
+    x
+        a partially vectorised tensor
+    shape
+        the shape of the original full tensor (including skipped dimensions)
+    skip_begin
+        number of dimensions to leave untouched at the beginning
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        full tensor
+    """
+    return partial_fold(x, mode=0, shape=shape, skip_begin=skip_begin, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def matricize(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    row_modes: Sequence[int],
+    column_modes: Optional[Sequence[int]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Matricizes the given tensor.
+
+    Parameters
+    ----------
+    x
+        the input tensor
+    row_modes
+        modes to use as row of the matrix (in the desired order)
+    column_modes
+        modes to use as column of the matrix, in the desired order
+        if None, the modes not in `row_modes` will be used in ascending order
+    out
+        optional output array, for writing the result to.
+
+    ret
+    -------
+        ivy.Array : tensor of size (ivy.prod(x.shape[i] for i in row_modes), -1)
+    """
+    ndims = len(x.shape)
+    row_indices = list(row_modes)
+
+    if column_modes:
+        column_indices = list(column_modes)
+    else:
+        column_indices = [i for i in range(ndims) if i not in row_indices]
+        if sorted(column_indices + row_indices) != list(range(ndims)):
+            msg = (
+                "If you provide both column and row modes for the matricization then"
+                " column_modes + row_modes must contain all the modes of the tensor."
+                f" Yet, got row_modes={row_modes} and column_modes={column_modes}."
+            )
+            raise ValueError(msg)
+
+    row_size, column_size = 1, 1
+    row_size = int(ivy.prod([x.shape[i] for i in row_indices]))
+    column_size = int(ivy.prod([x.shape[i] for i in column_indices]))
+
+    return ivy.reshape(
+        ivy.permute_dims(x, row_indices + column_indices),
+        (row_size, column_size),
+        out=out,
+    )
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def soft_thresholding(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    threshold: Union[float, ivy.Array, ivy.NativeArray],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Soft-thresholding operator.
+
+        sign(tensor) * max[abs(tensor) - threshold, 0]
+
+    Parameters
+    ----------
+    x
+      input array
+    threshold
+          float or array with shape tensor.shape
+        * If float the threshold is applied to the whole tensor
+        * If array, one threshold is applied per elements, 0 values are ignored
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ivy.Array
+        thresholded tensor on which the operator has been applied
+
+    Examples
+    --------
+    Basic shrinkage
+
+    >>> x = ivy.array([[1, -2, 1.5], [-4, 3, -0.5]])
+    >>> soft_thresholding(x, 1.1)
+    array([[ 0. , -0.9,  0.4],
+           [-2.9,  1.9,  0. ]])
+
+
+    Example with missing values
+
+    >>> mask = ivy.array([[0, 0, 1], [1, 0, 1]])
+    >>> soft_thresholding(x, mask*1.1)
+    array([[ 1. , -2. ,  0.4],
+           [-2.9,  3. ,  0. ]])
+    """
+    res = ivy.abs(x) - threshold
+    res = ivy.where(res < 0.0, 0.0, res) * ivy.sign(x)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def choose(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    choices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: None = None,
+    mode: Union[str, None] = None,
+) -> ivy.Array:
+    """
+    Take values from the input array by matching 1d index and data slices.
+
+    Parameters
+    ----------
+
+    arr
+        The source array.
+    choices
+        The indices of the values to extract.
+    out
+        The output array.
+    mode
+        One of: 'wrap', 'clip'. Parameter controlling how out-of-bounds indices
+        will be handled.
+
+    Returns
+    -------
+
+    ret
+        The returned array has the same shape as `indices`.
+    Examples
+    --------
+
+    >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
+                        [20, 21, 22, 23], [30, 31, 32, 33]])
+    >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
+    ivy.array([20, 31, 12, 3])
+    >>> arr = ivy.array([2, 4, 1, 0])
+    >>> print(choose(arr, choices, mode='clip')) # 4 goes to 3 (4-1)
+    ivy.array([20, 31, 12, 3])
+    >>> arr = ivy.array([2, 4, 1, 0])
+    >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
+    ivy.array([20, 1, 12, 3])
+    """
+    return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)

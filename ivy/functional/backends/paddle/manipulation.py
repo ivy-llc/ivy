@@ -65,9 +65,6 @@ def expand_dims(
     out_shape = _calculate_out_shape(axis, x.shape)
     if 0 in x.shape:
         return paddle.empty(out_shape, dtype=x.dtype)
-    if copy:
-        newarr = paddle.clone(x)
-        return newarr.reshape(out_shape)
     # reshape since unsqueeze sets a maximum limit of dimensions
     return x.reshape(out_shape)
 
@@ -141,19 +138,6 @@ def reshape(
         ]
     if len(x.shape) == 0:
         x = paddle.reshape(x, shape=[1])
-    if copy:
-        newarr = paddle.clone(x)
-        if order == "F":
-            ret = _reshape_fortran_paddle(newarr, shape)
-            if out_scalar:
-                return paddle_backend.squeeze(ret, axis=0)
-
-            return ret
-        ret = paddle.reshape(newarr, shape)
-        if out_scalar:
-            return paddle_backend.squeeze(ret, axis=0)
-
-        return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
@@ -230,6 +214,14 @@ def stack(
             dtype = ivy.promote_types(dtype, d)
 
     arrays = list(map(lambda x: x.cast(dtype), arrays))
+
+    first_shape = arrays[0].shape
+    if not all(arr.shape == first_shape for arr in arrays):
+        raise Exception("Shapes of all inputs must match")
+    if 0 in first_shape:
+        return ivy.empty(
+            first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype
+        )
 
     if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.bool]:
         arrays = list(map(lambda x: x.cast("float32"), arrays))
