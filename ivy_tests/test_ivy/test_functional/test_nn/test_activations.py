@@ -246,9 +246,18 @@ def test_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_devic
     ),
     beta=st.one_of(helpers.number(min_value=0.1, max_value=10), st.none()),
     threshold=st.one_of(helpers.number(min_value=0.1, max_value=30), st.none()),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
 def test_softplus(
-    *, dtype_and_x, beta, threshold, test_flags, backend_fw, fn_name, on_device
+    *,
+    dtype_and_x,
+    beta,
+    threshold,
+    complex_mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     assume(beta != 0)
     assume(threshold != 0)
@@ -264,4 +273,5 @@ def test_softplus(
         x=x[0],
         beta=beta,
         threshold=threshold,
+        complex_mode=complex_mode,
     )
