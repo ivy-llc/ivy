@@ -67,7 +67,7 @@ c. Comment on the ToDo list issue with a reference to your new issue like so:
    At some point after your comment is made, your issue will automatically be added to the ToDo list and the comment will be deleted.
    No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should be kept clean with comments only as described above.
 
-d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
+d. Start working on the task, and open a PR as soon as you have a full or partial solution, when you open the PR make sure to follow the `conventional commits format <https://www.conventionalcommits.org/en/v1.0.0/>`_, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
    :code:`Close #Issue_number`
 
