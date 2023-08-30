@@ -491,13 +491,13 @@ def handle_frontend_test(
         # Generate the test flags strategy
         test_flags = pf.frontend_function_flags(
             num_positional_args=number_positional_args,
-            with_out=test_with_out,
-            inplace=test_inplace,
-            as_variable=as_variable_flags,
-            native_arrays=native_array_flags,
-            test_compile=test_compile,
-            generate_frontend_arrays=generate_frontend_arrays,
-            precision_mode=precision_mode,
+            with_out=_get_runtime_flag_value(test_with_out),
+            inplace=_get_runtime_flag_value(test_inplace),
+            as_variable=_get_runtime_flag_value(as_variable_flags),
+            native_arrays=_get_runtime_flag_value(native_array_flags),
+            test_compile=_get_runtime_flag_value(test_compile),
+            generate_frontend_arrays=_get_runtime_flag_value(generate_frontend_arrays),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
     def test_wrapper(test_fn):
@@ -599,9 +599,9 @@ def handle_method(
     is_hypothesis_test = len(_given_kwargs) != 0
     possible_arguments = {
         "ground_truth_backend": st.just(ground_truth_backend),
-        "test_gradients": test_gradients,
-        "test_compile": test_compile,
-        "precision_mode": precision_mode,
+        "test_gradients": _get_runtime_flag_value(test_gradients),
+        "test_compile": _get_runtime_flag_value(test_compile),
+        "precision_mode": _get_runtime_flag_value(precision_mode),
     }
 
     if is_hypothesis_test and is_method_tree_provided:
@@ -614,9 +614,9 @@ def handle_method(
 
         possible_arguments["init_flags"] = pf.init_method_flags(
             num_positional_args=init_num_positional_args,
-            as_variable=init_as_variable_flags,
-            native_arrays=init_native_arrays,
-            precision_mode=precision_mode,
+            as_variable=_get_runtime_flag_value(init_as_variable_flags),
+            native_arrays=_get_runtime_flag_value(init_native_arrays),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
         if method_num_positional_args is None:
@@ -626,10 +626,10 @@ def handle_method(
 
         possible_arguments["method_flags"] = pf.method_flags(
             num_positional_args=method_num_positional_args,
-            as_variable=method_as_variable_flags,
-            native_arrays=method_native_arrays,
-            container_flags=method_container_flags,
-            precision_mode=precision_mode,
+            as_variable=_get_runtime_flag_value(method_as_variable_flags),
+            native_arrays=_get_runtime_flag_value(method_native_arrays),
+            container_flags=_get_runtime_flag_value(method_container_flags),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
     def test_wrapper(test_fn):
@@ -747,18 +747,18 @@ def handle_frontend_method(
             param_names = inspect.signature(test_fn).parameters.keys()
             init_flags = pf.frontend_method_flags(
                 num_positional_args=init_num_positional_args,
-                as_variable=init_as_variable_flags,
-                native_arrays=init_native_arrays,
-                test_compile=test_compile,
-                precision_mode=precision_mode,
+                as_variable=_get_runtime_flag_value(init_as_variable_flags),
+                native_arrays=_get_runtime_flag_value(init_native_arrays),
+                test_compile=_get_runtime_flag_value(test_compile),
+                precision_mode=_get_runtime_flag_value(precision_mode),
             )
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
-                as_variable=method_as_variable_flags,
-                native_arrays=method_native_arrays,
-                test_compile=test_compile,
-                precision_mode=precision_mode,
+                as_variable=_get_runtime_flag_value(method_as_variable_flags),
+                native_arrays=_get_runtime_flag_value(method_native_arrays),
+                test_compile=_get_runtime_flag_value(test_compile),
+                precision_mode=_get_runtime_flag_value(precision_mode),
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
