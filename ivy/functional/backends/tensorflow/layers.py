@@ -452,9 +452,7 @@ def conv_general_transpose(
             axis=-1,
         )
     elif dims == 2:
-        res = tf.concat(
-            [
-                conv2d_transpose(
+        res = conv2d_transpose(
                     x[..., j : j + filters.shape[-2] // feature_group_count],
                     filters[..., j : j + filters.shape[-2] // feature_group_count, :],
                     strides,
@@ -463,12 +461,6 @@ def conv_general_transpose(
                     data_format="NHWC",
                     dilations=dilations,
                 )
-                for j in range(
-                    0, filters.shape[-2], filters.shape[-2] // feature_group_count
-                )
-            ],
-            axis=-1,
-        )
     else:
         res = tf.concat(
             [
