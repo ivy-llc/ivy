@@ -1635,14 +1635,65 @@ def _higher_order_moment_data(draw):
     test_with_out=st.just(False),
 )
 def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
-    input_dtypes, tensor, order = data
+    input_dtypes, x, order = data
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
         input_dtypes=input_dtypes,
-        tensor=tensor,
+        x=x,
         order=order,
         test_values=False,
     )
+
+
+# batched_outer
+@st.composite
+def _batched_outer_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    tensors_num = draw(helpers.ints(min_value=1, max_value=10))
+    return dtype, x[0], tensors_num
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.batched_outer",
+    data=_batched_outer_data(),
+    test_with_out=st.just(False),
+)
+def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, tensors_num = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        tensors=[x] * tensors_num,
+        test_values=False,
+    )
+
+
+# test adapted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_outer_product.py#L22
+@pytest.mark.skip(
+    reason="ivy.tensordot does not support batched_modes argument for the moment"
+)
+def test_batched_outer_product():
+    batch_size = 3
+    X = ivy.random_uniform(shape=(batch_size, 4, 5, 6))
+    Y = ivy.random_uniform(shape=(batch_size, 3))
+    Z = ivy.random_uniform(shape=(batch_size, 2))
+    res = ivy.batched_outer([X, Y, Z])
+    true_res = ivy.tensordot(X, Y, (), batched_modes=0)
+    true_res = ivy.tensordot(true_res, Z, (), batched_modes=0)
+    np.testing.assert_array_almost_equal(res, true_res)
