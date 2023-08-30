@@ -190,7 +190,7 @@ def test_tensorflow_vorbis_window(
     #dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
-def test_kaiser_bessel_derived_window(
+def test_tensorflow_kaiser_bessel_derived_window(
         *, dtype_and_x, beta, test_flags, backend_fw, fn_tree, on_device, frontend,  #dtype
 ):
     input_dtype, x = dtype_and_x
