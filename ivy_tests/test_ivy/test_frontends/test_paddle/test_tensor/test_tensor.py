@@ -2966,7 +2966,7 @@ def test_paddle_tensor_nanmedian(
     method_flags,
     on_device,
 ):
-    input_dtype, x, axis, correction = dtype_and_x
+    input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={"data": x[0]},
