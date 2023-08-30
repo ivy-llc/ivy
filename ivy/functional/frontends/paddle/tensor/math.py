@@ -477,6 +477,17 @@ def subtract(x, y, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "int32", "int64", "float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def sum(x, axis=None, keepdim=False, name=None):
+    if x.dtype == ivy.int32:
+        arr = ivy.sum(x)
+        return arr.astype(ivy.int64)
+    return ivy.sum(x)
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
 )
 @to_ivy_arrays_and_back
