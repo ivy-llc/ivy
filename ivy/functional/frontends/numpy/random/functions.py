@@ -136,7 +136,7 @@ def negative_binomial(n, p, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def noncentral_f(dfnum, dfden, nonc, size=None, seed=None):
-    # Check parameter validity
+    # Check parameter range validity
     if dfnum <= 0 or dfden <= 0 or nonc < 0:
         raise ValueError("Parameters must satisfy: dfnum > 0, dfden > 0, nonc >= 0")
 

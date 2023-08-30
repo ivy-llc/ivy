@@ -1021,7 +1021,7 @@ def test_numpy_triangular(
     )
 
 
-# noncentral_f
+# noncentral_f - numpy
 @handle_frontend_test(
     fn_tree="numpy.random.noncentral_f",
     input_dtypes=helpers.get_dtypes("float"),
