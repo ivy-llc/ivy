@@ -2218,7 +2218,7 @@ def test_paddle_inner(
         y=x[1],
     )
 
-    
+
 # trunc
 @handle_frontend_test(
     fn_tree="paddle.trunc",
