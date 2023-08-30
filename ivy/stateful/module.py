@@ -875,7 +875,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         if name == "v":
             if super().__getattribute__("v") is None and not self.built_:
                 self._build_and_return_v(
-                    self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+                    *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
         if name != "buffers":
             if hasattr(self, "buffers"):
