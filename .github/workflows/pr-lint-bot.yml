@@ -11,4 +11,5 @@ jobs:
   fix-linting:
     name: PR Lint Bot
     uses: NripeshN/workflows/.github/workflows/pr-lint-bot.yml@main
-    secrets: inherit
+    secrets: 
+      IVY_BRANCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
