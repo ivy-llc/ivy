@@ -414,15 +414,19 @@ def scatter_nd(
         indices = paddle.reshape(indices, (-1, indices.shape[-1]))
         num_indices = indices.shape[0]
         # use flip to keep the last occurrence of each value
-        indices, unique_idxs = ivy.unique_all(ivy.flip(indices, axis=[0]), axis=0, by_value=True)[:2]
+        indices, unique_idxs = ivy.unique_all(
+            ivy.flip(indices, axis=[0]), axis=0, by_value=True
+        )[:2]
         indices = indices.data
         if len(unique_idxs) < num_indices:
-            updates = paddle.reshape(updates, (-1, *updates.shape[len(indices_shape)-1:]))
+            updates = paddle.reshape(
+                updates, (-1, *updates.shape[len(indices_shape) - 1 :])
+            )
             updates = ivy.gather(ivy.flip(updates, axis=[0]), unique_idxs, axis=0).data
             expected_shape = (
-                list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
+                list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
                 if ivy.exists(out)
-                else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
+                else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
             )
         else:
             indices = paddle.reshape(indices, indices_shape)
@@ -476,7 +480,11 @@ def scatter_nd(
         paddle.float16,
         paddle.bool,
     ]:
-        target, updates, updates_ = target.cast("float32"), updates.cast("float32"), updates_.cast("float32")
+        target, updates, updates_ = (
+            target.cast("float32"),
+            updates.cast("float32"),
+            updates_.cast("float32"),
+        )
         ret = paddle.scatter_nd_add(
             paddle.scatter_nd_add(target, indices, -updates_),
             indices,

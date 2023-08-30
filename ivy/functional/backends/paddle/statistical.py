@@ -137,8 +137,8 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x_dtype= x.dtype
-    supported_dtypes = ['int32', 'int64', 'float32', 'float64']
+    x_dtype = x.dtype
+    supported_dtypes = ["int32", "int64", "float32", "float64"]
     if str(x_dtype) not in supported_dtypes:
         x = x.cast("float32")
     dtype_ = dtype
