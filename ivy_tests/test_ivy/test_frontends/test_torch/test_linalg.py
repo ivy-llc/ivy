@@ -1349,7 +1349,7 @@ def test_torch_norm(
         on_device=on_device,
         rtol=1e-01,
         atol=1e-08,
-        A=x,
+        input=x,
         ord=p,
         dim=axis,
         keepdim=keepdim,

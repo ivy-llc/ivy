@@ -172,9 +172,9 @@ def cross(input, other, *, dim=None, out=None):
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
-def norm(A, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
+def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
     return torch_frontend.reduction_ops.norm(
-        A, p=ord, dim=dim, keepdim=keepdim, out=out, dtype=dtype
+        input, p=ord, dim=dim, keepdim=keepdim, out=out, dtype=dtype
     )
 
 
