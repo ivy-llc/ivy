@@ -640,3 +640,15 @@ class Tensor:
     )
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.1 and below": ("float64", "float32")}, "paddle")
+    def cov(self, rowvar=True, ddof=True, fweights=None, aweights=None):
+        return paddle_frontend.Tensor(
+            ivy.cov(
+                self._ivy_array,
+                rowVar=rowvar,
+                ddof=int(ddof),
+                fweights=fweights,
+                aweights=aweights,
+            )
+        )
