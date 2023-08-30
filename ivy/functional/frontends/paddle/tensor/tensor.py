@@ -666,3 +666,8 @@ class Tensor:
                 aweights=aweights,
             )
         )
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def remainder(self, y, name=None):
+        return ivy.remainder(self._ivy_array, y)
+
