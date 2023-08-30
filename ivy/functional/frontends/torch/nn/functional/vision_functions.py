@@ -421,6 +421,8 @@ def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
     zeros_mask = masks[0]
     for i in range(1, len(borders)):
         zeros_mask = ivy.bitwise_or(zeros_mask, masks[i])
+
+    zeros_mask = ivy.native_array(zeros_mask)
     if grid[zeros_mask].shape[0] > 0:
         grid[zeros_mask] = ivy.array(borders)
     return grid
