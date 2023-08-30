@@ -1868,10 +1868,22 @@ class Tensor:
         return arr
 
     @with_unsupported_dtypes(
-        {"2.0.1 and below": ("uint8", "uint16", "bfloat16", "float16")}, "torch"
+        {
+            "2.0.1 and below": (
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
     )
-    def cummax(self, dim, dtype=None):
-        return torch_frontend.cummax(self, dim, dtype=dtype)
+    def cummax(self, dim):
+        return torch_frontend.cummax(self, dim)
 
 
 class Size(tuple):
