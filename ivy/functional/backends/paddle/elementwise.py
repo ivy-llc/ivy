@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Tuple, Type
 
 import paddle
 import math
@@ -256,26 +256,55 @@ def sign(
     return paddle.sgn(x)
 
 
-def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [
+# TODO: Remove `float16` from the list once paddle add it's supporting kernel to `CPU`.
+def _determine_sqrt_dtype_cast(
+    dtype: Type[paddle.Tensor],
+) -> Tuple[Optional[str], Optional[str]]:
+    """
+    Determine the appropriate casting dtype for sqrt operations.
+
+    Returns:
+        (intermediate_dtype, output_dtype)
+    """
+
+    cast_and_return_float32_dtype = {
         paddle.int8,
         paddle.int16,
         paddle.int32,
-        paddle.int64,
         paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
         paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            angle = paddle.angle(x)
-            result = paddle.complex(
-                paddle.cos(angle / 2), paddle.sin(angle / 2)
-            ) * paddle.sqrt(paddle.abs(x))
-            return result
-        return paddle.sqrt(x.astype("float32")).astype(x.dtype)
-    return paddle.sqrt(x)
+    }
+
+    if dtype in cast_and_return_float32_dtype:
+        return "float32", "float32"
+    elif dtype == paddle.int64:
+        return "float64", "float64"
+    elif dtype == paddle.float16:
+        return "float32", "float16"
+    elif dtype == paddle.bfloat16:
+        return "float32", "bfloat16"
+    else:
+        return None, None
+
+
+def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    """Calculate the square root with type handling."""
+
+    if paddle.is_complex(x):
+        angle = paddle.angle(x)
+        return paddle.complex(
+            paddle.cos(angle / 2), paddle.sin(angle / 2)
+        ) * paddle.sqrt(paddle.abs(x))
+
+    if x.dtype in {paddle.float32, paddle.float64}:
+        return paddle.sqrt(x)
+
+    intermediate_dtype, output_dtype = _determine_sqrt_dtype_cast(x.dtype)
+    if intermediate_dtype:
+        result = paddle.sqrt(x.astype(intermediate_dtype))
+        return result.astype(output_dtype)
+
+    raise ValueError(f"Unsupported data type for sqrt: {x.dtype}")
 
 
 @with_unsupported_device_and_dtypes(
@@ -704,6 +733,9 @@ def square(
     return paddle_backend.pow(x, 2).astype(x.dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def pow(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],

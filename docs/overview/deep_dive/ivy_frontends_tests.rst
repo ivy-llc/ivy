@@ -559,7 +559,7 @@ an assertion, the examples given below will make it clearer.
 Alias functions
 ^^^^^^^^^^^^^^^
 Let's take a quick walkthrough on testing the function alias as we know that such functions have the same behavior as original functions.
-Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
+For example :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working the same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
 
 Code example for alias function:
 
@@ -629,7 +629,11 @@ for example, :code:`ndarray.__add__` would expect an array as input, despite the
     - :code:`init_tree` A full path to initialization function.
     - :code:`method_name` The name of the method to test. 
 
-:func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`.
+:func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
+  - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
+  - :code:`init_all_as_kwargs_np` The data to be passed when intializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
+  - :code:`method_input_dtypes` The input dtypes of the arguemnt which are to be passed to the instance method after the intialization of the array.
+  - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to instance method.
 
 
 Frontend Instance Method Test Examples

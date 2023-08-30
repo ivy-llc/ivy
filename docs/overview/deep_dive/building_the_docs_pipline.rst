@@ -4,6 +4,7 @@ Building the Docs Pipeline
 .. _Sphinx: http://sphinx-doc.org/
 .. _Sphinx configuration file: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _autosummary: https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
+.. _doc-builder repository: https://github.com/unifyai/doc-builder
 
 To build our docs, we use `Sphinx`_. Sphinx is an extendable documentation generator
 for Python. As our building pipeline is complex, we heavily customize Sphinx using 
@@ -23,9 +24,9 @@ We will go through how they work in the following sections.
 The convenience script
 ~~~~~~~~~~~~~~~~~~~~~~
 
-``make_docs_without_docker.sh`` is a convenience script to build the docs. It takes 
-one argument, the path to a project to document. The project should have the following
-characteristics:
+``make_docs_without_docker.sh`` is a convenience script to build the docs, which can be
+found in the `doc-builder repository`_. It takes one argument, the path to a project to
+document. The project should have the following characteristics:
 
 1. It should have a ``requirements.txt``, or alternatively a ``requirements`` folder,
    which includes a ``requirements.txt`` and an optional ``optional.txt`` file.
@@ -52,7 +53,7 @@ Running the script:
     ./make_docs_without_docker.sh /path/to/project
 
 will result in the creation of documentation for the project in the directory 
-``doc/build``.
+``docs/build``.
 
 Options
 """""""
@@ -175,7 +176,7 @@ This is a partial `Sphinx configuration file`_. Which is being imported in the
 `conf.py <https://github.com/unifyai/doc-builder/blob/main/docs/conf.py#L150>`_,
 it's used to customize options that are specific to the project being documented.
 While importing common configuration such as the theme, the extensions, etc in the 
-original ``conf.py``
+original ``conf.py``.
 
 This is a part of ``partial_conf.py``:
 
@@ -343,7 +344,7 @@ This will remove any function that has ``__qualname__`` attribute equal to
 ``ivy_data``
 ~~~~~~~~~~~~
 
-This is a custom documenter for ``autodoc`` that document Ivy data attributes that live
+This is a custom documenter for ``autodoc`` that documents Ivy data attributes that live
 in ``ivy.functional.ivy``, it will replace the module to ``ivy.`` instead of 
 ``ivy.functional.ivy.<submodule>``.
 

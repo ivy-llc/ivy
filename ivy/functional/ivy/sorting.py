@@ -36,7 +36,8 @@ def argsort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the indices that sort an array ``x`` along a specified axis.
+    """
+    Return the indices that sort an array ``x`` along a specified axis.
 
     Parameters
     ----------
