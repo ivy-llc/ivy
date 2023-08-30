@@ -193,13 +193,15 @@ def eye(
         return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
-def to_dlapck(x, /, *, out: Optional[paddle.Tensor] = None):
+def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
     return paddle.utils.dlpack.to_dlpack(x)
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    x_d = paddle.utils.dlpack.to_dlpack(x)
-    return paddle.utils.dlpack.from_dlpack(x_d)
+    # Right now, we can't support array because paddle and tf
+    # don't support dlpack dunders
+    # x_d = paddle.utils.dlpack.to_dlpack(x)
+    return paddle.utils.dlpack.from_dlpack(x)
 
 
 def full(

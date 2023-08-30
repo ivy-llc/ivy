@@ -229,8 +229,10 @@ def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
 
 
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
-    x = x.detach() if x.requires_grad else x
-    return torch.utils.dlpack.from_dlpack(x)
+    # Right now, we can't support array because paddle and tf
+    # don't support dlpack dunders
+    # x = x.detach() if x.requires_grad else x
+    return torch.from_dlpack(x)
 
 
 def full(

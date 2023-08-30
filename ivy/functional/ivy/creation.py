@@ -1691,9 +1691,9 @@ def full(
     )
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
@@ -1738,12 +1738,6 @@ def to_dlpack(
 
 
 @handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
