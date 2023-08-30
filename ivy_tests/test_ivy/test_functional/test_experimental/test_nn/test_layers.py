@@ -1268,4 +1268,3 @@ def test_rfftn(
         axes=axes,
         norm=norm,
     )
-

@@ -19,7 +19,6 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
-from ivy.functional.ivy.experimental.creation import hann_window
 from ivy.utils.exceptions import handle_exceptions
 
 _min = builtins.min
@@ -2879,4 +2878,3 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
-
