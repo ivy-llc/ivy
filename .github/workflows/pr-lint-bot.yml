@@ -11,6 +11,4 @@ jobs:
   fix-linting:
     name: PR Lint Bot
     uses: NripeshN/workflows/.github/workflows/pr-lint-bot.yml@main
-    with:
-      COMMIT_MESSAGE: "🤖 Lint code"
     secrets: inherit
