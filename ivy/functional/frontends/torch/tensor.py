@@ -1896,6 +1896,29 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "float16",
+                "complex128",
+                "complex64",
+                "bool",
+            )
+        },
+        "torch",
+    )
+    def unique_consecutive(self, return_inverse, return_counts, dim):
+        return torch_frontend.unique_consecutive(
+            self, return_inverse, return_counts, dim
+        )
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
                 "uint16",
                 "uint32",
                 "uint64",
