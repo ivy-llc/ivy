@@ -33,6 +33,7 @@ def keys_to_delete_from_db(all_tests, module, data, current_key=""):
             keys_for_deletion.extend(keys_to_delete_from_db(all_tests, value, new_key))
         # If the new_key is not in keys_to_keep, mark it for deletion
         else:
+            print(new_key)
             components = new_key.split(".")
             submodule = components[0]
             function = components[-2]
@@ -80,7 +81,6 @@ db_dict = {
     "test_xgboost": ["xgboost", 26]
 }
 def get_submodule(test_path):
-    print(test_path)
     test_path = test_path.split("/")
     for name in submodules:
         if name in test_path:
