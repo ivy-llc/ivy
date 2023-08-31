@@ -13,6 +13,7 @@ from typing import (
 from numbers import Number
 from functools import partial
 import math
+from collections import Counter
 
 # local
 import ivy
@@ -981,14 +982,30 @@ def _ndindex(shape):
 
 
 def _handle_reduction_op(reduction, arr, indices, values):
-    if reduction in ["mul", "multiply", "prod"]:
-        arr[indices] *= values
+    # TODO: implement correct flagging for accumulation
+    accumulate = len(arr) != len(indices)
+    if reduction in ["add", "sum"]:
+        if accumulate:
+            for i, index in enumerate(indices):
+                arr[index] += values[i]
+        else:
+            arr[indices] += values
+    elif reduction in ["mul", "multiply", "prod"]:
+        if accumulate:
+            for i, index in enumerate(indices):
+                arr[index] *= values[i]
+        else:
+            arr[indices] *= values
+    elif reduction == "mean":
+        element_count = Counter(indices.tolist())
+        element_count = {k: v + 1 for k, v in element_count.items()}
+        idx = ivy.unique_all(indices)[0]
+        for i, index in enumerate(indices):
+            arr[index] += values[i]
+        for i in idx:
+            arr[i] = arr[indices][i].item() / element_count[i.item()]
     elif reduction == "assign":
         arr[indices] = values
-    elif reduction in ["add", "sum"]:
-        arr[indices] += values
-    elif reduction == "mean":
-        arr[indices] = (arr[indices] + values) / 2
     elif reduction == "amax":
         arr[indices] = ivy.maximum(values, arr[indices])
     elif reduction == "amin":
@@ -1752,7 +1769,7 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: str = "assign",
+    mode: Literal["assign", "add", "mul", "mean", "amax", "amin"] = "assign",
     out: Optional[ivy.Array] = None,
 ) -> None:
     """
@@ -1826,10 +1843,9 @@ def put_along_axis(
 put_along_axis.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
-        "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+    "to_skip": "handle_partial_mixed_function",
 }
 
 

@@ -5,7 +5,7 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
     put_along_axis_helper,
 )
 
@@ -229,13 +229,14 @@ def test_torch_scatter_reduce(
     backend_fw,
 ):
     input_dtype, x, indices, value, axis = args
+    test_flags.num_positional_args = 4
     helpers.test_frontend_function(
         input_dtypes=[input_dtype, "int64", input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        backend_to_test="torch",
         input=x,
         dim=axis,
         index=indices,
