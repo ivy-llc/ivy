@@ -52,11 +52,7 @@ def _conv_transpose(
     dilation=1,
 ):
     dims = len(input.shape) - 2
-    print(weight.shape)
     weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
-    print(weight.shape)
-    # for i in range(dims):
-    #     weight = ivy.flip(weight, axis=i)
     padding, output_padding = map(
         lambda x: [x] * dims if isinstance(x, int) else x, [padding, output_padding]
     )
