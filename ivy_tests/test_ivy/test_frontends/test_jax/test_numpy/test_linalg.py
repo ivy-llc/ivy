@@ -503,8 +503,8 @@ def test_jax_inv(
 # least squares
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.lstsq",
-    dtype_and_a = helpers.get_first_solve_matrix(adjoint=True),
-    dtype_and_b = helpers.get_second_solve_matrix(),
+    dtype_and_a=helpers.get_first_solve_matrix(adjoint=True),
+    dtype_and_b=helpers.get_second_solve_matrix(),
     test_with_out=st.just(False),
 )
 def test_jax_lstsq(

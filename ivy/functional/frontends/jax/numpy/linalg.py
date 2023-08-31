@@ -63,7 +63,9 @@ def lstsq(a, b, rcond=None, *, numpy_resid=False):
     least_squares_solution = ivy.matmul(
         ivy.pinv(a, rtol=1e-15).astype(ivy.float64), b.astype(ivy.float64)
     )
-    residuals = ivy.sum((b - ivy.matmul(a, least_squares_solution)) ** 2).astype(ivy.float64)
+    residuals = ivy.sum((b - ivy.matmul(a, least_squares_solution)) ** 2).astype(
+        ivy.float64
+    )
     svd_values = ivy.svd(a, compute_uv=False)
     rank = ivy.matrix_rank(a).astype(ivy.int32)
     return (least_squares_solution, residuals, rank, svd_values[0])
