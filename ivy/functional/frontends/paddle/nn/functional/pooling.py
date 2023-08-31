@@ -148,6 +148,7 @@ def max_pool3d(x, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=Fal
 
     return F.max_pool3d(x, kernel_size, stride, padding, dilation, ceil_mode, data_format)
 
+
 def max_pool3d(
     x,
     kernel_size,

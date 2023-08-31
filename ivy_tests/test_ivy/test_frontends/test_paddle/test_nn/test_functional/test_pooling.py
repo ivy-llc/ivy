@@ -328,6 +328,7 @@ max_value = paddle.max(output)
 # Print the max value
 print(max_value)
 
+
 import unittest
 import numpy as np
 import paddle
