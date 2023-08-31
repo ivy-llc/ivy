@@ -80,7 +80,7 @@ def test_jax_numpy_fftshift(
 @st.composite
 def x_and_ifftn(draw):
     min_fft_points = 2
-    dtype = draw(helpers.get_dtypes("complex"))
+    dtype = draw(helpers.get_dtypes("float_and_complex"))
     x_dim = draw(
         helpers.get_shape(
             min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
@@ -137,8 +137,8 @@ def test_jax_numpy_ifftn(
     )
 
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        ret = ivy_backend.to_numpy(ret).astype(np.complex128)
-        frontend_ret = frontend_ret[0].astype(np.complex128)
+        ret = ivy_backend.to_numpy(ret)
+        frontend_ret = frontend_ret[0]
 
         assert_all_close(
             ret_np=ret,

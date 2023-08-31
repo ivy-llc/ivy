@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -30,6 +30,14 @@ def fftshift(x, axes=None, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "0.4.15 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    "jax",
+)
 def ifftn(a, s=None, axes=None, norm=None):
-    a = ivy.asarray(a, dtype=ivy.complex128)
     return ivy.ifftn(a, s=s, axes=axes, norm=norm)
