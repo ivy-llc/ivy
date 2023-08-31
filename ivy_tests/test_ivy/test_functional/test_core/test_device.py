@@ -701,7 +701,7 @@ def test_to_device(
                 device[1:].split(":")[-2:]
             )
         elif backend_fw == "torch":
-            assert type(dev_from_new_x) == type(device)
+            assert isinstance(dev_from_new_x, type(device))
         else:
             assert dev_from_new_x == device
 

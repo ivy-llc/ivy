@@ -14,17 +14,17 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
     if scale_factor and (not size):
-        if type(scale_factor) == int:
+        if isinstance(scale_factor, int):
             h_new = int(w_old * scale_factor)
             w_new = int(h_old * scale_factor)
-        elif type(scale_factor) == tuple:
+        elif isinstance(scale_factor, tuple):
             h_new = int(w_old * scale_factor[0])
             w_new = int(h_old * scale_factor[1])
     elif (not scale_factor) and size:
-        if type(size) == int:
+        if isinstance(size, int):
             h_new = size
             w_new = size
-        elif type(size) == tuple:
+        elif isinstance(size, tuple):
             h_new, w_new = size
     return h_new, w_new
 

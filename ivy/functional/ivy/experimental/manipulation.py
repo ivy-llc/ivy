@@ -2548,7 +2548,6 @@ def choose(
 
     Parameters
     ----------
-
     arr
         The source array.
     choices
@@ -2561,12 +2560,11 @@ def choose(
 
     Returns
     -------
-
     ret
         The returned array has the same shape as `indices`.
+
     Examples
     --------
-
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
                         [20, 21, 22, 23], [30, 31, 32, 33]])
     >>> print(choose(ivy.array([2, 3, 1, 0]), choices))

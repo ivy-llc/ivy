@@ -472,11 +472,6 @@ def Conv3D(
 
 
 @to_ivy_arrays_and_back
-def Cosh(*, x, name="Cosh"):
-    return ivy.cosh(x)
-
-
-@to_ivy_arrays_and_back
 def Cross(*, a, b, name="Cross"):
     a, b = check_tensorflow_casting(a, b)
     return ivy.cross(a, b)
