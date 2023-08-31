@@ -188,6 +188,28 @@ def solve(x1, x2, name=None):
     return ivy.solve(x1, x2)
 
 
+# t
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def t(input, name=None):
+    if len(ivy.shape(input)) > 2:
+        raise ValueError(
+            "Input(input) only support N-D (N<=2) tensor, but received "
+            "length of Input(input) is %s. Perhaps you can use paddle."
+            "tensor.transpose() instead."
+            % len(ivy.shape(input))
+        )
+
+    elif len(ivy.shape(input)) <= 1:
+        return input
+
+    elif len(ivy.shape(input)) == 2:
+        perm = [1, 0]
+        return ivy.permute_dims(input, axes=perm)
+
+
 # transpose
 @with_unsupported_dtypes({"2.5.1 and below": ("uint8", "int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back

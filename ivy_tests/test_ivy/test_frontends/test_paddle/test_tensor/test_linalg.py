@@ -870,6 +870,35 @@ def test_paddle_solve(
     )
 
 
+# t
+@handle_frontend_test(
+    fn_tree="paddle.t",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_t(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.transpose",
     dtype_and_x_perm=_transpose_helper(),
