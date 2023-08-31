@@ -1883,6 +1883,7 @@ class Tensor:
     )
     def cummax(self, dim):
         return torch_frontend.cummax(self, dim)
+
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
@@ -1894,7 +1895,6 @@ class Tensor:
     )
     def xlogy(self, *, other, out=None):
         return torch_frontend.xlogy(self, other, out=out)
-
 
 
 class Size(tuple):
