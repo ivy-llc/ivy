@@ -581,6 +581,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
     def conj(self, name=None):
         return paddle_frontend.Tensor(ivy.conj(self._ivy_array))
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+    )
+    def pow(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.pow(self._ivy_array, _to_ivy_array(y)))
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def log2(self, name=None):
