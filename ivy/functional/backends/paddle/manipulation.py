@@ -353,7 +353,7 @@ def tile(
         new_shape = [*x.shape[:5], -1]
         reshaped_tensor = paddle.reshape(x, new_shape)
         new_repeats = repeats[:5] + [math.prod(repeats[5:])]
-        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats).data
+        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats)
         tiled_shape = tuple(s * r for s, r in zip(x.shape, repeats))
         result = paddle.reshape(tiled_reshaped_tensor, tiled_shape)
         return result

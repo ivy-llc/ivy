@@ -289,16 +289,6 @@ def _get_dtype_and_multiplicative_matrices(draw):
 
 
 @st.composite
-def _get_dtype_and_multiplicative_matrices(draw):
-    return draw(
-        st.one_of(
-            _get_dtype_input_and_matrices(),
-            _get_dtype_and_3dbatch_matrices(),
-        )
-    )
-
-
-@st.composite
 def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
@@ -1588,6 +1578,42 @@ def test_torch_index_fill(
     ),
 )
 def test_torch_instance_sinc(
+    *,
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+    )
+
+
+# sinc_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sinc_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_instance_sinc_(
     *,
     dtype_and_x,
     frontend,
@@ -5269,7 +5295,7 @@ def test_torch_tensor_cos_(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-            "data": list(x[0]) if type(x[0]) == int else x[0],
+            "data": list(x[0]) if isinstance(x[0], int) else x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
