@@ -2918,7 +2918,6 @@ def _numel(shape):
 
 
 def _broadcast_to(input, target_shape):
-    input = ivy.squeeze(input)
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
         return ivy.reshape(input, target_shape)
     else:
