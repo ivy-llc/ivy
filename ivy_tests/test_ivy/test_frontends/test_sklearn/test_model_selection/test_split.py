@@ -12,12 +12,12 @@ CLASS_TREE = "ivy.functional.frontends.sklearn.model_selection.KFold"
     init_tree="sklearn.model_selection.KFold",
     method_name="split",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
         num_arrays=2,
     ),
 )
-def test_sklear_kfold_split(
+def test_sklearn_kfold_split(
     dtype_x,
     frontend,
     frontend_method_data,
