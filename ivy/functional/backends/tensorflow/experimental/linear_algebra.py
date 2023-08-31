@@ -223,7 +223,4 @@ def dot(
     *,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-    return tf.experimental.numpy.dot(a, b, out=out)
-
-
-dot.support_native_out = True
+    return tf.experimental.numpy.dot(a, b)
