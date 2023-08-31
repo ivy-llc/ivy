@@ -329,7 +329,7 @@ def test_torch_upsample_bilinear(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, _, size, _ = dtype_and_input_and_other
+    input_dtype, x, _, size, _, scale_factor, _ = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -339,6 +339,7 @@ def test_torch_upsample_bilinear(
         on_device=on_device,
         input=x[0],
         size=size,
+        scale_factor=scale_factor,
     )
 
 

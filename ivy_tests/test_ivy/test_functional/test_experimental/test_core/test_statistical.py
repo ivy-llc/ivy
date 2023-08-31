@@ -429,9 +429,8 @@ def test_cummax(
         atol_=1e-1,
     )
 
-    # cummin
 
-
+# cummin
 @handle_test(
     fn_tree="functional.ivy.experimental.cummin",
     dtype_x_axis_castable=_get_castable_dtype(),
