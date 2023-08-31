@@ -173,7 +173,7 @@ def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.acos",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -196,10 +196,11 @@ def test_acos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.acosh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=1,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        large_abs_safety_factor=2.1,
+        small_abs_safety_factor=2.1,
+        safety_factor_scale="log",
     ),
 )
 def test_acosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -287,7 +288,7 @@ def test_angle(
 @handle_test(
     fn_tree="functional.ivy.asin",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -310,7 +311,7 @@ def test_asin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.asinh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -332,7 +333,12 @@ def test_asinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # atan
 @handle_test(
     fn_tree="functional.ivy.atan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
 )
 def test_atan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -379,7 +385,9 @@ def test_atan2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # atanh
 @handle_test(
     fn_tree="functional.ivy.atanh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_atanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -583,7 +591,9 @@ def test_ceil(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # cos
 @handle_test(
     fn_tree="functional.ivy.cos",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_cos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -600,7 +610,9 @@ def test_cos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # cosh
 @handle_test(
     fn_tree="functional.ivy.cosh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+    ),
 )
 def test_cosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -706,7 +718,9 @@ def test_erf(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # exp
 @handle_test(
     fn_tree="functional.ivy.exp",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_exp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -724,7 +738,7 @@ def test_exp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.exp2",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-10,
         max_value=10,
         min_num_dims=1,
@@ -749,7 +763,13 @@ def test_exp2(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # expm1
 @handle_test(
     fn_tree="functional.ivy.expm1",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        # Can't use linear or log safety factor, since the function is exponential,
+        # next best option is a hardcoded maximum that won't break any data type.
+        # expm1 is designed for very small values anyway
+        max_value=20.0,
+    ),
 )
 def test_expm1(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1164,7 +1184,10 @@ def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # log
 @handle_test(
     fn_tree="functional.ivy.log",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
+    ),
 )
 def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1183,7 +1206,10 @@ def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # log10
 @handle_test(
     fn_tree="functional.ivy.log10",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
+    ),
 )
 def test_log10(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1205,8 +1231,9 @@ def test_log10(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.log1p",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         small_abs_safety_factor=2,
+        large_abs_safety_factor=2.1,
         safety_factor_scale="log",
     ),
 )
@@ -1227,7 +1254,10 @@ def test_log1p(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # log2
 @handle_test(
     fn_tree="functional.ivy.log2",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
+    ),
 )
 def test_log2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1738,7 +1768,9 @@ def test_sign(*, dtype_and_x, np_variant, test_flags, backend_fw, fn_name, on_de
 # sin
 @handle_test(
     fn_tree="functional.ivy.sin",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1755,7 +1787,9 @@ def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # sinh
 @handle_test(
     fn_tree="functional.ivy.sinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_sinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1773,7 +1807,13 @@ def test_sinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.sqrt",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), allow_inf=False
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        allow_inf=False,
+        # Safety factor is to account for complex, where taking square root
+        # involves taking absolute value first
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ).filter(lambda x: x[0][0] not in ["bfloat16"]),
 )
 def test_sqrt(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -1842,7 +1882,9 @@ def test_subtract(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_dev
 # tan
 @handle_test(
     fn_tree="functional.ivy.tan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1861,9 +1903,12 @@ def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # tanh
 @handle_test(
     fn_tree="functional.ivy.tanh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
-def test_tanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -1874,6 +1919,7 @@ def test_tanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-1,
         atol_=1e-2,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 

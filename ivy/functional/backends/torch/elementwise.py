@@ -507,7 +507,9 @@ not_equal.support_native_out = True
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 @handle_numpy_arrays_in_specific_backend
-def tanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tanh(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.tanh(x, out=out)
 

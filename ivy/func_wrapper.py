@@ -1493,16 +1493,28 @@ def handle_complex_input(fn: Callable) -> Callable:
         jax_like = fn.jax_like if hasattr(fn, "jax_like") else "entire"
 
         if complex_mode == "split" or (complex_mode == "jax" and jax_like == "split"):
-            real_inp = ivy.real(inp)
-            imag_inp = ivy.imag(inp)
-            return fn(real_inp, *args, **kwargs) + 1j * fn(imag_inp, *args, **kwargs)
+            real_inp = ivy.real(inp).data
+            imag_inp = ivy.imag(inp).data
+            if "out" in kwargs and kwargs["out"] is not None:
+                out = kwargs.pop("out")
+                real_ret = fn(real_inp, *args, out=ivy.real(out), **kwargs)
+                imag_ret = fn(imag_inp, *args, out=ivy.imag(out), **kwargs)
+            else:
+                real_ret = fn(real_inp, *args, **kwargs)
+                imag_ret = fn(imag_inp, *args, **kwargs)
+            return ivy.add(
+                real_ret,
+                ivy.multiply(ivy.array(1j, dtype=inp.dtype), imag_ret),
+            )
 
         elif complex_mode == "magnitude" or (
             complex_mode == "jax" and jax_like == "magnitude"
         ):
-            mag_inp = ivy.abs(inp)
-            angle_inp = ivy.angle(inp)
-            return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
+            mag_inp = ivy.abs(inp).data
+            angle_inp = ivy.angle(inp).data
+            return ivy.multiply(
+                fn(mag_inp, *args, **kwargs), ivy.exp(ivy.multiply(1j, angle_inp))
+            )
 
         elif complex_mode == "jax" and jax_like == "entire":
             return fn(inp, *args, **kwargs)

@@ -502,7 +502,9 @@ def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 
 
-def tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def tanh(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.tanh(x)
 
 

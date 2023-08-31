@@ -13,15 +13,22 @@ class GELU(Module):
         approximate: bool = False,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the GELU activation function."""
+        """
+        Apply the GELU activation function.
+
+        Parameters
+        ----------
+        approximate
+            whether to use the gelu approximation algorithm or exact formulation.
+        complex_mode
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         self._approximate = approximate
         self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(
-        self,
-        x,
-    ):
+    def _forward(self, x):
         """
         Perform forward pass of the GELU activation.
 
@@ -70,7 +77,15 @@ class ReLU(Module):
         self,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
-        """Apply the RELU activation function."""
+        """
+        Apply the RELU activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         self._complex_mode = complex_mode
         Module.__init__(self)
 
@@ -102,9 +117,10 @@ class LeakyReLU(Module):
         Parameters
         ----------
         alpha
-             Negative slope for ReLU.
+            Negative slope for ReLU.
         complex_mode
-             Specifies how to handle complex input.
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._alpha = alpha
         self._complex_mode = complex_mode
@@ -117,10 +133,6 @@ class LeakyReLU(Module):
         ----------
         x
               Inputs to process *[batch_shape, d]*.
-        alpha
-              Negative slope for ReLU.
-        complex_mode
-              Specifies how to handle complex input.
 
         Returns
         -------
@@ -275,8 +287,17 @@ class Sigmoid(Module):
 
 
 class Tanh(Module):
-    def __init__(self):
-        """Apply the TANH activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the TANH activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -292,7 +313,7 @@ class Tanh(Module):
          ret
             The outputs following the TANH activation *[batch_shape, d]*
         """
-        return ivy.tanh(x)
+        return ivy.tanh(x, complex_mode=self._complex_mode)
 
 
 class ReLU6(Module):
