@@ -7,11 +7,6 @@ from ivy.utils.exceptions import handle_exceptions
 # local
 from typing import Optional, Union, Callable, Tuple, Any
 
-
-# --- Helpers --- #
-# --------------- #
-
-
 # Extra #
 # ------#
 
@@ -199,70 +194,6 @@ def _train_task(
     return final_cost, variables, all_grads
 
 
-def _train_tasks(
-    batch,
-    inner_batch_fn,
-    outer_batch_fn,
-    inner_cost_fn,
-    outer_cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step,
-    order,
-    average_across_steps,
-    batched,
-    inner_v,
-    keep_innver_v,
-    outer_v,
-    keep_outer_v,
-    return_inner_v,
-    num_tasks,
-    stop_gradients,
-):
-    if batched:
-        return _train_tasks_batched(
-            batch,
-            inner_batch_fn,
-            outer_batch_fn,
-            inner_cost_fn,
-            outer_cost_fn,
-            variables,
-            inner_grad_steps,
-            inner_learning_rate,
-            inner_optimization_step,
-            order,
-            average_across_steps,
-            inner_v,
-            keep_innver_v,
-            outer_v,
-            keep_outer_v,
-            return_inner_v,
-            num_tasks,
-            stop_gradients,
-        )
-    return _train_tasks_with_for_loop(
-        batch,
-        inner_batch_fn,
-        outer_batch_fn,
-        inner_cost_fn,
-        outer_cost_fn,
-        variables,
-        inner_grad_steps,
-        inner_learning_rate,
-        inner_optimization_step,
-        order,
-        average_across_steps,
-        inner_v,
-        keep_innver_v,
-        outer_v,
-        keep_outer_v,
-        return_inner_v,
-        num_tasks,
-        stop_gradients,
-    )
-
-
 def _train_tasks_batched(
     batch,
     inner_batch_fn,
@@ -405,8 +336,68 @@ def _train_tasks_with_for_loop(
     return total_cost / num_tasks
 
 
-# --- Main --- #
-# ------------ #
+def _train_tasks(
+    batch,
+    inner_batch_fn,
+    outer_batch_fn,
+    inner_cost_fn,
+    outer_cost_fn,
+    variables,
+    inner_grad_steps,
+    inner_learning_rate,
+    inner_optimization_step,
+    order,
+    average_across_steps,
+    batched,
+    inner_v,
+    keep_innver_v,
+    outer_v,
+    keep_outer_v,
+    return_inner_v,
+    num_tasks,
+    stop_gradients,
+):
+    if batched:
+        return _train_tasks_batched(
+            batch,
+            inner_batch_fn,
+            outer_batch_fn,
+            inner_cost_fn,
+            outer_cost_fn,
+            variables,
+            inner_grad_steps,
+            inner_learning_rate,
+            inner_optimization_step,
+            order,
+            average_across_steps,
+            inner_v,
+            keep_innver_v,
+            outer_v,
+            keep_outer_v,
+            return_inner_v,
+            num_tasks,
+            stop_gradients,
+        )
+    return _train_tasks_with_for_loop(
+        batch,
+        inner_batch_fn,
+        outer_batch_fn,
+        inner_cost_fn,
+        outer_cost_fn,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        inner_optimization_step,
+        order,
+        average_across_steps,
+        inner_v,
+        keep_innver_v,
+        outer_v,
+        keep_outer_v,
+        return_inner_v,
+        num_tasks,
+        stop_gradients,
+    )
 
 
 # Public #
@@ -535,136 +526,7 @@ def fomaml_step(
     return cost, grads
 
 
-# Second Order
-
-
-@handle_exceptions
-@handle_array_function
-def maml_step(
-    batch: ivy.Container,
-    inner_cost_fn: Callable,
-    outer_cost_fn: Callable,
-    variables: ivy.Container,
-    inner_grad_steps: int,
-    inner_learning_rate: float,
-    /,
-    *,
-    inner_optimization_step: Callable = gradient_descent_update,
-    inner_batch_fn: Optional[Callable] = None,
-    outer_batch_fn: Optional[Callable] = None,
-    average_across_steps: bool = False,
-    batched: bool = True,
-    inner_v: Optional[ivy.Container] = None,
-    keep_inner_v: bool = True,
-    outer_v: Optional[ivy.Container] = None,
-    keep_outer_v: bool = True,
-    return_inner_v: Union[str, bool] = False,
-    num_tasks: Optional[int] = None,
-    stop_gradients: bool = True,
-) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of vanilla second order MAML.
-
-    Parameters
-    ----------
-    batch
-        The input batch
-    inner_cost_fn
-        callable for the inner loop cost function, receiving sub-batch, inner vars and
-        outer vars
-    outer_cost_fn
-        callable for the outer loop cost function, receving task-specific sub-batch,
-        inner vars and outer vars. If None, the cost from the inner loop will also be
-        optimized in the outer loop.
-    variables
-        Variables to be optimized during the meta step
-    inner_grad_steps
-        Number of gradient steps to perform during the inner loop.
-    inner_learning_rate
-        The learning rate of the inner loop.
-    inner_optimization_step
-        The function used for the inner loop optimization.
-        Default is ivy.gradient_descent_update.
-    inner_batch_fn
-        Function to apply to the task sub-batch, before passing to the inner_cost_fn.
-        Default is ``None``.
-    outer_batch_fn
-        Function to apply to the task sub-batch, before passing to the outer_cost_fn.
-        Default is ``None``.
-    average_across_steps
-        Whether to average the inner loop steps for the outer loop update.
-        Default is ``False``.
-    batched
-        Whether to batch along the time dimension, and run the meta steps in batch.
-        Default is ``True``.
-    inner_v
-        Nested variable keys to be optimized during the inner loop, with same keys and
-        boolean values. (Default value = None)
-    keep_inner_v
-        If True, the key chains in inner_v will be kept, otherwise they will be removed.
-        Default is ``True``.
-    outer_v
-        Nested variable keys to be optimized during the inner loop, with same keys and
-        boolean values. (Default value = None)
-    keep_outer_v
-        If True, the key chains in inner_v will be kept, otherwise they will be removed.
-        Default is ``True``.
-    return_inner_v
-        Either 'first', 'all', or False. 'first' means the variables for the first task
-        inner loop will also be returned. variables for all tasks will be returned with
-        'all'. Default is ``False``.
-    num_tasks
-        Number of unique tasks to inner-loop optimize for the meta step. Determined from
-        batch by default.
-    stop_gradients
-        Whether to stop the gradients of the cost. Default is ``True``.
-
-    Returns
-    -------
-    ret
-        The cost and the gradients with respect to the outer loop variables.
-    """
-    if num_tasks is None:
-        num_tasks = batch.cont_shape[0]
-    unique_outer = outer_v is not None
-    func_ret, grads = ivy.execute_with_gradients(
-        lambda v: _train_tasks(
-            batch,
-            inner_batch_fn,
-            outer_batch_fn,
-            inner_cost_fn,
-            outer_cost_fn,
-            variables.cont_set_at_key_chains(v) if unique_outer else v,
-            inner_grad_steps,
-            inner_learning_rate,
-            inner_optimization_step,
-            2,
-            average_across_steps,
-            batched,
-            inner_v,
-            keep_inner_v,
-            outer_v,
-            keep_outer_v,
-            return_inner_v,
-            num_tasks,
-            False,
-        ),
-        (
-            variables.cont_at_key_chains(outer_v, ignore_none=True)
-            if keep_outer_v
-            else variables.cont_prune_key_chains(outer_v, ignore_none=True)
-        ),
-    )
-    if isinstance(func_ret, tuple):
-        grads = grads["0"] if "0" in grads else grads
-        cost = func_ret[0]
-        rest = func_ret[1]
-    else:
-        cost = func_ret
-        rest = ()
-    if stop_gradients:
-        cost = ivy.stop_gradient(cost, preserve_type=False)
-    return cost, grads.sum(axis=0), rest
+fomaml_step.computes_gradients = True
 
 
 @handle_exceptions
@@ -803,6 +665,139 @@ def reptile_step(
     return cost, grads
 
 
-fomaml_step.computes_gradients = True
 reptile_step.computes_gradients = True
+
+
+# Second Order
+
+
+@handle_exceptions
+@handle_array_function
+def maml_step(
+    batch: ivy.Container,
+    inner_cost_fn: Callable,
+    outer_cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    /,
+    *,
+    inner_optimization_step: Callable = gradient_descent_update,
+    inner_batch_fn: Optional[Callable] = None,
+    outer_batch_fn: Optional[Callable] = None,
+    average_across_steps: bool = False,
+    batched: bool = True,
+    inner_v: Optional[ivy.Container] = None,
+    keep_inner_v: bool = True,
+    outer_v: Optional[ivy.Container] = None,
+    keep_outer_v: bool = True,
+    return_inner_v: Union[str, bool] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: bool = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
+    """
+    Perform step of vanilla second order MAML.
+
+    Parameters
+    ----------
+    batch
+        The input batch
+    inner_cost_fn
+        callable for the inner loop cost function, receiving sub-batch, inner vars and
+        outer vars
+    outer_cost_fn
+        callable for the outer loop cost function, receving task-specific sub-batch,
+        inner vars and outer vars. If None, the cost from the inner loop will also be
+        optimized in the outer loop.
+    variables
+        Variables to be optimized during the meta step
+    inner_grad_steps
+        Number of gradient steps to perform during the inner loop.
+    inner_learning_rate
+        The learning rate of the inner loop.
+    inner_optimization_step
+        The function used for the inner loop optimization.
+        Default is ivy.gradient_descent_update.
+    inner_batch_fn
+        Function to apply to the task sub-batch, before passing to the inner_cost_fn.
+        Default is ``None``.
+    outer_batch_fn
+        Function to apply to the task sub-batch, before passing to the outer_cost_fn.
+        Default is ``None``.
+    average_across_steps
+        Whether to average the inner loop steps for the outer loop update.
+        Default is ``False``.
+    batched
+        Whether to batch along the time dimension, and run the meta steps in batch.
+        Default is ``True``.
+    inner_v
+        Nested variable keys to be optimized during the inner loop, with same keys and
+        boolean values. (Default value = None)
+    keep_inner_v
+        If True, the key chains in inner_v will be kept, otherwise they will be removed.
+        Default is ``True``.
+    outer_v
+        Nested variable keys to be optimized during the inner loop, with same keys and
+        boolean values. (Default value = None)
+    keep_outer_v
+        If True, the key chains in inner_v will be kept, otherwise they will be removed.
+        Default is ``True``.
+    return_inner_v
+        Either 'first', 'all', or False. 'first' means the variables for the first task
+        inner loop will also be returned. variables for all tasks will be returned with
+        'all'. Default is ``False``.
+    num_tasks
+        Number of unique tasks to inner-loop optimize for the meta step. Determined from
+        batch by default.
+    stop_gradients
+        Whether to stop the gradients of the cost. Default is ``True``.
+
+    Returns
+    -------
+    ret
+        The cost and the gradients with respect to the outer loop variables.
+    """
+    if num_tasks is None:
+        num_tasks = batch.cont_shape[0]
+    unique_outer = outer_v is not None
+    func_ret, grads = ivy.execute_with_gradients(
+        lambda v: _train_tasks(
+            batch,
+            inner_batch_fn,
+            outer_batch_fn,
+            inner_cost_fn,
+            outer_cost_fn,
+            variables.cont_set_at_key_chains(v) if unique_outer else v,
+            inner_grad_steps,
+            inner_learning_rate,
+            inner_optimization_step,
+            2,
+            average_across_steps,
+            batched,
+            inner_v,
+            keep_inner_v,
+            outer_v,
+            keep_outer_v,
+            return_inner_v,
+            num_tasks,
+            False,
+        ),
+        (
+            variables.cont_at_key_chains(outer_v, ignore_none=True)
+            if keep_outer_v
+            else variables.cont_prune_key_chains(outer_v, ignore_none=True)
+        ),
+    )
+    if isinstance(func_ret, tuple):
+        grads = grads["0"] if "0" in grads else grads
+        cost = func_ret[0]
+        rest = func_ret[1]
+    else:
+        cost = func_ret
+        rest = ()
+    if stop_gradients:
+        cost = ivy.stop_gradient(cost, preserve_type=False)
+    return cost, grads.sum(axis=0), rest
+
+
 maml_step.computes_gradients = True

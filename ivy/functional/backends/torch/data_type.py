@@ -23,6 +23,7 @@ ivy_dtype_dict = {
     torch.complex128: "complex128",
     torch.bool: "bool",
 }
+
 native_dtype_dict = {
     "int8": torch.int8,
     "int16": torch.int16,
@@ -65,6 +66,73 @@ class Finfo:
     @property
     def smallest_normal(self):
         return self._torch_finfo.tiny
+
+
+# Array API Standard #
+# -------------------#
+
+
+def astype(
+    x: torch.Tensor,
+    dtype: torch.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return x.clone() if copy else x
+    return x.to(dtype)
+
+
+def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
+    try:
+        return list(torch.broadcast_tensors(*arrays))
+    except RuntimeError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+
+
+def broadcast_to(
+    x: torch.Tensor,
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
+    if x.ndim > len(shape):
+        return torch.broadcast_to(x.reshape(-1), shape)
+    return torch.broadcast_to(x, shape)
+
+
+@_handle_nestable_dtype_info
+def finfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> Finfo:
+    if isinstance(type, (torch.Tensor, np.ndarray)):
+        type = type.dtype
+    return Finfo(torch.finfo(ivy.as_native_dtype(type)))
+
+
+@_handle_nestable_dtype_info
+def iinfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> torch.iinfo:
+    if isinstance(type, (torch.Tensor, np.ndarray)):
+        type = type.dtype
+    return torch.iinfo(ivy.as_native_dtype(type))
+
+
+def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dtype:
+    input = []
+    for val in arrays_and_dtypes:
+        torch_val = as_native_dtype(val)
+        if isinstance(torch_val, torch.dtype):
+            torch_val = torch.tensor(1, dtype=torch_val)
+        input.append(torch_val)
+
+    result = torch.tensor(1, dtype=torch.result_type(input[0], input[1]))
+
+    for i in range(2, len(input)):
+        result = torch.tensor(1, dtype=torch.result_type(result, input[i]))
+    return as_ivy_dtype(result.dtype)
 
 
 # Extra #
@@ -136,44 +204,6 @@ def as_native_dtype(
         )
 
 
-# Array API Standard #
-# -------------------#
-
-
-def astype(
-    x: torch.Tensor,
-    dtype: torch.dtype,
-    /,
-    *,
-    copy: bool = True,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if x.dtype == dtype:
-        return x.clone() if copy else x
-    return x.to(dtype)
-
-
-def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
-    try:
-        return list(torch.broadcast_tensors(*arrays))
-    except RuntimeError as e:
-        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
-
-
-def broadcast_to(
-    x: torch.Tensor,
-    /,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
-    if x.ndim > len(shape):
-        return torch.broadcast_to(x.reshape(-1), shape)
-    return torch.broadcast_to(x, shape)
-
-
 def dtype(x: Union[torch.tensor, np.ndarray], *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.as_native_dtype(x.dtype)
@@ -194,20 +224,6 @@ def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
     )
 
 
-@_handle_nestable_dtype_info
-def finfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> Finfo:
-    if isinstance(type, (torch.Tensor, np.ndarray)):
-        type = type.dtype
-    return Finfo(torch.finfo(ivy.as_native_dtype(type)))
-
-
-@_handle_nestable_dtype_info
-def iinfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> torch.iinfo:
-    if isinstance(type, (torch.Tensor, np.ndarray)):
-        type = type.dtype
-    return torch.iinfo(ivy.as_native_dtype(type))
-
-
 def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
@@ -215,18 +231,3 @@ def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
         return True
     else:
         return False
-
-
-def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dtype:
-    input = []
-    for val in arrays_and_dtypes:
-        torch_val = as_native_dtype(val)
-        if isinstance(torch_val, torch.dtype):
-            torch_val = torch.tensor(1, dtype=torch_val)
-        input.append(torch_val)
-
-    result = torch.tensor(1, dtype=torch.result_type(input[0], input[1]))
-
-    for i in range(2, len(input)):
-        result = torch.tensor(1, dtype=torch.result_type(result, input[i]))
-    return as_ivy_dtype(result.dtype)

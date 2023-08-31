@@ -17,6 +17,18 @@ def argsort(
     raise IvyNotImplementedException()
 
 
+def sort(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    axis: int = (-1),
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def msort(
     a: Union[(None, mx.ndarray.NDArray, list, tuple)],
     /,
@@ -34,18 +46,6 @@ def searchsorted(
     side: Literal[("left", "right")] = "left",
     sorter: Optional[Union[(ivy.Array, ivy.NativeArray, List[int])]] = None,
     ret_dtype: None = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def sort(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    axis: int = (-1),
-    descending: bool = False,
-    stable: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

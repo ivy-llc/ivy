@@ -3,10 +3,6 @@ import torch
 from typing import Union, Optional, Sequence
 
 
-all.support_native_out = True
-any.support_native_out = True
-
-
 def all(
     x: torch.Tensor,
     /,
@@ -29,6 +25,9 @@ def all(
     return x
 
 
+all.support_native_out = True
+
+
 def any(
     x: torch.Tensor,
     /,
@@ -49,3 +48,6 @@ def any(
     for i, a in enumerate(axis):
         x = torch.any(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
     return x
+
+
+any.support_native_out = True

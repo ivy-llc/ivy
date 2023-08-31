@@ -1,3 +1,5 @@
+# global
+torch_scatter = None
 from typing import Union, Optional, Sequence
 
 import torch
@@ -8,130 +10,30 @@ from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
-# global
-torch_scatter = None
+# Array API Standard #
+# -------------------#
 
 
-# --- Helpers --- #
-# --------------- #
-
-
-def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if default_dtype in ivy.valid_dtypes:
-        if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-            return ivy.as_native_dtype(default_dtype)
-    return ivy.as_native_dtype(dtype)
-
-
-# --- Main --- #
-# ------------ #
-
-
-# Extra #
-# ----- #
-
-
-# Function does support uint8, but allowing support for unsigned will cause
-# the function to break the upcasting rule defined in the Array API Standard
-# TODO: bfloat16 support is added in PyTorch 1.12.1
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
-    },
-    backend_version,
-)
-def cumprod(
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+def min(
     x: torch.Tensor,
     /,
     *,
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    dtype: Optional[torch.dtype] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-
-    if not (exclusive or reverse):
-        return torch.cumprod(x, axis, dtype=dtype, out=out)
-    elif exclusive and reverse:
-        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
-        x = torch.transpose(x, axis, -1)
-        x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = torch.transpose(x, axis, -1)
-        ret = torch.flip(x, dims=(axis,))
-    elif exclusive:
-        x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = torch.cumprod(x, -1, dtype=dtype)
-        ret = torch.transpose(x, axis, -1)
-    else:
-        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
-        ret = torch.flip(x, dims=(axis,))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-# Function does support uint8, but allowing support for unsigned will cause
-# the function to break the upcasting rule defined in the Array API Standard
-# TODO: bfloat16 support is added in PyTorch 1.12.1
-@with_unsupported_dtypes(
-    {
-        "1.12.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
-    },
-    backend_version,
-)
-def cumsum(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if ivy.is_int_dtype(x.dtype):
-            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
-        dtype = _infer_dtype(x.dtype)
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
-            x = torch.transpose(x, axis, -1)
-            x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.transpose(x, axis, -1)
-            res = torch.flip(x, dims=(axis,))
-        elif exclusive:
-            x = torch.transpose(x, axis, -1)
-            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.cumsum(x, -1, dtype=dtype)
-            res = torch.transpose(x, axis, -1)
-        else:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
-            res = torch.flip(x, dims=(axis,))
+    if axis == ():
         if ivy.exists(out):
-            return ivy.inplace_update(out, res)
-        return res
-    return torch.cumsum(x, axis, dtype=dtype, out=out)
+            return ivy.inplace_update(out, x)
+        else:
+            return x
+    if not keepdims and not axis and axis != 0:
+        return torch.amin(input=x, out=out)
+    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16",)},
-    backend_version,
-)
-def einsum(
-    equation: str,
-    *operands: torch.Tensor,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = _get_promoted_type_of_operands(operands)
-    return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)
+min.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
@@ -151,6 +53,9 @@ def max(
     if not keepdims and not axis and axis != 0:
         return torch.amax(input=x, out=out)
     return torch.amax(input=x, dim=axis, keepdim=keepdims, out=out)
+
+
+max.support_native_out = True
 
 
 def mean(
@@ -176,27 +81,15 @@ def mean(
     return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
 
 
-# Array API Standard #
-# -------------------#
+mean.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
-def min(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if axis == ():
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        else:
-            return x
-    if not keepdims and not axis and axis != 0:
-        return torch.amin(input=x, out=out)
-    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if default_dtype in ivy.valid_dtypes:
+        if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+            return ivy.as_native_dtype(default_dtype)
+    return ivy.as_native_dtype(dtype)
 
 
 # Function does support uint8, but allowing support for unsigned will cause
@@ -321,8 +214,113 @@ def var(
         ).to(x.dtype)
 
 
-min.support_native_out = True
-max.support_native_out = True
-mean.support_native_out = True
+# Extra #
+# ----- #
+
+
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
+# TODO: bfloat16 support is added in PyTorch 1.12.1
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
+    },
+    backend_version,
+)
+def cumprod(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+
+    if not (exclusive or reverse):
+        return torch.cumprod(x, axis, dtype=dtype, out=out)
+    elif exclusive and reverse:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
+        x = torch.transpose(x, axis, -1)
+        x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.transpose(x, axis, -1)
+        ret = torch.flip(x, dims=(axis,))
+    elif exclusive:
+        x = torch.transpose(x, axis, -1)
+        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = torch.cumprod(x, -1, dtype=dtype)
+        ret = torch.transpose(x, axis, -1)
+    else:
+        x = torch.cumprod(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
+        ret = torch.flip(x, dims=(axis,))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 cumprod.support_native_out = True
+
+
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
+# TODO: bfloat16 support is added in PyTorch 1.12.1
+@with_unsupported_dtypes(
+    {
+        "1.12.1 and below": ("uint8", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "float16"),
+    },
+    backend_version,
+)
+def cumsum(
+    x: torch.Tensor,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if ivy.is_int_dtype(x.dtype):
+            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
+        dtype = _infer_dtype(x.dtype)
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
+            x = torch.transpose(x, axis, -1)
+            x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = torch.transpose(x, axis, -1)
+            res = torch.flip(x, dims=(axis,))
+        elif exclusive:
+            x = torch.transpose(x, axis, -1)
+            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = torch.cumsum(x, -1, dtype=dtype)
+            res = torch.transpose(x, axis, -1)
+        else:
+            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
+            res = torch.flip(x, dims=(axis,))
+        if ivy.exists(out):
+            return ivy.inplace_update(out, res)
+        return res
+    return torch.cumsum(x, axis, dtype=dtype, out=out)
+
+
 cumsum.support_native_out = True
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16",)},
+    backend_version,
+)
+def einsum(
+    equation: str,
+    *operands: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = _get_promoted_type_of_operands(operands)
+    return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)

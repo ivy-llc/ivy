@@ -23,10 +23,6 @@ def gelu(
     return jax.nn.gelu(x, approximate)
 
 
-def hardswish(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jax.nn.hard_swish(x)
-
-
 def leaky_relu(
     x: JaxArray,
     /,
@@ -36,18 +32,6 @@ def leaky_relu(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.asarray(jnp.where(x > 0, x, jnp.multiply(x, alpha)), x.dtype)
-
-
-def log_softmax(
-    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
-):
-    if axis is None:
-        axis = -1
-    return jax.nn.log_softmax(x, axis)
-
-
-def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
-    return x * jnp.tanh(jax.nn.softplus(x))
 
 
 def relu(
@@ -94,3 +78,19 @@ def softplus(
     if threshold is not None:
         return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
+
+
+def log_softmax(
+    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+):
+    if axis is None:
+        axis = -1
+    return jax.nn.log_softmax(x, axis)
+
+
+def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
+    return x * jnp.tanh(jax.nn.softplus(x))
+
+
+def hardswish(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.hard_swish(x)

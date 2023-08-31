@@ -6,9 +6,6 @@ from typing import Optional, Union
 import ivy
 
 
-lexsort.support_native_out = False
-
-
 # invert_permutation
 def invert_permutation(
     x: Union[torch.Tensor, list, tuple],
@@ -47,3 +44,6 @@ def lexsort(
         # only valid for torch > 2.0.1
         result = result[temp]
     return result
+
+
+lexsort.support_native_out = False

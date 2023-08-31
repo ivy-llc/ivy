@@ -12,67 +12,6 @@ from ivy.func_wrapper import (
 )
 from .. import backend_version
 
-
-vorbis_window.support_native_out = False
-hann_window.support_native_out = False
-blackman_window.support_native_out = False
-trilu.support_native_out = True
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def blackman_window(
-    size: int,
-    /,
-    *,
-    periodic: bool = True,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
-    return torch.blackman_window(
-        size,
-        periodic=periodic,
-        dtype=dtype,
-    )
-
-
-def hamming_window(
-    window_length: int,
-    /,
-    *,
-    periodic: bool = True,
-    alpha: float = 0.54,
-    beta: float = 0.46,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.hamming_window(
-        window_length,
-        periodic=periodic,
-        alpha=alpha,
-        beta=beta,
-        dtype=dtype,
-        layout=torch.strided,
-        device=None,
-        requires_grad=False,
-    )
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def hann_window(
-    size: int,
-    /,
-    *,
-    periodic: bool = True,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
-    return torch.hann_window(
-        size,
-        periodic=periodic,
-        dtype=dtype,
-    )
-
-
 # noinspection PyProtectedMember
 
 
@@ -103,6 +42,70 @@ def kaiser_window(
     )
 
 
+def hamming_window(
+    window_length: int,
+    /,
+    *,
+    periodic: bool = True,
+    alpha: float = 0.54,
+    beta: float = 0.46,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hamming_window(
+        window_length,
+        periodic=periodic,
+        alpha=alpha,
+        beta=beta,
+        dtype=dtype,
+        layout=torch.strided,
+        device=None,
+        requires_grad=False,
+    )
+
+
+def vorbis_window(
+    window_length: torch.tensor,
+    *,
+    dtype: torch.dtype = torch.float32,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.tensor(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
+    )
+
+
+vorbis_window.support_native_out = False
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def hann_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.hann_window(
+        size,
+        periodic=periodic,
+        dtype=dtype,
+    )
+
+
+hann_window.support_native_out = False
+
+
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -121,19 +124,6 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
-
-
-def trilu(
-    x: torch.Tensor,
-    /,
-    *,
-    k: int = 0,
-    upper: bool = True,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if upper:
-        return torch.triu(x, diagonal=k, out=out)
-    return torch.tril(x, diagonal=k, out=out)
 
 
 def unsorted_segment_min(
@@ -162,6 +152,25 @@ def unsorted_segment_min(
     return res
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.blackman_window(
+        size,
+        periodic=periodic,
+        dtype=dtype,
+    )
+
+
+blackman_window.support_native_out = False
+
+
 def unsorted_segment_sum(
     data: torch.Tensor,
     segment_ids: torch.Tensor,
@@ -187,21 +196,17 @@ def unsorted_segment_sum(
     return res
 
 
-def vorbis_window(
-    window_length: torch.tensor,
+def trilu(
+    x: torch.Tensor,
+    /,
     *,
-    dtype: torch.dtype = torch.float32,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
-    return torch.tensor(
-        [
-            round(
-                math.sin(
-                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
-                ),
-                8,
-            )
-            for i in range(1, window_length * 2)[0::2]
-        ],
-        dtype=dtype,
-    )
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if upper:
+        return torch.triu(x, diagonal=k, out=out)
+    return torch.tril(x, diagonal=k, out=out)
+
+
+trilu.support_native_out = True

@@ -64,17 +64,6 @@ def asarray(
     return np.copy(ret) if copy else ret
 
 
-def copy_array(
-    x: np.ndarray,
-    *,
-    to_ivy_array: bool = True,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if to_ivy_array:
-        return ivy.to_ivy(x.copy())
-    return x.copy()
-
-
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -116,17 +105,6 @@ def eye(
 
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
     return np.from_dlpack(x)
-
-
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[np.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> np.ndarray:
-    if isinstance(dtype, list):
-        dtype = np.dtype(dtype[0])
-    return np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
 
 
 def full(
@@ -192,6 +170,68 @@ def meshgrid(
     return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
+def ones(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: np.dtype,
+    device: str,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return _to_device(np.ones(shape, dtype), device=device)
+
+
+def ones_like(
+    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return _to_device(np.ones_like(x, dtype=dtype), device=device)
+
+
+def tril(
+    x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.tril(x, k)
+
+
+def triu(
+    x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.triu(x, k)
+
+
+def zeros(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: np.dtype,
+    device: str,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return _to_device(np.zeros(shape, dtype), device=device)
+
+
+def zeros_like(
+    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return _to_device(np.zeros_like(x, dtype=dtype), device=device)
+
+
+# Extra #
+# ------#
+
+
+array = asarray
+
+
+def copy_array(
+    x: np.ndarray,
+    *,
+    to_ivy_array: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if to_ivy_array:
+        return ivy.to_ivy(x.copy())
+    return x.copy()
+
+
 def one_hot(
     indices: np.ndarray,
     depth: int,
@@ -228,32 +268,15 @@ def one_hot(
     return res
 
 
-def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: np.dtype,
-    device: str,
-    out: Optional[np.ndarray] = None,
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[np.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
 ) -> np.ndarray:
-    return _to_device(np.ones(shape, dtype), device=device)
-
-
-def ones_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return _to_device(np.ones_like(x, dtype=dtype), device=device)
-
-
-def tril(
-    x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.tril(x, k)
-
-
-def triu(
-    x: np.ndarray, /, *, k: int = 0, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.triu(x, k)
+    if isinstance(dtype, list):
+        dtype = np.dtype(dtype[0])
+    return np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
 
 
 def triu_indices(
@@ -267,26 +290,3 @@ def triu_indices(
     return tuple(
         _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
     )
-
-
-def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: np.dtype,
-    device: str,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return _to_device(np.zeros(shape, dtype), device=device)
-
-
-def zeros_like(
-    x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return _to_device(np.zeros_like(x, dtype=dtype), device=device)
-
-
-# Extra #
-# ------#
-
-
-array = asarray

@@ -15,51 +15,6 @@ from ivy.functional.ivy.random import (
 )
 
 
-def bernoulli(
-    probs: Union[float, tf.Tensor, tf.Variable],
-    *,
-    logits: Union[float, tf.Tensor, tf.Variable] = None,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str,
-    dtype: DType,
-    seed: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if seed is not None:
-        tf.random.set_seed(seed)
-    if logits is not None:
-        logits = tf.cast(logits, dtype)
-        if not _check_shapes_broadcastable(shape, logits.shape):
-            shape = logits.shape
-    elif probs is not None:
-        probs = tf.cast(probs, dtype)
-        if not _check_shapes_broadcastable(shape, probs.shape):
-            shape = probs.shape
-    return tfp.distributions.Bernoulli(
-        logits=logits, probs=probs, dtype=dtype, allow_nan_stats=True
-    ).sample(shape, seed)
-
-
-def beta(
-    alpha: Union[float, tf.Tensor, tf.Variable],
-    beta: Union[float, tf.Tensor, tf.Variable],
-    /,
-    *,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[str] = None,
-    dtype: Optional[Union[DType, ivy.Dtype]] = None,
-    seed: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if not dtype:
-        dtype = ivy.default_float_dtype()
-    dtype = ivy.as_native_dtype(dtype)
-    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
-    alpha = tf.cast(alpha, dtype)
-    beta = tf.cast(beta, dtype)
-    return tfp.distributions.Beta(alpha, beta).sample(shape, seed=seed)
-
-
 # dirichlet
 @with_unsupported_dtypes(
     {
@@ -97,6 +52,26 @@ def dirichlet(
         ).sample(size),
         dtype=dtype,
     )
+
+
+def beta(
+    alpha: Union[float, tf.Tensor, tf.Variable],
+    beta: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: Optional[str] = None,
+    dtype: Optional[Union[DType, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
+    alpha = tf.cast(alpha, dtype)
+    beta = tf.cast(beta, dtype)
+    return tfp.distributions.Beta(alpha, beta).sample(shape, seed=seed)
 
 
 def gamma(
@@ -142,3 +117,28 @@ def poisson(
     if tf.reduce_any(lam < 0):
         return tf.where(lam < 0, fill_value, ret)
     return ret
+
+
+def bernoulli(
+    probs: Union[float, tf.Tensor, tf.Variable],
+    *,
+    logits: Union[float, tf.Tensor, tf.Variable] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: str,
+    dtype: DType,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if seed is not None:
+        tf.random.set_seed(seed)
+    if logits is not None:
+        logits = tf.cast(logits, dtype)
+        if not _check_shapes_broadcastable(shape, logits.shape):
+            shape = logits.shape
+    elif probs is not None:
+        probs = tf.cast(probs, dtype)
+        if not _check_shapes_broadcastable(shape, probs.shape):
+            shape = probs.shape
+    return tfp.distributions.Bernoulli(
+        logits=logits, probs=probs, dtype=dtype, allow_nan_stats=True
+    ).sample(shape, seed)

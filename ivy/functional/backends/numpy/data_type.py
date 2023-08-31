@@ -9,26 +9,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from . import backend_version
 
-char_rep_dtype_dict = {
-    "?": "bool",
-    "i": int,
-    "i1": "int8",
-    "i2": "int16",
-    "i4": "int32",
-    "i8": "int64",
-    "f": float,
-    "f2": "float16",
-    "f4": "float32",
-    "f8": "float64",
-    "c": complex,
-    "c8": "complex64",
-    "c16": "complex128",
-    "u": "uint32",
-    "u1": "uint8",
-    "u2": "uint16",
-    "u4": "uint32",
-    "u8": "uint64",
-}
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
     np.dtype("int16"): "int16",
@@ -60,6 +40,7 @@ ivy_dtype_dict = {
     np.complex128: "complex128",
     np.bool_: "bool",
 }
+
 native_dtype_dict = {
     "int8": np.dtype("int8"),
     "int16": np.dtype("int16"),
@@ -75,6 +56,27 @@ native_dtype_dict = {
     "complex64": np.dtype("complex64"),
     "complex128": np.dtype("complex128"),
     "bool": np.dtype("bool"),
+}
+
+char_rep_dtype_dict = {
+    "?": "bool",
+    "i": int,
+    "i1": "int8",
+    "i2": "int16",
+    "i4": "int32",
+    "i8": "int64",
+    "f": float,
+    "f2": "float16",
+    "f4": "float32",
+    "f8": "float64",
+    "c": complex,
+    "c8": "complex64",
+    "c16": "complex128",
+    "u": "uint32",
+    "u1": "uint8",
+    "u2": "uint16",
+    "u4": "uint32",
+    "u8": "uint64",
 }
 
 
@@ -104,6 +106,68 @@ class Finfo:
     @property
     def smallest_normal(self):
         return float(self._np_finfo.tiny)
+
+
+# Array API Standard #
+# -------------------#
+
+
+def astype(
+    x: np.ndarray,
+    dtype: np.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return np.copy(x) if copy else x
+    return x.astype(dtype)
+
+
+def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
+    try:
+        return np.broadcast_arrays(*arrays)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+def broadcast_to(
+    x: np.ndarray,
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
+    if x.ndim > len(shape):
+        return np.broadcast_to(x.reshape([-1]), shape)
+    return np.broadcast_to(x, shape)
+
+
+@_handle_nestable_dtype_info
+def finfo(type: Union[np.dtype, str, np.ndarray], /) -> Finfo:
+    if isinstance(type, np.ndarray):
+        type = type.dtype
+    return Finfo(np.finfo(ivy.as_native_dtype(type)))
+
+
+@_handle_nestable_dtype_info
+def iinfo(type: Union[np.dtype, str, np.ndarray], /) -> np.iinfo:
+    if isinstance(type, np.ndarray):
+        type = type.dtype
+    return np.iinfo(ivy.as_native_dtype(type))
+
+
+def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
+    if len(arrays_and_dtypes) <= 1:
+        return np.result_type(arrays_and_dtypes)
+    result = np.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
+    for i in range(2, len(arrays_and_dtypes)):
+        result = np.result_type(result, arrays_and_dtypes[i])
+    return as_ivy_dtype(result)
 
 
 # Extra #
@@ -174,45 +238,6 @@ def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> np.d
         )
 
 
-# Array API Standard #
-# -------------------#
-
-
-def astype(
-    x: np.ndarray,
-    dtype: np.dtype,
-    /,
-    *,
-    copy: bool = True,
-    out: Optional[ivy.Array] = None,
-) -> np.ndarray:
-    dtype = ivy.as_native_dtype(dtype)
-    if x.dtype == dtype:
-        return np.copy(x) if copy else x
-    return x.astype(dtype)
-
-
-def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
-    try:
-        return np.broadcast_arrays(*arrays)
-    except ValueError as e:
-        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
-
-
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
-def broadcast_to(
-    x: np.ndarray,
-    /,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
-    if x.ndim > len(shape):
-        return np.broadcast_to(x.reshape([-1]), shape)
-    return np.broadcast_to(x, shape)
-
-
 def dtype(x: np.ndarray, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
@@ -232,20 +257,6 @@ def dtype_bits(dtype_in: Union[np.dtype, str], /) -> int:
     )
 
 
-@_handle_nestable_dtype_info
-def finfo(type: Union[np.dtype, str, np.ndarray], /) -> Finfo:
-    if isinstance(type, np.ndarray):
-        type = type.dtype
-    return Finfo(np.finfo(ivy.as_native_dtype(type)))
-
-
-@_handle_nestable_dtype_info
-def iinfo(type: Union[np.dtype, str, np.ndarray], /) -> np.iinfo:
-    if isinstance(type, np.ndarray):
-        type = type.dtype
-    return np.iinfo(ivy.as_native_dtype(type))
-
-
 def is_native_dtype(dtype_in: Union[np.dtype, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
@@ -253,12 +264,3 @@ def is_native_dtype(dtype_in: Union[np.dtype, str], /) -> bool:
         return True
     else:
         return False
-
-
-def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
-    if len(arrays_and_dtypes) <= 1:
-        return np.result_type(arrays_and_dtypes)
-    result = np.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
-    for i in range(2, len(arrays_and_dtypes)):
-        result = np.result_type(result, arrays_and_dtypes[i])
-    return as_ivy_dtype(result)

@@ -10,26 +10,24 @@ from ivy.functional.ivy.random import (
 )
 
 
-dirichlet.support_native_out = False
-
-
-def bernoulli(
-    probs: Union[float, np.ndarray],
+# dirichlet
+def dirichlet(
+    alpha: Union[np.ndarray, float, Sequence[float]],
+    /,
     *,
-    logits: Optional[Union[float, np.ndarray]] = None,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[str] = None,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    size = size if size is not None else len(alpha)
+    dtype = dtype if dtype is not None else np.float64
     if seed is not None:
         np.random.seed(seed)
-    if logits is not None:
-        probs = np.asarray(ivy.softmax(logits), dtype=dtype)
-    if not _check_shapes_broadcastable(shape, probs.shape):
-        shape = probs.shape
-    return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)
+    return np.asarray(np.random.dirichlet(alpha, size=size), dtype=dtype)
+
+
+dirichlet.support_native_out = False
 
 
 def beta(
@@ -47,23 +45,6 @@ def beta(
     if seed is not None:
         np.random.seed(seed)
     return np.asarray(np.random.beta(alpha, beta, shape), dtype=dtype)
-
-
-# dirichlet
-def dirichlet(
-    alpha: Union[np.ndarray, float, Sequence[float]],
-    /,
-    *,
-    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype: Optional[np.dtype] = None,
-    seed: Optional[int] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    size = size if size is not None else len(alpha)
-    dtype = dtype if dtype is not None else np.float64
-    if seed is not None:
-        np.random.seed(seed)
-    return np.asarray(np.random.dirichlet(alpha, size=size), dtype=dtype)
 
 
 def gamma(
@@ -106,3 +87,22 @@ def poisson(
     else:
         ret = np.random.poisson(lam, shape)
     return np.asarray(ret, dtype=dtype)
+
+
+def bernoulli(
+    probs: Union[float, np.ndarray],
+    *,
+    logits: Optional[Union[float, np.ndarray]] = None,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: Optional[str] = None,
+    dtype: Optional[np.dtype] = None,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if seed is not None:
+        np.random.seed(seed)
+    if logits is not None:
+        probs = np.asarray(ivy.softmax(logits), dtype=dtype)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)

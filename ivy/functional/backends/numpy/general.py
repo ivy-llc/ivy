@@ -17,11 +17,6 @@ from . import backend_version
 from ...ivy.general import _broadcast_to
 
 
-scatter_flat.support_native_out = True
-scatter_nd.support_native_out = True
-isin.support_native_out = True
-
-
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
     return np.array_equal(x0, x1)
 
@@ -32,6 +27,49 @@ def container_types():
 
 def current_backend_str() -> str:
     return "numpy"
+
+
+@_scalar_output_to_0d_array
+def get_item(
+    x: np.ndarray,
+    /,
+    query: Union[np.ndarray, Tuple],
+    *,
+    copy: bool = None,
+) -> np.ndarray:
+    return x.__getitem__(query)
+
+
+@_scalar_output_to_0d_array
+def set_item(
+    x: np.ndarray,
+    query: Union[np.ndarray, Tuple],
+    val: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> np.ndarray:
+    if copy:
+        x = np.copy(x)
+    x.__setitem__(query, val)
+    return x
+
+
+def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy()
+    else:
+        return x
+
+
+def to_scalar(x: np.ndarray, /) -> Number:
+    if isinstance(x, (float, int)):
+        return x
+    return x.item()
+
+
+def to_list(x: np.ndarray, /) -> list:
+    return x.tolist()
 
 
 def gather(
@@ -60,36 +98,6 @@ def gather(
         for z in zip_list:
             p, i = z
             r = np.take(p, i, axis - batch_dims)
-            result.append(r)
-        result = np.array(result)
-        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
-
-
-def gather_nd(
-    params: np.ndarray,
-    indices: np.ndarray,
-    /,
-    *,
-    batch_dims: int = 0,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
-    batch_dims = batch_dims % len(params.shape)
-    result = []
-    if batch_dims == 0:
-        result = gather_nd_helper(params, indices)
-    else:
-        for b in range(batch_dims):
-            if b == 0:
-                zip_list = [(p, i) for p, i in zip(params, indices)]
-            else:
-                zip_list = [
-                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
-                ]
-        for z in zip_list:
-            p, i = z
-            r = gather_nd_helper(p, np.asarray(i, indices.dtype))
             result.append(r)
         result = np.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
@@ -127,15 +135,34 @@ def gather_nd_helper(params, indices):
     return res
 
 
-@_scalar_output_to_0d_array
-def get_item(
-    x: np.ndarray,
+def gather_nd(
+    params: np.ndarray,
+    indices: np.ndarray,
     /,
-    query: Union[np.ndarray, Tuple],
     *,
-    copy: bool = None,
+    batch_dims: int = 0,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return x.__getitem__(query)
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    batch_dims = batch_dims % len(params.shape)
+    result = []
+    if batch_dims == 0:
+        result = gather_nd_helper(params, indices)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = gather_nd_helper(p, np.asarray(i, indices.dtype))
+            result.append(r)
+        result = np.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return _to_device(result)
 
 
 def get_num_dims(x, /, *, as_array=False):
@@ -217,27 +244,6 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
-def isin(
-    elements: np.ndarray,
-    test_elements: np.ndarray,
-    /,
-    *,
-    assume_unique: bool = False,
-    invert: bool = False,
-) -> np.ndarray:
-    return np.isin(
-        elements,
-        test_elements,
-        assume_unique=assume_unique,
-        invert=invert,
-    )
-
-
-def itemsize(x: np.ndarray) -> int:
-    return x.itemsize
-
-
 def multiprocessing(context: Optional[str] = None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
@@ -282,6 +288,9 @@ def scatter_flat(
     return target
 
 
+scatter_flat.support_native_out = True
+
+
 def scatter_nd(
     indices: np.ndarray,
     updates: np.ndarray,
@@ -323,19 +332,7 @@ def scatter_nd(
     return _to_device(target)
 
 
-@_scalar_output_to_0d_array
-def set_item(
-    x: np.ndarray,
-    query: Union[np.ndarray, Tuple],
-    val: np.ndarray,
-    /,
-    *,
-    copy: Optional[bool] = False,
-) -> np.ndarray:
-    if copy:
-        x = np.copy(x)
-    x.__setitem__(query, val)
-    return x
+scatter_nd.support_native_out = True
 
 
 def shape(
@@ -348,23 +345,6 @@ def shape(
         return ivy.array(np.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
-
-
-def to_list(x: np.ndarray, /) -> list:
-    return x.tolist()
-
-
-def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
-    if copy:
-        return x.copy()
-    else:
-        return x
-
-
-def to_scalar(x: np.ndarray, /) -> Number:
-    if isinstance(x, (float, int)):
-        return x
-    return x.item()
 
 
 def vmap(
@@ -451,3 +431,27 @@ def vmap(
         return res
 
     return _vmap
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+def isin(
+    elements: np.ndarray,
+    test_elements: np.ndarray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> np.ndarray:
+    return np.isin(
+        elements,
+        test_elements,
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+isin.support_native_out = True
+
+
+def itemsize(x: np.ndarray) -> int:
+    return x.itemsize

@@ -7,34 +7,12 @@ from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
 
 
-def cumprod(
+def min(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    dtype: Optional[None] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def cumsum(
-    x: Union[(None, mx.ndarray.NDArray)],
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    *,
-    dtype: Optional[None] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def einsum(
-    equation: str,
-    *operands: Union[(None, mx.ndarray.NDArray)],
+    axis: Optional[Union[(int, Sequence[int])]] = None,
+    keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
@@ -52,17 +30,6 @@ def max(
 
 
 def mean(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    axis: Optional[Union[(int, Sequence[int])]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def min(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
@@ -140,6 +107,39 @@ def var(
     axis: Optional[Union[(int, Sequence[int])]] = None,
     correction: Union[(int, float)] = 0.0,
     keepdims: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def cumprod(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[None] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def cumsum(
+    x: Union[(None, mx.ndarray.NDArray)],
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    dtype: Optional[None] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def einsum(
+    equation: str,
+    *operands: Union[(None, mx.ndarray.NDArray)],
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

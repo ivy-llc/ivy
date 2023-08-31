@@ -5,81 +5,10 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def atleast_1d(
-    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
-) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise IvyNotImplementedException()
-
-
-def atleast_2d(
-    *arys: Union[(None, mx.ndarray.NDArray)], copy: Optional[bool] = None
-) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise IvyNotImplementedException()
-
-
-def atleast_3d(
-    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
-) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise IvyNotImplementedException()
-
-
-def broadcast_shapes(*shapes: Union[(List[int], List[Tuple])]) -> Tuple[(int, ...)]:
-    raise IvyNotImplementedException()
-
-
-def concat_from_sequence(
-    input_sequence: Union[(Tuple[None], List[None])],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def dsplit(
-    ary: Union[(None, mx.ndarray.NDArray)],
-    indices_or_sections: Union[(int, Tuple[(int, ...)])],
-    /,
-    *,
-    copy: Optional[bool] = None,
-) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise IvyNotImplementedException()
-
-
-def dstack(
-    arrays: Union[(Sequence[None], Sequence[mx.ndarray.NDArray])],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def expand(
-    x: Union[(None, mx.ndarray.NDArray)],
-    shape: Union[(List[int], List[Tuple])],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def fliplr(
-    m: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def flipud(
-    m: Union[(None, mx.ndarray.NDArray)],
+def moveaxis(
+    a: Union[(None, mx.ndarray.NDArray)],
+    source: Union[(int, Sequence[int])],
+    destination: Union[(int, Sequence[int])],
     /,
     *,
     copy: Optional[bool] = None,
@@ -98,17 +27,17 @@ def heaviside(
     raise IvyNotImplementedException()
 
 
-def hsplit(
-    ary: Union[(None, mx.ndarray.NDArray)],
-    indices_or_sections: Union[(int, Tuple[(int, ...)])],
+def flipud(
+    m: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     copy: Optional[bool] = None,
-) -> List[Union[(None, mx.ndarray.NDArray)]]:
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
 
-def hstack(
+def vstack(
     arrays: Union[(Sequence[None], Sequence[mx.ndarray.NDArray])],
     /,
     *,
@@ -117,22 +46,10 @@ def hstack(
     raise IvyNotImplementedException()
 
 
-def i0(
-    x: Union[(None, mx.ndarray.NDArray)],
+def hstack(
+    arrays: Union[(Sequence[None], Sequence[mx.ndarray.NDArray])],
     /,
     *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def moveaxis(
-    a: Union[(None, mx.ndarray.NDArray)],
-    source: Union[(int, Sequence[int])],
-    destination: Union[(int, Sequence[int])],
-    /,
-    *,
-    copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
@@ -150,18 +67,6 @@ def rot90(
     raise IvyNotImplementedException()
 
 
-def take_along_axis(
-    arr: Union[(None, mx.ndarray.NDArray)],
-    indices: Union[(None, mx.ndarray.NDArray)],
-    axis: int,
-    /,
-    *,
-    mode: str = "fill",
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def top_k(
     x: None,
     k: int,
@@ -175,6 +80,25 @@ def top_k(
     raise IvyNotImplementedException()
 
 
+def fliplr(
+    m: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def i0(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def vsplit(
     ary: Union[(None, mx.ndarray.NDArray)],
     indices_or_sections: Union[(int, Tuple[(int, ...)])],
@@ -185,10 +109,86 @@ def vsplit(
     raise IvyNotImplementedException()
 
 
-def vstack(
+def dsplit(
+    ary: Union[(None, mx.ndarray.NDArray)],
+    indices_or_sections: Union[(int, Tuple[(int, ...)])],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()
+
+
+def atleast_1d(
+    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()
+
+
+def dstack(
     arrays: Union[(Sequence[None], Sequence[mx.ndarray.NDArray])],
     /,
     *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def atleast_2d(
+    *arys: Union[(None, mx.ndarray.NDArray)], copy: Optional[bool] = None
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()
+
+
+def atleast_3d(
+    *arys: Union[(None, mx.ndarray.NDArray, bool, Number)], copy: Optional[bool] = None
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()
+
+
+def take_along_axis(
+    arr: Union[(None, mx.ndarray.NDArray)],
+    indices: Union[(None, mx.ndarray.NDArray)],
+    axis: int,
+    /,
+    *,
+    mode: str = "fill",
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def hsplit(
+    ary: Union[(None, mx.ndarray.NDArray)],
+    indices_or_sections: Union[(int, Tuple[(int, ...)])],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()
+
+
+def broadcast_shapes(*shapes: Union[(List[int], List[Tuple])]) -> Tuple[(int, ...)]:
+    raise IvyNotImplementedException()
+
+
+def expand(
+    x: Union[(None, mx.ndarray.NDArray)],
+    shape: Union[(List[int], List[Tuple])],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def concat_from_sequence(
+    input_sequence: Union[(Tuple[None], List[None])],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

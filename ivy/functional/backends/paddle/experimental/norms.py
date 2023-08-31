@@ -7,13 +7,6 @@ from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 
-batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
-    (x.ndim > 1 and x.ndim < 6)
-    and (scale is not None and scale.ndim == 1)
-    and (offset is not None and offset.ndim == 1)
-)
-
-
 # TODO: add support for the rest of the dtypes
 # use numpy implementation with ivy functions
 @with_unsupported_device_and_dtypes(
@@ -104,27 +97,11 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-def instance_norm(
-    x: paddle.Tensor,
-    mean: paddle.Tensor,
-    variance: paddle.Tensor,
-    /,
-    *,
-    scale: Optional[paddle.Tensor] = None,
-    offset: Optional[paddle.Tensor] = None,
-    training: Optional[bool] = False,
-    eps: Optional[float] = 1e-5,
-    momentum: Optional[float] = 1e-1,
-    data_format: Optional[str] = "NSC",
-    out: Optional[
-        Tuple[
-            paddle.Tensor,
-            paddle.Tensor,
-            paddle.Tensor,
-        ]
-    ] = None,
-) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
-    raise IvyNotImplementedException()
+batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
+    (x.ndim > 1 and x.ndim < 6)
+    and (scale is not None and scale.ndim == 1)
+    and (offset is not None and offset.ndim == 1)
+)
 
 
 def l1_normalize(
@@ -152,6 +129,29 @@ def l1_normalize(
 def l2_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+def instance_norm(
+    x: paddle.Tensor,
+    mean: paddle.Tensor,
+    variance: paddle.Tensor,
+    /,
+    *,
+    scale: Optional[paddle.Tensor] = None,
+    offset: Optional[paddle.Tensor] = None,
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
+    out: Optional[
+        Tuple[
+            paddle.Tensor,
+            paddle.Tensor,
+            paddle.Tensor,
+        ]
+    ] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
     raise IvyNotImplementedException()
 
 

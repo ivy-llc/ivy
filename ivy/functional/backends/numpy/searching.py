@@ -60,19 +60,6 @@ def argmin(
     return ret
 
 
-# Extra #
-# ----- #
-
-
-def argwhere(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.argwhere(x)
-
-
 def nonzero(
     x: np.ndarray,
     /,
@@ -108,3 +95,16 @@ def where(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return ivy.astype(np.where(condition, x1, x2), x1.dtype, copy=False)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.argwhere(x)

@@ -60,15 +60,7 @@ def asarray(
     return ret
 
 
-def copy_array(
-    x: Union[(None, mx.ndarray.NDArray)],
-    *,
-    to_ivy_array: bool = True,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    if to_ivy_array:
-        return ivy.to_ivy(x.copy())
-    return x.copy()
+array = asarray
 
 
 def empty(
@@ -111,15 +103,6 @@ def from_dlpack(
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[None] = float,
-    count: Optional[int] = (-1),
-    offset: Optional[int] = 0,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
@@ -171,21 +154,6 @@ def meshgrid(
     raise IvyNotImplementedException()
 
 
-def one_hot(
-    indices: Union[(None, mx.ndarray.NDArray)],
-    depth: int,
-    /,
-    *,
-    on_value: Optional[Number] = None,
-    off_value: Optional[Number] = None,
-    axis: Optional[int] = None,
-    dtype: Optional[None] = None,
-    device: str,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def ones(
     shape: Optional[ivy.NativeShape] = None,
     *,
@@ -227,12 +195,6 @@ def triu(
     raise IvyNotImplementedException()
 
 
-def triu_indices(
-    n_rows: int, n_cols: Optional[int] = None, k: int = 0, /, *, device: str
-) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:
-    raise IvyNotImplementedException()
-
-
 def zeros(
     *size: Union[(int, Sequence[int])],
     shape: Optional[ivy.NativeShape] = None,
@@ -258,4 +220,42 @@ def zeros_like(
     return ivy.to_device(ret, device)
 
 
-array = asarray
+def copy_array(
+    x: Union[(None, mx.ndarray.NDArray)],
+    *,
+    to_ivy_array: bool = True,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    if to_ivy_array:
+        return ivy.to_ivy(x.copy())
+    return x.copy()
+
+
+def one_hot(
+    indices: Union[(None, mx.ndarray.NDArray)],
+    depth: int,
+    /,
+    *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[None] = None,
+    device: str,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[None] = float,
+    count: Optional[int] = (-1),
+    offset: Optional[int] = 0,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def triu_indices(
+    n_rows: int, n_cols: Optional[int] = None, k: int = 0, /, *, device: str
+) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()

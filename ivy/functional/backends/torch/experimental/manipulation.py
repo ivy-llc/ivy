@@ -10,163 +10,19 @@ from .. import backend_version
 import ivy
 
 
-moveaxis.support_native_out = False
-heaviside.support_native_out = True
-flipud.support_native_out = False
-fliplr.support_native_out = False
-i0.support_native_out = True
-flatten.partial_mixed_handler = (
-    lambda *args, copy=None, start_dim=0, end_dim=1, order="C", **kwargs: order == "C"
-)
-take_along_axis.support_native_out = True
-broadcast_shapes.support_native_out = False
-expand.support_native_out = False
-
-
-def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
-    transformed = torch.atleast_1d(*arys)
-    if isinstance(transformed, tuple):
-        return list(transformed)
-    return transformed
-
-
-def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
-    transformed = torch.atleast_2d(*arys)
-    if isinstance(transformed, tuple):
-        return list(transformed)
-    return transformed
-
-
-def atleast_3d(
-    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
-) -> List[torch.Tensor]:
-    transformed = torch.atleast_3d(*arys)
-    if isinstance(transformed, tuple):
-        return list(transformed)
-    return transformed
-
-
-def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    return tuple(torch.broadcast_shapes(*shapes))
-
-
-def concat_from_sequence(
-    input_sequence: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    is_tuple = type(input_sequence) is tuple
-    if is_tuple:
-        input_sequence = list(input_sequence)
-    if new_axis == 0:
-        ret = torch.cat(input_sequence, dim=axis)
-        return ret
-    elif new_axis == 1:
-        ret = torch.stack(input_sequence, dim=axis)
-        return ret
-
-
-def dsplit(
-    ary: torch.Tensor,
-    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
-    /,
-    *,
-    copy: Optional[bool] = None,
-) -> List[torch.Tensor]:
-    if len(ary.shape) < 2:
-        raise ivy.utils.exceptions.IvyError(
-            "dsplit only works on arrays of 3 or more dimensions"
-        )
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
-
-
-def dstack(
-    arrays: Sequence[torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if not isinstance(arrays, tuple):
-        arrays = tuple(arrays)
-    return torch.dstack(arrays, out=out)
-
-
-def expand(
-    x: torch.Tensor,
-    shape: Union[List[int], List[Tuple]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return x.expand(shape)
-
-
-def fill_diagonal(
+def moveaxis(
     a: torch.Tensor,
-    v: Union[int, float],
-    /,
-    *,
-    wrap: bool = False,
-) -> torch.Tensor:
-    shape = a.shape
-    max_end = torch.prod(torch.tensor(shape))
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + (torch.cumprod(torch.tensor(shape[:-1]), 0)).sum()
-
-    end = max_end if end > max_end else end
-    a = torch.reshape(a, (-1,))
-    w = torch.zeros(a.shape, dtype=bool).to(a.device)
-    ins = torch.arange(0, max_end).to(a.device)
-    steps = torch.arange(0, end, step).to(a.device)
-
-    for i in steps:
-        i = ins == i
-        w = torch.logical_or(w, i)
-    a = torch.where(w, v, a)
-    a = torch.reshape(a, shape)
-    return a
-
-
-def flatten(
-    x: torch.Tensor,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
     /,
     *,
     copy: Optional[bool] = None,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
+    return torch.moveaxis(a, source, destination)
 
 
-def fliplr(
-    m: torch.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
-    return torch.fliplr(m)
-
-
-def flipud(
-    m: torch.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
-    return torch.flipud(m)
+moveaxis.support_native_out = False
 
 
 def heaviside(
@@ -183,16 +39,31 @@ def heaviside(
     )
 
 
-def hsplit(
-    ary: torch.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+heaviside.support_native_out = True
+
+
+def flipud(
+    m: torch.Tensor,
     /,
     *,
     copy: Optional[bool] = None,
-) -> List[torch.Tensor]:
-    if len(ary.shape) == 1:
-        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.flipud(m)
+
+
+flipud.support_native_out = False
+
+
+def vstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
+    return torch.vstack(arrays, out=None)
 
 
 def hstack(
@@ -206,28 +77,6 @@ def hstack(
     return torch.hstack(arrays, out=None)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def i0(
-    x: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.i0(x, out=out)
-
-
-def moveaxis(
-    a: torch.Tensor,
-    source: Union[int, Sequence[int]],
-    destination: Union[int, Sequence[int]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.moveaxis(a, source, destination)
-
-
 def rot90(
     m: torch.Tensor,
     /,
@@ -238,6 +87,138 @@ def rot90(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.rot90(m, k, axes)
+
+
+def top_k(
+    x: torch.Tensor,
+    k: int,
+    /,
+    *,
+    axis: int = -1,
+    largest: bool = True,
+    sorted: bool = True,
+    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    k = min(k, x.shape[axis])
+    topk_res = NamedTuple(
+        "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
+    )
+    if not largest:
+        indices = torch.argsort(x, dim=axis)
+        indices = torch.index_select(indices, axis, torch.arange(k))
+    else:
+        indices = torch.argsort(-x, dim=axis)
+        indices = torch.index_select(indices, axis, torch.arange(k))
+    if not sorted:
+        indices = torch.sort(indices, dim=axis)[0]
+    val = torch.gather(x, axis, indices)
+    return topk_res(val, indices)
+
+
+def fliplr(
+    m: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.fliplr(m)
+
+
+fliplr.support_native_out = False
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def i0(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.i0(x, out=out)
+
+
+i0.support_native_out = True
+
+
+def flatten(
+    x: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
+
+
+flatten.partial_mixed_handler = (
+    lambda *args, copy=None, start_dim=0, end_dim=1, order="C", **kwargs: order == "C"
+)
+
+
+def vsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[torch.Tensor]:
+    if len(ary.shape) < 2:
+        raise ivy.utils.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+
+
+def dsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[torch.Tensor]:
+    if len(ary.shape) < 2:
+        raise ivy.utils.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
+
+
+def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+    transformed = torch.atleast_1d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
+def dstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not isinstance(arrays, tuple):
+        arrays = tuple(arrays)
+    return torch.dstack(arrays, out=out)
+
+
+def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+    transformed = torch.atleast_2d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
+def atleast_3d(
+    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
+) -> List[torch.Tensor]:
+    transformed = torch.atleast_3d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -282,30 +263,59 @@ def take_along_axis(
     return torch.take_along_dim(arr, indices, axis, out=out)
 
 
-def top_k(
-    x: torch.Tensor,
-    k: int,
+def hsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    axis: int = -1,
-    largest: bool = True,
-    sorted: bool = True,
-    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
-) -> Tuple[torch.Tensor, torch.Tensor]:
-    k = min(k, x.shape[axis])
-    topk_res = NamedTuple(
-        "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
-    )
-    if not largest:
-        indices = torch.argsort(x, dim=axis)
-        indices = torch.index_select(indices, axis, torch.arange(k))
-    else:
-        indices = torch.argsort(-x, dim=axis)
-        indices = torch.index_select(indices, axis, torch.arange(k))
-    if not sorted:
-        indices = torch.sort(indices, dim=axis)[0]
-    val = torch.gather(x, axis, indices)
-    return topk_res(val, indices)
+    copy: Optional[bool] = None,
+) -> List[torch.Tensor]:
+    if len(ary.shape) == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
+
+
+take_along_axis.support_native_out = True
+
+
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+    return tuple(torch.broadcast_shapes(*shapes))
+
+
+broadcast_shapes.support_native_out = False
+
+
+def expand(
+    x: torch.Tensor,
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return x.expand(shape)
+
+
+expand.support_native_out = False
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
+    if new_axis == 0:
+        ret = torch.cat(input_sequence, dim=axis)
+        return ret
+    elif new_axis == 1:
+        ret = torch.stack(input_sequence, dim=axis)
+        return ret
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
@@ -332,26 +342,32 @@ def unique_consecutive(
     )
 
 
-def vsplit(
-    ary: torch.Tensor,
-    indices_or_sections: Union[int, Sequence[int], torch.Tensor],
+def fill_diagonal(
+    a: torch.Tensor,
+    v: Union[int, float],
     /,
     *,
-    copy: Optional[bool] = None,
-) -> List[torch.Tensor]:
-    if len(ary.shape) < 2:
-        raise ivy.utils.exceptions.IvyError(
-            "vsplit only works on arrays of 2 or more dimensions"
-        )
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
-
-
-def vstack(
-    arrays: Sequence[torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
+    wrap: bool = False,
 ) -> torch.Tensor:
-    if not isinstance(arrays, tuple):
-        arrays = tuple(arrays)
-    return torch.vstack(arrays, out=None)
+    shape = a.shape
+    max_end = torch.prod(torch.tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (torch.cumprod(torch.tensor(shape[:-1]), 0)).sum()
+
+    end = max_end if end > max_end else end
+    a = torch.reshape(a, (-1,))
+    w = torch.zeros(a.shape, dtype=bool).to(a.device)
+    ins = torch.arange(0, max_end).to(a.device)
+    steps = torch.arange(0, end, step).to(a.device)
+
+    for i in steps:
+        i = ins == i
+        w = torch.logical_or(w, i)
+    a = torch.where(w, v, a)
+    a = torch.reshape(a, shape)
+    return a

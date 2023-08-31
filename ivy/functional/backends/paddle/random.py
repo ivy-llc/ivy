@@ -19,6 +19,66 @@ from ivy.func_wrapper import (
 )
 from . import backend_version
 
+# Extra #
+# ------#
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8",)}},
+    backend_version,
+)
+def random_uniform(
+    *,
+    low: Union[float, paddle.Tensor] = 0.0,
+    high: Union[float, paddle.Tensor] = 1.0,
+    shape: Optional[Union[paddle.Tensor, ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    device: Place,
+    seed=None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
+    high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
+    # Set range and seed
+    rng = high - low
+    if seed:
+        _ = paddle.seed(seed)
+    random_base = paddle.uniform(shape, min=0.0, max=1.0)
+
+    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
+        dtype
+    )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def random_normal(
+    *,
+    mean: Union[float, paddle.Tensor] = 0.0,
+    std: Union[float, paddle.Tensor] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    seed: Optional[int] = None,
+    device: Place,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
+    if seed:
+        paddle.seed(seed)
+    if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
+        return paddle.normal(mean, std, shape).cast(dtype)
+    if mean.dtype not in [paddle.float32, paddle.float64]:
+        mean = mean.cast("float32")
+    std = std.cast(mean.dtype)
+    return paddle.normal(mean, std).cast(dtype)
+
 
 @with_supported_device_and_dtypes(
     {
@@ -82,67 +142,6 @@ def randint(
         paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
     )
     return _retval if shape else _retval.squeeze(axis=0)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
-    backend_version,
-)
-def random_normal(
-    *,
-    mean: Union[float, paddle.Tensor] = 0.0,
-    std: Union[float, paddle.Tensor] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype: paddle.dtype,
-    seed: Optional[int] = None,
-    device: Place,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape).shape
-    if seed:
-        paddle.seed(seed)
-    if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
-        return paddle.normal(mean, std, shape).cast(dtype)
-    if mean.dtype not in [paddle.float32, paddle.float64]:
-        mean = mean.cast("float32")
-    std = std.cast(mean.dtype)
-    return paddle.normal(mean, std).cast(dtype)
-
-
-# Extra #
-# ------#
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8",)}},
-    backend_version,
-)
-def random_uniform(
-    *,
-    low: Union[float, paddle.Tensor] = 0.0,
-    high: Union[float, paddle.Tensor] = 1.0,
-    shape: Optional[Union[paddle.Tensor, ivy.NativeShape, Sequence[int]]] = None,
-    dtype: paddle.dtype,
-    device: Place,
-    seed=None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if not dtype:
-        dtype = ivy.default_int_dtype()
-    dtype = ivy.as_native_dtype(dtype)
-    low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
-    high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
-    shape = _check_bounds_and_get_shape(low, high, shape).shape
-    # Set range and seed
-    rng = high - low
-    if seed:
-        _ = paddle.seed(seed)
-    random_base = paddle.uniform(shape, min=0.0, max=1.0)
-
-    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
-        dtype
-    )
 
 
 def seed(*, seed_value: int = 0) -> None:

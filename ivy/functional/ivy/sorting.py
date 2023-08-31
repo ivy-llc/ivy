@@ -143,6 +143,113 @@ def argsort(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def sort(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return a sorted copy of an array.
+
+    Parameters
+    ----------
+    x
+        input array
+    axis
+        axis along which to sort. If set to ``-1``, the function must sort along the
+        last axis. Default: ``-1``.
+    descending
+        direction  The direction in which to sort the values
+    stable
+        sort stability. If ``True``,
+        the returned indices must maintain the relative order of ``x`` values which
+        compare as equal. If ``False``, the returned indices may or may not maintain the
+        relative order of ``x`` values which compare as equal (i.e., the relative order
+        of ``x`` values which compare as equal is implementation-dependent).
+        Default: ``True``.
+    out
+        optional output array, for writing the result to. It must have the same shape
+        as ``x``.
+
+    Returns
+    -------
+    ret
+        An array with the same dtype and shape as ``x``, with the elements sorted
+        along the given `axis`.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.sort.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([7, 8, 6])
+    >>> y = ivy.sort(x)
+    >>> print(y)
+    ivy.array([6, 7, 8])
+
+    >>> x = ivy.array([[[8.9,0], [19,5]],[[6,0.3], [19,0.5]]])
+    >>> y = ivy.sort(x, axis=1, descending=True, stable=False)
+    >>> print(y)
+    ivy.array([[[19. ,  5. ],[ 8.9,  0. ]],[[19. ,  0.5],[ 6. ,  0.3]]])
+
+    >>> x = ivy.array([1.5, 3.2, 0.7, 2.5])
+    >>> y = ivy.zeros(5)
+    >>> ivy.sort(x, descending=True, stable=False, out=y)
+    >>> print(y)
+    ivy.array([3.2, 2.5, 1.5, 0.7])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
+    >>> ivy.sort(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.1,  2.2,  3.3],
+        [-6.6, -5.5, -4.4]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([8, 6, 6]),b=ivy.array([[9, 0.7], [0.4, 0]]))
+    >>> y = ivy.sort(x, descending=True)
+    >>> print(y)
+    {
+        a: ivy.array([8, 6, 6]),
+        b: ivy.array([[9., 0.7], [0.4, 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([3, 0.7, 1]),b=ivy.array([[4, 0.9], [0.6, 0.2]]))
+    >>> y = ivy.sort(x, descending=False, stable=False)
+    >>> print(y)
+    {
+        a: ivy.array([0.7, 1., 3.]),
+        b: ivy.array([[0.9, 4.], [0.2, 0.6]])
+    }
+    """
+    return ivy.current_backend(x).sort(
+        x, axis=axis, descending=descending, stable=stable, out=out
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
@@ -261,111 +368,4 @@ def searchsorted(
         sorter=sorter,
         out=out,
         ret_dtype=ret_dtype,
-    )
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-def sort(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Return a sorted copy of an array.
-
-    Parameters
-    ----------
-    x
-        input array
-    axis
-        axis along which to sort. If set to ``-1``, the function must sort along the
-        last axis. Default: ``-1``.
-    descending
-        direction  The direction in which to sort the values
-    stable
-        sort stability. If ``True``,
-        the returned indices must maintain the relative order of ``x`` values which
-        compare as equal. If ``False``, the returned indices may or may not maintain the
-        relative order of ``x`` values which compare as equal (i.e., the relative order
-        of ``x`` values which compare as equal is implementation-dependent).
-        Default: ``True``.
-    out
-        optional output array, for writing the result to. It must have the same shape
-        as ``x``.
-
-    Returns
-    -------
-    ret
-        An array with the same dtype and shape as ``x``, with the elements sorted
-        along the given `axis`.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.sort.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments
-
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([7, 8, 6])
-    >>> y = ivy.sort(x)
-    >>> print(y)
-    ivy.array([6, 7, 8])
-
-    >>> x = ivy.array([[[8.9,0], [19,5]],[[6,0.3], [19,0.5]]])
-    >>> y = ivy.sort(x, axis=1, descending=True, stable=False)
-    >>> print(y)
-    ivy.array([[[19. ,  5. ],[ 8.9,  0. ]],[[19. ,  0.5],[ 6. ,  0.3]]])
-
-    >>> x = ivy.array([1.5, 3.2, 0.7, 2.5])
-    >>> y = ivy.zeros(5)
-    >>> ivy.sort(x, descending=True, stable=False, out=y)
-    >>> print(y)
-    ivy.array([3.2, 2.5, 1.5, 0.7])
-
-    >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
-    >>> ivy.sort(x, out=x)
-    >>> print(x)
-    ivy.array([[ 1.1,  2.2,  3.3],
-        [-6.6, -5.5, -4.4]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([8, 6, 6]),b=ivy.array([[9, 0.7], [0.4, 0]]))
-    >>> y = ivy.sort(x, descending=True)
-    >>> print(y)
-    {
-        a: ivy.array([8, 6, 6]),
-        b: ivy.array([[9., 0.7], [0.4, 0.]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([3, 0.7, 1]),b=ivy.array([[4, 0.9], [0.6, 0.2]]))
-    >>> y = ivy.sort(x, descending=False, stable=False)
-    >>> print(y)
-    {
-        a: ivy.array([0.7, 1., 3.]),
-        b: ivy.array([[0.9, 4.], [0.2, 0.6]])
-    }
-    """
-    return ivy.current_backend(x).sort(
-        x, axis=axis, descending=descending, stable=stable, out=out
     )

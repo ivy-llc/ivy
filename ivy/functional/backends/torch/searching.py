@@ -69,19 +69,6 @@ def argmin(
     return ret
 
 
-# Extra #
-# ----- #
-
-
-def argwhere(
-    x: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.argwhere(x)
-
-
 def nonzero(
     x: torch.Tensor,
     /,
@@ -120,3 +107,16 @@ def where(
     if condition.dtype is not torch.bool:
         condition = condition == 1.0
     return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.argwhere(x)

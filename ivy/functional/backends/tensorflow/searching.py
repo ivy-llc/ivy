@@ -77,29 +77,6 @@ def argmin(
     return tf.cast(ret, dtype) if dtype is not None else ret
 
 
-# Extra #
-# ----- #
-
-
-def argwhere(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(x, tf.Variable):
-        x_ndim = x.shape.rank
-    else:
-        x_ndim = x.ndim
-    if x_ndim == 0:
-        return tf.zeros(shape=[int(bool(x)), 0], dtype="int64")
-    where_x = tf.experimental.numpy.nonzero(x)
-    res = tf.experimental.numpy.concatenate(
-        [tf.expand_dims(item, -1) for item in where_x], -1
-    )
-    return res
-
-
 def nonzero(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -137,3 +114,26 @@ def where(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.cast(tf.experimental.numpy.where(condition, x1, x2), x1.dtype)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.Variable):
+        x_ndim = x.shape.rank
+    else:
+        x_ndim = x.ndim
+    if x_ndim == 0:
+        return tf.zeros(shape=[int(bool(x)), 0], dtype="int64")
+    where_x = tf.experimental.numpy.nonzero(x)
+    res = tf.experimental.numpy.concatenate(
+        [tf.expand_dims(item, -1) for item in where_x], -1
+    )
+    return res

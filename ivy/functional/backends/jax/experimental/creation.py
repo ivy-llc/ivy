@@ -9,23 +9,27 @@ import jaxlib.xla_extension
 from ivy.functional.backends.jax import JaxArray
 import ivy
 
+# Array API Standard #
+# ------------------ #
 
-def blackman_window(
-    size: int,
-    /,
+
+def vorbis_window(
+    window_length: JaxArray,
     *,
-    periodic: bool = True,
-    dtype: Optional[jnp.dtype] = None,
+    dtype: jnp.dtype = jnp.float32,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if size < 2:
-        return jnp.ones([size], dtype=dtype)
-    if periodic:
-        count = jnp.arange(size) / size
-    else:
-        count = jnp.linspace(start=0, stop=size, num=size)
-    return (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count)) + (
-        0.08 * jnp.cos(2 * jnp.pi * 2 * count)
+    return jnp.array(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
     )
 
 
@@ -73,14 +77,6 @@ def tril_indices(
     return jnp.tril_indices(n=n_rows, k=k, m=n_cols)
 
 
-def trilu(
-    x: JaxArray, /, *, k: int = 0, upper: bool = True, out: Optional[JaxArray] = None
-) -> JaxArray:
-    if upper:
-        return jnp.triu(x, k)
-    return jnp.tril(x, k)
-
-
 def unsorted_segment_min(
     data: JaxArray,
     segment_ids: JaxArray,
@@ -108,25 +104,28 @@ def unsorted_segment_sum(
     return jax.ops.segment_sum(data, segment_ids, num_segments)
 
 
-# Array API Standard #
-# ------------------ #
-
-
-def vorbis_window(
-    window_length: JaxArray,
+def blackman_window(
+    size: int,
+    /,
     *,
-    dtype: jnp.dtype = jnp.float32,
+    periodic: bool = True,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.array(
-        [
-            round(
-                math.sin(
-                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
-                ),
-                8,
-            )
-            for i in range(1, window_length * 2)[0::2]
-        ],
-        dtype=dtype,
+    if size < 2:
+        return jnp.ones([size], dtype=dtype)
+    if periodic:
+        count = jnp.arange(size) / size
+    else:
+        count = jnp.linspace(start=0, stop=size, num=size)
+    return (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count)) + (
+        0.08 * jnp.cos(2 * jnp.pi * 2 * count)
     )
+
+
+def trilu(
+    x: JaxArray, /, *, k: int = 0, upper: bool = True, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if upper:
+        return jnp.triu(x, k)
+    return jnp.tril(x, k)

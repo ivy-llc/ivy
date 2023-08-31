@@ -32,14 +32,6 @@ def leaky_relu(
     return mx.nd.LeakyReLU(x, slope=alpha)
 
 
-def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None):
-    raise IvyNotImplementedException()
-
-
-def mish(x: None, /, *, out: Optional[None] = None) -> None:
-    raise IvyNotImplementedException()
-
-
 def relu(x: None, /, *, complex_mode="jax", out: Optional[None] = None) -> None:
     return mx.nd.relu(x)
 
@@ -79,3 +71,11 @@ def softplus(
     if threshold is not None:
         return mx.nd.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
+
+
+def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None):
+    raise IvyNotImplementedException()
+
+
+def mish(x: None, /, *, out: Optional[None] = None) -> None:
+    raise IvyNotImplementedException()

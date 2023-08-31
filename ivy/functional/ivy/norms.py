@@ -13,18 +13,6 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-layer_norm.mixed_backend_wrappers = {
-    "to_add": (
-        "handle_backend_invalid",
-        "handle_out_argument",
-        "inputs_to_native_arrays",
-        "outputs_to_ivy_arrays",
-        "handle_device_shifting",
-    ),
-    "to_skip": ("inputs_to_ivy_arrays",),
-}
-
-
 # Extra #
 # ------#
 
@@ -150,3 +138,15 @@ def layer_norm(
         return ivy.multiply(ivy.multiply(x, scale), new_std, out=out)
 
     return ivy.multiply(x, new_std, out=out)
+
+
+layer_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}

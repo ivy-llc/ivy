@@ -64,19 +64,6 @@ def argmin(
     return ret
 
 
-# Extra #
-# ----- #
-
-
-def argwhere(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.argwhere(x)
-
-
 def nonzero(
     x: JaxArray,
     /,
@@ -103,3 +90,16 @@ def where(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return ivy.astype(jnp.where(condition, x1, x2), x1.dtype, copy=False)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.argwhere(x)

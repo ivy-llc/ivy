@@ -1,53 +1,5 @@
 import tensorflow as tf
 
-
-# --- Helpers --- #
-# --------------- #
-
-
-def _dict_to_tuple(d):
-    return tuple([d[k] for k in d])
-
-
-def _tuple_to_dict(t):
-    return {k: t[k] for k in range(len(t))}
-
-
-# --- Main --- #
-# ------------ #
-
-
-def for_loop(
-    iterable,
-    body_fn,
-    vars,
-):
-    iterator = iterable.__iter__()
-
-    vars_dict = _tuple_to_dict(vars)
-
-    def test_fn(*args):
-        nonlocal iterator, body_fn, vars_dict
-        try:
-            val = iterator.__next__()
-        except StopIteration:
-            return False
-
-        vars_tuple = body_fn(val, _dict_to_tuple(vars_dict))
-
-        for k in range(len(vars_tuple)):
-            vars_dict[k] = vars_tuple[k]
-
-        return True
-
-    def empty_function(*args):
-        return (0,)
-
-    while_loop(test_fn, empty_function, ())
-
-    return _dict_to_tuple(vars_dict)
-
-
 # def if_exp(cond, if_true, if_false, expr_repr):
 #   def true_fn():
 #     return if_true()
@@ -85,3 +37,42 @@ def while_loop(test_fn, body_fn, vars):
         vars = (0,)
 
     return tf.while_loop(test_fn_wrapper, body_fn_wrapper, loop_vars=vars)
+
+
+def for_loop(
+    iterable,
+    body_fn,
+    vars,
+):
+    iterator = iterable.__iter__()
+
+    vars_dict = _tuple_to_dict(vars)
+
+    def test_fn(*args):
+        nonlocal iterator, body_fn, vars_dict
+        try:
+            val = iterator.__next__()
+        except StopIteration:
+            return False
+
+        vars_tuple = body_fn(val, _dict_to_tuple(vars_dict))
+
+        for k in range(len(vars_tuple)):
+            vars_dict[k] = vars_tuple[k]
+
+        return True
+
+    def empty_function(*args):
+        return (0,)
+
+    while_loop(test_fn, empty_function, ())
+
+    return _dict_to_tuple(vars_dict)
+
+
+def _tuple_to_dict(t):
+    return {k: t[k] for k in range(len(t))}
+
+
+def _dict_to_tuple(d):
+    return tuple([d[k] for k in d])

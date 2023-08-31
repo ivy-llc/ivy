@@ -10,61 +10,133 @@ from .. import backend_version
 import ivy
 
 
-def atleast_1d(
-    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
-    copy: Optional[bool] = None,
-) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.experimental.numpy.atleast_1d(*arys)
-
-
-def atleast_2d(
-    *arys: Union[tf.Tensor, tf.Variable],
-    copy: Optional[bool] = None,
-) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.experimental.numpy.atleast_2d(*arys)
-
-
-def atleast_3d(
-    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
-    copy: Optional[bool] = None,
-) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.experimental.numpy.atleast_3d(*arys)
-
-
-def broadcast_shapes(
-    *shapes: Union[List[int], List[Tuple]],
-) -> Tuple[int, ...]:
-    if len(shapes) > 1:
-        desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])
-        if len(shapes) > 2:
-            for i in range(2, len(shapes)):
-                desired_shape = tf.broadcast_dynamic_shape(desired_shape, shapes[i])
-    else:
-        return [shapes[0]]
-    return tuple(desired_shape.numpy().tolist())
-
-
-def concat_from_sequence(
-    input_sequence: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+def moveaxis(
+    a: Union[tf.Tensor, tf.Variable],
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
     /,
     *,
-    new_axis: int = 0,
-    axis: int = 0,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    is_tuple = type(input_sequence) is tuple
-    if is_tuple:
-        input_sequence = list(input_sequence)
-    highest_dtype = input_sequence[0].dtype
-    for i in input_sequence:
-        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
+    return tf.experimental.numpy.moveaxis(a, source, destination)
 
-    if new_axis == 0:
-        ret = tf.concat(input_sequence, axis=axis)
-        return ret
-    elif new_axis == 1:
-        ret = tf.stack(input_sequence, axis=axis)
-        return ret
+
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+def heaviside(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.cast(tf.experimental.numpy.heaviside(x1, x2), x1.dtype)
+
+
+def flipud(
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.flipud(m)
+
+
+def vstack(
+    arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.vstack(arrays)
+
+
+def hstack(
+    arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.hstack(arrays)
+
+
+def rot90(
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
+    out: Union[tf.Tensor, tf.Variable] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rot90(m, k, axes)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "complex")}, backend_version)
+def top_k(
+    x: tf.Tensor,
+    k: int,
+    /,
+    *,
+    axis: int = -1,
+    largest: bool = True,
+    sorted: bool = True,
+    out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
+) -> Tuple[tf.Tensor, tf.Tensor]:
+    k = min(k, x.shape[axis])
+    if not largest:
+        indices = tf.experimental.numpy.argsort(x, axis=axis)
+        indices = tf.experimental.numpy.take(
+            indices, tf.experimental.numpy.arange(k), axis=axis
+        )
+        indices = tf.dtypes.cast(indices, tf.int32)
+    else:
+        indices = tf.experimental.numpy.argsort(-x, axis=axis)
+        indices = tf.experimental.numpy.take(
+            indices, tf.experimental.numpy.arange(k), axis=axis
+        )
+        indices = tf.dtypes.cast(indices, tf.int32)
+    if not sorted:
+        indices = tf.sort(indices, axis=axis)
+    topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
+    val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
+    indices = tf.dtypes.cast(indices, tf.int64)
+    return topk_res(val, indices)
+
+
+def fliplr(
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.fliplr(m)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+def i0(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.bessel_i0(x, name=None)
+
+
+def vsplit(
+    ary: Union[tf.Tensor, tf.Variable],
+    indices_or_sections: Union[int, Sequence[int], tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    if len(ary.shape) < 2:
+        raise ivy.utils.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
@@ -81,6 +153,13 @@ def dsplit(
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
+def atleast_1d(
+    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
+    copy: Optional[bool] = None,
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
     /,
@@ -90,132 +169,18 @@ def dstack(
     return tf.experimental.numpy.dstack(arrays)
 
 
-def expand(
-    x: Union[tf.Tensor, tf.Variable],
-    shape: Union[List[int], List[Tuple]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    shape = list(shape)
-    for i, dim in enumerate(shape):
-        if dim < 0:
-            shape[i] = x.shape.num_elements() / tf.reduce_prod(
-                [s for s in shape if s > 0]
-            )
-    return tf.broadcast_to(x, shape)
-
-
-def fill_diagonal(
-    a: tf.Tensor,
-    v: Union[int, float],
-    /,
-    *,
-    wrap: bool = False,
-):
-    shape = tf.shape(a)
-    max_end = tf.math.reduce_prod(shape)
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + tf.reduce_sum(tf.math.cumprod(shape[:-1]))
-    a = tf.reshape(a, (-1,))
-    end = min(end, max_end)
-    indices = [[i] for i in range(0, end, step)]
-    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
-    a = tf.tensor_scatter_nd_update(a, indices, ups)
-    a = tf.reshape(a, shape)
-    return a
-
-
-def fliplr(
-    m: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.fliplr(m)
-
-
-def flipud(
-    m: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.flipud(m)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
-def heaviside(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cast(tf.experimental.numpy.heaviside(x1, x2), x1.dtype)
-
-
-def hsplit(
-    ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int, ...]],
-    /,
-    *,
+def atleast_2d(
+    *arys: Union[tf.Tensor, tf.Variable],
     copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    if len(ary.shape) == 1:
-        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
+    return tf.experimental.numpy.atleast_2d(*arys)
 
 
-def hstack(
-    arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.hstack(arrays)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
-def i0(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.bessel_i0(x, name=None)
-
-
-def moveaxis(
-    a: Union[tf.Tensor, tf.Variable],
-    source: Union[int, Sequence[int]],
-    destination: Union[int, Sequence[int]],
-    /,
-    *,
+def atleast_3d(
+    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
     copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.moveaxis(a, source, destination)
-
-
-def rot90(
-    m: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    k: int = 1,
-    axes: Tuple[int, int] = (0, 1),
-    out: Union[tf.Tensor, tf.Variable] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.rot90(m, k, axes)
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_3d(*arys)
 
 
 def take_along_axis(
@@ -263,36 +228,69 @@ def take_along_axis(
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "complex")}, backend_version)
-def top_k(
-    x: tf.Tensor,
-    k: int,
+def hsplit(
+    ary: Union[tf.Tensor, tf.Variable],
+    indices_or_sections: Union[int, Tuple[int, ...]],
     /,
     *,
-    axis: int = -1,
-    largest: bool = True,
-    sorted: bool = True,
-    out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
-) -> Tuple[tf.Tensor, tf.Tensor]:
-    k = min(k, x.shape[axis])
-    if not largest:
-        indices = tf.experimental.numpy.argsort(x, axis=axis)
-        indices = tf.experimental.numpy.take(
-            indices, tf.experimental.numpy.arange(k), axis=axis
-        )
-        indices = tf.dtypes.cast(indices, tf.int32)
+    copy: Optional[bool] = None,
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    if len(ary.shape) == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
+
+
+def broadcast_shapes(
+    *shapes: Union[List[int], List[Tuple]],
+) -> Tuple[int, ...]:
+    if len(shapes) > 1:
+        desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])
+        if len(shapes) > 2:
+            for i in range(2, len(shapes)):
+                desired_shape = tf.broadcast_dynamic_shape(desired_shape, shapes[i])
     else:
-        indices = tf.experimental.numpy.argsort(-x, axis=axis)
-        indices = tf.experimental.numpy.take(
-            indices, tf.experimental.numpy.arange(k), axis=axis
-        )
-        indices = tf.dtypes.cast(indices, tf.int32)
-    if not sorted:
-        indices = tf.sort(indices, axis=axis)
-    topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
-    val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
-    indices = tf.dtypes.cast(indices, tf.int64)
-    return topk_res(val, indices)
+        return [shapes[0]]
+    return tuple(desired_shape.numpy().tolist())
+
+
+def expand(
+    x: Union[tf.Tensor, tf.Variable],
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    shape = list(shape)
+    for i, dim in enumerate(shape):
+        if dim < 0:
+            shape[i] = x.shape.num_elements() / tf.reduce_prod(
+                [s for s in shape if s > 0]
+            )
+    return tf.broadcast_to(x, shape)
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
+    highest_dtype = input_sequence[0].dtype
+    for i in input_sequence:
+        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
+
+    if new_axis == 0:
+        ret = tf.concat(input_sequence, axis=axis)
+        return ret
+    elif new_axis == 1:
+        ret = tf.stack(input_sequence, axis=axis)
+        return ret
 
 
 def unique_consecutive(
@@ -348,24 +346,26 @@ def unique_consecutive(
     )
 
 
-def vsplit(
-    ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Sequence[int], tf.Tensor, tf.Variable],
+def fill_diagonal(
+    a: tf.Tensor,
+    v: Union[int, float],
     /,
     *,
-    copy: Optional[bool] = None,
-) -> List[Union[tf.Tensor, tf.Variable]]:
-    if len(ary.shape) < 2:
-        raise ivy.utils.exceptions.IvyError(
-            "vsplit only works on arrays of 2 or more dimensions"
-        )
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
-
-
-def vstack(
-    arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.vstack(arrays)
+    wrap: bool = False,
+):
+    shape = tf.shape(a)
+    max_end = tf.math.reduce_prod(shape)
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + tf.reduce_sum(tf.math.cumprod(shape[:-1]))
+    a = tf.reshape(a, (-1,))
+    end = min(end, max_end)
+    indices = [[i] for i in range(0, end, step)]
+    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
+    a = tf.tensor_scatter_nd_update(a, indices, ups)
+    a = tf.reshape(a, shape)
+    return a

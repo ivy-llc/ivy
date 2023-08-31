@@ -13,26 +13,29 @@ from ivy.functional.ivy.device import (
 from paddle.device import core
 
 
-class Profiler(BaseProfiler):
-    def __init__(self, save_dir: str):
-        # ToDO: add proper Paddle profiler
-        super(Profiler, self).__init__(save_dir)
-        os.makedirs(save_dir, exist_ok=True)
-        self._start_time = None
+# API #
+# ----#
 
-    def start(self):
-        self._start_time = time.perf_counter()
 
-    def stop(self):
-        time_taken = time.perf_counter() - self._start_time
-        with open(os.path.join(self._save_dir, "profile.log"), "w+") as f:
-            f.write("took {} seconds to complete".format(time_taken))
+def dev(
+    x: paddle.Tensor, /, *, as_native: bool = False
+) -> Union[ivy.Device, core.Place]:
+    return x.place if as_native else as_ivy_dev(x.place)
 
-    def __enter__(self):
-        self.start()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()
+def to_device(
+    x: paddle.Tensor,
+    device: core.Place,
+    /,
+    *,
+    stream: Optional[int] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    device = as_native_dev(device)
+    if device.is_cpu_place():
+        return x.cpu()
+    elif device.is_gpu_place():
+        return x.cuda(device.gpu_device_id())
 
 
 def as_ivy_dev(device: core.Place, /):
@@ -70,30 +73,29 @@ def as_native_dev(
     return native_dev
 
 
-def clear_cached_mem_on_dev(device: str, /):
-    device = as_native_dev(device)
-    if device.is_gpu_place():
-        paddle.device.cuda.empty_cache()
-
-
 def clear_mem_on_dev(device: core.Place, /):
     device = as_native_dev(device)
     if device.is_gpu_place():
         paddle.device.cuda.empty_cache()
 
 
-# API #
-# ----#
+def clear_cached_mem_on_dev(device: str, /):
+    device = as_native_dev(device)
+    if device.is_gpu_place():
+        paddle.device.cuda.empty_cache()
 
 
-def dev(
-    x: paddle.Tensor, /, *, as_native: bool = False
-) -> Union[ivy.Device, core.Place]:
-    return x.place if as_native else as_ivy_dev(x.place)
+def num_gpus() -> int:
+    return paddle.device.cuda.device_count()
 
 
 def gpu_is_available() -> bool:
     return bool(paddle.device.cuda.device_count())
+
+
+# noinspection PyUnresolvedReferences
+def tpu_is_available() -> bool:
+    return False
 
 
 def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
@@ -110,25 +112,23 @@ def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
     return ret
 
 
-def num_gpus() -> int:
-    return paddle.device.cuda.device_count()
+class Profiler(BaseProfiler):
+    def __init__(self, save_dir: str):
+        # ToDO: add proper Paddle profiler
+        super(Profiler, self).__init__(save_dir)
+        os.makedirs(save_dir, exist_ok=True)
+        self._start_time = None
 
+    def start(self):
+        self._start_time = time.perf_counter()
 
-def to_device(
-    x: paddle.Tensor,
-    device: core.Place,
-    /,
-    *,
-    stream: Optional[int] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    device = as_native_dev(device)
-    if device.is_cpu_place():
-        return x.cpu()
-    elif device.is_gpu_place():
-        return x.cuda(device.gpu_device_id())
+    def stop(self):
+        time_taken = time.perf_counter() - self._start_time
+        with open(os.path.join(self._save_dir, "profile.log"), "w+") as f:
+            f.write("took {} seconds to complete".format(time_taken))
 
+    def __enter__(self):
+        self.start()
 
-# noinspection PyUnresolvedReferences
-def tpu_is_available() -> bool:
-    return False
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()

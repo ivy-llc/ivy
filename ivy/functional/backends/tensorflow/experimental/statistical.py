@@ -14,79 +14,202 @@ from .. import backend_version
 from copy import deepcopy
 
 
-# --- Helpers --- #
-# --------------- #
-
-
-def __find_cummax(x: tf.Tensor, axis: int = 0) -> Tuple[tf.Tensor, tf.Tensor]:
-    values, indices = [], []
-    if (
-        isinstance(x[0], tf.Tensor)
-        and isinstance(x[0].numpy().tolist(), list)
-        and len(x[0].numpy().tolist()) >= 1
-    ):
-        if axis >= 1:
-            for ret1 in x:
-                value, indice = __find_cummax(ret1, axis=axis - 1)
-                indices.append(indice)
-                values.append(value)
-        else:
-            x_list = x.numpy()
-            z_list = __get_index(x_list.tolist())
-            indices, values, n1 = x_list.copy(), x_list.copy(), {}
-            indices.fill(0)
-            values.fill(0)
-            z_list = sorted(z_list, key=lambda i: i[1])
-            for y, y_index in z_list:
-                multi_index = y_index
-                if tuple(multi_index[1:]) not in n1:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                elif (
-                    y
-                    >= x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
-                ):
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                else:
-                    indices[y_index] = n1[tuple(multi_index[1:])]
-                    values[y_index] = x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
-    else:
-        x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])), dtype=x.dtype)
-        values, indices = tf.scan(
-            lambda a, b: (
-                a
-                if a > b
-                or tf.experimental.numpy.where(x[0].numpy() == b[0].numpy()) == 0
-                else b
-            ),
-            (x, x_indices),
+def histogram(
+    a: tf.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, tf.Tensor]] = None,
+    axis: Optional[int] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[tf.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    min_a = tf.reduce_min(a)
+    max_a = tf.reduce_max(a)
+    if isinstance(bins, tf.Tensor) and range:
+        raise ivy.exceptions.IvyException(
+            "Must choose between specifying bins and range or bin edges directly"
         )
+    if range:
+        if isinstance(bins, int):
+            bins = tf.cast(
+                tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+            )
+    elif isinstance(bins, int):
+        range = (min_a, max_a)
+        bins = tf.cast(
+            tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+        )
+    if tf.shape(bins)[0] < 2:
+        raise ivy.exceptions.IvyException("bins must have at least 1 bin (size > 1)")
+    if min_a < bins[0] and not extend_lower_interval:
+        raise ivy.exceptions.IvyException(
+            "Values of x outside of the intervals cause errors in tensorflow backend. "
+            "Consider using extend_lower_interval to deal with this."
+        )
+    if max_a > bins[-1] and not extend_upper_interval:
+        raise ivy.exceptions.IvyException(
+            "Values of x outside of the intervals cause errors in tensorflow backend. "
+            "Consider using extend_upper_interval to deal with this."
+        )
+    ret = tfp.stats.histogram(
+        x=a,
+        edges=bins,
+        axis=axis,
+        weights=weights,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=dtype,
+        name="histogram",
+    )
+    if density:
+        pass
+    # TODO: Tensorflow native dtype argument is not working
+    if dtype:
+        ret = tf.cast(ret, dtype)
+        bins = tf.cast(bins, dtype)
+    # TODO: weird error when returning bins: return ret, bins
+    return ret
 
-    return tf.convert_to_tensor(values, dtype=x.dtype), tf.cast(
-        tf.convert_to_tensor(indices), dtype=tf.int64
+
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float",
+            "complex",
+        )
+    },
+    backend_version,
+)
+def median(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.stats.percentile(
+        input,
+        50.0,
+        axis=axis,
+        interpolation="midpoint",
+        keepdims=keepdims,
     )
 
 
-def __get_index(lst, indices=None, prefix=None):
-    if indices is None:
-        indices = []
-    if prefix is None:
-        prefix = []
+def nanmean(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
+    return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
-    if isinstance(lst, list):
-        for i, sub_lst in enumerate(lst):
-            sub_indices = prefix + [i]
-            __get_index(sub_lst, indices, sub_indices)
+
+def _validate_quantile(q):
+    if tf.experimental.numpy.ndim(q) == 1 and tf.size(q) < 10:
+        for i in range(tf.size(q)):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
     else:
-        indices.append((lst, tuple(prefix)))
-    return indices
+        if not (tf.math.reduce_all(0 <= q) and tf.math.reduce_all(q <= 1)):
+            return False
+    return True
+
+
+def to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
+
+
+def _handle_axis(a, q, fn, keepdims=False, axis=None):
+    nd = tf.experimental.numpy.ndim(a)
+    axis_arg = deepcopy(axis)
+    if axis is not None:
+        axis = to_positive_axis(axis, nd)
+
+        if len(axis) == 1:
+            axis_arg = axis[0]
+        else:
+            keep = set(range(nd)) - set(axis)
+            nkeep = len(keep)
+
+            for i, s in enumerate(sorted(keep)):
+                a = tf.experimental.numpy.moveaxis(a, s, i)
+            a = tf.reshape(
+                a,
+                [
+                    *a.shape[:nkeep],
+                    -1,
+                ],
+            )
+            axis_arg = -1
+
+    ret = fn(a, q, axis=axis_arg)
+
+    if keepdims:
+        if axis is None:
+            index_ret = (None,) * nd
+        else:
+            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
+        ret = ret[(Ellipsis,) + index_ret]
+
+    return ret
+
+
+def _quantile(a, q, axis=None):
+    ret_dtype = a.dtype
+    if tf.experimental.numpy.ndim(q) > 1:
+        raise ValueError("q argument must be a scalar or 1-dimensional!")
+    if axis is None:
+        axis = 0
+        a = tf.reshape(a, [-1])
+    elif axis != 0:
+        a = tf.experimental.numpy.moveaxis(a, axis, 0)
+        axis = 0
+
+    n = a.shape[axis]
+
+    indices = q * (n - 1)
+
+    a = tf.sort(a, axis)
+
+    indices_below = tf.cast(tf.math.floor(indices), dtype=tf.int32)
+    indices_upper = tf.cast(tf.math.ceil(indices), dtype=tf.int32)
+
+    weights = indices - tf.cast(indices_below, dtype=ret_dtype)
+
+    indices_below = tf.clip_by_value(indices_below, 0, n - 1)
+    indices_upper = tf.clip_by_value(indices_upper, 0, n - 1)
+    tensor_upper = tf.gather(a, indices_upper, axis=axis)
+    tensor_below = tf.gather(a, indices_below, axis=axis)
+
+    pred = weights <= 0.5
+    out = tf.where(pred, tensor_below, tensor_upper)
+
+    return tf.cast(out, ret_dtype)
 
 
 def _compute_quantile_wrapper(
@@ -124,39 +247,50 @@ def _compute_quantile_wrapper(
         )
 
 
-def _handle_axis(a, q, fn, keepdims=False, axis=None):
-    nd = tf.experimental.numpy.ndim(a)
-    axis_arg = deepcopy(axis)
-    if axis is not None:
-        axis = to_positive_axis(axis, nd)
+def quantile(
+    a: Union[tf.Tensor, tf.Variable],
+    q: Union[tf.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
+        a,
+        q,
+        axis=axis,
+        keepdims=keepdims,
+        interpolation=interpolation,
+    )
 
-        if len(axis) == 1:
-            axis_arg = axis[0]
-        else:
-            keep = set(range(nd)) - set(axis)
-            nkeep = len(keep)
 
-            for i, s in enumerate(sorted(keep)):
-                a = tf.experimental.numpy.moveaxis(a, s, i)
-            a = tf.reshape(
-                a,
-                [
-                    *a.shape[:nkeep],
-                    -1,
-                ],
-            )
-            axis_arg = -1
+def corrcoef(
+    x: tf.Tensor,
+    /,
+    *,
+    y: tf.Tensor,
+    rowvar: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if y is None:
+        xarr = x
+    else:
+        axis = 0 if rowvar else 1
+        xarr = tf.concat([x, y], axis=axis)
 
-    ret = fn(a, q, axis=axis_arg)
+    if rowvar:
+        mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
+        cov_t = ((xarr - mean_t) @ tf.transpose(xarr - mean_t)) / (x.shape[1] - 1)
+    else:
+        mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
+        cov_t = (tf.transpose(xarr - mean_t) @ (xarr - mean_t)) / (x.shape[1] - 1)
 
-    if keepdims:
-        if axis is None:
-            index_ret = (None,) * nd
-        else:
-            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
-        ret = ret[(Ellipsis,) + index_ret]
-
-    return ret
+    cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
+    cor = cov2_t @ cov_t @ cov2_t
+    return cor
 
 
 def _nanmedian_helper(input, axis=None, keepdims=False):
@@ -318,52 +452,22 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
     return result
 
 
-def _quantile(a, q, axis=None):
-    ret_dtype = a.dtype
-    if tf.experimental.numpy.ndim(q) > 1:
-        raise ValueError("q argument must be a scalar or 1-dimensional!")
-    if axis is None:
-        axis = 0
-        a = tf.reshape(a, [-1])
-    elif axis != 0:
-        a = tf.experimental.numpy.moveaxis(a, axis, 0)
-        axis = 0
+def nanmedian(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if overwrite_input:
+        copied_input = tf.identity(input)
+        return _nanmedian_helper(copied_input, axis, keepdims)
 
-    n = a.shape[axis]
-
-    indices = q * (n - 1)
-
-    a = tf.sort(a, axis)
-
-    indices_below = tf.cast(tf.math.floor(indices), dtype=tf.int32)
-    indices_upper = tf.cast(tf.math.ceil(indices), dtype=tf.int32)
-
-    weights = indices - tf.cast(indices_below, dtype=ret_dtype)
-
-    indices_below = tf.clip_by_value(indices_below, 0, n - 1)
-    indices_upper = tf.clip_by_value(indices_upper, 0, n - 1)
-    tensor_upper = tf.gather(a, indices_upper, axis=axis)
-    tensor_below = tf.gather(a, indices_below, axis=axis)
-
-    pred = weights <= 0.5
-    out = tf.where(pred, tensor_below, tensor_upper)
-
-    return tf.cast(out, ret_dtype)
-
-
-def _validate_quantile(q):
-    if tf.experimental.numpy.ndim(q) == 1 and tf.size(q) < 10:
-        for i in range(tf.size(q)):
-            if not (0.0 <= q[i] <= 1.0):
-                return False
     else:
-        if not (tf.math.reduce_all(0 <= q) and tf.math.reduce_all(q <= 1)):
-            return False
-    return True
-
-
-# --- Main --- #
-# ------------ #
+        result = _nanmedian_helper(input, axis, keepdims)
+        return result
 
 
 @with_supported_device_and_dtypes(
@@ -401,30 +505,19 @@ def bincount(
     )
 
 
-def corrcoef(
-    x: tf.Tensor,
-    /,
-    *,
-    y: tf.Tensor,
-    rowvar: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def igamma(
+    a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:
-    if y is None:
-        xarr = x
-    else:
-        axis = 0 if rowvar else 1
-        xarr = tf.concat([x, y], axis=axis)
-
-    if rowvar:
-        mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
-        cov_t = ((xarr - mean_t) @ tf.transpose(xarr - mean_t)) / (x.shape[1] - 1)
-    else:
-        mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
-        cov_t = (tf.transpose(xarr - mean_t) @ (xarr - mean_t)) / (x.shape[1] - 1)
-
-    cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
-    cor = cov2_t @ cov_t @ cov2_t
-    return cor
+    return tf.math.igamma(a, x)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
@@ -587,6 +680,77 @@ def cummax(
     return __find_cummax(x, axis=axis)
 
 
+def __find_cummax(x: tf.Tensor, axis: int = 0) -> Tuple[tf.Tensor, tf.Tensor]:
+    values, indices = [], []
+    if (
+        isinstance(x[0], tf.Tensor)
+        and isinstance(x[0].numpy().tolist(), list)
+        and len(x[0].numpy().tolist()) >= 1
+    ):
+        if axis >= 1:
+            for ret1 in x:
+                value, indice = __find_cummax(ret1, axis=axis - 1)
+                indices.append(indice)
+                values.append(value)
+        else:
+            x_list = x.numpy()
+            z_list = __get_index(x_list.tolist())
+            indices, values, n1 = x_list.copy(), x_list.copy(), {}
+            indices.fill(0)
+            values.fill(0)
+            z_list = sorted(z_list, key=lambda i: i[1])
+            for y, y_index in z_list:
+                multi_index = y_index
+                if tuple(multi_index[1:]) not in n1:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                elif (
+                    y
+                    >= x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
+                ):
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                else:
+                    indices[y_index] = n1[tuple(multi_index[1:])]
+                    values[y_index] = x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
+    else:
+        x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])), dtype=x.dtype)
+        values, indices = tf.scan(
+            lambda a, b: (
+                a
+                if a > b
+                or tf.experimental.numpy.where(x[0].numpy() == b[0].numpy()) == 0
+                else b
+            ),
+            (x, x_indices),
+        )
+
+    return tf.convert_to_tensor(values, dtype=x.dtype), tf.cast(
+        tf.convert_to_tensor(indices), dtype=tf.int64
+    )
+
+
+def __get_index(lst, indices=None, prefix=None):
+    if indices is None:
+        indices = []
+    if prefix is None:
+        prefix = []
+
+    if isinstance(lst, list):
+        for i, sub_lst in enumerate(lst):
+            sub_indices = prefix + [i]
+            __get_index(sub_lst, indices, sub_indices)
+    else:
+        indices.append((lst, tuple(prefix)))
+    return indices
+
+
 @with_unsupported_dtypes(
     {"2.13.0 and below": ("bfloat16", "complex")},
     backend_version,
@@ -617,175 +781,3 @@ def cummin(
         return cummin_x
     else:
         return tf.cast(cummin_x, dtype)
-
-
-def histogram(
-    a: tf.Tensor,
-    /,
-    *,
-    bins: Optional[Union[int, tf.Tensor]] = None,
-    axis: Optional[int] = None,
-    extend_lower_interval: Optional[bool] = False,
-    extend_upper_interval: Optional[bool] = False,
-    dtype: Optional[tf.DType] = None,
-    range: Optional[Tuple[float]] = None,
-    weights: Optional[tf.Tensor] = None,
-    density: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor]:
-    min_a = tf.reduce_min(a)
-    max_a = tf.reduce_max(a)
-    if isinstance(bins, tf.Tensor) and range:
-        raise ivy.exceptions.IvyException(
-            "Must choose between specifying bins and range or bin edges directly"
-        )
-    if range:
-        if isinstance(bins, int):
-            bins = tf.cast(
-                tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
-            )
-    elif isinstance(bins, int):
-        range = (min_a, max_a)
-        bins = tf.cast(
-            tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
-        )
-    if tf.shape(bins)[0] < 2:
-        raise ivy.exceptions.IvyException("bins must have at least 1 bin (size > 1)")
-    if min_a < bins[0] and not extend_lower_interval:
-        raise ivy.exceptions.IvyException(
-            "Values of x outside of the intervals cause errors in tensorflow backend. "
-            "Consider using extend_lower_interval to deal with this."
-        )
-    if max_a > bins[-1] and not extend_upper_interval:
-        raise ivy.exceptions.IvyException(
-            "Values of x outside of the intervals cause errors in tensorflow backend. "
-            "Consider using extend_upper_interval to deal with this."
-        )
-    ret = tfp.stats.histogram(
-        x=a,
-        edges=bins,
-        axis=axis,
-        weights=weights,
-        extend_lower_interval=extend_lower_interval,
-        extend_upper_interval=extend_upper_interval,
-        dtype=dtype,
-        name="histogram",
-    )
-    if density:
-        pass
-    # TODO: Tensorflow native dtype argument is not working
-    if dtype:
-        ret = tf.cast(ret, dtype)
-        bins = tf.cast(bins, dtype)
-    # TODO: weird error when returning bins: return ret, bins
-    return ret
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.13.0 and below": {
-            "cpu": ("float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def igamma(
-    a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
-) -> tf.Tensor:
-    return tf.math.igamma(a, x)
-
-
-@with_supported_dtypes(
-    {
-        "2.13.0 and below": (
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
-def median(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tfp.stats.percentile(
-        input,
-        50.0,
-        axis=axis,
-        interpolation="midpoint",
-        keepdims=keepdims,
-    )
-
-
-def nanmean(
-    a: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: bool = False,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    np_math_ops.enable_numpy_methods_on_tensor()
-    return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
-
-
-def nanmedian(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: bool = False,
-    overwrite_input: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if overwrite_input:
-        copied_input = tf.identity(input)
-        return _nanmedian_helper(copied_input, axis, keepdims)
-
-    else:
-        result = _nanmedian_helper(input, axis, keepdims)
-        return result
-
-
-def quantile(
-    a: Union[tf.Tensor, tf.Variable],
-    q: Union[tf.Tensor, float],
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: str = "linear",
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
-    return _compute_quantile_wrapper(
-        a,
-        q,
-        axis=axis,
-        keepdims=keepdims,
-        interpolation=interpolation,
-    )
-
-
-def to_positive_axis(axis, ndim):
-    if not isinstance(axis, (list, tuple)):
-        axis = [axis]
-
-    if len(axis) == 0:
-        raise ValueError("Axis can't be empty!")
-
-    if len(set(axis)) != len(axis):
-        raise ValueError("Duplicated axis!")
-
-    for i in range(len(axis)):
-        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
-            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
-        if axis[i] < 0:
-            axis[i] += ndim
-    return axis

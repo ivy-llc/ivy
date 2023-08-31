@@ -10,18 +10,6 @@ from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
 
 
-# --- Helpers --- #
-# --------------- #
-
-
-def _abs_variant_sign(x):
-    return np.divide(x, np.abs(x), where=x != 0)
-
-
-# --- Main --- #
-# ------------ #
-
-
 @_scalar_output_to_0d_array
 def abs(
     x: Union[float, np.ndarray],
@@ -32,14 +20,23 @@ def abs(
     return np.absolute(x, out=out)
 
 
+abs.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def acos(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arccos(x, out=out)
 
 
+acos.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def acosh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arccosh(x, out=out)
+
+
+acosh.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -58,14 +55,7 @@ def add(
     return np.add(x1, x2, out=out)
 
 
-def angle(
-    z: np.ndarray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.angle(z, deg=deg)
+add.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -73,14 +63,23 @@ def asin(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arcsin(x, out=out)
 
 
+asin.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def asinh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arcsinh(x, out=out)
 
 
+asinh.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def atan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arctan(x, out=out)
+
+
+atan.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -92,9 +91,15 @@ def atan2(
     return np.arctan2(x1, x2, out=out)
 
 
+atan2.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def atanh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.arctanh(x, out=out)
+
+
+atanh.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -110,12 +115,18 @@ def bitwise_and(
     return np.bitwise_and(x1, x2, out=out)
 
 
+bitwise_and.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, bool, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.invert(x, out=out)
+
+
+bitwise_invert.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -131,6 +142,9 @@ def bitwise_left_shift(
     return np.left_shift(x1, x2, out=out)
 
 
+bitwise_left_shift.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
 def bitwise_or(
@@ -142,6 +156,9 @@ def bitwise_or(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return np.bitwise_or(x1, x2, out=out)
+
+
+bitwise_or.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -157,6 +174,9 @@ def bitwise_right_shift(
     return np.right_shift(x1, x2, out=out)
 
 
+bitwise_right_shift.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
 def bitwise_xor(
@@ -168,6 +188,9 @@ def bitwise_xor(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
     return np.bitwise_xor(x1, x2, out=out)
+
+
+bitwise_xor.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
@@ -182,9 +205,15 @@ def ceil(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return ret
 
 
+ceil.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def cos(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.cos(x, out=out)
+
+
+cos.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
@@ -193,10 +222,7 @@ def cosh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.cosh(x, out=out)
 
 
-@_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
-def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.deg2rad(x, out=out)
+cosh.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -216,6 +242,9 @@ def divide(
     return ret
 
 
+divide.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def equal(
     x1: Union[float, np.ndarray],
@@ -228,36 +257,15 @@ def equal(
     return np.equal(x1, x2, out=out)
 
 
-# Extra #
-# ------#
-
-
-@_scalar_output_to_0d_array
-def erf(x, /, *, out: Optional[np.ndarray] = None):
-    a1 = 0.254829592
-    a2 = -0.284496736
-    a3 = 1.421413741
-    a4 = -1.453152027
-    a5 = 1.061405429
-    p = 0.3275911
-
-    sign = np.sign(x)
-    x = np.abs(x)
-
-    # A&S formula 7.1.26
-    t = 1.0 / (1.0 + p * x)
-    y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * np.exp(-x * x)
-    ret = sign * y
-    if hasattr(x, "dtype"):
-        ret = np.asarray(ret, dtype=x.dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+equal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
 def exp(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.exp(x, out=out)
+
+
+exp.support_native_out = True
 
 
 def exp2(
@@ -269,9 +277,15 @@ def exp2(
     return np.exp2(x, out=out)
 
 
+exp2.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def expm1(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.expm1(x, out=out)
+
+
+expm1.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -284,6 +298,9 @@ def floor(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+floor.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -320,32 +337,7 @@ def fmin(
     )
 
 
-@_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
-def fmod(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.fmod(
-        x1,
-        x2,
-        out=None,
-    )
-
-
-def gcd(
-    x1: Union[np.ndarray, int, list, tuple],
-    x2: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.gcd(x1, x2, out=out)
+fmin.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -360,6 +352,9 @@ def greater(
     return np.greater(x1, x2, out=out)
 
 
+greater.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def greater_equal(
     x1: Union[float, np.ndarray],
@@ -372,18 +367,15 @@ def greater_equal(
     return np.greater_equal(x1, x2, out=out)
 
 
-def imag(
-    val: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.imag(val)
+greater_equal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
 def isfinite(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.isfinite(x, out=out)
+
+
+isfinite.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -409,9 +401,7 @@ def isnan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.isnan(x, out=out)
 
 
-@_scalar_output_to_0d_array
-def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.isreal(x)
+isnan.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -430,6 +420,9 @@ def lcm(
     )
 
 
+lcm.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def less(
     x1: Union[float, np.ndarray],
@@ -440,6 +433,9 @@ def less(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.less(x1, x2, out=out)
+
+
+less.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -454,9 +450,15 @@ def less_equal(
     return np.less_equal(x1, x2, out=out)
 
 
+less_equal.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def log(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.log(x, out=out)
+
+
+log.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -464,14 +466,23 @@ def log10(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.log10(x, out=out)
 
 
+log10.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def log1p(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.log1p(x, out=out)
 
 
+log1p.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def log2(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.log2(x, out=out)
+
+
+log2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -481,6 +492,9 @@ def logaddexp(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.logaddexp(x1, x2, out=out)
+
+
+logaddexp.support_native_out = True
 
 
 def logaddexp2(
@@ -497,6 +511,9 @@ def logaddexp2(
     return np.logaddexp2(x1, x2, out=out)
 
 
+logaddexp2.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def logical_and(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
@@ -504,9 +521,15 @@ def logical_and(
     return np.logical_and(x1, x2, out=out)
 
 
+logical_and.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def logical_not(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.logical_not(x, out=out)
+
+
+logical_not.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -516,6 +539,9 @@ def logical_or(
     return np.logical_or(x1, x2, out=out)
 
 
+logical_or.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def logical_xor(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
@@ -523,40 +549,7 @@ def logical_xor(
     return np.logical_xor(x1, x2, out=out)
 
 
-@_scalar_output_to_0d_array
-def maximum(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
-    /,
-    *,
-    use_where: bool = True,
-    out: Optional[np.ndarray] = None,
-):
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    if use_where:
-        ret = np.where(x1 >= x2, x1, x2)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
-    return np.maximum(x1, x2, out=out)
-
-
-@_scalar_output_to_0d_array
-def minimum(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
-    /,
-    *,
-    use_where: bool = True,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    if use_where:
-        ret = np.where(x1 <= x2, x1, x2)
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
-    return np.minimum(x1, x2, out=out)
+logical_xor.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -571,17 +564,7 @@ def multiply(
     return np.multiply(x1, x2, out=out)
 
 
-def nan_to_num(
-    x: np.ndarray,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+multiply.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -589,6 +572,9 @@ def negative(
     x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.negative(x, out=out)
+
+
+negative.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -603,11 +589,17 @@ def not_equal(
     return np.not_equal(x1, x2, out=out)
 
 
+not_equal.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def positive(
     x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.positive(x, out=out)
+
+
+positive.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -622,22 +614,7 @@ def pow(
     return np.power(x1, x2, out=out)
 
 
-@_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
-def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.rad2deg(x, out=out)
-
-
-def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.real(x)
-
-
-@_scalar_output_to_0d_array
-def reciprocal(
-    x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    numerator = np.ones_like(x)
-    return np.true_divide(numerator, x, out=out)
+pow.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -660,6 +637,9 @@ def remainder(
     return np.remainder(x1, x2, out=out)
 
 
+remainder.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def round(
     x: np.ndarray, /, *, decimals: int = 0, out: Optional[np.ndarray] = None
@@ -671,6 +651,13 @@ def round(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+round.support_native_out = True
+
+
+def _abs_variant_sign(x):
+    return np.divide(x, np.abs(x), where=x != 0)
 
 
 @_scalar_output_to_0d_array
@@ -686,9 +673,15 @@ def sign(
     return np.sign(x, out=out)
 
 
+sign.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def sin(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sin(x, out=out)
+
+
+sin.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -696,14 +689,23 @@ def sinh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinh(x, out=out)
 
 
+sinh.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def sqrt(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sqrt(x, out=out)
 
 
+sqrt.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def square(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.square(x, out=out)
+
+
+square.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -723,16 +725,7 @@ def subtract(
     return np.subtract(x1, x2, out=out)
 
 
-@_scalar_output_to_0d_array
-def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.tan(x, out=out)
-
-
-@_scalar_output_to_0d_array
-def tanh(
-    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.tanh(x, out=out)
+subtract.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -748,6 +741,27 @@ def trapz(
     return np.trapz(y, x=x, dx=dx, axis=axis)
 
 
+trapz.support_native_out = False
+
+
+@_scalar_output_to_0d_array
+def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.tan(x, out=out)
+
+
+tan.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def tanh(
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.tanh(x, out=out)
+
+
+tanh.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def trunc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
@@ -759,74 +773,192 @@ def trunc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return ret
 
 
-abs.support_native_out = True
-acos.support_native_out = True
-acosh.support_native_out = True
-add.support_native_out = True
-asin.support_native_out = True
-asinh.support_native_out = True
-atan.support_native_out = True
-atan2.support_native_out = True
-atanh.support_native_out = True
-bitwise_and.support_native_out = True
-bitwise_invert.support_native_out = True
-bitwise_left_shift.support_native_out = True
-bitwise_or.support_native_out = True
-bitwise_right_shift.support_native_out = True
-bitwise_xor.support_native_out = True
-ceil.support_native_out = True
-cos.support_native_out = True
-cosh.support_native_out = True
-divide.support_native_out = True
-equal.support_native_out = True
-exp.support_native_out = True
-exp2.support_native_out = True
-expm1.support_native_out = True
-floor.support_native_out = True
-fmin.support_native_out = True
-greater.support_native_out = True
-greater_equal.support_native_out = True
-isfinite.support_native_out = True
-isnan.support_native_out = True
-lcm.support_native_out = True
-less.support_native_out = True
-less_equal.support_native_out = True
-log.support_native_out = True
-log10.support_native_out = True
-log1p.support_native_out = True
-log2.support_native_out = True
-logaddexp.support_native_out = True
-logaddexp2.support_native_out = True
-logical_and.support_native_out = True
-logical_not.support_native_out = True
-logical_or.support_native_out = True
-logical_xor.support_native_out = True
-multiply.support_native_out = True
-negative.support_native_out = True
-not_equal.support_native_out = True
-positive.support_native_out = True
-pow.support_native_out = True
-remainder.support_native_out = True
-round.support_native_out = True
-sign.support_native_out = True
-sin.support_native_out = True
-sinh.support_native_out = True
-sqrt.support_native_out = True
-square.support_native_out = True
-subtract.support_native_out = True
-trapz.support_native_out = False
-tan.support_native_out = True
-tanh.support_native_out = True
 trunc.support_native_out = True
+
+
+# Extra #
+# ------#
+
+
+@_scalar_output_to_0d_array
+def erf(x, /, *, out: Optional[np.ndarray] = None):
+    a1 = 0.254829592
+    a2 = -0.284496736
+    a3 = 1.421413741
+    a4 = -1.453152027
+    a5 = 1.061405429
+    p = 0.3275911
+
+    sign = np.sign(x)
+    x = np.abs(x)
+
+    # A&S formula 7.1.26
+    t = 1.0 / (1.0 + p * x)
+    y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * np.exp(-x * x)
+    ret = sign * y
+    if hasattr(x, "dtype"):
+        ret = np.asarray(ret, dtype=x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 erf.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def maximum(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    /,
+    *,
+    use_where: bool = True,
+    out: Optional[np.ndarray] = None,
+):
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        ret = np.where(x1 >= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return np.maximum(x1, x2, out=out)
+
+
 maximum.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def minimum(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    /,
+    *,
+    use_where: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if use_where:
+        ret = np.where(x1 <= x2, x1, x2)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return np.minimum(x1, x2, out=out)
+
+
 minimum.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def reciprocal(
+    x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    numerator = np.ones_like(x)
+    return np.true_divide(numerator, x, out=out)
+
+
 reciprocal.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.deg2rad(x, out=out)
+
+
 deg2rad.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.rad2deg(x, out=out)
+
+
 rad2deg.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.isreal(x)
+
+
 isreal.support_native_out = False
+
+
+@_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+def fmod(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmod(
+        x1,
+        x2,
+        out=None,
+    )
+
+
 fmod.support_native_out = True
+
+
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.angle(z, deg=deg)
+
+
 angle.support_native_out = False
+
+
+def gcd(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.gcd(x1, x2, out=out)
+
+
 gcd.support_native_out = True
+
+
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.imag(val)
+
+
 imag.support_native_out = False
+
+
+def nan_to_num(
+    x: np.ndarray,
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
 nan_to_num.support_native_out = False
+
+
+def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.real(x)

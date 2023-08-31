@@ -79,19 +79,6 @@ def asarray(
         return jnp.asarray(obj, dtype=dtype)
 
 
-def copy_array(
-    x: JaxArray, *, to_ivy_array: bool = True, out: Optional[JaxArray] = None
-) -> JaxArray:
-    x = (
-        jax.core.ShapedArray(x.shape, x.dtype)
-        if isinstance(x, jax.core.ShapedArray)
-        else jnp.array(x)
-    )
-    if to_ivy_array:
-        return ivy.to_ivy(x)
-    return x
-
-
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -138,15 +125,6 @@ def eye(
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     capsule = jax.dlpack.to_dlpack(x)
     return jax.dlpack.from_dlpack(capsule)
-
-
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[jnp.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> JaxArray:
-    return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
 
 
 def full(
@@ -256,6 +234,76 @@ def meshgrid(
     return jnp.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
+def ones(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.ones(shape, dtype)
+
+
+def ones_like(
+    x: JaxArray,
+    /,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.ones_like(x, dtype=dtype)
+
+
+def tril(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.tril(x, k)
+
+
+def triu(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.triu(x, k)
+
+
+def zeros(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.zeros(shape, dtype)
+
+
+def zeros_like(
+    x: JaxArray,
+    /,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.zeros_like(x, dtype=dtype)
+
+
+# Extra #
+# ------#
+
+
+array = asarray
+
+
+def copy_array(
+    x: JaxArray, *, to_ivy_array: bool = True, out: Optional[JaxArray] = None
+) -> JaxArray:
+    x = (
+        jax.core.ShapedArray(x.shape, x.dtype)
+        if isinstance(x, jax.core.ShapedArray)
+        else jnp.array(x)
+    )
+    if to_ivy_array:
+        return ivy.to_ivy(x)
+    return x
+
+
 def one_hot(
     indices: JaxArray,
     depth: int,
@@ -292,33 +340,13 @@ def one_hot(
     return res
 
 
-def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[jnp.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
 ) -> JaxArray:
-    return jnp.ones(shape, dtype)
-
-
-def ones_like(
-    x: JaxArray,
-    /,
-    *,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.ones_like(x, dtype=dtype)
-
-
-def tril(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.tril(x, k)
-
-
-def triu(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.triu(x, k)
+    return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
 
 
 def triu_indices(
@@ -330,31 +358,3 @@ def triu_indices(
     device: jaxlib.xla_extension.Device,
 ) -> Tuple[JaxArray]:
     return jnp.triu_indices(n=n_rows, k=k, m=n_cols)
-
-
-def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.zeros(shape, dtype)
-
-
-def zeros_like(
-    x: JaxArray,
-    /,
-    *,
-    dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.zeros_like(x, dtype=dtype)
-
-
-# Extra #
-# ------#
-
-
-array = asarray

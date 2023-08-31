@@ -20,18 +20,6 @@ from ivy.functional.ivy.creation import (
 from . import backend_version
 
 
-# --- Helpers --- #
-# --------------- #
-
-
-def _slice_at_axis(sl, axis):
-    return (slice(None),) * axis + (sl,) + (...,)
-
-
-# --- Main --- #
-# ------------ #
-
-
 # Array API Standard #
 # -------------------#
 
@@ -107,17 +95,6 @@ def asarray(
     except (TypeError, ValueError):
         ret = tf.cast(obj, dtype)
     return tf.identity(ret) if copy else ret
-
-
-def copy_array(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    to_ivy_array: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if to_ivy_array:
-        return ivy.to_ivy(tf.identity(x))
-    return tf.identity(x)
 
 
 def empty(
@@ -204,27 +181,6 @@ def from_dlpack(
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("uint32", "uint64")}, backend_version)
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[tf.DType] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
-) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(buffer, bytearray):
-        buffer = bytes(buffer)
-    ret = tf.io.decode_raw(buffer, dtype)
-    dtype = tf.dtypes.as_dtype(dtype)
-    if offset > 0:
-        offset = int(offset / dtype.size)
-    if count > -1:
-        ret = ret[offset : offset + count]
-    else:
-        ret = ret[offset:]
-
-    return ret
-
-
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float, bool],
@@ -252,6 +208,10 @@ def full_like(
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
+
+
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
 
 
 def linspace(
@@ -305,23 +265,6 @@ def meshgrid(
     return res
 
 
-def one_hot(
-    indices: Union[tf.Tensor, tf.Variable],
-    depth: int,
-    /,
-    *,
-    on_value: Optional[Number] = None,
-    off_value: Optional[Number] = None,
-    axis: Optional[int] = None,
-    dtype: Optional[tf.DType] = None,
-    device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.one_hot(
-        indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
-    )
-
-
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -367,29 +310,6 @@ def triu(
     return tf.experimental.numpy.triu(x, k)
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: str,
-) -> Tuple[Union[tf.Tensor, tf.Variable]]:
-    n_cols = n_rows if n_cols is None else n_cols
-
-    if n_rows < 0 or n_cols < 0:
-        n_rows, n_cols = 0, 0
-
-    ret = [[], []]
-
-    for i in range(0, min(n_rows, n_cols - k), 1):
-        for j in range(max(0, k + i), n_cols, 1):
-            ret[0].append(i)
-            ret[1].append(j)
-
-    return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
-
-
 def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -416,3 +336,75 @@ def zeros_like(
 
 
 array = asarray
+
+
+def copy_array(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    to_ivy_array: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if to_ivy_array:
+        return ivy.to_ivy(tf.identity(x))
+    return tf.identity(x)
+
+
+def one_hot(
+    indices: Union[tf.Tensor, tf.Variable],
+    depth: int,
+    /,
+    *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[tf.DType] = None,
+    device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.one_hot(
+        indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
+    )
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("uint32", "uint64")}, backend_version)
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[tf.DType] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(buffer, bytearray):
+        buffer = bytes(buffer)
+    ret = tf.io.decode_raw(buffer, dtype)
+    dtype = tf.dtypes.as_dtype(dtype)
+    if offset > 0:
+        offset = int(offset / dtype.size)
+    if count > -1:
+        ret = ret[offset : offset + count]
+    else:
+        ret = ret[offset:]
+
+    return ret
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+    n_cols = n_rows if n_cols is None else n_cols
+
+    if n_rows < 0 or n_cols < 0:
+        n_rows, n_cols = 0, 0
+
+    ret = [[], []]
+
+    for i in range(0, min(n_rows, n_cols - k), 1):
+        for j in range(max(0, k + i), n_cols, 1):
+            ret[0].append(i)
+            ret[1].append(j)
+
+    return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))

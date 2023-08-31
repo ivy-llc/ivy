@@ -14,6 +14,42 @@ from ivy.functional.ivy.random import (
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
+# Extra #
+# ------#
+
+
+def random_uniform(
+    *,
+    low: Union[float, np.ndarray] = 0.0,
+    high: Union[float, np.ndarray] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int], np.ndarray]] = None,
+    dtype: np.dtype,
+    device: str,
+    out: Optional[np.ndarray] = None,
+    seed: Optional[int] = None,
+) -> np.ndarray:
+    if seed:
+        np.random.seed(seed)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
+    return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
+
+
+def random_normal(
+    *,
+    mean: Union[float, np.ndarray] = 0.0,
+    std: Union[float, np.ndarray] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: str,
+    dtype: np.dtype,
+    seed: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
+    if seed:
+        np.random.seed(seed)
+    return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
+
 
 @with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
 def multinomial(
@@ -72,43 +108,6 @@ def randint(
     if seed:
         np.random.seed(seed)
     return np.random.randint(low, high, shape, dtype=dtype)
-
-
-def random_normal(
-    *,
-    mean: Union[float, np.ndarray] = 0.0,
-    std: Union[float, np.ndarray] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str,
-    dtype: np.dtype,
-    seed: Optional[int] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape).shape
-    if seed:
-        np.random.seed(seed)
-    return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
-
-
-# Extra #
-# ------#
-
-
-def random_uniform(
-    *,
-    low: Union[float, np.ndarray] = 0.0,
-    high: Union[float, np.ndarray] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int], np.ndarray]] = None,
-    dtype: np.dtype,
-    device: str,
-    out: Optional[np.ndarray] = None,
-    seed: Optional[int] = None,
-) -> np.ndarray:
-    if seed:
-        np.random.seed(seed)
-    shape = _check_bounds_and_get_shape(low, high, shape).shape
-    return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
 def seed(*, seed_value: int = 0) -> None:

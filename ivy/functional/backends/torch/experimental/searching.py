@@ -3,9 +3,6 @@ from typing import Optional, Tuple
 import torch
 
 
-unravel_index.support_native_out = False
-
-
 def unravel_index(
     indices: torch.Tensor,
     shape: Tuple[int],
@@ -19,3 +16,6 @@ def unravel_index(
         output.append(temp % dim)
         temp = temp // dim
     return tuple(reversed(output))
+
+
+unravel_index.support_native_out = False

@@ -8,15 +8,6 @@ from jax import lax
 import ivy
 
 
-def elu(
-    x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
-) -> JaxArray:
-    ret = jax.nn.elu(x, alpha)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ret
-
-
 def logit(
     x: JaxArray,
     /,
@@ -29,10 +20,6 @@ def logit(
     else:
         x = jnp.clip(x, eps, 1 - eps)
     return jnp.log(x / (1 - x))
-
-
-def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jax.nn.log_sigmoid(input)
 
 
 def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -51,6 +38,20 @@ def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return new_func(x).astype(x.dtype)
 
 
+def thresholded_relu(
+    x: JaxArray,
+    /,
+    *,
+    threshold: Union[int, float] = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.where(x > threshold, x, 0).astype(x.dtype)
+
+
+def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.log_sigmoid(input)
+
+
 def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jax.nn.selu(x).astype(x.dtype)
     if ivy.exists(out):
@@ -65,11 +66,10 @@ def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
-def thresholded_relu(
-    x: JaxArray,
-    /,
-    *,
-    threshold: Union[int, float] = 0,
-    out: Optional[JaxArray] = None,
+def elu(
+    x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.where(x > threshold, x, 0).astype(x.dtype)
+    ret = jax.nn.elu(x, alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

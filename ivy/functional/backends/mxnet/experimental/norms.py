@@ -4,6 +4,16 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+def l2_normalize(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[None] = None,
+) -> None:
+    raise IvyNotImplementedException()
+
+
 def batch_norm(
     x: Union[(None, mx.ndarray.NDArray)],
     mean: Union[(None, mx.ndarray.NDArray)],
@@ -45,16 +55,6 @@ def instance_norm(
         Union[(None, mx.ndarray.NDArray)],
     )
 ]:
-    raise IvyNotImplementedException()
-
-
-def l2_normalize(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    axis: Optional[int] = None,
-    out: Optional[None] = None,
-) -> None:
     raise IvyNotImplementedException()
 
 

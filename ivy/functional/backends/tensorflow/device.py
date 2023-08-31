@@ -4,39 +4,15 @@ Tensorflow device functions.
 Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.
 """
+
+# global
+_round = round
 import tensorflow as tf
 from typing import Union, Optional
 
 # local
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
-
-# global
-_round = round
-
-
-class Profiler(BaseProfiler):
-    def __init__(self, save_dir: str):
-        super(Profiler, self).__init__(save_dir)
-        self._options = tf.profiler.experimental.ProfilerOptions(
-            host_tracer_level=3, python_tracer_level=1, device_tracer_level=1
-        )
-
-    def start(self):
-        tf.profiler.experimental.start(self._save_dir, options=self._options)
-
-    def stop(self):
-        tf.profiler.experimental.stop()
-
-    def __enter__(self):
-        self.start()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()
-
-
-# --- Helpers --- #
-# --------------- #
 
 
 def _same_device(dev_a, dev_b):
@@ -47,8 +23,34 @@ def _same_device(dev_a, dev_b):
     )
 
 
-# --- Main --- #
-# ------------ #
+def dev(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    as_native: bool = False,
+) -> Union[ivy.Device, str]:
+    dv = x.device
+    if as_native:
+        return dv
+    return as_ivy_dev(dv)
+
+
+def to_device(
+    x: Union[tf.Tensor, tf.Variable],
+    device: str,
+    /,
+    *,
+    stream: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if device is None:
+        return x
+    device = as_native_dev(device)
+    current_dev = dev(x)
+    if not _same_device(current_dev, device):
+        with tf.device("/" + device.upper()):
+            return tf.identity(x)
+    return x
 
 
 def as_ivy_dev(device: str, /):
@@ -77,48 +79,12 @@ def clear_cached_mem_on_dev(device: str, /):
     return None
 
 
-def dev(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    as_native: bool = False,
-) -> Union[ivy.Device, str]:
-    dv = x.device
-    if as_native:
-        return dv
-    return as_ivy_dev(dv)
-
-
-def gpu_is_available() -> bool:
-    return len(tf.config.list_physical_devices("GPU")) > 0
-
-
-def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
-    default_device = ivy.default_device(device_shifting_dev, as_native=True)
-    with tf.device(default_device):
-        return fn(*args, **kwargs)
-
-
 def num_gpus() -> int:
     return len(tf.config.list_physical_devices("GPU"))
 
 
-def to_device(
-    x: Union[tf.Tensor, tf.Variable],
-    device: str,
-    /,
-    *,
-    stream: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if device is None:
-        return x
-    device = as_native_dev(device)
-    current_dev = dev(x)
-    if not _same_device(current_dev, device):
-        with tf.device("/" + device.upper()):
-            return tf.identity(x)
-    return x
+def gpu_is_available() -> bool:
+    return len(tf.config.list_physical_devices("GPU")) > 0
 
 
 def tpu_is_available() -> bool:
@@ -131,3 +97,29 @@ def tpu_is_available() -> bool:
         return True
     except ValueError:
         return False
+
+
+def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
+    default_device = ivy.default_device(device_shifting_dev, as_native=True)
+    with tf.device(default_device):
+        return fn(*args, **kwargs)
+
+
+class Profiler(BaseProfiler):
+    def __init__(self, save_dir: str):
+        super(Profiler, self).__init__(save_dir)
+        self._options = tf.profiler.experimental.ProfilerOptions(
+            host_tracer_level=3, python_tracer_level=1, device_tracer_level=1
+        )
+
+    def start(self):
+        tf.profiler.experimental.start(self._save_dir, options=self._options)
+
+    def stop(self):
+        tf.profiler.experimental.stop()
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()

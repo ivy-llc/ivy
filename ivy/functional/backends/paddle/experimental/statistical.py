@@ -11,120 +11,120 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
-# --- Helpers --- #
-# --------------- #
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def median(
+    input: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # keepdims is set to True because in versions up to 2.5.1
+    # there was a problem when the axis was defined and it was the
+    # only axis in the tensor so it needs to be handled manually
 
-
-def __find_cummax(
-    x: paddle.Tensor, axis: int = 0, dtype: Optional[paddle.dtype] = None
-) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    indices = []
-    values = []
-    x_dtype = x.dtype if dtype is None else dtype
-    if (
-        isinstance(x.tolist()[0], list)
-        and len(x[0].shape) >= 1
-        and (isinstance(x[0], paddle.Tensor) or isinstance(x[0], ivy.Array))
-    ):
-        if axis >= 1:
-            if not isinstance(x, list):
-                x = x.tolist()
-            for ret1 in x:
-                value, indice = __find_cummax(
-                    paddle.to_tensor(ret1, dtype=x_dtype), axis=axis - 1, dtype=x_dtype
-                )
-                indices.append(indice)
-                values.append(value)
+    ret_dtype = input.dtype
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if paddle.is_complex(input):
+            ret = paddle.complex(
+                paddle.median(input.real(), axis=axis, keepdim=True),
+                paddle.median(input.imag(), axis=axis, keepdim=True),
+            )
         else:
-            x_list = x.numpy()
-            z_list = __get_index(x_list.tolist())
-            indices, values, n1 = x_list.copy(), x_list.copy(), {}
-            indices.fill(0)
-            values.fill(0)
-            z_list = sorted(z_list, key=lambda i: i[1])
-            for y, y_index in z_list:
-                multi_index = y_index
-                if tuple(multi_index[1:]) not in n1:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                elif (
-                    y
-                    >= x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
-                ):
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                else:
-                    indices[y_index] = n1[tuple(multi_index[1:])]
-                    values[y_index] = x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
+            ret = paddle.median(input.cast("float32"), axis=axis, keepdim=True)
     else:
-        if not isinstance(x, list):
-            x = x.tolist()
-        n = 0
-        for idx, y in enumerate(x):
-            if x[n] > y:
-                values.append(x[n])
-            elif x[n] <= y or idx == 0:
-                n = idx
-                values.append(y)
-            indices.append(n)
+        ret = paddle.median(input, axis=axis, keepdim=True)
+    if not keepdims:
+        ret = paddle_backend.squeeze(ret, axis=axis)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == input.ndim:
+            axis = None
+    if (input.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
 
-    if isinstance(x, paddle.Tensor):
-        return paddle.to_tensor(values, dtype=x.dtype), paddle.to_tensor(
-            indices, dtype="int64"
-        )
+
+def nanmean(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ret_dtype = dtype if dtype is not None else a.dtype
+    a = a.cast(
+        ret_dtype
+    )  # this is necessary to match other FWs behaviour which cast before calculation
+    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
+        if paddle.is_complex(a):
+            ret = paddle.complex(
+                paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
+                paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
+            )
+        else:
+            ret = paddle.nanmean(a.cast("float32"), axis=axis, keepdim=keepdims)
     else:
-        return ivy.array(values, dtype=x_dtype), ivy.array(indices, dtype="int64")
+        ret = paddle.nanmean(a, axis=axis, keepdim=keepdims)
+
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == a.ndim:
+            axis = None
+    if (a.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
 
 
-def __get_index(lst, indices=None, prefix=None):
-    if indices is None:
-        indices = []
-    if prefix is None:
-        prefix = []
-
-    if isinstance(lst, list):
-        for i, sub_lst in enumerate(lst):
-            sub_indices = prefix + [i]
-            __get_index(sub_lst, indices, sub_indices)
+def _validate_quantile(q):
+    if isinstance(q, float):
+        q = paddle.to_tensor(q)
+    if q.ndim == 1 and q.size < 10:
+        for i in range(q.size):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
     else:
-        indices.append((lst, tuple(prefix)))
-    return indices
+        if not (paddle.all(0 <= q) and paddle.all(q <= 1)):
+            return False
+    return True
 
 
-def _compute_quantile_wrapper(
-    x,
-    q,
-    axis=None,
-    keepdims=False,
-    interpolation="linear",
-):
-    if not _validate_quantile(q):
-        raise ValueError("Quantiles must be in the range [0, 1]")
-    if interpolation not in [
-        "linear",
-        "lower",
-        "higher",
-        "midpoint",
-        "nearest",
-        "nearest_jax",
-    ]:
-        raise ValueError(
-            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
-        )
-    return _handle_axis(
-        x,
-        q,
-        _quantile,
-        keepdims=keepdims,
-        axis=axis,
-        interpolation=interpolation,
-    )
+def _to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
 
 
 def _handle_axis(a, q, fn, keepdims=False, axis=None, interpolation="nearest"):
@@ -216,39 +216,154 @@ def _quantile(a, q, axis=None, interpolation="nearest"):
     return out.astype(ret_dtype)
 
 
-def _to_positive_axis(axis, ndim):
-    if not isinstance(axis, (list, tuple)):
-        axis = [axis]
+def _compute_quantile_wrapper(
+    x,
+    q,
+    axis=None,
+    keepdims=False,
+    interpolation="linear",
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation not in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+        )
+    return _handle_axis(
+        x,
+        q,
+        _quantile,
+        keepdims=keepdims,
+        axis=axis,
+        interpolation=interpolation,
+    )
 
-    if len(axis) == 0:
-        raise ValueError("Axis can't be empty!")
 
-    if len(set(axis)) != len(axis):
-        raise ValueError("Duplicated axis!")
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bfloat16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
+def quantile(
+    a: paddle.Tensor,
+    q: Union[paddle.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "linear",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
+        x=a,
+        q=q,
+        axis=axis,
+        keepdims=keepdims,
+        interpolation=interpolation,
+    )
 
-    for i in range(len(axis)):
-        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
-            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
-        if axis[i] < 0:
-            axis[i] += ndim
-    return axis
+
+def corrcoef(
+    x: paddle.Tensor,
+    /,
+    *,
+    y: Optional[paddle.Tensor] = None,
+    rowvar: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
 
 
-def _validate_quantile(q):
-    if isinstance(q, float):
-        q = paddle.to_tensor(q)
-    if q.ndim == 1 and q.size < 10:
-        for i in range(q.size):
-            if not (0.0 <= q[i] <= 1.0):
-                return False
+def histogram(
+    a: paddle.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, paddle.Tensor]] = None,
+    axis: Optional[int] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[paddle.Tensor] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[paddle.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+) -> Tuple[paddle.Tensor]:
+    if range is None:
+        min_range = 0
+        max_range = 0
     else:
-        if not (paddle.all(0 <= q) and paddle.all(q <= 1)):
-            return False
-    return True
+        min_range = range[0]
+        max_range = range[1]
+    return paddle.histogram(a, bins=bins, min=min_range, max=max_range)
 
 
-# --- Main --- #
-# ------------ #
+def nanmedian(
+    input: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
+    overwrite_input: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = input.dtype
+        input = input.cast("float32")
+        paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
+    return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def unravel_index(
+    indices: paddle.Tensor,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if indices.ndim == 0:
+        indices = indices.unsqueeze(0)
+    coord = []
+    indices = indices
+    for dim in reversed(shape):
+        coord.append((indices % dim).astype("int32"))
+        indices = paddle.floor(indices / dim)
+
+    return tuple(reversed(coord))
 
 
 @with_unsupported_device_and_dtypes(
@@ -282,15 +397,34 @@ def bincount(
     )
 
 
-def corrcoef(
-    x: paddle.Tensor,
+def igamma(
+    a: paddle.Tensor,
     /,
     *,
-    y: Optional[paddle.Tensor] = None,
-    rowvar: Optional[bool] = True,
+    x: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    results = []
+    ret_dtype = a.dtype if out is None else out.dtype
+    if paddle.float16 in [a.dtype, x.dtype]:
+        a = a.astype("float32")
+        x = x.astype("float32")
+
+    for ai, xi in zip(a.flatten(), x.flatten()):
+        ai = ai.astype("float64")
+        xi = xi.astype("float64")
+
+        def integrand(t):
+            return paddle.exp(-t) * paddle.pow(t, ai - 1)
+
+        intervals = paddle.linspace(0, xi, 10001).astype("float64")
+        interval_width = xi / 10000
+        values = integrand(intervals)
+        integral = paddle.multiply((values[:-1] + values[1:]) / 2, interval_width)
+        result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
+        results.append(result)
+
+    return paddle.to_tensor(results, dtype=ret_dtype).reshape(a.shape)
 
 
 def cov(
@@ -402,6 +536,88 @@ def cummax(
         return ivy.flip(x, axis=axis), ivy.flip(indices, axis=axis)
 
 
+def __find_cummax(
+    x: paddle.Tensor, axis: int = 0, dtype: Optional[paddle.dtype] = None
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    indices = []
+    values = []
+    x_dtype = x.dtype if dtype is None else dtype
+    if (
+        isinstance(x.tolist()[0], list)
+        and len(x[0].shape) >= 1
+        and (isinstance(x[0], paddle.Tensor) or isinstance(x[0], ivy.Array))
+    ):
+        if axis >= 1:
+            if not isinstance(x, list):
+                x = x.tolist()
+            for ret1 in x:
+                value, indice = __find_cummax(
+                    paddle.to_tensor(ret1, dtype=x_dtype), axis=axis - 1, dtype=x_dtype
+                )
+                indices.append(indice)
+                values.append(value)
+        else:
+            x_list = x.numpy()
+            z_list = __get_index(x_list.tolist())
+            indices, values, n1 = x_list.copy(), x_list.copy(), {}
+            indices.fill(0)
+            values.fill(0)
+            z_list = sorted(z_list, key=lambda i: i[1])
+            for y, y_index in z_list:
+                multi_index = y_index
+                if tuple(multi_index[1:]) not in n1:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                elif (
+                    y
+                    >= x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
+                ):
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                else:
+                    indices[y_index] = n1[tuple(multi_index[1:])]
+                    values[y_index] = x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
+    else:
+        if not isinstance(x, list):
+            x = x.tolist()
+        n = 0
+        for idx, y in enumerate(x):
+            if x[n] > y:
+                values.append(x[n])
+            elif x[n] <= y or idx == 0:
+                n = idx
+                values.append(y)
+            indices.append(n)
+
+    if isinstance(x, paddle.Tensor):
+        return paddle.to_tensor(values, dtype=x.dtype), paddle.to_tensor(
+            indices, dtype="int64"
+        )
+    else:
+        return ivy.array(values, dtype=x_dtype), ivy.array(indices, dtype="int64")
+
+
+def __get_index(lst, indices=None, prefix=None):
+    if indices is None:
+        indices = []
+    if prefix is None:
+        prefix = []
+
+    if isinstance(lst, list):
+        for i, sub_lst in enumerate(lst):
+            sub_indices = prefix + [i]
+            __get_index(sub_lst, indices, sub_indices)
+    else:
+        indices.append((lst, tuple(prefix)))
+    return indices
+
+
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16")}},
     backend_version,
@@ -429,227 +645,3 @@ def cummin(
     if reverse:
         cummin_x = paddle.flip(cummin_x, axis=[axis])
     return cummin_x.cast(dtype)
-
-
-def histogram(
-    a: paddle.Tensor,
-    /,
-    *,
-    bins: Optional[Union[int, paddle.Tensor]] = None,
-    axis: Optional[int] = None,
-    extend_lower_interval: Optional[bool] = False,
-    extend_upper_interval: Optional[bool] = False,
-    dtype: Optional[paddle.Tensor] = None,
-    range: Optional[Tuple[float]] = None,
-    weights: Optional[paddle.Tensor] = None,
-    density: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-) -> Tuple[paddle.Tensor]:
-    if range is None:
-        min_range = 0
-        max_range = 0
-    else:
-        min_range = range[0]
-        max_range = range[1]
-    return paddle.histogram(a, bins=bins, min=min_range, max=max_range)
-
-
-def igamma(
-    a: paddle.Tensor,
-    /,
-    *,
-    x: paddle.Tensor,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    results = []
-    ret_dtype = a.dtype if out is None else out.dtype
-    if paddle.float16 in [a.dtype, x.dtype]:
-        a = a.astype("float32")
-        x = x.astype("float32")
-
-    for ai, xi in zip(a.flatten(), x.flatten()):
-        ai = ai.astype("float64")
-        xi = xi.astype("float64")
-
-        def integrand(t):
-            return paddle.exp(-t) * paddle.pow(t, ai - 1)
-
-        intervals = paddle.linspace(0, xi, 10001).astype("float64")
-        interval_width = xi / 10000
-        values = integrand(intervals)
-        integral = paddle.multiply((values[:-1] + values[1:]) / 2, interval_width)
-        result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
-        results.append(result)
-
-    return paddle.to_tensor(results, dtype=ret_dtype).reshape(a.shape)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "float16",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def median(
-    input: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    # keepdims is set to True because in versions up to 2.5.1
-    # there was a problem when the axis was defined and it was the
-    # only axis in the tensor so it needs to be handled manually
-
-    ret_dtype = input.dtype
-    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        if paddle.is_complex(input):
-            ret = paddle.complex(
-                paddle.median(input.real(), axis=axis, keepdim=True),
-                paddle.median(input.imag(), axis=axis, keepdim=True),
-            )
-        else:
-            ret = paddle.median(input.cast("float32"), axis=axis, keepdim=True)
-    else:
-        ret = paddle.median(input, axis=axis, keepdim=True)
-    if not keepdims:
-        ret = paddle_backend.squeeze(ret, axis=axis)
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == input.ndim:
-            axis = None
-    if (input.ndim == 1 or axis is None) and not keepdims:
-        ret = ret.squeeze()
-    return ret.astype(ret_dtype)
-
-
-def nanmean(
-    a: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ret_dtype = dtype if dtype is not None else a.dtype
-    a = a.cast(
-        ret_dtype
-    )  # this is necessary to match other FWs behaviour which cast before calculation
-    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
-        if paddle.is_complex(a):
-            ret = paddle.complex(
-                paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
-                paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
-            )
-        else:
-            ret = paddle.nanmean(a.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.nanmean(a, axis=axis, keepdim=keepdims)
-
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == a.ndim:
-            axis = None
-    if (a.ndim == 1 or axis is None) and not keepdims:
-        ret = ret.squeeze()
-    return ret.astype(ret_dtype)
-
-
-def nanmedian(
-    input: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    dtype: Optional[paddle.dtype] = None,
-    overwrite_input: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        if dtype is None:
-            dtype = input.dtype
-        input = input.cast("float32")
-        paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
-    return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "float16",
-                "bfloat16",
-                "complex64",
-                "complex128",
-            )
-        }
-    },
-    backend_version,
-)
-def quantile(
-    a: paddle.Tensor,
-    q: Union[paddle.Tensor, float],
-    /,
-    *,
-    axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    interpolation: Optional[str] = "linear",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
-    return _compute_quantile_wrapper(
-        x=a,
-        q=q,
-        axis=axis,
-        keepdims=keepdims,
-        interpolation=interpolation,
-    )
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "float16",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def unravel_index(
-    indices: paddle.Tensor,
-    shape: Tuple[int],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if indices.ndim == 0:
-        indices = indices.unsqueeze(0)
-    coord = []
-    indices = indices
-    for dim in reversed(shape):
-        coord.append((indices % dim).astype("int32"))
-        indices = paddle.floor(indices / dim)
-
-    return tuple(reversed(coord))

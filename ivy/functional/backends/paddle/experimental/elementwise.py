@@ -17,54 +17,175 @@ from ivy.functional.backends.paddle.elementwise import _elementwise_helper
 from .. import backend_version
 
 
-_BERNOULLI_COEFS = [
-    12,
-    -720,
-    30240,
-    -1209600,
-    47900160,
-    -1307674368000 / 691,
-    74724249600,
-    -10670622842880000 / 3617,
-    5109094217170944000 / 43867,
-    -802857662698291200000 / 174611,
-    14101100039391805440000 / 77683,
-    -1693824136731743669452800000 / 236364091,
-    186134520519971831808000000 / 657931,
-    -37893265687455865519472640000000 / 3392780147,
-    759790291646040068357842010112000000 / 1723168255201,
-    -134196726836183700385281186201600000000 / 7709321041217,
-]
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
+    backend_version,
+)
+def lgamma(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.lgamma(x)
 
 
-# --- Helpers --- #
-# --------------- #
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float64", "float32", "int32", "int64")},
+    backend_version,
+)
+def fmax(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x1.dtype != x2.dtype:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+    return paddle.fmax(x1, x2)
 
 
-def _normalize_axis_index(ax: int, ndim: int) -> int:
-    if ax >= ndim or ax < -ndim:
-        raise ValueError("axis index is out of range")
-    return (ax + ndim) % ndim
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+)
+def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
+    return paddle.divide(paddle.sin(y), y)
 
 
-def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int, ...]:
-    if type(axis) not in (tuple, list):
-        try:
-            axis = [operator.index(axis)]
-        except TypeError:
-            pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
-    if len(set(axis)) != len(axis):
-        raise ValueError("repeated axis")
-    return axis
+def float_power(
+    x1: Union[paddle.Tensor, float, list, tuple],
+    x2: Union[paddle.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    x1 = paddle.cast(x1, dtype="float64")
+    x2 = paddle.cast(x2, dtype="float64")  # Compute the element-wise power
+    return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
 
-def _np_ndim(x):
-    return ivy.array(x).ndim
+def frexp(
+    x: Union[paddle.Tensor, Number],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException
 
 
-# --- Main --- #
-# ------------ #
+def ldexp(
+    x1: Union[paddle.Tensor, Number],
+    x2: Union[paddle.Tensor, Number],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    out_dtype = x1.dtype
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    with ivy.ArrayMode(False):
+        if ivy.any(ivy.less(x2, 0)):
+            pos_exp = ivy.greater_equal(x2, 0).astype(x2.dtype) * x2
+            neg_exp = ivy.less(x2, 0).astype(x2.dtype) * x2
+            ret = ivy.multiply(ivy.pow(2, pos_exp), x1)
+            ret = ivy.divide(ret, ivy.pow(2, -neg_exp))
+        else:
+            ret = ivy.multiply(ivy.pow(2, x2), x1)
+        return ivy.astype(ret, out_dtype, copy=False)
+
+
+def copysign(
+    x1: Union[paddle.Tensor, Number],
+    x2: Union[paddle.Tensor, Number],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    x2 = paddle_backend.where(
+        paddle_backend.equal(x2, 0.0), paddle_backend.divide(1.0, x2), x2
+    )
+    signs = paddle_backend.sign(x2)
+    result = paddle_backend.multiply(paddle_backend.abs(x1), signs)
+    return result
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+)
+def nansum(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
+    dtype: Optional[paddle.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+    if result.shape == [1]:
+        result = paddle.fluid.layers.squeeze(result, [0])
+    return result
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+)
+def isclose(
+    a: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+def diff(
+    x: Union[paddle.Tensor, list, tuple],
+    /,
+    *,
+    n: int = 1,
+    axis: int = -1,
+    prepend: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
+    append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ret_dtype = x.dtype
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        x = x.cast("float32")
+
+    def _tensor(val):
+        if val is not None and not isinstance(val, paddle.Tensor):
+            return paddle.to_tensor(val, dtype=ret_dtype)
+        return val
+
+    prepend = _tensor(prepend)
+    append = _tensor(append)
+    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(
+        ret_dtype
+    )
+
+
+def signbit(
+    x: Union[paddle.Tensor, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle_backend.less(
+        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1.0, x)), 0.0
+    )
+
+
+def hypot(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
@@ -98,95 +219,6 @@ def allclose(
     return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan).squeeze(0)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "complex64",
-            "complex128",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
-def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.conj(x)
-
-
-def copysign(
-    x1: Union[paddle.Tensor, Number],
-    x2: Union[paddle.Tensor, Number],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x2 = paddle_backend.where(
-        paddle_backend.equal(x2, 0.0), paddle_backend.divide(1.0, x2), x2
-    )
-    signs = paddle_backend.sign(x2)
-    result = paddle_backend.multiply(paddle_backend.abs(x1), signs)
-    return result
-
-
-def count_nonzero(
-    a: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, list, tuple]] = None,
-    keepdims: Optional[bool] = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        return ivy.sum(ivy.not_equal(a, 0), axis=axis, keepdims=keepdims, dtype=dtype)
-
-
-def diff(
-    x: Union[paddle.Tensor, list, tuple],
-    /,
-    *,
-    n: int = 1,
-    axis: int = -1,
-    prepend: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
-    append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ret_dtype = x.dtype
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        x = x.cast("float32")
-
-    def _tensor(val):
-        if val is not None and not isinstance(val, paddle.Tensor):
-            return paddle.to_tensor(val, dtype=ret_dtype)
-        return val
-
-    prepend = _tensor(prepend)
-    append = _tensor(append)
-    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append).cast(
-        ret_dtype
-    )
-
-
-@with_supported_dtypes(
-    {
-        "2.5.0 and below": (
-            "float32",
-            "float64",
-        )
-    },
-    backend_version,
-)
-def digamma(
-    x: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.digamma(x)
-
-
 def fix(
     x: paddle.Tensor,
     /,
@@ -197,41 +229,123 @@ def fix(
         return ivy.trunc(x)
 
 
-def float_power(
-    x1: Union[paddle.Tensor, float, list, tuple],
-    x2: Union[paddle.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x1 = paddle.cast(x1, dtype="float64")
-    x2 = paddle.cast(x2, dtype="float64")  # Compute the element-wise power
-    return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32", "int32", "int64")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
-def fmax(
+def nextafter(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x1.dtype != x2.dtype:
-        x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.fmax(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    with ivy.ArrayMode(False):
+        eps = ivy.finfo(x1.dtype).eps
+        return ivy.where(
+            ivy.equal(x1, x2),
+            x2,
+            ivy.where(ivy.greater(x2, x1), ivy.add(x1, eps), ivy.subtract(x1, eps)),
+        )
 
 
-def frexp(
-    x: Union[paddle.Tensor, Number],
+_BERNOULLI_COEFS = [
+    12,
+    -720,
+    30240,
+    -1209600,
+    47900160,
+    -1307674368000 / 691,
+    74724249600,
+    -10670622842880000 / 3617,
+    5109094217170944000 / 43867,
+    -802857662698291200000 / 174611,
+    14101100039391805440000 / 77683,
+    -1693824136731743669452800000 / 236364091,
+    186134520519971831808000000 / 657931,
+    -37893265687455865519472640000000 / 3392780147,
+    759790291646040068357842010112000000 / 1723168255201,
+    -134196726836183700385281186201600000000 / 7709321041217,
+]
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "float16",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def zeta(
+    x: paddle.Tensor,
+    q: paddle.Tensor,
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException
+    with ivy.ArrayMode(False):
+        s, a = ivy.promote_types_of_inputs(x, q)
+        s_, a_ = paddle.unsqueeze(x, -1), paddle.unsqueeze(q, -1)
+        N = M = (
+            paddle.to_tensor(8.0, dtype="float32")
+            if q.dtype == paddle.float32
+            else paddle.to_tensor(8.0, dtype="float64")
+        )
+        assert M <= len(_BERNOULLI_COEFS)
+        k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
+        S = paddle.sum((a_ + k) ** -s_, -1)
+        Q = ivy.divide((q + N) ** (1 - x), x - 1)
+        T0 = (q + N) ** -x
+        m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
+        s_over_a = (s_ + m) / (a_ + N)
+        s_over_a = ivy.where(
+            s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a
+        )
+        T1 = paddle.cumprod(s_over_a, -1)[..., ::2]
+        # t=np.array(T1)
+        T1 = paddle.clip(T1, max=ivy.finfo(T1.dtype).max)
+        coefs = paddle.unsqueeze(
+            paddle.to_tensor(_BERNOULLI_COEFS[: T1.shape[-1]], dtype=T1.dtype),
+            tuple(range(a.ndim)),
+        )
+        T1 = T1 / coefs
+        T = T0 * (0.5 + paddle.sum(T1, -1))
+        ans = S + Q + T
+        mask = x < 1
+        ans[mask] = ivy.nan
+        return ans
+
+
+def _normalize_axis_index(ax: int, ndim: int) -> int:
+    if ax >= ndim or ax < -ndim:
+        raise ValueError("axis index is out of range")
+    return (ax + ndim) % ndim
+
+
+def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int, ...]:
+    if type(axis) not in (tuple, list):
+        try:
+            axis = [operator.index(axis)]
+        except TypeError:
+            pass
+    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    if len(set(axis)) != len(axis):
+        raise ValueError("repeated axis")
+    return axis
+
+
+def _np_ndim(x):
+    return ivy.array(x).ndim
 
 
 @with_supported_dtypes(
@@ -464,126 +578,6 @@ def gradient(
         return outvals
 
 
-def hypot(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
-)
-def isclose(
-    a: paddle.Tensor,
-    b: paddle.Tensor,
-    /,
-    *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-def ldexp(
-    x1: Union[paddle.Tensor, Number],
-    x2: Union[paddle.Tensor, Number],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    out_dtype = x1.dtype
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    with ivy.ArrayMode(False):
-        if ivy.any(ivy.less(x2, 0)):
-            pos_exp = ivy.greater_equal(x2, 0).astype(x2.dtype) * x2
-            neg_exp = ivy.less(x2, 0).astype(x2.dtype) * x2
-            ret = ivy.multiply(ivy.pow(2, pos_exp), x1)
-            ret = ivy.divide(ret, ivy.pow(2, -neg_exp))
-        else:
-            ret = ivy.multiply(ivy.pow(2, x2), x1)
-        return ivy.astype(ret, out_dtype, copy=False)
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
-    backend_version,
-)
-def lgamma(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
-    return paddle.lgamma(x)
-
-
-def modf(
-    x: paddle.Tensor, /, *, out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None
-) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        return paddle.modf(x, out=out)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
-)
-def nansum(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[Tuple[int, ...], int]] = None,
-    dtype: Optional[paddle.dtype] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
-    if result.shape == [1]:
-        result = paddle.fluid.layers.squeeze(result, [0])
-    return result
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
-)
-def nextafter(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    with ivy.ArrayMode(False):
-        eps = ivy.finfo(x1.dtype).eps
-        return ivy.where(
-            ivy.equal(x1, x2),
-            x2,
-            ivy.where(ivy.greater(x2, x1), ivy.add(x1, eps), ivy.subtract(x1, eps)),
-        )
-
-
-def signbit(
-    x: Union[paddle.Tensor, float, int, list, tuple],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle_backend.less(
-        paddle_backend.where(x.astype(bool), x, paddle_backend.divide(1.0, x)), 0.0
-    )
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
-)
-def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
-    return paddle.divide(paddle.sin(y), y)
-
-
 def xlogy(
     x: paddle.Tensor, y: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -597,58 +591,56 @@ def xlogy(
         ).cast(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
+def count_nonzero(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, list, tuple]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        return ivy.sum(ivy.not_equal(a, 0), axis=axis, keepdims=keepdims, dtype=dtype)
+
+
+@with_supported_dtypes(
     {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "uint16",
-                "float16",
-                "bool",
-            )
-        }
+        "2.5.1 and below": (
+            "complex64",
+            "complex128",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
     },
     backend_version,
 )
-def zeta(
+def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    return paddle.conj(x)
+
+
+def modf(
+    x: paddle.Tensor, /, *, out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    with ivy.ArrayMode(False):
+        return paddle.modf(x, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
+def digamma(
     x: paddle.Tensor,
-    q: paddle.Tensor,
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        s, a = ivy.promote_types_of_inputs(x, q)
-        s_, a_ = paddle.unsqueeze(x, -1), paddle.unsqueeze(q, -1)
-        N = M = (
-            paddle.to_tensor(8.0, dtype="float32")
-            if q.dtype == paddle.float32
-            else paddle.to_tensor(8.0, dtype="float64")
-        )
-        assert M <= len(_BERNOULLI_COEFS)
-        k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
-        S = paddle.sum((a_ + k) ** -s_, -1)
-        Q = ivy.divide((q + N) ** (1 - x), x - 1)
-        T0 = (q + N) ** -x
-        m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
-        s_over_a = (s_ + m) / (a_ + N)
-        s_over_a = ivy.where(
-            s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a
-        )
-        T1 = paddle.cumprod(s_over_a, -1)[..., ::2]
-        # t=np.array(T1)
-        T1 = paddle.clip(T1, max=ivy.finfo(T1.dtype).max)
-        coefs = paddle.unsqueeze(
-            paddle.to_tensor(_BERNOULLI_COEFS[: T1.shape[-1]], dtype=T1.dtype),
-            tuple(range(a.ndim)),
-        )
-        T1 = T1 / coefs
-        T = T0 * (0.5 + paddle.sum(T1, -1))
-        ans = S + Q + T
-        mask = x < 1
-        ans[mask] = ivy.nan
-        return ans
+    return paddle.digamma(x)
