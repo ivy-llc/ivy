@@ -1283,12 +1283,23 @@ def test_rfftn(
 def stft_arguments(draw):
     dtype = draw(helpers.get_dtypes("float"))
     n_fft_type = draw(st.sampled_from(["int", "tuple"]))
-
     if n_fft_type == "int":
         n_fft = draw(st.integers(min_value=2, max_value=256))
+        window_choices = [
+            st.sampled_from(['hann']),
+            st.integers(min_value=1, max_value=n_fft) 
+            if isinstance(n_fft, int) 
+            else st.integers(min_value=1, max_value=n_fft[1]),
+            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=1),
+        ]
     else:
         n_fft = tuple(draw(st.integers(min_value=2, max_value=256)) for _ in range(2))
-
+        window_choices = [
+            st.sampled_from(['hann']),
+            st.tuples(st.sampled_from([(1,)])),
+            st.lists(st.sampled_from([1])),
+            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=1),
+        ]
     hop_length = draw(st.integers(min_value=1, max_value=256))
     axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
