@@ -968,6 +968,7 @@ def _check_arguments(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
