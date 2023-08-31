@@ -590,10 +590,6 @@ def GreaterEqual(*, x, y, name="GreaterEqual"):
     return ivy.greater_equal(x, y)
 
 
-@with_supported_dtypes(
-    {"2.13.0 and below": ("complex64", "complex128")},
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def Imag(
     *,
@@ -791,6 +787,9 @@ def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
 @to_ivy_arrays_and_back
 def TanhGrad(*, y, dy, name="TanhGrad"):
     return ivy.multiply(dy, ivy.subtract(1, ivy.multiply(y, y)))
+
+
+Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
 
 
 @to_ivy_arrays_and_back
