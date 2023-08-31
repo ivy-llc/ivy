@@ -524,10 +524,10 @@ def test_paddle_sigmoid_focal_loss(
     normalizer = [norm.reshape(-1) for norm in normalizer]
     labels = ivy.array(labels, dtype=ivy.int64)
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int64] 
-        + [ivy.float64] 
-        + x_dtype 
-        + normalizer_dtype 
+        input_dtypes=[ivy.int64]
+        + [ivy.float64]
+        + x_dtype
+        + normalizer_dtype
         + label_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
