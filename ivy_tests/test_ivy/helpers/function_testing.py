@@ -98,6 +98,7 @@ def test_function(
     fn_name: str,
     rtol_: float = None,
     atol_: float = 1e-06,
+    tolerance_dict: dict = None,
     test_values: bool = True,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
@@ -126,6 +127,8 @@ def test_function(
         relative tolerance value.
     atol_
         absolute tolerance value.
+    tolerance_dict
+        (Optional) dictionary of tolerance values for each dtype.
     test_values
         if True, test for the correctness of the resulting values.
     xs_grad_idxs
@@ -462,6 +465,7 @@ def test_function(
                     test_flags=test_flags,
                     rtol_=rtol_,
                     atol_=atol_,
+                    tolerance_dict=tolerance_dict,
                     xs_grad_idxs=xs_grad_idxs,
                     ret_grad_idxs=ret_grad_idxs,
                     ground_truth_backend=test_flags.ground_truth_backend,
@@ -497,6 +501,7 @@ def test_function(
         ret_np_from_gt_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
+        specific_tolerance_dict=tolerance_dict,
         backend=backend_to_test,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
@@ -513,6 +518,7 @@ def test_frontend_function(
     gt_fn_tree: str = None,
     rtol: float = None,
     atol: float = 1e-06,
+    tolerance_dict: dict = None,
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
@@ -537,6 +543,8 @@ def test_frontend_function(
         relative tolerance value.
     atol
         absolute tolerance value.
+    tolerance_dict
+        dictionary of tolerance values for specific dtypes.
     test_values
         if True, test for the correctness of the resulting values.
     all_as_kwargs_np
@@ -650,14 +658,12 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
-        assert ivy_backend.nested_map(
-            ret,
-            lambda x: (
-                _is_frontend_array(x)
-                if ivy_backend.is_array(x) and test_flags.generate_frontend_arrays
-                else True
-            ),
-        ), "Frontend function returned non-frontend arrays: {}".format(ret)
+        # test if frontend array was returned
+        if test_flags.generate_frontend_arrays:
+            assert ivy_backend.nested_map(
+                ret,
+                lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
+            ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
@@ -884,6 +890,7 @@ def test_frontend_function(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
+        specific_tolerance_dict=tolerance_dict,
         backend=backend_to_test,
         ground_truth_backend=frontend,
     )
@@ -903,6 +910,7 @@ def gradient_test(
     test_compile: bool = False,
     rtol_: float = None,
     atol_: float = 1e-06,
+    tolerance_dict: dict = None,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     backend_to_test: str,
@@ -1007,6 +1015,7 @@ def gradient_test(
         ret_np_from_gt_flat=grads_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
+        specific_tolerance_dict=tolerance_dict,
         backend=backend_to_test,
         ground_truth_backend=ground_truth_backend,
     )
@@ -1026,6 +1035,7 @@ def test_method(
     method_with_v: bool = False,
     rtol_: float = None,
     atol_: float = 1e-06,
+    tolerance_dict: dict = None,
     test_values: Union[bool, str] = True,
     test_gradients: bool = False,
     xs_grad_idxs=None,
@@ -1085,6 +1095,8 @@ def test_method(
         relative tolerance value.
     atol_
         absolute tolerance value.
+    tolerance_dict
+        dictionary of tolerance values for specific dtypes.
     test_values
         can be a bool or a string to indicate whether correctness of values should be
         tested. If the value is `with_v`, shapes are tested but not values.
@@ -1368,6 +1380,7 @@ def test_method(
                         test_compile=test_compile,
                         rtol_=rtol_,
                         atol_=atol_,
+                        tolerance_dict=tolerance_dict,
                         xs_grad_idxs=xs_grad_idxs,
                         ret_grad_idxs=ret_grad_idxs,
                         backend_to_test=backend_to_test,
@@ -1389,6 +1402,7 @@ def test_method(
                     test_compile=test_compile,
                     rtol_=rtol_,
                     atol_=atol_,
+                    tolerance_dict=tolerance_dict,
                     xs_grad_idxs=xs_grad_idxs,
                     ret_grad_idxs=ret_grad_idxs,
                     backend_to_test=backend_to_test,
@@ -1426,6 +1440,7 @@ def test_method(
         ret_np_from_gt_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
+        specific_tolerance_dict=tolerance_dict,
     )
 
 
@@ -1443,6 +1458,7 @@ def test_frontend_method(
     on_device,
     rtol_: float = None,
     atol_: float = 1e-06,
+    tolerance_dict: dict = None,
     test_values: Union[bool, str] = True,
 ):
     """
@@ -1474,6 +1490,8 @@ def test_frontend_method(
         relative tolerance value.
     atol_
         absolute tolerance value.
+    tolerance_dict
+        dictionary of tolerance values for specific dtypes.
     test_values
         can be a bool or a string to indicate whether correctness of values should be
         tested. If the value is `with_v`, shapes are tested but not values.
@@ -1736,6 +1754,7 @@ def test_frontend_method(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol_,
         atol=atol_,
+        specific_tolerance_dict=tolerance_dict,
         backend=backend_to_test,
         ground_truth_backend=frontend,
     )
@@ -1977,12 +1996,17 @@ def get_frontend_ret(
             )
         ret = frontend_fn(*args, **kwargs)
         if test_compile and frontend_array_function is not None:
-            ret = ivy_backend.nested_map(
-                ret,
-                arrays_to_frontend(backend, frontend_array_function),
-                include_derived={tuple: True},
-            )
-        if as_ivy_arrays:
+            if as_ivy_arrays:
+                ret = ivy_backend.nested_map(
+                    ret, ivy_backend.asarray, include_derived={tuple: True}
+                )
+            else:
+                ret = ivy_backend.nested_map(
+                    ret,
+                    arrays_to_frontend(backend, frontend_array_function),
+                    include_derived={tuple: True},
+                )
+        elif as_ivy_arrays:
             ret = ivy_backend.nested_map(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
             )
