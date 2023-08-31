@@ -563,8 +563,6 @@ def dct(
 ) -> torch.tensor:
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
-    if x.dtype not in [torch.float32, torch.float64]:
-        x = x.type(torch.float32)
     if axis < 0:
         axis = axis + len(x.shape)
     if n is not None:
