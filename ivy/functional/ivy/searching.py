@@ -124,8 +124,8 @@ def argmax(
     >>> y = ivy.argmax(x)
     >>> print(y)
     {
-        a: ivy.array(1),
-        b: ivy.array(0)
+        a: ivy.array(2),
+        b: ivy.array(2)
     }
     """
     return current_backend(x).argmax(
