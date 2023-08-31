@@ -23,4 +23,11 @@ To ensure that similar formats are used across the demo notebooks, a template is
 - The h3 (###) tags are used for subsection titles.
 - All steps and explanation should go with the default, which is text or paragraph (p) without any tags.
 
-4. Lastly, you have to include the new notebook path in the corresponding position in the listings of the files `_quarto.yml` and `index.qmd`.
+4. You have to include the new notebook path in the corresponding `toctree` which
+is located in [index.rst](docs/index.rst). This is to ensure that the notebook is rendered in the contents in the left of the webpage.
+
+5. You may need to add a `grid-item-card` in the [index.rst](docs/index.rst) file to link
+the notebook to the webpage. Please refer to the existing examples for the format. You may
+also look into the [`grid-item-card`](https://sphinx-design.readthedocs.io/en/latest/grids.html)
+documentation, or the [`card`](https://sphinx-design.readthedocs.io/en/latest/cards.html)
+documentation on `sphinx-design` website.

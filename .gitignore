@@ -1,7 +1,7 @@
-/.quarto/
-/docs/
+.vscode
 .idea/*
 **/.ipynb_checkpoints/*
 **pem**
 **fn_path_cache**
 *.DS_Store
+build/

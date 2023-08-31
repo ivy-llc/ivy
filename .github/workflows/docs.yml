@@ -1,32 +1,51 @@
+name: Update docs
 on:
-  workflow_dispatch:
   push:
-    branches: main
+    branches:
+      - main
+  workflow_dispatch:
 
-name: Docs Publish
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  update-docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
+      - name: Checkout 🛎️ Doc-builder
+        uses: actions/checkout@v3
+        with:
+          repository: unifyai/doc-builder
+          path: .doc-builder
 
-      - name: Install Python and Dependencies
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-          cache: 'pip'
-      - run: pip install -r requirements.txt
+          python-version: 3.8
 
-      - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
+      - name: Build docs
+        run: |
+          ./.doc-builder/make_docs_without_docker.sh ..
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          target: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: 'docs/build'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
