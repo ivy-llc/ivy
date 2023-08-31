@@ -141,6 +141,26 @@ def normal(loc=0.0, scale=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def numpy_random_vonmises(mu, kappa, size=None):
+    if size is None:
+        size = 1
+    li = []
+    while len(li) < size:
+        # Generate samples from the von Mises distribution using numpy
+        u = ivy.random_uniform(low=-ivy.pi, high=ivy.pi, shape=size)
+        v = ivy.random_uniform(low=0, high=1, shape=size)
+
+        condition = v < (1 + ivy.exp(kappa * ivy.cos(u - mu))) / (
+            2 * ivy.pi * ivy.i0(kappa)
+        )
+        selected_samples = u[condition]
+        li.extend(ivy.to_list(selected_samples))
+
+    return ivy.array(li[:size])
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def pareto(a, size=None):
     if a < 0:
         return 0
