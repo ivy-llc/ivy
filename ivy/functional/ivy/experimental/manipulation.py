@@ -802,39 +802,39 @@ def _set_reflect_both(padded, axis, width_pair, method, include_edge=False):
 def _set_wrap_both(padded, axis, width_pair):
     left_pad, right_pad = width_pair
     period = padded.shape[axis] - right_pad - left_pad
-    new_left_pad = 0
-    new_right_pad = 0
-    if left_pad > 0:
+    while left_pad > 0:
         right_slice = _slice_at_axis(
             slice(
-                -right_pad - min(period, left_pad),
-                -right_pad if right_pad != 0 else None,
+                -width_pair[1] - min(period, left_pad),
+                -width_pair[1] if width_pair[1] != 0 else None,
             ),
             axis,
         )
         right_chunk = padded[right_slice]
         if left_pad > period:
             pad_area = _slice_at_axis(slice(left_pad - period, left_pad), axis)
-            new_left_pad = left_pad - period
+            left_pad = left_pad - period
         else:
             pad_area = _slice_at_axis(slice(None, left_pad), axis)
+            left_pad = 0
         padded[pad_area] = right_chunk
-    if right_pad > 0:
+    while right_pad > 0:
         left_slice = _slice_at_axis(
             slice(
-                left_pad,
-                left_pad + min(period, right_pad),
+                width_pair[0],
+                width_pair[0] + min(period, right_pad),
             ),
             axis,
         )
         left_chunk = padded[left_slice]
         if right_pad > period:
             pad_area = _slice_at_axis(slice(-right_pad, -right_pad + period), axis)
-            new_right_pad = right_pad - period
+            right_pad = right_pad - period
         else:
             pad_area = _slice_at_axis(slice(-right_pad, None), axis)
+            right_pad = 0
         padded[pad_area] = left_chunk
-    return new_left_pad, new_right_pad, padded
+    return padded
 
 
 def _pad_simple(array, pad_width, fill_value=None):
@@ -1214,10 +1214,7 @@ def pad(
                 )
     elif mode == "wrap":
         for axis, (left_index, right_index) in zip(axes, pad_width):
-            while left_index > 0 or right_index > 0:
-                left_index, right_index, padded = _set_wrap_both(
-                    padded, axis, (left_index, right_index)
-                )
+            padded = _set_wrap_both(padded, axis, (left_index, right_index))
     return padded
 
 
