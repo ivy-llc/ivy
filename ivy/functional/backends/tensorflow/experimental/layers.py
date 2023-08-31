@@ -942,14 +942,13 @@ def _fft2_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
+@with_supported_dtypes({"2.13.0 and below": ("float32", "complex")}, backend_version)
 def trans_x_to_s(
     x: Union[tf.Tensor, tf.Variable],
     s: Sequence[int] = None,
     dim: Sequence[int] = (-2, -1),
 ) -> Union[tf.Tensor, tf.Variable]:
     """Change the shape of the input array x to the desired output shape s."""
-    if x.dtype != tf.complex128 and x.dtype != tf.complex64:
-        x = tf.cast(x, tf.float32)
     x_shape = x.shape
     if dim == (-1, -2) or dim == (1, 0):
         s = (s[1], s[0])

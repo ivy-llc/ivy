@@ -328,7 +328,7 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     x_min: Union[Number, tf.Tensor, tf.Variable],
@@ -347,9 +347,6 @@ def clip(
         x_max = tf.cast(x_max, promoted_type)
     if tf.size(x) == 0:
         ret = x
-    elif x.dtype == tf.bool:
-        ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
-        ret = tf.cast(ret, x.dtype)
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
     return ret
