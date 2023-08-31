@@ -11,11 +11,28 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 
 
+BACKENDS = ["jax", "numpy", "paddle", "tensorflow", "torch"]
+DEVICES = ["cpu", "gpu:0", "tpu:0"]
+
+# TODO: get these in a smarter way
+FN_NAMES = [
+    "gelu",
+    "hardswish",
+    "leaky_relu",
+    "log_softmax",
+    "mish",
+    "relu",
+    "sigmoid",
+    "softmax",
+    "softplus",
+]
+
+
 ivy.set_inplace_mode("strict")
 
 
 def is_dtype_err_jax(e):
-    return "not does not accept dtype" in str(e)
+    return "does not accept dtype" in str(e)
 
 
 def is_dtype_err_np(e):
@@ -47,14 +64,26 @@ results = {}
 
 
 @dataclass
-class DtypeTestConfig:
+class TestCase:
     backend: str = "numpy"
     fn_name: str = "add"
     device: ivy.Device = "cpu"
     dtype: ivy.Dtype = "float32"
 
 
-dtype_test_config = DtypeTestConfig()
+test_case = TestCase()
+
+
+def _set_result(res, err):
+    global results, test_case
+    if err is None:
+        results[test_case.backend][test_case.fn_name][test_case.device][res].add(
+            test_case.dtype
+        )
+    else:
+        results[test_case.backend][test_case.fn_name][test_case.device][res].add(
+            (test_case.dtype, err)
+        )
 
 
 def _get_nested_np_arrays(nest):
@@ -191,8 +220,8 @@ def mock_test_function(
 
 
 def mock_get_dtypes(*args, **kwargs):
-    global dtype_test_config
-    return [dtype_test_config.dtype]
+    global test_case
+    return [test_case.dtype]
 
 
 helpers.test_function = mock.Mock(wraps=mock_test_function)
@@ -201,52 +230,74 @@ sys.modules["ivy_tests.test_ivy.helpers"] = helpers
 
 test_globals._set_backend("numpy")
 
-for backend in is_dtype_err.keys():
-    dtype_test_config.backend = backend
+for backend in BACKENDS:
+    test_case.backend = backend
     if backend not in results:
         results[backend] = {}
 
+    ivy.set_backend(test_case.backend)
     import ivy_tests.test_ivy.test_functional.test_nn.test_activations as test_file
 
-    dtype_test_config.fn_name = "gelu"
-    dtype_test_config.device = "cpu"
-
-    print(
-        f"\nTesting ivy.{dtype_test_config.fn_name} on {dtype_test_config.device} with"
-        f" {dtype_test_config.backend}:\n"
-    )
-
-    ivy.set_backend(dtype_test_config.backend)
-    for t in ivy.valid_dtypes:
-        if t == "bfloat16":
+    for dtype in ivy.valid_dtypes:
+        if dtype == "bfloat16":
             continue
-        dtype_test_config.dtype = t
+        test_case.dtype = dtype
 
         importlib.reload(test_file)
 
-        kwargs = (
-            test_file.__dict__[f"test_{dtype_test_config.fn_name}"]
-            .__dict__["hypothesis"]
-            ._given_kwargs
-        )
-        min_example = {}
-        for k, v in kwargs.items():
-            min_example[k] = find(specifier=v, condition=lambda _: True)
+        for fn_name in FN_NAMES:
+            test_case.fn_name = fn_name
+            if fn_name not in results[test_case.backend]:
+                results[test_case.backend][fn_name] = {}
 
-        try:
-            test_file.__dict__[f"test_{dtype_test_config.fn_name}"].original(
-                **min_example,
-                backend_fw=dtype_test_config.backend,
-                on_device=dtype_test_config.device,
-            )
-            print("Valid dtype:", dtype_test_config.dtype)
-        except Exception as e:
-            if is_dtype_err[dtype_test_config.backend](e):
-                print("Invalid Dtype:", dtype_test_config.dtype)
-            else:
-                print(
-                    f"Potentially valid dtype: {dtype_test_config.dtype}"
-                    f" (error message: {str(e)})"
+            for device in DEVICES:
+                if "gpu" in device and not ivy.gpu_is_available():
+                    continue
+                if "tpu" in device and not ivy.tpu_is_available():
+                    continue
+                test_case.device = device
+                if device not in results[test_case.backend][test_case.fn_name]:
+                    results[test_case.backend][test_case.fn_name][device] = {
+                        "supported": set(),
+                        "unsupported": set(),
+                        "unsure": set(),
+                    }
+
+                kwargs = (
+                    test_file.__dict__[f"test_{test_case.fn_name}"]
+                    .__dict__["hypothesis"]
+                    ._given_kwargs
                 )
+                min_example = {}
+                for k, v in kwargs.items():
+                    min_example[k] = find(specifier=v, condition=lambda _: True)
+
+                try:
+                    test_file.__dict__[f"test_{test_case.fn_name}"].original(
+                        **min_example,
+                        backend_fw=test_case.backend,
+                        on_device=test_case.device,
+                    )
+                    print("Valid dtype:", test_case.dtype)
+                    _set_result("supported", None)
+                except Exception as e:
+                    if is_dtype_err[test_case.backend](e):
+                        print("Invalid Dtype:", test_case.dtype)
+                        _set_result("unsupported", e)
+                    else:
+                        print(
+                            f"Potentially valid dtype: {test_case.dtype}"
+                            f" (error message: {str(e)})"
+                        )
+                        _set_result("unsure", e)
 
 test_globals._unset_backend()
+
+for b in results.keys():
+    for f in results[b].keys():
+        for d in results[b][f].keys():
+            print(b, f, d)
+            print("Supported:", results[b][f][d]["supported"])
+            print("Unsupported:", results[b][f][d]["unsupported"])
+            print("Unsure:", results[b][f][d]["unsure"])
+            print("\n\n")
