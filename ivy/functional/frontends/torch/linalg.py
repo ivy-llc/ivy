@@ -197,12 +197,14 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
         eigenvalues, eigenvectors = ivy.linalg.eigh(input)
         threshold = 1e-10
 
-        # Inverse the non-zero eigenvalues and calculate the Hermitian pseudoinverse
+        # Inverse the non-zero eigenvalues and calculate the Hermitian
+        # pseudoinverse
         inverse_eigenvalues = ivy.where(
             abs(eigenvalues) > threshold, 1.0 / eigenvalues, ivy.zeros_like(eigenvalues)
         )
 
-        # Construct the Hermitian pseudoinverse using eigenvectors and inverse eigenvalues
+        # Construct the Hermitian pseudoinverse using eigenvectors and inverse
+        # eigenvalues
         pseudoinverse = (
             eigenvectors @ ivy.diag(inverse_eigenvalues) @ eigenvectors.conj().T
         )
