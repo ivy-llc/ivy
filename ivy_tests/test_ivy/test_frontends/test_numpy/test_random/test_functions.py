@@ -508,6 +508,7 @@ def test_numpy_multinomial(
     )
 
 
+# standard_t
 @handle_frontend_test(
     fn_tree="numpy.random.standard_t",
     df=st.floats(min_value=1, max_value=20),
