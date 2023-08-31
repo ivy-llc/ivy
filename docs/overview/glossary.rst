@@ -29,7 +29,7 @@ All of these new words can get confusing! We've created a glossary to help nail 
     Ivy Compiler
         A wrapper function around native compiler functions, which uses lower level compilers such as XLA to compile to lower level languages such as C++, CUDA, TorchScript, etc.
 
-    Tracer
+    Graph Compiler
         Tracers map the high-level computational graph coming from frameworks to operations that are executable on a specific device.
 
     Ivy Tracer
