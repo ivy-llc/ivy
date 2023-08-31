@@ -493,7 +493,7 @@ However, when compiling native framework code, we are only able to trace a graph
 For example, we cannot take torch code and trace this into tensorflow code.
 However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
 
-The tracer does not compile to C++, CUDA, or any other lower level language.
+The tracer is not a compiler and does not compile to C++, CUDA, or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
 Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
 
