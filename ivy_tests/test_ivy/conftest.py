@@ -165,6 +165,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-gradient-testing"),
             getopt("--with-gradient-testing"),
         ),
+        "test_compile": (
+            getopt("--skip-compile-testing"),
+            getopt("--with-compile-testing"),
+        ),
     }
 
     # final mapping for hypothesis value generation
@@ -202,6 +206,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-nestable-testing", action="store_true")
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
+    parser.addoption("--skip-compile-testing", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -209,6 +214,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-nestable-testing", action="store_true")
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
+    parser.addoption("--with-compile-testing", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",

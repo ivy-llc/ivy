@@ -983,10 +983,12 @@ class _ContainerWithCreationExperimental(ContainerBase):
             The data type to produce. Must be a floating point type.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container that contains the Blackman windows.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -1033,10 +1035,12 @@ class _ContainerWithCreationExperimental(ContainerBase):
             The data type to produce. Must be a floating point type.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container containing the Blackman windows.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -1049,3 +1053,51 @@ class _ContainerWithCreationExperimental(ContainerBase):
         }
         """
         return self.static_blackman_window(self, periodic, dtype, out=out)
+
+    @staticmethod
+    def _static_trilu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        *,
+        k: Union[int, ivy.Container] = 0,
+        upper: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "trilu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            k=k,
+            upper=upper,
+            out=out,
+        )
+
+    def trilu(
+        self: ivy.Container,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        *,
+        k: Union[int, ivy.Container] = 0,
+        upper: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self._static_trilu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            k=k,
+            upper=upper,
+            out=out,
+        )

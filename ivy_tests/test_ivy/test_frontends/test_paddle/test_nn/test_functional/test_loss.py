@@ -1,9 +1,43 @@
 # global
 from hypothesis import strategies as st
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+# cosine embedding loss
+@st.composite
+def _cos_embd_loss_helper(draw):
+    dtype_inputs_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=2,
+            ret_shape=True,
+            num_arrays=2,
+        )
+    )
+
+    input_dtypes, inputs, shape = dtype_inputs_shape
+
+    _, label = draw(
+        helpers.dtype_and_values(
+            dtype=input_dtypes, shape=(shape[0],), min_value=-1, max_value=1
+        ),
+    )
+
+    return input_dtypes, inputs, label
+
+
+# --- Main --- #
+# ------------ #
 
 
 @handle_frontend_test(
@@ -54,68 +88,6 @@ def test_paddle_binary_cross_entropy_with_logits(
     )
 
 
-# mse_loss
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.mse_loss",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=1,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
-    ),
-    reduction=st.sampled_from(["mean", "none", "sum"]),
-)
-def test_paddle_mse_loss(
-    dtype_and_x,
-    reduction,
-    on_device,
-    backend_fw,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        label=x[1],
-        reduction=reduction,
-    )
-
-
-# cosine embedding loss
-@st.composite
-def _cos_embd_loss_helper(draw):
-    dtype_inputs_shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=1,
-            max_num_dims=2,
-            min_dim_size=2,
-            ret_shape=True,
-            num_arrays=2,
-        )
-    )
-
-    input_dtypes, inputs, shape = dtype_inputs_shape
-
-    _, label = draw(
-        helpers.dtype_and_values(
-            dtype=input_dtypes, shape=(shape[0],), min_value=-1, max_value=1
-        ),
-    )
-
-    return input_dtypes, inputs, label
-
-
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.cosine_embedding_loss",
     dtype_xs_label=_cos_embd_loss_helper(),
@@ -158,6 +130,64 @@ def test_paddle_cosine_embedding_loss(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.nn.functional.dice_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=False,
+        min_num_dims=3,
+        min_dim_size=3,
+        max_num_dims=3,
+        max_dim_size=3,
+    ),
+    labels=st.lists(
+        (
+            st.lists(
+                (
+                    st.lists(
+                        st.integers(min_value=0, max_value=1), min_size=3, max_size=3
+                    )
+                ),
+                min_size=3,
+                max_size=3,
+            )
+        ),
+        min_size=1,
+        max_size=1,
+    ),
+    epsilon=st.floats(
+        min_value=1e-6,
+        max_value=1e-2,
+    ),
+)
+def test_paddle_dice_loss(
+    dtype_and_x,
+    labels,
+    epsilon,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x = dtype_and_x
+    x[0] = x[0].reshape([3, 3, 3])
+    labels = ivy.array(labels, dtype=ivy.int64)
+    labels = labels.reshape([3, 3, 1])
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int64] + [ivy.float64] + x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=labels,
+        epsilon=epsilon,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.nn.functional.hinge_embedding_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -192,6 +222,73 @@ def test_paddle_hinge_embedding_loss(
         input=x[0],
         label=x[1],
         margin=margin,
+        reduction=reduction,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.kl_div",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_value=1.0013580322265625e-05,
+    ),
+    reduction=st.sampled_from(["mean", "batchmean", "sum", "none"]),
+)
+def test_paddle_kl_div(
+    dtype_and_x, reduction, on_device, backend_fw, fn_tree, frontend, test_flags
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        reduction=reduction,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.l1_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+)
+def test_paddle_l1_loss(
+    dtype_and_x,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
         reduction=reduction,
     )
 
@@ -239,116 +336,6 @@ def test_paddle_log_loss(
     )
 
 
-# smooth_l1_loss
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.smooth_l1_loss",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    delta=st.floats(
-        min_value=0.1,
-        max_value=1.0,
-    ),
-    reduction=st.sampled_from(["mean", "sum", "none"]),
-)
-def test_paddle_smooth_l1_loss(
-    dtype_and_x,
-    delta,
-    reduction,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        label=x[1],
-        reduction=reduction,
-        delta=delta,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.l1_loss",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    reduction=st.sampled_from(["mean", "sum", "none"]),
-)
-def test_paddle_l1_loss(
-    dtype_and_x,
-    reduction,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        label=x[1],
-        reduction=reduction,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.kl_div",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        min_value=1.0013580322265625e-05,
-    ),
-    reduction=st.sampled_from(["mean", "batchmean", "sum", "none"]),
-)
-def test_paddle_kl_div(
-    dtype_and_x, reduction, on_device, backend_fw, fn_tree, frontend, test_flags
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        label=x[1],
-        reduction=reduction,
-    )
-
-
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.margin_ranking_loss",
     dtype_and_x=helpers.dtype_and_values(
@@ -393,51 +380,39 @@ def test_paddle_margin_ranking_loss(
     )
 
 
+# mse_loss
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.triplet_margin_loss",
-    dtype_and_inputs=helpers.dtype_and_values(
+    fn_tree="paddle.nn.functional.mse_loss",
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=3,
-        allow_inf=False,
+        num_arrays=2,
         shared_dtype=True,
-        min_value=0.0,
-        max_value=1.0,
         min_num_dims=1,
-        max_num_dims=2,
-        min_dim_size=1,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
-    margin=st.floats(min_value=1e-6, max_value=1e6),
-    p=st.integers(min_value=0, max_value=2),
-    swap=st.booleans(),
-    reduction=st.sampled_from(["none", "mean", "sum"]),
-    test_with_out=st.just(False),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
 )
-def test_paddle_triplet_margin_loss(
-    dtype_and_inputs,
-    margin,
-    p,
-    swap,
+def test_paddle_mse_loss(
+    dtype_and_x,
     reduction,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    frontend,
     on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
-    input_dtype, x = dtype_and_inputs
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype[0], input_dtype[1], input_dtype[2]],
-        backend_to_test=backend_fw,
+        input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        positive=x[1],
-        negative=x[2],
-        margin=margin,
-        p=p,
-        swap=swap,
+        label=x[1],
         reduction=reduction,
     )
 
@@ -489,5 +464,124 @@ def test_paddle_nll_loss(
         label=x[1],
         weight=weight[0],
         ignore_index=ignore_index,
+        reduction=reduction,
+    )
+
+
+# smooth_l1_loss
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.smooth_l1_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    delta=st.floats(
+        min_value=0.1,
+        max_value=1.0,
+    ),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+)
+def test_paddle_smooth_l1_loss(
+    dtype_and_x,
+    delta,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        reduction=reduction,
+        delta=delta,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.loss.square_error_cost",
+    dtype_and_input_and_label=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+    ),
+)
+def test_paddle_square_error_cost(
+    *,
+    dtype_and_input_and_label,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes, input_and_label = dtype_and_input_and_label
+    input, label = input_and_label
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        input=input,
+        label=label,
+        fn_tree=fn_tree,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.triplet_margin_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        allow_inf=False,
+        shared_dtype=True,
+        min_value=0.0,
+        max_value=1.0,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+    ),
+    margin=st.floats(min_value=1e-6, max_value=1e6),
+    p=st.integers(min_value=0, max_value=2),
+    swap=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_paddle_triplet_margin_loss(
+    dtype_and_inputs,
+    margin,
+    p,
+    swap,
+    reduction,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[1], input_dtype[2]],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        positive=x[1],
+        negative=x[2],
+        margin=margin,
+        p=p,
+        swap=swap,
         reduction=reduction,
     )
