@@ -2135,7 +2135,7 @@ def test_paddle_subtract(
 
 # sum
 @handle_frontend_test(
-    fn_tree="paddle.sum",
+    fn_tree="paddle.tensor.math.sum",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
