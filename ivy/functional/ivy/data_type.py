@@ -582,9 +582,7 @@ def can_cast(
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
     dtype = ivy.promote_types(from_, to)
-    if dtype == to:
-        return True
-    return False
+    return dtype == to
 
 
 @handle_exceptions
@@ -2132,14 +2130,6 @@ def promote_types(
             return ivy.array_api_promotion_table[query]
         return ivy.promotion_table[query]
 
-    # try:
-    #     ret = _promote(query)
-    # except KeyError:
-    #     raise ivy.utils.exceptions.IvyDtypePromotionError(
-    #         "these dtypes ({} and {}) are not type promotable, ".format(
-    #             type1, type2
-    #         )
-    #     )
     return _promote(query)
 
 
