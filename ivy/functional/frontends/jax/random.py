@@ -107,7 +107,6 @@ def categorical(key, logits, axis, shape=None):
                 +f"Shape {shape} is not compatible with reference shape {batch_shape}"
             )
 
-    shape_prefix = shape[: len(shape) - len(batch_shape)]
     logits_shape = list(shape[len(shape) - len(batch_shape) :])
     logits_shape.insert(axis % len(logits_arr.shape), logits_arr.shape[axis])
 
