@@ -19,8 +19,8 @@ import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
 
 
-def _is_list_or_tuple(inp):
-    return isinstance(inp, (list, tuple))
+# --- Helpers --- #
+# --------------- #
 
 
 def _convert_to_list(value, n, name="padding", _type=int):
@@ -35,6 +35,27 @@ def _convert_to_list(value, n, name="padding", _type=int):
             )
         else:
             return value_list
+
+
+def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
+    if filter_format == "channel_first":
+        filters = paddle.transpose(filters, (*range(2, dims + 2), 1, 0))
+
+    # adding dilation in input
+    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+    for i in range(dims):
+        if x_dilations[i] > 1:
+            h = x.shape[1 + i]
+            new_height = h + (h - 1) * (x_dilations[i] - 1)
+            h = paddle.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
+            x = paddle_backend.swapaxes(x, 1 + i, -1)
+            x = paddle.matmul(x, h)
+            x = paddle_backend.swapaxes(x, -1, 1 + i)
+    return x, filters
+
+
+def _is_list_or_tuple(inp):
+    return isinstance(inp, (list, tuple))
 
 
 def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format):
@@ -122,21 +143,8 @@ def _pad_before_conv_tranpose(
     return not_valid_pad, padding_list, output_padding
 
 
-def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
-    if filter_format == "channel_first":
-        filters = paddle.transpose(filters, (*range(2, dims + 2), 1, 0))
-
-    # adding dilation in input
-    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-    for i in range(dims):
-        if x_dilations[i] > 1:
-            h = x.shape[1 + i]
-            new_height = h + (h - 1) * (x_dilations[i] - 1)
-            h = paddle.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
-            x = paddle_backend.swapaxes(x, 1 + i, -1)
-            x = paddle.matmul(x, h)
-            x = paddle_backend.swapaxes(x, -1, 1 + i)
-    return x, filters
+# --- Main --- #
+# ------------ #
 
 
 def conv1d(
@@ -257,21 +265,6 @@ def conv2d_transpose(
     if data_format == "NHWC":
         res = res.transpose([0, 2, 3, 1])
     return res
-
-
-# noinspection PyUnresolvedReferences
-def depthwise_conv2d(
-    x: paddle.Tensor,
-    filters: paddle.Tensor,
-    strides: Union[int, Tuple[int, int]],
-    padding: Union[str, int, Sequence[Tuple[int, int]]],
-    /,
-    *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
@@ -494,3 +487,18 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.transpose(0, *range(2, dims + 2), 1)
     return res
+
+
+# noinspection PyUnresolvedReferences
+def depthwise_conv2d(
+    x: paddle.Tensor,
+    filters: paddle.Tensor,
+    strides: Union[int, Tuple[int, int]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    /,
+    *,
+    data_format: Optional[str] = "NHWC",
+    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()

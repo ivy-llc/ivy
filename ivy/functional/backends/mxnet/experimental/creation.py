@@ -5,11 +5,22 @@ import numpy as np
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def kaiser_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
+def blackman_window(
+    size: int,
+    /,
     *,
+    periodic: bool = True,
+    dtype: Optional[None] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def hann_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
     dtype: Optional[None] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
@@ -27,20 +38,11 @@ def kaiser_bessel_derived_window(
     raise IvyNotImplementedException()
 
 
-def vorbis_window(
-    window_length: Union[(None, mx.ndarray.NDArray)],
-    *,
-    dtype: None = np.float32,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def hann_window(
-    size: int,
-    /,
-    *,
+def kaiser_window(
+    window_length: int,
     periodic: bool = True,
+    beta: float = 12.0,
+    *,
     dtype: Optional[None] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
@@ -53,12 +55,10 @@ def tril_indices(
     raise IvyNotImplementedException()
 
 
-def blackman_window(
-    size: int,
-    /,
+def vorbis_window(
+    window_length: Union[(None, mx.ndarray.NDArray)],
     *,
-    periodic: bool = True,
-    dtype: Optional[None] = None,
+    dtype: None = np.float32,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

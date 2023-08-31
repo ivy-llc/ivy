@@ -6,6 +6,10 @@ from typing import Union, Optional, Sequence
 import ivy
 
 
+all.support_native_out = True
+any.support_native_out = True
+
+
 def all(
     x: np.ndarray,
     /,
@@ -20,9 +24,6 @@ def all(
         raise ivy.utils.exceptions.IvyIndexError(error)
 
 
-all.support_native_out = True
-
-
 def any(
     x: np.ndarray,
     /,
@@ -32,6 +33,3 @@ def any(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.asarray(np.any(x, axis=axis, keepdims=keepdims, out=out))
-
-
-any.support_native_out = True

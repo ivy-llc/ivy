@@ -9,49 +9,96 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
-def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinc(x).astype(x.dtype)
+fmax.support_native_out = True
+float_power.support_native_out = True
+copysign.support_native_out = True
+count_nonzero.support_native_out = False
+nansum.support_native_out = True
+isclose.support_native_out = False
+signbit.support_native_out = True
+diff.support_native_out = False
+allclose.support_native_out = False
+fix.support_native_out = True
+nextafter.support_natvie_out = True
+zeta.support_native_out = False
+# --- LGAMMA --- #
+LANCZOS_N = 13
+kBaseLanczosCoeff = 0.99999999999980993227684700473478
+kLanczosCoefficients = np.array(
+    [
+        676.520368121885098567009190444019,
+        -1259.13921672240287047156078755283,
+        771.3234287776530788486528258894,
+        -176.61502916214059906584551354,
+        12.507343278686904814458936853,
+        -0.13857109526572011689554707,
+        9.984369578019570859563e-6,
+        1.50563273514931155834e-7,
+    ]
+)
+# ---digamma---#
+kLanczosGamma = 7  # aka g
+lanczos_den_coeffs = np.array(
+    [
+        0.0,
+        39916800.0,
+        120543840.0,
+        150917976.0,
+        105258076.0,
+        45995730.0,
+        13339535.0,
+        2637558.0,
+        357423.0,
+        32670.0,
+        1925.0,
+        66.0,
+        1.0,
+    ]
+)
+lanczos_g = 6.024680040776729583740234375
+lanczos_num_coeffs = np.array(
+    [
+        23531376880.410759688572007674451636754734846804940,
+        42919803642.649098768957899047001988850926355848959,
+        35711959237.355668049440185451547166705960488635843,
+        17921034426.037209699919755754458931112671403265390,
+        6039542586.3520280050642916443072979210699388420708,
+        1439720407.3117216736632230727949123939715485786772,
+        248874557.86205415651146038641322942321632125127801,
+        31426415.585400194380614231628318205362874684987640,
+        2876370.6289353724412254090516208496135991145378768,
+        186056.26539522349504029498971604569928220784236328,
+        8071.6720023658162106380029022722506138218516325024,
+        210.82427775157934587250973392071336271166969580291,
+        2.5066282746310002701649081771338373386264310793408,
+    ]
+)
 
 
 @_scalar_output_to_0d_array
-def fmax(
+def allclose(
     x1: np.ndarray,
     x2: np.ndarray,
     /,
     *,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.fmax(
-        x1,
-        x2,
-        out=None,
-        where=True,
-        casting="same_kind",
-        order="K",
-        dtype=None,
-        subok=True,
-    )
+) -> bool:
+    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-fmax.support_native_out = True
-
-
-@_scalar_output_to_0d_array
-def float_power(
-    x1: Union[np.ndarray, float, list, tuple],
-    x2: Union[np.ndarray, float, list, tuple],
+def conj(
+    x: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.float_power(x1, x2, out=out)
-
-
-float_power.support_native_out = True
+    ret = np.conj(x, out=out)
+    if x.dtype == bool:
+        return ret.astype("bool")
+    return ret
 
 
 @_scalar_output_to_0d_array
@@ -67,9 +114,6 @@ def copysign(
         x1 = x1.astype(ivy.default_float_dtype(as_native=True))
         x2 = x2.astype(ivy.default_float_dtype(as_native=True))
     return np.copysign(x1, x2, out=out)
-
-
-copysign.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -90,67 +134,6 @@ def count_nonzero(
     return ret.astype(dtype)
 
 
-count_nonzero.support_native_out = False
-
-
-def nansum(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[Tuple[int, ...], int]] = None,
-    dtype: Optional[np.dtype] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if isinstance(axis, list):
-        axis = tuple(axis)
-    return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
-
-
-nansum.support_native_out = True
-
-
-def isclose(
-    a: np.ndarray,
-    b: np.ndarray,
-    /,
-    *,
-    rtol: float = 1e-05,
-    atol: float = 1e-08,
-    equal_nan: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-    if np.isscalar(ret):
-        return np.array(ret, dtype="bool")
-    return ret
-
-
-isclose.support_native_out = False
-
-
-def signbit(
-    x: Union[np.ndarray, float, int, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.signbit(x, out=out)
-
-
-signbit.support_native_out = True
-
-
-def hypot(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.hypot(x1, x2)
-
-
 def diff(
     x: Union[np.ndarray, list, tuple],
     /,
@@ -164,160 +147,6 @@ def diff(
     prepend = prepend if prepend is not None else np._NoValue
     append = append if append is not None else np._NoValue
     return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
-
-
-diff.support_native_out = False
-
-
-@_scalar_output_to_0d_array
-def allclose(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    rtol: float = 1e-05,
-    atol: float = 1e-08,
-    equal_nan: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> bool:
-    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
-
-allclose.support_native_out = False
-
-
-def fix(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.fix(x, out=out)
-
-
-fix.support_native_out = True
-
-
-def nextafter(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.nextafter(x1, x2)
-
-
-nextafter.support_natvie_out = True
-
-
-def zeta(
-    x: np.ndarray,
-    q: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    temp = np.logical_and(np.greater(x, 0), np.equal(np.remainder(x, 2), 0))
-    temp = np.logical_and(temp, np.less_equal(q, 0))
-    temp = np.logical_and(temp, np.equal(np.remainder(q, 1), 0))
-    inf_indices = np.logical_or(temp, np.equal(x, 1))
-    temp = np.logical_and(np.not_equal(np.remainder(x, 2), 0), np.greater(x, 1))
-    temp = np.logical_and(temp, np.less_equal(q, 0))
-    nan_indices = np.logical_or(temp, np.less(x, 1))
-    n, res = 1, 1 / q**x
-    while n < 10000:
-        term = 1 / (q + n) ** x
-        n, res = n + 1, res + term
-    ret = np.round(res, decimals=4)
-    ret[nan_indices] = np.nan
-    ret[inf_indices] = np.inf
-    return ret
-
-
-zeta.support_native_out = False
-
-
-def gradient(
-    x: np.ndarray,
-    /,
-    *,
-    spacing: Union[int, list, tuple] = 1,
-    axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: int = 1,
-) -> Union[np.ndarray, List[np.ndarray]]:
-    if type(spacing) in (int, float):
-        return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
-    return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)
-
-
-def xlogy(
-    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x, y = promote_types_of_inputs(x, y)
-    if (x == 0).all():
-        return 0.0
-    else:
-        return x * np.log(y)
-
-
-def conj(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    ret = np.conj(x, out=out)
-    if x.dtype == bool:
-        return ret.astype("bool")
-    return ret
-
-
-def ldexp(
-    x1: np.ndarray,
-    x2: Union[np.ndarray, int, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.ldexp(x1, x2, out=out)
-
-
-def frexp(
-    x: np.ndarray, /, *, out: Optional[Tuple[np.ndarray, np.ndarray]] = None
-) -> Tuple[np.ndarray, np.ndarray]:
-    if out is None:
-        return np.frexp(x, out=(None, None))
-    else:
-        return np.frexp(x, out=out)
-
-
-def modf(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
-) -> np.ndarray:
-    if out:
-        return np.modf(x, out=out)
-    return np.modf(x)
-
-
-# ---digamma---#
-kLanczosGamma = 7  # aka g
-kBaseLanczosCoeff = 0.99999999999980993227684700473478
-kLanczosCoefficients = np.array(
-    [
-        676.520368121885098567009190444019,
-        -1259.13921672240287047156078755283,
-        771.3234287776530788486528258894,
-        -176.61502916214059906584551354,
-        12.507343278686904814458936853,
-        -0.13857109526572011689554707,
-        9.984369578019570859563e-6,
-        1.50563273514931155834e-7,
-    ]
-)
 
 
 def digamma(
@@ -364,64 +193,94 @@ def digamma(
         )
 
 
-# --- LGAMMA --- #
-LANCZOS_N = 13
-lanczos_g = 6.024680040776729583740234375
-lanczos_num_coeffs = np.array(
-    [
-        23531376880.410759688572007674451636754734846804940,
-        42919803642.649098768957899047001988850926355848959,
-        35711959237.355668049440185451547166705960488635843,
-        17921034426.037209699919755754458931112671403265390,
-        6039542586.3520280050642916443072979210699388420708,
-        1439720407.3117216736632230727949123939715485786772,
-        248874557.86205415651146038641322942321632125127801,
-        31426415.585400194380614231628318205362874684987640,
-        2876370.6289353724412254090516208496135991145378768,
-        186056.26539522349504029498971604569928220784236328,
-        8071.6720023658162106380029022722506138218516325024,
-        210.82427775157934587250973392071336271166969580291,
-        2.5066282746310002701649081771338373386264310793408,
-    ]
-)
-lanczos_den_coeffs = np.array(
-    [
-        0.0,
-        39916800.0,
-        120543840.0,
-        150917976.0,
-        105258076.0,
-        45995730.0,
-        13339535.0,
-        2637558.0,
-        357423.0,
-        32670.0,
-        1925.0,
-        66.0,
-        1.0,
-    ]
-)
+def fix(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fix(x, out=out)
 
 
-def sinpi(x):
-    y = np.abs(x) % 2.0
-    n = np.round(2.0 * y)
-    assert 0 <= n and n <= 4
+@_scalar_output_to_0d_array
+def float_power(
+    x1: Union[np.ndarray, float, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.float_power(x1, x2, out=out)
 
-    if n == 0:
-        r = np.sin(np.pi * y)
-    elif n == 1:
-        r = np.cos(np.pi * (y - 0.5))
-    elif n == 2:
-        r = np.sin(np.pi * (1.0 - y))
-    elif n == 3:
-        r = -np.cos(np.pi * (y - 1.5))
-    elif n == 4:
-        r = np.sin(np.pi * (y - 2.0))
+
+@_scalar_output_to_0d_array
+def fmax(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmax(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+def frexp(
+    x: np.ndarray, /, *, out: Optional[Tuple[np.ndarray, np.ndarray]] = None
+) -> Tuple[np.ndarray, np.ndarray]:
+    if out is None:
+        return np.frexp(x, out=(None, None))
     else:
-        raise Exception("Unreachable code")
+        return np.frexp(x, out=out)
 
-    return np.copysign(1.0, x) * r
+
+def gradient(
+    x: np.ndarray,
+    /,
+    *,
+    spacing: Union[int, list, tuple] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: int = 1,
+) -> Union[np.ndarray, List[np.ndarray]]:
+    if type(spacing) in (int, float):
+        return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
+    return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)
+
+
+def hypot(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hypot(x1, x2)
+
+
+def isclose(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    if np.isscalar(ret):
+        return np.array(ret, dtype="bool")
+    return ret
 
 
 def lanczos_sum(x):
@@ -438,6 +297,16 @@ def lanczos_sum(x):
             den = den / x + lanczos_den_coeffs[i]
 
     return num / den
+
+
+def ldexp(
+    x1: np.ndarray,
+    x2: Union[np.ndarray, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.ldexp(x1, x2, out=out)
 
 
 # TODO: Replace with native lgamma implementation when available
@@ -480,3 +349,108 @@ def lgamma(
     # Vectorize 'func' for element-wise operations on 'x', output matching 'x' dtype.
     vfunc = np.vectorize(func, otypes=[x.dtype])
     return vfunc(x)
+
+
+def modf(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
+) -> np.ndarray:
+    if out:
+        return np.modf(x, out=out)
+    return np.modf(x)
+
+
+def nansum(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+def nextafter(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nextafter(x1, x2)
+
+
+def signbit(
+    x: Union[np.ndarray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.signbit(x, out=out)
+
+
+@_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.sinc(x).astype(x.dtype)
+
+
+def sinpi(x):
+    y = np.abs(x) % 2.0
+    n = np.round(2.0 * y)
+    assert 0 <= n and n <= 4
+
+    if n == 0:
+        r = np.sin(np.pi * y)
+    elif n == 1:
+        r = np.cos(np.pi * (y - 0.5))
+    elif n == 2:
+        r = np.sin(np.pi * (1.0 - y))
+    elif n == 3:
+        r = -np.cos(np.pi * (y - 1.5))
+    elif n == 4:
+        r = np.sin(np.pi * (y - 2.0))
+    else:
+        raise Exception("Unreachable code")
+
+    return np.copysign(1.0, x) * r
+
+
+def xlogy(
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x, y = promote_types_of_inputs(x, y)
+    if (x == 0).all():
+        return 0.0
+    else:
+        return x * np.log(y)
+
+
+def zeta(
+    x: np.ndarray,
+    q: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    temp = np.logical_and(np.greater(x, 0), np.equal(np.remainder(x, 2), 0))
+    temp = np.logical_and(temp, np.less_equal(q, 0))
+    temp = np.logical_and(temp, np.equal(np.remainder(q, 1), 0))
+    inf_indices = np.logical_or(temp, np.equal(x, 1))
+    temp = np.logical_and(np.not_equal(np.remainder(x, 2), 0), np.greater(x, 1))
+    temp = np.logical_and(temp, np.less_equal(q, 0))
+    nan_indices = np.logical_or(temp, np.less(x, 1))
+    n, res = 1, 1 / q**x
+    while n < 10000:
+        term = 1 / (q + n) ** x
+        n, res = n + 1, res + term
+    ret = np.round(res, decimals=4)
+    ret[nan_indices] = np.nan
+    ret[inf_indices] = np.inf
+    return ret

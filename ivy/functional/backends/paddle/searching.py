@@ -94,6 +94,31 @@ def argmin(
     return ret.astype(dtype)
 
 
+# Extra #
+# ----- #
+
+
+def argwhere(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.ndim == 0:
+        return paddle.zeros(shape=[int(bool(x.item())), 0], dtype="int64")
+    if x.dtype in [
+        paddle.int8,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if paddle.is_complex(x):
+            real_idx = paddle.nonzero(x.real())
+            imag_idx = paddle.nonzero(x.imag())
+            idx = paddle.concat([real_idx, imag_idx], axis=0)
+            return paddle.unique(idx, axis=0)
+        return paddle.nonzero(x.cast("float32"))
+    return paddle.nonzero(x)
+
+
 def nonzero(
     x: paddle.Tensor,
     /,
@@ -175,28 +200,3 @@ def where(
         result = paddle.where(condition, x1, x2)
 
     return result.squeeze().cast(ret_dtype) if scalar_out else result.cast(ret_dtype)
-
-
-# Extra #
-# ----- #
-
-
-def argwhere(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
-    if x.ndim == 0:
-        return paddle.zeros(shape=[int(bool(x.item())), 0], dtype="int64")
-    if x.dtype in [
-        paddle.int8,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-    ]:
-        if paddle.is_complex(x):
-            real_idx = paddle.nonzero(x.real())
-            imag_idx = paddle.nonzero(x.imag())
-            idx = paddle.concat([real_idx, imag_idx], axis=0)
-            return paddle.unique(idx, axis=0)
-        return paddle.nonzero(x.cast("float32"))
-    return paddle.nonzero(x)

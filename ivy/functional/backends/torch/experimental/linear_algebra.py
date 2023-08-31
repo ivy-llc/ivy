@@ -12,6 +12,37 @@ from .. import backend_version
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
+diagflat.support_native_out = False
+kron.support_native_out = True
+matrix_exp.support_native_out = True
+eig.support_native_out = False
+eigvals.support_native_out = False
+multi_dot.support_native_out = True
+cond.support_native_out = False
+dot.support_native_out = True
+
+
+def adjoint(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    _check_valid_dimension_size(x)
+    return torch.adjoint(x).resolve_conj()
+
+
+@with_unsupported_dtypes({"2.0.0 and below": ("float16", "bfloat16")}, backend_version)
+def cond(
+    x: torch.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.cond(x, p=p, out=out)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
@@ -97,7 +128,28 @@ def diagflat(
     return ret
 
 
-diagflat.support_native_out = False
+def dot(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.matmul(a, b)
+
+
+def eig(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor]:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eig(x)
+
+
+def eigvals(x: torch.Tensor, /) -> torch.Tensor:
+    if not torch.is_complex(x):
+        x = x.to(torch.complex128)
+    return torch.linalg.eigvals(x)
 
 
 def kron(
@@ -110,7 +162,14 @@ def kron(
     return torch.kron(a, b, out=out)
 
 
-kron.support_native_out = True
+def lu_factor(
+    x: torch.Tensor,
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor]:
+    raise IvyNotImplementedException()
 
 
 def matrix_exp(
@@ -122,39 +181,6 @@ def matrix_exp(
     return torch.linalg.matrix_exp(x)
 
 
-matrix_exp.support_native_out = True
-
-
-def eig(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> Tuple[torch.Tensor]:
-    if not torch.is_complex(x):
-        x = x.to(torch.complex128)
-    return torch.linalg.eig(x)
-
-
-eig.support_native_out = False
-
-
-def eigvals(x: torch.Tensor, /) -> torch.Tensor:
-    if not torch.is_complex(x):
-        x = x.to(torch.complex128)
-    return torch.linalg.eigvals(x)
-
-
-eigvals.support_native_out = False
-
-
-def adjoint(
-    x: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    _check_valid_dimension_size(x)
-    return torch.adjoint(x).resolve_conj()
-
-
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def multi_dot(
     x: Sequence[torch.Tensor],
@@ -163,43 +189,3 @@ def multi_dot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.multi_dot(x, out=out)
-
-
-multi_dot.support_native_out = True
-
-
-@with_unsupported_dtypes({"2.0.0 and below": ("float16", "bfloat16")}, backend_version)
-def cond(
-    x: torch.Tensor,
-    /,
-    *,
-    p: Optional[Union[None, int, str]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.linalg.cond(x, p=p, out=out)
-
-
-cond.support_native_out = False
-
-
-def lu_factor(
-    x: torch.Tensor,
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[torch.Tensor] = None,
-) -> Tuple[torch.Tensor]:
-    raise IvyNotImplementedException()
-
-
-def dot(
-    a: torch.Tensor,
-    b: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.matmul(a, b)
-
-
-dot.support_native_out = True

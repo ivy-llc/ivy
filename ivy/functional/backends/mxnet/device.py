@@ -11,23 +11,21 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def dev(
-    x: Union[(None, mx.ndarray.NDArray)], /, *, as_native: bool = False
-) -> Union[(ivy.Device, str)]:
-    if as_native:
-        return x.context
-    return as_ivy_dev(x.context)
+class Profiler(BaseProfiler):
+    def __init__(self, save_dir: str):
+        raise IvyNotImplementedException()
 
+    def start(self):
+        raise IvyNotImplementedException()
 
-def to_device(
-    x: Union[(None, mx.ndarray.NDArray)],
-    device: str,
-    /,
-    *,
-    stream: Optional[int] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    return x.as_in_context(as_native_dev(device))
+    def stop(self):
+        raise IvyNotImplementedException()
+
+    def __enter__(self):
+        raise IvyNotImplementedException()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        raise IvyNotImplementedException()
 
 
 def as_ivy_dev(device):
@@ -62,8 +60,12 @@ def clear_cached_mem_on_dev(device: str, /):
     raise IvyNotImplementedException()
 
 
-def num_gpus() -> int:
-    return mx.context.num_gpus()
+def dev(
+    x: Union[(None, mx.ndarray.NDArray)], /, *, as_native: bool = False
+) -> Union[(ivy.Device, str)]:
+    if as_native:
+        return x.context
+    return as_ivy_dev(x.context)
 
 
 def gpu_is_available() -> bool:
@@ -72,22 +74,20 @@ def gpu_is_available() -> bool:
     return False
 
 
+def num_gpus() -> int:
+    return mx.context.num_gpus()
+
+
+def to_device(
+    x: Union[(None, mx.ndarray.NDArray)],
+    device: str,
+    /,
+    *,
+    stream: Optional[int] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    return x.as_in_context(as_native_dev(device))
+
+
 def tpu_is_available() -> bool:
     return False
-
-
-class Profiler(BaseProfiler):
-    def __init__(self, save_dir: str):
-        raise IvyNotImplementedException()
-
-    def start(self):
-        raise IvyNotImplementedException()
-
-    def stop(self):
-        raise IvyNotImplementedException()
-
-    def __enter__(self):
-        raise IvyNotImplementedException()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        raise IvyNotImplementedException()

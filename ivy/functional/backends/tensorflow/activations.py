@@ -30,6 +30,11 @@ def gelu(
     return tf.nn.gelu(x, approximate)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return x * tf.nn.relu6(x + 3) / 6
+
+
 def leaky_relu(
     x: Tensor,
     /,
@@ -39,6 +44,23 @@ def leaky_relu(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def log_softmax(
+    x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
+):
+    return tf.nn.log_softmax(x, axis)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def mish(
+    x: Tensor,
+    /,
+    *,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return x * tf.math.tanh(tf.math.softplus(x))
 
 
 def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
@@ -89,25 +111,3 @@ def softplus(
     if threshold is not None:
         return tf.where(x_beta > threshold, x, res)
     return res
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def log_softmax(
-    x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
-):
-    return tf.nn.log_softmax(x, axis)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def mish(
-    x: Tensor,
-    /,
-    *,
-    out: Optional[Tensor] = None,
-) -> Tensor:
-    return x * tf.math.tanh(tf.math.softplus(x))
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
-    return x * tf.nn.relu6(x + 3) / 6

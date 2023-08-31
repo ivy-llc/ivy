@@ -22,7 +22,6 @@ ivy_dtype_dict = {
     paddle.complex128: "complex128",
     paddle.bool: "bool",
 }
-
 native_dtype_dict = {
     "int8": paddle.int8,
     "int16": paddle.int16,
@@ -102,6 +101,51 @@ class Bfloat16Finfo:
         )
 
 
+# Extra #
+# ------#
+
+
+def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy.Dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype()
+    if dtype_in is float:
+        return ivy.default_float_dtype()
+    if dtype_in is complex:
+        return ivy.default_complex_dtype()
+    if dtype_in is bool:
+        return ivy.Dtype("bool")
+    if isinstance(dtype_in, str):
+        if dtype_in in native_dtype_dict:
+            return ivy.Dtype(dtype_in)
+        else:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot convert to ivy dtype."
+                f" {dtype_in} is not supported by Paddle backend."
+            )
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
+
+
+def as_native_dtype(
+    dtype_in: Union[paddle.dtype, str, bool, int, float]
+) -> paddle.dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
+    if dtype_in is bool:
+        return paddle.bool
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    if dtype_in in native_dtype_dict.keys():
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot convert to Paddle dtype. {dtype_in} is not supported by Paddle."
+        )
+
+
 # Array API Standard #
 # -------------------#
 
@@ -172,6 +216,26 @@ def broadcast_to(
         return paddle.broadcast_to(x, shape)
 
 
+def dtype(x: paddle.Tensor, *, as_native: bool = False) -> ivy.Dtype:
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
+
+
+def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
+    dtype_str = as_ivy_dtype(dtype_in)
+    if "bool" in dtype_str:
+        return 1
+    return int(
+        dtype_str.replace("paddle.", "")
+        .replace("uint", "")
+        .replace("int", "")
+        .replace("bfloat", "")
+        .replace("float", "")
+        .replace("complex", "")
+    )
+
+
 @_handle_nestable_dtype_info
 def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
     if isinstance(type, paddle.Tensor):
@@ -195,75 +259,6 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
     return Iinfo(np.iinfo(type))
 
 
-def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    return ivy.promote_types(arrays_and_dtypes[0].dtype, arrays_and_dtypes[1].dtype)
-
-
-# Extra #
-# ------#
-
-
-def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy.Dtype:
-    if dtype_in is int:
-        return ivy.default_int_dtype()
-    if dtype_in is float:
-        return ivy.default_float_dtype()
-    if dtype_in is complex:
-        return ivy.default_complex_dtype()
-    if dtype_in is bool:
-        return ivy.Dtype("bool")
-    if isinstance(dtype_in, str):
-        if dtype_in in native_dtype_dict:
-            return ivy.Dtype(dtype_in)
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "Cannot convert to ivy dtype."
-                f" {dtype_in} is not supported by Paddle backend."
-            )
-    return ivy.Dtype(ivy_dtype_dict[dtype_in])
-
-
-def as_native_dtype(
-    dtype_in: Union[paddle.dtype, str, bool, int, float]
-) -> paddle.dtype:
-    if dtype_in is int:
-        return ivy.default_int_dtype(as_native=True)
-    if dtype_in is float:
-        return ivy.default_float_dtype(as_native=True)
-    if dtype_in is complex:
-        return ivy.default_complex_dtype(as_native=True)
-    if dtype_in is bool:
-        return paddle.bool
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    if dtype_in in native_dtype_dict.keys():
-        return native_dtype_dict[ivy.Dtype(dtype_in)]
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            f"Cannot convert to Paddle dtype. {dtype_in} is not supported by Paddle."
-        )
-
-
-def dtype(x: paddle.Tensor, *, as_native: bool = False) -> ivy.Dtype:
-    if as_native:
-        return ivy.to_native(x).dtype
-    return as_ivy_dtype(x.dtype)
-
-
-def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
-    dtype_str = as_ivy_dtype(dtype_in)
-    if "bool" in dtype_str:
-        return 1
-    return int(
-        dtype_str.replace("paddle.", "")
-        .replace("uint", "")
-        .replace("int", "")
-        .replace("bfloat", "")
-        .replace("float", "")
-        .replace("complex", "")
-    )
-
-
 def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
@@ -271,3 +266,7 @@ def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
         return True
     else:
         return False
+
+
+def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
+    return ivy.promote_types(arrays_and_dtypes[0].dtype, arrays_and_dtypes[1].dtype)

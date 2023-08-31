@@ -33,29 +33,13 @@ def argsort(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16", "float16", "complex")}},
     backend_version,
 )
-def sort(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[paddle.Tensor] = None,
+def msort(
+    a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        return paddle.sort(x.cast("float32"), axis=axis, descending=descending).cast(
-            x.dtype
-        )
-    return paddle.sort(x, axis=axis, descending=descending)
+    return paddle.sort(a, axis=0)
 
 
 @with_unsupported_device_and_dtypes(
@@ -115,10 +99,26 @@ def searchsorted(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16", "float16", "complex")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
-def msort(
-    a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
+def sort(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.sort(a, axis=0)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.sort(x.cast("float32"), axis=axis, descending=descending).cast(
+            x.dtype
+        )
+    return paddle.sort(x, axis=axis, descending=descending)

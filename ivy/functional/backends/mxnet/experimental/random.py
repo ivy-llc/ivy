@@ -5,14 +5,15 @@ import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def dirichlet(
-    alpha: Union[(None, mx.ndarray.NDArray, float, Sequence[float])],
-    /,
+def bernoulli(
+    probs: Union[(float, None, mx.ndarray.NDArray)],
     *,
-    size: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    logits: Union[(float, None, mx.ndarray.NDArray)] = None,
+    shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
+    device: str,
+    dtype: None,
     seed: Optional[int] = None,
-    dtype: Optional[None] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
@@ -27,6 +28,18 @@ def beta(
     dtype: Optional[Union[(None, ivy.Dtype)]] = None,
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def dirichlet(
+    alpha: Union[(None, mx.ndarray.NDArray, float, Sequence[float])],
+    /,
+    *,
+    size: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    seed: Optional[int] = None,
+    dtype: Optional[None] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
@@ -48,19 +61,6 @@ def gamma(
 def poisson(
     lam: Union[(float, None, mx.ndarray.NDArray)],
     *,
-    shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
-    device: str,
-    dtype: None,
-    seed: Optional[int] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def bernoulli(
-    probs: Union[(float, None, mx.ndarray.NDArray)],
-    *,
-    logits: Union[(float, None, mx.ndarray.NDArray)] = None,
     shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
     device: str,
     dtype: None,

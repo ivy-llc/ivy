@@ -10,8 +10,40 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
+
+
+# --- Main --- #
+# ------------ #
+
+
+def as_strided(
+    x: np.ndarray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    strides: Sequence[int],
+    /,
+) -> np.ndarray:
+    return np.lib.stride_tricks.as_strided(
+        x,
+        shape=shape,
+        strides=strides,
+    )
+
+
+def clip(
+    x: np.ndarray,
+    x_min: Union[Number, np.ndarray],
+    x_max: Union[Number, np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 
 # Array API Standard #
@@ -41,7 +73,15 @@ def concat(
     return ivy.astype(ret, highest_dtype, copy=False)
 
 
-concat.support_native_out = True
+def constant_pad(
+    x: np.ndarray,
+    /,
+    pad_width: List[List[int]],
+    *,
+    value: Number = 0.0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
 def expand_dims(
@@ -88,6 +128,18 @@ def permute_dims(
     return np.transpose(x, axes)
 
 
+@with_unsupported_dtypes({"1.25.2 and below": ("uint64",)}, backend_version)
+def repeat(
+    x: np.ndarray,
+    /,
+    repeats: Union[int, List[int]],
+    *,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.repeat(x, repeats, axis)
+
+
 def reshape(
     x: np.ndarray,
     /,
@@ -116,38 +168,6 @@ def roll(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.roll(x, shift, axis)
-
-
-def squeeze(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    copy: Optional[bool] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if isinstance(axis, list):
-        axis = tuple(axis)
-    if x.shape == ():
-        if axis is None or axis == 0 or axis == -1:
-            return x
-        raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
-        )
-    return np.squeeze(x, axis=axis)
-
-
-def stack(
-    arrays: Union[Tuple[np.ndarray], List[np.ndarray]],
-    /,
-    *,
-    axis: int = 0,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.stack(arrays, axis, out=out)
-
-
-stack.support_native_out = True
 
 
 # Extra #
@@ -191,39 +211,33 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("uint64",)}, backend_version)
-def repeat(
+def squeeze(
     x: np.ndarray,
     /,
-    repeats: Union[int, List[int]],
     *,
-    axis: Optional[int] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.repeat(x, repeats, axis)
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise ivy.utils.exceptions.IvyException(
+            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+        )
+    return np.squeeze(x, axis=axis)
 
 
-def tile(
-    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.tile(x, repeats)
-
-
-def constant_pad(
-    x: np.ndarray,
+def stack(
+    arrays: Union[Tuple[np.ndarray], List[np.ndarray]],
     /,
-    pad_width: List[List[int]],
     *,
-    value: Number = 0.0,
+    axis: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-
-
-def zero_pad(
-    x: np.ndarray, /, pad_width: List[List[int]], *, out: Optional[np.ndarray] = None
-):
-    return np.pad(_flat_array_to_1_dim_array(x), pad_width)
+    return np.stack(arrays, axis, out=out)
 
 
 def swapaxes(
@@ -236,6 +250,12 @@ def swapaxes(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.swapaxes(x, axis0, axis1)
+
+
+def tile(
+    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.tile(x, repeats)
 
 
 def unstack(
@@ -259,28 +279,12 @@ def unstack(
     return [np.squeeze(item, axis) for item in x_split]
 
 
-def clip(
-    x: np.ndarray,
-    x_min: Union[Number, np.ndarray],
-    x_max: Union[Number, np.ndarray],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
+def zero_pad(
+    x: np.ndarray, /, pad_width: List[List[int]], *, out: Optional[np.ndarray] = None
+):
+    return np.pad(_flat_array_to_1_dim_array(x), pad_width)
 
 
+concat.support_native_out = True
+stack.support_native_out = True
 clip.support_native_out = True
-
-
-def as_strided(
-    x: np.ndarray,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    strides: Sequence[int],
-    /,
-) -> np.ndarray:
-    return np.lib.stride_tricks.as_strided(
-        x,
-        shape=shape,
-        strides=strides,
-    )

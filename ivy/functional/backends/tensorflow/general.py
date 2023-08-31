@@ -23,12 +23,26 @@ from ...ivy.general import _broadcast_to
 _round = round
 
 
-def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, (tf.Tensor, tf.Variable)):
-        if exclusive and isinstance(x, tf.Variable):
-            return False
-        return True
-    return False
+# --- Helpers --- #
+# --------------- #
+
+
+def _check_query(query):
+    return not isinstance(query, list) and (
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+    )
+
+
+def _update_view(view, base):
+    for fn, args, kwargs, index in view._manipulation_stack:
+        base = ivy.__dict__[fn](base, *args, **kwargs)
+        base = base[index] if ivy.exists(index) else base
+    view.data = base.data
+    return view
+
+
+# --- Main --- #
+# ------------ #
 
 
 def array_equal(
@@ -48,58 +62,6 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
-def _check_query(query):
-    return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
-    )
-
-
-def get_item(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    query: Union[tf.Tensor, tf.Variable, Tuple],
-    *,
-    copy: bool = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return x.__getitem__(query)
-
-
-get_item.partial_mixed_handler = lambda x, query, **kwargs: (
-    all(_check_query(i) for i in query)
-    if isinstance(query, tuple)
-    else _check_query(query)
-)
-
-
-def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
-    # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
-    if (
-        ivy.is_array(x)
-        and get_num_dims(x) == 0
-        and ivy.as_native_dtype(x.dtype) is tf.bfloat16
-    ):
-        x = tf.expand_dims(x, 0)
-        if copy:
-            return np.squeeze(np.array(tf.convert_to_tensor(x)), 0)
-        else:
-            return np.squeeze(np.asarray(tf.convert_to_tensor(x)), 0)
-    if copy:
-        return np.array(tf.convert_to_tensor(x))
-    else:
-        return np.asarray(tf.convert_to_tensor(x))
-
-
-def to_scalar(x: Union[tf.Tensor, tf.Variable], /) -> Number:
-    ret = to_numpy(x).item()
-    if x.dtype == tf.bfloat16:
-        return float(ret)
-    return ret
-
-
-def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
-    return x.numpy().tolist()
-
-
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -113,38 +75,6 @@ def gather(
     batch_dims = batch_dims % len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
-
-
-def gather_nd_helper(params, indices):
-    indices_shape = tf.shape(indices)
-    params_shape = tf.shape(params)
-    num_index_dims = indices_shape[-1]
-    result_dim_sizes_list = [
-        tf.math.reduce_prod(params_shape[i + 1 :]) for i in range(len(params_shape) - 1)
-    ] + [1]
-    result_dim_sizes = tf.convert_to_tensor(result_dim_sizes_list, dtype=indices.dtype)
-    implicit_indices_factor = result_dim_sizes[num_index_dims - 1]
-    flat_params = tf.reshape(params, (-1,))
-    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
-    indices_scales = tf.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = tf.reshape(
-        tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)
-    )
-    indices_for_flat_tiled = tf.repeat(
-        indices_for_flat_tiled, implicit_indices_factor, axis=1
-    )
-    implicit_indices = tf.repeat(
-        tf.expand_dims(tf.range(implicit_indices_factor), 0),
-        indices_for_flat_tiled.shape[0],
-        axis=0,
-    )
-    indices_for_flat = indices_for_flat_tiled + implicit_indices
-    flat_indices_for_flat = tf.reshape(indices_for_flat, (-1,))
-    flat_gather = tf.gather(flat_params, flat_indices_for_flat)
-    res = tf.reshape(
-        flat_gather, tf.concat([indices_shape[:-1], params_shape[num_index_dims:]], 0)
-    )
-    return res
 
 
 def gather_nd(
@@ -182,6 +112,48 @@ def gather_nd(
                 result, tf.concat([params.shape[0:batch_dims], result.shape[1:]], 0)
             )
         return result
+
+
+def gather_nd_helper(params, indices):
+    indices_shape = tf.shape(indices)
+    params_shape = tf.shape(params)
+    num_index_dims = indices_shape[-1]
+    result_dim_sizes_list = [
+        tf.math.reduce_prod(params_shape[i + 1 :]) for i in range(len(params_shape) - 1)
+    ] + [1]
+    result_dim_sizes = tf.convert_to_tensor(result_dim_sizes_list, dtype=indices.dtype)
+    implicit_indices_factor = result_dim_sizes[num_index_dims - 1]
+    flat_params = tf.reshape(params, (-1,))
+    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
+    indices_scales = tf.reshape(result_dim_sizes[0:num_index_dims], new_shape)
+    indices_for_flat_tiled = tf.reshape(
+        tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)
+    )
+    indices_for_flat_tiled = tf.repeat(
+        indices_for_flat_tiled, implicit_indices_factor, axis=1
+    )
+    implicit_indices = tf.repeat(
+        tf.expand_dims(tf.range(implicit_indices_factor), 0),
+        indices_for_flat_tiled.shape[0],
+        axis=0,
+    )
+    indices_for_flat = indices_for_flat_tiled + implicit_indices
+    flat_indices_for_flat = tf.reshape(indices_for_flat, (-1,))
+    flat_gather = tf.gather(flat_params, flat_indices_for_flat)
+    res = tf.reshape(
+        flat_gather, tf.concat([indices_shape[:-1], params_shape[num_index_dims:]], 0)
+    )
+    return res
+
+
+def get_item(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    query: Union[tf.Tensor, tf.Variable, Tuple],
+    *,
+    copy: bool = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return x.__getitem__(query)
 
 
 def get_num_dims(x, /, *, as_array=False):
@@ -286,16 +258,47 @@ def inplace_update(
         return val
 
 
-def _update_view(view, base):
-    for fn, args, kwargs, index in view._manipulation_stack:
-        base = ivy.__dict__[fn](base, *args, **kwargs)
-        base = base[index] if ivy.exists(index) else base
-    view.data = base.data
-    return view
-
-
 def inplace_variables_supported():
     return True
+
+
+def is_native_array(x, /, *, exclusive=False):
+    if isinstance(x, (tf.Tensor, tf.Variable)):
+        if exclusive and isinstance(x, tf.Variable):
+            return False
+        return True
+    return False
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
+def isin(
+    elements: tf.Tensor,
+    test_elements: tf.Tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> tf.Tensor:
+    input_shape = elements.shape
+
+    if tf.rank(elements) == 0:
+        elements = tf.reshape(elements, [1])
+    if tf.rank(test_elements) == 0:
+        test_elements = tf.reshape(test_elements, [1])
+    if not assume_unique:
+        test_elements = tf.unique(tf.reshape(test_elements, [-1]))[0]
+
+    elements = tf.reshape(elements, [-1])
+    test_elements = tf.reshape(test_elements, [-1])
+
+    output = tf.reduce_any(
+        tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
+    )
+    return tf.reshape(output, input_shape) ^ invert
+
+
+def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
+    return x.dtype.size
 
 
 def multiprocessing(context: Optional[str] = None):
@@ -345,9 +348,6 @@ def scatter_flat(
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
     return res
-
-
-scatter_flat.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
@@ -406,9 +406,6 @@ def scatter_nd(
     return res
 
 
-scatter_nd.support_native_out = True
-
-
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -419,6 +416,35 @@ def shape(
         return ivy.array(tf.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
+
+
+def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
+    return x.numpy().tolist()
+
+
+def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
+    # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
+    if (
+        ivy.is_array(x)
+        and get_num_dims(x) == 0
+        and ivy.as_native_dtype(x.dtype) is tf.bfloat16
+    ):
+        x = tf.expand_dims(x, 0)
+        if copy:
+            return np.squeeze(np.array(tf.convert_to_tensor(x)), 0)
+        else:
+            return np.squeeze(np.asarray(tf.convert_to_tensor(x)), 0)
+    if copy:
+        return np.array(tf.convert_to_tensor(x))
+    else:
+        return np.asarray(tf.convert_to_tensor(x))
+
+
+def to_scalar(x: Union[tf.Tensor, tf.Variable], /) -> Number:
+    ret = to_numpy(x).item()
+    if x.dtype == tf.bfloat16:
+        return float(ret)
+    return ret
 
 
 def vmap(
@@ -507,32 +533,10 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
-def isin(
-    elements: tf.Tensor,
-    test_elements: tf.Tensor,
-    /,
-    *,
-    assume_unique: bool = False,
-    invert: bool = False,
-) -> tf.Tensor:
-    input_shape = elements.shape
-
-    if tf.rank(elements) == 0:
-        elements = tf.reshape(elements, [1])
-    if tf.rank(test_elements) == 0:
-        test_elements = tf.reshape(test_elements, [1])
-    if not assume_unique:
-        test_elements = tf.unique(tf.reshape(test_elements, [-1]))[0]
-
-    elements = tf.reshape(elements, [-1])
-    test_elements = tf.reshape(test_elements, [-1])
-
-    output = tf.reduce_any(
-        tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
-    )
-    return tf.reshape(output, input_shape) ^ invert
-
-
-def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
-    return x.dtype.size
+get_item.partial_mixed_handler = lambda x, query, **kwargs: (
+    all(_check_query(i) for i in query)
+    if isinstance(query, tuple)
+    else _check_query(query)
+)
+scatter_flat.support_native_out = True
+scatter_nd.support_native_out = True

@@ -28,7 +28,6 @@ ivy_dtype_dict = {
     tf.complex128: "complex128",
     tf.bool: "bool",
 }
-
 native_dtype_dict = {
     "int8": tf.int8,
     "int16": tf.int16,
@@ -89,93 +88,6 @@ class Bfloat16Finfo:
         return "finfo(resolution={}, min={}, max={}, dtype={})".format(
             self.resolution, self.min, self.max, "bfloat16"
         )
-
-
-# Array API Standard #
-# -------------------#
-
-
-def astype(
-    x: Union[tf.Tensor, tf.Variable],
-    dtype: Union[DType, str],
-    /,
-    *,
-    copy: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if x.dtype == dtype:
-        return tf.experimental.numpy.copy(x) if copy else x
-    return tf.cast(x, dtype)
-
-
-def broadcast_arrays(
-    *arrays: Union[tf.Tensor, tf.Variable],
-) -> List[Union[tf.Tensor, tf.Variable]]:
-    if len(arrays) > 1:
-        try:
-            desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
-        except tf.errors.InvalidArgumentError as e:
-            raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
-        if len(arrays) > 2:
-            for i in range(2, len(arrays)):
-                try:
-                    desired_shape = tf.broadcast_dynamic_shape(
-                        desired_shape, arrays[i].shape
-                    )
-                except tf.errors.InvalidArgumentError as e:
-                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
-    else:
-        return [arrays[0]]
-    result = []
-    for tensor in arrays:
-        result.append(tf.broadcast_to(tensor, desired_shape))
-
-    return result
-
-
-def broadcast_to(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
-    if tf.rank(x) > len(shape):
-        return tf.broadcast_to(tf.reshape(x, -1), shape)
-    return tf.broadcast_to(x, shape)
-
-
-@_handle_nestable_dtype_info
-def finfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> Finfo:
-    if isinstance(type, (tf.Tensor, np.ndarray)):
-        type = type.dtype
-    if ivy.as_native_dtype(type) == tf.bfloat16:
-        return Finfo(Bfloat16Finfo())
-    return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
-
-
-@_handle_nestable_dtype_info
-def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> np.iinfo:
-    if isinstance(type, (tf.Tensor, np.ndarray)):
-        type = type.dtype
-    return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
-def result_type(
-    *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
-) -> ivy.Dtype:
-    if len(arrays_and_dtypes) <= 1:
-        return tf.experimental.numpy.result_type(arrays_and_dtypes)
-
-    result = tf.experimental.numpy.result_type(
-        arrays_and_dtypes[0], arrays_and_dtypes[1]
-    )
-    for i in range(2, len(arrays_and_dtypes)):
-        result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
-    return as_ivy_dtype(result)
 
 
 # Extra #
@@ -247,6 +159,62 @@ def as_native_dtype(
         )
 
 
+# Array API Standard #
+# -------------------#
+
+
+def astype(
+    x: Union[tf.Tensor, tf.Variable],
+    dtype: Union[DType, str],
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return tf.experimental.numpy.copy(x) if copy else x
+    return tf.cast(x, dtype)
+
+
+def broadcast_arrays(
+    *arrays: Union[tf.Tensor, tf.Variable],
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    if len(arrays) > 1:
+        try:
+            desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
+        except tf.errors.InvalidArgumentError as e:
+            raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+        if len(arrays) > 2:
+            for i in range(2, len(arrays)):
+                try:
+                    desired_shape = tf.broadcast_dynamic_shape(
+                        desired_shape, arrays[i].shape
+                    )
+                except tf.errors.InvalidArgumentError as e:
+                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+    else:
+        return [arrays[0]]
+    result = []
+    for tensor in arrays:
+        result.append(tf.broadcast_to(tensor, desired_shape))
+
+    return result
+
+
+def broadcast_to(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
+    if tf.rank(x) > len(shape):
+        return tf.broadcast_to(tf.reshape(x, -1), shape)
+    return tf.broadcast_to(x, shape)
+
+
 def dtype(
     x: Union[tf.Tensor, tf.Variable, np.ndarray], *, as_native: bool = False
 ) -> ivy.Dtype:
@@ -269,6 +237,22 @@ def dtype_bits(dtype_in: Union[tf.DType, str, np.dtype], /) -> int:
     )
 
 
+@_handle_nestable_dtype_info
+def finfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> Finfo:
+    if isinstance(type, (tf.Tensor, np.ndarray)):
+        type = type.dtype
+    if ivy.as_native_dtype(type) == tf.bfloat16:
+        return Finfo(Bfloat16Finfo())
+    return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
+
+
+@_handle_nestable_dtype_info
+def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> np.iinfo:
+    if isinstance(type, (tf.Tensor, np.ndarray)):
+        type = type.dtype
+    return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
+
+
 def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
@@ -278,6 +262,16 @@ def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
         return False
 
 
-# ToDo:
-# 1. result_type: Add support for bfloat16 with int16
-# 2. can_cast : Add support for complex64, complex128
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+def result_type(
+    *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
+) -> ivy.Dtype:
+    if len(arrays_and_dtypes) <= 1:
+        return tf.experimental.numpy.result_type(arrays_and_dtypes)
+
+    result = tf.experimental.numpy.result_type(
+        arrays_and_dtypes[0], arrays_and_dtypes[1]
+    )
+    for i in range(2, len(arrays_and_dtypes)):
+        result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
+    return as_ivy_dtype(result)

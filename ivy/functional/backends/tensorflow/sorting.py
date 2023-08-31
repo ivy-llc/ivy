@@ -27,29 +27,6 @@ def argsort(
     return tf.cast(ret, dtype=tf.int64)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def sort(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    # TODO: handle stable sort when it's supported in tensorflow
-    # currently it supports only quicksort (unstable)
-    direction = "DESCENDING" if descending else "ASCENDING"
-    x = tf.convert_to_tensor(x)
-    is_bool = x.dtype.is_bool
-    if is_bool:
-        x = tf.cast(x, tf.int32)
-    ret = tf.sort(x, axis=axis, direction=direction)
-    if is_bool:
-        ret = tf.cast(ret, dtype=tf.bool)
-    return ret
-
-
 # msort
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def msort(
@@ -103,3 +80,26 @@ def searchsorted(
     if is_supported_int_ret_dtype:
         return tf.searchsorted(x, v, side=side, out_type=ret_dtype)
     return tf.cast(tf.searchsorted(x, v, side=side), ret_dtype)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def sort(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: handle stable sort when it's supported in tensorflow
+    # currently it supports only quicksort (unstable)
+    direction = "DESCENDING" if descending else "ASCENDING"
+    x = tf.convert_to_tensor(x)
+    is_bool = x.dtype.is_bool
+    if is_bool:
+        x = tf.cast(x, tf.int32)
+    ret = tf.sort(x, axis=axis, direction=direction)
+    if is_bool:
+        ret = tf.cast(ret, dtype=tf.bool)
+    return ret

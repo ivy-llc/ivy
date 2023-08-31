@@ -26,12 +26,8 @@ class RNGWrapper:
         self.key = jax.random.PRNGKey(0)
 
 
-RNG = RNGWrapper()
-
-
-def _setRNG(key):
-    global RNG
-    RNG.key = key
+# --- Helpers --- #
+# --------------- #
 
 
 def _getRNG():
@@ -39,47 +35,13 @@ def _getRNG():
     return RNG.key
 
 
-def random_uniform(
-    *,
-    low: Union[float, JaxArray] = 0.0,
-    high: Union[float, JaxArray] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
-    dtype: jnp.dtype,
-    seed: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    shape = _check_bounds_and_get_shape(low, high, shape).shape
-
-    if seed:
-        rng_input = jax.random.PRNGKey(seed)
-    else:
-        RNG_, rng_input = jax.random.split(_getRNG())
-        _setRNG(RNG_)
-    return jax.random.uniform(
-        rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
-    ).astype(dtype)
+def _setRNG(key):
+    global RNG
+    RNG.key = key
 
 
-def random_normal(
-    *,
-    mean: Union[float, JaxArray] = 0.0,
-    std: Union[float, JaxArray] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
-    dtype: jnp.dtype,
-    seed: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape).shape
-
-    if seed:
-        rng_input = jax.random.PRNGKey(seed)
-    else:
-        RNG_, rng_input = jax.random.split(_getRNG())
-        _setRNG(RNG_)
-    return jax.random.normal(rng_input, shape, dtype=dtype) * std + mean
+# --- Main --- #
+# ------------ #
 
 
 @with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
@@ -152,6 +114,49 @@ def randint(
     return jax.random.randint(rng_input, shape, low, high, dtype)
 
 
+def random_normal(
+    *,
+    mean: Union[float, JaxArray] = 0.0,
+    std: Union[float, JaxArray] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: jaxlib.xla_extension.Device,
+    dtype: jnp.dtype,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
+
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
+    return jax.random.normal(rng_input, shape, dtype=dtype) * std + mean
+
+
+def random_uniform(
+    *,
+    low: Union[float, JaxArray] = 0.0,
+    high: Union[float, JaxArray] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: jaxlib.xla_extension.Device,
+    dtype: jnp.dtype,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
+
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
+    return jax.random.uniform(
+        rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
+    ).astype(dtype)
+
+
 def seed(*, seed_value: int = 0) -> None:
     _setRNG(jax.random.PRNGKey(seed_value))
     return
@@ -176,3 +181,6 @@ def shuffle(
     # jax.random.shuffle is deprecated; identical behaviour reproduced with
     # jax.random.permutation
     return jax.random.permutation(key=rng_input, x=x, axis=axis, independent=True)
+
+
+RNG = RNGWrapper()
