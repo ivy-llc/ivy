@@ -931,10 +931,6 @@ class Tensor:
         self.ivy_array = ivy.astype(self.ivy_array, ivy.uint8, copy=False)
         return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
-    def ne(self, other):
-        return torch_frontend.ne(self, other)
-
     @numpy_to_torch_style_args
     def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
