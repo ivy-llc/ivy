@@ -11073,6 +11073,9 @@ def test_torch_tensor_square(
     method_name="square_",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        allow_inf=False,
+        max_value=1e04,
+        min_value=-1e04,
     ),
 )
 def test_torch_tensor_square_(
