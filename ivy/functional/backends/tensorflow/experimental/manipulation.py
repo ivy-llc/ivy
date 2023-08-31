@@ -363,7 +363,7 @@ def fill_diagonal(
     a = tf.reshape(a, (-1,))
     end = min(end, max_end)
     indices = [[i] for i in range(0, end, step)]
-    if isinstance(v, tf.Tensor):
+    if isinstance(v, tf.Tensor) or isinstance(v, tf.Variable):
         v = tf.reshape(v, (-1,))
         len_v = tf.shape(v)[0]
         ups = tf.convert_to_tensor(

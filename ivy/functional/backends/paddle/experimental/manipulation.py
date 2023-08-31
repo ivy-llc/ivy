@@ -635,7 +635,7 @@ def fill_diagonal(
     steps = paddle.arange(0, end, step)
 
     if isinstance(v, paddle.Tensor):
-        v = paddle.reshape(v, (-1,))
+        v = paddle.reshape(v, (-1,)).astype(a.dtype)
         len_v = v.shape[0]
         for n, i in enumerate(steps):
             a[i] = v[n % len_v]

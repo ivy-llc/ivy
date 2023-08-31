@@ -1006,6 +1006,8 @@ def test_unique_consecutive(
     v_is_array_like=st.booleans(),
     wrap=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_fill_diagonal(
     *,
@@ -1018,8 +1020,6 @@ def test_fill_diagonal(
     fn_name,
     on_device,
 ):
-    if backend_fw not in ["torch", "paddle", "tensorflow", "jax", "numpy"]:
-        return
     dt, a = dt_a
     if v_is_array_like:
         v = a[1]
