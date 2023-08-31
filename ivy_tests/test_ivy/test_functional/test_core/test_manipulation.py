@@ -407,9 +407,6 @@ def test_clip(*, dtype_x_min_max, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# (tf.constant([0], dtype=tf.uint8), 0.0, None)
-
-
 @st.composite
 def _constant_pad_helper(draw):
     dtype, value, shape = draw(
@@ -753,5 +750,3 @@ def test_unstack(
         keepdims=keepdims,
     )
 
-
-# tf.constant([0], dtype=tf.int8), tf.constant([0], dtype=tf.int8), tf.constant([False])

@@ -159,11 +159,11 @@ def median(
         interpolation="midpoint",
     )
     if input.dtype in [torch.int64, torch.float64]:
-        ret = torch.asarray(ret, dtype=torch.float64)
+        ret = ret.to(torch.float64)
     elif input.dtype in [torch.float16, torch.bfloat16]:
-        ret = torch.asarray(ret, dtype=input.dtype)
+        ret = ret.to(input.dtype)
     else:
-        ret = torch.asarray(ret, dtype=torch.float32)
+        ret = ret.to(torch.float32)
     return ret
 
 
@@ -186,6 +186,8 @@ nanmean.support_native_out = True
 
 
 def _validate_quantile(q):
+    if isinstance(q, float):
+        q = torch.as_tensor(q)
     if q.ndim == 1 and torch.numel(q) < 10:
         for i in range(torch.numel(q)):
             if not (0.0 <= q[i] <= 1.0):
@@ -250,39 +252,32 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None):
 
 def _quantile(a, q, axis=None):
     ret_dtype = a.dtype
-    if q.ndim > 2:
+    if isinstance(q, float):
+        q = torch.as_tensor(q)
+    if isinstance(q, torch.Tensor) and q.ndim > 1:
         raise ValueError("q argument must be a scalar or 1-dimensional!")
     if axis is None:
         axis = 0
         a = a.flatten()
 
     n = a.shape[axis]
-    if axis != 0:
-        a = torch.moveaxis(a, axis, 0)
 
-    indices = []
-    for q_num in q:
-        index = q_num * (n - 1)
-        indices.append(index)
+    indices = q * (n - 1)
 
-    a = torch.sort(a, 0)[0]
-    outputs = []
+    a = torch.sort(a, axis)[axis]
+    indices_below = torch.floor(indices).to(torch.int64)
+    indices_upper = torch.ceil(indices).to(torch.int64)
 
-    for index in indices:
-        indices_below = torch.floor(index).to(torch.int64)
-        indices_upper = torch.ceil(index).to(torch.int64)
+    weights = indices - indices_below.to(torch.float64)
 
-        weights = index - indices_below.to(torch.float64)
+    indices_below = torch.clip(indices_below, 0, n - 1)
+    indices_upper = torch.clip(indices_upper, 0, n - 1)
+    tensor_upper = torch.index_select(a, 0, indices_upper)
+    tensor_below = torch.index_select(a, 0, indices_below)
 
-        indices_below = torch.clip(indices_below, 0, n - 1)
-        indices_upper = torch.clip(indices_upper, 0, n - 1)
-        tensor_upper = torch.index_select(a, 0, indices_upper)
-        tensor_below = torch.index_select(a, 0, indices_below)
-
-        pred = weights <= 0.5
-        out = torch.where(pred, tensor_below, tensor_upper)
-        outputs.append(out)
-    return torch.concat(outputs, dim=0).to(ret_dtype)
+    pred = weights <= 0.5
+    out = torch.where(pred, tensor_below, tensor_upper)
+    return out.to(ret_dtype)
 
 
 def _compute_quantile_wrapper(

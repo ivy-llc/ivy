@@ -69,6 +69,7 @@ class ContainerBase(dict, abc.ABC):
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
         dynamic_backend=None,
+        build_callable=False,
         **kwargs,
     ):
         """
@@ -113,6 +114,9 @@ class ContainerBase(dict, abc.ABC):
         rebuild_child_containers
             Whether to rebuild container found in dict_in with these constructor params.
             Default is ``False``, in which case the original container are kept as are.
+        build_callable
+            Whether to treat functions encountered at leaf nodes as further instructions
+            to build the container
         types_to_iteratively_nest
             The data types to nest iteratively in the dict structure, each type must be
             iterable. Default is ``None``.
@@ -156,6 +160,7 @@ class ContainerBase(dict, abc.ABC):
             default_key_color=default_key_color,
             keyword_color_dict=keyword_color_dict,
             rebuild_child_containers=rebuild_child_containers,
+            build_callable=build_callable,
             types_to_iteratively_nest=types_to_iteratively_nest,
             alphabetical_keys=alphabetical_keys,
         )
@@ -565,7 +570,15 @@ class ContainerBase(dict, abc.ABC):
             all_keys_present = sum(keys_present) == num_containers
             if all_keys_present:
                 res = ivy.Container.cont_diff(
-                    *[cont[key] for cont in containers],
+                    *[
+                        (
+                            cont[key]()
+                            if cont.cont_config["build_callable"]
+                            and callable(cont[key])
+                            else cont[key]
+                        )
+                        for cont in containers
+                    ],
                     mode=mode,
                     diff_keys=diff_keys,
                     detect_key_diffs=detect_key_diffs,
@@ -809,7 +822,6 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         partial=False,
         key_chain="",
-        build_callable=False,
         assert_and_assign=False,
     ):
         """
@@ -841,9 +853,6 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
-        build_callable
-            if true, the leaf nodes which are callables are assumed to be called to
-            build further nested layers
         assert_and_assign
             if true, then the container being compared with is updated with the value
             in the container being compared to given that the strucutres are congruent
@@ -864,9 +873,8 @@ class ContainerBase(dict, abc.ABC):
         for key in keys:
             if not min([key in cont for cont in containers]):
                 return False
-            if build_callable:
-                # call the callable if encountered
-                for cont in containers:
+            for cont in containers:
+                if cont.cont_config["build_callable"]:
                     cont[key] = cont[key]() if callable(cont[key]) else cont[key]
             values = [cont[key] for cont in containers]
             value_0 = values[0]
@@ -905,7 +913,6 @@ class ContainerBase(dict, abc.ABC):
                     to_apply,
                     partial,
                     this_key_chain,
-                    build_callable=build_callable,
                     assert_and_assign=assert_and_assign,
                 )
                 if not ret:
@@ -983,7 +990,6 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         partial=False,
         key_chain="",
-        build_callable=False,
         assert_and_assign=False,
     ):
         """
@@ -1010,9 +1016,6 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
-        build_callable
-            if true, the leaf nodes which are callables are assumed to be called to
-            build further nested layers
         assert_and_assign
             if true, then the container being compared with is updated with the value in
             the container being compared to given that the strucutres are congruent
@@ -1030,7 +1033,6 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             partial,
             key_chain,
-            build_callable=build_callable,
             assert_and_assign=assert_and_assign,
         )
 
@@ -1042,7 +1044,6 @@ class ContainerBase(dict, abc.ABC):
         key_chains=None,
         to_apply=True,
         partial=False,
-        build_callable=False,
         assert_and_assign=False,
     ):
         """
@@ -1067,9 +1068,6 @@ class ContainerBase(dict, abc.ABC):
         partial
             Whether to also check for partially complete sub-containers.
             Default is ``False``.
-        build_callable
-            if true, the leaf nodes which are callables are assumed to be called to
-            build further nested layers
         assert_and_assign
             if true, then the container being compared with is updated with the value in
             the container being compared to given that the strucutres are congruent
@@ -1082,7 +1080,6 @@ class ContainerBase(dict, abc.ABC):
                 key_chains,
                 to_apply,
                 partial,
-                build_callable=build_callable,
                 assert_and_assign=assert_and_assign,
             ),
             "Containers did not have identical structure:\n\n{}".format(
