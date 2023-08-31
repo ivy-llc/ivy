@@ -30,7 +30,7 @@ def test_sklearn_kfold_split(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "n_splits": 2,
+            "n_splits": 2,  # todo test for shuffle
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -66,11 +66,11 @@ def test_sklearn_kfold_get_n_split(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "n_splits": 2,  # this arg only for compatibility
+            "n_splits": 2,  # todo test for shuffle
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "X": x[0],
+            "X": x[0],  # this arg only for compatibility
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
