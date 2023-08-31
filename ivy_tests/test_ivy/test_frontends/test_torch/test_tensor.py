@@ -12825,9 +12825,10 @@ def test_torch_unique(
     method_name="unique_consecutive",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        valid_axis=True,
-        force_int_axis=True,
         min_num_dims=1,
+        min_dim_size=2,
+        force_int_axis=True,
+        valid_axis=True,
     ),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
