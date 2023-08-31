@@ -131,30 +131,53 @@ def inv_ex(A, *, check_errors=False, out=None):
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
-def lstsq(a, b, rcond=None):
-    a_num_dim = a.size
-    b_num_dim = b.size
+def lstsq(a, b, rcond=None, driver=None):
+    a_num_dim = a.get_num_dims()
+    b_num_dim = b.get_num_dims()
     if a_num_dim < 2:
-        raise RuntimeError("dim should be at least 2")
+        raise RuntimeError("input must have at least 2 dimensions. ")
     if a_num_dim - b_num_dim <= 1:
-        for i in range(a_num_dim - 1):
+        for i in range(
+            a_num_dim - 1
+        ):  # should have the same batch shape and same m shape
             if a.shape[i] != b.shape[i]:
                 raise RuntimeError(f" input.size({i}) should match other.size({i})")
     else:
-        raise RuntimeError("x_num_dim - y_num_dim <=1")
-    dtype = a.dtype
-    if rcond is None:
-        rcond = ivy.finfo(dtype).eps * max(a.shape)
-    else:
-        rcond = ivy.where(rcond < 0, ivy.finfo(dtype).eps, rcond)
-    u, s, vt = ivy.svd(a)
+        raise RuntimeError(
+            "input.dim() must be greater or equal to other.dim() and (input.dim() -"
+            " other.dim()) <= 1"
+        )
+
+    a_dtype = a.dtype
+    m = a.shape[-2]
+    n = a.shape[-1]
+
     solution = ivy.matmul(ivy.pinv(a, rtol=1e-15), b)
-    rank = ivy.count_nonzero(s)
+
+    # check if A is full-rank
+    rank = ivy.matrix_rank(a)
     rank = ivy.astype(rank, ivy.int64)
-    resid = ivy.array([])
-    resid = ivy.astype(resid, dtype)
-    s = ivy.array([])
-    s = ivy.astype(s, dtype)
+    n_cols = a.shape[1]
+
+    if (rank == n_cols).any() and m > n:
+        b_estimate = ivy.matmul(a, solution)
+        resid = (b - b_estimate) ** 2
+    else:
+        resid = ivy.array([])
+        resid = ivy.astype(resid, a_dtype)
+
+    if driver == "gelsd" or driver == "gelss":
+        _, s, _ = ivy.svd(a)
+    else:
+        s = ivy.array([])
+        s = ivy.astype(s, a_dtype)
+
+    if driver == "gelsy" or driver == "gelsd" or driver == "gelss":
+        pass
+    else:
+        rank = ivy.array()
+        rank = ivy.astype(rank, ivy.int64)
+
     return solution, resid, rank, s
 
 
