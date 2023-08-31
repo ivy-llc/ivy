@@ -116,7 +116,7 @@ def max_unpool1d(
 
 def max_pool3d(x, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False, data_format='NCDHW'):
     """
-    3D max pooling operation.
+    3D max pooling operation
 
     Args:
         x (Tensor): The input tensor.
@@ -147,3 +147,51 @@ def max_pool3d(x, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=Fal
         data_format = 'NCDHW'
 
     return F.max_pool3d(x, kernel_size, stride, padding, dilation, ceil_mode, data_format)
+
+def max_pool3d(
+    x,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    name=None
+):
+    """3D max pooling operation.
+
+    This function performs 3D max pooling over the input tensor.
+
+    Args:
+        x (ivy.Array): Input tensor.
+        kernel_size (Union[int, Tuple[int, int, int]]): Size of the max pooling window.
+        stride (Union[int, Tuple[int, int, int]], optional): Stride of the max pooling
+            operation. Defaults to ``kernel_size``.
+        padding (Union[int, Tuple[int, int, int]], optional): Zero-padding added to each side
+            of the input. Defaults to ``0``.
+        ceil_mode (bool, optional): If ``True``, use "ceil" rounding when computing the
+            output shape. Defaults to ``False``.
+        name (str, optional): Optional name for the operation.
+
+    Returns:
+        ivy.Array: The max pooled output tensor.
+    """
+
+    # type-checking
+
+    backend = current_backend()
+    _ = backend.inputs_to_ivy_arrays([x])
+    _ = backend.as_native_dtype(kernel_size)
+    _ = backend.as_native_dtype(stride)
+    _ = backend.as_native_dtype(padding)
+    _ = backend.as_native_dtype(ceil_mode)
+    _ = backend.as_native_dtype(name)
+
+    # backend-specific implementation
+
+    if backend.framework == "tensorflow":
+        return _max_pool3d_tensorflow(x, kernel_size, stride, padding, ceil_mode, name)
+    elif backend.framework == "torch":
+        return _max_pool3d_torch(x, kernel_size, stride, padding, ceil_mode, name)
+    elif backend.framework == "jax":
+        return _max_pool3d_jax(x, kernel_size, stride, padding, ceil_mode, name)
+    elif backend.framework == "numpy":
+        return _max_pool3d_numpy(x, kernel_size, stride, padding, ceil_mode, name)

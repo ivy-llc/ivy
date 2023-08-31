@@ -327,3 +327,45 @@ max_value = paddle.max(output)
 
 # Print the max value
 print(max_value)
+
+import unittest
+import numpy as np
+import paddle
+import paddle.nn.functional as F
+
+from pooling import max_pool3d
+
+
+class TestMaxPool3D(unittest.TestCase):
+
+    def setUp(self):
+        # Set up any common resources or configurations for  tests
+        pass
+
+    def tearDown(self):
+        # Clean up after each test if necessary
+        pass
+
+    def test_max_pool3d(self):
+        # Test max_pool3d function
+
+        # Create test input data
+        input_data = np.random.rand(1, 1, 8, 16, 16).astype(np.float32)  # Assuming 1 channel, height=16, width=16
+
+        # Convert test data to PaddlePaddle tensor
+        input_tensor = paddle.to_tensor(input_data)
+
+        # Apply max_pool3d using PaddlePaddle's built-in function
+        kernel_size = (2, 2, 2)
+        expected_output = F.max_pool3d(input_tensor, kernel_size).numpy()  # Convert Paddle tensor to NumPy array
+
+        # Call  max_pool3d function
+        actual_output = max_pool3d(input_data, kernel_size)
+
+        # Assert that the actual output matches the expected output
+        np.testing.assert_allclose(actual_output, expected_output, rtol=1e-5)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

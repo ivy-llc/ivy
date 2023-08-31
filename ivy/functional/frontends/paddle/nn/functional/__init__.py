@@ -19,3 +19,4 @@ from .pooling import *
 from . import vision
 from .vision import *
 from .pooling import max_pool3d
+from .pooling import max_pool3d
