@@ -14,7 +14,6 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 Acos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acos))
 Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
-Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 ArgMax = to_ivy_arrays_and_back(
@@ -220,7 +219,6 @@ Sigmoid = to_ivy_arrays_and_back(
 )
 Sin = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.sin))
 Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
-Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
 Softmax = to_ivy_arrays_and_back(
     with_unsupported_dtypes(
         {
@@ -253,7 +251,6 @@ SquaredDifference = to_ivy_arrays_and_back(
 Squeeze = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.squeeze)
 )
-Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 Xlogy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xlogy))
@@ -593,10 +590,6 @@ def GreaterEqual(*, x, y, name="GreaterEqual"):
     return ivy.greater_equal(x, y)
 
 
-@with_supported_dtypes(
-    {"2.13.0 and below": ("complex64", "complex128")},
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def Imag(
     *,
@@ -796,6 +789,9 @@ def TanhGrad(*, y, dy, name="TanhGrad"):
     return ivy.multiply(dy, ivy.subtract(1, ivy.multiply(y, y)))
 
 
+Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
+
+
 @to_ivy_arrays_and_back
 def Transpose(*, x, perm, name="Transpose"):
     ret = ivy.permute_dims(x, axes=perm)
@@ -831,3 +827,8 @@ def Xlog1py(*, x, y, name="Xlog1py"):
 @to_ivy_arrays_and_back
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
+
+
+Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
+Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
+Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))

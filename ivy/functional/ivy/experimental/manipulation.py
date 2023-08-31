@@ -1148,12 +1148,9 @@ def pad(
     )
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return padded
+        if not ivy.is_array(constant_values) or constant_values.dtype != input.dtype:
+            constant_values = ivy.asarray(constant_values, dtype=input.dtype)
+        return _interior_pad(input, constant_values, pad_width)
     pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
@@ -1946,7 +1943,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = ivy.full(new_shape, padding_value)
+            new_array = ivy.full(new_shape, ivy.to_scalar(padding_value), dtype=operand.dtype)
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -2527,3 +2524,56 @@ def soft_thresholding(
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
     return res
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def choose(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    choices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: None = None,
+    mode: Union[str, None] = None,
+) -> ivy.Array:
+    """
+    Take values from the input array by matching 1d index and data slices.
+
+    Parameters
+    ----------
+
+    arr
+        The source array.
+    choices
+        The indices of the values to extract.
+    out
+        The output array.
+    mode
+        One of: 'wrap', 'clip'. Parameter controlling how out-of-bounds indices
+        will be handled.
+
+    Returns
+    -------
+
+    ret
+        The returned array has the same shape as `indices`.
+    Examples
+    --------
+
+    >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
+                        [20, 21, 22, 23], [30, 31, 32, 33]])
+    >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
+    ivy.array([20, 31, 12, 3])
+    >>> arr = ivy.array([2, 4, 1, 0])
+    >>> print(choose(arr, choices, mode='clip')) # 4 goes to 3 (4-1)
+    ivy.array([20, 31, 12, 3])
+    >>> arr = ivy.array([2, 4, 1, 0])
+    >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
+    ivy.array([20, 1, 12, 3])
+    """
+    return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)

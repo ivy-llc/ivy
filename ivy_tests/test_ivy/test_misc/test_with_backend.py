@@ -18,6 +18,11 @@ def compiled_backends():
     return compiled_backends
 
 
+def test_is_local(backend_fw):
+    local_ivy = ivy.with_backend(backend_fw)
+    assert local_ivy.is_local()
+
+
 @settings(
     # To be able to share compiled_backends between examples
     suppress_health_check=[HealthCheck(9)]
@@ -45,20 +50,15 @@ def test_prevent_access(backend_fw):
         local_ivy.set_backend(backend_fw)
 
 
-def test_with_backend_cached(backend_fw):
-    non_cached_local_ivy = ivy.with_backend(backend_fw)
-    cached_local_ivy = ivy.with_backend(backend_fw)
-    assert non_cached_local_ivy == cached_local_ivy
-
-
-def test_is_local(backend_fw):
-    local_ivy = ivy.with_backend(backend_fw)
-    assert local_ivy.is_local()
-
-
 def test_with_backend_array(backend_fw):
     local_ivy = ivy.with_backend(backend_fw)
     local_x = local_ivy.array([1, 2, 3, 4])
     ivy.set_backend(backend_fw)
     x = ivy.array([1, 2, 3, 4])
     assert np.allclose(x._data, local_x._data)
+
+
+def test_with_backend_cached(backend_fw):
+    non_cached_local_ivy = ivy.with_backend(backend_fw)
+    cached_local_ivy = ivy.with_backend(backend_fw)
+    assert non_cached_local_ivy == cached_local_ivy
