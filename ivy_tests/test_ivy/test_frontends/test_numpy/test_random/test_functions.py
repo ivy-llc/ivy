@@ -439,6 +439,42 @@ def test_numpy_lognormal(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.logseries",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    p=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        min_value=0,
+        max_value=1,
+        exclude_max=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_logseries(
+    input_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+    p,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        p=p,
+        size=size,
+    )
+
+
 # multinomial
 @handle_frontend_test(
     fn_tree="numpy.random.multinomial",
