@@ -103,6 +103,19 @@ def lognormal(mean=0.0, sigma=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def logseries(p=0, size=None):
+    if p < 0 or p >= 1:
+        raise ValueError("p value must be in the open interval (0, 1)")
+    r = ivy.log(1 - p)
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size)
+    v = ivy.random_uniform(low=0.0, high=1.0, shape=size)
+    q = 1 - ivy.exp(r * u)
+    ret = 1 + ivy.log(v) / ivy.log(q)
+    return ret
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def multinomial(n, pvals, size=None):
     assert not ivy.exists(size) or (len(size) > 0 and len(size) < 3)
     batch_size = 1

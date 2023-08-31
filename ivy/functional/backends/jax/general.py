@@ -15,9 +15,10 @@ import importlib
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.jax.device import _to_array
+from ivy.functional.backends.jax.device import _to_array, _to_device
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.functional.backends.jax import JaxArray, NativeArray
+from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 
 
@@ -251,10 +252,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend or ivy.is_native_array(x):
-            raise ivy.utils.exceptions.IvyException(
-                "JAX does not natively support inplace updates"
-            )
+        _check_inplace_update_support(x, ensure_in_backend)
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
