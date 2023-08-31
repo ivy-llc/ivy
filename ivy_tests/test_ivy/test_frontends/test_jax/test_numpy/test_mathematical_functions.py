@@ -906,36 +906,42 @@ def test_jax_arcsin(
 @handle_frontend_test(
     fn_tree="jax.numpy.gradient",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        valid_axis=True,
-        num_arrays=1,
-        min_dim_size=2,
+        available_dtypes=("float32", "float16", "float64"),
         min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+        valid_axis=True,
+        force_int_axis=True,
     ),
-    varargs=helpers.array_values(
-        dtype=helpers.get_dtypes("float"),
-        shape=helpers.get_shape(
-            min_dim_size=1,
-            min_num_dims=1,
-        ),
+    varargs=helpers.ints(
+        min_value=-3,
+        max_value=3,
     ),
-    edge_order=helpers.ints(min_value=1, max_value=2),
 )
 def test_jax_gradient(
-    *, dtype_input_axis, varargs, edge_order, test_flags, on_device, fn_tree, frontend
+    dtype_input_axis, 
+    varargs, 
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_input_axis
-    test_flags.num_positional_args = len(varargs) + 1
+    test_flags.num_positional_args = 2
+    kw = {}
+    kw["varargs"] = varargs
+    kw["axis"] = axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        test_flags=test_flags,
         frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         f=x[0],
-        varargs=varargs,
-        axis=axis,
-        edge_order=edge_order,
+        **kw,
     )
 
 
