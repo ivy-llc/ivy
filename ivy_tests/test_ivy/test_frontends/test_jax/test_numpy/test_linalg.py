@@ -498,7 +498,7 @@ def test_jax_inv(
         on_device=on_device,
         a=x[0],
     )
-        
+
 
 # least squares
 @handle_frontend_test(
