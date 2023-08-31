@@ -1876,6 +1876,9 @@ class Tensor:
     def cummax(self, dim):
         return torch_frontend.cummax(self, dim)
 
+    def ne(self, other):
+        return torch_frontend.ne(self, other)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
