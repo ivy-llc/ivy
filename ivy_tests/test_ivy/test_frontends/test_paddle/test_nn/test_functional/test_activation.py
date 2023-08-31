@@ -455,6 +455,31 @@ def test_paddle_prelu(
     )
 
 
+# relu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.relu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_relu(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
 # relu6
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.relu6",
