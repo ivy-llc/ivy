@@ -18,19 +18,8 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-# ToDo: modify these functions to track whether variable() has been called
-def variable(x, /):
-    return x
-
-
-def is_variable(x, /, *, exclusive=False):
-    if exclusive:
-        return False
-    return isinstance(x, NativeArray)
-
-
-def variable_data(x: JaxArray, /) -> JaxArray:
-    return x
+# --- Helpers --- #
+# --------------- #
 
 
 def _forward_fn(
@@ -66,6 +55,10 @@ def _forward_fn(
     if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
         ret_values = ret_values[0]
     return ret_values
+
+
+# --- Main --- #
+# ------------ #
 
 
 def execute_with_gradients(
@@ -127,21 +120,18 @@ def execute_with_gradients(
     return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
-def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
-
-    def callback_fn(xs):
-        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
-        value, grad = jax.value_and_grad(grad_fn)(xs)
-        return ivy.to_ivy(value), ivy.to_ivy(grad)
-
+def grad(func: Callable, argnums: Union[int, Tuple[int]] = 0):
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(
+        jax.grad(grad_fn, argnums)(ivy.to_native(x_in))
+    )
     return callback_fn
 
 
-def stop_gradient(
-    x: JaxArray, /, *, preserve_type: bool = True, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jlax.stop_gradient(x)
+def is_variable(x, /, *, exclusive=False):
+    if exclusive:
+        return False
+    return isinstance(x, NativeArray)
 
 
 def jac(func: Callable):
@@ -158,9 +148,27 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(func: Callable, argnums: Union[int, Tuple[int]] = 0):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(
-        jax.grad(grad_fn, argnums)(ivy.to_native(x_in))
-    )
+def stop_gradient(
+    x: JaxArray, /, *, preserve_type: bool = True, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jlax.stop_gradient(x)
+
+
+def value_and_grad(func):
+    grad_fn = lambda xs: ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+        value, grad = jax.value_and_grad(grad_fn)(xs)
+        return ivy.to_ivy(value), ivy.to_ivy(grad)
+
     return callback_fn
+
+
+# ToDo: modify these functions to track whether variable() has been called
+def variable(x, /):
+    return x
+
+
+def variable_data(x: JaxArray, /) -> JaxArray:
+    return x

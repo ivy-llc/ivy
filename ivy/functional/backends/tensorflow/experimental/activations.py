@@ -10,6 +10,15 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
+    alpha = tf.cast(alpha, x.dtype)
+    ret = tf.cast(tf.where(x > 0, x, tf.multiply(alpha, tf.math.expm1(x))), x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
 def logit(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -25,26 +34,14 @@ def logit(
     return tf.cast(tf.math.log(x / (1 - x)), x_dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
-def thresholded_relu(
-    x: Tensor,
-    /,
-    *,
-    threshold: Union[int, float] = 0,
-    out: Optional[Tensor] = None,
-) -> Tensor:
-    threshold = tf.cast(threshold, x.dtype)
-    return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def logsigmoid(input: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.math.log_sigmoid(input)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu6(x)
-
-
-@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
-def logsigmoid(input: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
-    return tf.math.log_sigmoid(input)
 
 
 @with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
@@ -68,10 +65,13 @@ def silu(
     return ivy.astype(ret, x.dtype)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
-def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
-    alpha = tf.cast(alpha, x.dtype)
-    ret = tf.cast(tf.where(x > 0, x, tf.multiply(alpha, tf.math.expm1(x))), x.dtype)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ivy.astype(ret, x.dtype)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
+def thresholded_relu(
+    x: Tensor,
+    /,
+    *,
+    threshold: Union[int, float] = 0,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    threshold = tf.cast(threshold, x.dtype)
+    return tf.cast(tf.where(x > threshold, x, 0), x.dtype)

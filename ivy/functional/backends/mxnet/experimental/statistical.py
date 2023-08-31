@@ -4,6 +4,43 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+def bincount(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    weights: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    minlength: int = 0,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def corrcoef(
+    x: None,
+    /,
+    *,
+    y: None,
+    rowvar: bool = True,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> None:
+    raise IvyNotImplementedException()
+
+
+def cov(
+    x1: None,
+    x2: None = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[None] = None,
+    aweights: Optional[None] = None,
+    dtype: Optional[type] = None,
+) -> None:
+    raise IvyNotImplementedException()
+
+
 def histogram(
     a: None,
     /,
@@ -44,30 +81,6 @@ def nanmean(
     raise IvyNotImplementedException()
 
 
-def quantile(
-    a: Union[(None, mx.ndarray.NDArray)],
-    q: Union[(None, float)],
-    /,
-    *,
-    axis: Optional[Union[(int, Sequence[int])]] = None,
-    interpolation: str = "linear",
-    keepdims: bool = False,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def corrcoef(
-    x: None,
-    /,
-    *,
-    y: None,
-    rowvar: bool = True,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> None:
-    raise IvyNotImplementedException()
-
-
 def nanmedian(
     input: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -79,27 +92,14 @@ def nanmedian(
     raise IvyNotImplementedException()
 
 
-def bincount(
-    x: Union[(None, mx.ndarray.NDArray)],
+def quantile(
+    a: Union[(None, mx.ndarray.NDArray)],
+    q: Union[(None, float)],
     /,
     *,
-    weights: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-    minlength: int = 0,
+    axis: Optional[Union[(int, Sequence[int])]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def cov(
-    x1: None,
-    x2: None = None,
-    /,
-    *,
-    rowVar: bool = True,
-    bias: bool = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[None] = None,
-    aweights: Optional[None] = None,
-    dtype: Optional[type] = None,
-) -> None:
     raise IvyNotImplementedException()

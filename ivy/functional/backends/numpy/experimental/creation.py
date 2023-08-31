@@ -7,37 +7,26 @@ import numpy as np
 from ivy.functional.backends.numpy.device import _to_device
 import ivy
 
-# Array API Standard #
-# -------------------#
 
-
-def vorbis_window(
-    window_length: np.ndarray,
-    *,
-    dtype: np.dtype = np.float32,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    result = []
-    for i in range(1, window_length * 2, 2):
-        temp = np.sin(ivy.pi / 2 * (np.sin(ivy.pi * i / (window_length * 2)) ** 2))
-        result.append(round(temp, 8))
-    return np.array(result, dtype=dtype)
-
-
-vorbis_window.support_native_out = False
-
-
-def tril_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
+def blackman_window(
+    size: int,
     /,
     *,
-    device: str,
-) -> Tuple[np.ndarray, ...]:
-    return tuple(
-        _to_device(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)), device=device)
-    )
+    periodic: bool = True,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if size < 2:
+        return np.ones([size], dtype=dtype)
+    if periodic:
+        count = np.arange(size) / size
+    else:
+        count = np.linspace(start=0, stop=size, num=size)
+
+    return (
+        (0.42 - 0.5 * np.cos(2 * np.pi * count))
+        + (0.08 * np.cos(2 * np.pi * 2 * count))
+    ).astype(dtype)
 
 
 def hann_window(
@@ -57,7 +46,12 @@ def hann_window(
     return (0.5 - 0.5 * np.cos(2 * np.pi * count)).astype(dtype)
 
 
-hann_window.support_native_out = False
+def indices(
+    dimensions: Sequence,
+    dtype: np.dtype = np.int64,
+    sparse: bool = False,
+) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
+    return np.indices(dimensions, dtype=dtype, sparse=sparse)
 
 
 def kaiser_window(
@@ -76,15 +70,30 @@ def kaiser_window(
         return np.kaiser(M=window_length + 1, beta=beta)[:-1].astype(dtype)
 
 
-kaiser_window.support_native_out = False
+def tril_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[np.ndarray, ...]:
+    return tuple(
+        _to_device(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)), device=device)
+    )
 
 
-def indices(
-    dimensions: Sequence,
-    dtype: np.dtype = np.int64,
-    sparse: bool = False,
-) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
-    return np.indices(dimensions, dtype=dtype, sparse=sparse)
+def trilu(
+    x: np.ndarray,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if upper:
+        return np.triu(x, k)
+    return np.tril(x, k)
 
 
 def unsorted_segment_min(
@@ -113,30 +122,6 @@ def unsorted_segment_min(
     return res
 
 
-def blackman_window(
-    size: int,
-    /,
-    *,
-    periodic: bool = True,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if size < 2:
-        return np.ones([size], dtype=dtype)
-    if periodic:
-        count = np.arange(size) / size
-    else:
-        count = np.linspace(start=0, stop=size, num=size)
-
-    return (
-        (0.42 - 0.5 * np.cos(2 * np.pi * count))
-        + (0.08 * np.cos(2 * np.pi * 2 * count))
-    ).astype(dtype)
-
-
-blackman_window.support_native_out = False
-
-
 def unsorted_segment_sum(
     data: np.ndarray,
     segment_ids: np.ndarray,
@@ -160,14 +145,24 @@ def unsorted_segment_sum(
     return res
 
 
-def trilu(
-    x: np.ndarray,
-    /,
+# Array API Standard #
+# -------------------#
+
+
+def vorbis_window(
+    window_length: np.ndarray,
     *,
-    k: int = 0,
-    upper: bool = True,
+    dtype: np.dtype = np.float32,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if upper:
-        return np.triu(x, k)
-    return np.tril(x, k)
+    result = []
+    for i in range(1, window_length * 2, 2):
+        temp = np.sin(ivy.pi / 2 * (np.sin(ivy.pi * i / (window_length * 2)) ** 2))
+        result.append(round(temp, 8))
+    return np.array(result, dtype=dtype)
+
+
+vorbis_window.support_native_out = False
+hann_window.support_native_out = False
+kaiser_window.support_native_out = False
+blackman_window.support_native_out = False

@@ -79,6 +79,21 @@ def det(
     return tf.linalg.det(x)
 
 
+# Extra #
+# ----- #
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def diag(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    k: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.diag(x, k=k)
+
+
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
@@ -615,6 +630,21 @@ def trace(
 
 
 @with_unsupported_dtypes(
+    {"2.13.0 and below": ("bfloat16", "float16", "complex", "unsigned")},
+    backend_version,
+)
+def vander(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.vander(x, N=N, increasing=increasing)
+
+
+@with_unsupported_dtypes(
     {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
@@ -665,36 +695,6 @@ def vector_norm(
         return tf.reduce_min(abs_x, axis=axis, keepdims=keepdims)
     else:
         return tf.reduce_sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
-
-
-# Extra #
-# ----- #
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def diag(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    k: int = 0,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diag(x, k=k)
-
-
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16", "complex", "unsigned")},
-    backend_version,
-)
-def vander(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.vander(x, N=N, increasing=increasing)
 
 
 @with_unsupported_dtypes(

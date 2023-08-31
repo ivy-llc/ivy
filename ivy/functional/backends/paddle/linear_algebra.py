@@ -108,6 +108,33 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return ret
 
 
+# Extra #
+# ----- #
+
+
+def diag(
+    x: paddle.Tensor,
+    /,
+    *,
+    k: int = 0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
+            )
+        return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
+    return paddle.diag(x, offset=k)
+
+
 def diagonal(
     x: paddle.Tensor,
     /,
@@ -134,6 +161,16 @@ def diagonal(
             x.cast("float32"), offset=offset, axis1=axis1, axis2=axis2
         ).cast(x.dtype)
     return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+def eig(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> Tuple[paddle.Tensor]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
+    )
+    eigenvalues, eigenvectors = paddle.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 def eigh(
@@ -318,16 +355,6 @@ def matrix_norm(
     return ret
 
 
-def eig(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
-) -> Tuple[paddle.Tensor]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
-    )
-    eigenvalues, eigenvectors = paddle.linalg.eig(x)
-    return result_tuple(eigenvalues, eigenvectors)
-
-
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
@@ -421,18 +448,6 @@ def pinv(
     if rtol is None:
         return paddle.linalg.pinv(x)
     return paddle.linalg.pinv(x, rcond=rtol)
-
-
-def tensorsolve(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    # Implemented as a composite function in ivy.functional.ivy.linear_algebra
-    raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
@@ -560,6 +575,18 @@ def tensordot(
     return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
+def tensorsolve(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Implemented as a composite function in ivy.functional.ivy.linear_algebra
+    raise IvyNotImplementedException()
+
+
 @with_unsupported_device_and_dtypes(
     {
         "2.5.1 and below": {
@@ -586,6 +613,28 @@ def trace(
 ) -> paddle.Tensor:
     ret = paddle.trace(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret.squeeze() if x.ndim <= 2 else ret
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
+    backend_version,
+)
+def vander(
+    x: paddle.Tensor,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    N = ivy.default(N, x.shape[-1])
+    start, stop, step = N - 1, -1, -1
+    if increasing:
+        start, stop, step = 0, N, 1
+    return paddle.pow(
+        paddle.moveaxis(paddle.unsqueeze(x, 0), 0, 1),
+        paddle.arange(start, stop, step, dtype=x.dtype),
+    )
 
 
 def vecdot(
@@ -631,55 +680,6 @@ def vector_norm(
             ),
             (1.0 / ord),
         )
-
-
-# Extra #
-# ----- #
-
-
-def diag(
-    x: paddle.Tensor,
-    /,
-    *,
-    k: int = 0,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            return paddle.complex(
-                paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
-            )
-        return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
-    return paddle.diag(x, offset=k)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
-    backend_version,
-)
-def vander(
-    x: paddle.Tensor,
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    N = ivy.default(N, x.shape[-1])
-    start, stop, step = N - 1, -1, -1
-    if increasing:
-        start, stop, step = 0, N, 1
-    return paddle.pow(
-        paddle.moveaxis(paddle.unsqueeze(x, 0), 0, 1),
-        paddle.arange(start, stop, step, dtype=x.dtype),
-    )
 
 
 @with_unsupported_dtypes(

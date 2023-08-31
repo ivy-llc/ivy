@@ -58,13 +58,19 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
-def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
-    )
-    eigenvalues, eigenvectors = jnp.linalg.eig(x)
-    return result_tuple(eigenvalues, eigenvectors)
+# Extra #
+# ------#
+
+
+@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    k: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.diag(x, k=k)
 
 
 @with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
@@ -92,15 +98,13 @@ def diagonal(
     return ret
 
 
-def tensorsolve(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    axes: Optional[Union[int, Tuple[Sequence[int], Sequence[int]]]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.linalg.tensorsolve(x1, x2, axes)
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes(
@@ -388,6 +392,17 @@ def tensordot(
     return jnp.tensordot(x1, x2, axes)
 
 
+def tensorsolve(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axes: Optional[Union[int, Tuple[Sequence[int], Sequence[int]]]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.tensorsolve(x1, x2, axes)
+
+
 @with_unsupported_dtypes(
     {"0.4.14 and below": ("bfloat16", "float16", "complex")},
     backend_version,
@@ -402,6 +417,21 @@ def trace(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
+
+
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
+def vander(
+    x: JaxArray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vander(x, N=N, increasing=increasing)
 
 
 @with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
@@ -436,36 +466,6 @@ def vector_norm(
         return jnp.min(abs_x, axis=axis, keepdims=keepdims, out=out)
     else:
         return jnp.sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
-
-
-# Extra #
-# ------#
-
-
-@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
-def diag(
-    x: JaxArray,
-    /,
-    *,
-    k: int = 0,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.diag(x, k=k)
-
-
-@with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16", "float16", "complex")},
-    backend_version,
-)
-def vander(
-    x: JaxArray,
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.vander(x, N=N, increasing=increasing)
 
 
 @with_unsupported_dtypes(

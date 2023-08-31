@@ -9,21 +9,82 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.utils.einsum_parser import legalise_einsum_expr
 
-# Array API Standard #
-# -------------------#
+
+# --- Helpers --- #
+# --------------- #
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def min(
+def _infer_dtype(dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
+
+
+# --- Main --- #
+# ------------ #
+
+
+# Extra #
+# ------#
+
+
+@with_unsupported_dtypes({"2.13.0 and below": "bfloat16"}, backend_version)
+def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is tf.bool:
+            dtype = ivy.default_int_dtype()
+        else:
+            dtype = _infer_dtype(x.dtype)
+        dtype = ivy.as_native_dtype(dtype)
+    x = tf.cast(x, dtype)
+    return tf.math.cumprod(x, axis, exclusive, reverse)
+
+
+def cumsum(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is tf.bool:
+            dtype = ivy.default_int_dtype()
+        elif ivy.is_int_dtype(x.dtype):
+            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
+        else:
+            dtype = _infer_dtype(x.dtype)
+        dtype = ivy.as_native_dtype(dtype)
+    x = tf.cast(x, dtype)
+    return tf.math.cumsum(x, axis, exclusive, reverse)
+
+
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("unsigned", "int8", "int16")},
+    backend_version,
+)
+def einsum(
+    equation: str,
+    *operands: Union[tf.Tensor, tf.Variable],
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = _get_promoted_type_of_operands(operands)
+    equation = legalise_einsum_expr(*[equation, *operands])
+    return tf.cast(tf.einsum(equation, *operands), dtype)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
@@ -51,11 +112,21 @@ def mean(
     return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
-def _infer_dtype(dtype: tf.DType):
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-        return default_dtype
-    return dtype
+# Array API Standard #
+# -------------------#
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def min(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
 def prod(
@@ -144,65 +215,3 @@ def var(
             * size
             / (size - correction)
         )
-
-
-# Extra #
-# ------#
-
-
-@with_unsupported_dtypes({"2.13.0 and below": "bfloat16"}, backend_version)
-def cumprod(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is tf.bool:
-            dtype = ivy.default_int_dtype()
-        else:
-            dtype = _infer_dtype(x.dtype)
-        dtype = ivy.as_native_dtype(dtype)
-    x = tf.cast(x, dtype)
-    return tf.math.cumprod(x, axis, exclusive, reverse)
-
-
-def cumsum(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    *,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is tf.bool:
-            dtype = ivy.default_int_dtype()
-        elif ivy.is_int_dtype(x.dtype):
-            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
-        else:
-            dtype = _infer_dtype(x.dtype)
-        dtype = ivy.as_native_dtype(dtype)
-    x = tf.cast(x, dtype)
-    return tf.math.cumsum(x, axis, exclusive, reverse)
-
-
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("unsigned", "int8", "int16")},
-    backend_version,
-)
-def einsum(
-    equation: str,
-    *operands: Union[tf.Tensor, tf.Variable],
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = _get_promoted_type_of_operands(operands)
-    equation = legalise_einsum_expr(*[equation, *operands])
-    return tf.cast(tf.einsum(equation, *operands), dtype)

@@ -20,111 +20,8 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def moveaxis(
-    a: JaxArray,
-    source: Union[int, Sequence[int]],
-    destination: Union[int, Sequence[int]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.moveaxis(a, source, destination)
-
-
-def heaviside(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.heaviside(x1, x2)
-
-
-def flipud(
-    m: JaxArray,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.flipud(m)
-
-
-def vstack(
-    arrays: Sequence[JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.vstack(arrays)
-
-
-def hstack(
-    arrays: Sequence[JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.hstack(arrays)
-
-
-def rot90(
-    m: JaxArray,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    k: int = 1,
-    axes: Tuple[int, int] = (0, 1),
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if isinstance(axes, list):
-        axes = tuple(axes)
-    return jnp.rot90(m, k, axes)
-
-
-def top_k(
-    x: JaxArray,
-    k: int,
-    /,
-    *,
-    axis: int = -1,
-    largest: bool = True,
-    sorted: bool = True,
-    out: Optional[Tuple[JaxArray, JaxArray]] = None,
-) -> Tuple[JaxArray, JaxArray]:
-    k = min(k, x.shape[axis])
-    if not largest:
-        indices = jnp.argsort(x, axis=axis)
-        indices = jnp.take(indices, jnp.arange(k), axis=axis)
-    else:
-        indices = jnp.argsort(-x, axis=axis)
-        indices = jnp.take(indices, jnp.arange(k), axis=axis)
-    if not sorted:
-        indices = jnp.sort(indices, axis=axis)
-    topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
-    val = jnp.take_along_axis(x, indices, axis=axis)
-    return topk_res(val, indices)
-
-
-def fliplr(
-    m: JaxArray,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.fliplr(m)
-
-
-def i0(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.i0(x)
+# --- Helpers --- #
+# --------------- #
 
 
 def _flat_array_to_1_dim_array(x):
@@ -142,6 +39,182 @@ def _to_nested_tuple(nested_list):
         return ret
     if ret == ():
         return nested_list
+
+
+# --- Main --- #
+# ------------ #
+
+
+def atleast_1d(
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
+) -> List[JaxArray]:
+    return jnp.atleast_1d(*arys)
+
+
+def atleast_2d(*arys: JaxArray, copy: Optional[bool] = None) -> List[JaxArray]:
+    return jnp.atleast_2d(*arys)
+
+
+def atleast_3d(
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
+) -> List[JaxArray]:
+    return jnp.atleast_3d(*arys)
+
+
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+    return jnp.broadcast_shapes(*shapes)
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[JaxArray], List[JaxArray]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
+    if new_axis == 0:
+        ret = jnp.concatenate(input_sequence, axis=axis)
+        return ret
+    elif new_axis == 1:
+        ret = jnp.stack(input_sequence, axis=axis)
+        return ret
+
+
+def dsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[JaxArray]:
+    if ary.ndim < 3:
+        raise ivy.utils.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
+
+
+def dstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dstack(arrays)
+
+
+def expand(
+    x: JaxArray,
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    shape = list(shape)
+    if len(shape) > len(x.shape):
+        x = jnp.expand_dims(x, range(len(shape) - len(x.shape)))
+    for i, dim in enumerate(shape):
+        if dim < 0:
+            shape[i] = x.shape[i]
+    return jnp.broadcast_to(x, tuple(shape))
+
+
+def fill_diagonal(
+    a: JaxArray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> JaxArray:
+    shape = jnp.array(a.shape)
+    end = None
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (jnp.cumprod(shape[:-1])).sum()
+    a = jnp.reshape(a, (-1,))
+    a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
+    a = jnp.reshape(a, shape)
+    return a
+
+
+def fliplr(
+    m: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fliplr(m)
+
+
+def flipud(
+    m: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.flipud(m)
+
+
+def heaviside(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.heaviside(x1, x2)
+
+
+def hsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Tuple[int, ...]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[JaxArray]:
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
+
+
+def hstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.hstack(arrays)
+
+
+def i0(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.i0(x)
+
+
+def moveaxis(
+    a: JaxArray,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.moveaxis(a, source, destination)
 
 
 def pad(
@@ -228,57 +301,18 @@ def pad(
     return ret
 
 
-def vsplit(
-    ary: JaxArray,
-    indices_or_sections: Union[int, Sequence[int], JaxArray],
+def rot90(
+    m: JaxArray,
     /,
     *,
     copy: Optional[bool] = None,
-) -> List[JaxArray]:
-    if ary.ndim < 2:
-        raise ivy.exceptions.IvyError(
-            "vsplit only works on arrays of 2 or more dimensions"
-        )
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
-
-
-def dsplit(
-    ary: JaxArray,
-    indices_or_sections: Union[int, Sequence[int], JaxArray],
-    /,
-    *,
-    copy: Optional[bool] = None,
-) -> List[JaxArray]:
-    if ary.ndim < 3:
-        raise ivy.utils.exceptions.IvyError(
-            "dsplit only works on arrays of 3 or more dimensions"
-        )
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
-
-
-def atleast_1d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
-) -> List[JaxArray]:
-    return jnp.atleast_1d(*arys)
-
-
-def dstack(
-    arrays: Sequence[JaxArray],
-    /,
-    *,
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.dstack(arrays)
-
-
-def atleast_2d(*arys: JaxArray, copy: Optional[bool] = None) -> List[JaxArray]:
-    return jnp.atleast_2d(*arys)
-
-
-def atleast_3d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
-) -> List[JaxArray]:
-    return jnp.atleast_3d(*arys)
+    if isinstance(axes, list):
+        axes = tuple(axes)
+    return jnp.rot90(m, k, axes)
 
 
 def take_along_axis(
@@ -298,56 +332,28 @@ def take_along_axis(
     return jnp.take_along_axis(arr, indices, axis, mode=mode)
 
 
-def hsplit(
-    ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-) -> List[JaxArray]:
-    if ary.ndim == 1:
-        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
-
-
-def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    return jnp.broadcast_shapes(*shapes)
-
-
-def expand(
+def top_k(
     x: JaxArray,
-    shape: Union[List[int], List[Tuple]],
+    k: int,
     /,
     *,
-    copy: Optional[bool] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    shape = list(shape)
-    if len(shape) > len(x.shape):
-        x = jnp.expand_dims(x, range(len(shape) - len(x.shape)))
-    for i, dim in enumerate(shape):
-        if dim < 0:
-            shape[i] = x.shape[i]
-    return jnp.broadcast_to(x, tuple(shape))
-
-
-def concat_from_sequence(
-    input_sequence: Union[Tuple[JaxArray], List[JaxArray]],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    is_tuple = type(input_sequence) is tuple
-    if is_tuple:
-        input_sequence = list(input_sequence)
-    if new_axis == 0:
-        ret = jnp.concatenate(input_sequence, axis=axis)
-        return ret
-    elif new_axis == 1:
-        ret = jnp.stack(input_sequence, axis=axis)
-        return ret
+    axis: int = -1,
+    largest: bool = True,
+    sorted: bool = True,
+    out: Optional[Tuple[JaxArray, JaxArray]] = None,
+) -> Tuple[JaxArray, JaxArray]:
+    k = min(k, x.shape[axis])
+    if not largest:
+        indices = jnp.argsort(x, axis=axis)
+        indices = jnp.take(indices, jnp.arange(k), axis=axis)
+    else:
+        indices = jnp.argsort(-x, axis=axis)
+        indices = jnp.take(indices, jnp.arange(k), axis=axis)
+    if not sorted:
+        indices = jnp.sort(indices, axis=axis)
+    topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
+    val = jnp.take_along_axis(x, indices, axis=axis)
+    return topk_res(val, indices)
 
 
 def unique_consecutive(
@@ -393,22 +399,24 @@ def unique_consecutive(
     )
 
 
-def fill_diagonal(
-    a: JaxArray,
-    v: Union[int, float],
+def vsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
-    wrap: bool = False,
+    copy: Optional[bool] = None,
+) -> List[JaxArray]:
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+
+
+def vstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    shape = jnp.array(a.shape)
-    end = None
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + (jnp.cumprod(shape[:-1])).sum()
-    a = jnp.reshape(a, (-1,))
-    a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
-    a = jnp.reshape(a, shape)
-    return a
+    return jnp.vstack(arrays)

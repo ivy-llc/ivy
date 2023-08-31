@@ -15,10 +15,45 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _reshape_fortran_tf(x, shape):
     if len(x.shape) > 0:
         x = tf.transpose(x)
     return tf.transpose(tf.reshape(x, shape[::-1]))
+
+
+# --- Main --- #
+# ------------ #
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def clip(
+    x: Union[tf.Tensor, tf.Variable],
+    x_min: Union[Number, tf.Tensor, tf.Variable],
+    x_max: Union[Number, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+        x = tf.cast(x, promoted_type)
+        x_min = tf.cast(x_min, promoted_type)
+        x_max = tf.cast(x_max, promoted_type)
+    if tf.size(x) == 0:
+        ret = x
+    elif x.dtype == tf.bool:
+        ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
+        ret = tf.cast(ret, x.dtype)
+    else:
+        ret = tf.clip_by_value(x, x_min, x_max)
+    return ret
 
 
 # Array API Standard #
@@ -52,6 +87,14 @@ def concat(
         return tf.concat(xs, axis)
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
         raise ivy.utils.exceptions.IvyIndexError(error)
+
+
+def constant_pad(
+    x, /, pad_width, *, value=0, out: Optional[Union[tf.Tensor, tf.Variable]] = None
+):
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    return tf.pad(x, pad_width, constant_values=value)
 
 
 def expand_dims(
@@ -106,6 +149,18 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
+@with_supported_dtypes({"2.13.0 and below": ("int32", "int64")}, backend_version)
+def repeat(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    repeats: Union[int, List[int]],
+    *,
+    axis: int = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.repeat(x, repeats, axis)
+
+
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -146,6 +201,47 @@ def roll(
             shift = [shift for _ in range(len(axis))]
         ret = tf.roll(x, shift, axis)
     return ret
+
+
+# Extra #
+# ------#
+
+
+def split(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    num_or_size_splits: Optional[
+        Union[int, Sequence[int], Union[tf.Tensor, tf.Variable]]
+    ] = None,
+    axis: int = 0,
+    with_remainder: bool = False,
+) -> Union[tf.Tensor, tf.Variable]:
+    if x.shape == ():
+        if num_or_size_splits is not None and num_or_size_splits != 1:
+            raise ivy.utils.exceptions.IvyException(
+                "input array had no shape, but num_sections specified was {}".format(
+                    num_or_size_splits
+                )
+            )
+        return [x]
+    if num_or_size_splits is None:
+        dim_size = tf.shape(x)[axis]
+        num_or_size_splits = int(dim_size)
+    if isinstance(num_or_size_splits, (tf.Tensor, tf.Variable)):
+        num_or_size_splits = tf.cast(num_or_size_splits, tf.int32)
+        num_or_size_splits = num_or_size_splits.numpy().tolist()
+    elif isinstance(num_or_size_splits, int) and with_remainder:
+        num_chunks = x.shape[axis] / num_or_size_splits
+        num_chunks_int = math.floor(num_chunks)
+        remainder = num_chunks - num_chunks_int
+        if remainder != 0:
+            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
+                int(remainder * num_or_size_splits)
+            ]
+
+    return tf.split(x, num_or_size_splits, axis)
 
 
 def squeeze(
@@ -202,57 +298,25 @@ def stack(
         raise ivy.utils.exceptions.IvyIndexError(e)
 
 
-# Extra #
-# ------#
-
-
-def split(
-    x: Union[tf.Tensor, tf.Variable],
+def swapaxes(
+    x,
+    axis0,
+    axis1,
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[
-        Union[int, Sequence[int], Union[tf.Tensor, tf.Variable]]
-    ] = None,
-    axis: int = 0,
-    with_remainder: bool = False,
-) -> Union[tf.Tensor, tf.Variable]:
-    if x.shape == ():
-        if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
-            )
-        return [x]
-    if num_or_size_splits is None:
-        dim_size = tf.shape(x)[axis]
-        num_or_size_splits = int(dim_size)
-    if isinstance(num_or_size_splits, (tf.Tensor, tf.Variable)):
-        num_or_size_splits = tf.cast(num_or_size_splits, tf.int32)
-        num_or_size_splits = num_or_size_splits.numpy().tolist()
-    elif isinstance(num_or_size_splits, int) and with_remainder:
-        num_chunks = x.shape[axis] / num_or_size_splits
-        num_chunks_int = math.floor(num_chunks)
-        remainder = num_chunks - num_chunks_int
-        if remainder != 0:
-            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
-                int(remainder * num_or_size_splits)
-            ]
-
-    return tf.split(x, num_or_size_splits, axis)
-
-
-@with_supported_dtypes({"2.13.0 and below": ("int32", "int64")}, backend_version)
-def repeat(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    repeats: Union[int, List[int]],
-    *,
-    axis: int = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.repeat(x, repeats, axis)
+):
+    x_shape = x.shape
+    num_dims = len(x_shape)
+    axis0 %= num_dims
+    axis1 %= num_dims
+    config = list(range(num_dims))
+    config.pop(axis0)
+    config.insert(axis0, axis1)
+    config.pop(axis1)
+    config.insert(axis1, axis0)
+    return tf.transpose(x, config)
 
 
 @with_unsupported_dtypes(
@@ -293,68 +357,6 @@ def tile(
     return tf.tile(x, repeats)
 
 
-def constant_pad(
-    x, /, pad_width, *, value=0, out: Optional[Union[tf.Tensor, tf.Variable]] = None
-):
-    if x.shape == ():
-        x = tf.reshape(x, (-1,))
-    return tf.pad(x, pad_width, constant_values=value)
-
-
-def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
-    if x.shape == ():
-        x = tf.reshape(x, (-1,))
-    return tf.pad(x, pad_width)
-
-
-def swapaxes(
-    x,
-    axis0,
-    axis1,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
-    x_shape = x.shape
-    num_dims = len(x_shape)
-    axis0 %= num_dims
-    axis1 %= num_dims
-    config = list(range(num_dims))
-    config.pop(axis0)
-    config.insert(axis0, axis1)
-    config.pop(axis1)
-    config.insert(axis1, axis0)
-    return tf.transpose(x, config)
-
-
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def clip(
-    x: Union[tf.Tensor, tf.Variable],
-    x_min: Union[Number, tf.Tensor, tf.Variable],
-    x_max: Union[Number, tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
-        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
-        promoted_type = ivy.as_native_dtype(
-            ivy.promote_types(promoted_type, x_max.dtype)
-        )
-        x = tf.cast(x, promoted_type)
-        x_min = tf.cast(x_min, promoted_type)
-        x_max = tf.cast(x_max, promoted_type)
-    if tf.size(x) == 0:
-        ret = x
-    elif x.dtype == tf.bool:
-        ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
-        ret = tf.cast(ret, x.dtype)
-    else:
-        ret = tf.clip_by_value(x, x_min, x_max)
-    return ret
-
-
 def unstack(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -369,3 +371,9 @@ def unstack(
     if keepdims:
         return [tf.expand_dims(r, axis) for r in ret]
     return ret
+
+
+def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    return tf.pad(x, pad_width)

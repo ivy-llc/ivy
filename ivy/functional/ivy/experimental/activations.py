@@ -23,6 +23,68 @@ from ivy.func_wrapper import (
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_array_function
+def elu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Apply the elu unit function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    alpha
+        scaler for controlling the slope of the function for x <= 0 Default: 1.0
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with elu applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.elu(x)
+    >>> print(y)
+    ivy.array([ 0.38999999, -0.57258511])
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.elu(x, out=y)
+    >>> print(y)
+    ivy.array([ 1.5, 0.69999999, -0.90928203])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
+    >>> ivy.elu(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.10000002,  2.20000005,  3.29999995],
+           [-0.98772264, -0.99591321, -0.99863964]])
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.elu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -0.69880581]),
+        b: ivy.array([0.40000001, -0.18126924])
+    }
+    """
+    return current_backend(x).elu(x, alpha=alpha, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_device_shifting
 def logit(
     x: Union[float, int, ivy.Array],
@@ -65,6 +127,57 @@ def logit(
     ivy.array([ 1.38629448,  1.38629448, -1.38629436])
     """
     return current_backend(x).logit(x, eps=eps, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def logsigmoid(
+    input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Apply element-wise Log-sigmoid of x.
+
+    logsigmoid(x) = log(1 / (1 + exp(-x)).
+
+    Parameters
+    ----------
+    input
+        Input array.
+
+    Returns
+    -------
+        Array with same shape as input with Log-sigmoid applied to every element.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> z = x.logsigmoid()
+    >>> print(z)
+    ivy.array([-1.31326175, -0.69314718, -0.31326169])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> z = x.logsigmoid()
+    >>> print(z)
+    ivy.array([-0.20141329, -0.40318608, -2.48683619])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
+    >>> x = ivy.logsigmoid(x)
+    >>> print(x)
+    {
+        a: ivy.array([-0.31326169, -1.46328247]),
+        b: ivy.array([-0.59813893, -0.43748799])
+    }
+    """
+    return ivy.current_backend(input).logsigmoid(input, out=out)
 
 
 @handle_exceptions
@@ -131,67 +244,6 @@ def prelu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
-def thresholded_relu(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    threshold: Union[int, float] = 0,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Apply the rectified linear unit function with custom threshold.
-
-    Parameters
-    ----------
-    x
-        input array
-    threshold
-        threshold value above which the activation is linear. Default: ``0``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing the rectified linear unit activation of each element in
-        ``x``. with custom ``threshold``.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> y = ivy.thresholded_relu(x, threshold=0.5)
-    >>> print(y)
-    ivy.array([0.,  0. ,  1.])
-
-    >>> x = ivy.array([1.5, 0.7, -2.4])
-    >>> y = ivy.zeros(3)
-    >>> ivy.thresholded_relu(x, threshold=1, out = y)
-    >>> print(y)
-    ivy.array([ 1.5,  0., 0.])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
-    >>> x = ivy.thresholded_relu(x, threshold=0.5)
-    >>> print(x)
-    {
-        a: ivy.array([1., 0.]),
-        b: ivy.array([0., 0.6])
-    }
-    """
-    return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
 def relu6(
@@ -230,57 +282,6 @@ def relu6(
     ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
     """
     return current_backend(x).relu6(x, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
-def logsigmoid(
-    input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """
-    Apply element-wise Log-sigmoid of x.
-
-    logsigmoid(x) = log(1 / (1 + exp(-x)).
-
-    Parameters
-    ----------
-    input
-        Input array.
-
-    Returns
-    -------
-        Array with same shape as input with Log-sigmoid applied to every element.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> z = x.logsigmoid()
-    >>> print(z)
-    ivy.array([-1.31326175, -0.69314718, -0.31326169])
-
-    >>> x = ivy.array([1.5, 0.7, -2.4])
-    >>> z = x.logsigmoid()
-    >>> print(z)
-    ivy.array([-0.20141329, -0.40318608, -2.48683619])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
-    >>> x = ivy.logsigmoid(x)
-    >>> print(x)
-    {
-        a: ivy.array([-0.31326169, -1.46328247]),
-        b: ivy.array([-0.59813893, -0.43748799])
-    }
-    """
-    return ivy.current_backend(input).logsigmoid(input, out=out)
 
 
 @handle_exceptions
@@ -342,6 +343,40 @@ def selu(
     return current_backend(x).selu(x, out=out)
 
 
+def sequence_length(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.int64:
+    """
+    Produce a scalar (tensor of empty shape) containing the number of tensors in the ivy
+    array input.
+
+    Parameters
+    ----------
+    x
+        Can be a sequence of any tensor type: bool, complex128,
+        complex64, double, float, float16, int16, int32, int64,
+        int8, string, uint16, uint32, uint64, uint8
+
+    Returns
+    -------
+    length
+        Length of the input sequence, as a scalar (empty shape tensor).
+
+    Examples
+    --------
+    >>> x = ivy.array([True, False, True])
+    >>> y = ivy.sequence_length(x)
+    >>> print(y)
+    3
+
+    >>> x = [1.0, 2.5, -3.4, 5.6, -85.3]
+    >>> y = ivy.sequence_length(x)
+    >>> print(y)
+    5
+    """
+    return current_backend(x).sequence_length(x, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -398,23 +433,23 @@ def silu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_array_function
-def elu(
+@handle_device_shifting
+def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    alpha: float = 1.0,
+    threshold: Union[int, float] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Apply the elu unit function element-wise.
+    Apply the rectified linear unit function with custom threshold.
 
     Parameters
     ----------
     x
-        Input array.
-    alpha
-        scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        input array
+    threshold
+        threshold value above which the activation is linear. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -422,67 +457,32 @@ def elu(
     Returns
     -------
     ret
-        The input array with elu applied element-wise.
+        an array containing the rectified linear unit activation of each element in
+        ``x``. with custom ``threshold``.
 
     Examples
     --------
     With :class:`ivy.Array` input:
-    >>> x = ivy.array([0.39, -0.85])
-    >>> y = ivy.elu(x)
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> y = ivy.thresholded_relu(x, threshold=0.5)
     >>> print(y)
-    ivy.array([ 0.38999999, -0.57258511])
+    ivy.array([0.,  0. ,  1.])
+
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
-    >>> ivy.elu(x, out=y)
+    >>> ivy.thresholded_relu(x, threshold=1, out = y)
     >>> print(y)
-    ivy.array([ 1.5, 0.69999999, -0.90928203])
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    ...                [-4.4, -5.5, -6.6]])
-    >>> ivy.elu(x, out=x)
-    >>> print(x)
-    ivy.array([[ 1.10000002,  2.20000005,  3.29999995],
-           [-0.98772264, -0.99591321, -0.99863964]])
+    ivy.array([ 1.5,  0., 0.])
+
     With :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
-    >>> x = ivy.elu(x, out=x)
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
+    >>> x = ivy.thresholded_relu(x, threshold=0.5)
     >>> print(x)
     {
-        a: ivy.array([0., -0.69880581]),
-        b: ivy.array([0.40000001, -0.18126924])
+        a: ivy.array([1., 0.]),
+        b: ivy.array([0., 0.6])
     }
     """
-    return current_backend(x).elu(x, alpha=alpha, out=out)
-
-
-def sequence_length(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
-) -> ivy.int64:
-    """
-    Produce a scalar (tensor of empty shape) containing the number of tensors in the ivy
-    array input.
-
-    Parameters
-    ----------
-    x
-        Can be a sequence of any tensor type: bool, complex128,
-        complex64, double, float, float16, int16, int32, int64,
-        int8, string, uint16, uint32, uint64, uint8
-
-    Returns
-    -------
-    length
-        Length of the input sequence, as a scalar (empty shape tensor).
-
-    Examples
-    --------
-    >>> x = ivy.array([True, False, True])
-    >>> y = ivy.sequence_length(x)
-    >>> print(y)
-    3
-
-    >>> x = [1.0, 2.5, -3.4, 5.6, -85.3]
-    >>> y = ivy.sequence_length(x)
-    >>> print(y)
-    5
-    """
-    return current_backend(x).sequence_length(x, out=out)
+    return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)

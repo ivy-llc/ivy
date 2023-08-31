@@ -44,7 +44,6 @@ _i0A = [
     -3.04682672343198398683e-1,
     6.76795274409476084995e-1,
 ]
-
 _i0B = [
     -7.23318048787475395456e-18,
     -4.83050448594418207126e-18,
@@ -74,266 +73,6 @@ _i0B = [
 ]
 
 
-def moveaxis(
-    a: paddle.Tensor,
-    source: Union[int, Sequence[int]],
-    destination: Union[int, Sequence[int]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if isinstance(source, tuple):
-        source = list(source)
-    if isinstance(destination, tuple):
-        source = list(destination)
-    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
-        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
-    return paddle.moveaxis(a, source, destination)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "float16",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def heaviside(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.heaviside(x1, x2)
-
-
-def flipud(
-    m: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.flip(m.cast("float32"), axis=0).cast(m.dtype)
-    return paddle.flip(m, axis=0)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
-    backend_version,
-)
-def vstack(
-    arrays: Sequence[paddle.Tensor],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        if arrays[0].ndim >= 2:
-            return ivy.concat(arrays, axis=0)
-        else:
-            return ivy.stack(arrays, axis=0)
-
-
-def hstack(
-    arrays: Sequence[paddle.Tensor],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        if arrays[0].ndim >= 2:
-            return ivy.concat(arrays, axis=1)
-        else:
-            return ivy.concat(arrays, axis=0)
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.5.1 and above": {
-            "cpu": (
-                "bool",
-                "int32",
-                "int64",
-                "float32",
-                "float64",
-            ),
-            "gpu": ("float16",),
-        },
-    },
-    backend_version,
-)
-def rot90(
-    m: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if (k % 4) and m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.rot90(m.cast("float32"), k=k, axes=axes).cast(m.dtype)
-    return paddle.rot90(m, k=k, axes=axes)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
-    backend_version,
-)
-def top_k(
-    x: paddle.Tensor,
-    k: int,
-    /,
-    *,
-    axis: int = -1,
-    largest: Optional[bool] = True,
-    sorted: bool = True,
-    out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
-) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    k = min(k, x.shape[axis])
-    topk_res = NamedTuple(
-        "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
-    )
-    with ivy.ArrayMode(False):
-        indices = ivy.argsort(x, axis=axis, descending=largest)
-        indices = paddle.index_select(indices, paddle.arange(end=k), axis)
-        if not sorted:
-            indices = paddle.sort(indices, axis=axis)
-        val = ivy.take_along_axis(x, indices, axis)
-        return topk_res(val, indices)
-
-
-def fliplr(
-    m: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.flip(m.cast("float32"), axis=1).cast(m.dtype)
-    return paddle.flip(m, axis=1)
-
-
-def i0(
-    x: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    def _i0_1(x):
-        return paddle_backend.multiply(
-            paddle_backend.exp(x),
-            _chbevl(paddle_backend.subtract(paddle_backend.divide(x, 2.0), 2.0), _i0A),
-        )
-
-    def _i0_2(x):
-        return paddle_backend.divide(
-            paddle_backend.multiply(
-                paddle_backend.exp(x),
-                _chbevl(
-                    paddle_backend.subtract(paddle_backend.divide(32.0, x), 2.0), _i0B
-                ),
-            ),
-            paddle_backend.sqrt(x),
-        )
-
-    def _chbevl(x, vals):
-        b0 = vals[0]
-        b1 = 0.0
-
-        for i in range(1, len(vals)):
-            b2 = b1
-            b1 = b0
-            b0 = paddle_backend.add(
-                paddle_backend.subtract(paddle_backend.multiply(x, b1), b2), vals[i]
-            )
-        return paddle_backend.multiply(0.5, paddle_backend.subtract(b0, b2))
-
-    x = paddle_backend.abs(x)
-    return paddle_backend.where(paddle_backend.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
-
-
-def flatten(
-    x: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
-    if x.ndim == 0:
-        return x
-
-    def _flatten(x, start_dim, end_dim):
-        if x.dtype in [
-            paddle.float16,
-            paddle.complex64,
-            paddle.complex128,
-            paddle.bool,
-        ]:
-            if paddle.is_complex(x):
-                return paddle.complex(
-                    paddle.flatten(x.real(), start_axis=start_dim, stop_axis=end_dim),
-                    paddle.flatten(x.imag(), start_axis=start_dim, stop_axis=end_dim),
-                )
-            return paddle.flatten(
-                x.cast("float32"), start_axis=start_dim, stop_axis=end_dim
-            ).cast(x.dtype)
-        return paddle.flatten(x, start_axis=start_dim, stop_axis=end_dim)
-
-    if order == "F":
-        with ivy.ArrayMode(False):
-            x = ivy.permute_dims(x, list(reversed(range(x.ndim))))
-            ret = _flatten(x, start_dim, end_dim)
-            return ivy.permute_dims(ret, list(reversed(range(ret.ndim))))
-    return _flatten(x, start_dim, end_dim)
-
-
-def vsplit(
-    ary: paddle.Tensor,
-    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
-    /,
-    *,
-    copy: Optional[bool] = None,
-) -> List[paddle.Tensor]:
-    if ary.ndim < 2:
-        raise ivy.exceptions.IvyError(
-            "vsplit only works on arrays of 2 or more dimensions"
-        )
-    return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
-
-
-def dsplit(
-    ary: paddle.Tensor,
-    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
-    /,
-    *,
-    copy: Optional[bool] = None,
-) -> List[paddle.Tensor]:
-    if ary.ndim < 3:
-        raise ivy.exceptions.IvyError(
-            "dsplit only works on arrays of 3 or more dimensions"
-        )
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
-
-
 def atleast_1d(
     *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
@@ -348,22 +87,6 @@ def atleast_1d(
     if len(res) == 1:
         return res[0]
     return res
-
-
-def dstack(
-    arrays: Sequence[paddle.Tensor],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        arrays = ivy.atleast_2d(*arrays)
-        if not isinstance(arrays, list):
-            arrays = [arrays]
-        if arrays[0].ndim < 3:
-            return ivy.stack(arrays, axis=-1)
-        else:
-            return ivy.concat(arrays, axis=2)
 
 
 def atleast_2d(
@@ -405,6 +128,319 @@ def atleast_3d(
         return res[0]
     else:
         return res
+
+
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+    def _broadcast_shape(s1, s2):
+        len_1 = len(s1)
+        len_2 = len(s2)
+        if len_1 == 0:
+            return () if len_2 == 0 else s2
+        elif len_1 != 0 and len_2 == 0:
+            return s1
+        else:
+            return paddle.broadcast_shape(s1, s2)
+
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shape(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shape(result, shapes[i])
+    # paddle outputs -1 if the output dimension is 0
+    result = [0 if dim == -1 else dim for dim in result]
+    return tuple(result)
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        if new_axis == 0:
+            return ivy.concat(input_sequence, axis=axis)
+        elif new_axis == 1:
+            return ivy.stack(input_sequence, axis=axis)
+
+
+def dsplit(
+    ary: paddle.Tensor,
+    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[paddle.Tensor]:
+    if ary.ndim < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
+
+
+def dstack(
+    arrays: Sequence[paddle.Tensor],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        arrays = ivy.atleast_2d(*arrays)
+        if not isinstance(arrays, list):
+            arrays = [arrays]
+        if arrays[0].ndim < 3:
+            return ivy.stack(arrays, axis=-1)
+        else:
+            return ivy.concat(arrays, axis=2)
+
+
+def expand(
+    x: paddle.Tensor,
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle_backend.broadcast_to(x, shape)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+)
+def fill_diagonal(
+    a: paddle.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> paddle.Tensor:
+    shape = a.shape
+    max_end = paddle.prod(paddle.to_tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
+    end = max_end if end > max_end else end
+    a = paddle.reshape(a, (-1,))
+    w = paddle.zeros(a.shape, dtype=bool)
+    ins = paddle.arange(0, max_end)
+    steps = paddle.arange(0, end, step)
+
+    for i in steps:
+        i = ins == i
+        w = paddle.logical_or(w, i)
+    v = paddle.to_tensor(v, dtype=a.dtype)
+    a = paddle.where(w, v, a)
+    a = paddle.reshape(a, shape)
+    return a
+
+
+def flatten(
+    x: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
+    if x.ndim == 0:
+        return x
+
+    def _flatten(x, start_dim, end_dim):
+        if x.dtype in [
+            paddle.float16,
+            paddle.complex64,
+            paddle.complex128,
+            paddle.bool,
+        ]:
+            if paddle.is_complex(x):
+                return paddle.complex(
+                    paddle.flatten(x.real(), start_axis=start_dim, stop_axis=end_dim),
+                    paddle.flatten(x.imag(), start_axis=start_dim, stop_axis=end_dim),
+                )
+            return paddle.flatten(
+                x.cast("float32"), start_axis=start_dim, stop_axis=end_dim
+            ).cast(x.dtype)
+        return paddle.flatten(x, start_axis=start_dim, stop_axis=end_dim)
+
+    if order == "F":
+        with ivy.ArrayMode(False):
+            x = ivy.permute_dims(x, list(reversed(range(x.ndim))))
+            ret = _flatten(x, start_dim, end_dim)
+            return ivy.permute_dims(ret, list(reversed(range(ret.ndim))))
+    return _flatten(x, start_dim, end_dim)
+
+
+def fliplr(
+    m: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.flip(m.cast("float32"), axis=1).cast(m.dtype)
+    return paddle.flip(m, axis=1)
+
+
+def flipud(
+    m: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.flip(m.cast("float32"), axis=0).cast(m.dtype)
+    return paddle.flip(m, axis=0)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def heaviside(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.heaviside(x1, x2)
+
+
+def hsplit(
+    ary: paddle.Tensor,
+    indices_or_sections: Union[int, Tuple[int, ...]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+) -> List[paddle.Tensor]:
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
+
+
+def hstack(
+    arrays: Sequence[paddle.Tensor],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        if arrays[0].ndim >= 2:
+            return ivy.concat(arrays, axis=1)
+        else:
+            return ivy.concat(arrays, axis=0)
+
+
+def i0(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    def _i0_1(x):
+        return paddle_backend.multiply(
+            paddle_backend.exp(x),
+            _chbevl(paddle_backend.subtract(paddle_backend.divide(x, 2.0), 2.0), _i0A),
+        )
+
+    def _i0_2(x):
+        return paddle_backend.divide(
+            paddle_backend.multiply(
+                paddle_backend.exp(x),
+                _chbevl(
+                    paddle_backend.subtract(paddle_backend.divide(32.0, x), 2.0), _i0B
+                ),
+            ),
+            paddle_backend.sqrt(x),
+        )
+
+    def _chbevl(x, vals):
+        b0 = vals[0]
+        b1 = 0.0
+
+        for i in range(1, len(vals)):
+            b2 = b1
+            b1 = b0
+            b0 = paddle_backend.add(
+                paddle_backend.subtract(paddle_backend.multiply(x, b1), b2), vals[i]
+            )
+        return paddle_backend.multiply(0.5, paddle_backend.subtract(b0, b2))
+
+    x = paddle_backend.abs(x)
+    return paddle_backend.where(paddle_backend.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
+
+
+def moveaxis(
+    a: paddle.Tensor,
+    source: Union[int, Sequence[int]],
+    destination: Union[int, Sequence[int]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if isinstance(source, tuple):
+        source = list(source)
+    if isinstance(destination, tuple):
+        source = list(destination)
+    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
+    return paddle.moveaxis(a, source, destination)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and above": {
+            "cpu": (
+                "bool",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            ),
+            "gpu": ("float16",),
+        },
+    },
+    backend_version,
+)
+def rot90(
+    m: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    k: Optional[int] = 1,
+    axes: Optional[Tuple[int, int]] = (0, 1),
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if (k % 4) and m.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.rot90(m.cast("float32"), k=k, axes=axes).cast(m.dtype)
+    return paddle.rot90(m, k=k, axes=axes)
 
 
 @with_unsupported_device_and_dtypes(
@@ -484,65 +520,31 @@ def take_along_axis(
     return paddle.take_along_axis(arr, indices, axis)
 
 
-def hsplit(
-    ary: paddle.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-) -> List[paddle.Tensor]:
-    if ary.ndim == 1:
-        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
-    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
-
-
-def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    def _broadcast_shape(s1, s2):
-        len_1 = len(s1)
-        len_2 = len(s2)
-        if len_1 == 0:
-            return () if len_2 == 0 else s2
-        elif len_1 != 0 and len_2 == 0:
-            return s1
-        else:
-            return paddle.broadcast_shape(s1, s2)
-
-    if len(shapes) == 0:
-        raise ValueError("shapes=[] must be non-empty")
-    elif len(shapes) == 1:
-        return shapes[0]
-    result = _broadcast_shape(shapes[0], shapes[1])
-    for i in range(2, len(shapes)):
-        result = _broadcast_shape(result, shapes[i])
-    # paddle outputs -1 if the output dimension is 0
-    result = [0 if dim == -1 else dim for dim in result]
-    return tuple(result)
-
-
-def expand(
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def top_k(
     x: paddle.Tensor,
-    shape: Union[List[int], List[Tuple]],
+    k: int,
     /,
     *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle_backend.broadcast_to(x, shape)
-
-
-def concat_from_sequence(
-    input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
+    axis: int = -1,
+    largest: Optional[bool] = True,
+    sorted: bool = True,
+    out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    k = min(k, x.shape[axis])
+    topk_res = NamedTuple(
+        "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
+    )
     with ivy.ArrayMode(False):
-        if new_axis == 0:
-            return ivy.concat(input_sequence, axis=axis)
-        elif new_axis == 1:
-            return ivy.stack(input_sequence, axis=axis)
+        indices = ivy.argsort(x, axis=axis, descending=largest)
+        indices = paddle.index_select(indices, paddle.arange(end=k), axis)
+        if not sorted:
+            indices = paddle.sort(indices, axis=axis)
+        val = ivy.take_along_axis(x, indices, axis)
+        return topk_res(val, indices)
 
 
 @with_unsupported_device_and_dtypes(
@@ -608,35 +610,32 @@ def unique_consecutive(
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
-)
-def fill_diagonal(
-    a: paddle.Tensor,
-    v: Union[int, float],
+def vsplit(
+    ary: paddle.Tensor,
+    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
-    wrap: bool = False,
-) -> paddle.Tensor:
-    shape = a.shape
-    max_end = paddle.prod(paddle.to_tensor(shape))
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
-    end = max_end if end > max_end else end
-    a = paddle.reshape(a, (-1,))
-    w = paddle.zeros(a.shape, dtype=bool)
-    ins = paddle.arange(0, max_end)
-    steps = paddle.arange(0, end, step)
+    copy: Optional[bool] = None,
+) -> List[paddle.Tensor]:
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
 
-    for i in steps:
-        i = ins == i
-        w = paddle.logical_or(w, i)
-    v = paddle.to_tensor(v, dtype=a.dtype)
-    a = paddle.where(w, v, a)
-    a = paddle.reshape(a, shape)
-    return a
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
+    backend_version,
+)
+def vstack(
+    arrays: Sequence[paddle.Tensor],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        if arrays[0].ndim >= 2:
+            return ivy.concat(arrays, axis=0)
+        else:
+            return ivy.stack(arrays, axis=0)

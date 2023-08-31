@@ -18,37 +18,26 @@ from ivy.functional.ivy.device import (
 
 torch_scatter = None
 
-# API #
-# ----#
 
+class Profiler(BaseProfiler):
+    def __init__(self, save_dir: str):
+        super(Profiler, self).__init__(save_dir)
+        self._prof = profile(
+            activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True
+        )
 
-def dev(
-    x: torch.Tensor, /, *, as_native: bool = False
-) -> Union[ivy.Device, torch.device]:
-    dv = x.device
-    if as_native:
-        if isinstance(dv, torch.device):
-            dv = dv.type
-        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-            return torch.device(dv.replace("gpu", "mps"))
-        return torch.device(dv.replace("gpu", "cuda"))
-    return as_ivy_dev(dv)
+    def start(self):
+        self._prof.__enter__()
 
+    def stop(self):
+        self._prof.__exit__(None, None, None)
+        self._prof.export_chrome_trace(os.path.join(self._save_dir, "trace.json"))
 
-def to_device(
-    x: torch.Tensor,
-    device: torch.device,
-    /,
-    *,
-    stream: Optional[int] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if device is None:
-        return x
-    ret = x.to(as_native_dev(device))
-    if isinstance(x, torch.nn.Parameter):
-        return torch.nn.Parameter(ret)
-    return ret
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
 
 
 def as_ivy_dev(device: torch.device, /):
@@ -89,23 +78,27 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:
         mps.empty_cache()
 
 
-def num_gpus() -> int:
-    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        return 1
-    return torch.cuda.device_count()
+# API #
+# ----#
+
+
+def dev(
+    x: torch.Tensor, /, *, as_native: bool = False
+) -> Union[ivy.Device, torch.device]:
+    dv = x.device
+    if as_native:
+        if isinstance(dv, torch.device):
+            dv = dv.type
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            return torch.device(dv.replace("gpu", "mps"))
+        return torch.device(dv.replace("gpu", "cuda"))
+    return as_ivy_dev(dv)
 
 
 def gpu_is_available() -> bool:
     if hasattr(torch.backends, "mps"):
         return torch.backends.mps.is_available() or torch.cuda.is_available()
     elif torch.cuda.is_available():
-        return True
-    return False
-
-
-# noinspection PyUnresolvedReferences
-def tpu_is_available() -> bool:
-    if importlib.util.find_spec("torch_xla") is not None:
         return True
     return False
 
@@ -121,22 +114,30 @@ def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
     return fn(*args, **kwargs)
 
 
-class Profiler(BaseProfiler):
-    def __init__(self, save_dir: str):
-        super(Profiler, self).__init__(save_dir)
-        self._prof = profile(
-            activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True
-        )
+def num_gpus() -> int:
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        return 1
+    return torch.cuda.device_count()
 
-    def start(self):
-        self._prof.__enter__()
 
-    def stop(self):
-        self._prof.__exit__(None, None, None)
-        self._prof.export_chrome_trace(os.path.join(self._save_dir, "trace.json"))
+def to_device(
+    x: torch.Tensor,
+    device: torch.device,
+    /,
+    *,
+    stream: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if device is None:
+        return x
+    ret = x.to(as_native_dev(device))
+    if isinstance(x, torch.nn.Parameter):
+        return torch.nn.Parameter(ret)
+    return ret
 
-    def __enter__(self):
-        self.start()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()
+# noinspection PyUnresolvedReferences
+def tpu_is_available() -> bool:
+    if importlib.util.find_spec("torch_xla") is not None:
+        return True
+    return False

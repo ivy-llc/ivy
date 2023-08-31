@@ -1,7 +1,3 @@
-# global
-
-torch_scatter = None
-
 from typing import Union, Optional, Sequence
 
 import paddle
@@ -16,138 +12,13 @@ import ivy.functional.backends.paddle as paddle_backend
 # local
 from . import backend_version
 
-# Array API Standard #
-# -------------------#
+# global
+
+torch_scatter = None
 
 
-def min(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ret_dtype = x.dtype
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bfloat16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-            imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
-            ret = paddle.complex(real, imag)
-        else:
-            ret = paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.amin(x, axis=axis, keepdim=keepdims)
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == x.ndim:
-            axis = None
-    if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = ret.squeeze()
-    return ret.astype(ret_dtype)
-
-
-def max(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ret_dtype = x.dtype
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.bfloat16,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            real_part = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
-            imag_part = paddle.amax(x.imag(), axis=axis, keepdim=keepdims)
-            ret = paddle.complex(real_part, imag_part)
-        else:
-            ret = paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.amax(x, axis=axis, keepdim=keepdims)
-
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == x.ndim:
-            axis = None
-    if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = ret.squeeze()
-    return ret.astype(ret_dtype)
-
-
-def mean(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ret_dtype = x.dtype
-    if x.dtype not in [
-        paddle.float32,
-        paddle.float64,
-    ]:
-        if paddle.is_complex(x):
-            ret = paddle.complex(
-                paddle.mean(x.real(), axis=axis, keepdim=keepdims),
-                paddle.mean(x.imag(), axis=axis, keepdim=keepdims),
-            )
-        else:
-            ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-    else:
-        ret = paddle.mean(x, axis=axis, keepdim=keepdims)
-
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == x.ndim:
-            axis = None
-    if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = ret.squeeze()
-    return ret.astype(ret_dtype)
-
-
-def prod(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[paddle.dtype] = None,
-    keepdims: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    x_dtype = x.dtype
-    supported_dtypes = ["int32", "int64", "float32", "float64"]
-    if str(x_dtype) not in supported_dtypes:
-        x = x.cast("float32")
-    dtype_ = dtype
-    if str(dtype) not in supported_dtypes:
-        dtype = None
-    ret = paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
-    if ret.dtype != dtype_:
-        ret = ret.cast(dtype_)
-    return ret
+# --- Helpers --- #
+# --------------- #
 
 
 def _std(x, axis, correction, keepdim):
@@ -169,54 +40,8 @@ def _std(x, axis, correction, keepdim):
     return out
 
 
-def std(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    correction: Union[int, float] = 0,
-    keepdims: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return _std(x, axis, correction, keepdims).cast(x.dtype)
-
-
-def sum(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[paddle.dtype] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    dtype = x.dtype if dtype is None else dtype
-    dtype = ivy.as_ivy_dtype(dtype)
-    if x.dtype in [paddle.int8, paddle.uint8]:
-        ret = paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
-    else:
-        ret = paddle.sum(x.cast(dtype), axis=axis, dtype=dtype, keepdim=keepdims)
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == x.ndim:
-            axis = None
-    if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = paddle_backend.squeeze(ret, axis=-1)
-    return ret
-
-
-def var(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    correction: Union[int, float] = 0,
-    keepdims: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ret = paddle_backend.pow(_std(x, axis, correction, keepdims), 2).cast(x.dtype)
-    return ret
+# --- Main --- #
+# ------------ #
 
 
 # Extra #
@@ -344,3 +169,187 @@ def einsum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
+
+
+def max(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ret_dtype = x.dtype
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.bfloat16,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            real_part = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
+            imag_part = paddle.amax(x.imag(), axis=axis, keepdim=keepdims)
+            ret = paddle.complex(real_part, imag_part)
+        else:
+            ret = paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.amax(x, axis=axis, keepdim=keepdims)
+
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
+
+
+def mean(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ret_dtype = x.dtype
+    if x.dtype not in [
+        paddle.float32,
+        paddle.float64,
+    ]:
+        if paddle.is_complex(x):
+            ret = paddle.complex(
+                paddle.mean(x.real(), axis=axis, keepdim=keepdims),
+                paddle.mean(x.imag(), axis=axis, keepdim=keepdims),
+            )
+        else:
+            ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.mean(x, axis=axis, keepdim=keepdims)
+
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
+
+
+# Array API Standard #
+# -------------------#
+
+
+def min(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ret_dtype = x.dtype
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bfloat16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
+            imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
+            ret = paddle.complex(real, imag)
+        else:
+            ret = paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims)
+    else:
+        ret = paddle.amin(x, axis=axis, keepdim=keepdims)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.astype(ret_dtype)
+
+
+def prod(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[paddle.dtype] = None,
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    x_dtype = x.dtype
+    supported_dtypes = ["int32", "int64", "float32", "float64"]
+    if str(x_dtype) not in supported_dtypes:
+        x = x.cast("float32")
+    dtype_ = dtype
+    if str(dtype) not in supported_dtypes:
+        dtype = None
+    ret = paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    if ret.dtype != dtype_:
+        ret = ret.cast(dtype_)
+    return ret
+
+
+def std(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    correction: Union[int, float] = 0,
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return _std(x, axis, correction, keepdims).cast(x.dtype)
+
+
+def sum(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[paddle.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    dtype = x.dtype if dtype is None else dtype
+    dtype = ivy.as_ivy_dtype(dtype)
+    if x.dtype in [paddle.int8, paddle.uint8]:
+        ret = paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
+    else:
+        ret = paddle.sum(x.cast(dtype), axis=axis, dtype=dtype, keepdim=keepdims)
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = paddle_backend.squeeze(ret, axis=-1)
+    return ret
+
+
+def var(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    correction: Union[int, float] = 0,
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ret = paddle_backend.pow(_std(x, axis, correction, keepdims), 2).cast(x.dtype)
+    return ret

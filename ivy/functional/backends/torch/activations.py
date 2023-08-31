@@ -18,25 +18,6 @@ from . import backend_version
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def relu(
-    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.relu(x)
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def leaky_relu(
-    x: torch.Tensor,
-    /,
-    *,
-    alpha: float = 0.2,
-    complex_mode="jax",
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.nn.functional.leaky_relu(x, alpha)
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def gelu(
     x: torch.Tensor,
     /,
@@ -52,43 +33,31 @@ def gelu(
     return torch.nn.functional.gelu(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    if not ivy.is_array(x):
-        x = torch.tensor(x)
-    return torch.sigmoid(x, out=out)
-
-
-sigmoid.support_native_out = True
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
-def softmax(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Optional[int] = None,
-    out: Optional[torch.Tensor] = None,
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
+)
+def hardswish(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if axis is None:
-        axis = -1
-    return torch.nn.functional.softmax(x, axis)
+    return torch.nn.functional.hardswish(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
-def softplus(
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def leaky_relu(
     x: torch.Tensor,
     /,
     *,
-    beta: Optional[Union[int, float]] = None,
-    threshold: Optional[Union[int, float]] = None,
+    alpha: float = 0.2,
     complex_mode="jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    kwargs = {
-        k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
-    }
-    return torch.nn.functional.softplus(x, **kwargs)
+    return torch.nn.functional.leaky_relu(x, alpha)
 
 
 @with_unsupported_dtypes(
@@ -125,16 +94,47 @@ def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.nn.functional.mish(x)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "complex",
-            "float16",
-        )
-    },
-    backend_version,
-)
-def hardswish(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def relu(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.nn.functional.hardswish(x)
+    return torch.relu(x)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    if not ivy.is_array(x):
+        x = torch.tensor(x)
+    return torch.sigmoid(x, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
+def softmax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if axis is None:
+        axis = -1
+    return torch.nn.functional.softmax(x, axis)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def softplus(
+    x: torch.Tensor,
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    complex_mode="jax",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    kwargs = {
+        k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
+    }
+    return torch.nn.functional.softplus(x, **kwargs)
+
+
+sigmoid.support_native_out = True

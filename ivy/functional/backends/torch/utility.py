@@ -25,9 +25,6 @@ def all(
     return x
 
 
-all.support_native_out = True
-
-
 def any(
     x: torch.Tensor,
     /,
@@ -50,4 +47,5 @@ def any(
     return x
 
 
+all.support_native_out = True
 any.support_native_out = True

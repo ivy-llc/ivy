@@ -345,6 +345,95 @@ def det(
     return current_backend(x).det(x, out=out)
 
 
+# Extra #
+# ------#
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def diag(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    k: int = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the specified diagonals of the input array, or an array with the input
+    array's elements as diagonals.
+
+    Parameters
+    ----------
+    x
+        An array with rank >= 1.
+    k
+        An integer that controls which diagonal to consider.
+        Positive value means superdiagonal,
+        0 refers to the main diagonal,
+        and negative value means subdiagonal.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        If x is a 1-D array, the function returns a 2-D square array with the elements
+        of input as diagonals.
+        If x is a 2-D array, the function returns a 1-D array with the diagonal elements
+        of x.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.diagonal.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    ------------------
+
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(x)
+    ivy.array([0, 4, 8])
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(x, k=1)
+    ivy.array([1, 5])
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(x, k=-1)
+    ivy.array([3, 7])
+
+    >>> x = ivy.array([[0, 1, 2],
+    >>>                [3, 4, 5],
+    >>>                [6, 7, 8]])
+    >>> ivy.diag(ivy.diag(x))
+    ivy.array([[0, 0, 0],
+               [0, 4, 0],
+               [0, 0, 8]])
+    """
+    return current_backend(x).diag(x, k=k, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -927,6 +1016,41 @@ def inv(
     }
     """
     return current_backend(x).inv(x, adjoint=adjoint, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def lu_factor(
+    A: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    pivot: bool = True,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    """
+    Parameters
+    ----------
+    A
+        tensor of shape (*, m, n) where * is zero or more batch dimensions.
+
+    pivot
+        Whether to compute the LU decomposition with partial pivoting, or the regular LU
+        decomposition. pivot = False not supported on CPU. Default: True.
+
+    out
+        tuple of two tensors to write the output to. Ignored if None. Default: None.
+
+    Returns
+    -------
+    ret
+        A named tuple (LU, pivots).
+    """
+    return current_backend(A).lu_factor(A, pivot=pivot, out=out)
 
 
 @handle_exceptions
@@ -2318,6 +2442,51 @@ def tensordot(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def tensorsolve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    ndim1 = ivy.get_num_dims(x1)
+    ndim2 = ivy.get_num_dims(x2)
+
+    if axes is not None:
+        allaxes = list(range(0, ndim1))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(ndim1, k)
+
+        x1 = ivy.matrix_transpose(x1, allaxes)
+
+    old_shape = x1.shape[-(ndim1 - ndim2) :]
+
+    prod = 1
+    for k in old_shape:
+        prod *= k
+
+    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
+        raise ivy.utils.exceptions.IvyException(
+            "Input arrays must satisfy the requirement "
+            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+        )
+
+    x1 = ivy.reshape(x1, (prod, prod))
+    x2 = ivy.flatten(x2)
+    res = ivy.solve(x1, x2)
+    res = ivy.reshape(res, old_shape)
+    return res
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2441,6 +2610,80 @@ def trace(
     }
     """
     return current_backend(x).trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def vander(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Generate a Vandermonde matrix. The columns of the output matrix are elementwise
+    powers of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. If increasing is True,
+    the order of the columns is reversed x^0, x^1, ..., x^{(N-1)}. Such a matrix with a
+    geometric progression in each row is named for Alexandre-Theophile Vandermonde.
+
+    Parameters
+    ----------
+    x
+        1-D input array.
+    N
+         Number of columns in the output. If N is not specified,
+         a square array is returned (N = len(x))
+    increasing
+        Order of the powers of the columns. If True, the powers increase
+        from left to right, if False (the default) they are reversed.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Vandermonde matrix.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([1, 2, 3, 5])
+    >>> ivy.vander(x)
+    ivy.array(
+       [[  1,   1,   1,   1],
+        [  8,   4,   2,   1],
+        [ 27,   9,   3,   1],
+        [125,  25,   5,   1]]
+        )
+
+    >>> x = ivy.array([1, 2, 3, 5])
+    >>> ivy.vander(x, N=3)
+    ivy.array(
+       [[ 1,  1,  1],
+        [ 4,  2,  1],
+        [ 9,  3,  1],
+        [25,  5,  1]]
+        )
+
+    >>> x = ivy.array([1, 2, 3, 5])
+    >>> ivy.vander(x, N=3, increasing=True)
+    ivy.array(
+       [[ 1,  1,  1],
+        [ 1,  2,  4],
+        [ 1,  3,  9],
+        [ 1,  5, 25]]
+        )
+    """
+    return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
 
 
 @handle_exceptions
@@ -2657,169 +2900,6 @@ def vector_norm(
     )
 
 
-# Extra #
-# ------#
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-def diag(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    k: int = 0,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Return the specified diagonals of the input array, or an array with the input
-    array's elements as diagonals.
-
-    Parameters
-    ----------
-    x
-        An array with rank >= 1.
-    k
-        An integer that controls which diagonal to consider.
-        Positive value means superdiagonal,
-        0 refers to the main diagonal,
-        and negative value means subdiagonal.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        If x is a 1-D array, the function returns a 2-D square array with the elements
-        of input as diagonals.
-        If x is a 2-D array, the function returns a 1-D array with the diagonal elements
-        of x.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    extensions/generated/array_api.linalg.diagonal.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Functional Examples
-    ------------------
-
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([[0, 1, 2],
-    >>>                [3, 4, 5],
-    >>>                [6, 7, 8]])
-    >>> ivy.diag(x)
-    ivy.array([0, 4, 8])
-
-    >>> x = ivy.array([[0, 1, 2],
-    >>>                [3, 4, 5],
-    >>>                [6, 7, 8]])
-    >>> ivy.diag(x, k=1)
-    ivy.array([1, 5])
-
-    >>> x = ivy.array([[0, 1, 2],
-    >>>                [3, 4, 5],
-    >>>                [6, 7, 8]])
-    >>> ivy.diag(x, k=-1)
-    ivy.array([3, 7])
-
-    >>> x = ivy.array([[0, 1, 2],
-    >>>                [3, 4, 5],
-    >>>                [6, 7, 8]])
-    >>> ivy.diag(ivy.diag(x))
-    ivy.array([[0, 0, 0],
-               [0, 4, 0],
-               [0, 0, 8]])
-    """
-    return current_backend(x).diag(x, k=k, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-def vander(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: bool = False,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Generate a Vandermonde matrix. The columns of the output matrix are elementwise
-    powers of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x. If increasing is True,
-    the order of the columns is reversed x^0, x^1, ..., x^{(N-1)}. Such a matrix with a
-    geometric progression in each row is named for Alexandre-Theophile Vandermonde.
-
-    Parameters
-    ----------
-    x
-        1-D input array.
-    N
-         Number of columns in the output. If N is not specified,
-         a square array is returned (N = len(x))
-    increasing
-        Order of the powers of the columns. If True, the powers increase
-        from left to right, if False (the default) they are reversed.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Vandermonde matrix.
-
-    Examples
-    --------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1, 2, 3, 5])
-    >>> ivy.vander(x)
-    ivy.array(
-       [[  1,   1,   1,   1],
-        [  8,   4,   2,   1],
-        [ 27,   9,   3,   1],
-        [125,  25,   5,   1]]
-        )
-
-    >>> x = ivy.array([1, 2, 3, 5])
-    >>> ivy.vander(x, N=3)
-    ivy.array(
-       [[ 1,  1,  1],
-        [ 4,  2,  1],
-        [ 9,  3,  1],
-        [25,  5,  1]]
-        )
-
-    >>> x = ivy.array([1, 2, 3, 5])
-    >>> ivy.vander(x, N=3, increasing=True)
-    ivy.array(
-       [[ 1,  1,  1],
-        [ 1,  2,  4],
-        [ 1,  3,  9],
-        [ 1,  5, 25]]
-        )
-    """
-    return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
-
-
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -2854,84 +2934,3 @@ def vector_to_skew_symmetric_matrix(
     instances in place of any of the arguments.
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
-def lu_factor(
-    A: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    pivot: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Parameters
-    ----------
-    A
-        tensor of shape (*, m, n) where * is zero or more batch dimensions.
-
-    pivot
-        Whether to compute the LU decomposition with partial pivoting, or the regular LU
-        decomposition. pivot = False not supported on CPU. Default: True.
-
-    out
-        tuple of two tensors to write the output to. Ignored if None. Default: None.
-
-    Returns
-    -------
-    ret
-        A named tuple (LU, pivots).
-    """
-    return current_backend(A).lu_factor(A, pivot=pivot, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-def tensorsolve(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    ndim1 = ivy.get_num_dims(x1)
-    ndim2 = ivy.get_num_dims(x2)
-
-    if axes is not None:
-        allaxes = list(range(0, ndim1))
-        for k in axes:
-            allaxes.remove(k)
-            allaxes.insert(ndim1, k)
-
-        x1 = ivy.matrix_transpose(x1, allaxes)
-
-    old_shape = x1.shape[-(ndim1 - ndim2) :]
-
-    prod = 1
-    for k in old_shape:
-        prod *= k
-
-    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
-        raise ivy.utils.exceptions.IvyException(
-            "Input arrays must satisfy the requirement "
-            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
-        )
-
-    x1 = ivy.reshape(x1, (prod, prod))
-    x2 = ivy.flatten(x2)
-    res = ivy.solve(x1, x2)
-    res = ivy.reshape(res, old_shape)
-    return res
-    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)

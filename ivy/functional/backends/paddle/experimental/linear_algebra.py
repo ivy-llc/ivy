@@ -12,6 +12,26 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
+def adjoint(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    _check_valid_dimension_size(x)
+    return paddle.moveaxis(x, -2, -1).conj()
+
+
+def cond(
+    x: paddle.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> Any:
+    raise IvyNotImplementedException()
+
+
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
@@ -45,6 +65,26 @@ def diagflat(
         )(diag)
 
 
+def dot(
+    a: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.dot(a, b, out=out)
+
+
+def eig(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> Tuple[paddle.Tensor]:
+    return paddle.linalg.eig(x)
+
+
+def eigvals(x: paddle.Tensor, /) -> paddle.Tensor:
+    return paddle.linalg.eig(x)[0]
+
+
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
@@ -58,47 +98,6 @@ def kron(
     return paddle.kron(a, b)
 
 
-def matrix_exp(
-    x: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    # TODO: this is elementwise exp, should be changed to matrix exp ASAP
-    # return paddle.exp(x)
-    raise IvyNotImplementedException()
-
-
-def eig(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
-) -> Tuple[paddle.Tensor]:
-    return paddle.linalg.eig(x)
-
-
-def eigvals(x: paddle.Tensor, /) -> paddle.Tensor:
-    return paddle.linalg.eig(x)[0]
-
-
-def adjoint(
-    x: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    _check_valid_dimension_size(x)
-    return paddle.moveaxis(x, -2, -1).conj()
-
-
-def cond(
-    x: paddle.Tensor,
-    /,
-    *,
-    p: Optional[Union[None, int, str]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> Any:
-    raise IvyNotImplementedException()
-
-
 def lu_factor(
     x: paddle.Tensor,
     /,
@@ -109,17 +108,15 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
-def dot(
-    a: paddle.Tensor,
-    b: paddle.Tensor,
+def matrix_exp(
+    x: paddle.Tensor,
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.dot(a, b, out=out)
-
-
-dot.support_native_out = True
+    # TODO: this is elementwise exp, should be changed to matrix exp ASAP
+    # return paddle.exp(x)
+    raise IvyNotImplementedException()
 
 
 @with_supported_device_and_dtypes(
@@ -145,3 +142,6 @@ def multi_dot(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.linalg.multi_dot(x)
+
+
+dot.support_native_out = True

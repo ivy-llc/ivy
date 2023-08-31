@@ -33,6 +33,15 @@ def argmin(
     raise IvyNotImplementedException()
 
 
+def argwhere(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def nonzero(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -48,15 +57,6 @@ def where(
     condition: Union[(None, mx.ndarray.NDArray)],
     x1: Union[(None, mx.ndarray.NDArray)],
     x2: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def argwhere(
-    x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,

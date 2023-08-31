@@ -14,6 +14,33 @@ from . import backend_version
 from ...ivy.manipulation import _calculate_out_shape
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _reshape_fortran_paddle(x, shape):
+    if len(x.shape) > 0:
+        x = paddle_backend.permute_dims(x, list(reversed(range(x.ndim))))
+    return paddle_backend.permute_dims(
+        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
+    )
+
+
+# --- Main --- #
+# ------------ #
+
+
+def clip(
+    x: paddle.Tensor,
+    x_min: Union[Number, paddle.Tensor],
+    x_max: Union[Number, paddle.Tensor],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle_backend.minimum(paddle_backend.maximum(x, x_min), x_max)
+
+
 # Array API Standard #
 # -------------------#
 
@@ -52,6 +79,35 @@ def concat(
     if dtype == paddle.int16:
         ret = ret.cast("int16")
     return ret
+
+
+def constant_pad(
+    x: paddle.Tensor,
+    /,
+    pad_width: List[List[int]],
+    *,
+    value: Number = 0.0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    paddings = []
+    pad_width = list(pad_width)
+    for item in pad_width:
+        if len(item) != 2:
+            raise ivy.utils.exceptions.IvyException("Length of each item should be 2")
+        else:
+            paddings.append(item[0])
+            paddings.append(item[1])
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.nn.functional.pad(
+            x.cast("float32"), pad=paddings, value=value
+        ).cast(x.dtype)
+    return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
 
 def expand_dims(
@@ -97,12 +153,50 @@ def permute_dims(
     return paddle.transpose(x, axes)
 
 
-def _reshape_fortran_paddle(x, shape):
-    if len(x.shape) > 0:
-        x = paddle_backend.permute_dims(x, list(reversed(range(x.ndim))))
-    return paddle_backend.permute_dims(
-        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
-    )
+def repeat(
+    x: paddle.Tensor,
+    /,
+    repeats: Union[int, Iterable[int]],
+    *,
+    axis: int = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # handle the case when repeats contains 0 as paddle doesn't support it
+    if (isinstance(repeats, Number) and repeats == 0) or (
+        isinstance(repeats, paddle.Tensor) and repeats.size == 1 and repeats.item() == 0
+    ):
+        if axis is None:
+            return paddle.to_tensor([], dtype=x.dtype)
+        else:
+            shape = x.shape
+            shape[axis] = 0
+            return paddle.zeros(shape=shape).cast(x.dtype)
+
+    if isinstance(repeats, paddle.Tensor) and repeats.size == 1:
+        repeats = repeats.item()
+
+    if axis is not None:
+        axis = axis % x.ndim
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
+                paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
+            )
+
+        return paddle.repeat_interleave(
+            x.cast("float32"), repeats=repeats, axis=axis
+        ).cast(x.dtype)
+
+    return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
 
 
 def reshape(
@@ -168,6 +262,62 @@ def roll(
     ]:
         return paddle.roll(x.cast("float32"), shift, axis).cast(x.dtype)
     return paddle.roll(x, shift, axis)
+
+
+# Extra #
+# ------#
+
+
+def split(
+    x: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    num_or_size_splits: Optional[Union[int, List[int], paddle.Tensor]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[paddle.Tensor]:
+    if x.shape == ():
+        if num_or_size_splits is not None and num_or_size_splits != 1:
+            raise ivy.utils.exceptions.IvyException(
+                "input array had no shape, but num_sections specified was {}".format(
+                    num_or_size_splits
+                )
+            )
+        return [x]
+    if num_or_size_splits is None:
+        num_or_size_splits = x.shape[axis]
+    elif isinstance(num_or_size_splits, paddle.Tensor):
+        num_or_size_splits = num_or_size_splits.cast("int32")
+        num_or_size_splits = num_or_size_splits.tolist()
+    elif isinstance(num_or_size_splits, int):
+        num_chunks = x.shape[axis] // num_or_size_splits
+        remainder = x.shape[axis] % num_or_size_splits
+        if remainder != 0:
+            if with_remainder:
+                num_or_size_splits = [num_or_size_splits] * num_chunks + [remainder]
+            else:
+                raise ivy.utils.exceptions.IvyException(
+                    "Split size is not compatible with input shape"
+                )
+
+    if isinstance(num_or_size_splits, (list, tuple)):
+        if sum(num_or_size_splits) < x.shape[axis]:
+            num_or_size_splits + type(num_or_size_splits)([-1])
+        elif sum(num_or_size_splits) > x.shape[axis]:
+            raise ivy.utils.exceptions.IvyException(
+                "total split size is not compatible with input shape,"
+                f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
+            )
+
+    if x.dtype in [paddle.int16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
+            real_list = paddle.split(x.real(), num_or_size_splits, axis)
+            return [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
+        ret = paddle.split(x.cast("int32"), num_or_size_splits, axis)
+        return [tensor.cast(x.dtype) for tensor in ret]
+    return paddle.split(x, num_or_size_splits, axis)
 
 
 def squeeze(
@@ -241,106 +391,18 @@ def stack(
         return paddle.stack(arrays, axis=axis)
 
 
-# Extra #
-# ------#
-
-
-def split(
+def swapaxes(
     x: paddle.Tensor,
+    axis0: int,
+    axis1: int,
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, List[int], paddle.Tensor]] = None,
-    axis: Optional[int] = 0,
-    with_remainder: Optional[bool] = False,
-) -> List[paddle.Tensor]:
-    if x.shape == ():
-        if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
-            )
-        return [x]
-    if num_or_size_splits is None:
-        num_or_size_splits = x.shape[axis]
-    elif isinstance(num_or_size_splits, paddle.Tensor):
-        num_or_size_splits = num_or_size_splits.cast("int32")
-        num_or_size_splits = num_or_size_splits.tolist()
-    elif isinstance(num_or_size_splits, int):
-        num_chunks = x.shape[axis] // num_or_size_splits
-        remainder = x.shape[axis] % num_or_size_splits
-        if remainder != 0:
-            if with_remainder:
-                num_or_size_splits = [num_or_size_splits] * num_chunks + [remainder]
-            else:
-                raise ivy.utils.exceptions.IvyException(
-                    "Split size is not compatible with input shape"
-                )
-
-    if isinstance(num_or_size_splits, (list, tuple)):
-        if sum(num_or_size_splits) < x.shape[axis]:
-            num_or_size_splits + type(num_or_size_splits)([-1])
-        elif sum(num_or_size_splits) > x.shape[axis]:
-            raise ivy.utils.exceptions.IvyException(
-                "total split size is not compatible with input shape,"
-                f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
-            )
-
-    if x.dtype in [paddle.int16, paddle.complex64, paddle.complex128]:
-        if paddle.is_complex(x):
-            imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
-            real_list = paddle.split(x.real(), num_or_size_splits, axis)
-            return [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
-        ret = paddle.split(x.cast("int32"), num_or_size_splits, axis)
-        return [tensor.cast(x.dtype) for tensor in ret]
-    return paddle.split(x, num_or_size_splits, axis)
-
-
-def repeat(
-    x: paddle.Tensor,
-    /,
-    repeats: Union[int, Iterable[int]],
-    *,
-    axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # handle the case when repeats contains 0 as paddle doesn't support it
-    if (isinstance(repeats, Number) and repeats == 0) or (
-        isinstance(repeats, paddle.Tensor) and repeats.size == 1 and repeats.item() == 0
-    ):
-        if axis is None:
-            return paddle.to_tensor([], dtype=x.dtype)
-        else:
-            shape = x.shape
-            shape[axis] = 0
-            return paddle.zeros(shape=shape).cast(x.dtype)
-
-    if isinstance(repeats, paddle.Tensor) and repeats.size == 1:
-        repeats = repeats.item()
-
-    if axis is not None:
-        axis = axis % x.ndim
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            return paddle.complex(
-                paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
-                paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
-            )
-
-        return paddle.repeat_interleave(
-            x.cast("float32"), repeats=repeats, axis=axis
-        ).cast(x.dtype)
-
-    return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
+    axes = [x for x in range(x.ndim)]
+    axes[axis0], axes[axis1] = axes[axis1], axes[axis0]
+    return paddle_backend.permute_dims(x, axes)
 
 
 def tile(
@@ -383,70 +445,6 @@ def tile(
     return paddle.tile(x, repeats)
 
 
-def constant_pad(
-    x: paddle.Tensor,
-    /,
-    pad_width: List[List[int]],
-    *,
-    value: Number = 0.0,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    paddings = []
-    pad_width = list(pad_width)
-    for item in pad_width:
-        if len(item) != 2:
-            raise ivy.utils.exceptions.IvyException("Length of each item should be 2")
-        else:
-            paddings.append(item[0])
-            paddings.append(item[1])
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        return paddle.nn.functional.pad(
-            x.cast("float32"), pad=paddings, value=value
-        ).cast(x.dtype)
-    return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
-
-
-def zero_pad(
-    x: paddle.Tensor,
-    /,
-    pad_width: List[List[int]],
-    *,
-    out: Optional[paddle.Tensor] = None,
-):
-    return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)
-
-
-def swapaxes(
-    x: paddle.Tensor,
-    axis0: int,
-    axis1: int,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    axes = [x for x in range(x.ndim)]
-    axes[axis0], axes[axis1] = axes[axis1], axes[axis0]
-    return paddle_backend.permute_dims(x, axes)
-
-
-def clip(
-    x: paddle.Tensor,
-    x_min: Union[Number, paddle.Tensor],
-    x_max: Union[Number, paddle.Tensor],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle_backend.minimum(paddle_backend.maximum(x, x_min), x_max)
-
-
 def unstack(
     x: paddle.Tensor,
     /,
@@ -482,3 +480,13 @@ def unstack(
     if keepdims:
         return [paddle_backend.expand_dims(r, axis=axis) for r in ret]
     return ret
+
+
+def zero_pad(
+    x: paddle.Tensor,
+    /,
+    pad_width: List[List[int]],
+    *,
+    out: Optional[paddle.Tensor] = None,
+):
+    return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)

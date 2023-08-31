@@ -97,11 +97,27 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
-    (x.ndim > 1 and x.ndim < 6)
-    and (scale is not None and scale.ndim == 1)
-    and (offset is not None and offset.ndim == 1)
-)
+def instance_norm(
+    x: paddle.Tensor,
+    mean: paddle.Tensor,
+    variance: paddle.Tensor,
+    /,
+    *,
+    scale: Optional[paddle.Tensor] = None,
+    offset: Optional[paddle.Tensor] = None,
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
+    out: Optional[
+        Tuple[
+            paddle.Tensor,
+            paddle.Tensor,
+            paddle.Tensor,
+        ]
+    ] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
+    raise IvyNotImplementedException()
 
 
 def l1_normalize(
@@ -132,30 +148,14 @@ def l2_normalize(
     raise IvyNotImplementedException()
 
 
-def instance_norm(
-    x: paddle.Tensor,
-    mean: paddle.Tensor,
-    variance: paddle.Tensor,
-    /,
-    *,
-    scale: Optional[paddle.Tensor] = None,
-    offset: Optional[paddle.Tensor] = None,
-    training: Optional[bool] = False,
-    eps: Optional[float] = 1e-5,
-    momentum: Optional[float] = 1e-1,
-    data_format: Optional[str] = "NSC",
-    out: Optional[
-        Tuple[
-            paddle.Tensor,
-            paddle.Tensor,
-            paddle.Tensor,
-        ]
-    ] = None,
-) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
-    raise IvyNotImplementedException()
-
-
 def lp_normalize(
     x: paddle.Tensor, /, *, p: float = 2, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
+
+
+batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
+    (x.ndim > 1 and x.ndim < 6)
+    and (scale is not None and scale.ndim == 1)
+    and (offset is not None and offset.ndim == 1)
+)

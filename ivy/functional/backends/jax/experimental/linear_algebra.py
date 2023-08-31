@@ -10,6 +10,28 @@ from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimensio
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+def adjoint(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    _check_valid_dimension_size(x)
+    axes = list(range(len(x.shape)))
+    axes[-1], axes[-2] = axes[-2], axes[-1]
+    return jnp.conjugate(jnp.transpose(x, axes=axes))
+
+
+def cond(
+    x: JaxArray,
+    /,
+    *,
+    p: Optional[Union[int, str, None]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.cond(x, p=p)
+
+
 def diagflat(
     x: JaxArray,
     /,
@@ -86,23 +108,14 @@ def diagflat(
     return ret
 
 
-def kron(
+def dot(
     a: JaxArray,
     b: JaxArray,
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.kron(a, b)
-
-
-def matrix_exp(
-    x: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jla.expm(x)
+    return jnp.dot(a, b)
 
 
 def eig(
@@ -120,35 +133,14 @@ def eigvals(x: JaxArray, /) -> JaxArray:
     return jnp.linalg.eigvals(x)
 
 
-def adjoint(
-    x: JaxArray,
+def kron(
+    a: JaxArray,
+    b: JaxArray,
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    _check_valid_dimension_size(x)
-    axes = list(range(len(x.shape)))
-    axes[-1], axes[-2] = axes[-2], axes[-1]
-    return jnp.conjugate(jnp.transpose(x, axes=axes))
-
-
-def multi_dot(
-    x: Sequence[JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.linalg.multi_dot(x)
-
-
-def cond(
-    x: JaxArray,
-    /,
-    *,
-    p: Optional[Union[int, str, None]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.linalg.cond(x, p=p)
+    return jnp.kron(a, b)
 
 
 def lu_factor(
@@ -161,14 +153,22 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
-def dot(
-    a: JaxArray,
-    b: JaxArray,
+def matrix_exp(
+    x: JaxArray,
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.dot(a, b)
+    return jla.expm(x)
+
+
+def multi_dot(
+    x: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.multi_dot(x)
 
 
 dot.support_native_out = True

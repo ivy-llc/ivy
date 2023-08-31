@@ -13,24 +13,8 @@ from ivy.functional.ivy.general import _broadcast_to
 from ivy.utils.exceptions import _check_inplace_update_support
 
 
-def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, paddle.Tensor):
-        if exclusive and not x.stop_gradient:
-            return False
-        return True
-    return False
-
-
-def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
-    return bool(paddle_backend.all(paddle_backend.equal(x0, x1)))
-
-
-def container_types():
-    return []
-
-
-def current_backend_str() -> str:
-    return "paddle"
+# --- Helpers --- #
+# --------------- #
 
 
 def _check_query(query):
@@ -45,59 +29,20 @@ def _check_query(query):
     )
 
 
-def get_item(
-    x: paddle.Tensor,
-    /,
-    query: Union[paddle.Tensor, Tuple],
-    *,
-    copy: bool = None,
-) -> paddle.Tensor:
-    dtype = x.dtype
-    if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
-        ret = x.cast("float32").__getitem__(query).cast(dtype)
-    elif dtype in [paddle.complex64, paddle.complex128]:
-        ret = paddle.complex(
-            x.real().__getitem__(query),
-            x.imag().__getitem__(query),
-        )
-    else:
-        ret = x.__getitem__(query)
-    return ret
+# --- Main --- #
+# ------------ #
 
 
-get_item.partial_mixed_handler = (
-    lambda x, query, **kwargs: _check_query(query) and 0 not in x.shape
-)
+def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
+    return bool(paddle_backend.all(paddle_backend.equal(x0, x1)))
 
 
-def to_numpy(
-    x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
-) -> Union[np.ndarray, List[np.ndarray]]:
-    if isinstance(x, (float, int, bool)):
-        return x
-    elif isinstance(x, np.ndarray):
-        if copy:
-            return x.copy()
-        else:
-            return x
-    elif paddle.is_tensor(x):
-        if copy:
-            return np.array(x)
-        else:
-            return np.asarray(x)
-    elif isinstance(x, list):
-        return [ivy.to_numpy(u) for u in x]
-    raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
+def container_types():
+    return []
 
 
-def to_scalar(x: paddle.Tensor, /) -> Number:
-    if isinstance(x, (Number, complex)):
-        return x
-    return x.item()
-
-
-def to_list(x: paddle.Tensor, /) -> list:
-    return x.tolist()
+def current_backend_str() -> str:
+    return "paddle"
 
 
 def gather(
@@ -287,6 +232,26 @@ def gather_nd(
     return out
 
 
+def get_item(
+    x: paddle.Tensor,
+    /,
+    query: Union[paddle.Tensor, Tuple],
+    *,
+    copy: bool = None,
+) -> paddle.Tensor:
+    dtype = x.dtype
+    if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
+        ret = x.cast("float32").__getitem__(query).cast(dtype)
+    elif dtype in [paddle.complex64, paddle.complex128]:
+        ret = paddle.complex(
+            x.real().__getitem__(query),
+            x.imag().__getitem__(query),
+        )
+    else:
+        ret = x.__getitem__(query)
+    return ret
+
+
 def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
@@ -354,6 +319,48 @@ def inplace_update(
 
 def inplace_variables_supported():
     return False
+
+
+def is_native_array(x, /, *, exclusive=False):
+    if isinstance(x, paddle.Tensor):
+        if exclusive and not x.stop_gradient:
+            return False
+        return True
+    return False
+
+
+def isin(
+    elements: paddle.Tensor,
+    test_elements: paddle.Tensor,
+    /,
+    *,
+    assume_unique: Optional[bool] = False,
+    invert: Optional[bool] = False,
+) -> paddle.Tensor:
+    input_shape = elements.shape
+    if elements.ndim == 0:
+        elements = paddle_backend.expand_dims(elements, axis=0)
+    if test_elements.ndim == 0:
+        test_elements = paddle_backend.expand_dims(test_elements, axis=0)
+    if not assume_unique:
+        test_elements = paddle_backend.unique_values(test_elements)
+
+    elements = elements.reshape([-1])
+    test_elements = test_elements.reshape([-1])
+
+    output = paddle_backend.any(
+        paddle_backend.equal(
+            paddle_backend.expand_dims(elements, axis=-1), test_elements
+        ),
+        axis=-1,
+    )
+    return paddle_backend.logical_xor(
+        paddle_backend.reshape(output, input_shape), invert
+    )
+
+
+def itemsize(x: paddle.Tensor) -> int:
+    return x.element_size()
 
 
 def multiprocessing(context=None):
@@ -512,6 +519,36 @@ def shape(
         return ivy.Shape(x.shape)
 
 
+def to_list(x: paddle.Tensor, /) -> list:
+    return x.tolist()
+
+
+def to_numpy(
+    x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
+) -> Union[np.ndarray, List[np.ndarray]]:
+    if isinstance(x, (float, int, bool)):
+        return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
+    elif paddle.is_tensor(x):
+        if copy:
+            return np.array(x)
+        else:
+            return np.asarray(x)
+    elif isinstance(x, list):
+        return [ivy.to_numpy(u) for u in x]
+    raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
+
+
+def to_scalar(x: paddle.Tensor, /) -> Number:
+    if isinstance(x, (Number, complex)):
+        return x
+    return x.item()
+
+
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -595,35 +632,6 @@ def vmap(
     return _vmap
 
 
-def isin(
-    elements: paddle.Tensor,
-    test_elements: paddle.Tensor,
-    /,
-    *,
-    assume_unique: Optional[bool] = False,
-    invert: Optional[bool] = False,
-) -> paddle.Tensor:
-    input_shape = elements.shape
-    if elements.ndim == 0:
-        elements = paddle_backend.expand_dims(elements, axis=0)
-    if test_elements.ndim == 0:
-        test_elements = paddle_backend.expand_dims(test_elements, axis=0)
-    if not assume_unique:
-        test_elements = paddle_backend.unique_values(test_elements)
-
-    elements = elements.reshape([-1])
-    test_elements = test_elements.reshape([-1])
-
-    output = paddle_backend.any(
-        paddle_backend.equal(
-            paddle_backend.expand_dims(elements, axis=-1), test_elements
-        ),
-        axis=-1,
-    )
-    return paddle_backend.logical_xor(
-        paddle_backend.reshape(output, input_shape), invert
-    )
-
-
-def itemsize(x: paddle.Tensor) -> int:
-    return x.element_size()
+get_item.partial_mixed_handler = (
+    lambda x, query, **kwargs: _check_query(query) and 0 not in x.shape
+)

@@ -26,6 +26,6 @@ repos:
         # Exclude everything in frontends except __init__.py, and func_wrapper.py
         exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
   - repo: https://github.com/unifyai/lint-hook
-    rev: 27646397c5390f644a645f439535b1061b9c0105
+    rev: 2e2dc6c06475b5ec47e4b97c30b23dbb4bd01891
     hooks:
       - id: ivy-lint

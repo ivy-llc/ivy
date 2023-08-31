@@ -11,22 +11,8 @@ from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
-    backend_version,
-)
-def linear(
-    x: torch.Tensor,
-    weight: torch.Tensor,
-    /,
-    *,
-    bias: Optional[torch.Tensor] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.nn.functional.linear(x, weight, bias)
-
-
-linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
+# --- Helpers --- #
+# --------------- #
 
 
 def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
@@ -124,6 +110,10 @@ def _pad_before_conv_tranpose(
     ]
     output_padding = [max(output_shape[i + 1] - out_shape[i], 0) for i in range(dims)]
     return not_valid_pad, padding_list, output_padding
+
+
+# --- Main --- #
+# ------------ #
 
 
 @with_unsupported_dtypes(
@@ -285,48 +275,6 @@ def conv2d_transpose(
     if data_format == "NHWC":
         res = res.permute(0, *range(2, 4), 1)
 
-    return res
-
-
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "float16",
-            "bfloat16",
-            "complex",
-        )
-    },
-    backend_version,
-)
-# noinspection PyUnresolvedReferences
-def depthwise_conv2d(
-    x: torch.Tensor,
-    filters: torch.Tensor,
-    strides: Union[int, Tuple[int, int]],
-    padding: Union[str, int, Sequence[Tuple[int, int]]],
-    /,
-    *,
-    data_format: str = "NHWC",
-    dilations: Union[int, Tuple[int, int]] = 1,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    strides = [strides] * 2 if isinstance(strides, int) else strides
-    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    if data_format == "NHWC":
-        x = x.permute(0, 3, 1, 2)
-    filters = ivy.squeeze(filters, 3).to_native() if filters.ndim == 4 else filters
-    filters = torch.unsqueeze(filters, -1)
-    dims_in = filters.shape[-2]
-    filters = filters.permute(2, 3, 0, 1)
-    x, padding = _pad_before_conv(
-        x, filters, strides, padding, 2, dilations, "channel_first"
-    )
-    # noinspection PyArgumentEqualDefault
-    res = torch.nn.functional.conv2d(
-        x, filters, None, strides, padding, dilations, dims_in
-    )
-    if data_format == "NHWC":
-        return res.permute(0, 2, 3, 1)
     return res
 
 
@@ -544,3 +492,63 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+            "complex",
+        )
+    },
+    backend_version,
+)
+# noinspection PyUnresolvedReferences
+def depthwise_conv2d(
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    /,
+    *,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if data_format == "NHWC":
+        x = x.permute(0, 3, 1, 2)
+    filters = ivy.squeeze(filters, 3).to_native() if filters.ndim == 4 else filters
+    filters = torch.unsqueeze(filters, -1)
+    dims_in = filters.shape[-2]
+    filters = filters.permute(2, 3, 0, 1)
+    x, padding = _pad_before_conv(
+        x, filters, strides, padding, 2, dilations, "channel_first"
+    )
+    # noinspection PyArgumentEqualDefault
+    res = torch.nn.functional.conv2d(
+        x, filters, None, strides, padding, dilations, dims_in
+    )
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+    return res
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "bfloat16", "complex")},
+    backend_version,
+)
+def linear(
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    /,
+    *,
+    bias: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.linear(x, weight, bias)
+
+
+linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2

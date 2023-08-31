@@ -9,44 +9,9 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
 
-# Array API Standard #
-# -------------------#
 
-
-def min(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
-
-
-def max(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
-
-
-def mean(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.mean(x, axis=axis, keepdims=keepdims)
+# --- Helpers --- #
+# --------------- #
 
 
 def _infer_dtype(dtype: jnp.dtype):
@@ -56,83 +21,8 @@ def _infer_dtype(dtype: jnp.dtype):
     return dtype
 
 
-def prod(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[jnp.dtype] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
-
-
-def std(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
-
-
-def sum(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[jnp.dtype] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = x.dtype
-    if dtype != x.dtype and not ivy.is_bool_dtype(x):
-        x = x.astype(dtype)
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
-
-
-def var(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if axis is None:
-        axis = tuple(range(len(x.shape)))
-    axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if isinstance(correction, int):
-        ret = jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        return ivy.astype(ret, x.dtype, copy=False)
-    if x.size == 0:
-        return jnp.asarray(float("nan"))
-    size = 1
-    for a in axis:
-        size *= x.shape[a]
-    if size == correction:
-        size += 0.0001  # to avoid division by zero in return
-    return ivy.astype(
-        jnp.multiply(
-            jnp.var(x, axis=axis, keepdims=keepdims, out=out),
-            size / jnp.abs(size - correction),
-        ),
-        x.dtype,
-        copy=False,
-    )
+# --- Main --- #
+# ------------ #
 
 
 # Extra #
@@ -215,3 +105,122 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
+
+
+def max(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+
+
+def mean(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.mean(x, axis=axis, keepdims=keepdims)
+
+
+# Array API Standard #
+# -------------------#
+
+
+def min(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+
+
+def prod(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[jnp.dtype] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
+def std(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    correction: Union[int, float] = 0.0,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
+
+
+def sum(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[jnp.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = x.dtype
+    if dtype != x.dtype and not ivy.is_bool_dtype(x):
+        x = x.astype(dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
+def var(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    correction: Union[int, float] = 0.0,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if isinstance(correction, int):
+        ret = jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
+        return ivy.astype(ret, x.dtype, copy=False)
+    if x.size == 0:
+        return jnp.asarray(float("nan"))
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    if size == correction:
+        size += 0.0001  # to avoid division by zero in return
+    return ivy.astype(
+        jnp.multiply(
+            jnp.var(x, axis=axis, keepdims=keepdims, out=out),
+            size / jnp.abs(size - correction),
+        ),
+        x.dtype,
+        copy=False,
+    )
