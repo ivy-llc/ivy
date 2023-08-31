@@ -3,7 +3,6 @@ Ivy Frontend Tests
 
 .. _`here`: https://unify.ai/docs/ivy/design/ivy_as_a_transpiler.html
 .. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
-.. _`ivy frontends tests forum`: https://discord.com/channels/799879767196958751/1028297887605587998
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
@@ -560,7 +559,7 @@ an assertion, the examples given below will make it clearer.
 Alias functions
 ^^^^^^^^^^^^^^^
 Let's take a quick walkthrough on testing the function alias as we know that such functions have the same behavior as original functions.
-Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
+For example :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working the same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
 
 Code example for alias function:
 
@@ -630,7 +629,11 @@ for example, :code:`ndarray.__add__` would expect an array as input, despite the
     - :code:`init_tree` A full path to initialization function.
     - :code:`method_name` The name of the method to test. 
 
-:func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`.
+:func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
+  - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
+  - :code:`init_all_as_kwargs_np` The data to be passed when intializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
+  - :code:`method_input_dtypes` The input dtypes of the arguemnt which are to be passed to the instance method after the intialization of the array.
+  - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to instance method.
 
 
 Frontend Instance Method Test Examples
@@ -814,7 +817,7 @@ The configuration files are located at: :code:`ivy_tests/test_ivy/test_frontends
 
 This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_ or in the `ivy frontends tests forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_!
 
 
 **Video**

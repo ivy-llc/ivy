@@ -94,13 +94,13 @@ jobs:
         continue-on-error: true
 
       - name: Install Mongo Python Client
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.check_file_changed.outputs.changed == 'True'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_file_changed.outputs.changed == 'True'
         uses: BSFishy/pip-action@v1
         with:
           packages: |
             pymongo[srv]
       - name: Update Database
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.check_file_changed.outputs.changed == 'True'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_file_changed.outputs.changed == 'True'
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         run: |
