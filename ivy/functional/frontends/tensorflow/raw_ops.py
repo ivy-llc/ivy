@@ -254,6 +254,7 @@ Squeeze = to_ivy_arrays_and_back(
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
+UnsortedSegmentSum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.UnsortedSegmentSum))
 Xlogy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xlogy))
 Zeta = to_ivy_arrays_and_back(
     with_supported_dtypes(
