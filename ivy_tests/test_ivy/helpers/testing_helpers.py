@@ -741,13 +741,13 @@ def handle_frontend_method(
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            init_flags = pf.frontend_method_flags(
+            init_flags = pf.init_method_flags(
                 num_positional_args=init_num_positional_args,
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
-                test_compile=test_compile,
+                # test_compile=test_compile,
                 precision_mode=precision_mode,
-                generate_frontend_arrays=generate_frontend_arrays,
+                # generate_frontend_arrays=generate_frontend_arrays,
             )
 
             method_flags = pf.frontend_method_flags(
