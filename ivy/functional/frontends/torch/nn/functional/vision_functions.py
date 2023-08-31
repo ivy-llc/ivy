@@ -95,7 +95,6 @@ def affine_grid(theta, size, align_corners=False):
             return grid.view((N, D, H, W, 3))
 
 
-# @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
@@ -382,7 +381,6 @@ def reflect(x, low2, high2):
     frac_in = ivy.abs(x / span)
     extra = (frac_in - ivy.floor(frac_in)) * ivy.abs(span)
     flips = ivy.floor(x / span)
-    # x *= 0
     x[flips % 2 == 0] = (extra + min)[flips % 2 == 0]
     x[flips % 2 != 0] = (span - extra + min)[flips % 2 != 0]
     return x
@@ -417,13 +415,12 @@ def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
     masks = []
     for idx, border in enumerate(borders):
         masks.append(ivy.bitwise_or(grid[..., idx] < -4, grid[..., idx] > border + 2))
-        borders[idx] += 2
+        borders[idx] += 1
 
     zeros_mask = masks[0]
     for i in range(1, len(borders)):
         zeros_mask = ivy.bitwise_or(zeros_mask, masks[i])
 
-    zeros_mask = ivy.native_array(zeros_mask)
     if grid[zeros_mask].shape[0] > 0:
         grid[zeros_mask] = ivy.array(borders)
     return grid
@@ -544,14 +541,14 @@ def grid_sample(
             grid[..., 1] = ((grid[..., 1] + 1) * h - 1) / 2
             grid[..., 2] = ((grid[..., 2] + 1) * d - 1) / 2
 
-        padding = [(0, 0) for _ in range(2)] + [(3, 3) for _ in range(3)]
-        input = ivy.pad(input, padding, mode="constant", constant_values=0)
-        grid = grid_sample_padding(grid, padding_mode, align_corners, borders=[w, h, d])
-        grid += 3
-
         batch_coor = ivy.reshape(ivy.arange(n), (-1, 1))
         batch_coor = ivy.repeat(batch_coor, to_d * to_h * to_w, axis=1)
         batch_coor = ivy.reshape(batch_coor, (n, to_d, to_h, to_w))
+        padding = [(0, 0) for _ in range(2)] + [(3, 3) for _ in range(3)]
+        input = ivy.pad(input, padding, mode="constant", constant_values=0)
+
+        grid = grid_sample_padding(grid, padding_mode, align_corners, borders=[w, h, d])
+        grid += 3
         w_coor = ivy.reshape(grid[..., 0], (n, to_d, to_h, to_w))
         h_coor = ivy.reshape(grid[..., 1], (n, to_d, to_h, to_w))
         d_coor = ivy.reshape(grid[..., 2], (n, to_d, to_h, to_w))
