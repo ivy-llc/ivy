@@ -173,39 +173,6 @@ def avg_pool3d(
         divisor_override=divisor_override,
     )
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-@to_ivy_arrays_and_back
-def max_pool3d(
-    input,
-    kernel_size,
-    stride=None,
-    padding=0,
-    dilation=1,
-    ceil_mode=False,
-    return_indices=False,
-):
-    if stride is None:
-        stride = kernel_size
-
-    if not isinstance(padding, int):
-        padding = tuple([padding[i] * 2 for i in range(3)])
-
-    if not all([pad <= kernel // 2 for kernel, pad in zip(kernel_size, padding)]):
-        raise ValueError(
-            "pad should be smaller than or equal to half of kernel size, "
-            f"but got padding={padding}, kernel_size={kernel_size}. "
-        )
-
-    return ivy.max_pool3d(
-        input,
-        kernel_size,
-        stride,
-        padding,
-        data_format="NCDHW",
-        dilation=dilation,
-        ceil_mode=ceil_mode,
-    )
-
 
 @with_unsupported_dtypes(
     {
@@ -304,6 +271,40 @@ def max_pool2d(
         stride,
         padding,
         data_format="NCHW",
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def max_pool3d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
+):
+    if stride is None:
+        stride = kernel_size
+
+    if not isinstance(padding, int):
+        padding = tuple([padding[i] * 2 for i in range(3)])
+
+    if not all([pad <= kernel // 2 for kernel, pad in zip(kernel_size, padding)]):
+        raise ValueError(
+            "pad should be smaller than or equal to half of kernel size, "
+            f"but got padding={padding}, kernel_size={kernel_size}. "
+        )
+
+    return ivy.max_pool3d(
+        input,
+        kernel_size,
+        stride,
+        padding,
+        data_format="NCDHW",
         dilation=dilation,
         ceil_mode=ceil_mode,
     )
