@@ -177,10 +177,10 @@ def center_crop(img, output_size):
 
     if isinstance(output_size, int):
         output_size = (output_size, output_size)
-        
+
     th, tw = output_size
-    i = (h - th) // 2
-    j = (w - tw) // 2
+    i = max(0, (h - th) // 2)
+    j = max(0, (w - tw) // 2)
 
     return img[..., i:i+th, j:j+tw]
 
