@@ -27,3 +27,13 @@ def fftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def rfft(a, n=None, axis=-1, norm=None):
+    if norm is None:
+        norm = "backward"
+    if n is None:
+        n = len(a)
+    return ivy.fft(a, axis, norm=norm, n=n)[:n//2 + 1]
