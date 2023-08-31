@@ -536,7 +536,7 @@ def grid_sample(
             grid[..., 0] = ((grid[..., 0] + 1) / 2) * (w - 1)
             grid[..., 1] = ((grid[..., 1] + 1) / 2) * (h - 1)
             grid[..., 2] = ((grid[..., 2] + 1) / 2) * (d - 1)
-        else:  # to range[0.5, size - 0.5]
+        elif not align_corners:  # to range[0.5, size - 0.5]
             grid[..., 0] = ((grid[..., 0] + 1) * w - 1) / 2
             grid[..., 1] = ((grid[..., 1] + 1) * h - 1) / 2
             grid[..., 2] = ((grid[..., 2] + 1) * d - 1) / 2
@@ -549,12 +549,12 @@ def grid_sample(
 
         grid = grid_sample_padding(grid, padding_mode, align_corners, borders=[w, h, d])
         grid += 3
-        w_coor = ivy.reshape(grid[..., 0], (n, to_d, to_h, to_w))
-        h_coor = ivy.reshape(grid[..., 1], (n, to_d, to_h, to_w))
-        d_coor = ivy.reshape(grid[..., 2], (n, to_d, to_h, to_w))
 
         if mode == "bilinear":
-            # NCNN implementations
+            w_coor = ivy.reshape(grid[..., 0], (n, to_d, to_h, to_w))
+            h_coor = ivy.reshape(grid[..., 1], (n, to_d, to_h, to_w))
+            d_coor = ivy.reshape(grid[..., 2], (n, to_d, to_h, to_w))
+
             w0 = ivy.astype(ivy.floor(w_coor), ivy.int64)
             h0 = ivy.astype(ivy.floor(h_coor), ivy.int64)
             d0 = ivy.astype(ivy.floor(d_coor), ivy.int64)
@@ -603,6 +603,13 @@ def grid_sample(
             return v
 
         elif mode == "nearest":
+            ceil_mask = (grid % 1 == 0.5)
+            grid[ceil_mask] = ivy.astype(ivy.ceil(grid[ceil_mask]), ivy.int64)
+
+            w_coor = ivy.reshape(grid[..., 0], (n, to_d, to_h, to_w))
+            h_coor = ivy.reshape(grid[..., 1], (n, to_d, to_h, to_w))
+            d_coor = ivy.reshape(grid[..., 2], (n, to_d, to_h, to_w))
+
             w_coor = ivy.astype(ivy.round(w_coor), ivy.int64)
             h_coor = ivy.astype(ivy.round(h_coor), ivy.int64)
             d_coor = ivy.astype(ivy.round(d_coor), ivy.int64)
