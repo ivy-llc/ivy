@@ -117,16 +117,6 @@ def argmax(
     >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])
-
-    With :class: `ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.argmax(x)
-    >>> print(y)
-    {
-        a: ivy.array(2),
-        b: ivy.array(2)
-    }
     """
     return current_backend(x).argmax(
         x,
