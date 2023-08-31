@@ -97,6 +97,15 @@ def softplus(
 softplus.support_native_out = True
 
 
+# Softsign
+@_scalar_output_to_0d_array
+def softsign(x: np.ndarray, /, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.divide(x, 1 + np.abs(x), out=out).astype(x.dtype)
+
+
+softsign.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def log_softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
