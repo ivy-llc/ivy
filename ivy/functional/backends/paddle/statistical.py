@@ -137,9 +137,17 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-    # TODO:prod causes segmentation fault
-    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    x_dtype = x.dtype
+    supported_dtypes = ["int32", "int64", "float32", "float64"]
+    if str(x_dtype) not in supported_dtypes:
+        x = x.cast("float32")
+    dtype_ = dtype
+    if str(dtype) not in supported_dtypes:
+        dtype = None
+    ret = paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    if ret.dtype != dtype_:
+        ret = ret.cast(dtype_)
+    return ret
 
 
 def _std(x, axis, correction, keepdim):
