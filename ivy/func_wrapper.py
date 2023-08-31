@@ -243,11 +243,6 @@ def _get_first_array(*args, **kwargs):
 
 def _build_view(original, view, fn, args, kwargs, index=None):
     if ivy.exists(original._base):
-        if ivy.backend in ("jax", "tensorflow"):
-            warnings.warn(
-                "Creating many views will lead to overhead "
-                "when performing inplace updates with this backend"
-            )
         base = original._base
         view._base = base
         view._manipulation_stack = python_copy.copy(original._manipulation_stack)
