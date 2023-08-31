@@ -53,6 +53,7 @@ array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
 exception_trace_mode_stack = list()
+inplace_mode_stack = list()
 trace_mode_dict = dict()
 trace_mode_dict["frontend"] = "ivy/functional/frontends"
 trace_mode_dict["ivy"] = "ivy/"
@@ -3040,6 +3041,79 @@ def inplace_update(
 
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+ivy.inplace_mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+
+
+@handle_exceptions
+def set_inplace_mode(mode: str = "lenient") -> None:
+    """
+    Set the memory management behavior for in-place updates in Ivy.
+
+    By default, Ivy creates new arrays in the backend for in-place updates.
+    However, this behavior can be controlled by the user
+    using the 'inplace_mode' parameter.
+
+    Parameters
+    ----------
+    mode : str
+        The mode for memory management during in-place updates.
+        - 'lenient': (Default) In this mode, new arrays will be created during
+                    in-place updates to avoid breaking existing code.
+                    This is the default behavior.
+        - 'strict': In this mode, an error will be raised if the
+                    'inplace_update' function is called
+                    in a backend that doesn't support inplace updates natively.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> set_inplace_mode('lenient')
+    >>> ivy.inplace_mode
+    'lenient'
+
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    Note
+    ----
+    Enabling strict mode can help users have more control over memory management
+    but may lead to errors if the backend doesn't support inplace updates natively.
+    """
+    global inplace_mode_stack
+    inplace_modes = ["lenient", "strict"]
+    ivy.utils.assertions.check_elem_in_list(
+        mode, inplace_modes, False, f"inplace mode must be one of {inplace_modes}"
+    )
+    inplace_mode_stack.append(mode)
+    ivy.__setattr__("inplace_mode", mode, True)
+
+
+@handle_exceptions
+def unset_inplace_mode() -> None:
+    """
+    Reset the memory management behavior for in-place updates in Ivy to the previous
+    state.
+
+    Examples
+    --------
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    >>> unset_inplace_mode()
+    >>> ivy.inplace_mode
+    'lenient'
+    """
+    global inplace_mode_stack
+    if inplace_mode_stack:
+        inplace_mode_stack.pop(-1)
+        mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+        ivy.__setattr__("inplace_mode", mode, True)
 
 
 @handle_exceptions

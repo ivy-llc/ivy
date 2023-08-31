@@ -524,6 +524,10 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
-    return arrays are all converted to `ndarray` instances."""
+    """
+    Wrap `fn` so it receives and returns `ivy.Array` instances.
+
+    Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
+    return arrays are all converted to `ndarray` instances.
+    """
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))

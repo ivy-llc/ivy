@@ -173,7 +173,6 @@ def mask_indices(n, mask_func, k=0):
         print(f"Attribute error: {e}")
 
 
-# take_along_axis
 @to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis, mode="fill"):
     return ivy.take_along_axis(arr, indices, axis, mode=mode)
@@ -199,7 +198,6 @@ def triu_indices_from(arr, k=0):
     return ivy.triu_indices(arr.shape[-2], arr.shape[-1], k)
 
 
-# unravel_index
 @to_ivy_arrays_and_back
 def unravel_index(indices, shape):
     ret = [x.astype(indices.dtype) for x in ivy.unravel_index(indices, shape)]

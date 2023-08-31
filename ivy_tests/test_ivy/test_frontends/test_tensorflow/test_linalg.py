@@ -156,7 +156,6 @@ def _get_hermitian_pos_def_matrix(draw):
     return [input_dtype], hpd
 
 
-# solve
 @st.composite
 def _get_second_matrix(draw):
     # batch_shape, shared, random_size
