@@ -136,7 +136,7 @@ There are different ways to do so. One way is to use a global dict :code:`HANDLE
     	def __ivy_array_function__(self, func, types, args, kwargs):
     		if func not in HANDLED_FUNCTIONS:
     			return NotImplemented
-    		if not all((t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types):
+    		if not all(issubclass(t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types):
     			return NotImplemented
     		return HANDLED_FUNCTIONS[func](*args, **kwargs)		
 
