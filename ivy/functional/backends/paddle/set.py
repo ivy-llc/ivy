@@ -30,7 +30,7 @@ def unique_all(
         axis = axis % x.ndim
     values, inverse_indices, counts = paddle.unique(
         x,
-        return_index=False,  # which occurrences of the unique values are picked is
+        return_index=False,  # which occurences of the unique values are picked is
         # inconsistent in some cases, so calculate the indices manually below
         return_counts=True,
         return_inverse=True,

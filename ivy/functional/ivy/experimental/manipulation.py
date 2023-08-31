@@ -1944,7 +1944,7 @@ def _interior_pad(operand, padding_value, padding_config):
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
             new_array = ivy.full(
-                new_shape, ivy.to_scalar(padding_value), dtype=operand.dtype
+                new_shape, padding_value, dtype=operand.dtype
             )
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
@@ -2548,7 +2548,6 @@ def choose(
 
     Parameters
     ----------
-
     arr
         The source array.
     choices
@@ -2561,12 +2560,11 @@ def choose(
 
     Returns
     -------
-
     ret
         The returned array has the same shape as `indices`.
+
     Examples
     --------
-
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
                         [20, 21, 22, 23], [30, 31, 32, 33]])
     >>> print(choose(ivy.array([2, 3, 1, 0]), choices))

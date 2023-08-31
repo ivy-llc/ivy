@@ -419,8 +419,18 @@ def greater_equal(
     return paddle.greater_equal(x1, x2)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+)
 def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        # From https://github.com/python/cpython/blob/39ef93edb9802dccdb6555d4209ac2e60875a011/Modules/cmathmodule.c#L178 # noqa
+        s1 = paddle_backend.sqrt(1 - x)
+        s2 = paddle_backend.sqrt(1 + x)
+        return paddle.complex(
+            2.0 * paddle.atan2(s1.real(), s2.real()),
+            paddle.asinh(s2.real() * s1.imag() - s2.imag() * s1.real()),
+        )
     return paddle.acos(x)
 
 
@@ -480,13 +490,31 @@ def logical_or(
     return paddle.logical_or(x1, x2)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+)
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        # From https://github.com/python/cpython/blob/39ef93edb9802dccdb6555d4209ac2e60875a011/Modules/cmathmodule.c#L221 # noqa
+        s1 = paddle_backend.sqrt(paddle.complex(x.real() - 1, x.imag()))
+        s2 = paddle_backend.sqrt(paddle.complex(x.real() + 1, x.imag()))
+        return paddle.complex(
+            paddle.asinh(s1.real() * s2.real() + s1.imag() * s2.imag()),
+            2.0 * paddle.atan2(s1.imag(), s2.real()),
+        )
     return paddle.acosh(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+)
 def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        re = x.real()
+        im = x.imag()
+        return paddle.complex(
+            paddle.sin(re) * paddle.cosh(im), paddle.cos(re) * paddle.sinh(im)
+        )
     return paddle.sin(x)
 
 
@@ -511,10 +539,14 @@ def not_equal(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "bfloat16", "float")},
+    {"2.5.1 and below": ("uint16", "bfloat16", "float", "complex")},
     backend_version,
 )
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        tanh_a = paddle.tanh(paddle.real(x))
+        tan_b = paddle.tan(paddle.imag(x))
+        return (tanh_a + 1j * tan_b) / (1 + 1j * (tanh_a * tan_b))
     return paddle.tanh(x)
 
 
@@ -559,8 +591,16 @@ def bitwise_or(
     return paddle.bitwise_or(x1, x2)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+)
 def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        re = x.real()
+        im = x.imag()
+        return paddle.complex(
+            paddle.sinh(re) * paddle.cos(im), paddle.cosh(re) * paddle.sin(im)
+        )
     return paddle.sinh(x)
 
 
@@ -774,13 +814,23 @@ def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.real(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+)
 def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        tanh_ix = paddle_backend.tanh(paddle.complex(-x.imag(), x.real()))
+        return paddle.complex(tanh_ix.imag(), -tanh_ix.real())
     return paddle.tan(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+)
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        atanh_iz = paddle_backend.atanh(paddle.complex(-x.imag(), x.real()))
+        return paddle.complex(atanh_iz.imag(), -atanh_iz.real())
     return paddle.atan(x)
 
 
@@ -876,8 +926,12 @@ def remainder(
     return paddle.remainder(x1, x2).astype(ret_dtype)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+)
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return 0.5 * (paddle_backend.log(1 + x) - paddle_backend.log(1 - x))
     return paddle.atanh(x)
 
 

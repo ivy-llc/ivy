@@ -36,6 +36,7 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
+    complex_mode="jax",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -55,6 +56,7 @@ def gelu(
     /,
     *,
     approximate: bool = False,
+    complex_mode="jax",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -106,8 +108,8 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[paddle.Tensor] = None,
     complex_mode="jax",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if beta is not None and beta != 1:
         x_beta = x * beta
