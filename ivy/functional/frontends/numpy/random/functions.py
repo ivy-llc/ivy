@@ -202,6 +202,11 @@ def standard_gamma(shape, size=None):
 def standard_normal(size=None):
     return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
 
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_exponential(size=None):
+    return ivy.standard_exponential(size=size, dtype="float64", method="zig")
+
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
