@@ -734,12 +734,6 @@ class Tensor:
         pin_memory=False,
     ):
         dtype = ivy.dtype(self.ivy_array) if dtype is None else dtype
-        if ivy.is_float_dtype(dtype):
-            fill_value = float(fill_value)
-        elif ivy.is_int_dtype(dtype):
-            fill_value = int(fill_value)
-        elif ivy.is_bool_dtype(dtype):
-            fill_value = bool(fill_value)
         device = ivy.dev(self.ivy_array) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
         return torch_frontend.tensor(_data)
