@@ -1877,6 +1877,19 @@ class Tensor:
     )
     def cummax(self, dim):
         return torch_frontend.cummax(self, dim)
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "uint16",
+            )
+        },
+        "torch",
+    )
+    def xlogy_(self, *, other, out=None):
+        self.ivy_array = torch_frontend.xlogy(self, other, out=out)
+        return self
 
     def ne(self, other):
         return torch_frontend.ne(self, other)
