@@ -389,11 +389,12 @@ def reflect(x, low2, high2):
 
 
 def bicubic_interp(x, t, alpha=-0.75):
+    n, h, w = t.shape
     coeffs = []
-    coeffs.append(cubic_conv2(alpha, t + 1))
-    coeffs.append(cubic_conv1(alpha, t))
-    coeffs.append(cubic_conv1(alpha, 1 - t))
-    coeffs.append(cubic_conv2(alpha, 2 - t))
+    coeffs.append(ivy.reshape(cubic_conv2(alpha, t + 1), (n, 1, h, w)))
+    coeffs.append(ivy.reshape(cubic_conv1(alpha, t), (n, 1, h, w)))
+    coeffs.append(ivy.reshape(cubic_conv1(alpha, 1 - t), (n, 1, h, w)))
+    coeffs.append(ivy.reshape(cubic_conv2(alpha, 2 - t), (n, 1, h, w)))
     return x[0] * coeffs[0] + x[1] * coeffs[1] + x[2] * coeffs[2] + x[3] * coeffs[3]
 
 
