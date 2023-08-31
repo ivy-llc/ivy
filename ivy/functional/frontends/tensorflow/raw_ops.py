@@ -253,6 +253,7 @@ Squeeze = to_ivy_arrays_and_back(
 )
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
+Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
 Xlogy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xlogy))
 Zeta = to_ivy_arrays_and_back(
     with_supported_dtypes(
@@ -471,11 +472,6 @@ def Conv3D(
 
 
 @to_ivy_arrays_and_back
-def Cosh(*, x, name="Cosh"):
-    return ivy.cosh(x)
-
-
-@to_ivy_arrays_and_back
 def Cross(*, a, b, name="Cross"):
     a, b = check_tensorflow_casting(a, b)
     return ivy.cross(a, b)
@@ -590,10 +586,6 @@ def GreaterEqual(*, x, y, name="GreaterEqual"):
     return ivy.greater_equal(x, y)
 
 
-@with_supported_dtypes(
-    {"2.13.0 and below": ("complex64", "complex128")},
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def Imag(
     *,
@@ -757,6 +749,12 @@ def Sinh(*, x, name="Sinh"):
 @to_ivy_arrays_and_back
 def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
+
+
+# Softsign
+@to_ivy_arrays_and_back
+def Softsign(*, features, name="Softsign"):
+    return ivy.softsign(features)
 
 
 @to_ivy_arrays_and_back

@@ -1018,7 +1018,7 @@ def test_train_eval(mode):
     cls.train(mode)
     assert mode == cls.training
     cls.eval()
-    assert False == cls.training
+    assert not cls.training
 
 
 # v with top v key chains
