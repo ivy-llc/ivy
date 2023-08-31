@@ -120,9 +120,7 @@ def histogram(
     return ret
 
 
-@with_unsupported_dtypes(
-    {"0.4.14 and below": ("complex64", "complex128")}, backend_version
-)
+@with_unsupported_dtypes({"0.4.14 and below": "complex"}, backend_version)
 def median(
     input: JaxArray,
     /,
@@ -271,6 +269,9 @@ def cov(
     )
 
 
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("bool", "float16", "int8", "int16", "complex", "uint8")}
+)
 def cummax(
     x: JaxArray,
     /,
@@ -281,13 +282,6 @@ def cummax(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
-    if x.dtype in (jnp.bool_, jnp.float16):
-        x = x.astype(jnp.float64)
-    elif x.dtype in (jnp.int16, jnp.int8, jnp.uint8):
-        x = x.astype(jnp.int64)
-    elif x.dtype in (jnp.complex128, jnp.complex64):
-        x = jnp.real(x).astype(jnp.float64)
-
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
             indices = __find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
