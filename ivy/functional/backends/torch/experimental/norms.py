@@ -52,9 +52,9 @@ def batch_norm(
         x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
     mean.requires_grad = False
     variance.requires_grad = False
-    if scale:
+    if scale is not None:
         scale.requires_grad = False
-    if offset:
+    if offset is not None:
         offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
@@ -73,12 +73,14 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-batch_norm.partial_mixed_handler = lambda x, mean, variance, scale, offset, **kwargs: (
-    x.ndim > 1
-    and mean.ndim == 1
-    and variance.ndim == 1
-    and (scale is None or scale.ndim == 1)
-    and (offset is None or offset.ndim == 1)
+batch_norm.partial_mixed_handler = (
+    lambda x, mean, variance, scale=None, offset=None, **kwargs: (
+        x.ndim > 1
+        and mean.ndim == 1
+        and variance.ndim == 1
+        and (scale is None or scale.ndim == 1)
+        and (offset is None or offset.ndim == 1)
+    )
 )
 
 
@@ -99,9 +101,9 @@ def instance_norm(
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
     variance.requires_grad = False
-    if scale:
+    if scale is not None:
         scale.requires_grad = False
-    if offset:
+    if offset is not None:
         offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
@@ -126,7 +128,7 @@ def instance_norm(
 
 
 instance_norm.partial_mixed_handler = (
-    lambda x, mean, variance, scale, offset, **kwargs: (
+    lambda x, mean, variance, scale=None, offset=None, **kwargs: (
         x.ndim > 1
         and mean.ndim == 1
         and variance.ndim == 1
