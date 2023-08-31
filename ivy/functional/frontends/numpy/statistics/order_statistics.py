@@ -47,73 +47,6 @@ def _quantile_is_valid(q):
 # --- Main --- #
 # ------------ #
 
-@handle_numpy_out
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def percentile(
-    a,
-    q,
-    axis=None,
-    out=None,
-    overwrite_input=False,
-    method="linear",
-    keepdims=False,
-    *,
-    interpolation=None,
-):
-    values = ivy.array(a)
-    quantile = ivy.divide(q, 100.0)
-    quantile_arr = ivy.array(quantile)
-
-    if quantile_arr.ndim == 0:
-        quantile_arr = ivy.array([quantile])
-
-    if not _quantile_is_valid(quantile_arr):
-        raise ivy.utils.exceptions.IvyException(
-            "Percentiles must be in the range [0, 100]"
-        )
-
-    output = []
-
-    if axis is None:
-        if ivy.any(ivy.isnan(values)):
-            output = [ivy.nan for _ in quantile_arr]
-
-        else:
-            reshaped_arr = ivy.sort(ivy.reshape(values, -1))
-
-            output = [_cpercentile(reshaped_arr, quantile) for quantile in quantile_arr]
-
-    elif axis == 0:
-        for quantile in quantile_arr:
-            q_row = []
-            for col_idx in range(values.shape[1]):
-                if ivy.any(ivy.isnan(values[:, col_idx])):
-                    val = ivy.nan
-                else:
-                    val = _cpercentile(ivy.sort(values[:, col_idx]), quantile)
-
-                q_row.append(val)
-
-            output.append(q_row)
-
-    elif axis == 1:
-        if values.shape[0] is None:
-            raise ivy.utils.exceptions.IvyException(
-                "axis 1 is out of bounds for array of dimension 0"
-            )
-        for quantile in quantile_arr:
-            q_row = []
-            for row_idx in range(values.shape[0]):
-                if ivy.any(ivy.isnan(values[row_idx, :])):
-                    val = ivy.nan
-                else:
-                    val = _cpercentile(ivy.sort(values[row_idx, :]), quantile)
-                q_row.append(val)
-
-            output.append(q_row)
-    return ivy.array(output)
-
 
 def nanpercentile(
     a,
@@ -184,6 +117,78 @@ def nanpercentile(
                     arrayofpercentiles.append(_cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
         return resultarray
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def percentile(
+    a,
+    q,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    *,
+    interpolation=None,
+):
+    values = ivy.array(a)
+    quantile = ivy.divide(q, 100.0)
+    quantile_arr = ivy.array(quantile)
+
+    if quantile_arr.ndim == 0:
+        quantile_arr = ivy.array([quantile])
+
+    if not _quantile_is_valid(quantile_arr):
+        raise ivy.utils.exceptions.IvyException(
+            "Percentiles must be in the range [0, 100]"
+        )
+
+    output = []
+
+    if axis is None:
+        if ivy.any(ivy.isnan(values)):
+            output = [ivy.nan for _ in quantile_arr]
+
+        else:
+            reshaped_arr = ivy.sort(ivy.reshape(values, -1))
+
+            output = [_cpercentile(reshaped_arr, quantile) for quantile in quantile_arr]
+
+    elif axis == 0:
+        if values.shape[1] is None:
+            raise ivy.utils.exceptions.IvyException(
+                "axis 0 is out of bounds for array of dimension 0"
+            )
+        for quantile in quantile_arr:
+            q_row = []
+            for col_idx in range(values.shape[1]):
+                if ivy.any(ivy.isnan(values[:, col_idx])):
+                    val = ivy.nan
+                else:
+                    val = _cpercentile(ivy.sort(values[:, col_idx]), quantile)
+
+                q_row.append(val)
+
+            output.append(q_row)
+
+    elif axis == 1:
+        if values.shape[0] is None:
+            raise ivy.utils.exceptions.IvyException(
+                "axis 1 is out of bounds for array of dimension 0"
+            )
+        for quantile in quantile_arr:
+            q_row = []
+            for row_idx in range(values.shape[0]):
+                if ivy.any(ivy.isnan(values[row_idx, :])):
+                    val = ivy.nan
+                else:
+                    val = _cpercentile(ivy.sort(values[row_idx, :]), quantile)
+                q_row.append(val)
+
+            output.append(q_row)
+    return ivy.array(output)
 
 
 @to_ivy_arrays_and_back
