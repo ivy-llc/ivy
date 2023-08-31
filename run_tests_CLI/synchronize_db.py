@@ -32,7 +32,7 @@ def keys_to_delete_from_db(all_tests, module, data, current_key=""):
         if isinstance(value, dict):
             keys_for_deletion.extend(keys_to_delete_from_db(all_tests, value, new_key))
         # If the new_key is not in keys_to_keep, mark it for deletion
-        else:
+        elif key != "_id":
             components = new_key.split(".")
             submodule = components[0]
             function = components[-2]
@@ -54,7 +54,11 @@ submodules = (
     "test_stateful",
     "test_misc",
     "test_scipy",
-    "test_pandas"
+    "test_pandas",
+    "test_mindspore",
+    "test_onnx",
+    "test_sklearn",
+    "test_xgboost"
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -69,7 +73,11 @@ db_dict = {
     "test_misc": ["misc", 19],
     "test_paddle": ["paddle", 20],
     "test_scipy": ["scipy", 21],
-    "test_pandas": ["pandas", 22]
+    "test_pandas": ["pandas", 22],
+    "test_mindspore": ["mindspore", 23],
+    "test_onnx": ["onnx", 24],
+    "test_sklearn": ["sklearn", 25],
+    "test_xgboost": ["xgboost", 26]
 }
 def get_submodule(test_path):
     test_path = test_path.split("/")

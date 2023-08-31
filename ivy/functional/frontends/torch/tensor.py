@@ -486,8 +486,6 @@ class Tensor:
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
 
-    ne = not_equal
-
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -1854,6 +1852,20 @@ class Tensor:
     def sinc(self):
         return torch_frontend.sinc(self)
 
+    @with_supported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float32",
+                "float64",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def sinc_(self):
+        self.ivy_array = torch_frontend.sinc(self).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.0.1 and below": ("uint8",)}, "torch")
     def index_fill(self, dim, index, value):
         arr = torch_frontend.moveaxis(self, dim, 0)
@@ -1879,7 +1891,7 @@ class Tensor:
         return torch_frontend.cummax(self, dim)
 
     def ne(self, other):
-        return torch_frontend.ne(self, other)
+        return self.not_equal(other)
 
 
 class Size(tuple):
