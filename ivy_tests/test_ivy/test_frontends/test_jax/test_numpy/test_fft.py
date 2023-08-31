@@ -76,6 +76,37 @@ def test_jax_numpy_fftshift(
     )
 
 
+@st.composite
+def x_and_ifftn(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("float_and_complex"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[1],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e10,
+        )
+    )
+    axes = draw(
+        st.lists(
+            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    norm = draw(st.sampled_from(["forward", "ortho", "backward"]))
+    s = draw(
+        st.lists(
+            st.integers(min_fft_points, 256), min_size=len(axes), max_size=len(axes)
+        )
+    )
+    return dtype, x, s, axes, norm
+
+
 # ifftn
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.ifftn",
@@ -116,34 +147,3 @@ def test_jax_numpy_ifftn(
             atol=1e-2,
             rtol=1e-2,
         )
-
-
-@st.composite
-def x_and_ifftn(draw):
-    min_fft_points = 2
-    dtype = draw(helpers.get_dtypes("float_and_complex"))
-    x_dim = draw(
-        helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
-        )
-    )
-    x = draw(
-        helpers.array_values(
-            dtype=dtype[1],
-            shape=tuple(x_dim),
-            min_value=-1e-10,
-            max_value=1e10,
-        )
-    )
-    axes = draw(
-        st.lists(
-            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
-        )
-    )
-    norm = draw(st.sampled_from(["forward", "ortho", "backward"]))
-    s = draw(
-        st.lists(
-            st.integers(min_fft_points, 256), min_size=len(axes), max_size=len(axes)
-        )
-    )
-    return dtype, x, s, axes, norm
