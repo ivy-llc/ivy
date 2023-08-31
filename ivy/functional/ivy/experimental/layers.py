@@ -2480,11 +2480,7 @@ def _dilate(operand, factors, fill_value):
         shape + (factors[i] - 1) * (shape - 1)
         for i, shape in enumerate(operand.shape[2:])
     ]
-    out = ivy.full(
-        outspace,
-        ivy.to_scalar(fill_value),
-        dtype=fill_value.dtype,
-    )
+    out = ivy.full(outspace, fill_value, dtype=fill_value.dtype)
     lhs_slices = tuple(_slice(None, None, step) for step in factors)
     out[(_slice(None),) * 2 + lhs_slices] = operand
     return out

@@ -41,7 +41,6 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
                     fill_value *= a.shape[d]
             else:
                 fill_value = a.shape[axis]
-            fill_value = int(fill_value) if ivy.is_int_dtype(ret) else float(fill_value)
             weights_sum = ivy.full_like(ret, fill_value=fill_value)
     else:
         a = ivy.asarray(a, copy=False)
