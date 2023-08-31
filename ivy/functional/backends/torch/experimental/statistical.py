@@ -159,11 +159,11 @@ def median(
         interpolation="midpoint",
     )
     if input.dtype in [torch.int64, torch.float64]:
-        ret = torch.asarray(ret, dtype=torch.float64)
+        ret = ret.to(torch.float64)
     elif input.dtype in [torch.float16, torch.bfloat16]:
-        ret = torch.asarray(ret, dtype=input.dtype)
+        ret = ret.to(input.dtype)
     else:
-        ret = torch.asarray(ret, dtype=torch.float32)
+        ret = ret.to(torch.float32)
     return ret
 
 
