@@ -32,8 +32,7 @@ def keys_to_delete_from_db(all_tests, module, data, current_key=""):
         if isinstance(value, dict):
             keys_for_deletion.extend(keys_to_delete_from_db(all_tests, value, new_key))
         # If the new_key is not in keys_to_keep, mark it for deletion
-        else:
-            print(new_key)
+        elif key != "_id":
             components = new_key.split(".")
             submodule = components[0]
             function = components[-2]
