@@ -1975,7 +1975,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Parameters
         ----------
-        a
+        self
             First input array.
         b
             Second input array.

@@ -119,9 +119,6 @@ def dot(
     return paddle.tensordot(a, b, axes=1)
 
 
-dot.support_native_out = True
-
-
 @with_supported_device_and_dtypes(
     {
         "2.5.1 and below": {

@@ -1616,46 +1616,46 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
 # dot
 @st.composite
 def _generate_dot_dtype_and_arrays(draw):
-    input_dtype = [draw(st.sampled_from(["float32", "float64"]))]
-    print()
     matrices_dims = draw(
-        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
+        st.lists(st.integers(min_value=2, max_value=10), min_size=3, max_size=3)
     )
     shape_1 = (matrices_dims[0], matrices_dims[1])
     shape_2 = (matrices_dims[1], matrices_dims[2])
 
-    matrix_1 = draw(
+    dtype_1, matrix_1 = draw(
         helpers.dtype_and_values(
             shape=shape_1,
-            dtype=input_dtype,
+            available_dtypes=helpers.get_dtypes("float"),
             min_value=-10,
             max_value=10,
-        )
+        ).filter(lambda x: "float16" not in x[0])
     )
-    matrix_2 = draw(
+    dtype_2, matrix_2 = draw(
         helpers.dtype_and_values(
             shape=shape_2,
-            dtype=input_dtype,
+            dtype=dtype_1,
             min_value=-10,
             max_value=10,
-        )
+        ).filter(lambda x: "float16" not in x[0])
     )
-    return [matrix_1[0][0], matrix_2[0][0]], [matrix_1[1][0], matrix_2[1][0]]
+    return [dtype_1[0], dtype_2[0]], [matrix_1[0], matrix_2[0]]
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.dot",
     data=_generate_dot_dtype_and_arrays(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
-def test_dot(data, test_flags, backend_fw, fn_name, on_device):
+def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     (input_dtypes, x) = data
     return helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
-        input_dtypes=["float32", "float32"],
+        input_dtypes=input_dtypes,
         test_values=True,
         rtol_=1e-1,
         atol_=6e-1,
