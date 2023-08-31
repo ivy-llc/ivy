@@ -22,7 +22,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltContainerStrategy,
     BuiltWithOutStrategy,
     BuiltInplaceStrategy,
-    BuiltCompileStrategy,
+    BuiltTraceStrategy,
     BuiltFrontendArrayStrategy,
     BuiltPrecisionModeStrategy,
 )
@@ -38,7 +38,7 @@ cmd_line_args = (
     "with_out",
     "instance_method",
     "test_gradients",
-    "test_compile",
+    "test_trace",
     "precision_mode",
 )
 cmd_line_args_lists = (
@@ -287,7 +287,7 @@ def handle_test(
     test_instance_method=BuiltInstanceStrategy,
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
@@ -322,8 +322,8 @@ def handle_test(
         A search strategy that generates a boolean to test the function with arrays as
         gradients
 
-    test_compile
-        A search strategy that generates a boolean to graph compile and test the
+    test_trace
+        A search strategy that generates a boolean to trace and test the
         function
 
     precision_mode
@@ -359,7 +359,7 @@ def handle_test(
             instance_method=test_instance_method,
             with_out=test_with_out,
             test_gradients=test_gradients,
-            test_compile=test_compile,
+            test_trace=test_trace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
             container_flags=container_flags,
@@ -424,7 +424,7 @@ def handle_frontend_test(
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     **_given_kwargs,
@@ -465,8 +465,8 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
 
-    test_compile
-        A search strategy that generates a boolean to graph compile and test the
+    test_trace
+        A search strategy that generates a boolean to trace and test the
         function
 
     generate_frontend_arrays
@@ -490,7 +490,7 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
-            test_compile=test_compile,
+            test_trace=test_trace,
             generate_frontend_arrays=generate_frontend_arrays,
             precision_mode=precision_mode,
         )
@@ -563,7 +563,7 @@ def handle_method(
     method_tree: str = None,
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
@@ -595,7 +595,7 @@ def handle_method(
     possible_arguments = {
         "ground_truth_backend": st.just(ground_truth_backend),
         "test_gradients": test_gradients,
-        "test_compile": test_compile,
+        "test_trace": test_trace,
         "precision_mode": precision_mode,
     }
 
@@ -684,7 +684,7 @@ def handle_frontend_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
-    test_compile=BuiltCompileStrategy,
+    test_trace=BuiltTraceStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
@@ -744,7 +744,7 @@ def handle_frontend_method(
                 num_positional_args=init_num_positional_args,
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
-                test_compile=test_compile,
+                test_trace=test_trace,
                 precision_mode=precision_mode,
             )
 
@@ -752,7 +752,7 @@ def handle_frontend_method(
                 num_positional_args=method_num_positional_args,
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
-                test_compile=test_compile,
+                test_trace=test_trace,
                 precision_mode=precision_mode,
             )
             ivy_init_modules = str(ivy_init_module)

@@ -11,7 +11,7 @@ path_hooks = []
 # If they do, the behavior of ivy.with_backend is undefined and may not function as
 # expected. Import these modules along with Ivy initialization, as the import logic
 # assumes they exist in sys.modules.
-MODULES_TO_SKIP = ["ivy.compiler"]
+MODULES_TO_SKIP = ["ivy.compiler"]  # ! Are we updating the Compiler Module to Tracer?
 
 IS_COMPILING_WITH_BACKEND = False
 
@@ -120,7 +120,9 @@ def _import_module(name, package=None):
     module = module_from_spec(spec)
     import_cache[absolute_name] = module
     if ivy.is_local():
-        spec.loader.exec_module(module, ivy._compiled_id)
+        spec.loader.exec_module(
+            module, ivy._compiled_id
+        )  # ! Not sure about what this ID is
     else:
         spec.loader.exec_module(module)
     if path is not None:

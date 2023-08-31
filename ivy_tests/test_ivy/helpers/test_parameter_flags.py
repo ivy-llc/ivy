@@ -34,7 +34,7 @@ BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
-BuiltCompileStrategy = st.just(False)
+BuiltTraceStrategy = st.just(False)
 BuiltFrontendArrayStrategy = st.booleans()
 BuiltPrecisionModeStrategy = st.booleans()
 
@@ -47,7 +47,7 @@ flags_mapping = {
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
     "inplace": "BuiltInplace",
-    "test_compile": "BuiltCompileStrategy",
+    "test_trace": "BuiltTraceStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
 }
 
@@ -81,7 +81,7 @@ class FunctionTestFlags(TestFlags):
         native_arrays,
         container,
         test_gradients,
-        test_compile,
+        test_trace,
         precision_mode,
     ):
         self.ground_truth_backend = ground_truth_backend
@@ -92,7 +92,7 @@ class FunctionTestFlags(TestFlags):
         self.container = container
         self.as_variable = as_variable
         self.test_gradients = test_gradients
-        self.test_compile = test_compile
+        self.test_trace = test_trace
         self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
@@ -119,7 +119,7 @@ class FunctionTestFlags(TestFlags):
             f"container={self.container}. "
             f"as_variable={self.as_variable}. "
             f"test_gradients={self.test_gradients}. "
-            f"test_compile={self.test_compile}. "
+            f"test_trace={self.test_trace}. "
             f"precision_mode={self.precision_mode}. "
         )
 
@@ -136,7 +136,7 @@ def function_flags(
     instance_method,
     with_out,
     test_gradients,
-    test_compile,
+    test_trace,
     as_variable,
     native_arrays,
     container_flags,
@@ -150,7 +150,7 @@ def function_flags(
             with_out=with_out,
             instance_method=instance_method,
             test_gradients=test_gradients,
-            test_compile=test_compile,
+            test_trace=test_trace,
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,
@@ -167,7 +167,7 @@ class FrontendFunctionTestFlags(TestFlags):
         inplace,
         as_variable,
         native_arrays,
-        test_compile,
+        test_trace,
         generate_frontend_arrays,
         precision_mode,
     ):
@@ -176,7 +176,7 @@ class FrontendFunctionTestFlags(TestFlags):
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
-        self.test_compile = test_compile
+        self.test_trace = test_trace
         self.generate_frontend_arrays = generate_frontend_arrays
         self.precision_mode = precision_mode
 
@@ -199,7 +199,7 @@ class FrontendFunctionTestFlags(TestFlags):
             f"inplace={self.inplace}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
-            f"test_compile={self.test_compile}. "
+            f"test_trace={self.test_trace}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
             f"precision_mode={self.precision_mode}. "
         )
@@ -217,7 +217,7 @@ def frontend_function_flags(
     inplace,
     as_variable,
     native_arrays,
-    test_compile,
+    test_trace,
     generate_frontend_arrays,
     precision_mode,
 ):
@@ -229,7 +229,7 @@ def frontend_function_flags(
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,
-            test_compile=test_compile,
+            test_trace=test_trace,
             generate_frontend_arrays=generate_frontend_arrays,
             precision_mode=precision_mode,
         )
@@ -364,13 +364,13 @@ class FrontendMethodTestFlags(TestFlags):
         as_variable,
         native_arrays,
         precision_mode,
-        test_compile,
+        test_trace,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
         self.precision_mode = precision_mode
-        self.test_compile = test_compile
+        self.test_trace = test_trace
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
@@ -390,7 +390,7 @@ class FrontendMethodTestFlags(TestFlags):
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
             f"precision_mode={self.precision_mode}. "
-            f"test_compile={self.test_compile}."
+            f"test_trace={self.test_trace}."
         )
 
     def __repr__(self):
@@ -405,7 +405,7 @@ def frontend_method_flags(
     as_variable,
     native_arrays,
     precision_mode,
-    test_compile,
+    test_trace,
 ):
     return draw(
         st.builds(
@@ -414,6 +414,6 @@ def frontend_method_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             precision_mode=precision_mode,
-            test_compile=test_compile,
+            test_trace=test_trace,
         )
     )

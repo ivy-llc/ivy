@@ -18,7 +18,7 @@ def if_else(cond, body_fn, orelse_fn, vars):
     cond = bool(cond(*vars))
     # return tf.cond(cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars))
 
-    # use pythonic placeholder until the graph compiler supports callable arguments
+    # use pythonic placeholder until the tracer supports callable arguments
 
     if cond:
         return body_fn(*vars)

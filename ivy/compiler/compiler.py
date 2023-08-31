@@ -14,7 +14,7 @@ class LazyGraph:
     pass
 
 
-def compile(
+def trace(
     *objs: Callable,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -32,16 +32,16 @@ def compile(
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
     if python_version[1] == "8":
-        from ._compiler_38 import compile as _compile
+        from ._compiler_38 import trace as _trace
     else:
-        from ._compiler import compile as _compile
+        from ._compiler import trace as _trace
     """
-    Take `fn` and compiles it into a more efficient composition of backend operations.
+    Take `fn` and decomposes it into a more efficient composition of backend operations.
 
     Parameters
     ----------
     objs
-        callable(s) to compile and create a graph of
+        callable(s) to trace and create a graph of
     stateful
         list of instances to be considered stateful during the graph compilation
     arg_stateful_idxs
@@ -59,7 +59,7 @@ def compile(
     static_argnames
         for jax's jit compilation
     graph_caching
-        whether to cache the compiled graph
+        whether to cache the traced graph
     args
         positional arguments for `obj`
     kwargs
@@ -67,7 +67,7 @@ def compile(
 
     Returns
     -------
-    the compiled `Graph` object.
+    the traced `Graph` object.
 
     Examples
     --------
@@ -84,8 +84,8 @@ def compile(
     ...     j = ivy.floor(b)
     ...     k = ivy.ceil(c)
     ...     return i, j, k
-    >>> graph = ivy.compile(fn, args=(x,))
-    Notice how the time taken to execute the compiled function is lower than
+    >>> graph = ivy.trace(fn, args=(x,))
+    Notice how the time taken to execute the traced function is lower than
     the original function. A typical run:
     >>> start = time.time()
     >>> fn(x)
@@ -96,7 +96,7 @@ def compile(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-    return _compile(
+    return _trace(
         *objs,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,

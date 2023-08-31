@@ -10,7 +10,7 @@ from ivy.utils.backend.handler import _backend_dict
 
 
 @pytest.fixture
-def compiled_backends():
+def compiled_backends():  # ! I assume this is about "compilation" of backends
     compiled_backends = []
     for b in _backend_dict:
         _b = ivy.with_backend(b)
