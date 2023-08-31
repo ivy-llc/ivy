@@ -200,9 +200,9 @@ def vflip(img, data_format="CHW"):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
-def pad(img, padding, fill=0, padding_mode='constant'):
+def pad(img, padding, fill=0, padding_mode="constant"):
     dim_size = img.ndim
-    if not hasattr(padding, '__len__'):
+    if not hasattr(padding, "__len__"):
         if dim_size == 2:
             trans_padding = ((padding, padding), (padding, padding))
         elif dim_size == 3:
