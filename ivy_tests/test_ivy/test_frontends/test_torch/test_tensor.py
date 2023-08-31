@@ -12660,7 +12660,7 @@ def test_torch_triu_(
     init_tree="torch.tensor",
     method_name="unique",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         force_int_axis=True,
     ),
