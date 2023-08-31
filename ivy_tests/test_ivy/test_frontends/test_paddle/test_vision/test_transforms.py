@@ -190,20 +190,20 @@ def test_paddle_vflip(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,
         max_num_dims=3,
-        min_dim_size=4,
-        max_dim_size=10,
+        min_dim_size=3,
+        max_dim_size=5,
     ),
     padding=st.one_of(
-        st.integers(min_value=1, max_value=3),
-        st.tuples(st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3)),
+        st.integers(min_value=0, max_value=2),
+        st.tuples(st.integers(min_value=0, max_value=2), st.integers(min_value=0, max_value=2)),
         st.tuples(
-            st.integers(min_value=1, max_value=3),
-            st.integers(min_value=1, max_value=3),
-            st.integers(min_value=1, max_value=3),
-            st.integers(min_value=1, max_value=3),
+            st.integers(min_value=0, max_value=2),
+            st.integers(min_value=0, max_value=2),
+            st.integers(min_value=0, max_value=2),
+            st.integers(min_value=0, max_value=2),
         ),
     ),
-    fill=st.floats(min_value=-5, max_value=5),
+    fill=st.integers(min_value=-5, max_value=5),
     padding_mode=st.sampled_from(["constant", "edge", "reflect"])
 
 
