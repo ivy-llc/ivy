@@ -113,3 +113,37 @@ def max_unpool1d(
     name=None,
 ):
     return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
+
+def max_pool3d(x, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False, data_format='NCDHW'):
+    """
+    3D max pooling operation.
+
+    Args:
+        x (Tensor): The input tensor.
+        kernel_size (int or tuple): The size of the pooling kernel.
+        stride (int or tuple, optional): The stride of the pooling operation. Default: None.
+        padding (int or tuple, optional): The padding of the pooling operation. Default: 0.
+        dilation (int or tuple, optional): The dilation of the pooling operation. Default: 1.
+        ceil_mode (bool, optional): Whether to use ceil mode for the pooling operation. Default: False.
+        data_format (str, optional): The data format of the input tensor. Default: 'NCDHW'.
+
+    Returns:
+        Tensor: The output tensor.
+    """
+
+    if stride is None:
+        stride = kernel_size
+
+    if padding is None:
+        padding = 0
+
+    if dilation is None:
+        dilation = 1
+
+    if ceil_mode is None:
+        ceil_mode = False
+
+    if data_format is None:
+        data_format = 'NCDHW'
+
+    return F.max_pool3d(x, kernel_size, stride, padding, dilation, ceil_mode, data_format)

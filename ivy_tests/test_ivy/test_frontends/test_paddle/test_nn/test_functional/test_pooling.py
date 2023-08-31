@@ -306,3 +306,24 @@ def test_paddle_max_unpool1d(
         stride=stride,
         padding=padding,
     )
+import paddle
+import paddle.nn as nn
+import paddle.nn.functional as F
+
+# Define the input data
+input = paddle.randn((1, 3, 32, 32, 32))
+
+# Define the max pooling layer
+pool = nn.MaxPool3D(kernel_size=3, stride=2, padding=1)
+
+# Apply the max pooling layer to the input data
+output = pool(input)
+
+# Print the output shape
+print(output.shape)
+
+# Calculate the max value of the output
+max_value = paddle.max(output)
+
+# Print the max value
+print(max_value)
