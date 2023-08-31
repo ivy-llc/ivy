@@ -121,11 +121,11 @@ def argmax(
     With :class: `ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.argmin(x)
+    >>> y = ivy.argmax(x)
     >>> print(y)
     {
-        a: ivy.array(2),
-        b: ivy.array(2)
+        a: ivy.array(1),
+        b: ivy.array(0)
     }
     """
     return current_backend(x).argmax(
