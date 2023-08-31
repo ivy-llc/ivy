@@ -253,6 +253,7 @@ Squeeze = to_ivy_arrays_and_back(
 )
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
+Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
 Xlogy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xlogy))
 Zeta = to_ivy_arrays_and_back(
     with_supported_dtypes(
@@ -787,9 +788,6 @@ def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
 @to_ivy_arrays_and_back
 def TanhGrad(*, y, dy, name="TanhGrad"):
     return ivy.multiply(dy, ivy.subtract(1, ivy.multiply(y, y)))
-
-
-Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
 
 
 @to_ivy_arrays_and_back

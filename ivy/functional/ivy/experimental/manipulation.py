@@ -1943,7 +1943,9 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = ivy.full(new_shape, ivy.to_scalar(padding_value), dtype=operand.dtype)
+            new_array = ivy.full(
+                new_shape, ivy.to_scalar(padding_value), dtype=operand.dtype
+            )
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
