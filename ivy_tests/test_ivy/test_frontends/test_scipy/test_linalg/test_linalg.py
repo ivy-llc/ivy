@@ -130,8 +130,6 @@ def test_scipy_eigh_tridiagonal(
     on_device,
     backend_fw,
 ):
-    print(all_args[-1])
-
     dtype, alpha, beta, eigvals_only, select, select_range, tol = all_args
     helpers.test_frontend_function(
         input_dtypes=dtype,
