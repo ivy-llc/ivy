@@ -157,6 +157,35 @@ def _get_splits(draw, as_list=False):
         return draw(get_int_split())
 
 
+# Tile
+@st.composite
+def _multiple_shape_helper(draw):
+    input_dtype, input_array, input_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
+        )
+    )
+    input_dims = len(input_shape)
+
+    dt_n_multiples = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_value=0,
+            max_value=10,
+            shape=draw(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=1,
+                    min_dim_size=input_dims,
+                    max_dim_size=input_dims,
+                )
+            ),
+        )
+    )
+
+    return input_dtype, input_array, dt_n_multiples
+
+
 @st.composite
 def _pad_helper(draw, return_constant_values=False):
     dtype, input, shape = draw(
@@ -4097,6 +4126,32 @@ def test_tensorflow_TanhGrad(  # NOQA
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Tile", all_arguments=_multiple_shape_helper()
+)
+def test_tensorflow_Tile(
+    *,
+    all_arguments,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, input_matrix, dt_and_multiples = all_arguments
+    dt_mul, multiples = dt_and_multiples
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + dt_mul,
+        input=input_matrix[0],
+        multiples=multiples[0],
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.raw_ops.TruncateDiv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"), num_arrays=2, shared_dtype=True
@@ -4332,60 +4387,6 @@ def test_tensorflow_roll(
         input=value[0],
         shift=shift,
         axis=axis,
-    )
-
-
-# Tile
-@st.composite
-def _multiple_shape_helper(draw):
-    input_dtype, input_array, input_shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
-        )
-    )
-    input_dims = len(input_shape)
-
-    dt_n_multiples = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["int32", "int64"],
-            min_value=0,
-            max_value=10,
-            shape=draw(
-                helpers.get_shape(
-                    min_num_dims=1,
-                    max_num_dims=1,
-                    min_dim_size=input_dims,
-                    max_dim_size=input_dims,
-                )
-            ),
-        )
-    )
-
-    return input_dtype, input_array, dt_n_multiples
-
-@handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.Tile", all_arguments=_multiple_shape_helper()
-)
-def test_tensorflow_Tile(
-    *,
-    all_arguments,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    input_dtype, input_matrix, dt_and_multiples = all_arguments
-    dt_mul, multiples = dt_and_multiples
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype + dt_mul,
-        input=input_matrix[0],
-        multiples=multiples[0],
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
     )
 
 
