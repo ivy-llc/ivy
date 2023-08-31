@@ -1,15 +1,24 @@
+from abc import ABCMeta, abstractmethod
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
-class BaseCrossValidator:
+
+class BaseCrossValidator(metaclass=ABCMeta):
     def split(self, X, y=None, groups=None):
         raise NotImplementedError
 
     def _iter_test_masks(self, X=None, y=None, groups=None):
-        raise NotImplementedError
+        for test_index in self._iter_test_indices(X, y, groups):
+            test_mask = ivy.zeros(X.shape[0], dtype="bool")
+            test_mask[test_index] = True
+            yield test_mask
 
     def _iter_test_indices(self, X=None, y=None, groups=None):
         raise NotImplementedError
+
+    @abstractmethod
+    def get_n_splits(self, X=None, y=None, groups=None):
+        pass
 
 
 class KFold(BaseCrossValidator):
@@ -24,18 +33,33 @@ class KFold(BaseCrossValidator):
         self.shuffle = shuffle
         self.random_state = random_state
 
-    def split(self, X, y=None, groups=None):
-        raise NotImplementedError
-
-    def _iter_test_masks(self, X=None, y=None, groups=None):
-        raise NotImplementedError
-
     def _iter_test_indices(self, X=None, y=None, groups=None):
-        raise NotImplementedError
+        n_samples = X.shape[0]
+        indices = ivy.arange(n_samples)
+        if self.shuffle:
+            indices = ivy.shuffle(indices, seed=self.random_state)
+
+        n_splits = self.n_splits
+        fold_sizes = ivy.full(
+            n_splits, n_samples // n_splits, dtype=ivy.default_int_dtype()
+        )
+        fold_sizes[: n_samples % n_splits] += 1
+        current = 0
+        for fold_size in fold_sizes:
+            start, stop = current, current + fold_size
+            yield indices[start:stop]
+            current = stop
 
 
 @to_ivy_arrays_and_back
-def train_test_split(*arrays, test_size=None, train_size=None, random_state=None, shuffle=True, stratify=None):
+def train_test_split(
+    *arrays,
+    test_size=None,
+    train_size=None,
+    random_state=None,
+    shuffle=True,
+    stratify=None,
+):
     # TODO: Make it concise
     # TODO: implement stratify
     if stratify is not None:
@@ -45,17 +69,23 @@ def train_test_split(*arrays, test_size=None, train_size=None, random_state=None
     if test_size is None and train_size is None:
         test_size = 0.25
     n_samples = arrays[0].shape[0]
-    n_train = ivy.floor(train_size * n_samples) if isinstance(train_size, float) \
+    n_train = (
+        ivy.floor(train_size * n_samples)
+        if isinstance(train_size, float)
         else float(train_size) if isinstance(train_size, int) else None
-    n_test = ivy.ceil(test_size * n_samples) if isinstance(test_size, float) \
+    )
+    n_test = (
+        ivy.ceil(test_size * n_samples)
+        if isinstance(test_size, float)
         else float(test_size) if isinstance(test_size, int) else None
+    )
     if train_size is None:
         n_train = n_samples - n_test
     elif test_size is None:
         n_test = n_samples - n_train
 
     n_train, n_test = int(n_train), int(n_test)
-    indices = ivy.arange(0,  n_train + n_test)
+    indices = ivy.arange(0, n_train + n_test)
     if shuffle:
         if random_state is not None:
             ivy.seed(random_state)
