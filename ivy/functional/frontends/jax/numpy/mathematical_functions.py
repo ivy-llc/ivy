@@ -379,11 +379,15 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
         if where is None:
             return ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
         filtered_a = a[where]
+        if filtered_a.shape == ():
+            return ivy.Array(filtered_a)
         return ivy.mean(filtered_a, axis=axis, keepdims=keepdims, out=out)
     casted_a = a.astype(dtype)
     if where is None:
         return ivy.mean(casted_a, axis=axis, keepdims=keepdims, out=out)
     filtered_casted_a = casted_a[where]
+    if filtered_casted_a.shape == ():
+        return ivy.Array(filtered_casted_a)
     return ivy.mean(filtered_casted_a, axis=axis, keepdims=keepdims, out=out)
 
 
