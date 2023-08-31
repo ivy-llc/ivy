@@ -955,7 +955,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
             num_segments,
         )
 
-
     @staticmethod
     def static_blackman_window(
         window_length: Union[int, ivy.Container],
@@ -984,10 +983,12 @@ class _ContainerWithCreationExperimental(ContainerBase):
             The data type to produce. Must be a floating point type.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container that contains the Blackman windows.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -1034,10 +1035,12 @@ class _ContainerWithCreationExperimental(ContainerBase):
             The data type to produce. Must be a floating point type.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             The container containing the Blackman windows.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -1050,8 +1053,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         }
         """
         return self.static_blackman_window(self, periodic, dtype, out=out)
-      
-      
+
     @staticmethod
     def _static_trilu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

@@ -3,15 +3,13 @@ import paddle
 from typing import Tuple, Optional
 from collections import namedtuple
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 
 # local
 from . import backend_version
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex",)}}, backend_version
-)
+@with_unsupported_dtypes({"2.5.1 and below": ("complex",)}, backend_version)
 def unique_all(
     x: paddle.Tensor,
     /,
@@ -24,32 +22,46 @@ def unique_all(
         ["values", "indices", "inverse_indices", "counts"],
     )
 
-    if x.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
         x, x_dtype = x.cast("float32"), x.dtype
     else:
         x_dtype = x.dtype
     if axis is not None:
         axis = axis % x.ndim
-    values, indices, inverse_indices, counts = paddle.unique(
+    values, inverse_indices, counts = paddle.unique(
         x,
-        return_index=True,
+        return_index=False,  # which occurences of the unique values are picked is
+        # inconsistent in some cases, so calculate the indices manually below
         return_counts=True,
         return_inverse=True,
         axis=axis,
     )
 
-    nan_count = paddle.sum(paddle.isnan(x))
-    if nan_count.item() > 0:
-        nan = paddle.to_tensor([float("nan")] * nan_count.item(), dtype=values.dtype)
-        values = paddle.concat((values, nan))
-        nan_idx = paddle.nonzero(paddle.isnan(x).astype(float).flatten()).flatten()
-        indices = paddle.concat((indices, nan_idx))
-        inverse_indices = paddle.put_along_axis(
-            arr=inverse_indices, indices=nan_idx, values=values.shape, axis=0
-        )
-        counts = paddle.concat(
-            (counts, paddle.ones(shape=nan_count, dtype=counts.dtype))
-        )
+    unique_nan = paddle.isnan(values)
+    idx_dtype = inverse_indices.dtype
+    if paddle.any(unique_nan):
+        nan_index = paddle.where(paddle.isnan(x))
+        non_nan_index = [
+            x.tolist().index(val) for val in values if not paddle.isnan(val)
+        ]
+        indices = values.clone().to(idx_dtype)
+        indices[unique_nan] = nan_index[0]
+        inverse_indices[paddle.isnan(x)] = paddle.where(unique_nan)[0][0]
+        counts[unique_nan] = 1
+        indices[~unique_nan] = paddle.to_tensor(non_nan_index, dtype=idx_dtype)
+    else:
+        decimals = paddle.arange(inverse_indices.numel()) / inverse_indices.numel()
+        inv_sorted = (inverse_indices.astype(decimals.dtype) + decimals).argsort()
+        tot_counts = paddle.concat(
+            (paddle.zeros((1,), dtype=counts.dtype), counts.cumsum(axis=0))
+        )[:-1]
+        indices = inv_sorted[tot_counts].astype(idx_dtype)
 
     if not by_value:
         sort_idx = paddle.argsort(indices)
@@ -59,7 +71,12 @@ def unique_all(
         values_ = paddle.moveaxis(values, axis, 0)
         values_ = paddle.reshape(values_, (values_.shape[0], -1))
         sort_idx = paddle.to_tensor(
-            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
+            [
+                i[0]
+                for i in sorted(
+                    list(enumerate(values_.numpy().tolist())), key=lambda x: tuple(x[1])
+                )
+            ]
         )
     values = paddle.gather(values, sort_idx, axis=axis)
     counts = paddle.gather(counts, sort_idx)
