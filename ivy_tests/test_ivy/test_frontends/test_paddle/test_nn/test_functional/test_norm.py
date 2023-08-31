@@ -49,7 +49,7 @@ def test_paddle_layer_norm(
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.normalize",
     dtype_and_x_and_axis=helpers.arrays_and_axes(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes(kind="valid"),
         num=1,
         return_dtype=True,
         force_int_axis=True,
@@ -66,7 +66,7 @@ def test_paddle_normalize(
     on_device,
     fn_tree,
 ):
-    dtype, x, _ = dtype_and_x_and_axis
+    dtype, x, axis = dtype_and_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -76,5 +76,5 @@ def test_paddle_normalize(
         fn_tree=fn_tree,
         x=x[0],
         p=p,
-        axis=0,
+        axis=axis if axis else 0,
     )
