@@ -1877,7 +1877,7 @@ class Tensor:
         return torch_frontend.cummax(self, dim)
 
     def ne(self, other):
-        return torch_frontend.ne(self, other)
+        return self.not_equal(other)
 
 
 class Size(tuple):
