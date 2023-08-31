@@ -289,16 +289,6 @@ def _get_dtype_and_multiplicative_matrices(draw):
 
 
 @st.composite
-def _get_dtype_and_multiplicative_matrices(draw):
-    return draw(
-        st.one_of(
-            _get_dtype_input_and_matrices(),
-            _get_dtype_and_3dbatch_matrices(),
-        )
-    )
-
-
-@st.composite
 def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
@@ -5269,7 +5259,7 @@ def test_torch_tensor_cos_(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-            "data": list(x[0]) if type(x[0]) == int else x[0],
+            "data": list(x[0]) if isinstance(x[0], int) else x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
