@@ -610,6 +610,47 @@ def softplus(
 softplus.jax_like = _softplus_jax_like
 
 
+# Softsign
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def softsign(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Apply the softsign function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with softsign applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.softsign(x)
+    >>> print(y)
+    ivy.array([0.5, 0.66666667, 0.75])
+    """
+    return current_backend(x).softsign(x, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable

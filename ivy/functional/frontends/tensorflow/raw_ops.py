@@ -751,6 +751,12 @@ def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
 
+# Softsign
+@to_ivy_arrays_and_back
+def Softsign(*, features, name="Softsign"):
+    return ivy.softsign(features)
+
+
 @to_ivy_arrays_and_back
 def SplitV(*, value, size_splits, axis, num_split, name="SplitV"):
     return ivy.split(value, num_or_size_splits=size_splits, axis=axis)
