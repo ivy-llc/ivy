@@ -581,6 +581,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
     def conj(self, name=None):
         return paddle_frontend.Tensor(ivy.conj(self._ivy_array))
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
     )
@@ -663,4 +664,3 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):
         return ivy.remainder(self._ivy_array, y)
-
