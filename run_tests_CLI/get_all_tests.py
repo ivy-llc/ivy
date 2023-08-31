@@ -28,7 +28,7 @@ def extract_tests_from_dir(directory):
     test_files = []
     for root, _, files in os.walk(directory):
         for file in files:
-            if file.endswith(".py"):
+            if file.endswith(".py") and "helpers" not in root:
                 full_path = os.path.join(root, file)
                 test_files.extend(extract_tests_from_file(full_path))
 
