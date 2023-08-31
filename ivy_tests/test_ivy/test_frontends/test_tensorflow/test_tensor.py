@@ -6,7 +6,6 @@ import tensorflow as tf
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.backends.tensorflow.general import _check_query
 from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
@@ -62,6 +61,13 @@ def _array_and_shape(
     to_shape = [(None if draw(st.booleans()) else _) for _ in shape]
 
     return dtype, [array, to_shape]
+
+
+# same implementation as in tensorflow backend but was causing backend conflict issues
+def _check_query(query):
+    return not isinstance(query, list) and (
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+    )
 
 
 # --- Main --- #

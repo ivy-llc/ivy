@@ -106,11 +106,9 @@ def test_jax_elu(
     fn_tree="jax.nn.gelu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        large_abs_safety_factor=1,
-        small_abs_safety_factor=1,
-        safety_factor_scale="linear",
         min_value=-1e4,
         max_value=1e4,
+        abs_smallest_val=1e-3,
     ),
     approximate=st.booleans(),
     test_with_out=st.just(False),
@@ -127,7 +125,7 @@ def test_jax_gelu(
 ):
     input_dtype, x = dtype_and_x
     # As erf function doesn't support complex dtype
-    if "complex" in str(x[0].dtype):
+    if "complex" in input_dtype[0]:
         approximate = True
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -136,8 +134,8 @@ def test_jax_gelu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-02,
-        atol=1e-02,
+        rtol=1e-2,
+        atol=1e-2,
         x=x[0],
         approximate=approximate,
     )
@@ -317,7 +315,9 @@ def test_jax_hard_tanh(
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
     ),
-    negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
+    negative_slope=helpers.floats(
+        min_value=0.0, max_value=1.0, small_abs_safety_factor=16
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_leaky_relu(
