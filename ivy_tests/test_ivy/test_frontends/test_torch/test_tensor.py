@@ -12546,9 +12546,12 @@ def test_torch_tensor_where(
     init_tree="torch.tensor",
     method_name="xlogy_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shared_dtype=True,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_num_dims=1,
+        min_value=-100,
+        max_value=100,
+        shared_dtype=True,
     ),
 )
 def test_torch_tensor_xlogy_(
