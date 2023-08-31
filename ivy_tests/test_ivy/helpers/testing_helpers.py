@@ -25,6 +25,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltCompileStrategy,
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
+    BuiltPrecisionModeStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -39,6 +40,7 @@ cmd_line_args = (
     "instance_method",
     "test_gradients",
     "test_compile",
+    "precision_mode",
 )
 cmd_line_args_lists = (
     "as_variable",
@@ -287,6 +289,7 @@ def handle_test(
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
     test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     container_flags=BuiltContainerStrategy,
@@ -324,6 +327,10 @@ def handle_test(
         A search strategy that generates a boolean to graph compile and test the
         function
 
+    precision_mode
+        A search strategy that generates a boolean to switch between two different
+        precision modes supported by numpy and (torch, jax) and test the function
+
     as_variable_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a Variable array
@@ -357,6 +364,7 @@ def handle_test(
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
             container_flags=container_flags,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
@@ -420,6 +428,7 @@ def handle_frontend_test(
     test_compile=BuiltCompileStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     transpile=BuiltTranspileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     **_given_kwargs,
 ):
     """
@@ -445,6 +454,10 @@ def handle_frontend_test(
     test_with_out
         A search strategy that generates a boolean to test the function with an `out`
         parameter
+
+    precision_mode
+        A search strategy that generates a boolean to switch between two different
+        precision modes supported by numpy and (torch, jax) and test the function
 
     as_variable_flags
         A search strategy that generates a list of boolean flags for array inputs to be
@@ -482,6 +495,7 @@ def handle_frontend_test(
             test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
             transpile=transpile,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
@@ -553,6 +567,7 @@ def handle_method(
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
@@ -575,6 +590,7 @@ def handle_method(
     ground_truth_backend
         The framework to assert test results are equal to
     """
+    # need to fill up the docstring
     is_method_tree_provided = method_tree is not None
     if is_method_tree_provided:
         method_tree = "ivy." + method_tree
@@ -583,6 +599,7 @@ def handle_method(
         "ground_truth_backend": st.just(ground_truth_backend),
         "test_gradients": test_gradients,
         "test_compile": test_compile,
+        "precision_mode": precision_mode,
     }
 
     if is_hypothesis_test and is_method_tree_provided:
@@ -597,6 +614,7 @@ def handle_method(
             num_positional_args=init_num_positional_args,
             as_variable=init_as_variable_flags,
             native_arrays=init_native_arrays,
+            precision_mode=precision_mode,
         )
 
         if method_num_positional_args is None:
@@ -609,6 +627,7 @@ def handle_method(
             as_variable=method_as_variable_flags,
             native_arrays=method_native_arrays,
             container_flags=method_container_flags,
+            precision_mode=precision_mode,
         )
 
     def test_wrapper(test_fn):
@@ -669,6 +688,7 @@ def handle_frontend_method(
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
     test_compile=BuiltCompileStrategy,
+    precision_mode=BuiltPrecisionModeStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
@@ -728,6 +748,7 @@ def handle_frontend_method(
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
                 test_compile=test_compile,
+                precision_mode=precision_mode,
             )
 
             method_flags = pf.frontend_method_flags(
@@ -735,6 +756,7 @@ def handle_frontend_method(
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
                 test_compile=test_compile,
+                precision_mode=precision_mode,
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
