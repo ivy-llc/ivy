@@ -182,6 +182,15 @@ def test_paddle_vflip(
         backend_to_test=backend_fw,
     )
 
+
+@handle_frontend_test(
+    fn_tree="paddle.vision.transforms.resize",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=_chw_image_shape_helper(),
+    ),
+    size=helpers.ints(min_value=1, max_value=100),
+)
 def test_paddle_resize(
     *,
     dtype_and_x,
