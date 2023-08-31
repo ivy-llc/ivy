@@ -875,14 +875,7 @@ def test_torch_multi_dot(
     dtype_and_input=_get_dtype_and_matrix(batch=True),
 )
 def test_torch_pinv(
-    *,
-    dtype_and_input,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-    hermitian
+    *, dtype_and_input, frontend, test_flags, fn_tree, backend_fw, on_device, hermitian
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -895,7 +888,7 @@ def test_torch_pinv(
         input=x[0],
         atol=1e-02,
         rtol=1e-02,
-        hermitian=hermitian
+        hermitian=hermitian,
     )
 
 
