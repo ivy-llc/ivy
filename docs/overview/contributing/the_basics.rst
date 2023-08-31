@@ -532,7 +532,7 @@ with PyCharm
         1. Click the gutter at the executable line of code where you want to set the breakpoint or place the caret at the line and press :code:`Ctrl+F8`
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
-           :aligh: center
+           :align: center
 
     2. Enter into the debug mode:
         1. Click on Run icon and Select **Debug test** or press :code:`Shift+F9`.
