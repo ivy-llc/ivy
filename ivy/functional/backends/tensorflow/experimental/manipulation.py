@@ -1,7 +1,16 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List, Literal, \
-    Callable, Any
+from typing import (
+    Union,
+    Optional,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Literal,
+    Callable,
+    Any,
+)
 from numbers import Number
 import tensorflow as tf
 
@@ -282,33 +291,45 @@ def pad(
         pad_width,
         mode=mode,
         constant_values=constant_values,
-     )
+    )
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: \
-    _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_tf_pad(
+    args[0].shape, args[1], mode, constant_values, reflect_type
+)
 
 
 def _check_tf_pad(input_shape, pad_width, mode, constant_values, reflect_type):
     pad_width = _to_tf_padding(pad_width, len(input_shape))
-    return isinstance(constant_values, Number) and \
-        (
-            mode == 'constant' or
-            (
-                reflect_type == "even" and
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            reflect_type == "even"
+            and (
                 (
-                    (mode == 'reflect' and all(pad_width[i][0] < s and pad_width[i][1] < s for i, s in enumerate(input_shape))) or
-                    (mode == 'symmetric' and all(pad_width[i][0] <= s and pad_width[i][1] <= s for i, s in enumerate(input_shape)))
+                    mode == "reflect"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or (
+                    mode == "symmetric"
+                    and all(
+                        pad_width[i][0] <= s and pad_width[i][1] <= s
+                        for i, s in enumerate(input_shape)
+                    )
                 )
             )
         )
+    )
 
 
 def _to_tf_padding(pad_width, ndim):
     if isinstance(pad_width, Number):
-        pad_width = [[pad_width]*2]*ndim
+        pad_width = [[pad_width] * 2] * ndim
     elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
-        pad_width = pad_width*ndim
+        pad_width = pad_width * ndim
     return pad_width
 
 
