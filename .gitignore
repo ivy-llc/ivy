@@ -43,8 +43,5 @@ venv.bak/
 ivy_dev/
 *venv/
 venv*
-.pytest_cache
-ivy_dev
-try.py
-ivy/try.py
+
 
