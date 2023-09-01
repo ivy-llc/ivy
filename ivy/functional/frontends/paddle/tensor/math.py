@@ -178,7 +178,7 @@ def erf(x, name=None):
     return ivy.erf(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)

@@ -74,7 +74,7 @@ def _assert_no_scalar(args, dtype, none=False):
         first_arg = args[0]
         ivy.utils.assertions.check_all_or_any_fn(
             *args,
-            fn=lambda x: isinstance(x, type(first_arg)),
+            fn=lambda x: type(x) == type(first_arg),  # noqa: E721
             type="all",
             message="type of input is incompatible with dtype {}".format(dtype),
         )
