@@ -36,4 +36,11 @@ def rfft(a, n=None, axis=-1, norm=None):
         norm = "backward"
     if n is None:
         n = len(a)
-    return ivy.fft(a, axis, norm=norm, n=n)[:n//2 + 1]
+    if ivy.current_backend_str() == "tensorflow":
+        if a.dtype in ["uint64", "int64", "float64"]:
+            a_new = ivy.astype(a, "complex128")
+        else:
+            a_new = ivy.astype(a, "complex64")
+    else:
+        a_new = a
+    return ivy.fft(a_new, axis, norm=norm, n=n)[:n//2 + 1]
