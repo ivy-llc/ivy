@@ -14,7 +14,7 @@ import ivy.functional.frontends.torch as torch
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="onnx.abs",
+    fn_tree="onnx.Abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=False),
         large_abs_safety_factor=2.5,
@@ -70,7 +70,7 @@ def test_onnx_abs_v2(dtype_x):
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="onnx.acos",
+    fn_tree="onnx.Acos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -120,7 +120,7 @@ def test_onnx_acos_v2(dtype_x):
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="onnx.acosh",
+    fn_tree="onnx.Acosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -170,7 +170,7 @@ def test_onnx_acosh_v2(dtype_x):
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="onnx.add",
+    fn_tree="onnx.Add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -235,7 +235,7 @@ def test_onnx_add_v2(dtype_x):
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="onnx.asin",
+    fn_tree="onnx.Asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
