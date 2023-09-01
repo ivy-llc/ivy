@@ -979,8 +979,6 @@ def test_numpy_triangular(
 @handle_frontend_test(
     fn_tree="numpy.random.zipf",
     input_dtypes=helpers.get_dtypes("float", index=2),
-    loc=st.floats(allow_nan=False, allow_infinity=False, width=32),
-    scale=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=0),
     a=st.floats(
         allow_nan=False,
         allow_infinity=False,
@@ -1013,7 +1011,5 @@ def test_numpy_zipf(
         test_values=False,
         a=a,
         size=size,
-        loc=loc,
-        scale=scale,
    )
     
