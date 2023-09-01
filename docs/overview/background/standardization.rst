@@ -6,11 +6,11 @@ Skepticism
 
 With our central goal being to unify all ML frameworks, you would be entirely forgiven for raising an eyebrow 🤨
 
-“You want to try and somehow unify: TensorFlow, PyTorch, JAX, NumPy and others, all of which have strong industrial backing, huge user momentum, and significant API differences?”
+“You want to try and somehow unify: TensorFlow, PyTorch, JAX, NumPy, and others, all of which have strong industrial backing, huge user momentum, and significant API differences?”
 
 Won’t adding a new “unified” framework just make the problem even worse…
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/how_standards_proliferate.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/standardization/how_standards_proliferate.png?raw=true
    :align: center
    :width: 70%
    :target: https://xkcd.com/927/
@@ -39,11 +39,11 @@ The reason we can “build” custom computers is thanks to many essential stand
 
 For software, `HTML <https://en.wikipedia.org/wiki/HTML>`_ enables anyone to design and host a website, `TCP/IP <https://en.wikipedia.org/wiki/Internet_protocol_suite#>`_ enables different nodes to communicate on a network, `SMTP <https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol>`_ makes it possible to send from Gmail to Outlook, `POP <https://en.wikipedia.org/wiki/Post_Office_Protocol>`_ enables us to open this email and `IEEE 754 <https://en.wikipedia.org/wiki/IEEE_754>`_ allows us to do calculations.
 These are all essential standards which our modern lives depend on.
-Most of these standards did not arise until there was substantial innovation, growth and usage and in the relevant area, making standardization a necessity so that all parties could easily engage.
+Most of these standards did not arise until there was substantial innovation, growth, and usage in the relevant area, making standardization a necessity so that all parties could easily engage.
 
 With regards to array libraries in Python, NumPy was effectively the standard until ~2015.
 Since then, array libraries have seen an explosion alongside innovations in Machine Learning.
-Given this recent time-frame, we are in a much less mature state than all of the preceding standards mentioned, most of which arose in the 70s, 80s and 90s.
+Given this recent time-frame, we are in a much less mature state than all of the preceding standards mentioned, most of which arose in the 70s, 80s, and 90s.
 An effort to standardize at this stage is completely natural, and like in all other cases mentioned, this will certainly bring huge benefits to users!
 
 The Array API Standard
@@ -52,7 +52,7 @@ The Array API Standard
 The `Consortium for Python Data API Standards <https://data-apis.org>`_ are on a mission to create this shared standard.
 At Ivy, we support their efforts 100% and we are in the process of adopting their standard ourselves.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/consortium.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/standardization/consortium.png?raw=true
    :align: center
    :width: 25%
 
@@ -60,25 +60,25 @@ The consortium is lead by `Quansight <https://www.quansight.com>`_, an open-sour
 Other collaborators include members of: `TensorFlow <https://www.tensorflow.org>`_, `JAX <https://jax.readthedocs.io/en/latest/>`_, `Google <https://about.google>`_, `OctoML <https://octoml.ai>`_ and `einops <https://einops.rocks>`_.
 Further, the consortium is sponsored by `LG Electronics <https://mail.google.com/chat/u/0/#chat/dm/lZAjU4AAAAE>`_, `Microsoft <https://www.microsoft.com/en-us>`_, `Quansight <https://www.quansight.com>`_, `D E Shaw and Co <https://www.deshaw.com>`_, `TensorFlow <https://www.tensorflow.org>`_, `JAX <https://jax.readthedocs.io/en/latest/>`_ and `Intel <https://www.intel.com/content/www/us/en/homepage.html>`_.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/array_api_backers.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/standardization/array_api_backers.png?raw=true
    :align: center
    :width: 100%
 
-Together, all major ML frameworks are involved in the the Array API standard in one way or another.
+Together, all major ML frameworks are involved in the Array API standard in one way or another.
 This is a promising sign in the pursuit of unification.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/logos/supported/frameworks.png?raw=true
    :align: center
    :width: 60%
 
 
-Clearly a lot of time, thought and careful attention has gone into creating the `first version <https://data-apis.org/array-api/latest/>`_ of the standard, such that it simplifies compatibility as much as possible for all ML frameworks.
+Clearly, a lot of time, thought and careful attention has gone into creating the `first version <https://data-apis.org/array-api/latest/>`_ of the standard, such that it simplifies compatibility as much as possible for all ML frameworks.
 
 We are very excited to be working with them on this standard, and bringing Ivy into compliance, with the hope that in due time others also follow-suit!
 
 
 **Round Up**
 
-Hopefully this has given some clear motivation for why standardization in ML frameworks could be a great thing, and convinced you that we should celebrate and encourage the foundational work by the Array API Standard 🙂
+Hopefully, this has given some clear motivation for why standardization in ML frameworks could be a great thing, and convinced you that we should celebrate and encourage the foundational work by the Array API Standard 🙂
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

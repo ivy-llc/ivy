@@ -7,6 +7,49 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+# test_where
+@st.composite
+def _broadcastable_trio(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    cond = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, xs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shape=shape,
+            shared_dtype=True,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    return cond, xs, dtypes
+
+
+# masked_select
+@st.composite
+def _dtypes_input_mask(draw):
+    _shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    _mask = draw(helpers.array_values(dtype="bool", shape=_shape))
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            shape=_shape,
+        )
+    )
+
+    return _dtype, _x, _mask
+
+
+# --- Main --- #
+# ------------ #
+
+
 @handle_frontend_test(
     fn_tree="paddle.argmax",
     dtype_x_and_axis=helpers.dtype_values_axis(
@@ -105,6 +148,37 @@ def test_paddle_argsort(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.masked_select",
+    dtype_input_mask=_dtypes_input_mask(),
+)
+def test_paddle_masked_select(
+    *,
+    dtype_input_mask,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    (
+        input_dtype,
+        x,
+        mask,
+    ) = dtype_input_mask
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + ["bool"],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        mask=mask,
+    )
+
+
 # nonzero
 @handle_frontend_test(
     fn_tree="paddle.nonzero",
@@ -172,4 +246,103 @@ def test_paddle_searchsorted(
         values=input[1],
         out_int32=out_int32,
         right=right,
+    )
+
+
+# sort
+@handle_frontend_test(
+    fn_tree="paddle.tensor.search.sort",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    descending=st.booleans(),
+)
+def test_paddle_sort(
+    *,
+    dtype_input_axis,
+    descending,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+        axis=axis,
+        descending=descending,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.topk",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    k=st.data(),
+    sorted=st.booleans(),
+    largest=st.booleans(),
+)
+def test_paddle_topk(
+    *,
+    dtype_x_and_axis,
+    k,
+    sorted,
+    largest,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, x, axis = dtype_x_and_axis
+    k = k.draw(st.integers(min_value=1, max_value=x[0].shape[axis]))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        k=k,
+        axis=axis,
+        largest=largest,
+        sorted=sorted,
+        test_values=False,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.where",
+    broadcastables=_broadcastable_trio(),
+)
+def test_paddle_where(
+    *, broadcastables, test_flags, frontend, backend_fw, fn_tree, on_device
+):
+    cond, xs, dtypes = broadcastables
+
+    helpers.test_frontend_function(
+        input_dtypes=["bool"] + dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=cond,
+        x=xs[0],
+        y=xs[1],
     )
