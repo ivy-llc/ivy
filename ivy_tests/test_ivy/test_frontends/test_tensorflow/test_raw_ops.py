@@ -3480,38 +3480,6 @@ def test_tensorflow_Rsqrt(
     )
 
 
-
-# Softsign
-@handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.Softsign",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_Softsign(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        features=x[0],
-    )
-
-
-
 # Shape
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Shape",
@@ -3724,6 +3692,36 @@ def test_tensorflow_Softmax(
     test_with_out=st.just(False),
 )
 def test_tensorflow_Softplus(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+    )
+
+
+# Softsign
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Softsign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Softsign(
     *,
     dtype_and_x,
     frontend,
@@ -4245,6 +4243,37 @@ def test_tensorflow_Unpack(  # NOQA
         value=x[0],
         num=x[0].shape[axis],
         axis=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.UnsortedSegmentSum",
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_UnsortedSegmentSum(  # NOQA
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=np.max(segment_ids) + 1,
     )
 
 
