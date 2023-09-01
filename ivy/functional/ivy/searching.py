@@ -177,7 +177,7 @@ def argmin(
         An optional output_dtype from: int32, int64. Defaults to int64.
     select_last_index
         If this is set to True, the index corresponding to the
-        last occurrence of the maximum value will be returned
+        last occurrence of the maximum value will be returned.
     out
         if axis is None, a zero-dimensional array containing the index of the first
         occurrence of the minimum value; otherwise, a non-zero-dimensional array
