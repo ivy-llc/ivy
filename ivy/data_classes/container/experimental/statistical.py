@@ -1680,3 +1680,70 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             dtype=dtype,
             out=out,
         )
+
+    # nanmax
+    @staticmethod
+    def static_nanmax(
+        input: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nanmax. This method simply wraps the
+        function, and so the docstring for ivy.nanmax also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the maximum values are computed.
+            The default is to compute the maximum of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a. If the value is anything but the default,
+            then keepdims will be passed through to the max or amax methods of
+            sub-classes of ndarray. If the sub-classes methods do not implement
+            keepdims, any exceptions will be raised.
+        dtype
+            The desired data type of the returned tensor. Default is None.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The nanmax of the array elements in the container.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, ivy.nan], [3, 4]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> ivy.Container.static_nanmax(a)
+        {
+            x: 4.0
+            y: 3.0
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "nanmax",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

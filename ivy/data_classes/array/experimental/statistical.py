@@ -686,3 +686,54 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             dtype=dtype,
             out=out,
         )
+
+    # nanmax
+    def nanmax(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.nanmax. This method simply wraps the
+        function, and so the docstring for ivy.nanmax also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the maximum values are computed.
+            The default is to compute the maximum of the flattened array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a. If the value is anything but the default,
+            then keepdims will be passed through to the max or amax methods of
+            sub-classes of ndarray. If the sub-classes methods do not implement
+            keepdims, any exceptions will be raised.
+        dtype
+            The desired data type of the returned tensor. Default is None.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The nanmax of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+        >>> a.nanmax()
+        4.0
+        >>> a.nanmax(axis=0)
+        ivy.array([3., 4.])
+        """
+        return ivy.nanmax(
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
