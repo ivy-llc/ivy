@@ -83,6 +83,7 @@ def sort(x, /, *, axis=-1, descending=False, name=None):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
+@to_ivy_arrays_and_back
 def topk(x, k, axis=None, largest=True, sorted=True, name=None):
     return ivy.top_k(x, k, axis=axis, largest=largest, sorted=sorted)
 
