@@ -18,7 +18,7 @@ def eigh(a, /, UPLO="L"):
 
 
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
+# @from_zero_dim_arrays_to_scalar
 def eigvals(a):
     return ivy.eig(a)[0]
 
