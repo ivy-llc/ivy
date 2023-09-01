@@ -179,13 +179,9 @@ def pad(
     input_dtype = input.dtype
 
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input_dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input_dtype)
-        else:
-            padding_value = constant_values
-        padded = jlax.pad(input, padding_value, pad_width)
-        return padded
-
+        if not ivy.is_array(constant_values) or constant_values.dtype != input_dtype:
+            constant_values = jnp.array(constant_values, dtype=input_dtype)
+        return jlax.pad(input, constant_values, pad_width)
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),

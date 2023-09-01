@@ -130,7 +130,7 @@ invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes, backend_version)
 invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_version)
 
 
-native_inplace_support = False
+native_inplace_support = True
 
 supports_gradients = False
 
