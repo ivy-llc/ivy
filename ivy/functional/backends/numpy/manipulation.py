@@ -261,19 +261,24 @@ def unstack(
 
 def clip(
     x: np.ndarray,
-    x_min: Union[float, int, np.ndarray] = None,
-    x_max: Union[float, int, np.ndarray] = None,
+    x_min: Union[Number, np.ndarray],
+    x_max: Union[Number, np.ndarray],
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     promoted_type = x.dtype
     if x_min is not None:
-        promoted_type = ivy.promote_types(promoted_type, x_min.dtype)
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
     if x_max is not None:
-        promoted_type = ivy.promote_types(promoted_type, x_max.dtype)
-
-    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype= promoted_type)
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+    return np.clip(x.astype(promoted_type), x_min, x_max, out=out)
 
 
 clip.support_native_out = True

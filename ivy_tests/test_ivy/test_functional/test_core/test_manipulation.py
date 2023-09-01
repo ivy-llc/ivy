@@ -328,31 +328,60 @@ def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_devic
     )
 
 
-# Extra #
-# ------#
-
-
 @st.composite
 def _broadcastable_arrays(draw):
     shapes = draw(helpers.mutually_broadcastable_shapes(num_shapes=3))
-    dtypes, values = draw(helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]))
-    min_val = draw(st.one_of(st.just(None),
-                             helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[1])  ))
-    max_val = draw(st.one_of(st.just(None),
-                             helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[2])  ))
+    dtypes, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]
+        )
+    )
+    min_val = draw(
+        st.one_of(
+            st.floats(-5, 5),
+            st.just(None),
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"), shape=shapes[1]
+            ),
+        )
+    )
+    max_val = draw(
+        st.one_of(
+            st.floats(-5, 5),
+            st.just(None),
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"), shape=shapes[2]
+            ),
+        )
+    )
     if min_val is None and max_val is None:
         generate_max = draw(st.booleans())
         if generate_max:
-            max_val = draw(helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]))
+            max_val = draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"), shape=shapes[2]
+                )
+            )
         else:
-            min_val = draw(helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]))
+            min_val = draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"), shape=shapes[1]
+                )
+            )
     if min_val is not None:
-        dtypes.append(min_val[0][0])
-        min_val = min_val[1][0]
+        if not isinstance(min_val, float):
+            dtypes.append(min_val[0][0])
+            min_val = min_val[1][0]
+        else:
+            dtypes.append(ivy.float32)
     if max_val is not None:
-        dtypes.append(max_val[0][0])
-        max_val = max_val[1][0]
+        if not isinstance(max_val, float):
+            dtypes.append(max_val[0][0])
+            max_val = max_val[1][0]
+        else:
+            dtypes.append(ivy.float32)
     return dtypes, values[0], min_val, max_val
+
 
 # clip
 @handle_test(

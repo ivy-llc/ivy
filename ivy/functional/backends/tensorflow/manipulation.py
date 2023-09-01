@@ -331,41 +331,40 @@ def swapaxes(
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
-    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
-    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    x_min: Union[Number, tf.Tensor, tf.Variable],
+    x_max: Union[Number, tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if x_min is None and x_max is None:
         raise ValueError("At least one of the x_min or x_max must be provided")
-    if tf.size(x) == 0:
-        return x
     promoted_type = x.dtype
     if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
         promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
     if x_max is not None:
-        promoted_type = ivy.as_native_dtype(ivy.promote_types(promoted_type, x_max.dtype))
-    if promoted_type == bool:
-        final_type = tf.bool
-        promoted_type = tf.int8
-    else:
-        final_type = promoted_type
-    x = tf.cast(x, promoted_type)
-    cond = True
-    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
         x_max = tf.cast(x_max, promoted_type)
+    x = tf.cast(x, promoted_type)
     if x_min is not None:
         x_min = tf.cast(x_min, promoted_type)
+    cond = True
     if x_min is not None and x_max is not None:
-        if tf.math.reduce_any(x_min > x_max):
+        if tf.math.reduce_any(tf.experimental.numpy.greater(x_min, x_max)):
             cond = False
     if cond:
-        ret = tf.experimental.numpy.clip(x, x_min, x_max)
+        return tf.experimental.numpy.clip(x, x_min, x_max)
     else:
-        ret = tf.math.minimum(x_max, tf.math.maximum(x, x_min))
+        return tf.experimental.numpy.minimum(
+            x_max, tf.experimental.numpy.maximum(x, x_min)
+        )
 
-    return tf.cast(ret, final_type)
 
 
 def unstack(
