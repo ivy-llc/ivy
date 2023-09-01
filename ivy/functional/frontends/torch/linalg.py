@@ -172,11 +172,11 @@ def lstsq(a, b, rcond=None, driver=None):
         s = ivy.array([])
         s = ivy.astype(s, a_dtype)
 
-    if driver == "gelsy" or driver == "gelsd" or driver == "gelss":
-        pass
-    else:
-        rank = ivy.array()
-        rank = ivy.astype(rank, ivy.int64)
+    # if driver == "gelsy" or driver == "gelsd" or driver == "gelss":
+    #     pass
+    # else:
+    #     rank = ivy.np.ndarray(shape=())
+    #     rank = ivy.astype(rank, ivy.int64)
 
     return solution, resid, rank, s
 

@@ -1300,10 +1300,11 @@ def _get_dtype_and_same_dim_matrix(draw):
     )
     dtype_and_values = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes(kind="valid"),
+            available_dtypes=helpers.get_dtypes(kind="valid", full=False),
             num_arrays=2,
             min_value=1,
             shape=randam_shape,
+            shared_dtype=True,
         )
     )
     return dtype_and_values
