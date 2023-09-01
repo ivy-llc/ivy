@@ -1104,6 +1104,7 @@ def test_numpy_laplace(
 
 
 
+
 # zipf
 @handle_frontend_test(
     fn_tree="numpy.random.zipf",
