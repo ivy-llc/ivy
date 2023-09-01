@@ -51,6 +51,7 @@ flags_mapping = {
     "test_compile": "BuiltCompileStrategy",
     "transpile": "BuiltTranspileStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
+}
 
 
 def build_flag(key: str, value: bool):

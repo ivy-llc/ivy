@@ -1,4 +1,6 @@
 # general
+import json
+import os
 import pytest
 import importlib
 import inspect
@@ -811,3 +813,17 @@ def handle_frontend_method(
 @st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
+
+
+def _create_transpile_report(json_object, file_name, path="root"):
+    if path == "root":
+        path = "../../../../"
+    full_path = os.path.join(path, file_name)
+    if os.path.isfile(full_path):
+        with open(full_path, "r") as outfile:
+            # Load the file's existing data
+            data = json.load(outfile)
+            if data["backend_nodes"] > json_object["backend_nodes"]:
+                return
+    with open(full_path, "w") as outfile:
+        outfile.write(json_object)

@@ -170,7 +170,7 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--with-compile-testing"),
         ),
         "transpile": (
-            getopt("--skip-transpile-frontend"),
+            False,
             getopt("--with-transpile-frontend"),
         ),
     }
@@ -211,7 +211,6 @@ def pytest_addoption(parser):
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
     parser.addoption("--skip-compile-testing", action="store_true")
-    parser.addoption("--skip-transpile-frontend", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -220,7 +219,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-compile-testing", action="store_true")
-    parser.addoption("--with-transpile-frontend", action="store_true", default=False)
+    parser.addoption("--with-transpile-frontend", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",
