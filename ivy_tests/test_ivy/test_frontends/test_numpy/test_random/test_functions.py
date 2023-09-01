@@ -1001,8 +1001,7 @@ def test_numpy_zipf(
     on_device,
     a,
     size,
-    loc,
-    scale
+
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
