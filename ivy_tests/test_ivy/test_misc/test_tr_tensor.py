@@ -4,51 +4,6 @@ import numpy as np
 import pytest
 
 
-# These tests have been adapted from Tensorly
-# https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_tr_tensor.py
-
-
-@pytest.mark.parametrize(
-    "true_shape, true_rank",
-    [
-        (
-            (6, 4, 5),
-            (3, 2, 2, 3),
-        )
-    ],
-)
-def test_validate_tr_tensor(true_shape, true_rank):
-    factors = ivy.random_tr(true_shape, true_rank).factors
-
-    # Check correct rank and shapes are returned
-    shape, rank = ivy.TRTensor.validate_tr_tensor(factors)
-    np.testing.assert_equal(
-        shape,
-        true_shape,
-        err_msg=f"Returned incorrect shape (got {shape}, expected {true_shape})",
-    )
-    np.testing.assert_equal(
-        rank,
-        true_rank,
-        err_msg=f"Returned incorrect rank (got {rank}, expected {true_rank})",
-    )
-
-    # One of the factors has the wrong ndim
-    factors[0] = ivy.random_uniform(shape=(4, 4))
-    with np.testing.assert_raises(ValueError):
-        ivy.TRTensor.validate_tr_tensor(factors)
-
-    # Consecutive factors ranks don't match
-    factors[0] = ivy.random_uniform(shape=(3, 6, 4))
-    with np.testing.assert_raises(ValueError):
-        ivy.TRTensor.validate_tr_tensor(factors)
-
-    # Boundary conditions not respected
-    factors[0] = ivy.random_uniform(shape=(2, 6, 2))
-    with np.testing.assert_raises(ValueError):
-        ivy.TRTensor.validate_tr_tensor(factors)
-
-
 @pytest.mark.parametrize(
     "shape1, shape2, shape3",
     [
@@ -98,3 +53,48 @@ def test_validate_tr_rank(rank1, rank2):
 
     with np.testing.assert_raises(ValueError):
         ivy.TRTensor.validate_tr_rank(tensor_shape, rank=rank2)
+
+
+# These tests have been adapted from Tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_tr_tensor.py
+
+
+@pytest.mark.parametrize(
+    "true_shape, true_rank",
+    [
+        (
+            (6, 4, 5),
+            (3, 2, 2, 3),
+        )
+    ],
+)
+def test_validate_tr_tensor(true_shape, true_rank):
+    factors = ivy.random_tr(true_shape, true_rank).factors
+
+    # Check correct rank and shapes are returned
+    shape, rank = ivy.TRTensor.validate_tr_tensor(factors)
+    np.testing.assert_equal(
+        shape,
+        true_shape,
+        err_msg=f"Returned incorrect shape (got {shape}, expected {true_shape})",
+    )
+    np.testing.assert_equal(
+        rank,
+        true_rank,
+        err_msg=f"Returned incorrect rank (got {rank}, expected {true_rank})",
+    )
+
+    # One of the factors has the wrong ndim
+    factors[0] = ivy.random_uniform(shape=(4, 4))
+    with np.testing.assert_raises(ValueError):
+        ivy.TRTensor.validate_tr_tensor(factors)
+
+    # Consecutive factors ranks don't match
+    factors[0] = ivy.random_uniform(shape=(3, 6, 4))
+    with np.testing.assert_raises(ValueError):
+        ivy.TRTensor.validate_tr_tensor(factors)
+
+    # Boundary conditions not respected
+    factors[0] = ivy.random_uniform(shape=(2, 6, 2))
+    with np.testing.assert_raises(ValueError):
+        ivy.TRTensor.validate_tr_tensor(factors)
