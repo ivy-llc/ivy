@@ -157,6 +157,35 @@ def _get_splits(draw, as_list=False):
         return draw(get_int_split())
 
 
+# Tile
+@st.composite
+def _multiple_shape_helper(draw):
+    input_dtype, input_array, input_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
+        )
+    )
+    input_dims = len(input_shape)
+
+    dt_n_multiples = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_value=0,
+            max_value=10,
+            shape=draw(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=1,
+                    min_dim_size=input_dims,
+                    max_dim_size=input_dims,
+                )
+            ),
+        )
+    )
+
+    return input_dtype, input_array, dt_n_multiples
+
+
 @st.composite
 def _pad_helper(draw, return_constant_values=False):
     dtype, input, shape = draw(
@@ -3683,6 +3712,36 @@ def test_tensorflow_Softplus(  # NOQA
     )
 
 
+# Softsign
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Softsign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Softsign(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+    )
+
+
 # Split
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Split",
@@ -4093,6 +4152,32 @@ def test_tensorflow_TanhGrad(  # NOQA
         on_device=on_device,
         y=xs[0],
         dy=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Tile", all_arguments=_multiple_shape_helper()
+)
+def test_tensorflow_Tile(
+    *,
+    all_arguments,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, input_matrix, dt_and_multiples = all_arguments
+    dt_mul, multiples = dt_and_multiples
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + dt_mul,
+        input=input_matrix[0],
+        multiples=multiples[0],
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
     )
 
 
