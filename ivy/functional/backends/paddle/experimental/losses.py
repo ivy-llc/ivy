@@ -92,3 +92,31 @@ def huber_loss(
     delta: Optional[float] = 1.0,
 ) -> paddle.Tensor:
     return paddle.fluid.layers.huber_loss(input, target, delta=delta)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def soft_margin_loss(
+    input: paddle.Tensor,
+    label: paddle.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> paddle.Tensor:
+    return paddle.nn.functional.soft_margin_loss(input, label, reduction=reduction)

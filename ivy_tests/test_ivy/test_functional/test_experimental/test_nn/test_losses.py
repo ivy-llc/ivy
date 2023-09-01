@@ -200,3 +200,52 @@ def test_smooth_l1_loss(
         beta=beta,
         reduction=reduction,
     )
+
+
+# soft_margin_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.soft_margin_loss",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+)
+def test_soft_margin_loss(
+    dtype_and_input,
+    dtype_and_target,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, input = dtype_and_input
+    target_dtype, target = dtype_and_target
+
+    helpers.test_function(
+        input_dtypes=input_dtype + target_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        pred=input[0],
+        target=target[0],
+        reduction=reduction,
+    )

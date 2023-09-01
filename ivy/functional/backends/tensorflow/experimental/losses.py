@@ -44,3 +44,21 @@ def smooth_l1_loss(
         return tf.reduce_sum(loss)
     else:
         return loss
+
+
+@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+def soft_margin_loss(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> tf.Tensor:
+    loss = tf.reduce_sum(tf.math.log1p(tf.exp(-input * target))) / tf.size(input)
+
+    if reduction == "sum":
+        return tf.reduce_sum(loss)
+    elif reduction == "mean":
+        return tf.reduce_mean(loss)
+    else:
+        return loss
