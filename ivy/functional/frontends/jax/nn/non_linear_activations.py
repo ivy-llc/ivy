@@ -278,7 +278,7 @@ def relu6(x):
 @to_ivy_arrays_and_back
 def selu(x):
     x = _type_conversion_64(x)
-    return ivy.selu(x)
+    return ivy.selu(x, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
@@ -314,12 +314,6 @@ def softmax(x, axis=-1, where=None, initial=None):
 def softplus(x):
     x = _type_conversion(x)
     return ivy.softplus(x, complex_mode="jax").astype(x.dtype)
-
-
-@to_ivy_arrays_and_back
-def selu(x):
-    x = _type_conversion_64(x)
-    return ivy.selu(x, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
