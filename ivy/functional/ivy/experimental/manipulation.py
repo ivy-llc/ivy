@@ -747,16 +747,28 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = padded[left_slice]
-    left_chunk = left_chunk.astype('float32') if ivy.is_int_dtype(left_chunk) else left_chunk
+    left_chunk = (
+        left_chunk.astype("float32") if ivy.is_int_dtype(left_chunk) else left_chunk
+    )
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
-    left_stat = ivy.round(left_stat).astype(padded.dtype) if ivy.is_int_dtype(padded) else left_stat
+    left_stat = (
+        ivy.round(left_stat).astype(padded.dtype)
+        if ivy.is_int_dtype(padded)
+        else left_stat
+    )
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = padded[right_slice]
-    right_chunk = right_chunk.astype('float32') if ivy.is_int_dtype(right_chunk) else right_chunk
+    right_chunk = (
+        right_chunk.astype("float32") if ivy.is_int_dtype(right_chunk) else right_chunk
+    )
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
-    right_stat = ivy.round(right_stat).astype(padded.dtype) if ivy.is_int_dtype(padded) else right_stat
+    right_stat = (
+        ivy.round(right_stat).astype(padded.dtype)
+        if ivy.is_int_dtype(padded)
+        else right_stat
+    )
     return left_stat, right_stat
 
 
@@ -1943,9 +1955,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = ivy.full(
-                new_shape, padding_value, dtype=operand.dtype
-            )
+            new_array = ivy.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
