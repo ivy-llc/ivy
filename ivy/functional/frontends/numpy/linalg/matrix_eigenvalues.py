@@ -19,7 +19,7 @@ def eigh(a, /, UPLO="L"):
 
 @to_ivy_arrays_and_back
 def eigvals(a):
-    return ivy.eigvals(a)
+    return ivy.eig(a)[0]
 
 
 @to_ivy_arrays_and_back
