@@ -75,9 +75,6 @@ class StratifiedKFold(KFold):
     def _iter_test_indices(self, X=None, y=None, groups=None):
         raise NotImplementedError
 
-    def get_n_splits(self, X=None, y=None, groups=None):
-        return self.n_splits
-
 
 @to_ivy_arrays_and_back
 def train_test_split(
