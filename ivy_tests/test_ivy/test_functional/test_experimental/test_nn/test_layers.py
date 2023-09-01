@@ -1281,10 +1281,10 @@ def test_rfftn(
 # stft
 @st.composite
 def stft_arguments(draw):
-    dtype = draw(helpers.get_dtypes("float"))
+    dtype = draw(helpers.get_dtypes("float", full=False))
     n_fft_type = draw(st.sampled_from(["int", "tuple"]))
     if n_fft_type == "int":
-        n_fft = draw(st.integers(min_value=2, max_value=256))
+        n_fft = draw(st.integers(min_value=1, max_value=256))
         window_choices = [
             st.sampled_from(['hann']),
             st.integers(min_value=1, max_value=n_fft) 
@@ -1293,26 +1293,33 @@ def stft_arguments(draw):
             st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=1),
         ]
     else:
-        n_fft = tuple(draw(st.integers(min_value=2, max_value=256)) for _ in range(2))
+        n_fft = tuple(
+            draw(st.integers(min_value=1, max_value=256))
+            for _ in range(2))
         window_choices = [
             st.sampled_from(['hann']),
             st.tuples(st.sampled_from([(1,)])),
             st.lists(st.sampled_from([1])),
-            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=1),
+            st.floats(min_value=0.0, max_value=1.0),
         ]
+
     hop_length = draw(st.integers(min_value=1, max_value=256))
     axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
-    fs = draw(st.floats(min_value=0.001, max_value=1.0))
-    window = "hann"
-    win_length = draw(st.integers(min_value=1, max_value=n_fft))
+    fs = draw(st.floats(min_value=0.001, max_value=1.0)),
+    window = draw(st.one_of(window_choices)) 
+    win_length = (
+        draw(st.integers(min_value=1, max_value=n_fft))
+        if isinstance(n_fft, int)
+        else draw(st.integers(min_value=1, max_value=n_fft[1]))
+    )
     noverlap = draw(st.integers(min_value=0, max_value=win_length - 1))
     center = draw(st.booleans())
     pad_mode = draw(st.sampled_from(["reflect", "constant"]))
     normalized = draw(st.booleans())
     detrend = draw(st.one_of(st.booleans(), st.sampled_from(["linear", "constant"])))
     return_complex = draw(st.booleans())
-    boundary = draw(st.sampled_from(["reflect", "zeros"]))
+    boundary = draw(st.sampled_from(['even', 'odd', 'constant', 'zeros', None]))
     return (
         dtype,
         n_fft,
@@ -1335,7 +1342,7 @@ def stft_arguments(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes('float'),
     ),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
@@ -1349,9 +1356,10 @@ def test_stft(
     backend_fw,
     fn_name,
     stft_args,
-):
+):      
     dtype, x = dtype_and_x
     (
+        dtype,
         n_fft,
         hop_length,
         axis,
@@ -1366,7 +1374,6 @@ def test_stft(
         detrend,
         return_complex,
         boundary,
-        axis,
     ) = stft_args
     helpers.test_function(
         input_dtypes=dtype,
@@ -1374,7 +1381,7 @@ def test_stft(
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        signal=x[0],
+        signal=x,
         n_fft=n_fft,
         hop_length=hop_length,
         axis=axis,
