@@ -44,4 +44,4 @@ def rfft(a, n=None, axis=-1, norm=None):
     else:
         a_new = a
     fft_fun = ivy.fft
-    return fft_fun(a_new, axis, norm=norm, n=n)[:n//2 + 1]
+    return fft_fun(a_new, axis, norm=norm, n=n)[: n // 2 + 1]
