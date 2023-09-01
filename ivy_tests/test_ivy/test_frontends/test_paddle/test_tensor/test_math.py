@@ -1743,14 +1743,14 @@ def test_paddle_reciprocal(
     )
 
 
-# reciprocal_
+# exp_
 @handle_frontend_test(
-    fn_tree="paddle.reciprocal",
+    fn_tree="paddle.tensor.math.exp_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_reciprocal_(
+def test_paddle_exp_(
     *,
     dtype_and_x,
     on_device,
