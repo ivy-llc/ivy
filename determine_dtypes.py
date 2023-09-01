@@ -8,12 +8,13 @@ from pathlib import Path
 from typing import List
 from unittest import mock
 from hypothesis import find
-import numpy as np  # base framework for testing
+import numpy as np  # used by the (mock) test function
 import re
 
 # IVY
 
 import ivy
+import ivy_tests.test_ivy.conftest  # noqa
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 
@@ -28,17 +29,36 @@ IGNORE_FILES = ["__init__", "func_wrapper", "helpers"]
 NN_FILES = ["activations", "layers", "losses", "norms"]
 
 
+# TODO: don't hardcode these
+DTYPE_CLASSES = [
+    ("numeric", set(ivy.all_numeric_dtypes)),
+    ("integer", set(ivy.all_int_dtypes)),
+    ("unsigned", set(ivy.all_uint_dtypes)),
+    ("float", set(ivy.all_float_dtypes)),
+    ("complex", set(ivy.all_complex_dtypes)),
+]
+
+
+# TODO: don't hardcode these
+CURRENT_VERSIONS = {
+    "jax": "0.4.14",
+    "numpy": "1.25.2",
+    "paddle": "2.5.1",
+    "tensorflow": "2.13.0",
+    "torch": "2.0.1",
+}
+
+
 # TODO list:
-# - add ability to write discovered (un)supported dtypes to files
-# - optimise how to write those (i.e. group together floats, ints, etc; choose which decorator to use)  # noqa
+# - add ability to write discovered (un)supported dtypes to files (in the correct format for multiple devices)  # noqa
 # - decide how to deal with uncertain cases (interactive mode? just write it and ask the user to check? flag to switch between these?)  # noqa
 # - make sure I don't overgeneralise (maybe gpu doesn't seem usable, but that's just because of the machine I'm on)  # noqa
 # - add new function types: method, frontend, frontend method (for now, I assume its a backend function)  # noqa
-# - add ability to test bfloat16 (currently blocked by numpy being numpy) - switch to tf?  # noqa
 # - add command line args (to specify certains folders/files/functions/backends/devices/versions/types) (partially done)  # noqa
 # - add ability to iterate over versions of a framework (talk to multiversion support people)  # noqa
 # - hook the script into *something* so it runs automatically
 # - allow the script to skip functions which e.g. already have a decorator for the latest version of that framework (but have a flag to override this)  # noqa
+# - fix other TODO comments left in the file
 
 
 def is_dtype_err_jax(e):
@@ -152,12 +172,16 @@ class BackendFileTester:
 
         self.is_set_up = True
 
+    def remove_fn(self, fn_name):
+        if fn_name in self.fn_names:
+            self.fn_names.remove(fn_name)
+
     def set_result(self, result, err=None):
         value = self.current_dtype if err is None else (self.current_dtype, err)
         self.result[self.current_fn_name][self.current_device][result].add(value)
 
     def print_result(self):
-        print(f"Printing results for {self.test_path}:\n")
+        print(f"Printing results for {self.file_path}:\n")
         for f in self.fn_names:
             for d in self.devices:
                 print(f, d)
@@ -165,6 +189,49 @@ class BackendFileTester:
                 print("Unsupported:", self.result[f][d]["unsupported"])
                 print("Unsure:", self.result[f][d]["unsure"])
                 print("\n")
+
+    def print_writable_result(self):
+        for f in self.fn_names:
+            print(f"For function {f}:")
+            for d in self.devices:
+                print(f"For device {d}:")
+                # assume remaining "unsure" should be marked as supported
+                supported = self.result[f][d]["supported"] | {
+                    t for t, _ in self.result[f][d]["unsure"]
+                }
+                unsupported = self.result[f][d]["unsupported"]
+
+                # reduce to classes where possible
+                for cls, types in DTYPE_CLASSES:
+                    if types.issubset(supported):
+                        supported = supported - types
+                        supported.add(cls)
+                    elif types.issubset(unsupported):
+                        unsupported = unsupported - types
+                        unsupported.add(cls)
+
+                # pick the shorter decorator
+                # TODO: refactor this, and put devices in there
+                if len(supported) <= len(unsupported):
+                    out = (
+                        '@with_supported_dtypes({"'
+                        + CURRENT_VERSIONS[self.backend]
+                        + ' and below": ('
+                        + ",".join([f'"{t}"' for t in supported])
+                        + ("," if len(supported) == 1 else "")
+                        + ")}, backend_version)"
+                    )
+                    print(out)
+                else:
+                    out = (
+                        '@with_unsupported_dtypes({"'
+                        + CURRENT_VERSIONS[self.backend]
+                        + ' and below": ('
+                        + ",".join([f'"{t}"' for t in unsupported])
+                        + ("," if len(unsupported) == 1 else "")
+                        + ")}, backend_version)"
+                    )
+                    print(out)
 
 
 def _get_nested_np_arrays(nest):
@@ -304,7 +371,7 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
     helpers.test_function = mock.Mock(wraps=mock_test_function)
     sys.modules["ivy_tests.test_ivy.helpers"] = helpers
 
-    test_globals._set_backend("numpy")
+    test_globals._set_backend("tensorflow")
 
     for file in files_list:
         # print(file)
@@ -313,8 +380,6 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
 
         for dtype in test_handler.dtypes:
             # print(f"  {dtype}")
-            if dtype == "bfloat16":  # TODO: remove this
-                continue
             test_handler.current_dtype = dtype
 
             helpers.get_dtypes = mock.Mock(return_value=[dtype])
@@ -326,10 +391,15 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
                 # print(f"    {fn_name}")
                 test_handler.current_fn_name = fn_name
 
+                test_fn = f"test_{fn_name}"
+                if test_fn not in test_file.__dict__:
+                    # TODO: turn this into a real warning
+                    print(f"Warning: no {test_fn} to match {fn_name} in {file}")
+                    test_handler.remove_fn(fn_name)
+                    continue
+
                 kwargs = (
-                    test_file.__dict__[f"test_{fn_name}"]
-                    .__dict__["hypothesis"]
-                    ._given_kwargs
+                    test_file.__dict__[test_fn].__dict__["hypothesis"]._given_kwargs
                 )
                 min_example = {
                     k: find(specifier=v, condition=lambda _: True)
@@ -341,18 +411,18 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
                     test_handler.current_device = device
 
                     try:
-                        test_file.__dict__[f"test_{fn_name}"].original(
+                        test_file.__dict__[test_fn].original(
                             **min_example,
                             backend_fw=test_handler.backend,
                             on_device=device,
                         )
-                        test_handler.set_result("supported", None)
+                        test_handler.set_result("supported")
                     except Exception as e:
                         if is_dtype_err[test_handler.backend](e):
-                            test_handler.set_result("unsupported", e)
+                            test_handler.set_result("unsupported")
                         else:
                             test_handler.set_result("unsure", e)
-        # test_handler.print_result()
+        test_handler.print_writable_result()
     test_globals._unset_backend()
 
 
