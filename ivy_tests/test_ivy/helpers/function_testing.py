@@ -77,6 +77,22 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
     return instance, new_args
 
 
+def _get_frontend_submodules(fn_tree: str, gt_fn_tree: str):
+    split_index = fn_tree.rfind(".")
+    frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
+
+    # if gt_fn_tree and gt_fn_name are different from our frontend structure
+    if gt_fn_tree is not None:
+        split_index = gt_fn_tree.rfind(".")
+        gt_frontend_submods, gt_fn_name = (
+            gt_fn_tree[:split_index],
+            gt_fn_tree[split_index + 1 :],
+        )
+    else:
+        gt_frontend_submods, gt_fn_name = fn_tree[25 : fn_tree.rfind(".")], fn_name
+    return frontend_submods, fn_name, gt_frontend_submods, gt_fn_name
+
+
 def test_function_backend_computation(
     fw, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name
 ):
