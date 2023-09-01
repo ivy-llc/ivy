@@ -277,6 +277,9 @@ def constant_pad(
     value: Number = 0.0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if 0 in x.shape:
+        new_shape = [s + sum(pad_width[i]) for i, s in enumerate(x.shape)]
+        return torch.ones(new_shape, dtype=x.dtype) * value
     if x.shape == ():
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
