@@ -788,7 +788,7 @@ add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler.compiler import transpile, trace, unify
 except:  # noqa: E722
     pass  # Added for the finally statment
 finally:
