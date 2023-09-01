@@ -38,6 +38,14 @@ Instead, the change must be made to the array-api repository directly and then o
         # pulls changes from upstream remote repo and merges them
         git submodule update --recursive --remote --merge
 
+Sometimes you will face strange behaviour when staging changes from Ivy main repo which includes submodule updates.
+And this is being caused by your submodule being out of date because we update the submodule iteratively. You can get around this by running the following command:
+
+.. code-block:: none
+
+        # Updating your submodule to the latest commit
+        git submodule update --remote
+
 and only *then* can changes to the submodule be pushed to ivy-main, i.e. only when these changes exist in the source array-api repository.
 See the `git website`_ for further information on working with submodules.
 
