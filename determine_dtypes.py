@@ -50,7 +50,7 @@ CURRENT_VERSIONS = {
 
 
 # TODO list:
-# - add ability to write discovered (un)supported dtypes to files (in the correct format for multiple devices)  # noqa
+# - add ability to write discovered (un)supported dtypes to files  # noqa
 # - decide how to deal with uncertain cases (interactive mode? just write it and ask the user to check? flag to switch between these?)  # noqa
 # - make sure I don't overgeneralise (maybe gpu doesn't seem usable, but that's just because of the machine I'm on)  # noqa
 # - add new function types: method, frontend, frontend method (for now, I assume its a backend function)  # noqa
@@ -61,6 +61,7 @@ CURRENT_VERSIONS = {
 # - fix other TODO comments left in the file
 
 
+# TODO: make sure these functions are absolutely right; convert them to regex and give them awareness of the input dtype if need be  # noqa
 def is_dtype_err_jax(e):
     return "does not accept dtype" in str(e)
 
@@ -78,7 +79,7 @@ def is_dtype_err_tf(e: ivy.exceptions.IvyException):
 
 
 def is_dtype_err_torch(e):
-    return "not implemented for" in str(e)
+    return ("not implemented for" in str(e)) or ("inputs not supported for" in str(e))
 
 
 is_dtype_err = {
@@ -119,6 +120,44 @@ def _import_module_from_path(module_path: Path, module_name="test_file"):
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def _type_list_to_tuple_string(dtype_list):
+    return (
+        "("
+        + ",".join([f'"{t}"' for t in dtype_list])
+        + ("," if len(dtype_list) == 1 else "")
+        + ")"
+    )
+
+
+# TODO: clean this up, check whether removing empty tuples is needed
+def _get_decorator_string(
+    dtype_lists, is_supported, version_no, version_string="backend_version"
+):
+    out = "@with_"
+    if not is_supported:
+        out += "un"
+    out += "supported_"
+    if len(dtype_lists.keys()) > 1:
+        out += "device_and_"
+    out += 'dtypes({"' + version_no + ' and below": '
+    if len(dtype_lists.keys()) > 1:
+        out += "{"
+        out += ",".join(
+            [
+                f'"{k.split(":")[0]}":' + _type_list_to_tuple_string(v) + ", "
+                for k, v in dtype_lists.items()
+            ]
+        )
+        out += "}"
+    else:
+        k = dtype_lists.keys()[0]
+        out += _type_list_to_tuple_string(dtype_lists[k])
+    out += "},"
+    out += version_string
+    out += ")"
+    return out
 
 
 class BackendFileTester:
@@ -193,8 +232,8 @@ class BackendFileTester:
     def print_writable_result(self):
         for f in self.fn_names:
             print(f"For function {f}:")
+            device_and_dtypes = {}
             for d in self.devices:
-                print(f"For device {d}:")
                 # assume remaining "unsure" should be marked as supported
                 supported = self.result[f][d]["supported"] | {
                     t for t, _ in self.result[f][d]["unsure"]
@@ -210,28 +249,17 @@ class BackendFileTester:
                         unsupported = unsupported - types
                         unsupported.add(cls)
 
-                # pick the shorter decorator
-                # TODO: refactor this, and put devices in there
-                if len(supported) <= len(unsupported):
-                    out = (
-                        '@with_supported_dtypes({"'
-                        + CURRENT_VERSIONS[self.backend]
-                        + ' and below": ('
-                        + ",".join([f'"{t}"' for t in supported])
-                        + ("," if len(supported) == 1 else "")
-                        + ")}, backend_version)"
-                    )
-                    print(out)
-                else:
-                    out = (
-                        '@with_unsupported_dtypes({"'
-                        + CURRENT_VERSIONS[self.backend]
-                        + ' and below": ('
-                        + ",".join([f'"{t}"' for t in unsupported])
-                        + ("," if len(unsupported) == 1 else "")
-                        + ")}, backend_version)"
-                    )
-                    print(out)
+                device_and_dtypes[d] = (supported, unsupported)
+            total_supported = sum(len(device_and_dtypes[d][0]) for d in self.devices)
+            total_unsupported = sum(len(device_and_dtypes[d][1]) for d in self.devices)
+            use_supported = total_supported <= total_unsupported
+            for d in self.devices:
+                device_and_dtypes[d] = device_and_dtypes[d][0 if use_supported else 1]
+            print(
+                _get_decorator_string(
+                    device_and_dtypes, use_supported, CURRENT_VERSIONS[self.backend]
+                )
+            )
 
 
 def _get_nested_np_arrays(nest):
@@ -422,6 +450,7 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
                             test_handler.set_result("unsupported")
                         else:
                             test_handler.set_result("unsure", e)
+        test_handler.print_result()
         test_handler.print_writable_result()
     test_globals._unset_backend()
 
