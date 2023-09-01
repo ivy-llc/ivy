@@ -437,7 +437,7 @@ def get_axis(
         )
     )
 
-    if type(axis) == list:
+    if isinstance(axis, list):
         if sort_values:
 
             def sort_key(ele, max_len):
