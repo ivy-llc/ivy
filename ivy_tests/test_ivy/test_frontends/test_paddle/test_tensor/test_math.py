@@ -790,7 +790,7 @@ def test_paddle_exp(
     )
 
 
-# exp
+# exp_
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.exp_",
     dtype_and_x=helpers.dtype_and_values(
@@ -1751,34 +1751,6 @@ def test_paddle_rad2deg(
     ),
 )
 def test_paddle_reciprocal(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# reciprocal_
-@handle_frontend_test(
-    fn_tree="paddle.reciprocal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_reciprocal_(
     *,
     dtype_and_x,
     on_device,
