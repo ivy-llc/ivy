@@ -15,12 +15,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=1,
     ),
     mean=st.floats(
-    min_value=-10,
-    max_value=10,
+        min_value=-10,
+        max_value=10,
     ),
     std=st.floats(
-    min_value=0,
-    max_value=10,
+        min_value=0,
+        max_value=10,
     ),
 )
 def test_paddle_normal(
