@@ -524,3 +524,4 @@ def trunc(x, name=None):
 @to_ivy_arrays_and_back
 def nansum(x, axis=None, dtype=None, name=None):
     return ivy.nansum(x, axis=axis, dtype=dtype)
+

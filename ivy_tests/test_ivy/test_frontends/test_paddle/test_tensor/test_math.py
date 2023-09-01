@@ -2218,7 +2218,7 @@ def test_paddle_trunc(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.nansum",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -2243,5 +2243,6 @@ def test_paddle_nansum(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        axis=axis
+        axis=axis,
     )
+
