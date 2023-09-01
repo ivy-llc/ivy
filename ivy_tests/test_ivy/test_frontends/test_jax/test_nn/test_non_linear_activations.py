@@ -609,7 +609,6 @@ def test_jax_relu6(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="jax.nn.selu",
     dtype_and_x=helpers.dtype_and_values(
