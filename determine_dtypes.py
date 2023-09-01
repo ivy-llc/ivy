@@ -50,7 +50,7 @@ CURRENT_VERSIONS = {
 
 
 # TODO list:
-# - add ability to write discovered (un)supported dtypes to files  # noqa
+# - add ability to write discovered (un)supported dtypes to files
 # - decide how to deal with uncertain cases (interactive mode? just write it and ask the user to check? flag to switch between these?)  # noqa
 # - make sure I don't overgeneralise (maybe gpu doesn't seem usable, but that's just because of the machine I'm on)  # noqa
 # - add new function types: method, frontend, frontend method (for now, I assume its a backend function)  # noqa
@@ -152,9 +152,8 @@ def _get_decorator_string(
         )
         out += "}"
     else:
-        k = dtype_lists.keys()[0]
-        out += _type_list_to_tuple_string(dtype_lists[k])
-    out += "},"
+        out += _type_list_to_tuple_string(list(dtype_lists.values())[0])
+    out += "}, "
     out += version_string
     out += ")"
     return out
@@ -175,6 +174,7 @@ class BackendFileTester:
         self.devices = devices or DEVICES
         self.dtypes = ()
         self.fn_names = fn_names
+        self.skip_fns = set()
 
         self.current_dtype = None
         self.current_fn_name = None
@@ -209,11 +209,33 @@ class BackendFileTester:
             for fn_name in self.fn_names
         }
 
+        self.decorators = {}
+
         self.is_set_up = True
+
+    def iterate_dtypes(self):
+        for dtype in self.dtypes:
+            self.current_dtype = dtype
+            yield dtype
+
+    def iterate_fn_names(self):
+        for fn_name in self.fn_names:
+            if fn_name in self.skip_fns:
+                continue
+            self.current_fn_name = fn_name
+            yield fn_name
+        for f in self.skip_fns:
+            self.fn_names.remove(f)
+        self.skip_fns = set()
+
+    def iterate_devices(self):
+        for device in self.devices:
+            self.current_device = device
+            yield device
 
     def remove_fn(self, fn_name):
         if fn_name in self.fn_names:
-            self.fn_names.remove(fn_name)
+            self.skip_fns.add(fn_name)
 
     def set_result(self, result, err=None):
         value = self.current_dtype if err is None else (self.current_dtype, err)
@@ -229,9 +251,8 @@ class BackendFileTester:
                 print("Unsure:", self.result[f][d]["unsure"])
                 print("\n")
 
-    def print_writable_result(self):
+    def create_decorators(self):
         for f in self.fn_names:
-            print(f"For function {f}:")
             device_and_dtypes = {}
             for d in self.devices:
                 # assume remaining "unsure" should be marked as supported
@@ -255,11 +276,10 @@ class BackendFileTester:
             use_supported = total_supported <= total_unsupported
             for d in self.devices:
                 device_and_dtypes[d] = device_and_dtypes[d][0 if use_supported else 1]
-            print(
-                _get_decorator_string(
-                    device_and_dtypes, use_supported, CURRENT_VERSIONS[self.backend]
-                )
+            self.decorators[f] = _get_decorator_string(
+                device_and_dtypes, use_supported, CURRENT_VERSIONS[self.backend]
             )
+            print(f, self.decorators[f])
 
 
 def _get_nested_np_arrays(nest):
@@ -402,23 +422,16 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
     test_globals._set_backend("tensorflow")
 
     for file in files_list:
-        # print(file)
         test_handler = BackendFileTester(file, devices, fn_names)
         test_handler.setup_test()
 
-        for dtype in test_handler.dtypes:
-            # print(f"  {dtype}")
-            test_handler.current_dtype = dtype
-
+        for dtype in test_handler.iterate_dtypes():
             helpers.get_dtypes = mock.Mock(return_value=[dtype])
             sys.modules["ivy_tests.test_ivy.helpers"] = helpers
 
             test_file = _import_module_from_path(test_handler.test_path)
 
-            for fn_name in test_handler.fn_names:
-                # print(f"    {fn_name}")
-                test_handler.current_fn_name = fn_name
-
+            for fn_name in test_handler.iterate_fn_names():
                 test_fn = f"test_{fn_name}"
                 if test_fn not in test_file.__dict__:
                     # TODO: turn this into a real warning
@@ -434,10 +447,7 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
                     for k, v in kwargs.items()
                 }
 
-                for device in test_handler.devices:
-                    # print(f"      {device}")
-                    test_handler.current_device = device
-
+                for device in test_handler.iterate_devices():
                     try:
                         test_file.__dict__[test_fn].original(
                             **min_example,
@@ -451,7 +461,7 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
                         else:
                             test_handler.set_result("unsure", e)
         test_handler.print_result()
-        test_handler.print_writable_result()
+        test_handler.create_decorators()
     test_globals._unset_backend()
 
 
