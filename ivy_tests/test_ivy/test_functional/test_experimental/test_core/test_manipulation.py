@@ -246,7 +246,9 @@ def _pad_helper(draw):
                 ),
                 min_size=ndim,
                 max_size=ndim,
-            ).filter(lambda x: all(shape[i] + x[i][0] + x[i][1] >= 0 for i in range(ndim)))
+            ).filter(
+                lambda x: all(shape[i] + x[i][0] + x[i][1] >= 0 for i in range(ndim))
+            )
         )
         constant_values = draw(helpers.number(min_value=0, max_value=100))
     else:
