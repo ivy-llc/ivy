@@ -255,3 +255,20 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+
+# nanmax
+def nanmax(a, /, axis=None, keepdims=False):
+    """
+    NumPy front-end for nanmax.
+
+    Parameters:
+    - a (numpy.ndarray): Input array.
+    - axis (int, optional): Axis or axes along which to operate. Default is None.
+    - keepdims (bool, optional): If True, retains reduced \
+    dimensions with size 1. Default is False.
+
+    Returns:
+    - Maximum value of the elements in a, ignoring NaN values.
+    """
+    return np.nanmax(a, axis=axis, keepdims=keepdims)
