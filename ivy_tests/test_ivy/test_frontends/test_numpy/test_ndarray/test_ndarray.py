@@ -3671,3 +3671,54 @@ def test_numpy_ndarray_view(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
+
+
+#var
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="var",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+    ),
+    keepdims=st.booleans(),
+    where=np_frontend_helpers.where(),
+    dtype=helpers.get_dtypes(kind="integer"),
+    ddof=0,
+)
+def test_numpy_ndarray_var(
+    dtype_x_axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+    on_device,
+    keepdims,
+    where,
+    dtype,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "dtype": dtype,
+            "ddof": 0,
+            "keepdims": keepdims,
+            "where": where,
+        },
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        rtol_=1e-2,
+        atol_=1e-2,
+        on_device=on_device,
+    )
