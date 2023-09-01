@@ -983,7 +983,7 @@ def stft(
     /,
     *,
     axis: Optional[int] = None,
-    onesided:Optional[bool] = True,
+    onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
     window: Optional[Union[torch.Tensor, list, str, Tuple[int]]] = None,
     win_length: Optional[int] = None,
@@ -993,9 +993,15 @@ def stft(
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
+    boundary: Optional[str] = "zeros",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if window is not None and isinstance(window, str):
+        if window == 'hann':
+            window = torch.hann_window(n_fft, dtype=torch.float32)
+        else:
+            raise ValueError(f"Unsupported window type: {window}")
+
     return torch.stft(
         signal,
         n_fft,
@@ -1008,7 +1014,6 @@ def stft(
         onesided,
         return_complex,
     )
-
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def rfftn(
     x: torch.Tensor,
