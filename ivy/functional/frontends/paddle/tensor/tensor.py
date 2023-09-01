@@ -640,3 +640,7 @@ class Tensor:
     )
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def stanh(self, scale_a=0.67, scale_b=1.7159, name=None):
+        return paddle_frontend.stanh(self._ivy_array, scale_a=scale_a, scale_b=scale_b)
