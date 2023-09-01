@@ -1,4 +1,5 @@
 # local
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -265,3 +266,11 @@ def weibull(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.pow(-ivy.log(1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def laplace(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    u = loc - scale * ivy.sign(u - 0.5) * ivy.log(1 - 2 * ivy.abs(u - 0.5))
+    return u
