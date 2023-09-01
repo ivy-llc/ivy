@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -1053,5 +1054,50 @@ def test_numpy_weibull(
         on_device=on_device,
         test_values=False,
         a=a,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.laplace",
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    loc=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    scale=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_laplace(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+    loc,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        loc=loc,
+        scale=scale,
         size=size,
     )
