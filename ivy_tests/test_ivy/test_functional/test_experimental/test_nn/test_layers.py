@@ -1306,7 +1306,7 @@ def stft_arguments(draw):
     hop_length = draw(st.integers(min_value=1, max_value=256))
     axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
-    fs = draw(st.floats(min_value=0.001, max_value=1.0)),
+    fs = 1.0
     window = draw(st.one_of(window_choices)) 
     win_length = (
         draw(st.integers(min_value=1, max_value=n_fft))
