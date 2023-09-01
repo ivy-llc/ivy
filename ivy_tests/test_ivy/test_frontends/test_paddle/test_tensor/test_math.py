@@ -792,7 +792,7 @@ def test_paddle_exp(
 
 # exp
 @handle_frontend_test(
-    fn_tree="paddle.exp",
+    fn_tree="paddle.tensor.math.exp_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
