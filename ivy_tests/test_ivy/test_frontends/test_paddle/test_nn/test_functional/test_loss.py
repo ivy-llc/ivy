@@ -468,6 +468,81 @@ def test_paddle_nll_loss(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.sigmoid_focal_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=False,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    dtype_and_normalizer=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_num_dims=1,
+        min_dim_size=1,
+        max_num_dims=1,
+        max_dim_size=1,
+    ),
+    dtype_and_labels=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=False,
+        min_num_dims=1,
+        min_dim_size=1,
+        min_value=0,
+        max_value=1,
+    ),
+    alpha=st.floats(
+        min_value=0.0,
+        max_value=1.0,
+    ),
+    gamma=st.floats(
+        min_value=0.0,
+        max_value=5.0,
+    ),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+)
+def test_paddle_sigmoid_focal_loss(
+    dtype_and_x,
+    dtype_and_normalizer,
+    dtype_and_labels,
+    alpha,
+    gamma,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x = dtype_and_x
+    normalizer_dtype, normalizer = dtype_and_normalizer
+    label_dtype, labels = dtype_and_labels
+    normalizer = [norm.reshape(-1) for norm in normalizer]
+    labels = ivy.array(labels, dtype=ivy.int64)
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int64]
+        + [ivy.float64]
+        + x_dtype
+        + normalizer_dtype
+        + label_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logit=x[0],
+        label=labels[0],
+        alpha=alpha,
+        gamma=gamma,
+        normalizer=normalizer[0],
+        reduction=reduction,
+    )
+
+
 # smooth_l1_loss
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.smooth_l1_loss",
