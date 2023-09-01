@@ -7,7 +7,6 @@ import types
 import importlib
 import inspect
 from collections import OrderedDict
-import json
 
 
 try:
@@ -2100,7 +2099,6 @@ def _get_transpiled_data_if_required(
     frontend_fw_time = np.mean(frontend_fw_timings).item()
     backend_nodes = len(compiled_fn._functions)
     ivy_nodes = len(compiled_fn_to_ivy._functions)
-    print(frontend_time)
 
     data = {
         "frontend": frontend,
@@ -2112,8 +2110,7 @@ def _get_transpiled_data_if_required(
     }
 
     # creating json object and creating a file
-    json_object = json.dumps(data, indent=6)
-    _create_transpile_report(json_object, "report.json")
+    _create_transpile_report(data, "report.json")
 
 
 def args_to_container(array_args):
