@@ -2,12 +2,43 @@
 import os
 import pytest
 from typing import Dict
+import sys
+import multiprocessing as mp
+
+# for enabling numpy's bfloat16 behavior
+from packaging import version
+
+mod_frontend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+    "mindspore": None,
+    "scipy": None,
+    "paddle": None,
+}  # multiversion
+mod_backend = {
+    "numpy": None,
+    "jax": None,
+    "tensorflow": None,
+    "torch": None,
+    "paddle": None,
+    "mxnet": None,
+}  # multiversion
+
+multiprocessing_flag = False  # multiversion
+
 
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks  # noqa
+from ivy_tests.test_ivy.helpers.multiprocessing import backend_proc, frontend_proc
+from ivy_tests.test_ivy.helpers.pipeline_helper import (
+    BackendHandler,
+    BackendHandlerMode,
+)
 
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
@@ -15,9 +46,27 @@ UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
 UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
-
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
+
+
+def default_framework_mapper(fw, fw_path="/opt/fw/", set_too=False):
+    # do a path search, get the latest
+    # so that we can get the higest version
+    # available dynamically and set that for
+    # use by the rest of the code
+    # eg: torch/1.11.0 and torch/1.12.0
+    # this will map to torch/1.12.0
+    try:
+        versions = os.listdir(f"/opt/fw/{fw}")
+    except FileNotFoundError:
+        # if no version exists return None
+        return None
+    versions = [version.parse(v) for v in versions]
+    versions.sort()
+    if set_too:
+        sys.path.insert(1, f"{fw_path}{fw}/{str(versions[-1])}")
+    return str(versions[-1])
 
 
 def pytest_report_header(config):
@@ -30,6 +79,9 @@ def pytest_report_header(config):
 
 def pytest_configure(config):
     global available_frameworks
+    global multiprocessing_flag
+    if config.getoption("--set-backend"):
+        BackendHandler._update_context(BackendHandlerMode.SetBackend)
 
     # Ivy Exception traceback
     set_exception_trace_mode(config.getoption("--ivy-tb"))
@@ -50,6 +102,88 @@ def pytest_configure(config):
         backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
+    no_mp = config.getoption("--no-mp")
+
+    if not no_mp:
+        # we go multiprocessing, if  multiversion
+        known_backends = {"tensorflow", "torch", "jax"}
+        found_backends = set()
+        for fw in backend_strs:
+            if "/" in fw:
+                # set backend to be used
+                BackendHandler._update_context(BackendHandlerMode.SetBackend)
+                multiprocessing_flag = True
+                # spin up multiprocessing
+                # build mp process, queue, initiation etc
+                input_queue = mp.Queue()
+                output_queue = mp.Queue()
+                proc = mp.Process(target=backend_proc, args=(input_queue, output_queue))
+                # start the process so that it loads the framework
+                input_queue.put(fw)
+                proc.start()
+
+                # we have the process running, the framework imported within,
+                # we now pack the queue and the process and store it in dict
+                # for future access
+                fwrk, ver = fw.split("/")
+                mod_backend[fwrk] = (proc, input_queue, output_queue)
+                # set the latest version for the rest of the test code and move on
+                default_framework_mapper(fwrk, set_too=False)
+                found_backends.add(fwrk)
+
+        if found_backends:
+            # we know it's multiversion+multiprocessing
+            # spin up processes for other backends that
+            # were not found in --backend flag
+            left_frameworks = known_backends.difference(found_backends)
+            for fw in left_frameworks:
+                # spin up multiprocessing
+                # build mp process, queue, initiation etc
+                # find the latest version of this framework
+                # and set it in the path for rest of the code
+                # to access
+                version = default_framework_mapper(fw, set_too=False)
+                # spin up process only if a version was found else don't
+                if version:
+                    input_queue = mp.Queue()
+                    proc = mp.Process(
+                        target=backend_proc, args=(input_queue, output_queue)
+                    )
+                    # start the process so that it loads the framework
+                    input_queue.put(fw + "/" + version)
+                    proc.start()
+
+                # we have the process running, the framework imported within,
+                # we now pack the queue and the process and store it in dict
+                # for future access
+                mod_backend[fw] = (proc, input_queue, output_queue)
+
+    else:
+        # no multiprocessing if multiversion
+        for fw in backend_strs:
+            if "/" in fw:
+                multiprocessing_flag = True
+                # multiversion, but without multiprocessing
+                sys.path.insert(1, f"/opt/fw/{fw}")
+
+    # frontend
+    frontend = config.getoption("--frontend")
+    if frontend:
+        frontend_strs = frontend.split(",")
+        # if we are passing a frontend flag, it has to have a version with it
+        for frontend in frontend_strs:
+            # spin up multiprocessing
+            fw, ver = frontend.split("/")
+            # build mp process, queue, initiation etc
+            queue = mp.Queue()
+            proc = mp.Process(target=frontend_proc, args=(queue,))
+            # start the process so that it loads the framework
+            proc.start()
+            queue.put(fw + "/" + ver)
+            # we have the process running, the framework imported within,
+            # we now pack the queue and the process and store it in dict
+            # for future access
+            mod_frontend[fw] = (proc, queue)
 
     # compile_graph
     raw_value = config.getoption("--compile_graph")
@@ -70,6 +204,8 @@ def pytest_configure(config):
     # create test configs
     for backend_str in backend_strs:
         for device in devices:
+            if "/" in backend_str:
+                backend_str = backend_str.split("/")[0]
             if (
                 backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
                 and device.partition(":")[0]
@@ -193,6 +329,14 @@ def process_cl_flags(config) -> Dict[str, bool]:
 
 
 def pytest_addoption(parser):
+    parser.addoption("--no-mp", action="store", default=None)
+    parser.addoption(
+        "--set-backend",
+        action="store_true",
+        default=False,
+        help="Force the testing pipeline to use ivy.set_backend for backend setting",
+    )
+
     parser.addoption("--device", action="store", default="cpu")
     parser.addoption("-B", "--backend", action="store", default="all")
     parser.addoption("--compile_graph", action="store_true")
@@ -232,4 +376,8 @@ def pytest_collection_finish(session):
         for item in session.items:
             item_path = os.path.relpath(item.path)
             print("{}::{}".format(item_path, item.name))
+
+        for backend in mod_backend:
+            proc = mod_backend[backend]
+            proc.terminate()
         pytest.exit("Done!")
