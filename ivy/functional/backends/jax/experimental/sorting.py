@@ -32,3 +32,9 @@ def lexsort(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.asarray(jnp.lexsort(keys, axis=axis))
+
+
+# argpartition
+def argpartition(arr: JaxArray, /, *, k: int, axis: int = -1) -> JaxArray:
+    indices = jnp.argpartition(arr, k, axis=axis)
+    return indices

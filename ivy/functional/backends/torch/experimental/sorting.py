@@ -47,3 +47,18 @@ def lexsort(
 
 
 lexsort.support_native_out = False
+
+
+# argpartition
+def argpartition(
+    arr: torch.Tensor,
+    /,
+    *,
+    k: int,
+    dim: int = -1,
+    largest=True,
+    sorted=True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    results = torch.topk(arr, k=k, dim=dim, largest=largest, sorted=sorted)
+    return results

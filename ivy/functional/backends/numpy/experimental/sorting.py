@@ -23,3 +23,9 @@ def lexsort(
 
 
 lexsort.support_native_out = False
+
+
+# argpartition
+def argpartition(arr: np.ndarray, /, *, k: int, axis: int = -1) -> np.ndarray:
+    indices = np.argpartition(arr, k, axis=axis)
+    return indices

@@ -35,3 +35,15 @@ def lexsort(
         temp = tf.argsort(ind, axis=axis, stable=True)
         result = tf.gather(result, temp)
     return tf.cast(result, tf.int64)
+
+
+# argpartition
+def argpartition(
+    arr: tf.Tensor,
+    /,
+    *,
+    k: int,
+    sorted=True,
+) -> tf.Tensor:
+    results = tf.math.top_k(arr, sorted=sorted, k=k)
+    return results

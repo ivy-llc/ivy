@@ -44,3 +44,8 @@ def lexsort(
         result = paddle.take_along_axis(result, temp, axis=axis)
 
     return result
+
+
+# argpartition
+def argpartition(arr: paddle.Tensor, /, *, k: int, axis: int = -1) -> paddle.Tensor:
+    return paddle.topk(arr, k=k, axis=axis)

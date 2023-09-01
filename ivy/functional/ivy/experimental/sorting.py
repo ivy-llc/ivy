@@ -92,3 +92,31 @@ def lexsort(
     array([2, 0, 4, 6, 5, 3, 1])
     """
     return ivy.current_backend().lexsort(keys, axis=axis, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def argpartition(arr: ivy.Array, /, *, k: int, axis: int = -1) -> ivy.Array:
+    """
+    Perform an indirect partition with an array along the specified axis.
+
+    Parameters
+    ----------
+    arr
+        array-like input to be indirectly partitioned.
+    k
+        Index indicating where the k-th smallest element should be placed.
+    axis
+        Axis along which to perform the partition.
+        By default, partition along the last axis.
+
+    Returns
+    -------
+    ret
+        Array of integer indices with the same shape as `arr`, partitioning the keys.
+    """
+    return ivy.current_backend().argpartition(arr, k=k, axis=axis)
