@@ -135,6 +135,7 @@ def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
 
 
+@to_ivy_arrays_and_back
 def lu_solve(LU, pivots, B, left=True, adjoint=False, out=None):
     # TODO: Implement left
     # TODO: Implement adjoint
