@@ -349,8 +349,8 @@ def arange(
 
     Examples
     --------
-    >>> start = 5
-    >>> x = ivy.arange(start)
+    >>> stop = 5
+    >>> x = ivy.arange(stop)
     >>> print(x)
     ivy.array([0, 1, 2, 3, 4])
 
@@ -489,7 +489,8 @@ def zeros(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with zeros.
+    """
+    Return a new array having a specified ``shape`` and filled with zeros.
 
     Parameters
     ----------
@@ -554,7 +555,8 @@ def ones(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with ones.
+    """
+    Return a new array having a specified ``shape`` and filled with ones.
 
     .. note::
 
@@ -599,35 +601,38 @@ def ones(
     >>> x = ivy.ones(shape)
     >>> print(x)
     ivy.array([[1., 1.],
-               [1., 1.]])
+           [1., 1.]])
 
     With :class:`ivy.Dtype` input:
 
     >>> shape = (3,2)
-    >>> d_type = object.__new__(Dtype, "int64")
+    >>> d_type = ivy.int64
     >>> y = ivy.ones(shape, dtype=d_type)
     >>> print(y)
-    ivy.array([[1, 1, 1],
-               [1, 1]])
+    ivy.array([[1, 1],
+           [1, 1],
+           [1, 1]])
 
     With :class:`ivy.Device` input:
 
     >>> shape = (3,2)
-    >>> dev = object.__new__(Device, "cpu")
-    >>> y = ivy.ones(shape, device=dev)
+    >>> y = ivy.ones(shape, device="cpu")
     >>> print(y)
-    ivy.array([[1, 1, 1],
-               [1, 1]])
+    ivy.array([[1., 1.],
+           [1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Array` input:
 
-    >>> shape = (1,5,2)
-    >>> array = ivy.array(shape)
-    >>> ivy.ones(shape, out=array)
-    >>> print(array)
-    ivy.array([[1.],
-               [1., 1., 1., 1., 1.],
-               [1., 1.]])
+    >>> shape = (1, 5, 2)
+    >>> x = ivy.zeros(shape)
+    >>> ivy.ones(shape, out=x)
+    >>> print(x)
+    ivy.array([[[1., 1.],
+            [1., 1.],
+            [1., 1.],
+            [1., 1.],
+            [1., 1.]]])
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
@@ -650,8 +655,9 @@ def full_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with ``fill_value`` and having the same ``shape`` as
-    an input array ``x`` .
+    """
+    Return a new array filled with ``fill_value`` and having the same ``shape`` as an
+    input array ``x`` .
 
     Parameters
     ----------
@@ -758,8 +764,9 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with ones and having the same shape as an input
-    array ``x``.
+    """
+    Return a new array filled with ones and having the same shape as an input array
+    ``x``.
 
     .. note::
 
@@ -802,36 +809,35 @@ def ones_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
-    >>> y1 = ivy.ones_like(x1)
-    >>> print(y1)
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y = ivy.ones_like(x)
+    >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
 
-    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
-    >>> y2 = ivy.ones_like(x2)
-    >>> print(y2)
+    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y = ivy.ones_like(x)
+    >>> print(y)
     ivy.array([[1., 1., 1.],
-               [1., 1., 1.]])
+           [1., 1., 1.]])
 
-    >>> x3 = ivy.array([3., 2., 1.])
-    >>> y3 = ivy.zeros(3)
-    >>> ivy.ones_like(x3, out=y3)
+    >>> x = ivy.array([3., 2., 1.])
+    >>> y = ivy.zeros(3)
+    >>> ivy.ones_like(x, out=y)
+    >>> print(y)
     ivy.array([1., 1., 1.])
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
-    >>> y1 = ivy.ones_like(x1)
-    >>> print(y1)
-    ivy.array([[1, 1, 1],[1, 1, 1]])
+    >>> x = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y = ivy.ones_like(x)
+    >>> print(y)
+    ivy.array([[1, 1, 1],
+           [1, 1, 1]])
 
-
-    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
-    >>> y2 = ivy.ones_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
-    >>> print(y2)
+    >>> x = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y = ivy.ones_like(x, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
-
-    # Array ``y2`` is now stored on the CPU.
 
     With :class:`ivy.Container` input:
 
@@ -842,9 +848,6 @@ def ones_like(
         a: ivy.array([1, 1, 1]),
         b: ivy.array([1, 1, 1])
     }
-
-    Instance Method Examples
-    -------------------
 
     With :class:`ivy.Array` input:
 
@@ -862,7 +865,6 @@ def ones_like(
         a: ivy.array([1., 1.]),
         b: ivy.array([1., 1.])
     }
-
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
@@ -884,8 +886,9 @@ def zeros_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array filled with zeros and having the same ``shape`` as an input
-    array ``x``.
+    """
+    Return a new array filled with zeros and having the same ``shape`` as an input array
+    ``x``.
 
     Parameters
     ----------
@@ -922,36 +925,35 @@ def zeros_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
-    >>> y1 = ivy.zeros_like(x1)
-    >>> print(y1)
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
     ivy.array([0, 0, 0, 0, 0, 0])
 
-    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
-    >>> y2 = ivy.zeros_like(x2)
-    >>> print(y2)
+    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
     ivy.array([[0., 0., 0.],
             [0., 0., 0.]])
 
-    >>> x3 = ivy.array([3., 2., 1.])
-    >>> y3 = ivy.ones(3)
-    >>> ivy.zeros_like(x3, out=y3)
+    >>> x = ivy.array([3., 2., 1.])
+    >>> y = ivy.ones(3)
+    >>> ivy.zeros_like(x, out=y)
+    >>> print(y)
     ivy.array([0., 0., 0.])
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
-    >>> y1 = ivy.zeros_like(x1)
-    >>> print(y1)
+    >>> x = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
     ivy.array([[0, 0, 0],[0, 0, 0]])
 
 
-    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
-    >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
-    >>> print(y2)
+    >>> x = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y = ivy.zeros_like(x, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y)
     ivy.array([0, 0, 0, 0, 0, 0])
-
-    # Array ``y2`` is now stored on the CPU.
 
     With :class:`ivy.Container` input:
 
@@ -963,8 +965,6 @@ def zeros_like(
         b: ivy.array([0, 0, 0])
     }
 
-    Instance Method Examples
-    -------------------
 
     With :class:`ivy.Array` input:
 
@@ -982,7 +982,6 @@ def zeros_like(
         a: ivy.array([0., 0.]),
         b: ivy.array([0., 0.])
     }
-
     """
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
@@ -1001,7 +1000,8 @@ def tril(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
 
     .. note::
 
@@ -1038,7 +1038,6 @@ def tril(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).tril(x, k=k, out=out)
 
@@ -1057,7 +1056,8 @@ def triu(
     k: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
+    """
+    Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
 
     .. note::
 
@@ -1094,21 +1094,20 @@ def triu(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).triu(x, k=k, out=out)
 
 
 @handle_backend_invalid
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
 @handle_device_shifting
+@infer_device
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -1269,8 +1268,8 @@ def eye(
 
     With :'n_rows' input:
 
-    >>> x1 = ivy.eye(3)
-    >>> print(x1)
+    >>> x = ivy.eye(3)
+    >>> print(x)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
@@ -1278,8 +1277,8 @@ def eye(
 
     With :'n_cols' input:
 
-    >>> x1 = ivy.eye(3,4)
-    >>> print(x1)
+    >>> x = ivy.eye(3,4)
+    >>> print(x)
     ivy.array([[1., 0., 0., 0.],
                [0., 1., 0., 0.],
                [0., 0., 1., 0.]])
@@ -1287,8 +1286,8 @@ def eye(
 
     With :'k' input:
 
-    >>> x1 = ivy.eye(3, k=1)
-    >>> print(x1)
+    >>> x = ivy.eye(3, k=1)
+    >>> print(x)
     ivy.array([[0., 1., 0.],
                [0., 0., 1.],
                [0., 0., 0.]])
@@ -1296,8 +1295,8 @@ def eye(
 
     With :'dtype' input:
 
-    >>> x1 = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
-    >>> print(x1)
+    >>> x = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
+    >>> print(x)
     ivy.array([[0, 0, 1, 0],
                [0, 0, 0, 1],
                [0, 0, 0, 0],
@@ -1306,8 +1305,8 @@ def eye(
 
     With :'batch_shape' input:
 
-    >>> x1 = ivy.eye(2, 3, batch_shape=[3])
-    >>> print(x1)
+    >>> x = ivy.eye(2, 3, batch_shape=[3])
+    >>> print(x)
     ivy.array([[[1., 0., 0.],
                 [0., 1., 0.]],
 
@@ -1316,18 +1315,13 @@ def eye(
 
                 [[1., 0., 0.],
                 [0., 1., 0.]]])
-    >>> x1.shape
-    (3, 2, 3)
-
-    Suppose batch_shape = [a, b] then the returning identity
-    array shape is [a, b, numRows, numColumns]
 
 
     With :'out' input:
 
-    >>> a1 = ivy.ones(3)
-    >>> ivy.eye(3, out=a1)
-    >>> print(a1)
+    >>> y = ivy.ones((3, 3))
+    >>> ivy.eye(3, out=y)
+    >>> print(y)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
@@ -1335,13 +1329,11 @@ def eye(
 
     With :'device' input:
 
-    >>> x1 = ivy.eye(3, device=ivy.Device('cpu'))
-    >>> print(x1)
+    >>> x = ivy.eye(3, device=ivy.Device('cpu'))
+    >>> print(x)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
-
-    # Array ``x1`` is now stored on the CPU.
     """
     return current_backend().eye(
         n_rows,
@@ -1422,26 +1414,26 @@ def linspace(
 
     With float input:
 
-    >>> x = ivy.linspace(1, 2, 4)
+    >>> x = ivy.linspace(1, 2, 3)
     >>> print(x)
-    ivy.array([1., 1.33333337, 1.66666663, 2.])
+    ivy.array([1. , 1.5, 2. ])
 
     >>> x = ivy.linspace(1, 2, 4, endpoint=False)
     >>> print(x)
     ivy.array([1., 1.25, 1.5 , 1.75])
 
-    >>> x = ivy.linspace(1, 10, 4, dtype = int)
+    >>> x = ivy.linspace(1, 10, 4, dtype="int32")
     >>> print(x)
     ivy.array([ 1,  4,  7, 10])
 
-    >>> x = ivy.linspace(1, 2, 4, device = "gpu")
+    >>> x = ivy.linspace(1, 2, 4, device= "cpu")
     >>> print(x)
     ivy.array([1., 1.33333337, 1.66666663, 2.])
 
-    >>> out = ivy.array([0,0,0,0])
-    >>> ivy.linspace(1, 2, 4, out = out)
-    >>> print(out)
-    ivy.array([1., 1.33333337, 1.66666663, 2.])
+    >>> y = ivy.array([0,0,0,0])
+    >>> ivy.linspace(1, 2, 4, out= y)
+    >>> print(y)
+    ivy.array([1, 1, 1, 2])
 
     With :class:`ivy.Array` input:
 
@@ -1592,8 +1584,8 @@ def meshgrid(
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_shapes
-@outputs_to_ivy_arrays
 @inputs_to_native_arrays
+@outputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
 @infer_device
@@ -1606,7 +1598,8 @@ def full(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a new array having a specified ``shape`` and filled with ``fill_value``.
+    """
+    Return a new array having a specified ``shape`` and filled with ``fill_value``.
 
     Parameters
     ----------
@@ -1692,8 +1685,6 @@ def full(
         b: ivy.array([[[False, False]],
                       [[False, False]]])
     }
-
-
     """
     return current_backend().full(
         shape, fill_value, dtype=dtype, device=device, out=out
@@ -1710,7 +1701,8 @@ def full(
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Return a new array containing the data from another (array) object with a
+    """
+    Return a new array containing the data from another (array) object with a
     ``__dlpack__`` method.
 
     Parameters
@@ -1742,7 +1734,6 @@ def from_dlpack(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).from_dlpack(x, out=out)
 
@@ -1897,21 +1888,21 @@ def native_array(
     With :class:`List[Number]` input:
 
     >>> x = [1, 2, 3]
-    >>> x_native = native_array(x)
+    >>> x_native = ivy.native_array(x)
     >>> print(x_native)
-    [1. 2. 3.]
+    [1 2 3]
 
     With :class:`np.ndarray` input:
     >>> y = np.array([4, 5, 6])
-    >>> y_native = native_array(y)
+    >>> y_native = ivy.native_array(y)
     >>> print(y_native)
-    [4. 5. 6.]
+    [4 5 6]
 
     With :class:`ivy.Array` input:
     >>> z = ivy.array([7, 8, 9])
-    >>> z_native = native_array(z)
+    >>> z_native = ivy.native_array(z)
     >>> print(z_native)
-    [7. 8. 9.]
+    [7 8 9]
     """
     # ToDo: Make this more efficient,
     # ideally without first converting to ivy.Array with ivy.asarray and then
@@ -2108,13 +2099,13 @@ def logspace(
     >>> print(ivy.logspace(1, 2, 4, endpoint=False))
     ivy.array([10., 17.7827941, 31.6227766, 56.23413252])
 
-    >>> print(ivy.logspace(1, 2, 4, dtype = int))
-    ivy.array([10, 21, 46, 100])
+    >>> print(ivy.logspace(1, 2, 4, dtype= int))
+    ivy.array([ 10.,  10.,  10., 100.])
 
     >>> out = ivy.array([0,0,0,0])
     >>> ivy.logspace(1, 2, 4, out = out)
     >>> print(out)
-    ivy.array([ 10., 21.5443469, 46.41588834, 100.])
+    ivy.array([ 10,  21,  46, 100])
 
     With :class:`ivy.Array` input:
     >>> x = ivy.array([1, 2])
@@ -2125,17 +2116,19 @@ def logspace(
                [1.e+03, 1.e+04],
                [1.e+04, 1.e+05])
 
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([4, 5])
     >>> print(ivy.logspace(x, y, 4, axis = 1))
     ivy.array([[[1.e+01, 1.e+02, 1.e+03, 1.e+04],
                [1.e+02, 1.e+03, 1.e+04, 1.e+05]]])
 
     >>> x = ivy.array([1, 2])
-    >>> y = ivy.array([4])      # Broadcasting example
+    >>> y = ivy.array([4])
     >>> print(ivy.logspace(x, y, 4))
-    ivy.array([[10., 100.]
-               [100., 464.15888336]
-               [1000., 2154.43469003]
-               [10000., 10000.]])
+    ivy.array([[   10.,   100.],
+           [  100.,   100.],
+           [ 1000.,  1000.],
+           [10000., 10000.]])
     """
     result = base ** linspace(
         start,
@@ -2191,19 +2184,19 @@ def frombuffer(
     With :class:`bytes` inputs:
 
     >>> x = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
-    >>> y = ivy.frombuffer(x)
+    >>> y = ivy.frombuffer(x, dtype=ivy.float64)
     >>> print(y)
-    (ivy.array([1., 2.]))
+    ivy.array([1., 2.])
 
     >>> x = b'\x01\x02\x03\x04'
     >>> y = ivy.frombuffer(x, dtype='int8', count=-2, offset=1)
     >>> print(y)
-    (ivy.array([2, 3, 4]))
+    ivy.array([2, 3, 4])
 
     >>> x = b'\x00<\x00@\x00B\x00D\x00E'
     >>> y = ivy.frombuffer(x, dtype='float16', count=4, offset=2)
     >>> print(y)
-    (ivy.array([2., 3., 4., 5.]))
+    ivy.array([2., 3., 4., 5.])
     """
     return current_backend().frombuffer(
         buffer,
@@ -2225,16 +2218,17 @@ def triu_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array]:
-    """Return the indices of the upper triangular part of a row by col matrix in a
-    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
-    row coordinates of all indices and the second row contains column coordinates.
-    Indices are ordered based on rows and then columns.  The upper triangular part
-    of the matrix is defined as the elements on and above the diagonal.  The argument
-    k controls which diagonal to consider. If k = 0, all elements on and above the main
-    diagonal are retained. A positive value excludes just as many diagonals above the
-    main diagonal, and similarly a negative value includes just as many diagonals
-    below the main diagonal. The main diagonal are the set of indices
-    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
+    """
+    Return the indices of the upper triangular part of a row by col matrix in a 2-by-N
+    shape (tuple of two N dimensional arrays), where the first row contains row
+    coordinates of all indices and the second row contains column coordinates. Indices
+    are ordered based on rows and then columns.  The upper triangular part of the matrix
+    is defined as the elements on and above the diagonal.  The argument k controls which
+    diagonal to consider. If k = 0, all elements on and above the main diagonal are
+    retained. A positive value excludes just as many diagonals above the main diagonal,
+    and similarly a negative value includes just as many diagonals below the main
+    diagonal. The main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
+    n_cols}−1].
 
     Notes
     -----
@@ -2304,6 +2298,5 @@ def triu_indices(
     >>> x = ivy.triu_indices(2,4,-100)
     >>> print(x)
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))
-
     """
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)

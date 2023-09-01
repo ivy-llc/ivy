@@ -57,24 +57,6 @@ def ifft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
-    if n is None:
-        n = 2 * (x.shape[axis] - 1)
-
-    pos_freq_terms = ivy.take_along_axis(x, range(n // 2 + 1), axis)
-    neg_freq_terms = ivy.conj(pos_freq_terms[1:-1][::-1])
-    combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axis)
-    time_domain = ivy.ifft(combined_freq_terms, axis, norm=norm, n=n)
-    if ivy.isreal(x):
-        time_domain = ivy.real(time_domain)
-    return time_domain
-
-
-@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "int32",
@@ -100,3 +82,44 @@ def ifftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def hfft(x, n=None, axis=-1, norm="backward", name=None):
+    """Compute the FFT of a signal that has Hermitian symmetry, resulting in a real
+    spectrum."""
+    # Determine the input shape and axis length
+    input_shape = x.shape
+    input_len = input_shape[axis]
+
+    # Calculate n if not provided
+    if n is None:
+        n = 2 * (input_len - 1)
+
+    # Perform the FFT along the specified axis
+    result = ivy.fft(x, axis, n=n, norm=norm)
+
+    return ivy.real(result)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
+    if n is None:
+        n = 2 * (x.shape[axis] - 1)
+
+    pos_freq_terms = ivy.take_along_axis(x, range(n // 2 + 1), axis)
+    neg_freq_terms = ivy.conj(pos_freq_terms[1:-1][::-1])
+    combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axis)
+    time_domain = ivy.ifft(combined_freq_terms, axis, norm=norm, n=n)
+    if ivy.isreal(x):
+        time_domain = ivy.real(time_domain)
+    return time_domain
+
