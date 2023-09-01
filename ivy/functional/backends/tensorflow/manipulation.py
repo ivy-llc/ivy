@@ -366,7 +366,6 @@ def clip(
         )
 
 
-
 def unstack(
     x: Union[tf.Tensor, tf.Variable],
     /,
