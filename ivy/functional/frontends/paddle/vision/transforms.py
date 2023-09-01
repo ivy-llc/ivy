@@ -144,6 +144,16 @@ def adjust_hue(img, hue_factor):
     return img_adjusted
 
 
+# crop
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def crop(img, top, left, height, width):
+    img = ivy.array(img)
+    return img[..., top:top + height, left:left + width]
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
