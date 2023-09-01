@@ -262,6 +262,20 @@ class Tensor:
     def cholesky(self, upper=False, name=None):
         return paddle_frontend.Tensor(ivy.cholesky(self._ivy_array, upper=upper))
 
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("float16", "uint16", "int16")}, "paddle"
+    )
+    def squeeze_(self, axis=None, name=None):
+        if isinstance(axis, int) and self.ndim > 0:
+            if self.shape[axis] > 1:
+                return self
+        if len(self.shape) == 0:
+            return self
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.squeeze(self._ivy_array, axis=axis)
+        ).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def multiply(self, y, name=None):
         return paddle_frontend.multiply(self, y)
