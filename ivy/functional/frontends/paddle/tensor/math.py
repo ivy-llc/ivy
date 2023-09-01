@@ -178,10 +178,16 @@ def erf(x, name=None):
     return ivy.erf(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def exp_(x, name=None):
+    return ivy.inplace_update(x, exp(x))
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float16", "float32", "float64")}, "paddle")
@@ -407,8 +413,7 @@ def reciprocal(x, name=None):
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def reciprocal_(x, name=None):
-    return ivy.inplace_update(x, ivy.reciprocal(x))
-
+    return ivy.inplace_update(x, reciprocal(x))
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back

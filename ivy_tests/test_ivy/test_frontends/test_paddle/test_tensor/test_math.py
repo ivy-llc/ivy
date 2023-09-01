@@ -1745,7 +1745,7 @@ def test_paddle_reciprocal(
 
 # reciprocal_
 @handle_frontend_test(
-    fn_tree="paddle.reciprocal",
+    fn_tree="paddle.tensor.math.reciprocal_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
