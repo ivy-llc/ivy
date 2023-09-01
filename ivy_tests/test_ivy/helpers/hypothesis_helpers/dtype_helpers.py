@@ -11,6 +11,7 @@ from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
+from ...conftest import mod_backend
 
 
 _dtype_kind_keys = {
@@ -38,10 +39,19 @@ def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"
 
 
 def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
+    if mod_backend[framework]:
+        proc, input_queue, output_queue = mod_backend[framework]
+        input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
+        return output_queue.get()
+    else:
+        return _get_type_dict_helper(framework, kind, is_frontend_test)
+
+
+def _get_type_dict_helper(framework, kind, is_frontend_test):
     if is_frontend_test:
         framework_module = get_frontend_config(framework).supported_dtypes
     else:
-        framework_module = ivy.with_backend(framework)
+        framework_module = ivy
 
     if kind == "valid":
         return framework_module.valid_dtypes
@@ -365,45 +375,61 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     ret
         A tuple of inputs and castable dtype.
     """
-    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+    cast_dtype = draw(
+        st.sampled_from(available_dtypes).filter(
+            lambda value: cast_filter(value, dtype=dtype, x=x)
+        )
+    )
+    if x is None:
+        return dtype, cast_dtype
+    return dtype, x, cast_dtype
+
+
+def cast_filter(d, dtype, x):
+    if mod_backend[test_globals.CURRENT_BACKEND]:
+        proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
+        input_queue.put(
+            ("cast_filter_helper", d, dtype, x, test_globals.CURRENT_BACKEND)
+        )
+        return output_queue.get()
+    else:
+        return cast_filter_helper(d, dtype, x, test_globals.CURRENT_BACKEND)
+
+
+def cast_filter_helper(d, dtype, x, current_backend):
+    with BackendHandler.update_backend(current_backend) as ivy_backend:
         bound_dtype_bits = lambda d: (
             ivy_backend.dtype_bits(d) / 2
             if ivy_backend.is_complex_dtype(d)
             else ivy_backend.dtype_bits(d)
         )
 
-        def cast_filter(d):
-            if ivy_backend.is_int_dtype(d):
-                max_val = ivy_backend.iinfo(d).max
-                min_val = ivy_backend.iinfo(d).min
-            elif ivy_backend.is_float_dtype(d) or ivy_backend.is_complex_dtype(d):
-                max_val = ivy_backend.finfo(d).max
-                min_val = ivy_backend.finfo(d).min
-            else:
-                max_val = 1
-                min_val = -1
-            if x is None:
-                if ivy_backend.is_int_dtype(dtype):
-                    max_x = ivy_backend.iinfo(dtype).max
-                    min_x = ivy_backend.iinfo(dtype).min
-                elif ivy_backend.is_float_dtype(dtype) or ivy_backend.is_complex_dtype(
-                    dtype
-                ):
-                    max_x = ivy_backend.finfo(dtype).max
-                    min_x = ivy_backend.finfo(dtype).min
-                else:
-                    max_x = 1
-                    min_x = -1
-            else:
-                max_x = np.max(np.asarray(x))
-                min_x = np.min(np.asarray(x))
-            return (
-                max_x <= max_val
-                and min_x >= min_val
-                and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
-            )
-
-        cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
+        if ivy_backend.is_int_dtype(d):
+            max_val = ivy_backend.iinfo(d).max
+            min_val = ivy_backend.iinfo(d).min
+        elif ivy_backend.is_float_dtype(d) or ivy_backend.is_complex_dtype(d):
+            max_val = ivy_backend.finfo(d).max
+            min_val = ivy_backend.finfo(d).min
+        else:
+            max_val = 1
+            min_val = -1
         if x is None:
-            return dtype, cast_dtype
-        return dtype, x, cast_dtype
+            if ivy_backend.is_int_dtype(dtype):
+                max_x = ivy_backend.iinfo(dtype).max
+                min_x = ivy_backend.iinfo(dtype).min
+            elif ivy_backend.is_float_dtype(dtype) or ivy_backend.is_complex_dtype(
+                dtype
+            ):
+                max_x = ivy_backend.finfo(dtype).max
+                min_x = ivy_backend.finfo(dtype).min
+            else:
+                max_x = 1
+                min_x = -1
+        else:
+            max_x = np.max(np.asarray(x))
+            min_x = np.min(np.asarray(x))
+        return (
+            max_x <= max_val
+            and min_x >= min_val
+            and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+        )

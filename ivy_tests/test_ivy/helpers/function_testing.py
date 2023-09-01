@@ -8,6 +8,8 @@ import inspect
 from collections import OrderedDict
 
 
+from ivy_tests.test_ivy.conftest import mod_backend
+
 try:
     import tensorflow as tf
 except ImportError:
@@ -91,113 +93,9 @@ def _get_frontend_submodules(fn_tree: str, gt_fn_tree: str):
     return frontend_submods, fn_name, gt_frontend_submods, gt_fn_name
 
 
-def test_function(
-    *,
-    input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    test_flags: FunctionTestFlags,
-    fn_name: str,
-    rtol_: float = None,
-    atol_: float = 1e-06,
-    tolerance_dict: dict = None,
-    test_values: bool = True,
-    xs_grad_idxs=None,
-    ret_grad_idxs=None,
-    backend_to_test: str,
-    on_device: str,
-    return_flat_np_arrays: bool = False,
-    **all_as_kwargs_np,
+def test_function_backend_computation(
+    fw, test_flags, all_as_kwargs_np, input_dtypes, on_device, fn_name
 ):
-    """
-    Test a function that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
-
-    Parameters
-    ----------
-    input_dtypes
-        data types of the input arguments in order.
-    test_flags
-        FunctionTestFlags object that stores all testing flags, including:
-        num_positional_args, with_out, instance_method, as_variable,
-        native_arrays, container, gradient, precision_mode
-    fw
-        current backend (framework).
-    fn_name
-        name of the function to test.
-    rtol_
-        relative tolerance value.
-    atol_
-        absolute tolerance value.
-    tolerance_dict
-        (Optional) dictionary of tolerance values for each dtype.
-    test_values
-        if True, test for the correctness of the resulting values.
-    xs_grad_idxs
-        Indices of the input arrays to compute gradients with respect to. If None,
-        gradients are returned with respect to all input arrays. (Default value = None)
-    ret_grad_idxs
-        Indices of the returned arrays for which to return computed gradients. If None,
-        gradients are returned for all returned arrays. (Default value = None)
-    on_device
-        The device on which to create arrays
-    return_flat_np_arrays
-        If test_values is False, this flag dictates whether the original returns are
-        returned, or whether the flattened numpy arrays are returned.
-    all_as_kwargs_np
-        input arguments to the function as keyword arguments.
-
-    Returns
-    -------
-    ret
-        optional, return value from the function
-    ret_gt
-        optional, return value from the Ground Truth function
-
-    Examples
-    --------
-    >>> input_dtypes = 'float64'
-    >>> as_variable_flags = False
-    >>> with_out = False
-    >>> num_positional_args = 0
-    >>> native_array_flags = False
-    >>> container_flags = False
-    >>> instance_method = False
-    >>> precision_mode = False
-    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
-        instance_method,
-        as_variable,
-        native_arrays,
-        container_flags,
-        precision_mode,
-        none)
-    >>> fw = "torch"
-    >>> fn_name = "abs"
-    >>> x = np.array([-1])
-    >>> test_function(input_dtypes, test_flags, fw, fn_name, x=x)
-
-    >>> input_dtypes = ['float64', 'float32']
-    >>> as_variable_flags = [False, True]
-    >>> with_out = False
-    >>> num_positional_args = 1
-    >>> native_array_flags = [True, False]
-    >>> container_flags = [False, False]
-    >>> instance_method = False
-    >>> precision_mode = False
-    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
-        instance_method,
-        as_variable,
-        native_arrays,
-        container_flags,
-        precision_mode,
-        none)
-    >>> fw = "numpy"
-    >>> fn_name = "add"
-    >>> x1 = np.array([1, 3, 4])
-    >>> x2 = np.array([-3, 15, 24])
-    >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
-    """
-    # ToDo add with_backend refactor in GC
-    _switch_backend_context(test_flags.test_compile)
-
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -226,7 +124,7 @@ def test_function(
             test_flags.container[0] for _ in range(total_num_arrays)
         ]
 
-    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
+    with BackendHandler.update_backend(fw) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
@@ -240,7 +138,7 @@ def test_function(
     )
 
     args, kwargs = create_args_kwargs(
-        backend=backend_to_test,
+        backend=fw,
         args_np=args_np,
         arg_np_vals=arg_np_arrays,
         args_idxs=arrays_args_indices,
@@ -252,15 +150,16 @@ def test_function(
         on_device=on_device,
     )
 
-    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
-        # If function doesn't have an out argument but an out argument is given
-        # or a test with out flag is True
-        if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
-            getattr(ivy_backend, fn_name)
-        ).parameters:
-            raise Exception(f"Function {fn_name} does not have an out parameter")
+    # If function doesn't have an out argument but an out argument is given
+    # or a test with out flag is True
 
-        # Run either as an instance method or from the API directly
+    if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
+        getattr(ivy, fn_name)
+    ).parameters:
+        raise Exception(f"Function {fn_name} does not have an out parameter")
+
+    # Run either as an instance method or from the API directly
+    with BackendHandler.update_backend(fw) as ivy_backend:
         instance = None
         if instance_method:
             array_or_container_mask = [
@@ -281,11 +180,11 @@ def test_function(
 
             if any(args_instance_mask):
                 instance, args = _find_instance_in_args(
-                    backend_to_test, args, arrays_args_indices, args_instance_mask
+                    fw, args, arrays_args_indices, args_instance_mask
                 )
             else:
                 instance, kwargs = _find_instance_in_args(
-                    backend_to_test, kwargs, arrays_kwargs_indices, kwargs_instance_mask
+                    fw, kwargs, arrays_kwargs_indices, kwargs_instance_mask
                 )
 
             if test_flags.test_compile:
@@ -299,12 +198,7 @@ def test_function(
             target_fn = ivy_backend.__dict__[fn_name]
 
         ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-            backend_to_test,
-            target_fn,
-            *args,
-            test_compile=test_flags.test_compile,
-            precision_mode=test_flags.precision_mode,
-            **kwargs,
+            fw, target_fn, *args, test_compile=test_flags.test_compile, **kwargs
         )
 
         assert ivy_backend.nested_map(
@@ -323,28 +217,16 @@ def test_function(
                 test_ret, ivy_backend.zeros_like, to_mutable=True, include_derived=True
             )
             if instance_method:
-                (
-                    ret_from_target,
-                    ret_np_flat_from_target,
-                ) = get_ret_and_flattened_np_array(
-                    backend_to_test,
-                    instance.__getattribute__(fn_name),
-                    precision_mode=test_flags.precision_mode,
-                    *args,
-                    **kwargs,
-                    out=out,
+                ret_from_target, ret_np_flat_from_target = (
+                    get_ret_and_flattened_np_array(
+                        fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
+                    )
                 )
             else:
-                (
-                    ret_from_target,
-                    ret_np_flat_from_target,
-                ) = get_ret_and_flattened_np_array(
-                    backend_to_test,
-                    ivy_backend.__dict__[fn_name],
-                    precision_mode=test_flags.precision_mode,
-                    *args,
-                    **kwargs,
-                    out=out,
+                ret_from_target, ret_np_flat_from_target = (
+                    get_ret_and_flattened_np_array(
+                        fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
+                    )
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
@@ -365,22 +247,20 @@ def test_function(
                     ),
                     lambda x: not x,
                 )
-
+            # TODO use context manager
             test_ret = (
-                ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
-                if hasattr(ivy_backend.__dict__[fn_name], "out_index")
+                ret_from_target[getattr(ivy.__dict__[fn_name], "out_index")]
+                if hasattr(ivy.__dict__[fn_name], "out_index")
                 else ret_from_target
             )
-            assert not ivy_backend.nested_any(
-                ivy_backend.nested_multi_map(
-                    lambda x, _: x[0] is x[1], [test_ret, out]
-                ),
+            assert not ivy.nested_any(
+                ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
                 lambda x: not x,
             ), "the array in out argument does not contain same value as the returned"
             if not max(test_flags.container) and ivy_backend.native_inplace_support:
                 # these backends do not always support native inplace updates
-                assert not ivy_backend.nested_any(
-                    ivy_backend.nested_multi_map(
+                assert not ivy.nested_any(
+                    ivy.nested_multi_map(
                         lambda x, _: x[0].data is x[1].data, [test_ret, out]
                     ),
                     lambda x: not x,
@@ -388,14 +268,38 @@ def test_function(
                     "the array in out argument does not contain same value as the"
                     " returned"
                 )
+    ret_device = None
+    if isinstance(ret_from_target, ivy_backend.Array):  # TODO use str for now
+        ret_device = ivy_backend.dev(ret_from_target)
+    return (
+        ret_from_target,
+        ret_np_flat_from_target,
+        ret_device,
+        args_np,
+        arg_np_arrays,
+        arrays_args_indices,
+        kwargs_np,
+        arrays_kwargs_indices,
+        kwarg_np_arrays,
+        test_flags,
+        input_dtypes,
+    )
 
-        # compute the return with a Ground Truth backend
-        ret_device = None
-        if isinstance(ret_from_target, ivy_backend.Array):
-            ret_device = ivy_backend.dev(ret_from_target)
 
-    # compute the return with a Ground Truth backend
-    with BackendHandler.update_backend(test_flags.ground_truth_backend) as gt_backend:
+def test_function_ground_truth_computation(
+    ground_truth_backend,
+    on_device,
+    args_np,
+    arg_np_arrays,
+    arrays_args_indices,
+    kwargs_np,
+    arrays_kwargs_indices,
+    kwarg_np_arrays,
+    input_dtypes,
+    test_flags,
+    fn_name,
+):
+    with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
         args, kwargs = create_args_kwargs(
             backend=test_flags.ground_truth_backend,
@@ -443,44 +347,233 @@ def test_function(
                 out=out_from_gt,
             )
 
-        ret_from_gt_device = None
-        if isinstance(ret_from_gt, gt_backend.Array):
-            ret_from_gt_device = gt_backend.dev(ret_from_gt)
-
-        # TODO clearly this is not the best way to test gradients
-        # This should be more efficient and easier to read
-        # Gradient test
+        # TODO enable
         fw_list = gradient_unsupported_dtypes(fn=gt_backend.__dict__[fn_name])
-        if (
-            test_flags.test_gradients
-            and not instance_method
-            and "bool" not in input_dtypes
-            and not any(gt_backend.is_complex_dtype(d) for d in input_dtypes)
-        ):
-            if backend_to_test not in fw_list or not gt_backend.nested_argwhere(
+        ret_from_gt_device = None
+        if isinstance(ret_from_gt, gt_backend.Array):  # TODO use str for now
+            ret_from_gt_device = gt_backend.dev(ret_from_gt)
+    return (ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list)
+
+
+def test_function(
+    *,
+    input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
+    test_flags: FunctionTestFlags,
+    fn_name: str,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    tolerance_dict: dict = None,
+    test_values: bool = True,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
+    backend_to_test: str,
+    on_device: str,
+    return_flat_np_arrays: bool = False,
+    **all_as_kwargs_np,
+):
+    """
+    Test a function that consumes (or returns) arrays for the current backend by
+    comparing the result with numpy.
+
+    Parameters
+    ----------
+    input_dtypes
+        data types of the input arguments in order.
+    test_flags
+        FunctionTestFlags object that stores all testing flags, including:
+        num_positional_args, with_out, instance_method, as_variable,
+        native_arrays, container, gradient
+    fw
+        current backend (framework).
+    fn_name
+        name of the function to test.
+    rtol_
+        relative tolerance value.
+    atol_
+        absolute tolerance value.
+    test_values
+        if True, test for the correctness of the resulting values.
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
+    on_device
+        The device on which to create arrays
+    return_flat_np_arrays
+        If test_values is False, this flag dictates whether the original returns are
+        returned, or whether the flattened numpy arrays are returned.
+    all_as_kwargs_np
+        input arguments to the function as keyword arguments.
+
+    Returns
+    -------
+    ret
+        optional, return value from the function
+    ret_gt
+        optional, return value from the Ground Truth function
+
+    Examples
+    --------
+    >>> input_dtypes = 'float64'
+    >>> as_variable_flags = False
+    >>> with_out = False
+    >>> num_positional_args = 0
+    >>> native_array_flags = False
+    >>> container_flags = False
+    >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
+    >>> fw = "torch"
+    >>> fn_name = "abs"
+    >>> x = np.array([-1])
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x=x)
+
+    >>> input_dtypes = ['float64', 'float32']
+    >>> as_variable_flags = [False, True]
+    >>> with_out = False
+    >>> num_positional_args = 1
+    >>> native_array_flags = [True, False]
+    >>> container_flags = [False, False]
+    >>> instance_method = False
+    >>> test_flags = FunctionTestFlags(num_positional_args, with_out,
+        instance_method,
+        as_variable,
+        native_arrays,
+        container_flags,
+        none)
+    >>> fw = "numpy"
+    >>> fn_name = "add"
+    >>> x1 = np.array([1, 3, 4])
+    >>> x2 = np.array([-3, 15, 24])
+    >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
+    """
+    ground_truth_backend = test_flags.ground_truth_backend
+    if mod_backend[backend_to_test]:
+        # multiprocessing
+        proc, input_queue, output_queue = mod_backend[backend_to_test]
+        input_queue.put(
+            (
+                "function_backend_computation",
+                backend_to_test,
+                test_flags,
                 all_as_kwargs_np,
-                lambda x: (
-                    x.dtype in fw_list[backend_to_test]
-                    if isinstance(x, np.ndarray)
-                    else None
-                ),
-            ):
-                gradient_test(
-                    fn=fn_name,
-                    all_as_kwargs_np=all_as_kwargs_np,
-                    args_np=args_np,
-                    kwargs_np=kwargs_np,
-                    input_dtypes=input_dtypes,
-                    test_flags=test_flags,
-                    rtol_=rtol_,
-                    atol_=atol_,
-                    tolerance_dict=tolerance_dict,
-                    xs_grad_idxs=xs_grad_idxs,
-                    ret_grad_idxs=ret_grad_idxs,
-                    ground_truth_backend=test_flags.ground_truth_backend,
-                    backend_to_test=backend_to_test,
-                    on_device=on_device,
-                )
+                input_dtypes,
+                on_device,
+                fn_name,
+            )
+        )
+        (
+            ret_from_target,
+            ret_np_flat_from_target,
+            ret_device,
+            args_np,
+            arg_np_arrays,
+            arrays_args_indices,
+            kwargs_np,
+            arrays_kwargs_indices,
+            kwarg_np_arrays,
+            test_flags,
+            input_dtypes,
+        ) = output_queue.get()
+    else:
+        (
+            ret_from_target,
+            ret_np_flat_from_target,
+            ret_device,
+            args_np,
+            arg_np_arrays,
+            arrays_args_indices,
+            kwargs_np,
+            arrays_kwargs_indices,
+            kwarg_np_arrays,
+            test_flags,
+            input_dtypes,
+        ) = test_function_backend_computation(
+            backend_to_test,
+            test_flags,
+            all_as_kwargs_np,
+            input_dtypes,
+            on_device,
+            fn_name,
+        )
+
+    # compute the return with a Ground Truth backend
+    if mod_backend[ground_truth_backend]:
+        proc, input_queue, output_queue = mod_backend[ground_truth_backend]
+        input_queue.put(
+            (
+                "function_ground_truth_computation",
+                ground_truth_backend,
+                on_device,
+                args_np,
+                arg_np_arrays,
+                arrays_args_indices,
+                kwargs_np,
+                arrays_kwargs_indices,
+                kwarg_np_arrays,
+                input_dtypes,
+                test_flags,
+                fn_name,
+            )
+        )
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list = (
+            output_queue.get()
+        )
+    else:
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list = (
+            test_function_ground_truth_computation(
+                ground_truth_backend,
+                on_device,
+                args_np,
+                arg_np_arrays,
+                arrays_args_indices,
+                kwargs_np,
+                arrays_kwargs_indices,
+                kwarg_np_arrays,
+                input_dtypes,
+                test_flags,
+                fn_name,
+            )
+        )
+
+    # Gradient test
+    # TODO enable back , ADD backend_to_test to the call below
+
+    if (
+        test_flags.test_gradients
+        and not test_flags.instance_method
+        and "bool" not in input_dtypes
+        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
+    ):
+        if backend_to_test not in fw_list or not ivy.nested_argwhere(
+            all_as_kwargs_np,
+            lambda x: (
+                x.dtype in fw_list[backend_to_test]
+                if isinstance(x, np.ndarray)
+                else None
+            ),
+        ):
+            gradient_test(
+                fn=fn_name,
+                all_as_kwargs_np=all_as_kwargs_np,
+                args_np=args_np,
+                kwargs_np=kwargs_np,
+                input_dtypes=input_dtypes,
+                test_flags=test_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+                backend_to_test=backend_to_test,
+                on_device=on_device,
+            )
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
@@ -915,28 +1008,22 @@ def test_frontend_function(
 # Method testing
 
 
-def gradient_test(
-    *,
-    fn,
-    all_as_kwargs_np,
+def test_gradient_backend_computation(
+    backend_to_test,
     args_np,
+    arg_np_vals,
+    args_idxs,
     kwargs_np,
+    kwarg_np_vals,
+    kwargs_idxs,
     input_dtypes,
     test_flags,
-    test_compile: bool = False,
-    rtol_: float = None,
-    atol_: float = 1e-06,
-    tolerance_dict: dict = None,
-    xs_grad_idxs=None,
-    ret_grad_idxs=None,
-    backend_to_test: str,
-    ground_truth_backend: str,
-    on_device: str,
+    on_device,
+    fn,
+    test_compile,
+    xs_grad_idxs,
+    ret_grad_idxs,
 ):
-    # extract all arrays from the arguments and keyword arguments
-    arg_np_vals, args_idxs, _ = _get_nested_np_arrays(args_np)
-    kwarg_np_vals, kwargs_idxs, _ = _get_nested_np_arrays(kwargs_np)
-
     args, kwargs = create_args_kwargs(
         backend=backend_to_test,
         args_np=args_np,
@@ -972,7 +1059,26 @@ def gradient_test(
                 ret_grad_idxs=ret_grad_idxs,
             )
     grads_np_flat = flatten_and_to_np(backend=backend_to_test, ret=grads)
+    return grads_np_flat
 
+
+def test_gradient_ground_truth_computation(
+    ground_truth_backend,
+    on_device,
+    fn,
+    input_dtypes,
+    all_as_kwargs_np,
+    args_np,
+    arg_np_vals,
+    args_idxs,
+    kwargs_np,
+    kwarg_np_vals,
+    test_flags,
+    kwargs_idxs,
+    test_compile,
+    xs_grad_idxs,
+    ret_grad_idxs,
+):
     with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
 
@@ -1019,6 +1125,116 @@ def gradient_test(
             backend=ground_truth_backend, ret=grads_from_gt
         )
 
+    return grads_np_from_gt_flat
+
+
+def gradient_test(
+    *,
+    fn,
+    all_as_kwargs_np,
+    args_np,
+    kwargs_np,
+    input_dtypes,
+    test_flags,
+    test_compile: bool = False,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    tolerance_dict=None,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
+    backend_to_test: str,
+    ground_truth_backend: str,
+    on_device: str,
+):
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, _ = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, _ = _get_nested_np_arrays(kwargs_np)
+
+    if mod_backend[backend_to_test]:
+        # do this using multiprocessing
+        proc, input_queue, output_queue = mod_backend[backend_to_test]
+        input_queue.put(
+            (
+                "gradient_backend_computation",
+                backend_to_test,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                kwargs_idxs,
+                input_dtypes,
+                test_flags,
+                on_device,
+                fn,
+                test_compile,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+        )
+        grads_np_flat = output_queue.get()
+
+    else:
+        grads_np_flat = test_gradient_backend_computation(
+            backend_to_test,
+            args_np,
+            arg_np_vals,
+            args_idxs,
+            kwargs_np,
+            kwarg_np_vals,
+            kwargs_idxs,
+            input_dtypes,
+            test_flags,
+            on_device,
+            fn,
+            test_compile,
+            xs_grad_idxs,
+            ret_grad_idxs,
+        )
+
+    if mod_backend[ground_truth_backend]:
+        # do this using multiprocessing
+        proc, input_queue, output_queue = mod_backend[ground_truth_backend]
+        input_queue.put(
+            (
+                "gradient_ground_truth_computation",
+                ground_truth_backend,
+                on_device,
+                fn,
+                input_dtypes,
+                all_as_kwargs_np,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                test_flags,
+                kwargs_idxs,
+                test_compile,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+        )
+        grads_np_from_gt_flat = output_queue.get()
+    else:
+        grads_np_from_gt_flat = test_gradient_ground_truth_computation(
+            ground_truth_backend,
+            on_device,
+            fn,
+            input_dtypes,
+            all_as_kwargs_np,
+            args_np,
+            arg_np_vals,
+            args_idxs,
+            kwargs_np,
+            kwarg_np_vals,
+            test_flags,
+            kwargs_idxs,
+            test_compile,
+            xs_grad_idxs,
+            ret_grad_idxs,
+        )
+
     assert len(grads_np_flat) == len(
         grads_np_from_gt_flat
     ), "result length mismatch: {} ({}) != {} ({})".format(
@@ -1039,113 +1255,21 @@ def gradient_test(
     )
 
 
-def test_method(
-    *,
-    init_input_dtypes: List[ivy.Dtype] = None,
-    method_input_dtypes: List[ivy.Dtype] = None,
-    init_all_as_kwargs_np: dict = None,
-    method_all_as_kwargs_np: dict = None,
-    init_flags: pf.MethodTestFlags,
-    method_flags: pf.MethodTestFlags,
-    class_name: str,
-    method_name: str = "__call__",
-    init_with_v: bool = False,
-    method_with_v: bool = False,
-    rtol_: float = None,
-    atol_: float = 1e-06,
-    tolerance_dict: dict = None,
-    test_values: Union[bool, str] = True,
-    test_gradients: bool = False,
-    xs_grad_idxs=None,
-    ret_grad_idxs=None,
-    test_compile: bool = False,
-    backend_to_test: str,
-    ground_truth_backend: str,
-    on_device: str,
-    return_flat_np_arrays: bool = False,
+def test_method_backend_computation(
+    init_input_dtypes,
+    init_flags,
+    backend_to_test,
+    init_all_as_kwargs_np,
+    on_device,
+    method_input_dtypes,
+    method_flags,
+    method_all_as_kwargs_np,
+    class_name,
+    method_name,
+    init_with_v,
+    test_compile,
+    method_with_v,
 ):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
-
-    Parameters
-    ----------
-    init_input_dtypes
-        data types of the input arguments to the constructor in order.
-    init_as_variable_flags
-        dictates whether the corresponding input argument passed to the constructor
-        should be treated as an ivy.Array.
-    init_num_positional_args
-        number of input arguments that must be passed as positional arguments to the
-        constructor.
-    init_native_array_flags
-        dictates whether the corresponding input argument passed to the constructor
-        should be treated as a native array.
-    init_all_as_kwargs_np:
-        input arguments to the constructor as keyword arguments.
-    method_input_dtypes
-        data types of the input arguments to the method in order.
-    method_as_variable_flags
-        dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy.Array.
-    method_num_positional_args
-        number of input arguments that must be passed as positional arguments to the
-        method.
-    method_native_array_flags
-        dictates whether the corresponding input argument passed to the method should
-        be treated as a native array.
-    method_container_flags
-        dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy Container.
-    method_all_as_kwargs_np:
-        input arguments to the method as keyword arguments.
-    class_name
-        name of the class to test.
-    method_name
-        name of tthe method to test.
-    init_with_v
-        if the class being tested is an ivy.Module, then setting this flag as True will
-        call the constructor with the variables v passed explicitly.
-    method_with_v
-        if the class being tested is an ivy.Module, then setting this flag as True will
-        call the method with the variables v passed explicitly.
-    rtol_
-        relative tolerance value.
-    atol_
-        absolute tolerance value.
-    tolerance_dict
-        dictionary of tolerance values for specific dtypes.
-    test_values
-        can be a bool or a string to indicate whether correctness of values should be
-        tested. If the value is `with_v`, shapes are tested but not values.
-    test_gradients
-        if True, test for the correctness of gradients.
-    xs_grad_idxs
-        Indices of the input arrays to compute gradients with respect to. If None,
-        gradients are returned with respect to all input arrays. (Default value = None)
-    ret_grad_idxs
-        Indices of the returned arrays for which to return computed gradients. If None,
-        gradients are returned for all returned arrays. (Default value = None)
-    test_compile
-        If True, test for the correctness of compilation.
-    ground_truth_backend
-        Ground Truth Backend to compare the result-values.
-    device_
-        The device on which to create arrays.
-    return_flat_np_arrays
-        If test_values is False, this flag dictates whether the original returns are
-        returned, or whether the flattened numpy arrays are returned.
-
-    Returns
-    -------
-    ret
-        optional, return value from the function
-    ret_gt
-        optional, return value from the Ground Truth function
-    """
-    # ToDo add with_backend refactor in GC
-    _switch_backend_context(test_compile)
-
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
@@ -1300,14 +1424,41 @@ def test_method(
             ret_device = ivy_backend.dev(ret)
         else:
             ret_device = None
+    fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
 
-        assert ivy_backend.nested_map(
-            ret,
-            lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
-        ), "Ivy method returned non-ivy arrays: {}".format(ret)
+    return (
+        ret,
+        ret_np_flat,
+        ret_device,
+        org_con_data,
+        args_np_method,
+        met_arg_np_vals,
+        met_args_idxs,
+        kwargs_np_method,
+        met_kwarg_np_vals,
+        met_kwargs_idxs,
+        v_np,
+        fw_list,
+    )
 
-    # Compute the return with a Ground Truth backend
 
+def test_method_ground_truth_computation(
+    ground_truth_backend,
+    on_device,
+    org_con_data,
+    args_np_method,
+    met_arg_np_vals,
+    met_args_idxs,
+    kwargs_np_method,
+    met_kwarg_np_vals,
+    met_kwargs_idxs,
+    method_input_dtypes,
+    method_flags,
+    class_name,
+    method_name,
+    test_compile,
+    v_np,
+):
     with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)
         args_gt_constructor, kwargs_gt_constructor = create_args_kwargs(
@@ -1355,80 +1506,296 @@ def test_method(
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
         ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
 
-        # TODO optimize or cache
-        # Exhuastive replication for all examples
-        fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
         fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
-        for k, v in fw_list2.items():
-            if k not in fw_list:
-                fw_list[k] = []
-            fw_list[k].extend(v)
+        # for k, v in fw_list2.items():
+        #     if k not in fw_list:
+        #         fw_list[k] = []
+        #     fw_list[k].extend(v)
 
         if isinstance(ret_from_gt, gt_backend.Array):
             ret_from_gt_device = gt_backend.dev(ret_from_gt)
         else:
             ret_from_gt_device = None
 
-        # gradient test
-        if (
-            test_gradients
-            and not backend_to_test == "numpy"
-            and "bool" not in method_input_dtypes
-            and not any(gt_backend.is_complex_dtype(d) for d in method_input_dtypes)
-        ):
-            if backend_to_test in fw_list:
-                if gt_backend.nested_argwhere(
-                    method_all_as_kwargs_np,
-                    lambda x: (
-                        x.dtype in fw_list[backend_to_test]
-                        if isinstance(x, np.ndarray)
-                        else None
-                    ),
-                ):
-                    pass
-                else:
-                    gradient_test(
-                        fn=[
-                            ins.__getattribute__(method_name),
-                            ins_gt.__getattribute__(method_name),
-                        ],
-                        all_as_kwargs_np=method_all_as_kwargs_np,
-                        args_np=args_np_method,
-                        kwargs_np=kwargs_np_method,
-                        input_dtypes=method_input_dtypes,
-                        test_flags=method_flags,
-                        test_compile=test_compile,
-                        rtol_=rtol_,
-                        atol_=atol_,
-                        tolerance_dict=tolerance_dict,
-                        xs_grad_idxs=xs_grad_idxs,
-                        ret_grad_idxs=ret_grad_idxs,
-                        backend_to_test=backend_to_test,
-                        ground_truth_backend=ground_truth_backend,
-                        on_device=on_device,
-                    )
+    return ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2
 
-            else:
-                gradient_test(
-                    fn=[
-                        ins.__getattribute__(method_name),
-                        ins_gt.__getattribute__(method_name),
-                    ],
-                    all_as_kwargs_np=method_all_as_kwargs_np,
-                    args_np=args_np_method,
-                    kwargs_np=kwargs_np_method,
-                    input_dtypes=method_input_dtypes,
-                    test_flags=method_flags,
-                    test_compile=test_compile,
-                    rtol_=rtol_,
-                    atol_=atol_,
-                    tolerance_dict=tolerance_dict,
-                    xs_grad_idxs=xs_grad_idxs,
-                    ret_grad_idxs=ret_grad_idxs,
-                    backend_to_test=backend_to_test,
-                    ground_truth_backend=ground_truth_backend,
-                    on_device=on_device,
-                )
+
+def test_method(
+    *,
+    init_input_dtypes: List[ivy.Dtype] = None,
+    method_input_dtypes: List[ivy.Dtype] = None,
+    init_all_as_kwargs_np: dict = None,
+    method_all_as_kwargs_np: dict = None,
+    init_flags: pf.MethodTestFlags,
+    method_flags: pf.MethodTestFlags,
+    class_name: str,
+    method_name: str = "__call__",
+    init_with_v: bool = False,
+    method_with_v: bool = False,
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    tolerance_dict=None,
+    test_values: Union[bool, str] = True,
+    test_gradients: bool = False,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
+    test_compile: bool = False,
+    backend_to_test: str,
+    ground_truth_backend: str,
+    on_device: str,
+    return_flat_np_arrays: bool = False,
+):
+    """
+    Test a class-method that consumes (or returns) arrays for the current backend by
+    comparing the result with numpy.
+
+    Parameters
+    ----------
+    init_input_dtypes
+        data types of the input arguments to the constructor in order.
+    init_as_variable_flags
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as an ivy.Array.
+    init_num_positional_args
+        number of input arguments that must be passed as positional arguments to the
+        constructor.
+    init_native_array_flags
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as a native array.
+    init_all_as_kwargs_np:
+        input arguments to the constructor as keyword arguments.
+    method_input_dtypes
+        data types of the input arguments to the method in order.
+    method_as_variable_flags
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy.Array.
+    method_num_positional_args
+        number of input arguments that must be passed as positional arguments to the
+        method.
+    method_native_array_flags
+        dictates whether the corresponding input argument passed to the method should
+        be treated as a native array.
+    method_container_flags
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy Container.
+    method_all_as_kwargs_np:
+        input arguments to the method as keyword arguments.
+    class_name
+        name of the class to test.
+    method_name
+        name of the method to test.
+    init_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the constructor with the variables v passed explicitly.
+    method_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the method with the variables v passed explicitly.
+    rtol_
+        relative tolerance value.
+    atol_
+        absolute tolerance value.
+    test_values
+        can be a bool or a string to indicate whether correctness of values should be
+        tested. If the value is `with_v`, shapes are tested but not values.
+    test_gradients
+        if True, test for the correctness of gradients.
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
+    test_compile
+        If True, test for the correctness of compilation.
+    ground_truth_backend
+        Ground Truth Backend to compare the result-values.
+    device_
+        The device on which to create arrays.
+    return_flat_np_arrays
+        If test_values is False, this flag dictates whether the original returns are
+        returned, or whether the flattened numpy arrays are returned.
+
+    Returns
+    -------
+    ret
+        optional, return value from the function
+    ret_gt
+        optional, return value from the Ground Truth function
+    """
+    # check to see if multiprocessing is to be used
+
+    if mod_backend[backend_to_test]:
+        # yep, multiprocessing
+        proc, input_queue, output_queue = mod_backend[backend_to_test]
+        input_queue.put(
+            (
+                "method_backend_computation",
+                init_input_dtypes,
+                init_flags,
+                backend_to_test,
+                init_all_as_kwargs_np,
+                on_device,
+                method_input_dtypes,
+                method_flags,
+                method_all_as_kwargs_np,
+                class_name,
+                method_name,
+                init_with_v,
+                test_compile,
+                method_with_v,
+            )
+        )
+        (
+            ret,
+            ret_np_flat,
+            ret_device,
+            org_con_data,
+            args_np_method,
+            met_arg_np_vals,
+            met_args_idxs,
+            kwargs_np_method,
+            met_kwarg_np_vals,
+            met_kwargs_idxs,
+            v_np,
+            fw_list,
+        ) = output_queue.get()
+    else:
+        (
+            ret,
+            ret_np_flat,
+            ret_device,
+            org_con_data,
+            args_np_method,
+            met_arg_np_vals,
+            met_args_idxs,
+            kwargs_np_method,
+            met_kwarg_np_vals,
+            met_kwargs_idxs,
+            v_np,
+            fw_list,
+        ) = test_method_backend_computation(
+            init_input_dtypes,
+            init_flags,
+            backend_to_test,
+            init_all_as_kwargs_np,
+            on_device,
+            method_input_dtypes,
+            method_flags,
+            method_all_as_kwargs_np,
+            class_name,
+            method_name,
+            init_with_v,
+            test_compile,
+            method_with_v,
+        )
+
+    # Compute the return with a Ground Truth backend
+    if mod_backend[ground_truth_backend]:
+        # yep, multiprocessing
+        proc, input_queue, output_queue = mod_backend[ground_truth_backend]
+        input_queue.put(
+            (
+                "method_ground_truth_computation",
+                ground_truth_backend,
+                on_device,
+                org_con_data,
+                args_np_method,
+                met_arg_np_vals,
+                met_args_idxs,
+                kwargs_np_method,
+                met_kwarg_np_vals,
+                met_kwargs_idxs,
+                method_input_dtypes,
+                method_flags,
+                class_name,
+                method_name,
+                test_compile,
+                v_np,
+            )
+        )
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = (
+            output_queue.get()
+        )
+    else:
+        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = (
+            test_method_ground_truth_computation(
+                ground_truth_backend,
+                on_device,
+                org_con_data,
+                args_np_method,
+                met_arg_np_vals,
+                met_args_idxs,
+                kwargs_np_method,
+                met_kwarg_np_vals,
+                met_kwargs_idxs,
+                method_input_dtypes,
+                method_flags,
+                class_name,
+                method_name,
+                test_compile,
+                v_np,
+            )
+        )
+
+    for k, v in fw_list2.items():
+        if k not in fw_list:
+            fw_list[k] = []
+        fw_list[k].extend(v)
+
+    # gradient test
+    # TODO enable gradient testing
+    # if (
+    #     test_gradients
+    #     and not backend_to_test == "numpy"
+    #     and "bool" not in method_input_dtypes
+    #     and not any(ivy.is_complex_dtype(d) for d in method_input_dtypes)
+    # ):
+    #     if fw in fw_list:
+    #         if ivy.nested_argwhere(
+    #             method_all_as_kwargs_np,
+    #             lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray)
+    #               else None,
+    #         ):
+    #             pass
+    #         else:
+    #             gradient_test(
+    #                 fn=[
+    #                     ins.__getattribute__(method_name),
+    #                     ins_gt.__getattribute__(method_name),
+    #                 ],
+    #                 all_as_kwargs_np=method_all_as_kwargs_np,
+    #                 args_np=args_np_method,
+    #                 kwargs_np=kwargs_np_method,
+    #                 input_dtypes=method_input_dtypes,
+    #                 test_flags=method_flags,
+    #                 test_compile=test_compile,
+    #                 rtol_=rtol_,
+    #                 atol_=atol_,
+    #                 xs_grad_idxs=xs_grad_idxs,
+    #                 ret_grad_idxs=ret_grad_idxs,
+    #                 ground_truth_backend=ground_truth_backend,
+    #                 on_device=on_device,
+    #             )
+
+    #     else:
+    #         gradient_test(
+    #             fn=[
+    #                 ins.__getattribute__(method_name),
+    #                 ins_gt.__getattribute__(method_name),
+    #             ],
+    #             all_as_kwargs_np=method_all_as_kwargs_np,
+    #             args_np=args_np_method,
+    #             kwargs_np=kwargs_np_method,
+    #             input_dtypes=method_input_dtypes,
+    #             test_flags=method_flags,
+    #             test_compile=test_compile,
+    #             rtol_=rtol_,
+    #             atol_=atol_,
+    #             xs_grad_idxs=xs_grad_idxs,
+    #             ret_grad_idxs=ret_grad_idxs,
+    #             ground_truth_backend=ground_truth_backend,
+    #             on_device=on_device,
+    #         )
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({ground_truth_backend}) returned array on"
