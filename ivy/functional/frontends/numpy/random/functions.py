@@ -281,5 +281,4 @@ def zipf(a, size=None):
     if a <= 1:
         return 0
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    return ivy.pow(-ivy.log(1 - u), 1 / a)
     return ivy.floor(ivy.pow(1 / (1 - u), 1 / a))
