@@ -1334,7 +1334,7 @@ def stft(
     /,
     *,
     axis: Optional[int] = None,
-    onesided:Optional[bool] = True,
+    onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
     window: Optional[Union[tf.Tensor, list, str, Tuple[int]]] = None,
     win_length: Optional[int] = None,
@@ -1344,12 +1344,14 @@ def stft(
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
+    boundary: Optional[str] = "zeros",
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(n_fft, int):
-        raise TypeError("n_fft must be an int.")
-
+    if window is not None and isinstance(window, str) and window == 'hann':
+        window = tf.signal.hann_window(n_fft, dtype=signal.dtype)
+    else:
+        window = window
+        
     return tf.signal.stft(
         signal,
         n_fft,
@@ -1358,6 +1360,7 @@ def stft(
         win_length,
         pad_mode,
     )
+    
 """
 RFFTN Function
 """
