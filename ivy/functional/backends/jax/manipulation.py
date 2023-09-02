@@ -203,45 +203,28 @@ def tile(
 
 def clip(
     x: JaxArray,
-    x_min: Union[Number, JaxArray],
-    x_max: Union[Number, JaxArray],
+    x_min: Optional[Union[Number, JaxArray]] = None,
+    x_max: Optional[Union[Number, JaxArray]] = None,
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if (
-        hasattr(x_min, "dtype")
-        and hasattr(x_max, "dtype")
-        and (x.dtype != x_min.dtype or x.dtype != x_max.dtype)
-    ):
-        if (jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)) and (
-            jnp.int16 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.uint16 in (x.dtype, x_min.dtype, x_max.dtype)
-        ):
-            promoted_type = jnp.promote_types(x.dtype, jnp.float32)
-            promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
-            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = x.astype(promoted_type)
-        elif (
-            jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.float32 in (x.dtype, x_min.dtype, x_max.dtype)
-        ) and (
-            jnp.int32 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.uint32 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.uint64 in (x.dtype, x_min.dtype, x_max.dtype)
-            or jnp.int64 in (x.dtype, x_min.dtype, x_max.dtype)
-        ):
-            promoted_type = jnp.promote_types(x.dtype, jnp.float64)
-            promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
-            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = x.astype(promoted_type)
-        else:
-            promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
-            promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x.astype(promoted_type)
-    # jnp.clip isn't used because of inconsistent gradients
-    x = jnp.where(x > x_max, x_max, x)
-    return jnp.where(x < x_min, x_min, x)
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        x = jnp.where(x < x_min, x_min.astype(promoted_type), x.astype(promoted_type))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+        x = jnp.where(x > x_max, x_max.astype(promoted_type), x.astype(promoted_type))
+    return x
 
 
 @with_unsupported_dtypes({"0.4.14 and below": ("uint64",)}, backend_version)

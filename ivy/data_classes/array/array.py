@@ -144,6 +144,10 @@ class Array(
             self._data = data
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
+        elif ivy.is_ivy_sparse_array(data):
+            self._data = data._data
+        elif ivy.is_native_sparse_array(data):
+            self._data = data._data
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
