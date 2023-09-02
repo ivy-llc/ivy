@@ -6,40 +6,27 @@ from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
 import hypothesis.strategies as st
 
 
-def leaf_strategy():
-    return st.lists(st.integers(1, 10)).map(ivy.array)
-
-
-def tree_strategy(max_depth=2):
-    if max_depth == 0:
-        return leaf_strategy()
-    else:
-        return st.dictionaries(
-            keys=st.one_of(
-                *[
-                    st.text(
-                        alphabet=st.characters(min_codepoint=97, max_codepoint=122),
-                        min_size=1,
-                        max_size=1,
-                    ).filter(lambda x: x not in used_keys)
-                    for used_keys in [set()]
-                ]
-            ),
-            values=st.one_of(leaf_strategy(), tree_strategy(max_depth - 1)),
-            min_size=1,
-            max_size=10,
-        )
+# --- Helpers --- #
+# --------------- #
 
 
 @st.composite
-def tree_dict_strategy(draw):
+def _tree_dict_strategy(draw):
     return draw(tree_strategy())
+
+
+# --- Main --- #
+# ------------ #
+
+
+def leaf_strategy():
+    return st.lists(st.integers(1, 10)).map(ivy.array)
 
 
 # tree_leaves
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_leaves",
-    tree=tree_dict_strategy(),
+    tree=_tree_dict_strategy(),
 )
 def test_jax_tree_leaves(
     *,
@@ -65,7 +52,7 @@ def test_jax_tree_leaves(
 # tree_map
 @handle_frontend_test(
     fn_tree="jax._src.tree_util.tree_map",
-    tree=tree_dict_strategy(),
+    tree=_tree_dict_strategy(),
 )
 def test_jax_tree_map(
     *,
@@ -93,3 +80,24 @@ def test_jax_tree_map(
 
     assert ivy.equal(ivy.Container(result), expected)
     ivy.previous_backend()
+
+
+def tree_strategy(max_depth=2):
+    if max_depth == 0:
+        return leaf_strategy()
+    else:
+        return st.dictionaries(
+            keys=st.one_of(
+                *[
+                    st.text(
+                        alphabet=st.characters(min_codepoint=97, max_codepoint=122),
+                        min_size=1,
+                        max_size=1,
+                    ).filter(lambda x: x not in used_keys)
+                    for used_keys in [set()]
+                ]
+            ),
+            values=st.one_of(leaf_strategy(), tree_strategy(max_depth - 1)),
+            min_size=1,
+            max_size=10,
+        )
