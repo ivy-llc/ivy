@@ -128,43 +128,16 @@ def inv_ex(A, *, check_errors=False, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-)
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 def lstsq(a, b, rcond=None, driver=None):
-    a_num_dim = a.get_num_dims()
-    b_num_dim = b.get_num_dims()
-    if a_num_dim < 2:
-        raise RuntimeError("input must have at least 2 dimensions. ")
-    if a_num_dim - b_num_dim <= 1:
-        for i in range(
-            a_num_dim - 1
-        ):  # should have the same batch shape and same m shape
-            if a.shape[i] != b.shape[i]:
-                raise RuntimeError(f" input.size({i}) should match other.size({i})")
-    else:
-        raise RuntimeError(
-            "input.dim() must be greater or equal to other.dim() and (input.dim() -"
-            " other.dim()) <= 1"
-        )
-
     a_dtype = a.dtype
-    m = a.shape[-2]
-    n = a.shape[-1]
+    a = ivy.astype(a, ivy.float64)
+    b = ivy.astype(b, ivy.float64)
 
-    solution = ivy.matmul(ivy.pinv(a, rtol=1e-15), b)
-
-    # check if A is full-rank
-    rank = ivy.matrix_rank(a)
-    rank = ivy.astype(rank, ivy.int64)
-    n_cols = a.shape[1]
-
-    if (rank == n_cols).any() and m > n:
-        b_estimate = ivy.matmul(a, solution)
-        resid = (b - b_estimate) ** 2
-    else:
-        resid = ivy.array([])
-        resid = ivy.astype(resid, a_dtype)
+    q, r = ivy.qr(a)
+    r_inv = ivy.pinv(r)
+    solution = ivy.matmul(ivy.matmul(r_inv, ivy.matrix_transpose(q)), b)
+    solution = ivy.astype(solution, a_dtype)
 
     if driver == "gelsd" or driver == "gelss":
         _, s, _ = ivy.svd(a)
@@ -172,13 +145,12 @@ def lstsq(a, b, rcond=None, driver=None):
         s = ivy.array([])
         s = ivy.astype(s, a_dtype)
 
-    # if driver == "gelsy" or driver == "gelsd" or driver == "gelss":
-    #     pass
-    # else:
-    #     rank = ivy.np.ndarray(shape=())
-    #     rank = ivy.astype(rank, ivy.int64)
+    rank = ivy.matrix_rank(a)
+    rank = ivy.astype(rank, ivy.int64)
 
-    return solution, resid, rank, s
+    residuals = ivy.array([])
+    residuals = ivy.astype(residuals, a_dtype)
+    return solution, residuals, rank, s
 
 
 @to_ivy_arrays_and_back

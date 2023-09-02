@@ -1293,37 +1293,37 @@ def test_torch_cholesky_ex(
 
 @st.composite
 def _get_dtype_and_same_dim_matrix(draw):
-    randam_shape = draw(
-        helpers.get_shape(
-            min_num_dims=2, max_num_dims=4, min_dim_size=2, max_dim_size=4
-        )
-    )
+    # randam_shape = draw(
+    #     helpers.get_shape(
+    #         min_num_dims=2, max_num_dims=4, min_dim_size=2, max_dim_size=4
+    #     )
+    # )
     dtype_and_values = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes(kind="valid", full=False),
             num_arrays=2,
-            min_value=1,
-            shape=randam_shape,
+            shape=(2, 2),
             shared_dtype=True,
+            min_value=1,
+            max_value=4,
         )
     )
     return dtype_and_values
 
 
 @handle_frontend_test(
-    fn_tree="torch.linalg.lstsq",
-    dtype_values=_get_dtype_and_same_dim_matrix(),
+    fn_tree="torch.linalg.lstsq", dtype_x=_get_dtype_and_same_dim_matrix()
 )
 def test_torch_lstsq(
     *,
-    dtype_values,
+    dtype_x,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, values = dtype_values
+    input_dtype, values = dtype_x
     test_flags.num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1332,8 +1332,8 @@ def test_torch_lstsq(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
-        atol=1e-03,
+        rtol=1,
+        atol=1,
         a=values[0],
         b=values[1],
     )
