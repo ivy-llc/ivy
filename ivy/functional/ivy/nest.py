@@ -221,7 +221,8 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     """
     Recursively inserts a value into a nested data structure at a specified index.
 
-    This function traverses a nested data structure and inserts the provided `value` at the specified `index`.
+    This function traverses a nested data structure and inserts the provided `value`
+    at the specified `index`.
 
     Parameters
     ----------
