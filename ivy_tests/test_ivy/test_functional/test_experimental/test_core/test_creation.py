@@ -32,7 +32,7 @@ def _random_tr_data(draw):
     shape = draw(
         st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
     )
-    rank = draw(helpers.ints(min_value=1, max_value=10))
+    rank = min(shape)
     dtype = draw(helpers.get_dtypes("float", full=False))
     full = draw(st.booleans())
     seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
@@ -446,8 +446,8 @@ def test_random_tr(
         )
 
         for c, c_gt in zip(core, core_gt):
-            assert np.prod(c.shape) == np.prod(rank)
-            assert np.prod(c_gt.shape) == np.prod(rank)
+            assert len(c) == rank
+            assert len(c_gt) == rank
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
