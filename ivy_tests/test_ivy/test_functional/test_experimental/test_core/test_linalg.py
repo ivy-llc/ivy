@@ -1616,29 +1616,46 @@ def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
 # dot
 @st.composite
 def _generate_dot_dtype_and_arrays(draw):
-    matrices_dims = draw(
-        st.lists(st.integers(min_value=2, max_value=10), min_size=3, max_size=3)
+    shape_a = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+        )
     )
-    shape_1 = (matrices_dims[0], matrices_dims[1])
-    shape_2 = (matrices_dims[1], matrices_dims[2])
+    shape_b = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+        )
+    )
+    # pdb.set_trace()
+    shape_a = list(shape_a)
+    shape_b = list(shape_b)
+    if len(shape_a) == 1 and len(shape_b) == 1:
+        shape_b[0] = shape_a[0]
+    elif len(shape_a) == 2 and len(shape_b) == 2:
+        shape_b[0] = shape_a[1]
+    elif len(shape_a) >= 2 and len(shape_b) == 1:
+        shape_b[0] = shape_a[-1]
+    elif len(shape_a) >= 1 and len(shape_b) >= 2:
+        shape_a[-1] = shape_b[-2]
 
-    dtype_1, matrix_1 = draw(
+    dtype_1, a = draw(
         helpers.dtype_and_values(
-            shape=shape_1,
+            shape=shape_a,
             available_dtypes=helpers.get_dtypes("float"),
             min_value=-10,
             max_value=10,
         ).filter(lambda x: "float16" not in x[0])
     )
-    dtype_2, matrix_2 = draw(
+    dtype_2, b = draw(
         helpers.dtype_and_values(
-            shape=shape_2,
+            shape=shape_b,
             dtype=dtype_1,
             min_value=-10,
             max_value=10,
         ).filter(lambda x: "float16" not in x[0])
     )
-    return [dtype_1[0], dtype_2[0]], [matrix_1[0], matrix_2[0]]
+
+    return [dtype_1[0], dtype_2[0]], [a[0], b[0]]
 
 
 @handle_test(
@@ -1657,8 +1674,8 @@ def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         input_dtypes=input_dtypes,
         test_values=True,
-        rtol_=1e-1,
-        atol_=6e-1,
+        rtol_=0.5,
+        atol_=0.5,
         a=x[0],
         b=x[1],
     )

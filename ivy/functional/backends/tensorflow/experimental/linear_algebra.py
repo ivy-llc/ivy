@@ -212,6 +212,9 @@ def lu_factor(
             "float64",
             "int32",
             "int64",
+            "complex64",
+            "complex128",
+            "bfloat16",
         )
     },
     backend_version,
@@ -223,4 +226,5 @@ def dot(
     *,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
+    a, b = ivy.promote_types_of_inputs(a, b)
     return tf.experimental.numpy.dot(a, b)

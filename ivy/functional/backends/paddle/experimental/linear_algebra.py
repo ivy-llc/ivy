@@ -116,7 +116,16 @@ def dot(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.tensordot(a, b, axes=1)
+    if len(a.shape) == 0 or len(b.shape) == 0:
+        return paddle.multiply(a, b)
+    if (
+        len(a.shape) in [1, 2]
+        and len(b.shape) in [1, 2]
+        or (len(a.shape) >= 1 and len(b.shape) == 1)
+    ):
+        return paddle.matmul(a, b)
+
+    return paddle.tensordot(a, b, axes=[[-1], [-2]])
 
 
 @with_supported_device_and_dtypes(
