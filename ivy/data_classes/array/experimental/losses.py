@@ -145,3 +145,45 @@ class _ArrayWithLossesExperimental(abc.ABC):
         return ivy.smooth_l1_loss(
             self._data, target, beta=beta, reduction=reduction, out=out
         )
+
+    def soft_margin_loss(
+        self: ivy.Array,
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: Optional[str] = "mean",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.soft_margin_loss. This method simply
+        wraps the function, and so the docstring for ivy.soft_margin_loss also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing true labels.
+        target
+            input array containing targeted labels.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'sum'``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The soft margin loss between the true and targeticted labels.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 1, 0])
+        >>> y = ivy.array([0.7, 0.8, 0.2])
+        >>> z = x.soft_margin_loss(y)
+        >>> print(z)
+        ivy.array([0.35667497, 0.22314353, 1.60943791])
+        """
+        return ivy.soft_margin_loss(self._data, target, reduction=reduction, out=out)
