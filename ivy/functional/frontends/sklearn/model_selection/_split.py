@@ -5,7 +5,11 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 class BaseCrossValidator(metaclass=ABCMeta):
     def split(self, X, y=None, groups=None):
-        raise NotImplementedError
+        indices = ivy.arange(X.shape[0])
+        for test_index in self._iter_test_masks(X, y, groups):
+            train_index = indices[ivy.logical_not(test_index)]
+            test_index = indices[test_index]
+            yield train_index, test_index
 
     def _iter_test_masks(self, X=None, y=None, groups=None):
         for test_index in self._iter_test_indices(X, y, groups):
@@ -49,6 +53,9 @@ class KFold(BaseCrossValidator):
             start, stop = current, current + fold_size
             yield indices[start:stop]
             current = stop
+
+    def get_n_splits(self, X=None, y=None, groups=None):
+        return self.n_splits
 
 
 @to_ivy_arrays_and_back
