@@ -1851,13 +1851,13 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
-                    "int8",
-                    "int16",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "bfloat16",
+                "int8",
+                "int16",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
             )
         },
         "torch",
