@@ -98,7 +98,15 @@ def test_paddle_adjust_hue(
 # crop
 @handle_frontend_test(
     fn_tree="paddle.vision.transforms.crop",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=255,
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
     top=helpers.ints(min_value=0),
     left=helpers.ints(min_value=0),
     height=helpers.ints(min_value=0),
