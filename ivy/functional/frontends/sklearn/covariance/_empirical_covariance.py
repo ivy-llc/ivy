@@ -11,8 +11,10 @@ def empirical_covariance(X, *, assume_centered = False):
     else:
         covariance = ivy.cov(X.T, bias = 1)
 
-    
     if covariance.ndim == 0:
         covariance = ivy.array([[covariance]])
-    
-    return covariance
+
+    if ivy.is_complex_dtype(X):
+        return covariance.astype(ivy.complex128)
+
+    return covariance.astype(ivy.float64)

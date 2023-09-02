@@ -5,7 +5,11 @@ from hypothesis import strategies as st
 @handle_frontend_test(
     fn_tree="sklearn.covariance.empirical_covariance",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes= helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=3,
     ),
     assume_centered = st.booleans()
 )
