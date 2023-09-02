@@ -108,6 +108,11 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def ceil_(self):
+        self.ivy_array = self.ceil().ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
     def numel(self):
         return paddle_frontend.numel(self)
@@ -153,6 +158,13 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sqrt_(self, name=None):
         self.ivy_array = self.sqrt().ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("bfloat16", "uint16")}, "paddle")
+    def zero_(self):
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.zeros_like(self._ivy_array)
+        ).ivy_array
         return self
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -227,8 +239,11 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.tanh(self._ivy_array))
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-    def add_(self, name=None):
-        return paddle_frontend.Tensor(ivy.add(self._ivy_array))
+    def add_(self, y, name=None):
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.add(self._ivy_array, _to_ivy_array(y))
+        ).ivy_array
+        return self
 
     @with_supported_dtypes(
         {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
@@ -236,6 +251,13 @@ class Tensor:
     )
     def isinf(self, name=None):
         return paddle_frontend.Tensor(ivy.isinf(self._ivy_array))
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "uint16")}, "paddle")
+    def unsqueeze_(self, axis=None, name=None):
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.expand_dims(self._ivy_array, axis=axis)
+        ).ivy_array
+        return self
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def square(self, name=None):
@@ -251,6 +273,20 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cholesky(self, upper=False, name=None):
         return paddle_frontend.Tensor(ivy.cholesky(self._ivy_array, upper=upper))
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("float16", "uint16", "int16")}, "paddle"
+    )
+    def squeeze_(self, axis=None, name=None):
+        if isinstance(axis, int) and self.ndim > 0:
+            if self.shape[axis] > 1:
+                return self
+        if len(self.shape) == 0:
+            return self
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.squeeze(self._ivy_array, axis=axis)
+        ).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def multiply(self, y, name=None):
@@ -647,3 +683,16 @@ class Tensor:
     )
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+        "paddle",
+    )
+    def argmin(self, axis=None, keepdim=False, dtype=None, name=None):
+        return paddle_frontend.argmin(
+            self._ivy_array, axis=axis, keepdim=keepdim, dtype=dtype
+        )
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def remainder(self, y, name=None):
+        return ivy.remainder(self._ivy_array, y)

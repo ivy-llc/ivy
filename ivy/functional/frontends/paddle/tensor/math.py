@@ -116,6 +116,12 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def ceil_(x, name=None):
+    return ivy.ceil(x, out=x)
+
+
 @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
 @to_ivy_arrays_and_back
 def conj(x, name=None):
@@ -178,7 +184,7 @@ def erf(x, name=None):
     return ivy.erf(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
@@ -231,6 +237,17 @@ def gcd(x, y, name=None):
 @to_ivy_arrays_and_back
 def heaviside(x, y, name=None):
     return ivy.heaviside(x, y)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def inner(x, y, name=None):
+    result = ivy.inner(x, y)
+    if (x.shape == () and y.shape == (1,)) or (x.shape == (1,) and y.shape == ()):
+        result = result.reshape((1,))
+    elif x.shape == (1,) and y.shape == (1,):
+        result = result.reshape((1,))
+    return result
 
 
 @with_supported_dtypes(
@@ -518,3 +535,10 @@ def tanh(x, name=None):
 @to_ivy_arrays_and_back
 def trunc(x, name=None):
     return ivy.trunc(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def nansum(x, axis=None, dtype=None, name=None):
+    return ivy.nansum(x, axis=axis, dtype=dtype)
+
