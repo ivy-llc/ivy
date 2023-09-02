@@ -216,7 +216,7 @@ def l1_loss(
     sum_diff = ivy.abs(input - label)
     reduction = _get_reduction_func(reduction)
     out = reduction(sum_diff)
-    return paddle.to_tensor(out)
+    return out
 
 
 @with_supported_dtypes(
@@ -246,7 +246,6 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
 
     out = ivy.where(out < 0, 0, out)
     out = reduction(out).astype(input.dtype)
-    out = ivy.atleast_1d(out)
 
     return out
 
