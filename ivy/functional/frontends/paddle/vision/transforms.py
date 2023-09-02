@@ -174,32 +174,6 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
-def to_tensor(pic, data_format="CHW"):
-    array = ivy.array(pic)
-    return Tensor(array)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
-        }
-    },
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def vflip(img, data_format="CHW"):
-    if data_format.lower() == "chw":
-        axis = -2
-    elif data_format.lower() == "hwc":
-        axis = -3
-    return ivy.flip(img, axis=axis)
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-@to_ivy_arrays_and_back
 def pad(img, padding, fill=0, padding_mode="constant"):
     dim_size = img.ndim
     if not hasattr(padding, "__len__"):
@@ -224,3 +198,29 @@ def pad(img, padding, fill=0, padding_mode="constant"):
         return ivy.pad(img, trans_padding, mode=padding_mode, constant_values=fill)
     else:
         raise "Unsupported padding_mode"
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def to_tensor(pic, data_format="CHW"):
+    array = ivy.array(pic)
+    return Tensor(array)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
+        }
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def vflip(img, data_format="CHW"):
+    if data_format.lower() == "chw":
+        axis = -2
+    elif data_format.lower() == "hwc":
+        axis = -3
+    return ivy.flip(img, axis=axis)
