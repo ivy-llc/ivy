@@ -237,14 +237,9 @@ def current_backend(*args, **kwargs):
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is not None:
         if verbosity.level > 0:
-            verbosity.cprint("Using backend from type: {}".format(f))
+            verbosity.cprint(f"Using backend from type: {f}")
         implicit_backend = f.current_backend_str()
         return f
-<<<<<<< HEAD
-    if verbosity.level > 0:
-        verbosity.cprint(f"Using backend from type: {f}")
-=======
->>>>>>> dbad65365246f433c1c6ac27cfbd054a5eb57b89
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
@@ -469,13 +464,8 @@ def set_backend(backend: str, dynamic: bool = False):
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
 
         if verbosity.level > 0:
-<<<<<<< HEAD
             verbosity.cprint(f"backend stack: {backend_stack}")
-
-=======
-            verbosity.cprint("backend stack: {}".format(backend_stack))
     _handle_inplace_mode()
->>>>>>> dbad65365246f433c1c6ac27cfbd054a5eb57b89
     return ivy
 
 
