@@ -9885,7 +9885,7 @@ def test_torch_tensor_quantile(
         min_num_dims=1,
         max_num_dims=5,
     ),
-    to=helpers.ints(min_value=4, max_value=10),
+    to=helpers.ints(min_value=1, max_value=100),
 )
 def test_torch_tensor_random_(
     dtype_and_x,

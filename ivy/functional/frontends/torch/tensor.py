@@ -1858,6 +1858,7 @@ class Tensor:
                 "uint32",
                 "uint64",
                 "bfloat16",
+                "float64",
             )
         },
         "torch",
@@ -1869,7 +1870,7 @@ class Tensor:
         *,
         generator=None,
     ):
-        if not to:
+        if to is None:
             if ivy.is_float_dtype(self.ivy_array):
                 to = ivy.finfo(self.dtype).max
             else:
