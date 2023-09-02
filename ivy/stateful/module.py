@@ -61,6 +61,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         devices=None,
         dtype=None,
         dynamic_backend=None,
+        training=True,
         **kwargs,
     ):
         """
@@ -98,6 +99,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             is raised during the compiled forward pass. Default is ``True``.
         with_partial_v
             Whether to allow partial specification of variables. Default is ``False``.
+        training
+            specifies whether the module is in training or evaluation mode. Default is
+            ``True``.
         devices
             devices on which to distribute the module's variables
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
@@ -145,6 +149,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._target = None
         self._lazy_compiled = False
         self._dynamic_backend = dynamic_backend
+        self.training = training
         if build_mode != "on_init":
             return
         if hasattr(Module, "_init_var"):
@@ -813,6 +818,18 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         """Set the buffer at any place within the class."""
         self._set_buffers({var_name: value})
 
+    def eval(self):
+        # disables training mode for child modules
+        self.train(mode=False)
+
+    def train(self, mode: bool = True):
+        # enables/disables training mode
+        self.training = mode
+        for module in self.v:
+            module = getattr(self, module, None)
+            if isinstance(module, ivy.Module):
+                module.train(mode=mode)
+
     def __repr__(self):
         return object.__repr__(self)
 
@@ -858,7 +875,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         if name == "v":
             if super().__getattribute__("v") is None and not self.built_:
                 self._build_and_return_v(
-                    self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+                    *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
         if name != "buffers":
             if hasattr(self, "buffers"):
