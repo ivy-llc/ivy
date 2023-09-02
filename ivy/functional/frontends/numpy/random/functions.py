@@ -83,6 +83,22 @@ def shuffle(x, axis=0, /):
     if isinstance(x, int):
         x = ivy.arange(x)
     return ivy.shuffle(x, axis)
+  
+  
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def laplace(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    u = loc - scale * ivy.sign(u - 0.5) * ivy.log(1 - 2 * ivy.abs(u - 0.5))
+    return u
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logistic(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    x = loc + scale * ivy.log(u / (1 - u))
+    return x
 
 
 @to_ivy_arrays_and_back
@@ -242,3 +258,4 @@ def zipf(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.floor(ivy.pow(1 / (1 - u), 1 / a))
+
