@@ -133,9 +133,9 @@ def percentile(
     *,
     interpolation=None,
 ):
-    values = ivy.array(a)
+    values = ivy.astype(a, ivy.float64)
     quantile = ivy.divide(q, 100.0)
-    quantile_arr = ivy.array(quantile)
+    quantile_arr = ivy.astype(quantile, ivy.float64)
 
     if quantile_arr.ndim == 0:
         quantile_arr = ivy.array([quantile])
@@ -157,21 +157,28 @@ def percentile(
             output = [_cpercentile(reshaped_arr, quantile) for quantile in quantile_arr]
 
     elif axis == 0:
-        if values.shape[1] is None:
-            raise ivy.utils.exceptions.IvyException(
-                "axis 0 is out of bounds for array of dimension 0"
-            )
+        # if values.shape[1] is None:
+        #     raise ivy.utils.exceptions.IvyException(
+        #         "axis 0 is out of bounds for array of dimension 0"
+        #     )
         for quantile in quantile_arr:
-            q_row = []
-            for col_idx in range(values.shape[1]):
-                if ivy.any(ivy.isnan(values[:, col_idx])):
+            if values.shape[1] is None:
+                if ivy.any(ivy.isnan(values)):
                     val = ivy.nan
                 else:
-                    val = _cpercentile(ivy.sort(values[:, col_idx]), quantile)
+                    val = _cpercentile(ivy.sort(values), quantile)
+                output.append(val)
+            else:
+                q_row = []
+                for col_idx in range(values.shape[1]):
+                    if ivy.any(ivy.isnan(values[:, col_idx])):
+                        val = ivy.nan
+                    else:
+                        val = _cpercentile(ivy.sort(values[:, col_idx]), quantile)
 
-                q_row.append(val)
+                    q_row.append(val)
 
-            output.append(q_row)
+                output.append(q_row)
 
     elif axis == 1:
         if values.shape[0] is None:
@@ -188,7 +195,8 @@ def percentile(
                 q_row.append(val)
 
             output.append(q_row)
-    return ivy.array(output)
+
+    return output
 
 
 @to_ivy_arrays_and_back

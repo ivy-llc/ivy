@@ -82,7 +82,7 @@ def test_numpy_percentile(
         out=None,
         backend_to_test=backend_fw,
         overwrite_input=None,
-        method=None,
+        method="linear",
         keepdims=keep_dims,
         interpolation=None,
         frontend=frontend,
