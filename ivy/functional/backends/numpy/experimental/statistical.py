@@ -528,3 +528,35 @@ def igamma(
 
     igamma_vec = np.vectorize(igamma_cal)
     return igamma_vec(a, x).astype(a.dtype)
+
+
+# nanmax
+def nanmax(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    initial: float = np.NINF,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    """
+    Return the maximum of an array, ignoring NaNs.
+
+    Parameters
+    ----------
+    a (numpy.ndarray): Input array.
+    axis (int or tuple of ints, optional): Axis or axes along which to operate. \
+    By default, flattened input is used.
+    keepdims (bool, optional): If True, the axis or axes that are reduced \
+    are left in the result with size one.
+    initial (float, optional): The minimum value of the output. \
+    Defaults to negative infinity.
+    out (numpy.ndarray, optional): Alternative output \
+    array in which to place the result.
+
+    Returns
+    ---------
+    numpy.ndarray: Maximum values. If axis is None, a scalar is returned.
+    """
+    return np.nanmax(a, axis=axis, keepdims=keepdims, initial=initial, out=out)

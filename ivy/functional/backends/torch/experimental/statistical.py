@@ -601,3 +601,29 @@ def cummin(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret.to(dtype))
     return ret.to(dtype)
+
+
+# nanmax
+def nanmax(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if ivy.exists(out):
+        raise ValueError("Output tensor 'out' is not supported in nanmax.")
+
+    if a.numel() == 0:
+        raise ValueError("nanmax: array contains no NaN entries.")
+
+    if ivy.exists(axis):
+        a = torch.moveaxis(a, axis, 0)
+
+    if keepdims:
+        res = torch.max(a, dim=0, keepdim=True)
+    else:
+        res = torch.max(a, dim=0)[0]
+
+    return res

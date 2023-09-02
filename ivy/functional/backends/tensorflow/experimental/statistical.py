@@ -781,3 +781,21 @@ def cummin(
         return cummin_x
     else:
         return tf.cast(cummin_x, dtype)
+
+
+# nanmax
+def nanmax(a: tf.Tensor, axis=None, keepdims=False, name=None):
+    if axis is not None:
+        a = tf.transpose(a, perm=axis[::-1])
+        # Move specified axis to the first dimension
+
+    if keepdims:
+        max_val = tf.math.reduce_max(a, axis=0, keepdims=True)
+    else:
+        max_val = tf.math.reduce_max(a, axis=0)
+
+    if axis is not None:
+        max_val = tf.transpose(max_val, perm=axis)
+        # Move the first dimension back to its original position
+
+    return max_val

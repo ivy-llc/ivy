@@ -400,3 +400,17 @@ def igamma(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jlax.igamma(a=a, x=x)
+
+
+# nanmax
+@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+def nanmax(
+    a: jnp.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[jnp.ndarray] = None,
+) -> jnp.ndarray:
+    return jnp.nanmax(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
