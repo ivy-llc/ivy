@@ -2242,4 +2242,3 @@ def test_paddle_trunc(
         on_device=on_device,
         x=x[0],
     )
-
