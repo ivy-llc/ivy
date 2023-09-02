@@ -802,7 +802,8 @@ def dct(
         a: ivy.array([96., -28.1580677, -31.89422607, 22.86190414,
                       -26.00041008, 19.75149155, -16.97056389, 10.87819386,
                       -5.89381361]),
-        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00])
+        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16,
+                      -1.00000000e+00])
     }
     """
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
@@ -894,9 +895,11 @@ def idct(
     >>> print(y)
     {
         a: ivy.array([1.01823380e+02, -5.15385818e+01, 1.36371466e-06, -5.38763905e+00,
-                      0.00000000e+00, -1.60722279e+00, -8.80319249e-08, -4.05617893e-01]),
+                      0.00000000e+00, -1.60722279e+00, -8.80319249e-08,
+                      -4.05617893e-01]),
         b: ivy.array([1.27279224e+01, -6.44232273e+00, 1.70464332e-07, -6.73454881e-01,
-                      0.00000000e+00, -2.00902849e-01, -1.10039906e-08, -5.07022366e-02])
+                      0.00000000e+00, -2.00902849e-01, -1.10039906e-08,
+                      -5.07022366e-02])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -912,7 +915,8 @@ def idct(
         a: ivy.array([86.29723358, -66.69506073, 9.93914604, 2.88008881,
                       -16.18951607, 18.06697273, -17.57439613, 11.68861485,
                       -4.41308832]),
-        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00])
+        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16,
+                      -1.00000000e+00])
     }
     """
     return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
@@ -2874,3 +2878,24 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+def sliding_window(
+    input: Union[ivy.Array, ivy.NativeArray],
+    window_size: Union[int, Tuple[int, int], Tuple[int, int, int]],
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+    /,
+    *,
+    data_format="NCHW",
+):
+    # Docstring to be added
+
+    return ivy.current_backend(input).sliding_window(
+        input, window_size, stride, dilation, padding, data_format=data_format
+    )
