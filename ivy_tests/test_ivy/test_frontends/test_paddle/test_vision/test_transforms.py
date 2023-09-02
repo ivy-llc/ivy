@@ -140,7 +140,9 @@ def test_paddle_hflip(
     ),
     padding=st.one_of(
         st.integers(min_value=0, max_value=2),
-        st.tuples(st.integers(min_value=0, max_value=2), st.integers(min_value=0, max_value=2)),
+        st.tuples(st.integers(
+            min_value=0, max_value=2), st.integers(min_value=0, max_value=2)
+        ),
         st.tuples(
             st.integers(min_value=0, max_value=2),
             st.integers(min_value=0, max_value=2),
@@ -149,7 +151,7 @@ def test_paddle_hflip(
         ),
     ),
     fill=st.integers(min_value=-5, max_value=5),
-    padding_mode=st.sampled_from(["constant", "edge", "reflect"])
+    padding_mode=st.sampled_from(["constant", "edge", "reflect"]),
 )
 def test_paddle_pad(
     *,
