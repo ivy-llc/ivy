@@ -1293,16 +1293,12 @@ def test_torch_cholesky_ex(
 
 @st.composite
 def _get_dtype_and_same_dim_matrix(draw):
-    # randam_shape = draw(
-    #     helpers.get_shape(
-    #         min_num_dims=2, max_num_dims=4, min_dim_size=2, max_dim_size=4
-    #     )
-    # )
+    randam_shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
     dtype_and_values = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes(kind="valid", full=False),
             num_arrays=2,
-            shape=(2, 2),
+            shape=randam_shape,
             shared_dtype=True,
             min_value=1,
             max_value=4,
@@ -1332,8 +1328,8 @@ def test_torch_lstsq(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1,
-        atol=1,
+        rtol=1e-03,
+        atol=1e-03,
         a=values[0],
         b=values[1],
     )
