@@ -205,7 +205,8 @@ def kl_div(
     return out.astype(label.dtype)
 
 
-@inputs_to_ivy_arrays
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def l1_loss(
     input,
     label,
@@ -215,8 +216,6 @@ def l1_loss(
     sum_diff = ivy.abs(input - label)
     reduction = _get_reduction_func(reduction)
     out = reduction(sum_diff)
-    if out.shape == ():
-        out = out.expand_dims()
     return paddle.to_tensor(out)
 
 
