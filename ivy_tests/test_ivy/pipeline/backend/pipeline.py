@@ -28,14 +28,16 @@ class BackendPipeline(Pipeline):
         **all_as_kwargs_np,
     ):
         runner = BackendTestCaseRunner(
+            fn_name=fn_name,
             backend_handler=self._backend_handler,
             backend_to_test=backend_to_test,
             ground_truth_backend=test_flags.ground_truth_backend,
+            on_device=on_device,
             rtol=rtol_,
             atol=atol_,
         )
 
-        runner.run(all_as_kwargs_np, test_flags)
+        runner.run(input_dtypes, all_as_kwargs_np, test_flags)
 
     def test_method():
         pass

@@ -7,11 +7,20 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
 
 class BackendTestCaseRunner(TestCaseRunner):
     def __init__(
-        self, backend_handler, backend_to_test, ground_truth_backend, rtol, atol
+        self,
+        backend_handler,
+        fn_name,
+        backend_to_test,
+        ground_truth_backend,
+        on_device,
+        rtol,
+        atol,
     ):
+        self.fn_name = fn_name
         self.backend_handler = backend_handler
         self.backend_to_test = backend_to_test
         self.grond_truth_backend = ground_truth_backend
+        self.on_device = on_device
         self.rtol = rtol
         self.atol = atol
 
