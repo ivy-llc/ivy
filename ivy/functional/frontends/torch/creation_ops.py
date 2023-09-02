@@ -4,7 +4,11 @@ from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     to_ivy_shape,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    handle_out_argument,
+)
 import ivy.functional.frontends.torch as torch_frontend
 
 
@@ -308,3 +312,32 @@ def zeros_like(
 ):
     ret = ivy.zeros_like(input, dtype=dtype, device=device)
     return ret
+
+
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+@to_ivy_arrays_and_back
+@handle_out_argument
+def complex(
+    real,
+    imag,
+    *,
+    out=None,
+):
+    assert real.dtype == imag.dtype, ValueError(
+        f"Expected real and imag to have the same dtype, "
+        " but got real.dtype = {real.dtype} and imag.dtype = {imag.dtype}."
+    )
+
+    complex_dtype = ivy.complex64 if real.dtype != ivy.float64 else ivy.complex128
+    complex_array = real + imag * 1j
+    return complex_array.astype(complex_dtype)
+
+
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def polar(
+    abs,
+    angle,
+    *,
+    out=None,
+):
+    return complex(abs * angle.cos(), abs * angle.sin(), out=out)
