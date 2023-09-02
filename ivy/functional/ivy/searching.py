@@ -50,7 +50,7 @@ def argmax(
         input array. Should have a numeric data type.
     axis
         axis along which to search. If None, the function must return the index of the
-        maximum value of the flattened array. Deafult: ``None``.
+        maximum value of the flattened array. Default = None.
     keepdims
         If this is set to True, the axes which are reduced are left in the result as
         dimensions with size one. With this option, the result will broadcast correctly
@@ -117,6 +117,16 @@ def argmax(
     >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.argmax(x)
+    >>> print(y)
+    {
+        a: ivy.array(2),
+        b: ivy.array(2)
+    }
     """
     return current_backend(x).argmax(
         x,
@@ -164,7 +174,10 @@ def argmin(
         input array (see Broadcasting). Otherwise, if False, the reduced axes
         (dimensions) must not be included in the result. Default = False.
     dtype
-            An optional output_dtype from: int32, int64. Defaults to int64.
+        An optional output_dtype from: int32, int64. Defaults to int64.
+    select_last_index
+        If this is set to True, the index corresponding to the
+        last occurrence of the maximum value will be returned.
     out
         if axis is None, a zero-dimensional array containing the index of the first
         occurrence of the minimum value; otherwise, a non-zero-dimensional array
