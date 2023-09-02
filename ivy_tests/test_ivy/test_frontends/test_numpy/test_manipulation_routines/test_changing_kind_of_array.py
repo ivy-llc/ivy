@@ -24,8 +24,7 @@ def test_numpy_asmatrix(arr, backend_fw):
     fn_tree="numpy.asscalar",
     arr=helpers.array_values(dtype=helpers.get_dtypes("numeric"), shape=1),
 )
-def test_numpy_asscalar(arr: np.ndarray, backend_fw):
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        ret_1 = arr.item()
-        ret_2 = np_frontend.asscalar(arr)
-        assert ret_1 == ret_2
+def test_numpy_asscalar(arr: np.ndarray):
+    ret_1 = arr.item()
+    ret_2 = np_frontend.asscalar(arr)
+    assert ret_1 == ret_2
