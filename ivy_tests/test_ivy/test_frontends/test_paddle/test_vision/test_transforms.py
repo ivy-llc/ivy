@@ -140,8 +140,8 @@ def test_paddle_hflip(
     ),
     padding=st.one_of(
         st.integers(min_value=0, max_value=2),
-        st.tuples(st.integers(
-            min_value=0, max_value=2), st.integers(min_value=0, max_value=2)
+        st.tuples(
+            st.integers(min_value=0, max_value=2), st.integers(min_value=0, max_value=2)
         ),
         st.tuples(
             st.integers(min_value=0, max_value=2),
