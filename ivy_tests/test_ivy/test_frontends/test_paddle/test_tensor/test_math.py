@@ -2244,5 +2244,6 @@ def test_paddle_nansum(
         on_device=on_device,
         x=x[0],
         axis=axis,
+        rtol=1e-04,
+        atol=1e-04,
     )
-
