@@ -807,10 +807,8 @@ def multi_head_attention(
     num_dims = query.ndim
     ivy.assertions.check_all(
         num_dims > 1 and num_dims < 4,
-        (
-            "Number of dimensions should be 2 (for unbatched input) or 3 (for batched"
-            f" input), got {num_dims}"
-        ),
+        "Number of dimensions should be 2 (for unbatched input) or 3 (for batched"
+        f" input), got {num_dims}",
     )
     if key is None and value is None:
         key = value = query
@@ -1548,7 +1546,6 @@ def depthwise_conv2d(
                        [[0.],
                         [-6.]]]])
     }
-
     """
     return current_backend(x).depthwise_conv2d(
         x,

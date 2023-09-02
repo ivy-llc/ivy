@@ -17,18 +17,26 @@ def gelu(
     /,
     *,
     approximate: bool = False,
+    complex_mode="jax",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)
 
 
 def leaky_relu(
-    x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 0.2,
+    complex_mode="jax",
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.asarray(jnp.where(x > 0, x, jnp.multiply(x, alpha)), x.dtype)
 
 
-def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def relu(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.maximum(x, 0)
 
 
@@ -48,6 +56,7 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = 1,
     threshold: Optional[Union[int, float]] = None,
+    complex_mode="jax",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x_beta = x * beta
@@ -61,6 +70,11 @@ def softplus(
     if threshold is not None:
         return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
+
+
+# Softsign
+def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.soft_sign(x)
 
 
 def log_softmax(x: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None):

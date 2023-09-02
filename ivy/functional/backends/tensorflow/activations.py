@@ -18,18 +18,30 @@ from . import backend_version
 
 
 def gelu(
-    x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
+    x: Tensor,
+    /,
+    *,
+    approximate: bool = False,
+    complex_mode="jax",
+    out: Optional[Tensor] = None,
 ) -> Tensor:
+    if x.dtype in [tf.complex64, tf.complex128]:
+        return 0.5 * x * (1 + tf.math.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
     return tf.nn.gelu(x, approximate)
 
 
 def leaky_relu(
-    x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 0.2,
+    complex_mode="jax",
+    out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
 
@@ -45,7 +57,17 @@ def softmax(x: Tensor, /, *, axis: int = -1, out: Optional[Tensor] = None) -> Te
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "bfloat16", "float32", "float64")}, backend_version
+    {
+        "2.13.0 and below": (
+            "float16",
+            "bfloat16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
 )
 def softplus(
     x: Tensor,
@@ -53,6 +75,7 @@ def softplus(
     *,
     beta: Union[int, float] = 1,
     threshold: Optional[Union[int, float]] = None,
+    complex_mode="jax",
     out: Optional[Tensor] = None,
 ) -> Tensor:
     x_beta = x * beta
@@ -60,6 +83,24 @@ def softplus(
     if threshold is not None:
         return tf.where(x_beta > threshold, x, res)
     return res
+
+
+# Softsign
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float16",
+            "bfloat16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def softsign(x: tf.Tensor, /, out: Optional[tf.Tensor] = None) -> tf.Tensor:
+    return tf.nn.softsign(x)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
