@@ -94,6 +94,22 @@ def _get_dtype_and_rank_2k_tensors(draw):
 
 
 @st.composite
+def _get_dtype_and_same_dim_matrix(draw):
+    randam_shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
+    dtype_and_values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(kind="valid", full=False),
+            num_arrays=2,
+            shape=randam_shape,
+            shared_dtype=True,
+            min_value=1,
+            max_value=4,
+        )
+    )
+    return dtype_and_values
+
+
+@st.composite
 def _get_dtype_and_sequence_of_arrays(draw):
     array_dtype = draw(helpers.get_dtypes("float", full=False))
     arbitrary_size = draw(st.integers(min_value=2, max_value=10))
@@ -744,6 +760,34 @@ def test_tensorflow_logdet(
         fn_tree=fn_tree,
         on_device=on_device,
         matrix=x,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.lstsq", dtype_x=_get_dtype_and_same_dim_matrix()
+)
+def test_tensorflow_lstsq(
+    *,
+    dtype_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, values = dtype_x
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-03,
+        a=values[0],
+        b=values[1],
     )
 
 

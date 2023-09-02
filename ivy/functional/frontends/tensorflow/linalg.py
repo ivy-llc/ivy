@@ -178,6 +178,49 @@ def logdet(matrix, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex64")}, "tensorflow"
+)
+def lstsq(
+    matrix,
+    rhs,
+    l2_regularizer=0.0,
+    fast=True,
+):
+    matrix_num_dim = matrix.get_num_dims()
+    rhs_num_dim = rhs.get_num_dims()
+    if matrix_num_dim < 2:
+        raise RuntimeError("input must have at least 2 dimensions. ")
+    if matrix_num_dim - rhs_num_dim <= 1:
+        for i in range(
+            matrix_num_dim - 1
+        ):  # should have the same batch shape and same m shape
+            if matrix.shape[i] != rhs.shape[i]:
+                raise RuntimeError(f" input.size({i}) should match other.size({i})")
+    else:
+        raise RuntimeError(
+            "input.dim() must be greater or equal to other.dim() and (input.dim() -"
+            " other.dim()) <= 1"
+        )
+    if l2_regularizer != 0:
+        raise NotImplementedError(
+            "linalg.lstsq is currently disabled for complex128 and l2_regularizer != 0"
+            " due to poor accuracy."
+        )
+
+    matrix_dtype = matrix.dtype
+    matrix = ivy.astype(matrix, ivy.float64)
+    rhs = ivy.astype(rhs, ivy.float64)
+
+    q, r = ivy.qr(matrix)
+    r_inv = ivy.pinv(r)
+    solution = ivy.matmul(ivy.matmul(r_inv, ivy.matrix_transpose(q)), rhs)
+    solution = ivy.astype(solution, matrix_dtype)
+
+    return solution
+
+
+@to_ivy_arrays_and_back
 def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
     return ivy.lu_matrix_inverse(
         ivy.lu_reconstruct(lower_upper, perm), validate_args=validate_args, name=name
