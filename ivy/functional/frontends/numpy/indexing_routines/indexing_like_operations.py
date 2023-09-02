@@ -102,12 +102,6 @@ def compress(condition, a, axis=None, out=None):
 
 @to_ivy_arrays_and_back
 def put(a, ind, v, mode='raise'):
-    '''
-    a: the target array
-    ind: the target indices, interpreted as integers
-    v: the values to place in a at target indices. If v is shorter than ind, it will be repeated as necessary.
-    mode: specifies how out-of-bounds indices will behave. It can take on one of three values: 'raise', 'wrap', or 'clip'. The default value is 'raise'.
-    '''
     a = ivy.array(a)
     ind = ivy.array(ind)
     v = ivy.array(v)
