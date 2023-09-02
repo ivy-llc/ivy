@@ -130,6 +130,22 @@ def inv_ex(A, *, check_errors=False, out=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 def lstsq(a, b, rcond=None, driver=None):
+    a_num_dim = a.get_num_dims()
+    b_num_dim = b.get_num_dims()
+    if a_num_dim < 2:
+        raise RuntimeError("input must have at least 2 dimensions. ")
+    if a_num_dim - b_num_dim <= 1:
+        for i in range(
+            a_num_dim - 1
+        ):  # should have the same batch shape and same m shape
+            if a.shape[i] != b.shape[i]:
+                raise RuntimeError(f" input.size({i}) should match other.size({i})")
+    else:
+        raise RuntimeError(
+            "input.dim() must be greater or equal to other.dim() and (input.dim() -"
+            " other.dim()) <= 1"
+        )
+
     a_dtype = a.dtype
     a = ivy.astype(a, ivy.float64)
     b = ivy.astype(b, ivy.float64)
