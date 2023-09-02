@@ -236,10 +236,10 @@ def current_backend(*args, **kwargs):
     # the backend from the arguments
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is not None:
+        if verbosity.level > 0:
+            verbosity.cprint("Using backend from type: {}".format(f))
         implicit_backend = f.current_backend_str()
         return f
-    if verbosity.level > 0:
-        verbosity.cprint("Using backend from type: {}".format(f))
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
