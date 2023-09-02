@@ -1,14 +1,25 @@
 from collections import namedtuple
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Any,
+    Literal,
+    Callable,
+)
 from numbers import Number
 
 
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_supported_device_and_dtypes
+from ...tensorflow.experimental.manipulation import _to_tf_padding
 
 # Code from cephes for i0
 
@@ -90,6 +101,89 @@ def moveaxis(
     if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
         return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
     return paddle.moveaxis(a, source, destination)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+    backend_version,
+)
+def pad(
+    input: paddle.Tensor,
+    pad_width: Union[Sequence[Sequence[int]], paddle.Tensor, int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "reflect",
+            "wrap",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[paddle.Tensor], int] = 1,
+    constant_values: Number = 0,
+    end_values: Number = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+) -> paddle.Tensor:
+    constant_values = (
+        float(constant_values)
+        if not isinstance(constant_values, float)
+        else constant_values
+    )
+    pad_width = _to_paddle_padding(pad_width, input.ndim)
+    mode = "replicate" if mode == "edge" else "circular" if mode == "wrap" else mode
+    data_format = "NCL" if input.ndim == 1 else "NCHW" if input.ndim == 2 else "NCDHW"
+    return (
+        paddle.nn.functional.pad(
+            input.unsqueeze(0).unsqueeze(0),
+            pad_width,
+            mode=mode,
+            value=constant_values,
+            data_format=data_format,
+        )
+        .squeeze(0)
+        .squeeze(0)
+    )
+
+
+pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_paddle_pad(
+    mode, reflect_type, args[1], args[0].shape, constant_values, 3
+)
+
+
+def _check_paddle_pad(
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            (
+                (
+                    mode == "reflect"
+                    and reflect_type == "even"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or mode in ["edge", "wrap"]
+            )
+            and len(input_shape) <= ndim_limit
+        )
+    )
+
+
+def _to_paddle_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [pad_width] * (2 * ndim)
+    else:
+        if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
+            pad_width = pad_width * ndim
+        pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
+    return pad_width
 
 
 @with_unsupported_device_and_dtypes(
