@@ -45,9 +45,33 @@ def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> T
     return tf.nn.relu(x)
 
 
-def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def sigmoid(x: Union[Tensor, float], /, *, out: Optional[Tensor] = None) -> Tensor:
+    """
+    Apply the sigmoid function element-wise.
+
+    Parameters
+    ----------
+    x : Union[Tensor, float]
+        Input array or scalar.
+    out : Optional[Tensor], default=None
+        Optional output array for storing the result. It must have a shape that the
+        input broadcast to.
+
+    Returns
+    -------
+    Tensor
+        An array containing the sigmoid activation of each element in ``x``.
+        Sigmoid activation of x is defined as 1/(1+exp(-x)).
+
+    Examples
+    --------
+    >>> x = ivy.array([-1.0, 1.0, 2.0], backend='tensorflow')
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([0.2689414 , 0.7310586 , 0.88079703], backend='tensorflow')
+    """
     if not ivy.is_array(x):
-        x = float(x)
+        x = tf.constant(float(x))
     return tf.nn.sigmoid(x)
 
 
