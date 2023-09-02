@@ -1015,9 +1015,9 @@ def rfftn(
 def sliding_window(
     input: torch.Tensor,
     kernel_size: Union[int, Tuple[int, int]],
+    stride: Union[int, Tuple[int, int]] = 1,
     dilation: Union[int, Tuple[int, int]] = 1,
     padding: Union[str, int, Tuple[int, int]] = 0,
-    stride: Union[int, Tuple[int, int]] = 1,
     /,
     *,
     data_format: str = "NHWC",
@@ -1050,11 +1050,11 @@ def sliding_window(
         else:
             padding = 0
     else:
-        padding = (padding) * 2 if isinstance(padding, int) else padding
+        padding = (padding,) * 2 if isinstance(padding, int) else padding
 
-    kernel_size = (kernel_size) * 2 if isinstance(kernel_size, int) else kernel_size
-    dilation = (dilation) * 2 if isinstance(dilation, int) else dilation
-    stride = (stride) * 2 if isinstance(padding, int) else stride
+    kernel_size = (kernel_size,) * 2 if isinstance(kernel_size, int) else kernel_size
+    dilation = (dilation,) * 2 if isinstance(dilation, int) else dilation
+    stride = (stride,) * 2 if isinstance(stride, int) else stride
 
     res = torch.nn.functional.unfold(input, kernel_size, dilation, padding, stride)
 

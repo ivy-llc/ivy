@@ -1399,12 +1399,12 @@ def rfftn(
 def sliding_window(
     input: Union[tf.Tensor, tf.Variable],
     kernel_size: Union[int, Tuple[int, int]],
+    stride: Union[int, Tuple[int, int]],
     dilation: Union[int, Tuple[int, int]],
     padding: Union[str, int, Tuple[int, int]],
-    stride: Union[int, Tuple[int, int]],
     /,
     *,
-    data_format="NHWC",
+    data_format="NCHW",
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         # transpose input to "NHWC" acceptable to tensorflow

@@ -1056,14 +1056,15 @@ def rfftn(
 
 def sliding_window(
     input: np.ndarray,
-    kernel_size: Union[int, Tuple[int, int]],
-    dilation: Union[int, Tuple[int, int]] = 1,
-    padding: Union[str, int, Tuple[int, int]] = 0,
+    kernel_size: Union[int, Sequence[int]],
     stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
     /,
     *,
     init_value: Union[int, float] = None,
     computation: Callable = None,
+    data_format: str = None,
 ) -> np.ndarray:
     k_size, stride, padding, dilation = map(
         lambda x: tuple([x] * len(input.shape)) if isinstance(x, int) else x,

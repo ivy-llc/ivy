@@ -880,9 +880,9 @@ def rfftn(
 def sliding_window(
     input: JaxArray,
     kernel_size: Union[int, Tuple[int, int]],
+    stride: Union[int, Tuple[int, int]] = 1,
     dilation: Union[int, Tuple[int, int]] = 1,
     padding: Union[str, int, Tuple[int, int]] = 0,
-    stride: Union[int, Tuple[int, int]] = 1,
     /,
     *,
     init_value: Union[int, float] = None,
