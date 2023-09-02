@@ -1,7 +1,7 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 import pytest
 import numpy as np
 
@@ -194,10 +194,13 @@ def test_adam_update(
 def test_execute_with_gradients(
     *, dtype_and_xs, retain_grads, test_flags, backend_fw, fn_name, on_device
 ):
-    assume(not backend_fw == "numpy")
+    if backend_fw == "numpy":
+        return
 
     def func(xs):
-        with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        with BackendHandler.update_backend(
+            ivy.current_backend(xs.to_native()).backend
+        ) as ivy_backend:
             if isinstance(xs, ivy_backend.Container):
                 array_idxs = ivy_backend.nested_argwhere(xs, ivy_backend.is_array)
                 array_vals = ivy_backend.multi_index_nest(xs, array_idxs)
