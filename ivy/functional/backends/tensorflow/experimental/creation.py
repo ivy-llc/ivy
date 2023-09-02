@@ -1,13 +1,12 @@
 # global
 
 from typing import Union, Optional, Tuple
-
 import tensorflow as tf
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .. import backend_version
+
 
 # Array API Standard #
 # -------------------#
@@ -88,10 +87,6 @@ def tril_indices(
             ret[0].append(i)
             ret[1].append(j)
 
-    if device is not None:
-        with tf.device(ivy.as_native_dev(device)):
-            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
-
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
@@ -112,14 +107,14 @@ def blackman_window(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if size < 2:
-        return tnp.ones([size], dtype=tnp.result_type(size, 0.0))
+        return tf.ones([size], dtype=tf.result_type(size, 0.0))
     if periodic:
-        count = tnp.arange(size) / size
+        count = tf.arange(size) / size
     else:
-        count = tnp.linspace(start=0, stop=size, num=size)
+        count = tf.linspace(start=0, stop=size, num=size)
 
-    return (0.42 - 0.5 * tnp.cos(2 * tnp.pi * count)) + (
-        0.08 * tnp.cos(2 * tnp.pi * 2 * count)
+    return (0.42 - 0.5 * tf.cos(2 * tf.pi * count)) + (
+        0.08 * tf.cos(2 * tf.pi * 2 * count)
     )
 
 
