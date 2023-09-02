@@ -12,6 +12,15 @@ def fft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
+def fft2(a, s=None, axes=(-2, -1), norm=None):
+    if norm is None:
+        norm = "backward"
+    if ivy.dtype(a) == "complex128":
+        return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex128")
+    return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex64")
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 def fftshift(x, axes=None, name=None):
     shape = x.shape
@@ -27,13 +36,3 @@ def fftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
-
-
-@to_ivy_arrays_and_back
-def fft2(a, s=None, axes=(-2, -1), norm=None):
-    if norm is None:
-        norm = "backward"
-    if ivy.dtype(a) == "complex128":
-        return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex128")
-    return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex64")
-
