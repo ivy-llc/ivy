@@ -128,7 +128,7 @@ class FunctionTestFlags(TestFlags):
 
 
 @st.composite
-def function_flags(
+def build_backend_function_flags(
     draw,
     *,
     ground_truth_backend,
@@ -209,7 +209,7 @@ class FrontendFunctionTestFlags(TestFlags):
 
 
 @st.composite
-def frontend_function_flags(
+def build_frontend_function_flags(
     draw,
     *,
     num_positional_args,
@@ -274,7 +274,7 @@ class InitMethodTestFlags(TestFlags):
 
 
 @st.composite
-def init_method_flags(
+def build_init_method_backend_flags(
     draw,
     *,
     num_positional_args,
@@ -336,7 +336,7 @@ class MethodTestFlags(TestFlags):
 
 
 @st.composite
-def method_flags(
+def build_backend_method_flags(
     draw,
     *,
     num_positional_args,

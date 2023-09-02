@@ -24,7 +24,7 @@ import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 import ivy_tests.test_ivy.helpers.globals as t_globals
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
-from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+from ivy_tests.test_ivy.helpers.structs import MethodData
 from .assertions import (
     value_test,
     check_unsupported_dtype,
@@ -612,7 +612,7 @@ def test_function(
 def test_frontend_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    test_flags: pf.frontend_function_flags,
+    test_flags: pf.build_frontend_function_flags,
     backend_to_test: str,
     on_device="cpu",
     frontend: str,
@@ -1840,7 +1840,7 @@ def test_frontend_method(
     init_all_as_kwargs_np: dict = None,
     method_all_as_kwargs_np: dict,
     frontend: str,
-    frontend_method_data: FrontendMethodData,
+    frontend_method_data: MethodData,
     backend_to_test: str,
     on_device,
     rtol_: float = None,
@@ -2032,8 +2032,9 @@ def test_frontend_method(
             shallow=False,
         )
 
+        # TODO prefix concatenation should be encapulsated in the method data
         frontend_fw_module = ivy_backend.utils.dynamic_import.import_module(
-            frontend_method_data.ivy_init_module
+            frontend_method_data.prefix_to_tree + frontend_method_data.init_module_tree
         )
         ivy_frontend_creation_fn = getattr(
             frontend_fw_module, frontend_method_data.init_name
@@ -2104,7 +2105,7 @@ def test_frontend_method(
             kwargs_method_frontend["device"]
         )
     frontend_creation_fn = getattr(
-        importlib.import_module(frontend_method_data.framework_init_module),
+        importlib.import_module(frontend_method_data.init_module_tree),
         frontend_method_data.init_name,
     )
     ins_gt = frontend_creation_fn(
