@@ -40,18 +40,18 @@ class BackendTestCaseRunner(TestCaseRunner):
             f"do not match\n {target_elements}!={ground_truth_elements} \n\n"
         )
 
-    def _call_target(self, test_arguments, test_flags):
+    def _call_target(self, input_dtypes, test_arguments, test_flags):
         pass
 
-    def _call_ground_truth(self, test_arguments, test_flags):
+    def _call_ground_truth(self, input_dtypes, test_arguments, test_flags):
         pass
 
-    def run(self, test_arguments, test_flags):
+    def run(self, input_dtypes, test_arguments, test_flags):
         target_results: TestCaseSubRunnerResult = self._call_target(
-            test_arguments, test_flags
+            input_dtypes, test_arguments, test_flags
         )
         ground_truth_results: TestCaseSubRunnerResult = self._call_ground_truth(
-            test_arguments, test_flags
+            input_dtypes, test_arguments, test_flags
         )
 
         self._assert_dtype(target_results.dtype, ground_truth_results.dtype)
