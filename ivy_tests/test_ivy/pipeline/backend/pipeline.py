@@ -1,6 +1,7 @@
 from ivy_tests.test_ivy.pipeline.base.pipeline import Pipeline
 from ivy_tests.test_ivy.pipeline.c_backend_handler import WithBackendHandler
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
+from ivy_tests.test_ivy.pipeline.backend.runners import BackendTestCaseRunner
 
 
 class BackendPipeline(Pipeline):
@@ -12,7 +13,7 @@ class BackendPipeline(Pipeline):
         return self.backend_handler
 
     def test_function(
-        *,
+        self,
         fn_name: str,
         on_device: str,
         backend_to_test: str,
@@ -26,7 +27,15 @@ class BackendPipeline(Pipeline):
         test_values: bool = True,
         **all_as_kwargs_np,
     ):
-        pass
+        runner = BackendTestCaseRunner(
+            backend_handler=self._backend_handler,
+            backend_to_test=backend_to_test,
+            ground_truth_backend=test_flags.ground_truth_backend,
+            rtol=rtol_,
+            atol=atol_,
+        )
+
+        runner.run(all_as_kwargs_np, test_flags)
 
     def test_method():
         pass
