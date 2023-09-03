@@ -883,7 +883,7 @@ class Tensor:
     def inverse(self):
         return torch_frontend.inverse(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool", "bfloat16")}, "torch")
     def neg(self):
         return torch_frontend.negative(self)
 
@@ -893,6 +893,10 @@ class Tensor:
         return self
 
     __neg__ = neg
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool", "bfloat16")}, "torch")
+    def negative(self):
+        return torch_frontend.negative(self)
 
     def int(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int32, copy=False)
@@ -1892,6 +1896,26 @@ class Tensor:
 
     def ne(self, other):
         return self.not_equal(other)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "float16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def unique(self, sorted=True, return_inverse=False, return_counts=False, dim=None):
+        return torch_frontend.unique(self, sorted, return_inverse, return_counts, dim)
 
 
 class Size(tuple):

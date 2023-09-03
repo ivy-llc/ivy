@@ -120,6 +120,12 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def ceil_(x, name=None):
+    return ivy.ceil(x, out=x)
+
+
 @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
 @to_ivy_arrays_and_back
 def conj(x, name=None):
@@ -368,6 +374,14 @@ def multiply(x, y, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def nansum(x, axis=None, dtype=None, name=None):
+    return ivy.nansum(x, axis=axis, dtype=dtype)
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int8", "int16", "int32", "int64")},
     "paddle",
 )
@@ -406,6 +420,12 @@ def rad2deg(x, name=None):
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def reciprocal_(x, name=None):
+    return ivy.inplace_update(x, reciprocal(x))
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
