@@ -56,3 +56,23 @@ def soft_margin_loss(
         return jnp.sum(loss)
     else:
         return loss
+
+
+def margin_ranking_loss(
+    input1: JaxArray,
+    input2: JaxArray,
+    target: JaxArray,
+    /,
+    *,
+    margin: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean"
+) -> JaxArray:
+    pairwise_margin = margin - target * (input1 - input2)
+    loss = jnp.where(pairwise_margin > 0, pairwise_margin, 0)
+
+    if reduction == "mean":
+        return jnp.mean(loss)
+    elif reduction == "sum":
+        return jnp.sum(loss)
+    else:
+        return loss

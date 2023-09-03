@@ -187,3 +187,57 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array([0.35667497, 0.22314353, 1.60943791])
         """
         return ivy.soft_margin_loss(self._data, target, reduction=reduction, out=out)
+
+    def margin_ranking_loss(
+        self: ivy.Array,
+        pred: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        margin: Optional[float] = 0.0,
+        reduction: Optional[str] = "mean",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.margin_ranking_loss. This method simply
+        wraps the function, and so the docstring for ivy.margin_ranking_loss also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        true
+            input array or container containing predictions for the first input.
+        pred
+            input array or container containing predictions for the second input.
+        target
+            input array or container containing the binary labels (1 or -1).
+        margin
+            a float margin for loss. Default: ``0.0``.
+        reduction
+            the reduction type to apply to the loss. Default: ``'mean'``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The margin ranking loss.
+
+        Examples
+        --------
+        >>> true = ivy.array([0.5, 0.8, 0.6])
+        >>> pred = ivy.array([0.3, 0.4, 0.2])
+        >>> target = ivy.array([1.0, -1.0, -1.0])
+        >>> loss = true.margin_ranking_loss(pred, target, margin=0.1)
+        >>> print(loss)
+        ivy.array(0.33)
+        """
+        return ivy.margin_ranking_loss(
+            self._data,
+            pred,
+            target,
+            margin=margin,
+            reduction=reduction,
+            out=out,
+        )

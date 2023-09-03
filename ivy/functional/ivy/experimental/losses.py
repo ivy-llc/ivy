@@ -409,3 +409,73 @@ def soft_margin_loss(
         return ivy.mean(loss, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
+    
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def margin_ranking_loss(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    margin: Optional[float] = 0.0,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the margin ranking loss between two input tensors.
+
+    Parameters
+    ----------
+    true : array_like
+        First input tensor.
+    pred : array_like
+        Second input tensor.
+    target : array_like
+        Tensor of the same shape as true and pred,
+        representing the target binary labels (1 for positive pairs,
+          -1 for negative pairs).
+    margin : float, optional
+        Margin value. Default is 0.0.
+    reduction : {'mean', 'sum'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The margin ranking loss between the two input tensors.
+
+    Examples
+    --------
+    >>> true = ivy.array([1.0, 2.0, 3.0])
+    >>> pred = ivy.array([4.0, 5.0, 6.0])
+    >>> target = ivy.array([1.0, -1.0, 1.0])
+    >>> ivy.margin_ranking_loss(true, pred, target)
+    ivy.array(2.)
+    >>> true = ivy.array([1.0, 2.0, 3.0])
+    >>> pred = ivy.array([4.0, 5.0, 6.0])
+    >>> target = ivy.array([1.0, -1.0, -1.0])
+    >>> ivy.margin_ranking_loss(true, pred, target, margin=1.0)
+    ivy.array(1.33)
+    >>> true = ivy.array([1.0, 2.0, 3.0])
+    >>> pred = ivy.array([4.0, 5.0, 6.0])
+    >>> target = ivy.array([1.0, 1.0, 1.0])
+    >>> ivy.margin_ranking_loss(true, pred, target, reduction='sum')
+    ivy.array(9.)
+    """
+    pairwise_margin = margin - target * (true - pred)
+    loss = ivy.where(pairwise_margin > 0, pairwise_margin, 0)
+
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss

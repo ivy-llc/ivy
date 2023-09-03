@@ -70,3 +70,26 @@ def soft_margin_loss(
         return np.sum(loss)
     else:
         return loss
+
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
+@_scalar_output_to_0d_array
+def margin_ranking_loss(
+    input1: np.ndarray,
+    input2: np.ndarray,
+    target: np.ndarray,
+    /,
+    *,
+    margin: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
+) -> np.ndarray:
+    pairwise_margin = margin - target * (input1 - input2)
+    loss = np.where(pairwise_margin > 0, pairwise_margin, 0)
+
+    if reduction == "mean":
+        return np.mean(loss)
+    elif reduction == "sum":
+        return np.sum(loss)
+    else:
+        return loss

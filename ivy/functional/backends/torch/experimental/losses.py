@@ -97,3 +97,22 @@ def soft_margin_loss(
         target,
         reduction=reduction,
     )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bool")}, backend_version)
+def margin_ranking_loss(
+    input1: torch.Tensor,
+    input2: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    margin: Optional[float] = 0.0,
+    reduction: Optional[str] = "mean",
+) -> torch.Tensor:
+    return torch.nn.functional.margin_ranking_loss(
+        input1,
+        input2,
+        target,
+        margin=margin,
+        reduction=reduction,
+    )

@@ -62,3 +62,24 @@ def soft_margin_loss(
         return tf.reduce_mean(loss)
     else:
         return loss
+
+
+@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+def margin_ranking_loss(
+    input1: tf.Tensor,
+    input2: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    margin: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean"
+) -> tf.Tensor:
+    pairwise_margin = margin - target * (input1 - input2)
+    loss = tf.where(pairwise_margin > 0, pairwise_margin, 0.0)
+
+    if reduction == "sum":
+        return tf.reduce_sum(loss)
+    elif reduction == "mean":
+        return tf.reduce_mean(loss)
+    else:
+        return loss

@@ -120,3 +120,35 @@ def soft_margin_loss(
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
     return paddle.nn.functional.soft_margin_loss(input, label, reduction=reduction)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def margin_ranking_loss(
+    input1: paddle.Tensor,
+    input2: paddle.Tensor,
+    target: paddle.Tensor,
+    /,
+    *,
+    margin: Optional[float] = 0.0,
+    reduction: Optional[str] = "mean",
+) -> paddle.Tensor:
+    return paddle.nn.functional.margin_ranking_loss(
+        input1, input2, target, margin=margin, reduction=reduction
+    )
