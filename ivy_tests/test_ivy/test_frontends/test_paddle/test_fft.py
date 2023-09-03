@@ -47,6 +47,36 @@ def test_paddle_fft(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.fft.fftfreq",
+    n=st.integers(min_value=2, max_value=100),
+    sample_space=st.integers(min_value=1, max_value=10),
+    dtypes=helpers.get_dtypes("integer"),
+)
+def test_paddle_fftfreq(
+    n,
+    sample_space,
+    dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    d = 1 / sample_space
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        n=n,
+        d=d,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.fft.fftshift",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
