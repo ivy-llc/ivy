@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -353,6 +354,51 @@ def test_numpy_gumbel(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.laplace",
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    loc=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    scale=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_laplace(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+    loc,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        loc=loc,
+        scale=scale,
+        size=size,
+    )
+
+
 # logistic
 @handle_frontend_test(
     fn_tree="numpy.random.logistic",
@@ -435,6 +481,42 @@ def test_numpy_lognormal(
         test_values=False,
         mean=mean,
         sigma=sigma,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.logseries",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    p=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        min_value=0,
+        max_value=1,
+        exclude_max=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_logseries(
+    input_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+    p,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        p=p,
         size=size,
     )
 
@@ -842,6 +924,41 @@ def test_numpy_standard_normal(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        size=size,
+    )
+
+
+# standard_t
+@handle_frontend_test(
+    fn_tree="numpy.random.standard_t",
+    df=st.floats(min_value=1, max_value=20),
+    df_dtypes=helpers.get_dtypes("integer", full=False),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    size_dtypes=helpers.get_dtypes("integer", full=False),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_t(
+    df,
+    df_dtypes,
+    size,
+    size_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=df_dtypes + size_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        df=df,
         size=size,
     )
 

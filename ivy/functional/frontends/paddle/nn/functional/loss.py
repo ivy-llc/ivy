@@ -252,15 +252,12 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     return out
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @inputs_to_ivy_arrays
 def mse_loss(input, label, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
     ret = ivy.square(input - label)
     ret = reduction(ret)
-
-    if ret.shape == ():
-        ret = ret.expand_dims()
 
     return paddle.to_tensor(ret)
 
@@ -300,6 +297,52 @@ def nll_loss(
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def sigmoid_focal_loss(
+    logit,
+    label,
+    normalizer=None,
+    alpha=0.25,
+    gamma=2.0,
+    reduction="sum",
+    name=None,
+):
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError(
+            "The value of 'reduction' in sigmoid_focal_loss should be 'sum', 'mean' or"
+            f" 'none', but received {reduction}, which is not allowed."
+        )
+
+    if normalizer is not None and normalizer.ndim > 1:
+        raise ValueError(
+            "Expected zero or one dimension of normalizer in sigmoid_focal_loss but"
+            f" got {normalizer.ndim}."
+        )
+
+    if not isinstance(logit, ivy.Array):
+        logit = ivy.array(logit)
+
+    if not isinstance(label, ivy.Array):
+        label = ivy.array(label)
+
+    pred = ivy.sigmoid(logit)
+    loss = -(
+        label * alpha * ivy.pow((1 - pred), gamma) * ivy.log(pred)
+        + (1 - label) * (1 - alpha) * ivy.pow(pred, gamma) * ivy.log(1 - pred)
+    )
+
+    if normalizer is not None:
+        loss /= normalizer
+
+    if reduction == "sum":
+        return ivy.sum(loss)
+    elif reduction == "mean":
+        return ivy.mean(loss)
+
+    return loss
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def smooth_l1_loss(
     input,
     label,
@@ -322,6 +365,12 @@ def smooth_l1_loss(
     elif reduction == "sum":
         out = ivy.sum(out)
     return out.astype(label.dtype)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32",)}, "paddle")
+@to_ivy_arrays_and_back
+def square_error_cost(input, label):
+    return ivy.square(ivy.subtract(input, label))
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
