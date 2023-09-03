@@ -40,7 +40,9 @@ def max(
         const = tf.constant(1j, dtype=x.dtype)
         real_max = tf.reduce_max(real, axis=axis, keepdims=keepdims)
         imag = tf.where(
-            real == real_max, img, tf.experimental.numpy.finfo(img.dtype).min,
+            real == real_max,
+            img,
+            tf.experimental.numpy.finfo(img.dtype).min,
         )
         # we consider the number with the biggest real and imag part
         img_max = tf.reduce_max(imag, axis=axis, keepdims=keepdims)
