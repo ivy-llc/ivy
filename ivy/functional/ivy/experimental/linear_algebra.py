@@ -1718,8 +1718,7 @@ def higher_order_moment(
     moment = ivy.copy_array(x)
     for _ in range(order - 1):
         moment = ivy.batched_outer([moment, x])
-
-    return ivy.mean(moment, axis=0)
+    return ivy.mean(moment, axis=0, out=out)
 
 
 @handle_nestable
@@ -1797,5 +1796,8 @@ def batched_outer(
 
         result_shape = ivy.shape(result)
         result_size = len(result_shape) - 1
+
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
 
     return result

@@ -1632,7 +1632,6 @@ def _higher_order_moment_data(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.higher_order_moment",
     data=_higher_order_moment_data(),
-    test_with_out=st.just(False),
 )
 def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, x, order = data
@@ -1644,7 +1643,6 @@ def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device
         input_dtypes=input_dtypes,
         x=x,
         order=order,
-        test_values=False,
     )
 
 
@@ -1668,7 +1666,6 @@ def _batched_outer_data(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.batched_outer",
     data=_batched_outer_data(),
-    test_with_out=st.just(False),
 )
 def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, x, tensors_num = data
@@ -1679,7 +1676,6 @@ def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         input_dtypes=input_dtypes,
         tensors=[x] * tensors_num,
-        test_values=False,
     )
 
 

@@ -715,7 +715,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             [26, 36]
         ]])
         """
-        return ivy.higher_order_moment(self._data, order)
+        return ivy.higher_order_moment(self._data, order, out=out)
 
     def batched_outer(
         self: Sequence[Union[ivy.Array, ivy.NativeArray]],
