@@ -1,4 +1,4 @@
-
+import ivy
 
 
 
@@ -481,23 +481,23 @@ class Tree:
             return self._apply_dense(X)
         
     def _apply_dense(self, X):
-        if not isinstance(X, torch.Tensor):
-            raise ValueError("X should be a torch.Tensor, got %s" % type(X))
+        if not isinstance(X, ivy.data_classes.array.array.Array):
+            raise ValueError("X should be a ivy.data_classes.array.array.Array, got %s" % type(X))
 
-        if X.dtype != torch.float32:
-            raise ValueError("X.dtype should be torch.float32, got %s" % X.dtype)
+        if X.dtype != "float32":
+            raise ValueError("X.dtype should be float32, got %s" % X.dtype)
 
         X_tensor = X
         n_samples = X.shape[0]
-        out = torch.zeros(n_samples, dtype=torch.int64)
+        out = ivy.zeros(n_samples, dtype="float32")
 
         for i in range(n_samples):
-            node = self.nodes
+            node = self.nodes[0]  # Start at the root node
 
             while node.left_child != _TREE_LEAF:
                 X_i_node_feature = X_tensor[i, node.feature]
 
-                if torch.isnan(X_i_node_feature):
+                if ivy.isnan(X_i_node_feature):
                     if node.missing_go_to_left:
                         node = self.nodes[node.left_child]
                     else:
@@ -507,7 +507,7 @@ class Tree:
                 else:
                     node = self.nodes[node.right_child]
 
-            out[i] = node - self.nodes
+            out[i] = self.nodes.index(node)  # Get the index of the terminal node
 
         return out
     

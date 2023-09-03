@@ -26,6 +26,8 @@ from libcpp cimport bool
 
 import struct
 
+import ivy
+
 import numpy as np
 cimport numpy as cnp
 cnp.import_array()
