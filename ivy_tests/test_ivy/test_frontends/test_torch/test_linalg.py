@@ -23,6 +23,17 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_ran
 
 
 @st.composite
+def _dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset
+
+
+@st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
     input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))]
     matrices_dims = draw(
@@ -394,27 +405,44 @@ def test_torch_det(
 # diagonal
 @handle_frontend_test(
     fn_tree="torch.linalg.diagonal",
-    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    dims_and_offset=_dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
 )
 def test_torch_diagonal(
     *,
-    dtype_and_x,
+    dtype_and_values,
+    dims_and_offset,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, value = dtype_and_values
+    dim1, dim2, offset = dims_and_offset
+    input = value[0]
+    num_dims = len(np.shape(input))
+    assume(dim1 != dim2)
+    if dim1 < 0:
+        assume(dim1 + num_dims != dim2)
+    if dim2 < 0:
+        assume(dim1 != dim2 + num_dims)
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        test_flags=test_flags,
-        on_device=on_device,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
-        test_values=True,
-        A=x,
+        on_device=on_device,
+        A=input,
+        offset=offset,
+        dim1=dim1,
+        dim2=dim2,
     )
 
 
