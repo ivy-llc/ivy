@@ -147,8 +147,7 @@ class Dropout(Module):
         """
         self._prob = prob
         self._scale = scale
-        self.training = training
-        Module.__init__(self, device=None, v=None, dtype=dtype)
+        Module.__init__(self, device=None, v=None, dtype=dtype, training=training)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -210,6 +209,7 @@ class MultiHeadAttention(Module):
         v=None,
         build_mode="on_init",
         dtype=None,
+        training=True,
     ):
         """
         Multi Head Attention layer.
@@ -258,6 +258,8 @@ class MultiHeadAttention(Module):
         dtype
             the desired data type of the internal variables to be created if not provided.
             Default is ``None``.
+        training
+            If True, dropout is used, otherwise dropout is not activated.
         """
         # proj
 
@@ -285,6 +287,7 @@ class MultiHeadAttention(Module):
             build_mode=build_mode,
             with_partial_v=True,
             dtype=dtype,
+            training=training,
         )
 
     def _create_variables(self, device, dtype=None):
@@ -371,7 +374,6 @@ class MultiHeadAttention(Module):
         is_causal=False,
         return_attention_weights=False,
         average_attention_weights=True,
-        training=False,
     ):
         """
         Perform forward pass of the MultiHeadAttention layer.
@@ -396,8 +398,6 @@ class MultiHeadAttention(Module):
             If true, indicates that the returned ``attention_weights`` should be averaged across
             heads. Otherwise, ``attention_weights`` are provided separately per head. Note that this flag only has an
             effect when ``return_attention_weights=True``. Default: ``True`` (i.e. average weights across heads)
-        training
-            If True, dropout is used, otherwise dropout is not activated.
 
         Returns
         -------
@@ -432,7 +432,7 @@ class MultiHeadAttention(Module):
             return_attention_weights=return_attention_weights,
             average_attention_weights=average_attention_weights,
             dropout=self._dropout_rate,
-            training=training,
+            training=self.training,
         )
 
 

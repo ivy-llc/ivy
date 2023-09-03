@@ -85,6 +85,11 @@ def bmm(input, mat2, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def chain_matmul(*matrices, out=None):
+    return ivy.multi_dot(matrices, out=out)
+
+
+@to_ivy_arrays_and_back
 def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 

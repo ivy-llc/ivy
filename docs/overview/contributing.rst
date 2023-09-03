@@ -35,6 +35,9 @@ The contributor guide is split into the sections below, it's best to go from sta
 | 
 | (g) :ref:`Helpful Resources`
 | Resources you would find useful when learning Ivy 📖
+| 
+| (g) :ref:`Error Handling`
+| Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
    :hidden:
@@ -48,6 +51,7 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/open_tasks.rst
    contributing/applied_libraries.rst
    contributing/helpful_resources.rst
+   contributing/error_handling.rst
 
 **Video**
 

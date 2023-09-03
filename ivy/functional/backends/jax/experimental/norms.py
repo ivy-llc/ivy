@@ -11,7 +11,7 @@ def l1_normalize(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
-        norm = jnp.sum(jnp.abs(x.flatten()))
+        norm = jnp.sum(jnp.abs(jnp.ravel(x)))
         denorm = norm * jnp.ones_like(x)
     else:
         norm = jnp.sum(jnp.abs(x), axis=axis, keepdims=True)
