@@ -53,6 +53,7 @@ def det(A, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("uint16", "uint32", "uint64")}, "torch")
 def diagonal(A, *, offset=0, dim1=-2, dim2=-1):
     return torch_frontend.diagonal(A, offset=offset, dim1=dim1, dim2=dim2)
 
