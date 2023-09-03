@@ -612,7 +612,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def _static_margin_ranking_loss(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],

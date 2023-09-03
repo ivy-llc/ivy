@@ -409,7 +409,7 @@ def soft_margin_loss(
         return ivy.mean(loss, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
-    
+
 
 @handle_exceptions
 @handle_nestable

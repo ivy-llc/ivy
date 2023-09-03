@@ -150,6 +150,67 @@ def test_log_poisson_loss(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.margin_ranking_loss",
+    dtype_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    margin=helpers.floats(min_value=0.0, max_value=10.0),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+)
+def test_margin_ranking_loss(
+    dtype_true,
+    dtype_pred,
+    dtype_target,
+    margin,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    true_dtype, true = dtype_true
+    pred_dtype, pred = dtype_pred
+    target_dtype, target = dtype_target
+
+    helpers.test_function(
+        input_dtypes=true_dtype + pred_dtype + target_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        true=true[0],
+        pred=pred[0],
+        target=target[0],
+        margin=margin,
+        reduction=reduction,
+    )
+
+
 # smooth_l1_loss
 # all loss functions failing for paddle backend due to
 # "There is no grad op for inputs:[0] or it's stop_gradient=True."
@@ -247,66 +308,5 @@ def test_soft_margin_loss(
         atol_=1e-02,
         pred=input[0],
         target=target[0],
-        reduction=reduction,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.margin_ranking_loss",
-    dtype_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1,
-        max_value=1,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=3,
-    ),
-    dtype_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1,
-        max_value=1,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=3,
-    ),
-    dtype_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1,
-        max_value=1,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=3,
-    ),
-    margin=helpers.floats(min_value=0.0, max_value=10.0),
-    reduction=st.sampled_from(["none", "sum", "mean"]),
-)
-def test_margin_ranking_loss(
-    dtype_true,
-    dtype_pred,
-    dtype_target,
-    margin,
-    reduction,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    true_dtype, true = dtype_true
-    pred_dtype, pred = dtype_pred
-    target_dtype, target = dtype_target
-
-    helpers.test_function(
-        input_dtypes=true_dtype + pred_dtype + target_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        true=true[0],
-        pred=pred[0],
-        target=target[0],
-        margin=margin,
         reduction=reduction,
     )

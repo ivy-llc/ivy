@@ -65,7 +65,7 @@ def margin_ranking_loss(
     /,
     *,
     margin: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean"
+    reduction: Optional[str] = "mean",
 ) -> JaxArray:
     pairwise_margin = margin - target * (input1 - input2)
     loss = jnp.where(pairwise_margin > 0, pairwise_margin, 0)
