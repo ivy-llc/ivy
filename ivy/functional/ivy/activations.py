@@ -22,16 +22,13 @@ def _gelu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    fn_original=None,
+    fn_original: Optional[Callable] = None,
     approximate: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     # We don't have the exact implementation
     # cuz the erf function doesn't work on complex numbers
-    sqrt_2_over_pi = ivy.sqrt(2 / ivy.pi).astype(x.dtype)
-    x_pw = ivy.pow(x, 3)
-    cdf = 0.5 * (1.0 + ivy.tanh(sqrt_2_over_pi * (x + 0.044715 * x_pw)))
-    return x * cdf
+    return fn_original(x, approximate=True, out=out)
 
 
 @handle_exceptions
@@ -48,8 +45,8 @@ def gelu(
     /,
     *,
     approximate: bool = False,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the Gaussian error linear unit (GELU) activation function.
@@ -59,13 +56,14 @@ def gelu(
     x
         Input array.
     approximate
-        Whether to approximate, default is ``True``.
+        Whether to approximate, default is ``True``. An approximation is always used if
+        the input array is complex.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -137,8 +135,8 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the leaky rectified linear unit function element-wise.
@@ -154,12 +152,12 @@ def leaky_relu(
         Input array.
     alpha
         Negative slope for ReLU.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -309,27 +307,27 @@ def relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the rectified linear unit function element-wise.
 
     If the input is complex, then by default each element is set to zero  if
     either its real part is strictly negative or if its real part is zero and its
-    imaginary part is negative.
-    This behaviour can be changed by specifying a different `complex_mode`.
+    imaginary part is negative. This behaviour can be changed by specifying a different
+    `complex_mode`.
 
     Parameters
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -553,8 +551,8 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the softplus function element-wise.
@@ -574,12 +572,12 @@ def softplus(
     threshold
         values above this revert to a linear function
         If the input is complex, only its real part is considered. Default: ``None``
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
     complex_mode
         optional specifier for how to handle complex data types. See
         ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -610,6 +608,47 @@ def softplus(
 
 
 softplus.jax_like = _softplus_jax_like
+
+
+# Softsign
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def softsign(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Apply the softsign function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with softsign applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.softsign(x)
+    >>> print(y)
+    ivy.array([0.5, 0.66666667, 0.75])
+    """
+    return current_backend(x).softsign(x, out=out)
 
 
 @handle_exceptions

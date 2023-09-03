@@ -30,7 +30,9 @@ unsupported_dtypes = [
 ]
 
 
-def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def relu(
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
             return paddle.complex(F.relu(x.real()), F.relu(x.imag()))
@@ -46,6 +48,7 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
+    complex_mode="jax",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
@@ -59,27 +62,26 @@ def leaky_relu(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex128", "complex64")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )
 def gelu(
     x: paddle.Tensor,
     /,
     *,
     approximate: bool = False,
+    complex_mode="jax",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        sqrt_2_over_pi = 0.7978845608
+        # the other magic number comes directly from the formula in
+        # https://doi.org/10.48550/arXiv.1606.08415
+        return (
+            0.5
+            * x
+            * (1 + paddle_backend.tanh(sqrt_2_over_pi * (x + 0.044715 * x * x * x)))
+        )
     if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            if approximate:
-                return (
-                    0.5
-                    * x
-                    * (
-                        1
-                        + paddle_backend.tanh(0.7978845608 * (x + 0.044715 * x * x * x))
-                    )
-                )
-            return 0.5 * x * (1 + paddle_backend.erf(x / paddle_backend.sqrt(2)))
         return F.gelu(x.cast("float32"), approximate=approximate).cast(x.dtype)
     return F.gelu(x, approximate=approximate)
 
@@ -120,8 +122,8 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[paddle.Tensor] = None,
     complex_mode="jax",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if beta is not None and beta != 1:
         x_beta = x * beta
@@ -140,6 +142,21 @@ def softplus(
     if threshold is not None:
         return ivy.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
+
+
+# Softsign
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+)
+def softsign(
+    x: paddle.Tensor,
+    /,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return F.softsign(x)
+
+
+softsign.support_native_out = True
 
 
 @with_unsupported_device_and_dtypes(
