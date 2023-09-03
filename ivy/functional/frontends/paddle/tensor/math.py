@@ -116,6 +116,12 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def ceil_(x, name=None):
+    return ivy.ceil(x, out=x)
+
+
 @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
 @to_ivy_arrays_and_back
 def conj(x, name=None):
@@ -406,6 +412,12 @@ def reciprocal(x, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def reciprocal_(x, name=None):
+    return ivy.inplace_update(x, reciprocal(x))
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def remainder(x, y, name=None):
     return ivy.remainder(x, y)
 
@@ -529,3 +541,10 @@ def tanh(x, name=None):
 @to_ivy_arrays_and_back
 def trunc(x, name=None):
     return ivy.trunc(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def nansum(x, axis=None, dtype=None, name=None):
+    return ivy.nansum(x, axis=axis, dtype=dtype)
+

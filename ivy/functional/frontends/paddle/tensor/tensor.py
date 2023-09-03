@@ -108,6 +108,11 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def ceil_(self):
+        self.ivy_array = self.ceil().ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
     def numel(self):
         return paddle_frontend.numel(self)
@@ -229,6 +234,26 @@ class Tensor:
             ret = ivy.clip(self._ivy_array, min, max)
         return paddle_frontend.Tensor(ret)
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def clip_(self, min=None, max=None, name=None):
+        ivy.utils.assertions.check_all_or_any_fn(
+            min,
+            max,
+            fn=ivy.exists,
+            type="any",
+            limit=[1, 2],
+            message="at most one of min or max can be None",
+        )
+        if min is None:
+            self._ivy_array = ivy.minimum(self._ivy_array, max)
+        elif max is None:
+            self._ivy_array = ivy.maximum(self._ivy_array, min)
+        else:
+            self._ivy_array = ivy.clip(self._ivy_array, min, max)
+        return self
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def tanh(self, name=None):
         return paddle_frontend.Tensor(ivy.tanh(self._ivy_array))
@@ -246,6 +271,13 @@ class Tensor:
     )
     def isinf(self, name=None):
         return paddle_frontend.Tensor(ivy.isinf(self._ivy_array))
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "uint16")}, "paddle")
+    def unsqueeze_(self, axis=None, name=None):
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.expand_dims(self._ivy_array, axis=axis)
+        ).ivy_array
+        return self
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def square(self, name=None):
