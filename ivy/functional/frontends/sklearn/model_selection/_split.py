@@ -58,6 +58,48 @@ class KFold(BaseCrossValidator):
         return self.n_splits
 
 
+class StratifiedKFold(KFold):
+    def __init__(
+        self,
+        n_splits=5,
+        *,
+        shuffle=False,
+        random_state=None,
+    ):
+        super().__init__(
+            n_splits=n_splits,
+            shuffle=shuffle,
+            random_state=random_state,
+        )
+
+    def _iter_test_indices(self, X=None, y=None, groups=None):
+        ivy.seed(self.random_state)
+        y = ivy.array(y)
+        shape = y.shape
+        if len(shape) == 2 or shape[1] == 1:
+            y = ivy.reshape(y, (-1,))
+        _, y_idx, y_inv, _ = ivy.unique_all(y, return_index=True, return_inverse=True)
+        class_perm = ivy.unique_inverse(y_idx)
+        y_encoded = class_perm[y_inv]
+
+        n_classes = len(y_idx)
+        y_order = ivy.sort(y_encoded)
+        allocation = ivy.asarray(
+            [ivy.bincount(y_order[i:: self.n_splits], minlength=n_classes) for i in range(self.n_splits)]
+        )
+        test_folds = ivy.empty(len(y), dtype="int64")
+        for k in range(n_classes):
+            folds_for_class = ivy.arange(self.n_splits).repeat(allocation[:, k])
+            if self.shuffle:
+                folds_for_class = ivy.shuffle(folds_for_class)
+            test_folds[y_encoded == k] = folds_for_class
+        for i in range(self.n_splits):
+            yield test_folds == i
+
+    def split(self, X, y, groups=None):
+        return super().split(X, y, groups)
+
+
 @to_ivy_arrays_and_back
 def train_test_split(
     *arrays,
