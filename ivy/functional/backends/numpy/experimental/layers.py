@@ -2,7 +2,7 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence
 
 # local
 import ivy
@@ -15,9 +15,6 @@ from ivy.functional.ivy.layers import (
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import (
     _padding_ceil_mode,
-    _cast_init,
-    _correct_ivy_callable,
-    _get_identity,
     _padtype_to_pads,
     _dilate,
     _conv_view,
@@ -1062,21 +1059,12 @@ def sliding_window(
     padding: Union[str, int, Tuple[int, int]] = "VALID",
     /,
     *,
-    init_value: Union[int, float] = None,
-    computation: Callable = None,
     data_format: str = None,
 ) -> np.ndarray:
     k_size, stride, padding, dilation = map(
         lambda x: tuple([x] * len(input.shape)) if isinstance(x, int) else x,
         [kernel_size, stride, padding, dilation],
     )
-
-    if init_value and computation:
-        init_value = _cast_init(init_value, input.dtype)
-        computation = _correct_ivy_callable(computation)
-        identity = _get_identity(computation, input.dtype, init_value)
-    else:
-        identity = ivy.array(0)
 
     if isinstance(padding, str):
         pads = _padtype_to_pads(input.shape, k_size, stride, padding)
@@ -1085,12 +1073,10 @@ def sliding_window(
 
     input = input.reshape((1, 1) + input.shape)
     if dilation:
+        identity = ivy.array(0)
         input = _dilate(input, dilation, identity)
 
     view = _conv_view(input, [1, 1] + list(k_size), stride, pads, identity)[0]
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(k_size)], -1))
-
-    if init_value and computation:
-        return view, init_value, computation
 
     return view

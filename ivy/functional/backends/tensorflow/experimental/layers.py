@@ -1404,19 +1404,23 @@ def sliding_window(
     padding: Union[str, int, Tuple[int, int]],
     /,
     *,
-    data_format="NCHW",
+    data_format: str = "NCHW",
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         # transpose input to "NHWC" acceptable to tensorflow
         input = tf.transpose(input, (0, 2, 3, 1))
 
     kernel_size = (
-        [1] + ([kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size) + [1]
+        [1]
+        + ([kernel_size] * 2 if isinstance(kernel_size, int) else list(kernel_size))
+        + [1]
     )
 
-    stride = [1] + ([stride] * 2 if isinstance(stride, int) else stride) + [1]
+    stride = [1] + ([stride] * 2 if isinstance(stride, int) else list(stride)) + [1]
 
-    dilation = [1] + ([dilation] * 2 if isinstance(dilation, int) else dilation) + [1]
+    dilation = (
+        [1] + ([dilation] * 2 if isinstance(dilation, int) else list(dilation)) + [1]
+    )
 
     padding = [padding] * 2 if isinstance(padding, int) else padding
 
