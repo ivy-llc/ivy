@@ -1919,6 +1919,28 @@ def test_tensorflow_stack(
     )
 
 
+# stop_gradient
+@handle_frontend_test(
+    fn_tree="tensorflow.stop_gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_tensorflow_stop_gradient(
+    *, dtype_and_x, test_flags, backend_fw, fn_tree, frontend, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 # strided_slice
 @handle_frontend_test(
     fn_tree="tensorflow.strided_slice",

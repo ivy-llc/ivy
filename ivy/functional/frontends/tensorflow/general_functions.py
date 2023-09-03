@@ -465,6 +465,11 @@ def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
 
 
+@to_ivy_arrays_and_back
+def stop_gradient(input, name=None):
+    return ivy.stop_gradient(input)
+
+
 # ToDo: find a way around for negative indexing, which torch does not support
 @to_ivy_arrays_and_back
 def strided_slice(
