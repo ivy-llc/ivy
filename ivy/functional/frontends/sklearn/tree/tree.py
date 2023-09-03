@@ -511,42 +511,45 @@ class Tree:
 
         return out
     
+    #not so sure about sparse implimentation yet
     def _apply_sparse_csr(self, X):
         """Finds the terminal region (=leaf node) for each sample in sparse X."""
-        if not isinstance(X, csr_matrix):
-            raise ValueError("X should be in csr_matrix format, got %s" % type(X))
+        if not isinstance(X, ivy.data_classes.array.array.Array):
+            raise ValueError("X should be a ivy.data_classes.array.array.Array, got %s" % type(X))
 
-        if X.dtype != np.float32:
-            raise ValueError("X.dtype should be np.float32, got %s" % X.dtype)
+        if X.dtype != "float32":
+            raise ValueError("X.dtype should be float32, got %s" % X.dtype)
 
         n_samples, n_features = X.shape
 
         # Initialize output
-        out = np.zeros(n_samples, dtype=np.intp)
+        out = ivy.zeros(n_samples, dtype="float32")
 
-        # Initialize auxiliary data structures
-        feature_to_sample = np.full(n_features, -1, dtype=np.intp)
-        X_sample = np.zeros(n_features, dtype=np.float32)
+        # Initialize auxiliary data structures on CPU
+        feature_to_sample = ivy.full((n_features,), -1, dtype="float32")
+        X_sample = ivy.zeros((n_features,), dtype="float32")
 
         for i in range(n_samples):
-            node = self.nodes
+            node = self.nodes[0]  # Start from the root node
 
             for k in range(X.indptr[i], X.indptr[i + 1]):
                 feature_to_sample[X.indices[k]] = i
                 X_sample[X.indices[k]] = X.data[k]
 
-            while node.left_child != _TREE_LEAF:
+            while node.left_child is not None:
                 if feature_to_sample[node.feature] == i:
                     feature_value = X_sample[node.feature]
                 else:
-                    feature_value = 0.0
+                    feature_value = ivy.array(0,dtype="float32") #feature value is computed during training
 
-                if feature_value <= node.threshold:
-                    node = self.nodes[node.left_child]
+                threshold = ivy.array(node.threshold, dtype="float32")
+                if feature_value <= threshold:
+                    node = node.left_child
                 else:
-                    node = self.nodes[node.right_child]
+                    node = node.right_child
 
-            out[i] = node - self.nodes  # node offset
+            # Get the index of the leaf node
+            out[i] = self.nodes.index(node)
 
         return out
     
@@ -561,49 +564,48 @@ class Tree:
         """Finds the decision path (=node) for each sample in X."""
 
         # Check input
-        if not isinstance(X, np.ndarray):
-            raise ValueError("X should be in np.ndarray format, got %s" % type(X))
+        if not isinstance(X, ivy.data_classes.array.array.Array):
+            raise ValueError("X should be a ivy.data_classes.array.array.Array, got %s" % type(X))
 
-        if X.dtype != DTYPE:
-            raise ValueError("X.dtype should be np.float32, got %s" % X.dtype)
+        if X.dtype != "float32":
+            raise ValueError("X.dtype should be float32, got %s" % X.dtype)
 
         # Extract input
-        X_ndarray = X
         n_samples = X.shape[0]
 
         # Initialize output
-        indptr = np.zeros(n_samples + 1, dtype=np.intp)
-        indices = np.zeros(n_samples * (1 + self.max_depth), dtype=np.intp)
+        indptr = ivy.zeros(n_samples + 1, dtype="float32")
+        indices = ivy.zeros(n_samples * (1 + self.max_depth), dtype="float32")
 
         # Initialize auxiliary data-structure
-        node = None
         i = 0
 
         for i in range(n_samples):
-            node = self.nodes
+            node = self.nodes[0]
             indptr[i + 1] = indptr[i]
 
             # Add all external nodes
             while node.left_child != _TREE_LEAF:
-                # ... and node.right_child != _TREE_LEAF:
-                indices[indptr[i + 1]] = node - self.nodes
+                indices[indptr[i + 1]] = node 
                 indptr[i + 1] += 1
 
-                if X_ndarray[i, node.feature] <= node.threshold:
+                if X[i, node.feature] <= node.threshold:
                     node = self.nodes[node.left_child]
                 else:
                     node = self.nodes[node.right_child]
 
             # Add the leaf node
-            indices[indptr[i + 1]] = node - self.nodes
+            indices[indptr[i + 1]] = node
             indptr[i + 1] += 1
 
         indices = indices[:indptr[n_samples]]
-        data = np.ones(shape=len(indices), dtype=np.intp)
+        data = ivy.ones(indices.shape, dtype="float32")
+        #csr_matrix is not implemented
         out = csr_matrix((data, indices, indptr), shape=(n_samples, self.node_count))
 
         return out
     
+    #not tested
     def _decision_path_sparse_csr(self, X):
         """Finds the decision path (=node) for each sample in X."""
 
@@ -672,10 +674,10 @@ class Tree:
 
         Returns
         -------
-        depths : ndarray of shape (self.node_count,), dtype=np.int64
+        depths : ivy of shape (self.node_count,), dtype="int32"
             The depth of each node in the tree.
         """
-        depths = np.empty(self.node_count, dtype=np.int64)
+        depths = ivy.zeros(self.node_count, dtype="int32")
         children_left = self.children_left
         children_right = self.children_right
         node_count = self.node_count
