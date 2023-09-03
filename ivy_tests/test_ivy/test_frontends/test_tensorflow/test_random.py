@@ -415,7 +415,9 @@ def test_tensorflow_uniform(
             max_size=10,
         ),
     ),
-    seed=helpers.ints(min_value=0, max_value=10),
+    seed=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
+    ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_stateless_binomial(
@@ -465,7 +467,9 @@ def test_tensorflow_stateless_binomial(
     beta=st.floats(
         allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=3
     ),
-    seed=helpers.ints(min_value=0, max_value=10),
+    seed=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
+    ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_stateless_gamma(
