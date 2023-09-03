@@ -839,6 +839,37 @@ def test_paddle_pinv(
     )
 
 
+# qr
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.qr",
+    dtype_and_x=_get_dtype_and_matrix(),
+    mode=st.sampled_from(("reduced", "complete")),
+    test_with_out=st.just(False),
+)
+def test_paddle_qr(
+    dtype_and_x,
+    mode,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    assume(matrix_is_stable(x[0]))
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        x=x[0],
+        mode=mode,
+    )
+
+
 # solve
 @handle_frontend_test(
     fn_tree="paddle.solve",
@@ -898,35 +929,3 @@ def test_paddle_transpose(
         x=x[0],
         perm=perm,
     )
-
-
-# qr
-@handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.qr",
-    dtype_and_x=_get_dtype_and_matrix(),
-    mode=st.sampled_from(("reduced", "complete")),
-    test_with_out=st.just(False),
-)
-def test_paddle_qr(
-    dtype_and_x,
-    mode,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    assume(matrix_is_stable(x[0]))
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-01,
-        x=x[0],
-        mode=mode,
-    )
-

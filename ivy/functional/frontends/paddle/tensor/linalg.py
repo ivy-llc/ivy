@@ -181,6 +181,13 @@ def pinv(x, rcond=1e-15, hermitian=False, name=None):
     return ivy.pinv(x, rtol=rcond)
 
 
+# qr
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def qr(x, mode="reduced", name=None):
+    return ivy.qr(x, mode=mode)
+
+
 # solve
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -193,10 +200,3 @@ def solve(x1, x2, name=None):
 @to_ivy_arrays_and_back
 def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)
-
-
-# qr
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def qr(x, mode="reduced", name=None):
-    return ivy.qr(x, mode=mode)
