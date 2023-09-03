@@ -507,7 +507,6 @@ def test_numpy_negative_binomial(
     fn_tree,
     backend_fw,
     on_device,
-
     n,
     p,
 ):
