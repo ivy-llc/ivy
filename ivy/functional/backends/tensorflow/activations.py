@@ -15,6 +15,7 @@ from tensorflow.python.types.core import Tensor
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
+import ivy.functional.backends.tensorflow as tf_backend
 
 
 def gelu(
@@ -58,8 +59,7 @@ def softmax(
         axis = -1
     dtype = x.dtype
     if "complex" in str(dtype):
-        amax = tf.reduce_max(tf.math.real(x), axis=axis, keepdims=True)
-        amax = tf.cast(amax, dtype)
+        amax = tf_backend.max(x, axis=axis, keepdims=True)
         normalized = tf.exp(tf.subtract(x, amax))
         return tf.divide(
             normalized, tf.reduce_sum(normalized, axis=axis, keepdims=True)
