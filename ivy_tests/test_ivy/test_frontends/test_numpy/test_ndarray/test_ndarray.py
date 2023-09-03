@@ -3684,7 +3684,7 @@ def test_numpy_ndarray_view(
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
-    dtype=helpers.get_dtypes(kind="integer"),
+    dtype=helpers.get_dtypes(kind="valid"),
     ddof=0,
 )
 def test_numpy_ndarray_var(
