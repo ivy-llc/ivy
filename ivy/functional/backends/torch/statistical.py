@@ -36,7 +36,6 @@ def min(
 min.support_native_out = True
 
 
-#@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def max(
     x: torch.Tensor,
     /,
@@ -53,9 +52,7 @@ def max(
         # we consider the number with the biggest real and imag part
         img_max = torch.max(imag, dim=axis, keepdim=keepdims).values
         img_max = img_max.to(x.dtype)
-        return torch.add(
-            real_max.to(x.dtype), torch.multiply(img_max, const)
-        )
+        return torch.add(real_max.to(x.dtype), torch.multiply(img_max, const))
     if axis == ():
         if ivy.exists(out):
             return ivy.inplace_update(out, x)

@@ -79,7 +79,9 @@ def max(
         if paddle.is_complex(x):
             const = paddle.to_tensor(1j, dtype=x.dtype)
             real_max = paddle.max(x.real(), axis=axis, keepdim=keepdims)
-            imag = paddle.where(x.real() == real_max, x.imag(), paddle.full_like(x.imag(), -1e10))
+            imag = paddle.where(
+                x.real() == real_max, x.imag(), paddle.full_like(x.imag(), -1e10)
+            )
             # we consider the number with the biggest real and imag part
             img_max = paddle.max(imag, axis=axis, keepdim=keepdims)
             img_max = paddle.cast(img_max, x.dtype)
