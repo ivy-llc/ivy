@@ -414,7 +414,7 @@ def test_torch_diagonal(
         frontend=frontend,
         fn_tree=fn_tree,
         test_values=True,
-        tensors=x,
+        A=x,
     )
 
 
