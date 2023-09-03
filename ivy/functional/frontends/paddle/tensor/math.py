@@ -370,6 +370,14 @@ def multiply(x, y, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def nansum(x, axis=None, dtype=None, name=None):
+    return ivy.nansum(x, axis=axis, dtype=dtype)
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int8", "int16", "int32", "int64")},
     "paddle",
 )
@@ -541,10 +549,3 @@ def tanh(x, name=None):
 @to_ivy_arrays_and_back
 def trunc(x, name=None):
     return ivy.trunc(x)
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle")
-@to_ivy_arrays_and_back
-def nansum(x, axis=None, dtype=None, name=None):
-    return ivy.nansum(x, axis=axis, dtype=dtype)
-

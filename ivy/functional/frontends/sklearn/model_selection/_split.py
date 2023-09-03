@@ -85,7 +85,10 @@ class StratifiedKFold(KFold):
         n_classes = len(y_idx)
         y_order = ivy.sort(y_encoded)
         allocation = ivy.asarray(
-            [ivy.bincount(y_order[i:: self.n_splits], minlength=n_classes) for i in range(self.n_splits)]
+            [
+                ivy.bincount(y_order[i :: self.n_splits], minlength=n_classes)
+                for i in range(self.n_splits)
+            ]
         )
         test_folds = ivy.empty(len(y), dtype="int64")
         for k in range(n_classes):

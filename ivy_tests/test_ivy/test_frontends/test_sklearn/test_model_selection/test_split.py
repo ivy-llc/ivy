@@ -91,7 +91,6 @@ def test_sklearn_kfold_split(
         num_arrays=2,
         max_num_dims=2,
         min_num_dims=1,
-
     ),
 )
 def test_sklearn_stratfiedkfold_split(
