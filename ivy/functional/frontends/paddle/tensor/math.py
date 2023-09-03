@@ -190,6 +190,12 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def exp_(x, name=None):
+    return ivy.inplace_update(x, exp(x))
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float16", "float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def expm1(x, name=None):
