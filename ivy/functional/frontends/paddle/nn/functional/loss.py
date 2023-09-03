@@ -272,6 +272,33 @@ def nll_loss(
     """Refer
     https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for
     more on NLL(Negative log likelihood) Loss."""
+    if reduction not in ['sum', 'mean', 'none']:
+        raise ValueError(
+            "The value of 'reduction' in nll_loss should be 'sum, 'mean' or "
+            "'none', but received %s, which is not allowed." % reduction
+        )
+    input_shape = list(input.shape)
+    input_dims = len(input_shape)
+    label_shape = list(label.shape)
+    label_dims = len(label_shape)
+    
+    if input_dims -1 != label_dims and input_dims != label_dims:
+        raise ValueError(
+            "Expected input_dims - 1 = label_dims or input_dims == label_dims\
+             (got input_dims{}, label_dims{})".format(
+                input_dims, label_dims
+            )
+        )
+    if input_dims < 2:
+        raise ValueError(f'Expected 2 or more dimensions (got {input_dims})')
+    
+    if input_shape[1] < 1:
+        raise ValueError(
+            "Expected 1 or more classes (got num classes{})".format(
+                input_shape[1]
+            )
+        )
+    
     if weight is None:
         weight = ivy.ones(ivy.shape(input[0]))
     input = ivy.log(input)
