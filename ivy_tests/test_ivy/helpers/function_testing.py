@@ -1664,24 +1664,107 @@ def test_frontend_method(
             ),
             shallow=False,
         )
+        if method_flags.generate_frontend_arrays:
+            frontend_config = get_frontend_config(frontend)
+            args_constructor_frontend = ivy.nested_map(
+                args_constructor_np,
+                lambda x: (
+                    frontend_config.native_array(x) if isinstance(x, np.ndarray) else x
+                ),
+                shallow=False,
+            )
+            kwargs_constructor_frontend = ivy.nested_map(
+                kwargs_constructor_np,
+                lambda x: (
+                    frontend_config.native_array(x) if isinstance(x, np.ndarray) else x
+                ),
+                shallow=False,
+            )
+            args_method_frontend = ivy.nested_map(
+                args_method_np,
+                lambda x: (
+                    frontend_config.native_array(x)
+                    if isinstance(x, np.ndarray)
+                    else (
+                        frontend_config.as_native_dtype(x)
+                        if isinstance(x, frontend_config.Dtype)
+                        else (
+                            frontend_config.as_native_dev(x)
+                            if isinstance(x, frontend_config.Device)
+                            else x
+                        )
+                    )
+                ),
+                shallow=False,
+            )
+            kwargs_method_frontend = ivy.nested_map(
+                kwargs_method_np,
+                lambda x: (
+                    frontend_config.native_array(x) if isinstance(x, np.ndarray) else x
+                ),
+                shallow=False,
+            )
+            # # change ivy dtypes to native dtypes
+            # if "dtype" in kwargs_method_frontend:
+            #     kwargs_method_frontend["dtype"] = frontend_config.as_native_dtype(
+            #         kwargs_method_frontend["dtype"]
+            #     )
 
-        frontend_fw_module = ivy_backend.utils.dynamic_import.import_module(
-            frontend_method_data.ivy_init_module
-        )
-        ivy_frontend_creation_fn = getattr(
-            frontend_fw_module, frontend_method_data.init_name
-        )
+            # # change ivy device to native devices
+            # if "device" in kwargs_method_frontend:
+            #     kwargs_method_frontend["device"] = frontend_config.as_native_dev(
+            #         kwargs_method_frontend["device"]
+            #     )
+            frontend_creation_fn = getattr(
+                importlib.import_module(frontend_method_data.framework_init_module),
+                frontend_method_data.init_name,
+            )
+            ins_gt = frontend_creation_fn(
+                *args_constructor_frontend, **kwargs_constructor_frontend
+            )
+            frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
+                *args_method_frontend, **kwargs_method_frontend
+            )
 
-        # Run testing
-        ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
-        ret, ret_np_flat = get_ret_and_flattened_np_array(
-            backend_to_test,
-            ins.__getattribute__(frontend_method_data.method_name),
-            precision_mode=method_flags.precision_mode,
-            *args_method,
-            test_compile=method_flags.test_compile,
-            **kwargs_method,
-        )
+            if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
+                ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
+            elif frontend_config.isscalar(frontend_ret):
+                ret_np_flat = [np.asarray(frontend_ret)]
+            else:
+                # tuplify the frontend return
+                if not isinstance(frontend_ret, tuple):
+                    frontend_ret = (frontend_ret,)
+                frontend_ret_idxs = ivy.nested_argwhere(
+                    frontend_ret, frontend_config.is_native_array
+                )
+                frontend_ret_flat = ivy.multi_index_nest(
+                    frontend_ret, frontend_ret_idxs
+                )
+                ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+
+            assert ivy_backend.nested_map(
+                frontend_ret,
+                lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
+            ), "Frontend function returned non-frontend arrays: {}".format(frontend_ret)
+
+        else:
+            frontend_fw_module = ivy_backend.utils.dynamic_import.import_module(
+                frontend_method_data.ivy_init_module
+            )
+            ivy_frontend_creation_fn = getattr(
+                frontend_fw_module, frontend_method_data.init_name
+            )
+
+            # Run testing
+            ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+            ret, ret_np_flat = get_ret_and_flattened_np_array(
+                backend_to_test,
+                ins.__getattribute__(frontend_method_data.method_name),
+                precision_mode=method_flags.precision_mode,
+                *args_method,
+                test_compile=method_flags.test_compile,
+                **kwargs_method,
+            )
 
         # ToDo: uncomment once test_frontend_method has been updated to test for
         #  frontend array arguments like test_frontend_function where
