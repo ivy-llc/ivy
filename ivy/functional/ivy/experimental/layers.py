@@ -2600,22 +2600,11 @@ def reduce_window(
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op = operand
-    dims, strides, padding, base_dilation, window_dilation = map(
-        lambda x: tuple([x] * len(op.shape)) if isinstance(x, int) else x,
-        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
-    )
     init_value = _cast_init(init_value, op.dtype)
-    identity = _get_identity(computation, operand.dtype, init_value)
-    if isinstance(padding, str):
-        pads = _padtype_to_pads(op.shape, dims, strides, padding)
-    else:
-        pads = padding
-    op = op.reshape((1, 1) + op.shape)
-    if base_dilation:
-        op = _dilate(op, base_dilation, identity)
-    view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
-    view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
-    ret = ivy.reduce(view, init_value, computation, axes=-1)
+    slid_win_vals = ivy.current_backend(operand).sliding_window(
+        operand, window_dimensions, window_strides, base_dilation, padding
+    )
+    ret = ivy.reduce(slid_win_vals, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
 
 
