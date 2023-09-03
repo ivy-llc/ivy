@@ -37,8 +37,7 @@ def unique_all(
     values, inverse_indices, counts = paddle.unique(
         x,
         return_index=False,  # which occurences of the unique values are picked is
-        # inconsistent in some cases, so calculate the indices
-        # manually below
+        # inconsistent in some cases, so calculate the indices manually below
         return_counts=True,
         return_inverse=True,
         axis=axis,

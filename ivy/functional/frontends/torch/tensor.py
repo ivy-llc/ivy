@@ -486,8 +486,6 @@ class Tensor:
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
 
-    ne = not_equal
-
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
@@ -734,12 +732,6 @@ class Tensor:
         pin_memory=False,
     ):
         dtype = ivy.dtype(self.ivy_array) if dtype is None else dtype
-        if ivy.is_float_dtype(dtype):
-            fill_value = float(fill_value)
-        elif ivy.is_int_dtype(dtype):
-            fill_value = int(fill_value)
-        elif ivy.is_bool_dtype(dtype):
-            fill_value = bool(fill_value)
         device = ivy.dev(self.ivy_array) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
         return torch_frontend.tensor(_data)
@@ -891,7 +883,7 @@ class Tensor:
     def inverse(self):
         return torch_frontend.inverse(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool", "bfloat16")}, "torch")
     def neg(self):
         return torch_frontend.negative(self)
 
@@ -901,6 +893,10 @@ class Tensor:
         return self
 
     __neg__ = neg
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool", "bfloat16")}, "torch")
+    def negative(self):
+        return torch_frontend.negative(self)
 
     def int(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int32, copy=False)
@@ -1860,6 +1856,20 @@ class Tensor:
     def sinc(self):
         return torch_frontend.sinc(self)
 
+    @with_supported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float32",
+                "float64",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def sinc_(self):
+        self.ivy_array = torch_frontend.sinc(self).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.0.1 and below": ("uint8",)}, "torch")
     def index_fill(self, dim, index, value):
         arr = torch_frontend.moveaxis(self, dim, 0)
@@ -1883,6 +1893,29 @@ class Tensor:
     )
     def cummax(self, dim):
         return torch_frontend.cummax(self, dim)
+
+    def ne(self, other):
+        return self.not_equal(other)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "float16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def unique(self, sorted=True, return_inverse=False, return_counts=False, dim=None):
+        return torch_frontend.unique(self, sorted, return_inverse, return_counts, dim)
 
 
 class Size(tuple):

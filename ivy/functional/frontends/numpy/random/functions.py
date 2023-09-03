@@ -1,4 +1,5 @@
 # local
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -88,6 +89,14 @@ def gumbel(loc=0.0, scale=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def laplace(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    u = loc - scale * ivy.sign(u - 0.5) * ivy.log(1 - 2 * ivy.abs(u - 0.5))
+    return u
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def logistic(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     x = loc + scale * ivy.log(u / (1 - u))
@@ -98,6 +107,19 @@ def logistic(loc=0.0, scale=1.0, size=None):
 @from_zero_dim_arrays_to_scalar
 def lognormal(mean=0.0, sigma=1.0, size=None):
     ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
+    return ret
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logseries(p=0, size=None):
+    if p < 0 or p >= 1:
+        raise ValueError("p value must be in the open interval (0, 1)")
+    r = ivy.log(1 - p)
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size)
+    v = ivy.random_uniform(low=0.0, high=1.0, shape=size)
+    q = 1 - ivy.exp(r * u)
+    ret = 1 + ivy.log(v) / ivy.log(q)
     return ret
 
 

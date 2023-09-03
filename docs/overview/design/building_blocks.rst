@@ -218,10 +218,10 @@ The contents of this function are as follows:
         # if no global backend exists, we try to infer the backend from the arguments
         f = _determine_backend_from_args(list(args) + list(kwargs.values()))
         if f is not None:
+            if verbosity.level > 0:
+                verbosity.cprint("Using backend from type: {}".format(f))
             implicit_backend = f.current_backend_str()
             return f
-        if verbosity.level > 0:
-            verbosity.cprint("Using backend from type: {}".format(f))
         return importlib.import_module(_backend_dict[implicit_backend])
 
 If a global backend framework has been previously set using for example :code:`ivy.set_backend('tensorflow')`, then this globally set backend is returned.

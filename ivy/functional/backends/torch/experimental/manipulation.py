@@ -1,13 +1,28 @@
 # global
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Literal,
+    Callable,
+    Any,
+)
 from numbers import Number
 from collections import namedtuple
 import torch
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 import ivy
+from ivy.functional.ivy.experimental.manipulation import (
+    _to_tf_padding,
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
 
 
 def moveaxis(
@@ -40,6 +55,82 @@ def heaviside(
 
 
 heaviside.support_native_out = True
+
+
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")},
+    backend_version,
+)
+def pad(
+    input: torch.Tensor,
+    pad_width: Union[Sequence[Sequence[int]], torch.Tensor, int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "reflect",
+            "wrap",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[torch.Tensor], int] = 1,
+    constant_values: Number = 0,
+    end_values: Number = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+) -> torch.Tensor:
+    constant_values = (
+        float(constant_values)
+        if not isinstance(constant_values, float)
+        else constant_values
+    )
+    pad_width = _to_paddle_padding(pad_width, input.ndim)
+    mode = "replicate" if mode == "edge" else "circular" if mode == "wrap" else mode
+    if mode == "circular":
+        return (
+            torch.nn.functional.pad(
+                input.unsqueeze(0).unsqueeze(0),
+                tuple(pad_width),
+                mode=mode,
+            )
+            .squeeze(0)
+            .squeeze(0)
+        )
+    elif mode == "constant":
+        return torch.nn.functional.pad(
+            input.unsqueeze(0),
+            tuple(pad_width),
+            mode=mode,
+            value=constant_values,
+        ).squeeze(0)
+    else:
+        return torch.nn.functional.pad(
+            input.unsqueeze(0),
+            tuple(pad_width),
+            mode=mode,
+        ).squeeze(0)
+
+
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_torch_pad(mode, reflect_type, args[1], args[0].shape, constant_values)
+    )
+)
+
+
+def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return _check_paddle_pad(
+        mode, reflect_type, pad_width, input_shape, constant_values, 4
+    ) and (
+        mode != "wrap"
+        or all(
+            pad_width[i][0] <= s and pad_width[i][1] <= s
+            for i, s in enumerate(input_shape)
+        )
+    )
 
 
 def flipud(
