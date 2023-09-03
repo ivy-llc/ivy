@@ -115,6 +115,50 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
 
 
 @to_ivy_arrays_and_back
+def grid_sample(x, grid, data_format="NCHW"):
+    input_shape = ivy.shape(x)
+
+    if len(input_shape) != 4:
+        raise ValueError(
+            "grid_sample requires a 4D input, but it got input size {}".format(
+                input_shape
+            )
+        )
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "The data_format should be 'NCHW' or 'NHWC', but received the following"
+            " data_format: {}".format(data_format)
+        )
+
+    b = input_shape[0]
+    c = input_shape[1] if data_format == "NCHW" else input_shape[3]
+    h = input_shape[2] if data_format == "NCHW" else input_shape[1]
+    w = input_shape[3] if data_format == "NCHW" else input_shape[2]
+
+    grid_shape = ivy.shape(grid)
+    if len(grid_shape) != 4 or grid_shape[3] != 2:
+        raise ValueError("The grid must be a 4D tensor with shape (N, H, W, 2)")
+
+    oc = c
+    oh, ow = grid_shape[1], grid_shape[2]
+
+    if data_format == "NCHW":
+        input_reshaped = ivy.reshape(x, (b, oc, h, w))
+    else:
+        input_reshaped = ivy.reshape(x, (b, h, w, oc))
+
+    interpolated = grid_sample(
+        input_reshaped, grid, mode="bilinear", padding_mode="zeros"
+    )
+
+    if data_format == "NCHW":
+        return ivy.reshape(interpolated, (b, oc, oh, ow))
+    else:
+        return ivy.reshape(interpolated, (b, oh, ow, oc))
+
+
+@to_ivy_arrays_and_back
 def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     input_shape = ivy.shape(x)
     check_equal(
