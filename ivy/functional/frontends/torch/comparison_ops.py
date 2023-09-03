@@ -289,8 +289,8 @@ def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     return ivy.top_k(input, k, axis=dim, largest=largest, sorted=sorted, out=out)
 
 
-ge = greater_equal
 gt = greater
+ge = greater_equal
 le = less_equal
 lt = less
 ne = not_equal
