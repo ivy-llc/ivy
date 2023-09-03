@@ -2163,6 +2163,56 @@ def _mask(vals, length, range_max, dim, mask_value=0.0):
 
 @handle_nestable
 @inputs_to_ivy_arrays
+def adaptive_max_pool1d(
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[Sequence[int], int],
+):
+    """
+    """
+    squeeze = False
+    if input.ndim == 2:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif input.ndim != 3:
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
+        )
+
+    if input.shape[-1] % output_size == 0:
+        stride = input.shape[-1] // output_size
+        kernel_size = input.shape[-1] - (output_size - 1) * stride
+        pooled_output = ivy.max_pool1d(
+            input, kernel_size, stride, "VALID", data_format="NCW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
+        input.shape[-1], output_size, input.device
+    )
+
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(input.to_numpy()[..., idxw])
+
+    if not adaptive_w:
+        ret = ivy.max(vals, axis=-1)
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
+
+    vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
+
+    ret = []
+    for i in range(vals.shape[-2]):
+            ret.append( ivy.max( vals[:,:,i, 0:length_w[i]] ).to_scalar() )
+
+    pooled_output = ivy.array(ret)
+
+    return pooled_output
+
+
+@handle_nestable
+@inputs_to_ivy_arrays
 def adaptive_max_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],

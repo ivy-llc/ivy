@@ -63,6 +63,16 @@ def adaptive_avg_pool2d(input, output_size):
 
 
 @to_ivy_arrays_and_back
+def adaptive_max_pool1d(
+    input,
+    output_size,
+    return_indices=False,
+):
+    # ToDo: Add return_indices once superset is implemented
+    return ivy.adaptive_max_pool1d(input, output_size)
+
+
+@to_ivy_arrays_and_back
 def adaptive_max_pool2d(
     input,
     output_size,
