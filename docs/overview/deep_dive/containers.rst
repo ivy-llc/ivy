@@ -204,7 +204,7 @@ The *nestable* behaviour is added to any function which is decorated with the `h
 This wrapper causes the function to be applied at each leaf of any containers passed in the input.
 More information on this can be found in the `Function Wrapping <https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/docs/partial_source/deep_dive/function_wrapping.rst>`_ section of the Deep Dive.
 
-Additionally, any nestable function which returns multiple arrays, will return the same number of containers for it's container counterpart.
+Additionally, any nestable function which returns multiple arrays, will return the same number of containers for its container counterpart.
 This property makes the function symmetric with regards to the input-output behavior, irrespective of whether :class:`ivy.Array` or :class:`ivy.Container` instances are based used.
 Any argument in the input can be replaced with a container without changing the number of inputs, and the presence or absence of ivy.Container instances in the input should not change the number of return values of the function.
 In other words, if containers are detected in the input, then we should return a separate container for each array that the function would otherwise return.
@@ -246,8 +246,10 @@ The functions :func:`ivy.clip`, :func:`ivy.log`, :func:`ivy.sum` and :func:`ivy.
 
 Therefore, our approach is to **not** wrap any compositional functions which are already *implicitly nestable* as a result of the *nestable* functions called internally.
 
+**Explicitly Nestable Compositional Functions**
+
 There may be some compositional functions which are not implicitly nestable for some reason, and in such cases adding the explicit `handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_ wrapping may be necessary.
-One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` which is not nestable and can't be made nestable.
+One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` and :func:`__list__` which, among other functions, are not nestable and can't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
 When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
