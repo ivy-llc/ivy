@@ -765,6 +765,22 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "complex",
+                "bfloat16",
+                "bool",
+                "uint16",
+                "uint32",
+                "uint64",
+            )
+        },
+        "torch",
+    )
+    def maximum(self, other, *, out=None):
+        return torch_frontend.maximum(self, other=other, out=out)
+
     @property
     def is_quantized(self):
         return "q" in ivy.dtype(self.ivy_array)
