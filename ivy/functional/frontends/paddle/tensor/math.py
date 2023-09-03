@@ -111,7 +111,7 @@ def atanh(x, name=None):
 
 
 def broadcast_shape(x_shape, y_shape):
-    return ivy.broadcast_shapes(x_shape, y_shape)
+    return list(ivy.broadcast_shapes(x_shape, y_shape))
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
