@@ -12,14 +12,14 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional import
 # avg_pool3d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.pooling.avg_pool3d",
-    dtype_x_k_s=helpers.arrays_for_pooling(
+    df_x_k_s_p=helpers.arrays_for_pooling(
         min_dims=4,
         max_dims=4,
         min_side=2,
         max_side=4,
     ),
-    ceil_mode=st.booleans(),
     exclusive=st.booleans(),
+    ceil_mode=st.booleans(),
     data_format=st.sampled_from(["NDHWC", "NCDHW"]),
 )
 def test_paddle_avg_pool3d(
