@@ -35,6 +35,21 @@ def fromfunction(function, shape, *, dtype="float64", like=None, **kwargs):
 
 @handle_numpy_dtype
 @outputs_to_frontend_arrays
+def fromiter(iter, dtype, count=-1, *, like=None):
+    if count == -1:
+        data = [x for x in iter]
+    else:
+        data = [next(iter) for _ in range(count)]
+
+    if like is None:
+        return ivy.array(data, dtype=dtype)
+    else:
+        return ivy.array(data, dtype=dtype, like=like)
+    return ivy.array(data, dtype=dtype)
+
+
+@handle_numpy_dtype
+@outputs_to_frontend_arrays
 def full(shape, fill_value, dtype=None, order="C", *, like=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
