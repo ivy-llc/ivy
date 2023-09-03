@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, matrix_is_stable
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
-=======
+
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
     _get_second_matrix,
     _get_cholesky_matrix,
@@ -900,46 +900,6 @@ def test_paddle_transpose(
     )
 
 
-# bincount
-@handle_frontend_test(
-    fn_tree="paddle.bincount",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_value=1,
-        max_value=2,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=1,
-            ),
-            key="a_s_d",
-        ),
-    ),
-    test_with_out=st.just(False),
-)
-def test_paddle_bincount(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        weights=None,
-        minlength=0,
-    )
-
-
 # qr
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.qr",
@@ -970,38 +930,3 @@ def test_paddle_qr(
         mode=mode,
     )
 
-
-@handle_frontend_test(
-    fn_tree="paddle.dist",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-    ),
-    p=helpers.floats(min_value=1.0, max_value=10.0),
-)
-def test_paddle_dist(
-    *,
-    dtype_and_input,
-    p,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-        p=p,
-    )
