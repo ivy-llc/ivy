@@ -435,11 +435,13 @@ def test_jax_numpy_apply_over_axes(
     test_flags,
     func,
     axes,
+    backend_fw,
 ):
     input_dtype, (a,), axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
