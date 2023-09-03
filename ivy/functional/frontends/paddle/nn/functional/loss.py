@@ -282,7 +282,6 @@ def nll_loss(
     label_shape = list(label.shape)
     label_dims = len(label_shape)
 
-    
     if input_dims - 1 != label_dims and input_dims != label_dims:
         raise ValueError(
             "Expected input_dims - 1 = label_dims or input_dims == label_dims         "
@@ -291,13 +290,11 @@ def nll_loss(
     if input_dims < 2:
         raise ValueError(f"Expected 2 or more dimensions (got {input_dims})")
 
-    
     if input_shape[1] < 1:
         raise ValueError(
             "Expected 1 or more classes (got num classes{})".format(input_shape[1])
         )
 
-    
     if weight is None:
         weight = ivy.ones(ivy.shape(input[0]))
     input = ivy.log(input)
