@@ -1897,6 +1897,26 @@ class Tensor:
     def ne(self, other):
         return self.not_equal(other)
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "float16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def unique(self, sorted=True, return_inverse=False, return_counts=False, dim=None):
+        return torch_frontend.unique(self, sorted, return_inverse, return_counts, dim)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
