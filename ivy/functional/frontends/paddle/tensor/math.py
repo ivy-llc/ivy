@@ -412,6 +412,12 @@ def reciprocal(x, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def reciprocal_(x, name=None):
+    return ivy.inplace_update(x, reciprocal(x))
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def remainder(x, y, name=None):
     return ivy.remainder(x, y)
 
