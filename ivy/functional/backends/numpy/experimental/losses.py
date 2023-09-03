@@ -51,3 +51,22 @@ def smooth_l1_loss(
         return np.sum(loss)
     else:
         return loss
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
+@_scalar_output_to_0d_array
+def soft_margin_loss(
+    input: np.ndarray,
+    target: np.ndarray,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> np.ndarray:
+    loss = np.sum(np.log1p(np.exp(-input * target))) / input.size
+
+    if reduction == "mean":
+        return np.mean(loss)
+    elif reduction == "sum":
+        return np.sum(loss)
+    else:
+        return loss

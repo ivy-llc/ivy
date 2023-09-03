@@ -501,6 +501,34 @@ def test_paddle_ceil(
     )
 
 
+# ceil_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.ceil_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_ceil_(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # conj
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.conj",
@@ -1557,6 +1585,41 @@ def test_paddle_multiply(
     )
 
 
+# nansum
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.nansum",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        allow_nan=True,
+    ),
+)
+def test_paddle_nansum(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        rtol=1e-04,
+        atol=1e-04,
+    )
+
+
 # neg
 @handle_frontend_test(
     fn_tree="paddle.neg",
@@ -1723,6 +1786,34 @@ def test_paddle_rad2deg(
     ),
 )
 def test_paddle_reciprocal(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# reciprocal_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.reciprocal_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_reciprocal_(
     *,
     dtype_and_x,
     on_device,
