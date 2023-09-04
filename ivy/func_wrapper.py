@@ -293,6 +293,21 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
             )
 
 
+def _get_preferred_device(args, kwargs):
+    # When new arrays are created, they should be created on the same device as
+    # existing array inputs. If a device is specified as a kwarg, create them there.
+    # If not, scan for any other inputs which are already arrays and use the device
+    # of the first one found (unless we're in soft device mode).
+    device = None
+    if "device" in kwargs and kwargs["device"] is not None:
+        return device
+    if not ivy.soft_device_mode:
+        for arg in args + list(kwargs.values()):
+            if ivy.is_array(arg):
+                return ivy.default_device(item=arg, as_native=True)
+    return ivy.default_device(as_native=True)
+
+
 # Array Handling #
 # ---------------#
 
@@ -374,18 +389,7 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
         parameters = list(type_hints.keys())
         annotations = [param.annotation for param in type_hints.values()]
 
-        # When new arrays are created, they should be created on the same device as
-        # existing array inputs. If a device is specified as a kwarg, create them there
-        # If not, scan for any other inputs which are already arrays and use the device
-        # of the first one found.
-        device = None
-        if "device" in kwargs and kwargs["device"] is not None:
-            device = device
-        else:
-            for arg in args + list(kwargs.values()):
-                if ivy.is_array(arg):
-                    device = ivy.default_device(item=arg, as_native=True)
-                    break
+        device = _get_preferred_device(args, kwargs)
 
         for i, (annotation, parameter, arg) in enumerate(
             zip(annotations, parameters, args)
