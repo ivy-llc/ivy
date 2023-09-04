@@ -830,9 +830,8 @@ def handle_device_shifting(fn: Callable) -> Callable:
         if "device" in kwargs and kwargs["device"] is not None:
             dev = ivy.as_native_dev(kwargs["device"])
         if ivy.soft_device_mode:
-            return ivy.handle_soft_device_variable(
-                *args, fn=fn, device_shifting_dev=dev, **kwargs
-            )
+            with ivy.DefaultDevice(ivy.default_device(dev)):
+                return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
         inputs = args + tuple(kwargs.values())
         devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
         unique_devices = set(devices)
@@ -844,9 +843,8 @@ def handle_device_shifting(fn: Callable) -> Callable:
                 if dev is not None
                 else None if len(unique_devices) == 0 else next(iter(unique_devices))
             )
-            return ivy.handle_soft_device_variable(
-                *args, fn=fn, device_shifting_dev=dst_dev, **kwargs
-            )
+            with ivy.DefaultDevice(ivy.default_device(dst_dev)):
+                return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
         # raise when arrays are on different devices
         elif len(unique_devices) > 1:
             raise ivy.utils.exceptions.IvyException(
@@ -1506,16 +1504,28 @@ def handle_complex_input(fn: Callable) -> Callable:
         jax_like = fn.jax_like if hasattr(fn, "jax_like") else "entire"
 
         if complex_mode == "split" or (complex_mode == "jax" and jax_like == "split"):
-            real_inp = ivy.real(inp)
-            imag_inp = ivy.imag(inp)
-            return fn(real_inp, *args, **kwargs) + 1j * fn(imag_inp, *args, **kwargs)
+            real_inp = ivy.real(inp).data
+            imag_inp = ivy.imag(inp).data
+            if "out" in kwargs and kwargs["out"] is not None:
+                out = kwargs.pop("out")
+                real_ret = fn(real_inp, *args, out=ivy.real(out), **kwargs)
+                imag_ret = fn(imag_inp, *args, out=ivy.imag(out), **kwargs)
+            else:
+                real_ret = fn(real_inp, *args, **kwargs)
+                imag_ret = fn(imag_inp, *args, **kwargs)
+            return ivy.add(
+                real_ret,
+                ivy.multiply(ivy.array(1j, dtype=inp.dtype), imag_ret),
+            )
 
         elif complex_mode == "magnitude" or (
             complex_mode == "jax" and jax_like == "magnitude"
         ):
-            mag_inp = ivy.abs(inp)
-            angle_inp = ivy.angle(inp)
-            return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
+            mag_inp = ivy.abs(inp).data
+            angle_inp = ivy.angle(inp).data
+            return ivy.multiply(
+                fn(mag_inp, *args, **kwargs), ivy.exp(ivy.multiply(1j, angle_inp))
+            )
 
         elif complex_mode == "jax" and jax_like == "entire":
             return fn(inp, *args, **kwargs)
