@@ -1,69 +1,12 @@
 import ivy
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import numpy as np
-
-
-
 from scipy.sparse import issparse
 from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# =============================================================================
-# Types and constants
-# =============================================================================
-
-from numpy import float32 as DTYPE
-from numpy import float64 as DOUBLE
-
-
 # Define constants
-INFINITY = np.inf
-EPSILON = np.finfo(np.double).eps
+INFINITY = ivy.inf
+EPSILON = ivy.finfo(ivy.double).eps
 
 # Some handy constants (BestFirstTreeBuilder)
 IS_FIRST = 1
@@ -76,8 +19,7 @@ TREE_UNDEFINED = -2
 _TREE_LEAF = TREE_LEAF
 _TREE_UNDEFINED = TREE_UNDEFINED
 
-# Since you're dealing with Cython-specific types and features,
-# it's important to provide a dummy definition for Node.
+
 class Node:
     def __init__(self):
         self.left_child = None
@@ -89,9 +31,7 @@ class Node:
         self.weighted_n_node_samples = None
         self.missing_go_to_left = None
 
-dummy = Node()
-# Create a numpy dtype for Node using the dummy object
-NODE_DTYPE = np.asarray([dummy], dtype=object).dtype
+
 # =============================================================================
 # TreeBuilder
 # =============================================================================
@@ -375,45 +315,9 @@ class Tree:
         raise NotImplementedError
 
     def _resize(self, capacity):
-        """
-        Resize all inner arrays to `capacity`. If `capacity` is -1, then double the size of the inner arrays.
-        Returns -1 in case of failure to allocate memory (and raise MemoryError), or 0 otherwise.
-        """
-        if self._resize_c(capacity) != 0:
-            # Raise MemoryError if resizing fails
-            raise MemoryError()
+        raise NotImplementedError
 
     def _resize_c(self, capacity=float('inf')):
-        # """
-        # Guts of _resize
-        # Returns -1 in case of failure to allocate memory (and raise MemoryError),
-        # or 0 otherwise.
-        # """
-        # if capacity == self.capacity and self.nodes is not None:
-        #     return 0
-
-        # if capacity == float('inf'):
-        #     if self.capacity == 0:
-        #         capacity = 3  # default initial value
-        #     else:
-        #         capacity = 2 * self.capacity
-
-        # # This section is relevant if the code is dealing with C arrays.
-        # # In Python, resizing arrays is handled automatically by lists or numpy arrays.
-        # # You won't need to explicitly reallocate memory or initialize values like this.
-        # self.nodes = [None] * capacity #doubtfull either the Node classes  get reallocated or something else happends
-        # self.value = [0.0] * (capacity * self.value_stride) #doubtfull either the value classes  get reallocated or something else happends
-
-        # # value memory is initialized to 0 to enable classifier argmax
-        # if capacity > self.capacity:
-        #     self.value += [0.0] * ((capacity - self.capacity) * self.value_stride)
-
-        # # if capacity smaller than node_count, adjust the counter
-        # if capacity < self.node_count:
-        #     self.node_count = capacity
-
-        # self.capacity = capacity
-        # return 0
         raise NotImplementedError
 
 
@@ -433,7 +337,7 @@ class Tree:
         #     if self._resize_c() != 0:
         #         return -1 #throw error if resize not possible
 
-        node = Node() #self.nodes contains a list of nodes, it returns the node at node_id location
+        node = Node()  #self.nodes contains a list of nodes, it returns the node at node_id location
         self.nodes.append(node)
         node.impurity = impurity
         node.n_node_samples = n_node_samples
@@ -691,110 +595,154 @@ class Tree:
 
         return depths.base
 
+    
+    '''
+    This code is typically used after fitting a decision tree model to assess the importance of each feature in making predictions.
+    The feature importances indicate the contribution of each feature to the overall decision-making process of the tree.
+    '''
     def compute_feature_importances(self, normalize=True):
-        """Computes the importance of each feature (aka variable)."""
-        nodes = self.nodes
-        node = nodes
-        end_node = node + self.node_count
+        # Compute the importance of each feature (variable).
 
-        importances = np.zeros(self.n_features, dtype=np.float64)
+        # Create an array to store feature importances.
+        importances = ivy.zeros(self.n_features)
 
-        while node != end_node:
-            if node.left_child != _TREE_LEAF:
-                left = nodes[node.left_child]
-                right = nodes[node.right_child]
+        for node in self.nodes:
+            if node.left_child is not None and node.right_child is not None:
+                left = node.left_child
+                right = node.right_child
 
-                importances[node.feature] += (
+                # Calculate the importance for the feature associated with this node.
+                importance = (
                     node.weighted_n_node_samples * node.impurity -
                     left.weighted_n_node_samples * left.impurity -
-                    right.weighted_n_node_samples * right.impurity)
-            node += 1
+                    right.weighted_n_node_samples * right.impurity
+                )
 
-        for i in range(self.n_features):
-            importances[i] /= nodes[0].weighted_n_node_samples
+                importances[node.feature] += importance
 
         if normalize:
-            normalizer = np.sum(importances)
+            total_importance = ivy.sum(importances)
 
-            if normalizer > 0.0:
-                # Avoid dividing by zero (e.g., when root is pure)
-                importances /= normalizer
+            if total_importance > 0.0:
+                # Normalize feature importances to sum up to 1.0
+                importances /= total_importance
 
         return importances
     
     def _get_value_ndarray(self):
-        """Wraps value as a 3-d NumPy array.
+        """Wraps value as a 3-dimensional NumPy array.
 
         The array keeps a reference to this Tree, which manages the underlying
         memory.
         """
-        shape = (self.node_count, self.n_outputs, self.max_n_classes)
-        arr = np.ndarray(shape, dtype=np.float64, buffer=self.value)
-        arr.base = self
+        shape = (
+            int(self.node_count),
+            int(self.n_outputs),
+            int(self.max_n_classes)
+        )
+        arr = ivy.array(self.value, dtype="float32").reshape(shape)
         return arr
     
-    def _get_node_ndarray(self):
-        """Wraps nodes as a NumPy struct array.
+    '''
+    this code creates a NumPy structured array that wraps the internal nodes of a decision tree. 
+    This array can be used to access and manipulate the tree's nodes efficiently in Python.
+    '''
+    def _get_node_tensor(self):
+        """Wraps nodes as a PyTorch tensor.
 
-        The array keeps a reference to this Tree, which manages the underlying
-        memory. Individual fields are publicly accessible as properties of the
-        Tree.
+        The tensor keeps a reference to this Tree, which manages the underlying
+        memory. Individual fields are publicly accessible as properties of the Tree.
         """
-        shape = (self.node_count,)
-        dtype = np.dtype([
-            ('left_child', np.intp),
-            ('right_child', np.intp),
-            ('feature', np.intp),
-            ('threshold', np.float64),
-            ('impurity', np.float64),
-            ('n_node_samples', np.intp),
-            ('weighted_n_node_samples', np.float64),
-            ('missing_go_to_left', np.uint8)
-        ])
-        arr = np.ndarray(shape, dtype=dtype, buffer=self.nodes)
-        arr.base = self
-        return arr
-    
-    def compute_partial_dependence(self, X, target_features, out):
-        out.fill(0.0)  # Initialize the output array
+        
+        # Create a tensor with a custom data type for the tree nodes
+        nodes_tensor = ivy.zeros(self.node_count, dtype="float32")
 
-        _TREE_LEAF = self._TREE_LEAF  # The value for leaf nodes
+        # Fill the tensor with node data
+        for i, node in enumerate(self.nodes):
+            nodes_tensor[i] = ivy.array((
+                node.impurity,
+                node.n_node_samples,
+                node.weighted_n_node_samples,
+                node.left_child,
+                node.right_child,
+                node.feature,
+                node.threshold,
+                node.missing_go_to_left,
+            ), dtype="float32")
+
+        # Attach a reference to the tree
+        nodes_tensor.tree_reference = self
+
+        return nodes_tensor
+    
+    '''
+    This code effectively computes the partial dependence values for a set of grid points based on a given decision tree. 
+    Partial dependence helps understand how the model's predictions change with variations in specific features while keeping other features constant.
+    '''   
+    def compute_partial_dependence(self, X, target_features, out):
+        """
+        Partial dependence of the response on the target_feature set.
+
+        For each sample in X, a tree traversal is performed.
+        Each traversal starts from the root with weight 1.0.
+
+        At each non-leaf node that splits on a target feature, either the left child or the right child is visited based on the feature value of the current sample, and the weight is not modified.
+        At each non-leaf node that splits on a complementary feature, both children are visited, and the weight is multiplied by the fraction of training samples that went to each child.
+
+        At each leaf, the value of the node is multiplied by the current weight (weights sum to 1 for all visited terminal nodes).
+
+        Parameters
+        ----------
+        X : numpy.ndarray, shape (n_samples, n_target_features)
+            The grid points on which the partial dependence should be evaluated.
+        target_features : numpy.ndarray, shape (n_target_features)
+            The set of target features for which the partial dependence should be evaluated.
+        out : numpy.ndarray, shape (n_samples)
+            The value of the partial dependence function on each grid point.
+        """
+        weight_stack = ivy.zeros(self.node_count, dtype="float32")
+        node_idx_stack = np.zeros(self.node_count, dtype="int32")
+        stack_size = 0
 
         for sample_idx in range(X.shape[0]):
+            # Init stacks for the current sample
             stack_size = 1
-            node_idx_stack = [0]  # root node
-            weight_stack = [1.0]  # all samples are in the root node
-            total_weight = 0.0
+            node_idx_stack[0] = 0  # Root node
+            weight_stack[0] = 1.0  # All samples are in the root node
 
             while stack_size > 0:
+                # Pop the stack
                 stack_size -= 1
                 current_node_idx = node_idx_stack[stack_size]
                 current_node = self.nodes[current_node_idx]
 
-                if current_node.left_child == _TREE_LEAF:
-                    # Leaf node
+                if current_node.left_child == -1:  # Leaf node
                     out[sample_idx] += weight_stack[stack_size] * self.value[current_node_idx]
-                    total_weight += weight_stack[stack_size]
-                else:
-                    is_target_feature = any(target_feature == current_node.feature for target_feature in target_features)
+                else:  # Non-leaf node
+                    is_target_feature = current_node.feature in target_features
                     if is_target_feature:
+                        # Push left or right child on the stack
                         if X[sample_idx, current_node.feature] <= current_node.threshold:
-                            node_idx_stack.append(current_node.left_child)
-                            weight_stack.append(weight_stack[stack_size])
-                            stack_size += 1
+                            node_idx_stack[stack_size] = current_node.left_child
                         else:
-                            node_idx_stack.append(current_node.right_child)
-                            weight_stack.append(weight_stack[stack_size])
-                            stack_size += 1
+                            node_idx_stack[stack_size] = current_node.right_child
+                        stack_size += 1
                     else:
-                        left_sample_frac = self.nodes[current_node.left_child].weighted_n_node_samples / current_node.weighted_n_node_samples
+                        # Push both children onto the stack and give a weight proportional to the number of samples going through each branch
+                        left_child = current_node.left_child
+                        right_child = current_node.right_child
+                        left_sample_frac = self.nodes[left_child].weighted_n_node_samples / current_node.weighted_n_node_samples
                         current_weight = weight_stack[stack_size]
-                        node_idx_stack.extend([current_node.left_child, current_node.right_child])
-                        weight_stack.extend([current_weight * left_sample_frac, current_weight * (1 - left_sample_frac)])
-                        stack_size += 2
+                        weight_stack[stack_size] = current_weight * left_sample_frac
+                        stack_size += 1
 
-            if not (0.999 < total_weight < 1.001):
-                raise ValueError(f"Total weight should be 1.0 but was {total_weight:.9f}")
+                        node_idx_stack[stack_size] = right_child
+                        weight_stack[stack_size] = current_weight * (1 - left_sample_frac)
+                        stack_size += 1
+
+        # Sanity check. Should never happen.
+        if not (0.999 < np.sum(weight_stack) < 1.001):
+            raise ValueError("Total weight should be 1.0 but was %.9f" % np.sum(weight_stack))
 
 
 def _check_n_classes(n_classes, expected_dtype):
