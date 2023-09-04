@@ -243,7 +243,7 @@ class ndarray:
             out=out,
         )
 
-    def conj(
+    def conjugate(
         self,
         /,
         out=None,
@@ -254,7 +254,7 @@ class ndarray:
         dtype=None,
         subok=True,
     ):
-        return np_frontend.conj(
+        return np_frontend.conjugate(
             self.ivy_array,
             out=out,
             where=where,

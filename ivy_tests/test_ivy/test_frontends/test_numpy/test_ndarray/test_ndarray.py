@@ -2358,12 +2358,12 @@ def test_numpy_ndarray_compress(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="conj",
+    method_name="conjugate",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("real_and_complex"),
     ),
 )
-def test_numpy_ndarray_conj(
+def test_numpy_ndarray_conjugate(
     dtype_and_x,
     on_device,
     frontend,
