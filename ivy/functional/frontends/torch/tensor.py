@@ -1842,6 +1842,9 @@ class Tensor:
                 "float64",
                 "complex",
                 "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
                 "int8",
             )
         },
