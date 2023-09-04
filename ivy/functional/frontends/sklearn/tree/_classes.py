@@ -49,12 +49,6 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
     def _compute_missing_values_in_feature_mask(self, X):
         raise NotImplementedError
 
-    def _support_missing_values(self, X):
-        raise NotImplementedError
-
-    def _compute_missing_values_in_feature_mask(self, X):
-        raise NotImplementedError
-
     def _fit(
         self,
         X,
@@ -68,16 +62,6 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
     def _validate_X_predict(self, X, check_input):
         raise NotImplementedError
 
-
-    def predict(self, X, check_input=True):
-        raise NotImplementedError
-    
-    def apply(self, X, check_input=True):
-        raise NotImplementedError
-    
-    def _validate_X_predict(self, X, check_input):
-        raise NotImplementedError
-
     def predict(self, X, check_input=True):
         raise NotImplementedError
 
@@ -85,13 +69,6 @@ class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):
         raise NotImplementedError
 
     def decision_path(self, X, check_input=True):
-        raise NotImplementedError
-
-    def _prune_tree(self):
-        raise NotImplementedError
-
-
-    def cost_complexity_pruning_path(self, X, y, sample_weight=None):
         raise NotImplementedError
 
     def _prune_tree(self):
