@@ -33,7 +33,9 @@ def test_sklearn_as_float_array(
     fn_tree="sklearn.utils.column_or_1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.one_of(st.tuples(st.integers(1, 10), st.just(1)), st.tuples(st.integers(1, 10))),
+        shape=st.one_of(
+            st.tuples(st.integers(1, 10), st.just(1)), st.tuples(st.integers(1, 10))
+        ),
     ),
 )
 def test_sklearn_column_or_1d(
