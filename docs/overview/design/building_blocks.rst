@@ -17,7 +17,7 @@ The first important point to make is that, Ivy does not implement it’s own C++
 Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
 Let’s take the function :func:`ivy.stack` as an example.
 
-There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
+There are separate backend modules for JAX, TensorFlow, PyTorch, and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
 
 .. code-block:: python
 
@@ -77,7 +77,7 @@ There were no changes required for this function, however NumPy and PyTorch both
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
 For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
-For example, the APIs of JAX, PyTorch and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing.
+For example, the APIs of JAX, PyTorch, and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing.
 Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 
 .. code-block:: python
@@ -200,7 +200,7 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 ------------------
 
-All code for setting and unsetting backend resides in the submodule at :mod:`ivy/utils/backend/handler.py`, and the front facing function is :func:`ivy.current_backend`.
+All code for setting and unsetting the backend resides in the submodule at :mod:`ivy/utils/backend/handler.py`, and the front facing function is :func:`ivy.current_backend`.
 The contents of this function are as follows:
 
 .. code-block:: python
@@ -240,7 +240,7 @@ The following is a slightly simplified version of this code for illustration, wh
        if not backend_stack:
            ivy_original_dict = ivy.__dict__.copy()
 
-       # add the input backend to global stack
+       # add the input backend to the global stack
        backend_stack.append(backend)
 
        # iterate through original ivy.__dict__
@@ -253,7 +253,7 @@ The following is a slightly simplified version of this code for illustration, wh
            # update global ivy.__dict__ with this method
            ivy.__dict__[k] = backend.__dict__[k]
 
-       # maybe log to terminal
+       # maybe log to the terminal
        if verbosity.level > 0:
            verbosity.cprint(
                'Backend stack: {}'.format(backend_stack))
@@ -277,7 +277,7 @@ A good example is :func:`ivy.lstm_update`, as shown:
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
-        """Perform long-short term memory update by unrolling time dimension of input array.
+        """Perform long-short term memory update by unrolling time dimension of the input array.
         Parameters
         ----------
         x
@@ -405,7 +405,7 @@ has a different mix of Ivy and PyTorch code, they all compile to the same graph:
    :align: center
    :width: 75%
 
-For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes.
+For all existing ML frameworks, the functional API is the backbone that underpins all higher level functions and classes.
 This means that under the hood, any code can be expressed as a composition of ops in the functional API.
 The same is true for Ivy.
 Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded.
@@ -441,7 +441,7 @@ For example, the following 3 pieces of code all compile to the exact same comput
    :width: 75%
 
 This compilation is not restricted to just PyTorch.
-Let's take another example, but compile to Tensorflow, NumPy and JAX:
+Let's take another example, but compile to Tensorflow, NumPy, and JAX:
 
 +------------------------------------+
 |.. code-block:: python              |
@@ -493,7 +493,7 @@ However, when compiling native framework code, we are only able to compile a gra
 For example, we cannot take torch code and compile this into tensorflow code.
 However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
 
-The graph compiler does not compile to C++, CUDA or any other lower level language.
+The graph compiler does not compile to C++, CUDA, or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
 Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
 
@@ -525,6 +525,6 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 
 **Round Up**
 
-Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
+Hopefully, this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler, and graph compiler 🙂
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

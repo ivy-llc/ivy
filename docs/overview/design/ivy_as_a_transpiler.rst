@@ -1,7 +1,7 @@
 Ivy as a Transpiler
 ===================
 
-On the :ref:`Building Blocks` page, we explored the role of the backend functional APIs, the Ivy functional API, the backend handler and the graph compiler.
+On the :ref:`Building Blocks` page, we explored the role of the backend functional APIs, the Ivy functional API, the backend handler, and the graph compiler.
 These parts are labelled (a) in the image below.
 
 Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks.
@@ -17,10 +17,10 @@ This is in keeping with the rest of the documentation.
 Frontend Functional APIs 🚧
 ---------------------------
 
-While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not, for example, enable PyTorch code to be framework agnostic.
+While the backend API, Ivy API, and backend handler enable all Ivy code to be framework-agnostic, they do not, for example, enable PyTorch code to be framework agnostic.
 But with frontend APIs, we can also achieve this!
 
-Let’s take a look at the how the implementation of :code:`clip` method would seem like in the frontends:
+Let’s take a look at how the implementation of :code:`clip` method would seem like in the frontends:
 
 
 .. code-block:: python
@@ -65,7 +65,7 @@ In the reverse direction: we can take pre-written pure PyTorch code, replace eac
 For this example it’s very simple, the differences are only syntactic, but the above process works for **any** function.
 If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy functions as compositions of backend methods.
 
-Let’s take a more complex example and convert PyTorch method :func:`torch.nn.functional.one_hot` into NumPy code.
+Let’s take a more complex example and convert the PyTorch method :func:`torch.nn.functional.one_hot` into NumPy code.
 The frontend is implemented by wrapping a single Ivy method :func:`ivy.one_hot` as follows:
 
 .. code-block:: python
@@ -283,14 +283,14 @@ If we want to remove Ivy from the pipeline entirely, we can then train the model
        params = jax.tree_multimap(update_rule, params, grads)
 
 
-Other JAX-specific network libraries such as Flax, Trax and Objax are also supported.
+Other JAX-specific network libraries such as Flax, Trax, and Objax are also supported.
 
 Overall, we have taken a :class:`torch.nn.Module` instance, which can be trained using PyTorch’s optimizer classes, and converted this to a :class:`haiku.Module` instance which can be trained using Haiku’s optimizer classes.
 The same is true for any combination of frameworks, and for any network architecture, regardless of its complexity!
 
 **Round Up**
 
-Hopefully this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the construction signs 🚧.
+Hopefully, this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the construction signs 🚧.
 This is in keeping with the rest of the documentation.
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
