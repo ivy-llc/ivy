@@ -28,10 +28,61 @@ We use the following linters:
 * `autoflake <https://github.com/PyCQA/autoflake>`_
 * `docformatter <https://github.com/PyCQA/docformatter>`_
 * `pydocstyle <https://github.com/pycqa/pydocstyle>`_
-* `ivy-lint <https://github.com/unifyai/lint-hook>`_ (WIP 🚧)
+* `ivy-lint <https://github.com/unifyai/lint-hook>`_ 
 
 You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/main/setup.cfg>`_
 file.
+
+Ivy-Lint
+--------
+
+The `FunctionOrderingFormatter` in `ivy-lint` is a specialized formatter designed to ensure a specific order of declarations in Python files. It sorts the functions, classes, and assignments in the codebase according to a predefined hierarchy.
+
+Overview:
+~~~~~~~~~
+
+1. **Purpose**: The primary objective of this formatter is to impose order in the code files by sorting Python declarations.
+2. **Target Files**: It targets specific files that match patterns defined in `FILE_PATTERN`.
+
+How the Formatter Works:
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. **Header Removal**: Before any ordering is performed, the existing headers in the source code are removed using the regex pattern defined in `HEADER_PATTERN`.
+
+2. **Extracting Node Comments**: 
+    - The formatter extracts AST nodes along with their leading comments from the source code. Leading comments are those found right above a declaration or a statement.
+    - The method `_extract_all_nodes_with_comments` provides this extraction, and `_extract_node_with_leading_comments` aids by retrieving a specific node's comments.
+
+3. **Building Dependency Graphs**: 
+    - To understand and maintain inherent relationships, dependency graphs are constructed.
+    - **Class Dependencies**: A graph (`class_dependency_graph`) is built to understand class inheritance. Nodes represent class names, and directed edges represent inheritance. The `class_build_dependency_graph` method facilitates this.
+    - **Assignment Dependencies**: Another graph (`assignment_dependency_graph`) captures dependencies among assignments. For instance, if one assignment depends on the value from another assignment, this relationship is represented in the graph. This is facilitated by the `assignment_build_dependency_graph` method.
+
+4. **Sorting Logic**:
+    - The `sort_key` function dictates the order in which nodes are arranged:
+        1. Imports are prioritized.
+        2. Assignments come next, with various considerations. If assignments depend on another assignment or a function/class, they are given priority.
+        3. Classes follow, based on the inheritance chain.
+        4. Functions come in two categories: Helper (private with names starting with "_") and API functions (public). They're sorted accordingly.
+    - Any module-level docstring is preserved and positioned at the beginning.
+    - Comments are retained with their associated code sections.
+    - Helper functions are grouped under the `# --- Helpers --- #` header, while the primary functions come under `# --- Main --- #`.
+   
+5. **File Processing**:
+    - If a file matches the `FILE_PATTERN`, the formatter reads its content and applies the rearrangement logic.
+    - The reordered code is then written back to the file.
+    - If there's a `SyntaxError` during the process, the formatter will notify that the provided file does not contain valid Python code.
+
+Using the Formatter:
+~~~~~~~~~~~~~~~~~~~~
+
+To utilize the `FunctionOrderingFormatter`, you'd typically integrate it as part of a pre-commit hook. When the hook triggers (usually before committing changes to a repository), the formatter checks each file against the `FILE_PATTERN` and, if matched, processes it to ensure it adheres to the desired ordering of declarations.
+
+Note:
+~~~~~
+
+For developers looking to understand or extend the formatter, it's essential to have a grasp of Python's Abstract Syntax Trees (AST). This formatter heavily relies on AST to parse and understand the Python source code.
+
 
 Setup Formatting Locally
 ------------------------
