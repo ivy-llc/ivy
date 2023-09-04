@@ -374,10 +374,12 @@ def softmax_with_cross_entropy(
             keepdims=True,
         )
     else:
+        mask = ivy.not_equal(label.astype("float64"), float(ignore_index))
         loss = ivy.add(
             -ivy.take_along_axis(logits, label, axis),
             ivy.log(ivy.sum(ivy.exp(logits), axis=axis, keepdims=True)),
         )
+        loss = ivy.multiply(loss, mask)
     if return_softmax:
         return paddle.to_tensor(loss), paddle.to_tensor(softmax)
     return paddle.to_tensor(loss)

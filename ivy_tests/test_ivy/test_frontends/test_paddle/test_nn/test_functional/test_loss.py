@@ -543,10 +543,14 @@ def test_paddle_softmax_with_cross_entropy(
     logits = x[0]
     labels = x[1]
     label_dtype = x_dtype
+    ignore_index = 0
     if soft_label:
         labels = labels / ivy.sum(labels).to_native()
     else:
         labels = ivy.argmax(labels, axis=axis).to_native()
+        flattened_labels = labels.flatten()
+        ignore_index = ivy.randint(0, flattened_labels.size)
+        ignore_index = flattened_labels[ignore_index]
         label_dtype = [str(labels.dtype)]
     if on_device == "cpu" or soft_label:
         numeric_stable_mode = True
@@ -560,7 +564,7 @@ def test_paddle_softmax_with_cross_entropy(
         logits=logits,
         label=labels,
         soft_label=soft_label,
-        ignore_index=-100,
+        ignore_index=ignore_index,
         numeric_stable_mode=numeric_stable_mode,
         return_softmax=return_softmax,
         axis=axis,
