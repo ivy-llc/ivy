@@ -56,3 +56,29 @@ def soft_margin_loss(
         return jnp.sum(loss)
     else:
         return loss
+
+
+def kl_div(
+    input: JaxArray,
+    target: JaxArray,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> JaxArray:
+    input = jnp.clip(input, 1e-7, 1)
+    target = jnp.clip(target, 1e-7, 1)
+
+    size = jnp.shape(input)
+    if len(size) < 1:
+        size = [1]
+
+    loss = jnp.sum(input * jnp.log(input / target), axis=-1)
+
+    if reduction == "mean":
+        return jnp.mean(loss)
+    elif reduction == "sum":
+        return jnp.sum(loss)
+    elif reduction == "batchmean":
+        return jnp.sum(loss) / size[0]
+    else:
+        return loss

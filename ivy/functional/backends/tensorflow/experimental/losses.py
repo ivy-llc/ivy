@@ -62,3 +62,14 @@ def soft_margin_loss(
         return tf.reduce_mean(loss)
     else:
         return loss
+
+
+@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+def kl_div(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> tf.Tensor:
+    return tf.keras.losses.KLDivergence(input, target, reduction=reduction)
