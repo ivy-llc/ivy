@@ -1870,24 +1870,28 @@ def einops_rearrange(
 
     Suppose we have a set of 32 images in "h w c" format (height-width-channel)
     and concatenate images along height (vertical axis), 960 = 32 * 30
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
     # Concatenate images along horizontal axis, 1280 = 32 * 40
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
     >>> print(x.shape)
     (30, 1280, 3)
 
     # Reorder axes to "b c h w" format for deep learning
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
     >>> print(x.shape)
     (32, 3, 30, 40)
 
     # Flatten each image into a vector, 3600 = 30 * 40 * 3
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
@@ -1895,6 +1899,7 @@ def einops_rearrange(
 
     # Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
     # 128 = 32 * 2 * 2
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c',
     ... h1=2, w1=2)
