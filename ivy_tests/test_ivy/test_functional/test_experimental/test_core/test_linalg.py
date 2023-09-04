@@ -154,7 +154,7 @@ def _generate_dot_dtype_and_arrays(draw):
             min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
         )
     )
-    # pdb.set_trace()
+
     shape_a = list(shape_a)
     shape_b = list(shape_b)
     if len(shape_a) == 1 and len(shape_b) == 1:
