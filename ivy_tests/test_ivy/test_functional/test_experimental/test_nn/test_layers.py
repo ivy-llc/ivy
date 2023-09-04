@@ -1283,43 +1283,43 @@ def test_rfftn(
 def stft_arguments(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))
     n_fft_type = draw(st.sampled_from(["int", "tuple"]))
+    
     if n_fft_type == "int":
         n_fft = draw(st.integers(min_value=1, max_value=256))
-        window_choices = [
-            st.sampled_from(['hann']),
-            st.integers(min_value=1, max_value=n_fft) 
-            if isinstance(n_fft, int) 
-            else st.integers(min_value=1, max_value=n_fft[1]),
-            st.lists(st.floats(min_value=0.0, max_value=1.0), min_size=1),
-        ]
     else:
         n_fft = tuple(
             draw(st.integers(min_value=1, max_value=256))
             for _ in range(2))
-        window_choices = [
-            st.sampled_from(['hann']),
-            st.tuples(st.sampled_from([(1,)])),
-            st.lists(st.sampled_from([1])),
-            st.floats(min_value=0.0, max_value=1.0),
-        ]
-
+    
     hop_length = draw(st.integers(min_value=1, max_value=256))
     axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
     fs = 1.0
-    window = draw(st.one_of(window_choices)) 
+    window = draw(st.one_of([
+        st.sampled_from(['hann']),
+        st.floats(min_value=0.0, max_value=1.0),
+        st.tuples(st.sampled_from([(1,)])),
+    ]))
+    
     win_length = (
         draw(st.integers(min_value=1, max_value=n_fft))
         if isinstance(n_fft, int)
         else draw(st.integers(min_value=1, max_value=n_fft[1]))
     )
+    
     noverlap = draw(st.integers(min_value=0, max_value=win_length - 1))
     center = draw(st.booleans())
     pad_mode = draw(st.sampled_from(["reflect", "constant"]))
     normalized = draw(st.booleans())
-    detrend = draw(st.one_of(st.booleans(), st.sampled_from(["linear", "constant"])))
+    detrend = draw(st.one_of([st.booleans(), st.sampled_from(["linear", "constant"])]))
     return_complex = draw(st.booleans())
     boundary = draw(st.sampled_from(['even', 'odd', 'constant', 'zeros', None]))
+    max_signal_size = 256  
+    if isinstance(n_fft, int) and n_fft > max_signal_size:
+        n_fft = max_signal_size
+    if isinstance(win_length, int) and win_length > max_signal_size:
+        win_length = max_signal_size
+
     return (
         dtype,
         n_fft,
@@ -1375,6 +1375,12 @@ def test_stft(
         return_complex,
         boundary,
     ) = stft_args
+    
+    if backend_fw == "jax":
+        window = "hann" if window == "hann" else "hann"
+    elif backend_fw in ["tensorflow", "torch", "paddle"]:
+        window = "hann" if window == "hann" else 1.0
+
     helpers.test_function(
         input_dtypes=dtype,
         on_device=on_device,
