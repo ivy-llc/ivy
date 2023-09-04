@@ -1,10 +1,50 @@
 # global
 from hypothesis import strategies as st
+import ivy
 
 # local
 
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+
+@handle_frontend_test(
+    fn_tree="paddle.normal",
+    input_dtypes=st.sampled_from([["int32"], ["int64"]]),
+    shape=helpers.get_shape(
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    mean=st.floats(
+        min_value=-10,
+        max_value=10,
+    ),
+    std=st.floats(
+        min_value=0,
+        max_value=10,
+    ),
+)
+def test_paddle_normal(
+    input_dtypes,
+    shape,
+    mean,
+    std,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes + [ivy.float64] + [ivy.float32],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        mean=mean,
+        std=std,
+        shape=shape,
+    )
 
 
 @handle_frontend_test(
