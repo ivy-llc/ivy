@@ -385,9 +385,7 @@ def test_tensorflow_uniform(
 
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_binomial",
-    output_dtype=helpers.array_dtypes(
-        available_dtypes=("float32", "float64"),
-    ),
+    output_dtype=helpers.array_dtypes(available_dtypes=("int32", "int64")),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -444,16 +442,14 @@ def test_tensorflow_stateless_binomial(
         shape=shape,
         counts=counts,
         probs=probs,
-        dtype=output_dtype[0],
+        output_dtype=output_dtype[0],
         seed=seed[0],
     )
 
 
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_gamma",
-    dtype=helpers.array_dtypes(
-        available_dtypes=("float32", "float64"),
-    ),
+    dtype=helpers.get_dtypes("float", full=False),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
