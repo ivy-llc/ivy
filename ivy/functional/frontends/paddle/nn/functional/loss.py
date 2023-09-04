@@ -279,16 +279,14 @@ def nll_loss(
     label_dims = len(label_shape)
 
     ivy.assertions.check_true(
-        input_dims -1 == label_dims or input_dims == label_dims,
+        input_dims - 1 == label_dims or input_dims == label_dims,
         message=str(
             "Expected input_dims - 1 = label_dims or input_dims == label_dims "
-            "(got input_dims %d, label_dims %d)" % (input_dims, label_dims)
-        ),
+            "(got input_dims %d, label_dims %d)" % (input_dims, label_dims)),
     )
     ivy.assertions.check_true(
         input_dims >= 2,
-        message=str(
-            "Expected 2 or more dimensions (got %d})" % (input_dims)
+        message=str("Expected 2 or more dimensions (got %d})" % (input_dims)
         ),
     )
     ivy.assertions.check_true(
@@ -312,19 +310,20 @@ def nll_loss(
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
        
-    elif reduction == 'mean':
+    elif reduction == "mean":
         output = ivy.mean(loss)
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
         
-    elif reduction == 'none':
+    elif reduction == "none":
         output = loss
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index] / den
         
     else:
         raise ivy.utils.exceptions.IvyException(
-            "The value of 'reduction' in nll_loss should be 'sum', 'mean' or 'none', but received {}, which is not allowed.".format(reduction)
+            "The value of 'reduction' in nll_loss should be 'sum', 'mean' or 'none',"
+            " but received {}, which is not allowed.".format(reduction)
         )
     return output
 
