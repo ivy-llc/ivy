@@ -9,6 +9,7 @@ versions = {
     "scipy": "1.10.1",
     "paddle": "2.5.1",
     "sklearn": "1.3.0",
+    "xgboost": "1.7.6",
 }
 
 

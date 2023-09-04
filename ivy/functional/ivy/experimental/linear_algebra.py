@@ -1668,16 +1668,19 @@ def dot(
     return current_backend(a, b).dot(a, b, out=out)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-# @handle_device_shifting
+@handle_device_shifting
 def general_inner_product(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
     n_modes: Optional[int] = None,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, float]:
     """
     Generalised inner products between tensors.
@@ -1695,11 +1698,36 @@ def general_inner_product(
         int, default is None. If None, the traditional inner product is returned
         (i.e. a float) otherwise, the product between the `n_modes` last modes of
         `a` and the `n_modes` first modes of `b` is returned. The resulting tensor's
-        order is `ndim(a) - n_modes`.
+        order is `len(a) - n_modes`.
+    out
+        Optional output array. If provided, the output array to store the result.
 
     Returns
     -------
         float if n_modes is None, tensor otherwise
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> print(result)
+    ivy.array(32)
+
+    >>> a = ivy.array([1, 2])
+    >>> b = ivy.array([4, 5])
+    >>> result = ivy.general_inner_product(a, b)
+    >>> print(result)
+    ivy.array(14)
+
+    >>> a = ivy.array([[1, 1], [1, 1]])
+    >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
+    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> print(result)
+    ivy.array([[2, 3, 4, 5],
+       [2, 3, 4, 5]])
     """
     shape_a = a.shape
     shape_b = b.shape
@@ -1720,13 +1748,8 @@ def general_inner_product(
         )
 
     common_size = int(ivy.prod(common_modes)) if len(common_modes) != 0 else 0
-
     output_shape = shape_a[:-n_modes] + shape_b[n_modes:]
-    if common_size == 0:
-        inner_product = ivy.dot(ivy.reshape(a, (-1,)), ivy.reshape(b, (-1,)))
-        return inner_product
-    else:
-        inner_product = ivy.dot(
-            ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
-        )
-    return ivy.reshape(inner_product, output_shape)
+    inner_product = ivy.dot(
+        ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
+    )
+    return ivy.reshape(inner_product, output_shape, out=out)

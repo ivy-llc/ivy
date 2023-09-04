@@ -680,6 +680,9 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         self: Union[ivy.Array, ivy.NativeArray],
         b: Union[ivy.Array, ivy.NativeArray],
         n_modes: Optional[int] = None,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, float]:
         """
         ivy.Array instance method variant of ivy.general_inner_product. This method
@@ -696,10 +699,35 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             int, default is None. If None, the traditional inner product is returned
             (i.e. a float) otherwise, the product between the `n_modes` last modes of
             `a` and the `n_modes` first modes of `b` is returned. The resulting tensor's
-            order is `ndim(a) - n_modes`.
+            order is `len(a) - n_modes`.
+        out
+            Optional output array. If provided, the output array to store the result.
 
         Returns
         -------
             float if n_modes is None, tensor otherwise
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([1, 2])
+        >>> b = ivy.array([4, 5])
+        >>> result = a.general_inner_product(b)
+        >>> print(result)
+        ivy.array(14)
+
+        >>> a = ivy.array([[1, 1], [1, 1]])
+        >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
+        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> print(result)
+        ivy.array([[2, 3, 4, 5],
+            [2, 3, 4, 5]])
         """
-        return ivy.general_inner_product(self._data, b, n_modes=n_modes)
+        return ivy.general_inner_product(self, b, n_modes, out=out)
