@@ -64,3 +64,32 @@ def dropout3d(input, p=0.5, training=True, inplace=False):
             input, p, training=training, data_format="NDHWC", out=input
         )
     return ivy.dropout3d(input, p, training=training, data_format="NDHWC")
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def feature_alpha_dropout(input, p=0.5, training=False, inplace=False):
+    if p == 0.0 or not training or len(input.shape) < 4:
+        return input
+    alpha = 1.7580993408473766
+    a = float(1.0 / ivy.sqrt((alpha * alpha * p + 1) * (1 - p)))
+
+    mask_shape = input.shape[0:2]
+    for _ in range(2, len(input.shape)):
+        mask_shape += (1,)
+    feature_mask = ivy.where(
+        ivy.random_uniform(shape=mask_shape, device=ivy.dev(input)) < p,
+        0.0,
+        1.0,
+    )
+    mask = ivy.ones(input.shape) * feature_mask
+
+    b = ((mask - 1) * alpha * a) + alpha * a * p
+    mask *= a
+
+    if inplace:
+        ivy.inplace_update(input, mask * input + b)
+        return input
+    else:
+        masked = mask * input + b
+        return masked
