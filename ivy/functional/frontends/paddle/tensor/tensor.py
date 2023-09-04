@@ -141,6 +141,11 @@ class Tensor:
     def sinh(self, name=None):
         return paddle_frontend.Tensor(ivy.sinh(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def lerp_(self, y, weight, name=None):
+        self.ivy_array = paddle_frontend.lerp(self, y, weight).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(self, axis=None, keepdim=False, dtype=None, name=None):
         return paddle_frontend.Tensor(
