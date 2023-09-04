@@ -149,34 +149,14 @@ def pad(
 
 
 pad.partial_mixed_handler = (
+    (
     lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        (
         _check_paddle_pad(
-            mode, reflect_type, args[1], args[0].shape, constant_values, 3
-        )
+                    mode, reflect_type, args[1], args[0].shape, constant_values, 3
+                )
     )
 )
-
-
-def _check_paddle_pad(
-    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
-):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
-    return isinstance(constant_values, Number) and (
-        mode == "constant"
-        or (
-            (
-                (
-                    mode == "reflect"
-                    and reflect_type == "even"
-                    and all(
-                        pad_width[i][0] < s and pad_width[i][1] < s
-                        for i, s in enumerate(input_shape)
-                    )
-                )
-                or mode in ["edge", "wrap"]
-            )
-            and len(input_shape) <= ndim_limit
-        )
     )
 
 

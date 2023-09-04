@@ -18,8 +18,11 @@ import torch
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 import ivy
-from ...paddle.experimental.manipulation import _check_paddle_pad, _to_paddle_padding
-from ...tensorflow.experimental.manipulation import _to_tf_padding
+from ivy.functional.ivy.experimental.manipulation import (
+    _to_tf_padding,
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
 
 
 def moveaxis(
