@@ -1,5 +1,6 @@
 # global
 import copy
+import time
 from typing import Union, List
 import numpy as np
 import types
@@ -25,6 +26,7 @@ import ivy_tests.test_ivy.helpers.globals as t_globals
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+from ivy_tests.test_ivy.helpers.testing_helpers import _create_transpile_report
 from .assertions import (
     value_test,
     check_unsupported_dtype,
@@ -664,7 +666,7 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     # ToDo add with_backend refactor in GC
-    _switch_backend_context(test_flags.test_compile)
+    _switch_backend_context(test_flags.test_compile or test_flags.transpile)
 
     assert (
         not test_flags.with_out or not test_flags.inplace
@@ -969,7 +971,19 @@ def test_frontend_function(
 
     # compute the return via the frontend framework
     frontend_fw = importlib.import_module(gt_frontend_submods)
-    frontend_ret = frontend_fw.__dict__[gt_fn_name](*args_frontend, **kwargs_frontend)
+    frontend_fw_fn = frontend_fw.__dict__[gt_fn_name]
+    frontend_ret = frontend_fw_fn(*args_frontend, **kwargs_frontend)
+
+    # ToDo: only compiles and does inference on ivy arrays for now
+    if test_flags.transpile and hasattr(frontend_config, "backend_str"):
+        _get_transpiled_data_if_required(
+            frontend_fn,
+            frontend_fw_fn,
+            frontend,
+            fn_name=gt_frontend_submods + "." + gt_fn_name,
+            frontend_fw_args=args_frontend,
+            frontend_fw_kwargs=kwargs_frontend,
+        )
 
     if frontend_config.isscalar(frontend_ret):
         frontend_ret_np_flat = [frontend_config.to_numpy(frontend_ret)]
@@ -2402,6 +2416,68 @@ def get_frontend_ret(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
             )
     return ret
+
+
+def _get_transpiled_data_if_required(
+    frontend_fn,
+    frontend_fw_fn,
+    frontend,
+    fn_name,
+    frontend_fw_args,
+    frontend_fw_kwargs,
+):
+    iterations = 1
+
+    # to compile the frontend function on ivy arrays
+    with BackendHandler.update_backend(frontend) as ivy_backend:
+        args, kwargs = ivy_backend.args_to_ivy(*frontend_fw_args, **frontend_fw_kwargs)
+
+    compiled_fn = compiled_if_required(
+        frontend,
+        frontend_fn,
+        test_compile=True,
+        args=args,
+        kwargs=kwargs,
+    )
+
+    # running inference to get runtime
+    frontend_timings = []
+    frontend_fw_timings = []
+    for i in range(0, iterations):
+        # timing the compiled_fn
+        start = time.time()
+        compiled_fn(*args, **kwargs)
+        end = time.time()
+        frontend_timings.append(end - start)
+
+        # timing the frontend_fw_fn
+        start = time.time()
+        frontend_fw_fn(*frontend_fw_args, **frontend_fw_kwargs)
+        end = time.time()
+        frontend_fw_timings.append(end - start)
+
+    # compile to get ivy nodes
+    with BackendHandler.update_backend(frontend) as ivy_backend:
+        compiled_fn_to_ivy = ivy_backend.compile(
+            frontend_fn, to="ivy", args=args, kwargs=kwargs
+        )
+
+    frontend_time = np.mean(frontend_timings).item()
+    frontend_fw_time = np.mean(frontend_fw_timings).item()
+    backend_nodes = len(compiled_fn._functions)
+    ivy_nodes = len(compiled_fn_to_ivy._functions)
+
+    data = {
+        "frontend": frontend,
+        "frontend_func": fn_name,
+        "frontend_time": frontend_time,
+        "frontend_fw_time": frontend_fw_time,
+        "backend_nodes": backend_nodes,
+        "ivy_nodes": ivy_nodes,
+    }
+
+    # creating json object and creating a file
+    _create_transpile_report(data, "report.json")
 
 
 def args_to_container(array_args):
