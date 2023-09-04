@@ -508,6 +508,13 @@ def square(x, name=None):
     return ivy.square(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_divide(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
