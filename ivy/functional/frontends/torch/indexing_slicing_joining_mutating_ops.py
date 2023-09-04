@@ -238,17 +238,9 @@ def index_reduce(input, dim, index, source, reduce, *, include_self=True, out=No
             result_slice = [slice(None)] * result.ndim
             result_slice[dim] = input_index
 
-            print("result:", result[tuple(result_slice)].shape)
-            print(
-                "update:", update_result(result, reduce, input_data, source_data).shape
-            )
-            print(input_data.dtype)
-
             update_data = update_result(result, reduce, input_data, source_data)
             slide_shape = result[tuple(result_slice)].shape
             result[tuple(result_slice)] = ivy.reshape(update_data, slide_shape)
-
-            print(result.dtype)
 
             counts = update_counts(reduce, counts, dim, input_index)
 
@@ -260,26 +252,14 @@ def index_reduce(input, dim, index, source, reduce, *, include_self=True, out=No
 
             input_data = ivy.flatten(result)[input_index]
             source_data = ivy.flatten(source)[i]
-            print(input_data.dtype)
-
-            print("index:", input_index)
-            print("input:", input_data)
-            print("source:", source_data)
-            print("update:", update_result(result, reduce, input_data, source_data))
 
             result[input_index] = update_result(result, reduce, input_data, source_data)
             counts[input_index] += 1
-
-            print(result.dtype)
-
-            print("result:", result)
-            print("==================\n")
 
     if reduce == "mean":
         if ivy.any(counts == ivy.array(0)):
             counts[counts == ivy.array(0)] = ivy.array(1)
         result /= counts
-        print("RESULT:", result)
         if not input.is_float_dtype():
             result = ivy.floor(result)
             result = result.astype(input.dtype)
