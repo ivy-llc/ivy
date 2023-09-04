@@ -272,7 +272,7 @@ def nll_loss(
     """Refer
     https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for
     more on NLL(Negative log likelihood) Loss."""
-    
+
     input_shape = list(input.shape)
     input_dims = len(input_shape)
     label_shape = list(label.shape)
@@ -282,12 +282,12 @@ def nll_loss(
         input_dims - 1 == label_dims or input_dims == label_dims,
         message=str(
             "Expected input_dims - 1 = label_dims or input_dims == label_dims "
-            "(got input_dims %d, label_dims %d)" % (input_dims, label_dims)),
+            "(got input_dims %d, label_dims %d)" % (input_dims, label_dims)
+        ),
     )
     ivy.assertions.check_true(
         input_dims >= 2,
-        message=str("Expected 2 or more dimensions (got %d})" % (input_dims)
-        ),
+        message=str("Expected 2 or more dimensions (got %d})" % (input_dims)),
     )
     ivy.assertions.check_true(
         input_shape[1] >= 1,
@@ -309,17 +309,17 @@ def nll_loss(
         output = ivy.sum(loss)
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
-       
+    
     elif reduction == "mean":
         output = ivy.mean(loss)
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
-        
+    
     elif reduction == "none":
         output = loss
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index] / den
-        
+    
     else:
         raise ivy.utils.exceptions.IvyException(
             "The value of 'reduction' in nll_loss should be 'sum', 'mean' or 'none',"
