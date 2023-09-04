@@ -468,6 +468,81 @@ def test_paddle_nll_loss(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.sigmoid_focal_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=False,
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    dtype_and_normalizer=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_num_dims=1,
+        min_dim_size=1,
+        max_num_dims=1,
+        max_dim_size=1,
+    ),
+    dtype_and_labels=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=False,
+        min_num_dims=1,
+        min_dim_size=1,
+        min_value=0,
+        max_value=1,
+    ),
+    alpha=st.floats(
+        min_value=0.0,
+        max_value=1.0,
+    ),
+    gamma=st.floats(
+        min_value=0.0,
+        max_value=5.0,
+    ),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+)
+def test_paddle_sigmoid_focal_loss(
+    dtype_and_x,
+    dtype_and_normalizer,
+    dtype_and_labels,
+    alpha,
+    gamma,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x = dtype_and_x
+    normalizer_dtype, normalizer = dtype_and_normalizer
+    label_dtype, labels = dtype_and_labels
+    normalizer = [norm.reshape(-1) for norm in normalizer]
+    labels = ivy.array(labels, dtype=ivy.int64)
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int64]
+        + [ivy.float64]
+        + x_dtype
+        + normalizer_dtype
+        + label_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logit=x[0],
+        label=labels[0],
+        alpha=alpha,
+        gamma=gamma,
+        normalizer=normalizer[0],
+        reduction=reduction,
+    )
+
+
 # smooth_l1_loss
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.smooth_l1_loss",
@@ -508,6 +583,66 @@ def test_paddle_smooth_l1_loss(
         label=x[1],
         reduction=reduction,
         delta=delta,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softmax_with_cross_entropy",
+    dtype_and_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=1e-04,
+        max_value=1,
+        min_num_dims=2,
+        allow_inf=False,
+        shared_dtype=True,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    soft_label=st.booleans(),
+    numeric_stable_mode=st.booleans(),
+    return_softmax=st.booleans(),
+)
+def test_paddle_softmax_with_cross_entropy(
+    dtype_and_x_and_axis,
+    soft_label,
+    numeric_stable_mode,
+    return_softmax,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, axis = dtype_and_x_and_axis
+    logits = x[0]
+    labels = x[1]
+    label_dtype = x_dtype
+    ignore_index = 0
+    if soft_label:
+        labels = labels / ivy.sum(labels).to_native()
+    else:
+        labels = ivy.argmax(labels, axis=axis).to_native()
+        flattened_labels = labels.flatten()
+        ignore_index = ivy.randint(0, flattened_labels.size)
+        ignore_index = flattened_labels[ignore_index]
+        label_dtype = [str(labels.dtype)]
+    if on_device == "cpu" or soft_label:
+        numeric_stable_mode = True
+    helpers.test_frontend_function(
+        input_dtypes=[x_dtype[0], label_dtype[0]],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=logits,
+        label=labels,
+        soft_label=soft_label,
+        ignore_index=ignore_index,
+        numeric_stable_mode=numeric_stable_mode,
+        return_softmax=return_softmax,
+        axis=axis,
     )
 
 

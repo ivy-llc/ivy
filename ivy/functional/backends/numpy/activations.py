@@ -10,7 +10,9 @@ from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 @_scalar_output_to_0d_array
-def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def relu(
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.maximum(x, 0, out=out, dtype=x.dtype)
 
 
@@ -18,14 +20,24 @@ relu.support_native_out = True
 
 
 def leaky_relu(
-    x: np.ndarray, /, *, alpha: float = 0.2, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    alpha: float = 0.2,
+    complex_mode="jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
 @_scalar_output_to_0d_array
 def gelu(
-    x: np.ndarray, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    approximate: bool = False,
+    complex_mode="jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if approximate:
         ret = 0.5 * x * (1 + np.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
@@ -58,8 +70,8 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[np.ndarray] = None,
     complex_mode="jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if beta is not None and beta != 1:
         x_beta = x * beta
@@ -83,6 +95,15 @@ def softplus(
 
 
 softplus.support_native_out = True
+
+
+# Softsign
+@_scalar_output_to_0d_array
+def softsign(x: np.ndarray, /, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.divide(x, 1 + np.abs(x), out=out).astype(x.dtype)
+
+
+softsign.support_native_out = True
 
 
 @_scalar_output_to_0d_array

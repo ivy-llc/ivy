@@ -133,7 +133,6 @@ def full(
     device=None,
     requires_grad=None,
 ):
-    fill_value = ivy.to_scalar(fill_value)
     ret = ivy.full(size, fill_value, dtype=dtype, device=device, out=out)
     return ret
 
