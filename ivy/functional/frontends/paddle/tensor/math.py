@@ -172,6 +172,13 @@ def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
     return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def digamma(x, name=None):
+    digamma_fun = ivy.digamma
+    return ivy.array(digamma_fun(x), dtype=x.dtype)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def divide(x, y, name=None):
