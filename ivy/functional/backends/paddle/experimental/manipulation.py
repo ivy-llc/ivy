@@ -19,7 +19,10 @@ import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_supported_device_and_dtypes
-from ...tensorflow.experimental.manipulation import _to_tf_padding
+from ivy.functional.ivy.experimental.manipulation import (
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
 
 # Code from cephes for i0
 
@@ -149,15 +152,12 @@ def pad(
 
 
 pad.partial_mixed_handler = (
-    (
     lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
-        (
         _check_paddle_pad(
-                    mode, reflect_type, args[1], args[0].shape, constant_values, 3
-                )
+            mode, reflect_type, args[1], args[0].shape, constant_values, 3
+        )
     )
 )
-    )
 
 
 def _to_paddle_padding(pad_width, ndim):
