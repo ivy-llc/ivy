@@ -559,6 +559,37 @@ def test_paddle_ones_like(
     )
 
 
+# random_uniform
+@handle_frontend_test(
+    fn_tree="paddle.random_uniform",
+    dtype_and_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_random_uniform(
+    *,
+    dtype_and_shape,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, shape = dtype_and_shape
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+    )
+
+
 # Tests #
 # ----- #
 
