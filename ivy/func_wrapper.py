@@ -379,7 +379,7 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
         # If not, scan for any other inputs which are already arrays and use the device
         # of the first one found.
         device = None
-        if "device" in kwargs:
+        if "device" in kwargs and kwargs["device"] is not None:
             device = device
         else:
             for arg in args + list(kwargs.values()):
