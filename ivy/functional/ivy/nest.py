@@ -217,7 +217,35 @@ def set_nest_at_index(
 
 
 @handle_exceptions
-def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
+    """
+    Recursively inserts a value into a nested data structure at a specified index.
+
+    This function traverses a nested data structure and inserts the provided `value`
+    at the specified `index`.
+
+    Parameters
+    ----------
+    nest : Iterable
+        The nested data structure.
+    index : Tuple
+        The index specifying the location where the `value` should be inserted.
+    value : object
+        The value to be inserted.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> nest = [[1, 2], [3, 4]]
+    >>> index = (1, 1)
+    >>> value = 99
+    >>> insert_into_nest_at_index(nest, index, value)
+    >>> print(nest)
+    [[1, 2], [3, 99, 4]]
+    """
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):

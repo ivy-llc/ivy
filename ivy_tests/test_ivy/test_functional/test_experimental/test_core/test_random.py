@@ -6,8 +6,86 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
 
 
-# Helpers #
-# ------- #
+@handle_test(
+    fn_tree="functional.ivy.experimental.bernoulli",
+    dtype_and_probs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=0,
+        max_value=1,
+        min_num_dims=0,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
+)
+def test_bernoulli(
+    *, dtype_and_probs, seed, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, probs = dtype_and_probs
+    # torch doesn't support half precision on CPU
+    assume(
+        not ("torch" in str(backend_fw) and "float16" in dtype and on_device == "cpu")
+    )
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        test_values=False,
+        probs=probs[0],
+        logits=None,
+        shape=None,
+        seed=seed,
+    )
+
+
+# beta
+@handle_test(
+    fn_tree="functional.ivy.experimental.beta",
+    dtype_and_alpha_beta=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=2,
+        num_arrays=2,
+        exclude_min=True,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    test_gradients=st.just(False),
+)
+def test_beta(
+    *,
+    dtype_and_alpha_beta,
+    seed,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_flags,
+):
+    dtype, alpha_beta = dtype_and_alpha_beta
+    if "float16" in dtype:
+        return
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        test_values=False,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        alpha=alpha_beta[0],
+        beta=alpha_beta[1],
+        shape=None,
+        dtype=dtype[0],
+        seed=seed,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
 
 
 # dirichlet
@@ -61,55 +139,6 @@ def test_dirichlet(
             assert ivy_backend.all(
                 ivy_backend.sum(u, axis=-1) == ivy_backend.sum(v, axis=-1)
             )
-            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
-            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
-
-
-# beta
-@handle_test(
-    fn_tree="functional.ivy.experimental.beta",
-    dtype_and_alpha_beta=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=1,
-        max_num_dims=2,
-        num_arrays=2,
-        exclude_min=True,
-    ),
-    seed=helpers.ints(min_value=0, max_value=100),
-    test_gradients=st.just(False),
-)
-def test_beta(
-    *,
-    dtype_and_alpha_beta,
-    seed,
-    backend_fw,
-    fn_name,
-    on_device,
-    test_flags,
-):
-    dtype, alpha_beta = dtype_and_alpha_beta
-    if "float16" in dtype:
-        return
-    ret, ret_gt = helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        test_values=False,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        alpha=alpha_beta[0],
-        beta=alpha_beta[1],
-        shape=None,
-        dtype=dtype[0],
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
-    ret_gt = helpers.flatten_and_to_np(
-        ret=ret_gt, backend=test_flags.ground_truth_backend
-    )
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        for u, v in zip(ret, ret_gt):
             assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
             assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
 
@@ -213,36 +242,3 @@ def test_poisson(
     for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.bernoulli",
-    dtype_and_probs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
-        max_value=1,
-        min_num_dims=0,
-    ),
-    seed=helpers.ints(min_value=0, max_value=100),
-    test_gradients=st.just(False),
-)
-def test_bernoulli(
-    *, dtype_and_probs, seed, test_flags, backend_fw, fn_name, on_device
-):
-    dtype, probs = dtype_and_probs
-    # torch doesn't support half precision on CPU
-    assume(
-        not ("torch" in str(backend_fw) and "float16" in dtype and on_device == "cpu")
-    )
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        test_values=False,
-        probs=probs[0],
-        logits=None,
-        shape=None,
-        seed=seed,
-    )
