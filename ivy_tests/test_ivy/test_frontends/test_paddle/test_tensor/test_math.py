@@ -727,6 +727,36 @@ def test_paddle_diff(
     )
 
 
+# digamma
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.digamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+    ),
+)
+def test_paddle_digamma(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-4,
+        x=x[0],
+    )
+
+
 # divide
 @handle_frontend_test(
     fn_tree="paddle.divide",
