@@ -30,6 +30,14 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def add_(x, y, name=None):
+    return ivy.inplace_update(x, add(x, y))
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
