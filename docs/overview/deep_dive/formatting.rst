@@ -47,7 +47,8 @@ Overview:
 How the Formatter Works:
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Header Removal**: Before any ordering is performed, the existing headers in the source code are removed using the regex pattern defined in `HEADER_PATTERN`.
+1. **Header Removal**: 
+    - Before any ordering is performed, the existing headers in the source code are removed using the regex pattern defined in `HEADER_PATTERN`.
 
 2. **Extracting Node Comments**: 
     - The formatter extracts AST nodes along with their leading comments from the source code. Leading comments are those found right above a declaration or a statement.
