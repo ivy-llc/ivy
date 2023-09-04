@@ -198,6 +198,12 @@ def floor(x, name=None):
     return ivy.floor(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_(x, name=None):
+    return ivy.inplace_update(x, floor(x))
+
+
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
