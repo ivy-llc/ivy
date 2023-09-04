@@ -67,7 +67,7 @@ c. Comment on the ToDo list issue with a reference to your new issue like so:
    At some point after your comment is made, your issue will automatically be added to the ToDo list and the comment will be deleted.
    No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should be kept clean with comments only as described above.
 
-d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
+d. Start working on the task, and open a PR as soon as you have a full or partial solution, when you open the PR make sure to follow the `conventional commits format <https://www.conventionalcommits.org/en/v1.0.0/>`_, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
    :code:`Close #Issue_number`
 
@@ -532,7 +532,7 @@ with PyCharm
         1. Click the gutter at the executable line of code where you want to set the breakpoint or place the caret at the line and press :code:`Ctrl+F8`
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
-           :aligh: center
+           :align: center
 
     2. Enter into the debug mode:
         1. Click on Run icon and Select **Debug test** or press :code:`Shift+F9`.
@@ -577,10 +577,11 @@ with PyCharm
             1. Select the breakpoint-fragment of code, press :code:`Alt+shift+E` Start debugging!
 
             .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/console_coding.png?raw=true
-               :aligh: center
+               :align: center
+
 
     5. Using **try-except**:
-        1. PyChram is great at pointing the lines of code which are causing tests to fail.
+        1. PyCharm is great at pointing the lines of code which are causing tests to fail.
            Navigating to that line, you can add Try-Except block with breakpoints to get in depth understanding of the errors.
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/try_except.png?raw=true
