@@ -17,7 +17,7 @@ Ivy Frontend Tests
 Introduction
 ------------
 
-Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder `test ivy`_.
+Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in the subfolder `test ivy`_.
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
 **Writing Ivy Frontend Tests**
@@ -27,7 +27,7 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 
 **Ivy Decorators**
 
-Ivy provides test decorators for frontend tests to make it easier and more maintainable, currently there are two:
+Ivy provides test decorators for frontend tests to make them easier and more maintainable, currently there are two:
 
 * :func:`@handle_frontend_test` a decorator which is used to test frontend functions, for example :func:`np.zeros` and :func:`tensorflow.tan`.
 * :func:`@handle_frontend_method` a decorator which is used to test frontend methods and special methods, for example :func:`torch.Tensor.add` and :func:`numpy.ndarray.__add__`.
@@ -363,7 +363,7 @@ This function requires us to create extra functions for generating :code:`shape`
         )
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for NumPy.
-* :func:`numpy.full` does not have a :code:`where` argument so we can use :func:`helpers.test_frontend_function`, we specify the `out` flag explicitely.
+* :func:`numpy.full` does not have a :code:`where` argument so we can use :func:`helpers.test_frontend_function`, we specify the `out` flag explicitly.
 
 **TensorFlow**
 
@@ -419,7 +419,7 @@ This function requires us to create extra functions for generating :code:`shape`
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for this function.
 * Tensorflow's version of :func:`full` is named :func:`Fill` therefore we specify the :code:`fn_tree` argument to be :code:`"Fill"`
-* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
+* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitly.
 
 
 **PyTorch**
@@ -486,7 +486,7 @@ Testing Without Using Tests Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 While even using hypothesis, there are some cases in which we set :code:`test_values=False` for example, we have a
-function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
+function add_noise() and we call it on x and we try to assert (we internally use assert np.all_close) that the result
 from torch backend matches tensorflow and the test will always fail, because the function add_noise() depends on a random
 seed internally that we have no control over, what we change is only how we test for equality, in which in that case
 we can not and we have to reconstruct the output as shown in the example below.
@@ -535,9 +535,9 @@ we can not and we have to reconstruct the output as shown in the example below.
                 ground_truth_backend=frontend,
             )
 
-* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.
+* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test by reconstructing the output.
 
-What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not same it will cause
+What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not the same it will cause
 an assertion, the examples given below will make it clearer.
 
 .. code-block:: python
@@ -553,7 +553,7 @@ an assertion, the examples given below will make it clearer.
     >>> a = np.array([[1., 5.]], dtype='float64')
     >>> b = np.array([[2., 4.]], dtype='float32')
     >>> print(helpers.assert_all_close(a, b))
-    AssertionError: the return with a TensorFlow backend produced data type of float32, while the return with a  backend returned a data type of float64.
+    AssertionError: the return with a TensorFlow backend produced a data type of float32, while the return with a  backend returned a data type of float64.
 
 
 Alias functions
@@ -632,8 +632,8 @@ for example, :code:`ndarray.__add__` would expect an array as input, despite the
 :func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
   - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
   - :code:`init_all_as_kwargs_np` The data to be passed when intializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
-  - :code:`method_input_dtypes` The input dtypes of the arguemnt which are to be passed to the instance method after the intialization of the array.
-  - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to instance method.
+  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the intialization of the array.
+  - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to the instance method.
 
 
 Frontend Instance Method Test Examples
