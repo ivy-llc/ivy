@@ -2,6 +2,8 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
+import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
 
@@ -176,6 +178,44 @@ def _sparse_csr_indices_values_shape(draw):
 
 # --- Main --- #
 # ------------ #
+
+
+# adding sparse array to dense array
+@handle_method(
+    init_tree="ivy.array",
+    method_tree="Array.__add__",
+    sparse_data=_sparse_coo_indices_values_shape(),
+)
+def test_array_add_sparse(
+    sparse_data,
+    method_name,
+    class_name,
+    on_device,
+):
+    coo_ind, val_dtype, val, shp = sparse_data
+
+    # set backed to 'torch' as this is the only backend which supports sparse arrays
+    ivy.set_backend("torch")
+
+    # initiate a sparse array
+    sparse_inst = ivy.sparse_array.SparseArray(
+        coo_indices=coo_ind,
+        values=val,
+        dense_shape=shp,
+        format="coo",
+    )
+
+    # create an Array instance
+    array_class = getattr(ivy, class_name)
+    x = np.random.random_sample(shp)
+    x = ivy.array(x, dtype=val_dtype, device=on_device)
+
+    # call add method
+    add_method = getattr(array_class, method_name)
+    res = add_method(x, sparse_inst)
+
+    # make sure the result is an Array instance
+    assert isinstance(res, array_class)
 
 
 # bsc - to_dense_array
