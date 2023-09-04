@@ -199,7 +199,13 @@ def dot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.matmul(a, b)
+    a, b = ivy.promote_types_of_inputs(a, b)
+    if a.dim() == 0 or b.dim() == 0:
+        return torch.mul(a, b, out=out)
+    if a.dim() in [1, 2] and b.dim() in [1, 2] or (a.dim() >= 1 and b.dim() == 1):
+        return torch.matmul(a, b, out=out)
+
+    return torch.tensordot(a, b, dims=[[-1], [-2]], out=out)
 
 
 dot.support_native_out = True

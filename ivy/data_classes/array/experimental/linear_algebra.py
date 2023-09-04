@@ -675,3 +675,56 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             tol=tol,
             verbose=verbose,
         )
+
+    def dot(
+        self: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+        Compute the dot product between two arrays `a` and `b` using the current
+        backend's implementation. The dot product is defined as the sum of the element-
+        wise product of the input arrays.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        b
+            Second input array.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        ret
+            The dot product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = ivy.dot(a, b)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> b = ivy.array([[5, 6], [7, 8]])
+        >>> c = ivy.empty_like(a)
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[19, 22],
+            [43, 50]])
+
+        >>> a = ivy.array([[1.1, 2.3, -3.6]])
+        >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+        >>> c = ivy.zeros((1, 1))
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[-15.28]])
+        """
+        return ivy.dot(self._data, b, out=out)

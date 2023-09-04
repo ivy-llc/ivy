@@ -203,6 +203,22 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def dot(
     a: tf.Tensor,
     b: tf.Tensor,
@@ -210,7 +226,5 @@ def dot(
     *,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-    return tf.tensordot(a, b, axes=1)
-
-
-dot.support_native_out = True
+    a, b = ivy.promote_types_of_inputs(a, b)
+    return tf.experimental.numpy.dot(a, b)

@@ -1610,10 +1610,11 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
+@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def dot(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
