@@ -103,7 +103,8 @@ class BackendTestCaseRunner(TestCaseRunner):
         )
 
     def _call_target(self, input_dtypes, test_arguments, test_flags):
-        pass
+        sub_runner_target = FunctionTestCaseSubRunner(input_dtypes, test_flags)
+        sub_runner_target.get_results(test_arguments)
 
     def _call_ground_truth(self, input_dtypes, test_arguments, test_flags):
         pass
