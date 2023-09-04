@@ -294,8 +294,10 @@ def pad(
     )
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_tf_pad(
-    args[0].shape, args[1], mode, constant_values, reflect_type
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+    )
 )
 
 

@@ -798,7 +798,7 @@ def test_paddle_zeros(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    dtype=helpers.get_dtypes("valid")
+    dtype=helpers.get_dtypes("valid"),
 )
 def test_paddle_zeros_like(
     dtype_and_x,

@@ -110,8 +110,10 @@ def pad(
         ).squeeze(0)
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_torch_pad(
-    mode, reflect_type, args[1], args[0].shape, constant_values
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_torch_pad(mode, reflect_type, args[1], args[0].shape, constant_values)
+    )
 )
 
 
