@@ -405,6 +405,52 @@ def log_softmax(input, axis=-1):
 
 @with_supported_dtypes(
     {
+        "2.0.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def max_pool3d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
+):
+    # ToDo: Add return_indices once superset in implemented
+
+    if not stride:
+        stride = kernel_size
+
+    data_format = "NCDHW"
+
+    return ivy.max_pool3d(
+        input,
+        kernel_size,
+        stride,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
+@with_supported_dtypes(
+    {
         "2.0 and below": (
             "int8",
             "int16",
