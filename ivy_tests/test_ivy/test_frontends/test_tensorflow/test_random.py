@@ -395,14 +395,14 @@ def test_tensorflow_uniform(
     ),
     counts=helpers.lists(
             x=helpers.floats(
-                allow_nan=False, allow_inf=False, min_value=-2, max_value=5
+                allow_nan=False, allow_inf=False, min_value=0, max_value=5
             ),
             min_size=1,
             max_size=10,
         ),
     probs=helpers.lists(
             x=helpers.floats(
-                allow_nan=False, allow_inf=False, min_value=-2, max_value=5
+                allow_nan=False, allow_inf=False, min_value=0.0, max_value=1.0
             ),
             min_size=1,
             max_size=10,
