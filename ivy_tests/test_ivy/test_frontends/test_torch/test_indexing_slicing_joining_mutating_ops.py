@@ -4,6 +4,7 @@ import math
 
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
@@ -40,7 +41,7 @@ def _array_idxes_n_dtype(draw, **kwargs):
 
 
 @st.composite
-def _arrays_dim_idx_n_dtypes(draw):
+def _arrays_dim_idx_n_dtypes(draw, support_dtypes="numberic", unsupport_dtypes=()):
     num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
     num_arrays = 2
     common_shape = draw(
@@ -72,8 +73,16 @@ def _arrays_dim_idx_n_dtypes(draw):
     )
 
     xs = list()
-    available_input_types = draw(helpers.get_dtypes("numeric"))
-    available_input_types.remove("float16")  # half summation unstable in backends
+    available_input_types = draw(helpers.get_dtypes(support_dtypes))
+
+    unstabled_dtypes = ["float16"]
+    available_input_types = [
+        dtype for dtype in available_input_types if dtype not in unstabled_dtypes
+    ]
+    available_input_types = [
+        dtype for dtype in available_input_types if dtype not in unsupport_dtypes
+    ]
+
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=available_input_types,
@@ -631,6 +640,49 @@ def test_torch_index_copy(
         dim=axis,
         index=indices,
         source=source,
+    )
+
+
+# index_reduce
+@handle_frontend_test(
+    fn_tree="torch.index_reduce",
+    xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(
+        support_dtypes="numeric",
+        unsupport_dtypes=ivy.function_unsupported_dtypes(
+            ivy.functional.frontends.torch.index_reduce
+        ),
+    ),
+    reduce=st.sampled_from(["prod", "mean", "amin", "amax"]),
+)
+def test_torch_index_reduce(
+    *,
+    xs_dtypes_dim_idx,
+    reduce,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
+    if xs[0].shape[axis] < xs[1].shape[axis]:
+        source, input = xs
+    else:
+        input, source = xs
+
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtypes[0], "int64", input_dtypes[1]],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=input,
+        dim=axis,
+        index=indices,
+        source=source,
+        reduce=reduce,
     )
 
 
