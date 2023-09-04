@@ -840,9 +840,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3])
@@ -980,9 +979,8 @@ def clip_vector_norm(
     ret
         An array with the vector norm downscaled to the max norm if needed.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -1069,9 +1067,8 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0., 1., 2.]])
@@ -1461,8 +1458,8 @@ def default(
     ret
         x if x exists (is not None), else default.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :code:`Any` input:
 
     >>> x = None
@@ -2769,9 +2766,8 @@ def get_item(
     ret
         New array with the values gathered at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> print(ivy.get_item(x, query))
@@ -2841,9 +2837,8 @@ def set_item(
     ret
         the array with updated values at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])

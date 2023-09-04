@@ -584,9 +584,8 @@ def softplus(
     ret
         an array containing the softplus activation of each element in ``x``.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-0.3461, -0.6491])
