@@ -11,19 +11,22 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 def alpha_dropout(input, p=0.5, training=False, inplace=False):
     if p == 0.0 or not training or input.shape == () or input.shape == (0,):
         return input
-    neg_saturation = ivy.log1p(ivy.exp(-ivy.square(input)))
+    alpha = 1.7580993408473766
+    a = float(1.0 / ivy.sqrt((alpha * alpha * p + 1) * (1 - p)))
     mask = ivy.where(
         ivy.random_uniform(shape=input.shape, device=ivy.dev(input)) < p,
         0.0,
         1.0,
     )
+    b = ((mask - 1) * alpha * a) + alpha * a * p
+    mask *= a
+
     if inplace:
-        ivy.inplace_update(input, mask * input + (1 - mask) * neg_saturation)
-        ivy.inplace_update(input, input / ivy.sqrt(1 - p / (1 - p + 1e-5)))
+        ivy.inplace_update(input, mask * input + b)
         return input
     else:
-        masked = mask * input + (1 - mask) * neg_saturation
-        return masked / ivy.sqrt(1 - p / (1 - p + 1e-5))
+        masked = mask * input + b
+        return masked
 
 
 @to_ivy_arrays_and_back
