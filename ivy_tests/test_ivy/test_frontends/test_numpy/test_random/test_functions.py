@@ -146,6 +146,37 @@ def test_numpy_chisquare(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.choice",
+    dtypes=helpers.get_dtypes("float", full=False),
+    a=helpers.ints(min_value=2, max_value=10),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_choice(
+    dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    a,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        size=size,
+        replace=True,
+        p=np.array([1 / a] * a, dtype=dtypes[0]),
+    )
+
+
 # dirichlet
 @handle_frontend_test(
     fn_tree="numpy.random.dirichlet",
