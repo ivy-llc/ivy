@@ -4287,7 +4287,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             input container.
 
         Returns
