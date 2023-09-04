@@ -4242,3 +4242,57 @@ class _ContainerWithGeneral(ContainerBase):
             A tuple containing the strides.
         """
         return self.static_strides(self)
+
+    @staticmethod
+    def static_exists(x: ivy.Container, /) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+
+        Returns
+        -------
+        ret
+            True if x is not None, else False.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[1,2,3,4], b=[])
+        >>> y = x.exists()
+        >>> print(y)
+        { a: True, b: True }
+
+        >>> x = ivy.Container(a=None, b=[1,2])
+        >>> y = x.exists()
+        >>> print(y)
+        { a: False, b: True }
+
+        >>> x = ivy.Container(a={"d": 1, "c": 3}, b=None)
+        >>> y = x.exists()
+        >>> print(y)
+        { a: { c: True, d: True }, b: False }
+        """
+        return ContainerBase.cont_multi_map_in_function("exists", x)
+
+    def exists(self: ivy.Container, /) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+
+        Returns
+        -------
+        ret
+            True if x is not None, else False.
+        """
+        return self.static_exists(self)
