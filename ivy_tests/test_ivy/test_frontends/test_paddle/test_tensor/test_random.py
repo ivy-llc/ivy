@@ -9,9 +9,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @handle_frontend_test(
     fn_tree="paddle.normal",
-    input_dtypes=st.sampled_from([["float32"], ["float64"]]),
-    mean=helpers.floats(),
-    std=helpers.floats(min_value=0),
+    input_dtypes=helpers.get_dtypes("float"),
+    mean=st.floats(allow_nan=False),
+    std=st.floats(allow_nan=False, min_value=0.0),
     shape=helpers.get_shape(),
 )
 def test_paddle_normal(
