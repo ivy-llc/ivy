@@ -470,6 +470,9 @@ def stft(
     boundary: Optional[str] = 'zeros',
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if window is None:
+        window = 'hann'
+        
     return paddle.signal.stft(
          signal,
          n_fft,
