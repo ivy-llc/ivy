@@ -48,16 +48,23 @@ CURRENT_VERSIONS = {
     "torch": "2.0.1",
 }
 
+DTYPE_DECORATORS = {
+    "with_supported_dtypes",
+    "with_unsupported_dtypes",
+    "with_supported_device_and_dtypes",
+    "with_unsupported_device_and_dtypes",
+}
+
 
 # TODO list:
-# - add ability to write discovered (un)supported dtypes to files
-# - decide how to deal with uncertain cases (interactive mode? just write it and ask the user to check? flag to switch between these?)  # noqa
+# - decide how to deal with uncertain cases (interactive mode? just write it and ask the user to check? flag to switch between these? send a warning?)  # noqa
 # - make sure I don't overgeneralise (maybe gpu doesn't seem usable, but that's just because of the machine I'm on)  # noqa
+# - related to that, make sure that if there's an existing dtype decorator referencing a version/device I didn't test, make sure I include that data when I write the new version (maybe I could read that in before I "compile" the decorator and use it to modify the data structure)  # noqa
 # - add new function types: method, frontend, frontend method (for now, I assume its a backend function)  # noqa
 # - add command line args (to specify certains folders/files/functions/backends/devices/versions/types) (partially done)  # noqa
 # - add ability to iterate over versions of a framework (talk to multiversion support people)  # noqa
 # - hook the script into *something* so it runs automatically
-# - allow the script to skip functions which e.g. already have a decorator for the latest version of that framework (but have a flag to override this)  # noqa
+# - have some smart way of deciding which functions to run on (maybe a flag that tells it to look at the most recent `git diff`s and only check the functions that have been changed) # noqa
 # - fix other TODO comments left in the file
 
 
@@ -144,9 +151,9 @@ def _get_decorator_string(
     out += 'dtypes({"' + version_no + ' and below": '
     if len(dtype_lists.keys()) > 1:
         out += "{"
-        out += ",".join(
+        out += ", ".join(
             [
-                f'"{k.split(":")[0]}":' + _type_list_to_tuple_string(v) + ", "
+                f'"{k.split(":")[0]}": {_type_list_to_tuple_string(v)}'
                 for k, v in dtype_lists.items()
             ]
         )
@@ -280,6 +287,106 @@ class BackendFileTester:
                 device_and_dtypes, use_supported, CURRENT_VERSIONS[self.backend]
             )
             print(f, self.decorators[f])
+
+    def write_decorators(self):
+        is_dtype_dec_regex = r"@with_(un)?supported_(device_and_)?dtypes\("
+        get_dtype_decs_regex = r"@(with_(?:un)?supported_(?:device_and_)?dtypes)\("
+        get_imported_decs_regex = (
+            r"from ivy\.func_wrapper import"
+            r" (?:\(\s*((?:\w+,?\s*)+)\)|((?:\w+,?[^\S\r\n]*)+))\n"
+        )
+        replace_imported_decs_regex = (
+            r"from ivy\.func_wrapper import"
+            r" (?:\(\s*(?:\w+,?\s*)+\)|(?:\w+,?[^\S\r\n]*)+)\n"
+        )
+
+        # read in the code file
+        with open(self.file_path, "r") as f:
+            code_text = f.readlines()
+        print(code_text[15])
+
+        # find each function in it
+        for func in self.fn_names:
+            for i, v in enumerate(code_text):
+                if f"def {func}(" in v:
+                    def_index = i
+                    break
+            else:
+                print(
+                    f"WARNING: no definition of {func} found in {self.file_path}"
+                )  # TODO: make it an actual warning
+
+            # read all the lines that could be decorators (i.e. they're immediately
+            # above the `def` line)
+            decorator_start_idx = def_index
+            decorator_lines = []
+            while (
+                decorator_start_idx >= 1
+                and code_text[decorator_start_idx - 1].strip() != ""
+            ):
+                decorator_lines.insert(0, code_text[decorator_start_idx - 1])
+                decorator_start_idx -= 1
+
+            # find any dtype decorators in those lines
+            indices_to_remove = []
+            start_of_decorator = None
+            dec_string = ""
+            for i in range(len(decorator_lines)):
+                line = decorator_lines[i]
+
+                # check for the start of a dtype decorator
+                if start_of_decorator is None:
+                    if re.search(is_dtype_dec_regex, line):
+                        start_of_decorator = decorator_start_idx + i
+
+                # if we're in a decorator, check if we've seen the end of it yet, and
+                # if we have mark the whole segment for deletion
+                if start_of_decorator is not None:
+                    dec_string += line
+                    if dec_string.count("(") == dec_string.count(")"):
+                        indices_to_remove.append(
+                            (start_of_decorator, decorator_start_idx + i + 1)
+                        )
+                        start_of_decorator = None
+                        dec_string = ""
+
+            # remove dtype decorators that already exist
+            for i, j in indices_to_remove:
+                del code_text[i:j]
+                def_index -= j - i
+
+            # add the new decorator
+            code_text.insert(def_index, self.decorators[func] + "\n")
+
+        # combine the lines into a single string
+        code_text = "".join(code_text)
+
+        # get all the decorators that are used in it
+        all_decorators = set(re.findall(get_dtype_decs_regex, code_text))
+
+        # get all the decorators that are imported
+        matches = [
+            g1 + "," + g2 for g1, g2 in re.findall(get_imported_decs_regex, code_text)
+        ]
+        imported_decorators = {
+            item.strip() for match in matches for item in match.split(",")
+        }
+        imported_decorators.discard("")
+
+        # just in case any other functions are imported
+        desired_decorators = list(
+            (imported_decorators - DTYPE_DECORATORS) | all_decorators
+        )
+
+        # write the import statement to the file
+        code_text = re.sub(
+            replace_imported_decs_regex,
+            f"from ivy.func_wrapper import {', '.join(desired_decorators)}\n",
+            code_text,
+        )
+
+        with open(self.file_path, "w") as f:
+            f.write(code_text)
 
 
 def _get_nested_np_arrays(nest):
@@ -462,6 +569,7 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
                             test_handler.set_result("unsure", e)
         test_handler.print_result()
         test_handler.create_decorators()
+        test_handler.write_decorators()
     test_globals._unset_backend()
 
 
