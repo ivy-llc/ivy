@@ -302,9 +302,8 @@ def _get_preferred_device(args, kwargs):
     if "device" in kwargs and kwargs["device"] is not None:
         return device
     if not ivy.soft_device_mode:
-        for arg in args + list(kwargs.values()):
-            if ivy.is_array(arg):
-                return ivy.default_device(item=arg, as_native=True)
+        arr_arg = _get_first_array(*args, **kwargs)
+        return ivy.default_device(item=arr_arg, as_native=True)
     return ivy.default_device(as_native=True)
 
 
