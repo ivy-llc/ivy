@@ -313,8 +313,8 @@ def det(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2.,4.],[6.,7.]])
@@ -405,9 +405,8 @@ def diagonal(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1., 2.],
@@ -1864,9 +1863,8 @@ def slogdet(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2.0, 1.0],
@@ -2132,9 +2130,8 @@ def svdvals(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
@@ -2195,8 +2192,8 @@ def svdvals(
         b: ivy.array([15.7786541, 5.55970621, 4.16857576, 0.86412698])
     }
 
-    # Instance Method Examples
-    ------------------------
+    Instance Method Examples
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Using :class:`ivy.Array` instance method:
 
@@ -2279,8 +2276,8 @@ def tensordot(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1., 2.], [2., 3.]])
@@ -2712,9 +2709,8 @@ def diag(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[0, 1, 2],

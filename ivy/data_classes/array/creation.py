@@ -589,8 +589,8 @@ class _ArrayWithCreation(abc.ABC):
         simplicity, but this function is *nestable*, and therefore also accepts
         :class:`ivy.Container` instances in place of any of the arguments.
 
-        Functional Examples
-        -------------------
+        Examples
+        --------
         With float input:
 
         >>> x = ivy.array([1, 2])
