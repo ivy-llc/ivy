@@ -22,6 +22,11 @@ register_pytree_node(
     lambda a, c: ivy.Container(tree_unflatten(a, c)),
 )
 
+register_pytree_node(
+    ivy.Array,
+    lambda tree: ((tree.data,), None),
+    lambda _, args: ivy.Array(*args),
+)
 
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():
