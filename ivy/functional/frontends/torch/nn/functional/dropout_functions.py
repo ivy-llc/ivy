@@ -66,6 +66,7 @@ def dropout3d(input, p=0.5, training=True, inplace=False):
     return ivy.dropout3d(input, p, training=training, data_format="NDHWC")
 
 
+# ToDo: this function will be simplified once ivy.feature_alpha_dropout is implemented
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def feature_alpha_dropout(input, p=0.5, training=False, inplace=False):
