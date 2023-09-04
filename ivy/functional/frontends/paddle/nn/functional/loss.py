@@ -309,17 +309,17 @@ def nll_loss(
         output = ivy.sum(loss)
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
-    
+
     elif reduction == "mean":
         output = ivy.mean(loss)
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
-    
+
     elif reduction == "none":
         output = loss
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index] / den
-    
+
     else:
         raise ivy.utils.exceptions.IvyException(
             "The value of 'reduction' in nll_loss should be 'sum', 'mean' or 'none',"
