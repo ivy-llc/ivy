@@ -264,8 +264,6 @@ class ndarray:
             subok=subok,
         )
 
-    conj = conjugate
-
     def cumprod(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumprod(
             self,
