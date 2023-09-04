@@ -839,21 +839,21 @@ def embedding(
 def stft(
     signal: Union[JaxArray, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    hop_length: int,    
+    hop_length: int,
     /,
-    *,  
+    *,
     axis: Optional[int] = None,
     fs: Optional[float] = 1.0,
     window: Optional[Union[str, int, Tuple[int], JaxArray]] = None,
     win_length: Optional[int] = None,
     noverlap: Optional[int] = None,
-    boundary: Optional[str] = 'zeros',
     center: Optional[bool] = True,
-    onesided:Optional[bool] = True,
+    onesided: Optional[bool] = True,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
+    boundary: Optional[str] = "zeros",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
@@ -863,7 +863,7 @@ def stft(
         window = "hann"
 
     if hop_length is None:
-        hop_length = n_fft//4
+        hop_length = n_fft // 4
 
     if not isinstance(hop_length, int):
         raise TypeError("hop_length must be an int.")
@@ -872,8 +872,8 @@ def stft(
         raise TypeError("n_fft must be an int.")
 
     if win_length is None:
-        win_length = n_fft        
-    
+        win_length = n_fft
+
     return jax.scipy.signal.stft(
         signal,
         fs,
