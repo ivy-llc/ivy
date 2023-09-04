@@ -136,10 +136,8 @@ class DefaultDevice:
         return self
 
 
-def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
-    return ivy.current_backend().handle_soft_device_variable(
-        *args, fn=fn, device_shifting_dev=device_shifting_dev, **kwargs
-    )
+def handle_soft_device_variable(*args, fn, **kwargs):
+    return ivy.current_backend().handle_soft_device_variable(*args, fn=fn, **kwargs)
 
 
 # Helpers #
@@ -155,9 +153,9 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     return handle
 
 
-def _shift_native_arrays_on_default_device(*args, device_shifting_dev=None, **kwargs):
+def _shift_native_arrays_on_default_device(*args, **kwargs):
     with ivy.ArrayMode(False):
-        default_device = ivy.default_device(device_shifting_dev, as_native=True)
+        default_device = ivy.default_device(as_native=True)
         args, kwargs = ivy.nested_map(
             [args, kwargs],
             lambda x: (
