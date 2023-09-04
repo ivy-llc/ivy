@@ -120,6 +120,7 @@ Examples and Demos
     :hidden:
     :maxdepth: 1
 
+    Ivy docs <https://unify.ai/docs/ivy/>
     self
     quickstart.ipynb
 
