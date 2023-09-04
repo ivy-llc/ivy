@@ -977,7 +977,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return loaded
 
 
-class _HaikuIvyModule(ivy.Module):
+class _HaikuIvyModule(Module):
     def __init__(self, *args, params_hk, native_module, device, devices, **kwargs):
         self._native_module = native_module
         self._args = args
@@ -1042,7 +1042,7 @@ class _HaikuIvyModule(ivy.Module):
         return FlatMapping(ret_flat_map)
 
 
-class _FlaxIvyModule(ivy.Module):
+class _FlaxIvyModule(Module):
     def __init__(self, *args, params_fx, native_module, device, devices, **kwargs):
         self._native_module = native_module
         self._args = args
@@ -1082,7 +1082,7 @@ class _FlaxIvyModule(ivy.Module):
         return ivy.to_native(ret)
 
 
-class _KerasIvyModule(ivy.Module):
+class _KerasIvyModule(Module):
     def __init__(self, *args, native_module, device, devices, **kwargs):
         self._native_module = native_module
         self._args = args
@@ -1109,7 +1109,7 @@ class _KerasIvyModule(ivy.Module):
         return ivy.to_native(ret)
 
 
-class _PaddleIvyModule(ivy.Module):
+class _PaddleIvyModule(Module):
     def __init__(self, *args, native_module, device, devices, **kwargs):
         self._native_module = native_module
         self._args = args
@@ -1141,7 +1141,7 @@ class _PaddleIvyModule(ivy.Module):
         return ivy.to_native(ret)
 
 
-class _TorchIvyModule(ivy.Module):
+class _TorchIvyModule(Module):
     def __init__(self, *args, native_module, device, devices, inplace_update, **kwargs):
         self._native_module = native_module
         self._args = args
