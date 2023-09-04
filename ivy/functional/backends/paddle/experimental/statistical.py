@@ -97,6 +97,8 @@ def nanmean(
 
 
 def _validate_quantile(q):
+    if isinstance(q, float):
+        q = paddle.to_tensor(q)
     if q.ndim == 1 and q.size < 10:
         for i in range(q.size):
             if not (0.0 <= q[i] <= 1.0):
@@ -155,66 +157,63 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None, interpolation="nearest"):
         else:
             index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
         ret = ret[(Ellipsis,) + index_ret]
-
+    # if keepdims:
+    #     axis = axis if axis is not None else list(range(a.ndim))
+    #     ret = ret.unsqueeze(axis)
     return ret
 
 
 def _quantile(a, q, axis=None, interpolation="nearest"):
+    if isinstance(q, float):
+        q = paddle.to_tensor(q)
     ret_dtype = a.dtype
-    if q.ndim > 2:
+    if q.ndim > 1:
         raise ValueError("q argument must be a scalar or 1-dimensional!")
     if axis is None:
         axis = 0
         a = paddle.flatten(a)
+    elif axis != 0:
+        a = a.moveaxis(axis, 0)
+        axis = 0
 
     n = a.shape[axis]
-    if axis != 0:
-        a = paddle.moveaxis(a, axis, 0)
 
-    indices = []
-    for q_num in q:
-        index = q_num * (n - 1)
-        indices.append(index)
+    indices = q * (n - 1)
 
-    a = paddle.sort(a, 0)
-    outputs = []
+    a = paddle.sort(a, axis)
 
-    for index in indices:
-        if interpolation == "lower":
-            index = paddle.floor(index)
-        elif interpolation == "higher":
-            index = paddle.ceil(index)
-        elif interpolation == "nearest":
-            index = paddle.round(index)
-        elif interpolation == "midpoint":
-            index_floor = paddle.floor(index)
-            index_ceil = paddle.ceil(index)
-            index = (index_ceil + index_floor) / 2
+    if interpolation == "lower":
+        indices = paddle.floor(indices)
+    elif interpolation == "higher":
+        indices = paddle.ceil(indices)
+    elif interpolation == "nearest":
+        indices = paddle.round(indices)
+    elif interpolation == "midpoint":
+        index_floor = paddle.floor(indices)
+        index_ceil = paddle.ceil(indices)
+        indices = (index_ceil + index_floor) / 2
 
-        indices_below = paddle.floor(index).astype(paddle.int32)
-        indices_upper = paddle.ceil(index).astype(paddle.int32)
+    indices_below = paddle.floor(indices).astype(paddle.int32)
+    indices_upper = paddle.ceil(indices).astype(paddle.int32)
+    weights = indices - indices_below.astype(paddle.float64)
+    if interpolation == "nearest_jax":
+        indices_below = paddle.clip(indices_below, 0, n - 1)
+        indices_upper = paddle.clip(indices_upper, 0, n - 1)
+        tensor_upper = paddle.gather(a, indices_upper, axis=axis)
+        tensor_below = paddle.gather(a, indices_below, axis=axis)
 
-        if interpolation == "nearest_jax":
-            weights = index - indices_below.astype(paddle.float64)
+        pred = weights <= 0.5
+        out = paddle.where(pred, tensor_below, tensor_upper)
+    else:
+        tensor_upper = paddle.gather(a, indices_upper, axis=axis)
+        tensor_below = paddle.gather(a, indices_below, axis=axis)
+        out = paddle.lerp(
+            tensor_below.astype(paddle.float64),
+            tensor_upper.astype(paddle.float64),
+            weights.astype(paddle.float64),
+        )
 
-            indices_below = paddle.clip(indices_below, 0, n - 1)
-            indices_upper = paddle.clip(indices_upper, 0, n - 1)
-            tensor_upper = paddle.gather(a, indices_upper, axis=0)
-            tensor_below = paddle.gather(a, indices_below, axis=0)
-
-            pred = weights <= 0.5
-            out = paddle.where(pred, tensor_below, tensor_upper)
-        else:
-            tensor_upper = paddle.gather(a, indices_upper, axis=0)
-            tensor_below = paddle.gather(a, indices_below, axis=0)
-            weights = index - indices_below.astype(paddle.float64)
-            out = paddle.lerp(
-                tensor_below.astype(paddle.float64),
-                tensor_upper.astype(paddle.float64),
-                weights.astype(paddle.float64),
-            )
-        outputs.append(out)
-    return paddle.concat(outputs, axis=0).astype(ret_dtype)
+    return out.astype(ret_dtype)
 
 
 def _compute_quantile_wrapper(
@@ -546,10 +545,7 @@ def __find_cummax(
     if (
         isinstance(x.tolist()[0], list)
         and len(x[0].shape) >= 1
-        and (
-            (type(x[0]) == paddle.Tensor)
-            or (type(x[0]) == ivy.data_classes.array.array.Array)
-        )
+        and (isinstance(x[0], paddle.Tensor) or isinstance(x[0], ivy.Array))
     ):
         if axis >= 1:
             if not isinstance(x, list):
@@ -599,7 +595,7 @@ def __find_cummax(
                 values.append(y)
             indices.append(n)
 
-    if type(x) == paddle.Tensor:
+    if isinstance(x, paddle.Tensor):
         return paddle.to_tensor(values, dtype=x.dtype), paddle.to_tensor(
             indices, dtype="int64"
         )

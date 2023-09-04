@@ -1,4 +1,5 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
+import inspect
 
 # global
 import os
@@ -95,9 +96,7 @@ def num_gpus() -> int:
 
 
 def gpu_is_available() -> bool:
-    if hasattr(torch.backends, "mps"):
-        return torch.backends.mps.is_available()
-    return torch.cuda.is_available()
+    return torch.backends.mps.is_available() or torch.cuda.is_available()
 
 
 # noinspection PyUnresolvedReferences
@@ -111,8 +110,11 @@ def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
     args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
         *args, device_shifting_dev=device_shifting_dev, **kwargs
     )
-    with torch.device(device_shifting_dev):
-        return fn(*args, **kwargs)
+    # checking if this function accepts `device` argument
+    # must be handled in the backend
+    if "device" in inspect.getfullargspec(fn).args:
+        kwargs["device"] = device_shifting_dev
+    return fn(*args, **kwargs)
 
 
 class Profiler(BaseProfiler):
