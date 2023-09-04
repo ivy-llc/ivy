@@ -273,50 +273,6 @@ def solve(A, B, *, left=True, out=None):
     return ivy.solve(A, B, out=out)
 
 
-@to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-)
-def solve_triangular(A, B, *, upper, left=True, unitriangular=False, out=None):
-    # TOD0: Implement left and out
-    X = ivy.zeros_like(B)
-
-    #check if A is triangular
-    if ivy.all(ivy.triu(A)) != 0 or ivy.all(ivy.tril(A)) != 0:
-        raise RuntimeError("Matrix is not triangular")
-
-    #check if matrix is inversible
-    for row_idx, _ in enumerate(A):
-        if A[row_idx][row_idx] == 0:
-            raise RuntimeError("Matrix is not invertible")
-
-    #need to make leading variables 1
-    if unitriangular == False:
-        if upper == True:
-            for row_idx, row in enumerate(A):
-                div = A[row_idx][row_idx]
-                row[:] = [x / div for x in row]
-                B[row_idx][:] = [y / div for y in B[row_idx]]
-        else:
-            for row_idx, row in enumerate(A):
-                div = A[row_idx][0]
-                row[:] = [x / div for x in row]
-                B[row_idx][:] = [y / div for y in B[row_idx]]
-
-    #equation for lower
-    if upper == False:
-        for i in range(len(A)):
-            X[i] = (B[i] - ivy.dot(A[i][:i], X[:i])) / A[i][i]
-
-        return X
-
-    #equation for upper
-    if upper == True:
-        for i in range(len(A) - 1, -1, -1):
-            X[i] = (B[i] - ivy.dot(A[i][i:], X[i:])) / A[i][i]
-        
-        return X
-
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
@@ -332,6 +288,48 @@ def tensorsolve(A, B, dims=None, *, out=None):
 )
 def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
+def ldl_factor_ex(A, *, hermitian=False, check_errors=False, out=False):
+    size = len(A[0])
+    L = ivy.eye(size)
+    D = ivy.eye(A)
+    pivots = ivy.zeros(size)
+    info = ivy.zeros(1,1)
+
+    #make it symmetrical
+    if hermitian == False:
+        A = 0.5 * (ivy.add(A, ivy.matrix_transpose(A)))
+
+        #LDL Factorisation
+        for j in range(size):
+            d_jj = A[j][j]
+            for k in range(j):
+                d_jj -= (L[j,k])**2 * D[k,k]
+            D[j,j] = d_jj
+
+            if check_errors == True:
+                if d_jj == 0:
+                    info[0] = 1
+                    raise("Divison by zero")
+
+
+            for i in range(j+1, size):
+                l_ij = A[i,j]
+                for k in range(j):
+                    l_ij -= L[i,k] * D[k,k] * L[j,k]
+
+                l_ij /= d_jj
+                L[i,j] = l_ij
+
+
+    #TODO: Get LD in compact form (multiplying for now), add pivot functionality
+    LD = ivy.matmul(L, D)
+
+    return LD, pivots, info
 
 
 @to_ivy_arrays_and_back
