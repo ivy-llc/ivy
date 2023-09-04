@@ -1,8 +1,61 @@
 import numpy as np
 from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
+    TestCaseSubRunner,
     TestCaseSubRunnerResult,
 )
+
+
+class FunctionTestCaseSubRunner(TestCaseSubRunner):
+    def __init__(self, input_dtypes, test_flags):
+        self.test_flags = test_flags
+        self.input_dtypes = input_dtypes
+
+    def _search_args(self):
+        pass
+
+    def _preprocess_flags(self, total_num_arrays):
+        # Make all array-specific test flags and dtypes equal in length
+        if len(self.input_dtypes) < total_num_arrays:
+            self.input_dtypes = [self.input_dtypes[0] for _ in range(total_num_arrays)]
+        if len(self.test_flags.as_variable) < total_num_arrays:
+            self.test_flags.as_variable = [
+                self.test_flags.as_variable[0] for _ in range(total_num_arrays)
+            ]
+        if len(self.test_flags.native_arrays) < total_num_arrays:
+            self.test_flags.native_arrays = [
+                self.test_flags.native_arrays[0] for _ in range(total_num_arrays)
+            ]
+        if len(self.test_flags.container) < total_num_arrays:
+            self.test_flags.container = [
+                self.test_flags.container[0] for _ in range(total_num_arrays)
+            ]
+        return self.test_flags
+
+    def _preprocess_args(self):
+        pass
+
+    def _call_function(self):
+        pass
+
+    def get_results(self, test_arguments):
+        # split the arguments into their positional and keyword components
+        args_np, kwargs_np = self.split_args_to_args_and_kwargs(kwargs=test_arguments)
+
+        # Extract all arrays from the arguments and keyword arguments
+        arg_np_arrays, arrays_args_indices, n_args_arrays = self._get_nested_np_arrays(
+            args_np
+        )
+        kwarg_np_arrays, arrays_kwargs_indices, n_kwargs_arrays = (
+            self._get_nested_np_arrays(kwargs_np)
+        )
+
+        total_num_arrays = n_args_arrays + n_kwargs_arrays
+        self._preprocess_flags(self.test_flags, total_num_arrays)
+
+        args, kwargs, idx_args, idx_kwargs = self._search_args(test_arguments)
+        args, kwargs = self._preprocess_args(args, kwargs, idx_args, idx_kwargs)
+        return self._call_function(args, kwargs)
 
 
 class BackendTestCaseRunner(TestCaseRunner):
