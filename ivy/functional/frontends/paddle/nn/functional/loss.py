@@ -272,28 +272,31 @@ def nll_loss(
     """Refer
     https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for
     more on NLL(Negative log likelihood) Loss."""
-    if reduction not in ["sum", "mean", "none"]:
-        raise ValueError(
-            "The value of 'reduction' in nll_loss should be 'sum, 'mean' or "
-            "'none', but received %s, which is not allowed." % reduction
-        )
+    
     input_shape = list(input.shape)
     input_dims = len(input_shape)
     label_shape = list(label.shape)
     label_dims = len(label_shape)
 
-    if input_dims - 1 != label_dims and input_dims != label_dims:
-        raise ValueError(
-            "Expected input_dims - 1 = label_dims or input_dims == label_dims         "
-            "   (got input_dims{}, label_dims{})".format(input_dims, label_dims)
-        )
-    if input_dims < 2:
-        raise ValueError(f"Expected 2 or more dimensions (got {input_dims})")
-
-    if input_shape[1] < 1:
-        raise ValueError(
-            "Expected 1 or more classes (got num classes{})".format(input_shape[1])
-        )
+    ivy.assertions.check_true(
+        input_dims -1 == label_dims or input_dims == label_dims,
+        message=str(
+            "Expected input_dims - 1 = label_dims or input_dims == label_dims "
+            "(got input_dims %d, label_dims %d)" % (input_dims, label_dims)
+        ),
+    )
+    ivy.assertions.check_true(
+        input_dims >= 2,
+        message=str(
+            "Expected 2 or more dimensions (got %d})" % (input_dims)
+        ),
+    )
+    ivy.assertions.check_true(
+        input_shape[1] >= 1,
+        message=str(
+            "Expected 1 or more classes (got num classes %d)" % (input_shape[1])
+        ),
+    )
 
     if weight is None:
         weight = ivy.ones(ivy.shape(input[0]))
@@ -308,11 +311,21 @@ def nll_loss(
         output = ivy.sum(loss)
         if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
-        return output
-    num = ivy.sum(loss)
-    output = num / den
-    if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
-        output = output - loss[ignore_index] / den
+       
+    elif reduction == 'mean':
+        output = ivy.mean(loss)
+        if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
+            output = output - loss[ignore_index]
+        
+    elif reduction == 'none':
+        output = loss
+        if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
+            output = output - loss[ignore_index] / den
+        
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "The value of 'reduction' in nll_loss should be 'sum', 'mean' or 'none', but received {}, which is not allowed.".format(reduction)
+        )
     return output
 
 
