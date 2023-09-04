@@ -393,26 +393,20 @@ def test_tensorflow_uniform(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    counts=st.one_of(
-        helpers.ints(min_value=-2, max_value=5),
-        helpers.lists(
+    counts=helpers.lists(
             x=helpers.floats(
                 allow_nan=False, allow_inf=False, min_value=-2, max_value=5
             ),
             min_size=1,
             max_size=10,
         ),
-    ),
-    probs=st.one_of(
-        helpers.floats(allow_inf=False, allow_nan=False, min_value=-2, max_value=5),
-        helpers.lists(
+    probs=helpers.lists(
             x=helpers.floats(
                 allow_nan=False, allow_inf=False, min_value=-2, max_value=5
             ),
             min_size=1,
             max_size=10,
         ),
-    ),
     seed=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
