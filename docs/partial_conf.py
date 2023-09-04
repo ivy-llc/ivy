@@ -10,11 +10,17 @@ youtube_map = {
 
 nbsphinx_execute = 'never'
 nbsphinx_prolog = """
-.. |Open in Colab| image:: https://colab.research.google.com/assets/colab-badge.svg
-    :target: https://colab.research.google.com/github/unifyai/demos/blob/main/docs/{{ env.doc2path(env.docname, base=None) }}
+.. |Open in Colab| raw:: html
 
-.. |Github| image:: https://badgen.net/badge/icon/github?icon=github&label
-    :target: https://github.com/unifyai/demos/blob/main/docs/{{ env.doc2path(env.docname, base=None) }}
+    <a href="https://colab.research.google.com/github/unifyai/demos/blob/main/docs/{{ env.doc2path(env.docname, base=None) }}" target="_blank">
+        <img src="https://colab.research.google.com/assets/colab-badge.svg">
+    </a>
+
+.. |Github| raw:: html
+
+    <a href="https://github.com/unifyai/demos/blob/main/docs/{{ env.doc2path(env.docname, base=None) }}" target="_blank">
+        <img src="https://badgen.net/badge/icon/github?icon=github&label">
+    </a>
 
 {% if env.config.youtube_map[env.docname] %}
 .. raw:: html
