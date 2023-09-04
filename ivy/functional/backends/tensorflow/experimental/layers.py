@@ -1347,10 +1347,14 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if window is not None and isinstance(window, str) and window == 'hann':
-        window = tf.signal.hann_window(n_fft, dtype=signal.dtype)
-    else:
-        window = window
+    if window is not None and isinstance(window, str):
+        if window == 'hann':
+            if isinstance(n_fft, int):
+                window = tf.signal.hann_window(n_fft, dtype=signal.dtype)
+            else:
+                window = tf.signal.hann_window(n_fft[0], dtype=signal.dtype)
+        else:
+            raise ValueError(f"Unsupported window type: {window}")
         
     return tf.signal.stft(
         signal,
