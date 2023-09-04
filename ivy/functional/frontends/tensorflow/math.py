@@ -66,50 +66,31 @@ def approx_max_k(input_tensor, k, recall_target = 0.95,
                  aggregate_to_topk = True, name = None):
     
 
-    original_shape = ivy.shape(input_tensor)
-    rank = len(input_tensor.shape)
+    if k > ivy.astype(ivy.prod(input_tensor),ivy.int32,copy=False).size:
+        raise ValueError("k should be less than or equal to the size of input_tensor.")
+    if not 0 <= recall_target <= 1:
+        raise ValueError("recall_target should be between 0 and 1.")
+        
+    sorted_indices = ivy.argsort(input_tensor, descending=True)
+    
+    sorted_values = ivy.gather(input_tensor, sorted_indices, batch_dims = -1)
+    
+    threshold_index = ivy.cast(ivy.math.ceil(recall_target * k), ivy.int32) - 1  # Adjust for 0-based index
+    if threshold_index >= ivy.size(sorted_values):
+        threshold_index = ivy.size(sorted_values) - 1  # Cap the index
 
-    if reduction_input_size_override > 0:
-        reduction_shape = list(original_shape)
-        reduction_shape[reduction_dimension] = reduction_input_size_override
-        input_tensor = ivy.reshape(input_tensor, reduction_shape)
-
-    # Flatten all dimensions except for the reduction dimension
-    reshaped_tensor = ivy.reshape(input_tensor, [-1, original_shape[reduction_dimension]])
-  
-    # Sort the tensor along the specified dimension
-    sorted_tensor = ivy.sort(reshaped_tensor, axis=-1, direction='DESCENDING')
-
-    # Determine the threshold value for the desired recall target
-    threshold_index = ivy.cast(ivy.ceil(recall_target * ivy.cast(k, ivy.float32)), dtype=ivy.int32) - 1
-    threshold_value = sorted_tensor[:, threshold_index]
-
-    # Unflatten the threshold_value tensor to match the original tensor shape
-    unflattened_threshold_value = ivy.reshape(threshold_value, ivy.concat([original_shape[:reduction_dimension], original_shape[(reduction_dimension + 1):]], axis=0))
-
-    # Expand dims to broadcast shape
-    for _ in range(rank - 1):
-        unflattened_threshold_value = ivy.expand_dims(unflattened_threshold_value, axis=reduction_dimension)
-  
-    # Create a boolean mask of values greater than the threshold
-    candidates_mask = ivy.greater_equal(input_tensor, unflattened_threshold_value)
-
-    # Get the indices of the candidates
-    candidate_indices = ivy.where(candidates_mask)
-
-    # Get the values for candidate indices and sort them
-    candidate_values = ivy.gather_nd(input_tensor, candidate_indices)
+    threshold_value = sorted_values[threshold_index]
+    
+    candidates_mask = input_tensor >= threshold_value
+    candidate_indices = ivy.where(candidates_mask)[:, 0]
+    
+    candidate_values = ivy.gather(input_tensor, candidate_indices)
     sorted_candidate_indices = ivy.argsort(candidate_values, direction='DESCENDING')
-
-    # Extract the top-k indices and values
-    if aggregate_to_topk:
-        final_indices = ivy.gather(candidate_indices, sorted_candidate_indices[:k], axis=0)
-    else:
-        final_indices = ivy.gather(candidate_indices, sorted_candidate_indices, axis=0)
-
-    final_values = ivy.gather_nd(input_tensor, final_indices)
-
-    return final_values, final_indices
+    top_k_indices = ivy.gather(candidate_indices, sorted_candidate_indices[:k])
+    
+    top_k_values = ivy.gather(input_tensor, top_k_indices)
+    
+    return top_k_values, top_k_indices
 
 
 
