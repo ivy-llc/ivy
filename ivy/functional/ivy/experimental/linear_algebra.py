@@ -201,9 +201,8 @@ def diagflat(
     ret
         The 2-D output array.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1,2], [3,4]])
@@ -350,8 +349,8 @@ def eig(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w, v = ivy.eig(x)
@@ -404,8 +403,8 @@ def eigvals(
     w
         Not necessarily ordered array(..., N) of eigenvalues in complex type.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w = ivy.eigvals(x)
@@ -1610,10 +1609,11 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
+@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def dot(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -1681,7 +1681,7 @@ def general_inner_product(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, float]:
+) -> ivy.Array:
     """
     Generalised inner products between tensors.
 
@@ -1704,7 +1704,7 @@ def general_inner_product(
 
     Returns
     -------
-        float if n_modes is None, tensor otherwise
+        The inner product of the input arrays.
 
     Examples
     --------
@@ -1738,7 +1738,7 @@ def general_inner_product(
                 " common modes is equivalent to taking inner product.This requires"
                 f" a.shape == b.shape.However, got shapes {a.shape} and {b.shape}"
             )
-        return ivy.sum(ivy.multiply(a, b))
+        return ivy.sum(ivy.multiply(a, b), out=out)
 
     common_modes = shape_a[len(shape_a) - n_modes :]
     if common_modes != shape_b[:n_modes]:

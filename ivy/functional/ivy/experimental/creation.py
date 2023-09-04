@@ -98,8 +98,8 @@ def hann_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
@@ -193,8 +193,8 @@ def kaiser_bessel_derived_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
@@ -423,9 +423,8 @@ def eye_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances as a replacement to any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([[0, 1],[2, 3]])
@@ -721,8 +720,9 @@ def blackman_window(
     -------
     ret
         The array containing the window.
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     >>> ivy.blackman_window(4, periodic = True)
     ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
     >>> ivy.blackman_window(7, periodic = False)

@@ -3361,7 +3361,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            container including the float if n_modes is None or tensor otherwise
+            Container including the inner product tensor.
 
         Examples
         --------
