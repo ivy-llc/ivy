@@ -1661,9 +1661,6 @@ def _generate_dot_dtype_and_arrays(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.dot",
     data=_generate_dot_dtype_and_arrays(),
-    test_with_out=st.just(False),
-    test_gradients=st.just(False),
-    ground_truth_backend="numpy",
 )
 def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     (input_dtypes, x) = data
@@ -1672,6 +1669,7 @@ def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
+        xs_grad_idxs=[[0, 0]],
         input_dtypes=input_dtypes,
         test_values=True,
         rtol_=0.5,
