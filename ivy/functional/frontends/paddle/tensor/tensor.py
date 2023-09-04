@@ -465,6 +465,11 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.reciprocal(ivy.sqrt(self._ivy_array)))
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def rsqrt_(self, name=None):
+        self.ivy_array = self.rsqrt().ivy_array
+        return self
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def reciprocal(self, name=None):
         return paddle_frontend.reciprocal(self)
 
