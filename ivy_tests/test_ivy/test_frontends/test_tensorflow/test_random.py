@@ -449,7 +449,9 @@ def test_tensorflow_stateless_binomial(
 
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_gamma",
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.array_dtypes(
+        available_dtypes=("float32", "float64"),
+    ),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
