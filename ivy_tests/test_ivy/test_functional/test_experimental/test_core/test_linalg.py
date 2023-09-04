@@ -1644,7 +1644,7 @@ def _generate_dot_dtype_and_arrays(draw):
             available_dtypes=helpers.get_dtypes("float"),
             min_value=-10,
             max_value=10,
-        ).filter(lambda x: "float16" not in x[0])
+        )
     )
     dtype_2, b = draw(
         helpers.dtype_and_values(
@@ -1652,7 +1652,7 @@ def _generate_dot_dtype_and_arrays(draw):
             dtype=dtype_1,
             min_value=-10,
             max_value=10,
-        ).filter(lambda x: "float16" not in x[0])
+        )
     )
 
     return [dtype_1[0], dtype_2[0]], [a[0], b[0]]
