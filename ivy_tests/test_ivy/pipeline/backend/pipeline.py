@@ -12,8 +12,8 @@ class BackendPipeline(Pipeline):
     def backend_handler(self):
         return self.backend_handler
 
+    @staticmethod
     def test_function(
-        self,
         fn_name: str,
         on_device: str,
         backend_to_test: str,
@@ -29,7 +29,7 @@ class BackendPipeline(Pipeline):
     ):
         runner = BackendTestCaseRunner(
             fn_name=fn_name,
-            backend_handler=self._backend_handler,
+            backend_handler=WithBackendHandler(),
             backend_to_test=backend_to_test,
             ground_truth_backend=test_flags.ground_truth_backend,
             on_device=on_device,
