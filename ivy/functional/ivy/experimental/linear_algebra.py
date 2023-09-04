@@ -1666,3 +1666,135 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a, b, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def tt_matrix_to_tensor(
+    tt_matrix: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the full tensor whose TT-Matrix decomposition is given by 'factors' Re-
+    assembles 'factors', which represent a tensor in TT-Matrix format into the
+    corresponding full tensor.
+
+    Parameters
+    ----------
+    tt_matrix
+            array of 4D-arrays
+            TT-Matrix factors (known as core) of shape
+            (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns
+    -------
+    output_tensor: array
+                tensor whose TT-Matrix decomposition was given by 'factors'
+
+    Examples
+    --------
+    >>> x = ivy.array([[[[[0.49671414],
+    ...                      [-0.1382643]],
+    ...
+    ...                     [[0.64768857],
+    ...                      [1.5230298]]]],
+    ...                   [[[[-0.23415337],
+    ...                      [-0.23413695]],
+    ...
+    ...                     [[1.57921278],
+    ...                      [0.76743472]]]]])
+    >>> y = ivy.tt_matrix_to_tensor(x)
+    >>> print(y)
+    ivy.array([[[[-0.1163073 , -0.11629914],
+    [ 0.03237505,  0.03237278]],
+
+    [[ 0.78441733,  0.38119566],
+    [-0.21834874, -0.10610882]]],
+
+
+    [[[-0.15165846, -0.15164782],
+    [-0.35662258, -0.35659757]],
+
+    [[ 1.02283812,  0.49705869],
+    [ 2.40518808,  1.16882598]]]])
+    """
+    _, in_shape, out_shape, _ = zip(*(f.shape for f in tt_matrix))
+    ndim = len(in_shape)
+    full_shape = sum(zip(*(in_shape, out_shape)), ())
+    order = list(range(0, ndim * 2, 2)) + list(range(1, ndim * 2, 2))
+    for i, factor in enumerate(tt_matrix):
+        if not i:
+            res = factor
+        else:
+            axes = ([-1], [0])
+            a = res
+            b = factor
+            try:
+                iter(axes)
+            except Exception:
+                axes_a = list(range(-axes, 0))
+                axes_b = list(range(0, axes))
+            else:
+                axes_a, axes_b = axes
+            try:
+                na = len(axes_a)
+                axes_a = list(axes_a)
+            except TypeError:
+                axes_a = [axes_a]
+                na = 1
+            try:
+                nb = len(axes_b)
+                axes_b = list(axes_b)
+            except TypeError:
+                axes_b = [axes_b]
+                nb = 1
+
+            a, b = ivy.asarray(a), ivy.asarray(b)
+            as_ = a.shape
+            nda = a.ndim
+            bs = b.shape
+            ndb = b.ndim
+            equal = True
+            if na != nb:
+                equal = False
+            else:
+                for k in range(na):
+                    if as_[axes_a[k]] != bs[axes_b[k]]:
+                        equal = False
+                        break
+                    if axes_a[k] < 0:
+                        axes_a[k] += nda
+                    if axes_b[k] < 0:
+                        axes_b[k] += ndb
+            if not equal:
+                raise ValueError("shape-mismatch for sum")
+
+            notin = [k for k in range(nda) if k not in axes_a]
+            newaxes_a = notin + axes_a
+            N2 = 1
+            for axis in axes_a:
+                N2 *= as_[axis]
+
+            newshape_a = (int(ivy.prod([as_[ax] for ax in notin])), N2)
+            olda = [as_[axis] for axis in notin]
+
+            notin = [k for k in range(ndb) if k not in axes_b]
+            newaxes_b = axes_b + notin
+            N2 = 1
+            for axis in axes_b:
+                N2 *= bs[axis]
+            newshape_b = (N2, int(ivy.prod([bs[ax] for ax in notin])))
+            oldb = [bs[axis] for axis in notin]
+            at = a.permute_dims(axes=newaxes_a).reshape(newshape_a)
+            bt = b.permute_dims(axes=newaxes_b).reshape(newshape_b)
+            res = ivy.dot(at, bt)
+            res = res.reshape(olda + oldb)
+    return ivy.permute_dims(ivy.reshape(res, full_shape), axes=order, out=out)
