@@ -320,20 +320,3 @@ def einsum(
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
     return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)
-
-
-# nanmax
-def nanmax(a, /, axis=None, keepdims=False):
-    """
-    PyTorch front-end for nanmax.
-
-    Parameters:
-    - a (torch.Tensor): Input tensor.
-    - axis (int, optional): Axis or axes along which to operate. Default is None.
-    - keepdims (bool, optional): If True, retains reduced \
-    dimensions with size 1. Default is False.
-
-    Returns:
-    - Maximum value of the elements in a, ignoring NaN values.
-    """
-    return torch.nanmax(a, dim=axis, keepdim=keepdims)
