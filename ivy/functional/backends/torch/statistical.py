@@ -74,6 +74,10 @@ def mean(
             return ivy.inplace_update(out, x)
         else:
             return x
+    if "float" not in str(x.dtype) and "complex" not in str(x.dtype):  # unsupported
+        return torch.mean(x.to(torch.float32), dim=axis, keepdim=keepdims, out=out).to(
+            x.dtype
+        )
     return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
 
 
