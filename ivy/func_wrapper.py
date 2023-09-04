@@ -1452,6 +1452,7 @@ def handle_complex_input(fn: Callable) -> Callable:
         Examples
         --------
         Using the default `jax_like` behaviour
+
         >>> @handle_complex_input
         >>> def my_func(inp):
         >>>     return ivy.ones_like(inp)
@@ -1468,6 +1469,7 @@ def handle_complex_input(fn: Callable) -> Callable:
                    0.38461535+0.92307694j])
 
         Using non-default `jax_like` behaviour
+
         >>> @handle_complex_input
         >>> def my_func(inp):
         >>>     return ivy.ones_like(inp)
@@ -1476,6 +1478,7 @@ def handle_complex_input(fn: Callable) -> Callable:
         ivy.array([1.+1.j, 1.+1.j, 1.+1.j])
 
         Using callable `jax_like` behaviour
+
         >>> def _my_func_jax_like(inp, fn_original=None):
         >>>     return fn_original(inp) * 3j
         >>> @handle_complex_input
