@@ -419,6 +419,7 @@ class Tensor:
             "2.0.1 and below": (
                 "bfloat16",
                 "uint32",
+                "uint16",
             )
         },
         "torch",
