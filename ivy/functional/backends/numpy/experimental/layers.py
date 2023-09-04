@@ -950,7 +950,7 @@ def stft(
     /,
     *,
     axis: Optional[int] = None,
-    onesided:Optional[bool] = True,
+    onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
     window: Optional[Union[np.ndarray, list, str, Tuple[int]]] = None,
     win_length: Optional[int] = None,
@@ -961,44 +961,47 @@ def stft(
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
-    boundary: Optional[str] = 'zeros',
+    boundary: Optional[str] = "zeros",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if window is None:
         window = np.hanning(n_fft)
     else:
         window = np.asarray(window)
-
+    
     if center:
-        pad = (n_fft - hop_length) // 2
-        signal = np.pad(signal, [(0, 0)] * (signal.ndim - 1) + [(pad, pad)], mode=pad_mode)
-
+        pad = max(0, (n_fft - hop_length) // 2)
+        signal = np.pad(signal, [(0, 0)] * (np.ndim(signal) - 1) + [(pad, pad)], mode=pad_mode)
+    
     num_frames = (signal.shape[-1] - n_fft) // hop_length + 1
-    stft_result = np.empty(signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=np.complex128)
-
+    stft_result = np.empty(
+        signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=np.complex128
+    )
+    
     for i in range(num_frames):
         start = i * hop_length
         end = start + n_fft
         frame = signal[..., start:end]
-
+        
         if win_length is not None:
-            frame = frame * window[:len(frame)]
+            win_len = min(win_length, frame.shape[-1])
+            frame = frame * window[:win_len]
         else:
             frame = frame * window
-
+        
         stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
         if onesided:
-            stft_frame = stft_frame[..., :n_fft // 2 + 1]
-
+            stft_frame = stft_frame[..., : n_fft // 2 + 1]
+        
         if detrend:
             detrend_func = np.poly1d if isinstance(detrend, bool) else detrend
             detrended = detrend_func(np.arange(len(frame)))(frame)
             stft_frame = np.fft.fft(detrended, n=n_fft, axis=-1)
             if onesided:
-                stft_frame = stft_frame[..., :n_fft // 2 + 1]
-
-        stft_result[..., i, :n_fft // 2 + 1] = stft_frame
-
+                stft_frame = stft_frame[..., : n_fft // 2 + 1]
+        
+        stft_result[..., i, : n_fft // 2 + 1] = stft_frame
+    
     return stft_result
         
     
