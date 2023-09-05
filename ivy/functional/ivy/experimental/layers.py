@@ -2166,6 +2166,7 @@ def _mask(vals, length, range_max, dim, mask_value=0.0):
 def adaptive_max_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
+    data_format: str = "NCHW",
 ):
     """
     Apply a 2D adaptive maximum pooling over an input signal composed of several input
@@ -2179,6 +2180,8 @@ def adaptive_max_pool2d(
         spatial dimensions.
     output_size
         Spatial output size.
+    data_format
+        NHWC" or "NCHW". Defaults to "NCHW".
 
     Returns
     -------
@@ -2201,7 +2204,7 @@ def adaptive_max_pool2d(
         stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-2:], output_size))
         kernel_size = stride  # Mathematically identical to the previous expression
         pooled_output = ivy.max_pool2d(
-            input, kernel_size, stride, "VALID", data_format="NCHW"
+            input, kernel_size, stride, "VALID", data_format=data_format
         )
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
@@ -2259,6 +2262,7 @@ adaptive_max_pool2d.mixed_backend_wrappers = {
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
+    data_format: str = "NCW",
 ) -> ivy.Array:
     """
     Apply a 1D adaptive average pooling over an input signal composed of several input
@@ -2272,6 +2276,8 @@ def adaptive_avg_pool1d(
         dimension.
     output_size
         Spatial output size.
+    data_format
+        Defaults to "NCW".
 
     Returns
     -------
@@ -2291,7 +2297,7 @@ def adaptive_avg_pool1d(
         stride = input.shape[-1] // output_size
         kernel_size = input.shape[-1] - (output_size - 1) * stride
         pooled_output = ivy.avg_pool1d(
-            input, kernel_size, stride, "VALID", data_format="NCW"
+            input, kernel_size, stride, "VALID", data_format=data_format
         )
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
@@ -2342,6 +2348,7 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
+    data_format: str = "NCHW",
 ) -> ivy.Array:
     """
     Apply a 2D adaptive average pooling over an input signal composed of several input
@@ -2355,6 +2362,8 @@ def adaptive_avg_pool2d(
         spatial dimensions.
     output_size
         Spatial output size.
+    data_format
+        NHWC" or "NCHW". Defaults to "NCHW".
 
     Returns
     -------
@@ -2377,7 +2386,7 @@ def adaptive_avg_pool2d(
         stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-2:], output_size))
         kernel_size = stride  # Mathematically identical to the previous expression
         pooled_output = ivy.avg_pool2d(
-            input, kernel_size, stride, "VALID", data_format="NCHW"
+            input, kernel_size, stride, "VALID", data_format=data_format
         )
         if squeeze:
             return ivy.squeeze(pooled_output, axis=0)
