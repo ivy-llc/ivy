@@ -9,7 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
 
 
-
 # --- Helpers --- #
 # --------------- #
 
@@ -368,6 +367,50 @@ def test_numpy_gcd(
         x2=xs[1],
         out=None,
         where=where,
+    )
+
+
+#gradient
+@handle_frontend_test(
+    fn_tree = "numpy.gradient",
+    dtype_input_axis = helpers.dtype_values_axis(
+        available_dtypes = ("float32", "float16", "float64"),
+        min_num_dims = 1,
+        max_num_dims = 3,
+        min_dim_size = 2,
+        max_dim_size = 4,
+        valid_axis = True,
+        force_int_axis = True,
+    ),
+    varargs=helpers.ints(
+        min_value = -3,
+        max_value = 3,
+    ),
+)
+def test_numpy_gradient(
+    dtype_input_axis,
+    varargs,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+
+    input_dtype, x, axis = dtype_input_axis
+    test_flags.num_positional_args = 2
+    kw = {}
+    kw["varargs"] = varargs
+    kw["axis"] = axis
+    helpers.test_frontend_function(
+        input_dtypes = input_dtype,
+        frontend = frontend,
+        backend_to_test = backend_fw,
+        test_flags = test_flags,
+        fn_tree = fn_tree,
+        on_device = on_device,
+        f = x[0],
+        **kw,
     )
 
 
@@ -797,46 +840,4 @@ def test_numpy_square(
         order="K",
         dtype=dtype,
         subok=True,
-    )
-
-@handle_frontend_test(
-    fn_tree = "numpy.gradient",
-    dtype_input_axis = helpers.dtype_values_axis(
-        available_dtypes = ("float32", "float16", "float64"),
-        min_num_dims = 1,
-        max_num_dims = 3,
-        min_dim_size = 2,
-        max_dim_size = 4,
-        valid_axis = True,
-        force_int_axis = True,
-    ),
-    varargs=helpers.ints(
-        min_value = -3,
-        max_value = 3,
-    ),
-)
-def test_numpy_gradient(
-    dtype_input_axis,
-    varargs,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-
-    input_dtype, x, axis = dtype_input_axis
-    test_flags.num_positional_args = 2
-    kw = {}
-    kw["varargs"] = varargs
-    kw["axis"] = axis
-    helpers.test_frontend_function(
-        input_dtypes = input_dtype,
-        frontend = frontend,
-        backend_to_test = backend_fw,
-        test_flags = test_flags,
-        fn_tree = fn_tree,
-        on_device = on_device,
-        f = x[0],
-        **kw,
     )
