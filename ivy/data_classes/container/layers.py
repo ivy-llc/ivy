@@ -1059,12 +1059,11 @@ class _ContainerWithLayers(ContainerBase):
         average_attention_weights: Union[bool, ivy.Container] = True,
         dropout: Union[float, ivy.Container] = 0.0,
         training: Union[bool, ivy.Container] = False,
-        key_chains: Optional[
-            Union[List[str], Dict[str, str], ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "multi_head_attention",
@@ -1132,7 +1131,7 @@ class _ContainerWithLayers(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         return self._static_multi_head_attention(
             self,

@@ -715,7 +715,7 @@ def multi_head_attention(
     key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     num_heads: int = 8,
-    scale: float = None,
+    scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     q_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -729,7 +729,7 @@ def multi_head_attention(
     average_attention_weights: bool = True,
     dropout: float = 0.0,
     training: bool = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Apply multi-head attention to inputs x. This is an implementation of multi-headed

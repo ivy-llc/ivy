@@ -413,7 +413,7 @@ class _ArrayWithLayers(abc.ABC):
         average_attention_weights: bool = True,
         dropout: float = 0.0,
         training: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.multi_head_attention(
             self._data,
