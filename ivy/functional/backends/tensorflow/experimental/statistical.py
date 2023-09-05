@@ -115,6 +115,37 @@ def nanmean(
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
+def _infer_dtype(dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
+
+
+def nanprod(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return (
+        tf.experimental.numpy.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype)
+        * initial
+    )
+
+
 def _validate_quantile(q):
     if tf.experimental.numpy.ndim(q) == 1 and tf.size(q) < 10:
         for i in range(tf.size(q)):
@@ -181,39 +212,35 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None):
 
 def _quantile(a, q, axis=None):
     ret_dtype = a.dtype
-    if tf.experimental.numpy.ndim(q) > 2:
+    if tf.experimental.numpy.ndim(q) > 1:
         raise ValueError("q argument must be a scalar or 1-dimensional!")
     if axis is None:
         axis = 0
         a = tf.reshape(a, [-1])
+    elif axis != 0:
+        a = tf.experimental.numpy.moveaxis(a, axis, 0)
+        axis = 0
 
     n = a.shape[axis]
-    if axis != 0:
-        a = tf.experimental.numpy.moveaxis(a, axis, 0)
 
-    indices = []
-    for q_num in q:
-        index = q_num * (n - 1)
-        indices.append(index)
+    indices = q * (n - 1)
 
-    a = tf.sort(a, 0)
-    outputs = []
+    a = tf.sort(a, axis)
 
-    for index in indices:
-        indices_below = tf.cast(tf.math.floor(index), dtype=tf.int32)
-        indices_upper = tf.cast(tf.math.ceil(index), dtype=tf.int32)
+    indices_below = tf.cast(tf.math.floor(indices), dtype=tf.int32)
+    indices_upper = tf.cast(tf.math.ceil(indices), dtype=tf.int32)
 
-        weights = index - tf.cast(indices_below, dtype=ret_dtype)
+    weights = indices - tf.cast(indices_below, dtype=ret_dtype)
 
-        indices_below = tf.clip_by_value(indices_below, 0, n - 1)
-        indices_upper = tf.clip_by_value(indices_upper, 0, n - 1)
-        tensor_upper = tf.gather(a, indices_upper, axis=0)
-        tensor_below = tf.gather(a, indices_below, axis=0)
+    indices_below = tf.clip_by_value(indices_below, 0, n - 1)
+    indices_upper = tf.clip_by_value(indices_upper, 0, n - 1)
+    tensor_upper = tf.gather(a, indices_upper, axis=axis)
+    tensor_below = tf.gather(a, indices_below, axis=axis)
 
-        pred = weights <= 0.5
-        out = tf.where(pred, tensor_below, tensor_upper)
-        outputs.append(out)
-    return tf.convert_to_tensor(outputs, dtype=ret_dtype)
+    pred = weights <= 0.5
+    out = tf.where(pred, tensor_below, tensor_upper)
+
+    return tf.cast(out, ret_dtype)
 
 
 def _compute_quantile_wrapper(
