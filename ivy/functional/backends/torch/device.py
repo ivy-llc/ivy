@@ -106,9 +106,9 @@ def tpu_is_available() -> bool:
     return False
 
 
-def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
+def handle_soft_device_variable(*args, fn, **kwargs):
     args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
-        *args, device_shifting_dev=device_shifting_dev, **kwargs
+        *args, **kwargs
     )
     # checking if this function accepts `device` argument
     # must be handled in the backend

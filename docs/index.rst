@@ -9,7 +9,7 @@
   :caption: Overview
 
   overview/get_started.rst
-  Examples <https://unify.ai/demos/>
+  Examples <demos/index.rst>
   overview/glossary.rst
   overview/faq.rst
 
@@ -20,7 +20,6 @@
   :caption: Users
 
   overview/background.rst
-  overview/design.rst
   overview/related_work.rst
   overview/extensions.rst
 
@@ -30,8 +29,9 @@
   :maxdepth: -1
   :caption: Contributors
 
-  overview/deep_dive.rst
+  overview/design.rst
   overview/contributing.rst
+  overview/deep_dive.rst
 
 
 .. toctree::
