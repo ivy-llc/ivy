@@ -167,7 +167,34 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanprod(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(
+        np.nanprod(
+            a=a, axis=axis, dtype=dtype, keepdims=keepdims, out=out, initial=initial
+        )
+    )
+
+
+nanprod.support_native_out = True
+
+
 def _validate_quantile(q):
+    if isinstance(q, float):
+        q = np.asarray(q)
     if q.ndim == 1 and q.size < 10:
         for i in range(q.size):
             if not (0.0 <= q[i] <= 1.0):
@@ -226,40 +253,37 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None):
 
 
 def _quantile(a, q, axis=None):
+    if isinstance(q, float):
+        q = np.asarray(q)
     ret_dtype = a.dtype
-    if q.ndim > 2:
+    if q.ndim > 1:
         raise ValueError("q argument must be a scalar or 1-dimensional!")
     if axis is None:
         axis = 0
         a = a.flatten()
+    elif axis != 0:
+        a = np.moveaxis(a, axis, 0)
+        axis = 0
 
     n = a.shape[axis]
-    if axis != 0:
-        a = np.moveaxis(a, axis, 0)
+    indices = q * (n - 1)
 
-    indices = []
-    for q_num in q:
-        index = q_num * (n - 1)
-        indices.append(index)
+    a.sort(axis)
 
-    a.sort(0)
-    outputs = []
+    indices_below = np.floor(indices).astype(np.int32)
+    indices_upper = np.ceil(indices).astype(np.int32)
 
-    for index in indices:
-        indices_below = np.floor(index).astype(np.int32)
-        indices_upper = np.ceil(index).astype(np.int32)
+    weights = indices - indices_below.astype("float64")
 
-        weights = index - indices_below.astype("float64")
+    indices_below = np.clip(indices_below, 0, n - 1)
+    indices_upper = np.clip(indices_upper, 0, n - 1)
+    tensor_upper = np.take(a, indices_upper, axis=axis)  # , mode="clip")
+    tensor_below = np.take(a, indices_below, axis=axis)  # , mode="clip")
 
-        indices_below = np.clip(indices_below, 0, n - 1)
-        indices_upper = np.clip(indices_upper, 0, n - 1)
-        tensor_upper = np.take(a, indices_upper, axis=0)  # , mode="clip")
-        tensor_below = np.take(a, indices_below, axis=0)  # , mode="clip")
+    pred = weights <= 0.5
+    out = np.where(pred, tensor_below, tensor_upper)
 
-        pred = weights <= 0.5
-        out = np.where(pred, tensor_below, tensor_upper)
-        outputs.append(out)
-    return np.array(outputs, dtype=ret_dtype)
+    return out.astype(ret_dtype)
 
 
 def _compute_quantile_wrapper(
@@ -444,7 +468,7 @@ def __find_cummax_indices(
     axis: int = 0,
 ) -> np.ndarray:
     indices = []
-    if type(x[0]) == np.ndarray:
+    if x[0] is np.ndarray:
         if axis >= 1:
             for ret1 in x:
                 indice = __find_cummax_indices(ret1, axis=axis - 1)
