@@ -365,6 +365,6 @@ def real_if_close(a, tol=100):
 
 
 @to_ivy_arrays_and_back
-def gradient(f, *varargs, axis=None, edge_order=1):
+def gradient(f, *varargs, axis = None, edge_order = 1):
     edge_order = edge_order if edge_order is not None else 1
-    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
+    return ivy.gradient(f, spacing = varargs, axis = axis, edge_order = edge_order)
