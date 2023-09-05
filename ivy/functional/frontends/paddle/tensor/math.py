@@ -158,6 +158,14 @@ def cumprod(x, dim=None, dtype=None, name=None):
     return ivy.cumprod(x, axis=dim, dtype=dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def cumsum(x, axis=None, dtype=None, name=None):
+    return ivy.cumsum(x, axis=axis, dtype=dtype)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def deg2rad(x, name=None):
@@ -215,6 +223,12 @@ def expm1(x, name=None):
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_divide(x, y, name=None):
+    return ivy.floor_divide(x, y)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
@@ -512,12 +526,6 @@ def sqrt_(x, name=None):
 @to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def floor_divide(x, y, name=None):
-    return ivy.floor_divide(x, y)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
