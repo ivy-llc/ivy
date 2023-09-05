@@ -60,7 +60,7 @@ def test_huber_loss(
     fn_tree="functional.ivy.experimental.kl_div",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1e-04,
+        min_value=1e-07,
         max_value=1,
         allow_inf=False,
         min_num_dims=1,
@@ -69,7 +69,7 @@ def test_huber_loss(
     ),
     dtype_and_target=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1e-04,
+        min_value=1e-07,
         max_value=1,
         allow_inf=False,
         min_num_dims=1,
