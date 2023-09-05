@@ -13,7 +13,7 @@ def l1_normalize(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
-        norm = np.sum(np.abs(x.flatten()))
+        norm = np.sum(np.abs(np.reshape(x, -1)))
         denorm = norm * np.ones_like(x)
     else:
         norm = np.sum(np.abs(x), axis=axis, keepdims=True)

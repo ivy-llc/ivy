@@ -758,7 +758,7 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
-from .data_classes.FactorizedTensor import TuckerTensor, CPTensor
+from .data_classes.factorized_tensor import TuckerTensor, CPTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -935,6 +935,7 @@ globals_vars = GlobalsDict(
         "warning_level_stack": warning_level_stack,
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
+        "inplace_mode_stack": general.inplace_mode_stack,
         "soft_device_mode_stack": device.soft_device_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
         "show_func_wrapper_trace_mode_stack": (
@@ -1415,6 +1416,7 @@ GLOBAL_PROPS = [
     "nan_policy",
     "array_mode",
     "nestable_mode",
+    "inplace_mode",
     "exception_trace_mode",
     "show_func_wrapper_trace_mode",
     "min_denominator",
