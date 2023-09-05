@@ -897,27 +897,26 @@ def random_tr(
     ivy.TRTensor or ivy.Array if full is True
     """
     rank = ivy.TRTensor.validate_tr_rank(shape, rank)
-
     # Make sure it's not a tuple but a list
     rank = list(rank)
+    _check_first_and_last_rank_elements_are_equal(rank)
+    factors = [
+        ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed)
+        for i, s in enumerate(shape)
+    ]
+    if full:
+        return ivy.TRTensor.tr_to_tensor(factors)
+    else:
+        return ivy.TRTensor(factors)
 
-    # Initialization
+
+def _check_first_and_last_rank_elements_are_equal(rank):
     if rank[0] != rank[-1]:
         message = (
             f"Provided rank[0] == {rank[0]} and rank[-1] == {rank[-1]} "
             "but boundary conditions dictate rank[0] == rank[-1]."
         )
         raise ValueError(message)
-
-    factors = [
-        ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed)
-        for i, s in enumerate(shape)
-    ]
-
-    if full:
-        return ivy.TRTensor.tr_to_tensor(factors)
-    else:
-        return ivy.TRTensor(factors)
 
 
 @handle_nestable

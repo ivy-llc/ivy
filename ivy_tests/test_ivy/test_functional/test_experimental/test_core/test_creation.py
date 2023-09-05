@@ -340,6 +340,7 @@ def test_ndindex(dtype_x_shape):
     data=_random_cp_data(),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_random_cp(
     *,
@@ -400,6 +401,7 @@ def test_random_cp(
     data=_random_tr_data(),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_random_tr(
     *,
