@@ -294,21 +294,19 @@ def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
         ivy.full_like(not_nan_mask_count1, ivy.nan),
     )
     return ivy.divide(array_sum1, count_zero_handel)
-
+    
 @handle_jax_dtype
 @with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def digitize(x, bins, right=False, out=None):
     if right:
-        indices = inpy.searchsorted(bins, x, side="right")
+        indices = promote_types_of_jax_inputs(ivy.searchsorted(bins, x, side="right"), x)
     else:
-        indices = inpy.searchsorted(bins, x, side="left")
-    indices = inpy.clip(indices, 0, len(bins) - 1)
+        indices = promote_types_of_jax_inputs(ivy.searchsorted(bins, x, side="left"), x)
+    indices = ivy.clip(indices, 0, len(bins) - 1)
     if out is not None:
-        indices = inpy.astype(indices, out.dtype)
+        indices = ivy.astype(indices, out.dtype)
     return indices
-
-
 
 @to_ivy_arrays_and_back
 def nanmedian(
