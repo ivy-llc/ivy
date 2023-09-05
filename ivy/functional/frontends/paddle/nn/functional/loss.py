@@ -49,6 +49,38 @@ def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
     "paddle",
 )
 @inputs_to_ivy_arrays
+def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None):
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError(
+            "The value of 'reduction' in binary_cross_entropy should be 'sum', 'mean'"
+            " or 'none',but received %s, which is not allowed." % reduction
+        )
+    reduction_ = _get_reduction_func(reduction)
+    if weight is None:
+        ret = ivy.binary_cross_entropy(label, input, reduction="none")
+        ret = reduction_(ret)
+        if reduction == "none":
+            out = paddle.to_tensor(ivy.atleast_1d(ret))
+        else:
+            out = paddle.to_tensor(ivy.atleast_1d(ret))[0]
+
+    if weight is not None:
+        ret = ivy.multiply(
+            weight, ivy.binary_cross_entropy(label, input, reduction="none")
+        )
+        ret = reduction_(ret).astype(label.dtype)
+        if reduction == "none":
+            out = paddle.to_tensor(ivy.atleast_1d(ret))
+        else:
+            out = paddle.to_tensor(ivy.atleast_1d(ret))[0]
+    return out
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float",)},
+    "paddle",
+)
+@inputs_to_ivy_arrays
 def binary_cross_entropy_with_logits(
     logit,
     label,
