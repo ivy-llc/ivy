@@ -103,6 +103,10 @@ class Tensor:
     # Setters #
     # --------#
 
+    @device.setter
+    def cuda(self):
+        self.device = "cuda"
+
     @ivy_array.setter
     def ivy_array(self, array):
         self._ivy_array = (
