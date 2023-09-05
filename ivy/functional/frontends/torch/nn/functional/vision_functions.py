@@ -369,16 +369,6 @@ def reflect(x, low2, high2):
     return x
 
 
-def bicubic_interp(x, t, alpha=-0.75):
-    n, h, w = t.shape
-    coeffs = []
-    coeffs.append(ivy.reshape(cubic_conv2(alpha, t + 1), (n, 1, h, w)))
-    coeffs.append(ivy.reshape(cubic_conv1(alpha, t), (n, 1, h, w)))
-    coeffs.append(ivy.reshape(cubic_conv1(alpha, 1 - t), (n, 1, h, w)))
-    coeffs.append(ivy.reshape(cubic_conv2(alpha, 2 - t), (n, 1, h, w)))
-    return x[0] * coeffs[0] + x[1] * coeffs[1] + x[2] * coeffs[2] + x[3] * coeffs[3]
-
-
 def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
     if padding_mode == "reflection":
         if align_corners:
@@ -409,26 +399,28 @@ def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
     return grid
 
 
+def bicubic_interp(x, t, alpha=-0.75):
+    n, h, w = t.shape
+    coeffs = []
+    coeffs.append(ivy.reshape(cubic_conv2(alpha, t + 1), (n, 1, h, w)))
+    coeffs.append(ivy.reshape(cubic_conv1(alpha, t), (n, 1, h, w)))
+    coeffs.append(ivy.reshape(cubic_conv1(alpha, 1 - t), (n, 1, h, w)))
+    coeffs.append(ivy.reshape(cubic_conv2(alpha, 2 - t), (n, 1, h, w)))
+    return x[0] * coeffs[0] + x[1] * coeffs[1] + x[2] * coeffs[2] + x[3] * coeffs[3]
+
+
 cubic_conv1 = lambda A, x: ((A + 2) * x - (A + 3)) * x * x + 1
 cubic_conv2 = lambda A, x: (((A * x) - (5 * A)) * x + (8 * A)) * x - (4 * A)
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float32", )}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(
     input, grid, mode="bilinear", padding_mode="zeros", align_corners=False
 ):
-    # Ref:
-    # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/GridSampler.cpp
-    # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cpu/GridSamplerKernel.cpp
-    # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/UpSample.h
-    # https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/GridSampler.cu
-    # https://github.com/Tencent/ncnn/blob/cb674ac5eddb32f0709a60c81f71d2cbc6bc89da/src/layer/gridsample.cpp#L21
     input_clone = ivy.copy_array(input)
     grid_clone = ivy.copy_array(grid)
 
-    input_clone = ivy.astype(input_clone, ivy.float32)
-    grid_clone = ivy.astype(grid_clone, ivy.float32)
     if ivy.get_num_dims(input_clone) == 4:  # sample from 2D images
         n, c, h, w = input_clone.shape
         n, to_h, to_w, gc = grid_clone.shape
@@ -448,7 +440,6 @@ def grid_sample(
         padding = [(0, 0) for _ in range(2)] + [(4, 4) for _ in range(2)]
         input_clone = ivy.pad(input_clone, padding, mode="constant", constant_values=0)
 
-
         if mode == "bicubic":
             grid_floor = ivy.floor(grid_clone)
             distance = grid_clone - grid_floor
@@ -456,25 +447,38 @@ def grid_sample(
             tx, ty = distance[..., 0], distance[..., 1]
 
             grid_floor -= 1
-            grid_floor = [grid_sample_padding(grid_floor + i, padding_mode, align_corners, borders=[w, h]) for i in range(4)]
+            grid_floor = [
+                grid_sample_padding(
+                    grid_floor + i, padding_mode, align_corners, borders=[w, h]
+                )
+                for i in range(4)
+            ]
 
-            w_cubic = [ivy.astype(grid_floor[i][..., 0] + 4, ivy.int64) for i in range(4)]
-            h_cubic = [ivy.astype(grid_floor[i][..., 1] + 4, ivy.int64) for i in range(4)]
+            w_cubic = [
+                ivy.astype(grid_floor[i][..., 0] + 4, ivy.int64) for i in range(4)
+            ]
+            h_cubic = [
+                ivy.astype(grid_floor[i][..., 1] + 4, ivy.int64) for i in range(4)
+            ]
 
             coeffs = [
                 bicubic_interp(
                     [
                         ivy.permute_dims(
-                            input_clone[batch_coor, :, h_cubic[i], w_cubic[0]], (0, 3, 1, 2)
+                            input_clone[batch_coor, :, h_cubic[i], w_cubic[0]],
+                            (0, 3, 1, 2),
                         ),
                         ivy.permute_dims(
-                            input_clone[batch_coor, :, h_cubic[i], w_cubic[1]], (0, 3, 1, 2)
+                            input_clone[batch_coor, :, h_cubic[i], w_cubic[1]],
+                            (0, 3, 1, 2),
                         ),
                         ivy.permute_dims(
-                            input_clone[batch_coor, :, h_cubic[i], w_cubic[2]], (0, 3, 1, 2)
+                            input_clone[batch_coor, :, h_cubic[i], w_cubic[2]],
+                            (0, 3, 1, 2),
                         ),
                         ivy.permute_dims(
-                            input_clone[batch_coor, :, h_cubic[i], w_cubic[3]], (0, 3, 1, 2)
+                            input_clone[batch_coor, :, h_cubic[i], w_cubic[3]],
+                            (0, 3, 1, 2),
                         ),
                     ],
                     tx,
@@ -484,7 +488,9 @@ def grid_sample(
             return bicubic_interp(coeffs, ty)
 
         else:
-            grid_clone = grid_sample_padding(grid_clone, padding_mode, align_corners, borders=[w, h])
+            grid_clone = grid_sample_padding(
+                grid_clone, padding_mode, align_corners, borders=[w, h]
+            )
 
         if mode == "bilinear":
             grid_clone += 4
@@ -500,7 +506,6 @@ def grid_sample(
             v01 = ivy.permute_dims(input_clone[batch_coor, :, h0, w1], (0, 3, 1, 2))
             v10 = ivy.permute_dims(input_clone[batch_coor, :, h1, w0], (0, 3, 1, 2))
             v11 = ivy.permute_dims(input_clone[batch_coor, :, h1, w1], (0, 3, 1, 2))
-
 
             alpha = ivy.reshape(w_coor - w0, (n, 1, to_h, to_w))
             beta = ivy.reshape(h_coor - h0, (n, 1, to_h, to_w))
@@ -519,7 +524,9 @@ def grid_sample(
 
             w_coor = ivy.astype(ivy.round(w_coor), ivy.int64) + 4
             h_coor = ivy.astype(ivy.round(h_coor), ivy.int64) + 4
-            return ivy.permute_dims(input_clone[batch_coor, :, h_coor, w_coor], (0, 3, 1, 2))
+            return ivy.permute_dims(
+                input_clone[batch_coor, :, h_coor, w_coor], (0, 3, 1, 2)
+            )
 
         else:
             raise ivy.exceptions.IvyError(f"Not supported mode {mode}")
@@ -544,8 +551,9 @@ def grid_sample(
         padding = [(0, 0) for _ in range(2)] + [(3, 3) for _ in range(3)]
         input_clone = ivy.pad(input_clone, padding, mode="constant", constant_values=0)
 
-        grid_clone = grid_sample_padding(grid_clone, padding_mode, align_corners, borders=[w, h, d])
-        # grid_clone += 3
+        grid_clone = grid_sample_padding(
+            grid_clone, padding_mode, align_corners, borders=[w, h, d]
+        )
 
         if mode == "bilinear":
             grid_clone += 3
@@ -605,8 +613,10 @@ def grid_sample(
             return v
 
         elif mode == "nearest":
-            ceil_mask = (grid_clone % 1 == 0.5)
-            grid_clone[ceil_mask] = ivy.astype(ivy.ceil(grid_clone[ceil_mask]), ivy.int64)
+            ceil_mask = grid_clone % 1 == 0.5
+            grid_clone[ceil_mask] = ivy.astype(
+                ivy.ceil(grid_clone[ceil_mask]), ivy.int64
+            )
 
             w_coor = ivy.reshape(grid_clone[..., 0], (n, to_d, to_h, to_w))
             h_coor = ivy.reshape(grid_clone[..., 1], (n, to_d, to_h, to_w))
@@ -624,3 +634,4 @@ def grid_sample(
 
     else:
         raise ivy.exceptions.IvyError(f"Not supported input shape {input_clone.shape}")
+
