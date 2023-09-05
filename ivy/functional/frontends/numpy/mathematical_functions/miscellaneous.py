@@ -9,6 +9,10 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
 )
+
+from ivy.functional.frontends.torch.func_wrapper import (
+    outputs_to_frontend_arrays,
+)
 from ivy.func_wrapper import with_supported_dtypes
 
 
@@ -360,3 +364,9 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 @to_ivy_arrays_and_back
 def real_if_close(a, tol=100):
     return ivy.array(a)  # ivy doesn't yet support complex numbers
+
+
+@to_ivy_arrays_and_back
+def gradient(f, *varargs, axis=None, edge_order=1):
+    edge_order = edge_order if edge_order is not None else 1
+    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
