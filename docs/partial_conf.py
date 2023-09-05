@@ -48,3 +48,5 @@ from docs.conf import html_theme_options
 html_theme_options["switcher"]["json_url"] = "https://unify.ai/docs/versions/ivy.json"
 
 repo_name = "ivy"
+
+from docs.demos.demos_conf import *  # noqa

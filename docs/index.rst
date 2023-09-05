@@ -9,7 +9,7 @@
   :caption: Overview
 
   overview/get_started.rst
-  Examples <https://unify.ai/demos/>
+  Examples <demos/index.rst>
   overview/glossary.rst
   overview/faq.rst
 
