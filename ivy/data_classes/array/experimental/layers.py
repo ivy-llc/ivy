@@ -1163,4 +1163,3 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.stft(self._data, frame_length, frame_step, fft_length=fft_length,
                         window_fn=window_fn, pad_end=pad_end, name=name, out=out)
-

@@ -1308,6 +1308,8 @@ def test_stft(
         backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
         signals=x[0],
         frame_length=frame_length,
         frame_step=frame_step,

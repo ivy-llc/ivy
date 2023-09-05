@@ -1447,8 +1447,7 @@ def stft(
                             fft_length=fft_length, window_fn=window_fn, pad_end=pad_end, name=name)
 
     if out is not None:
-        out = tf.cast(result, tf.complex128)
         return out
 
     else:
-        return tf.cast(result, tf.complex128)
+        return result

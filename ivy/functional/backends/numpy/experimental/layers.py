@@ -1090,7 +1090,7 @@ def stft(
                 f"Invalid data points {fft_length}, expecting fft_length larger than or equal to 1"
             )
 
-    input_dtype = np.dtype(signals)
+    input_dtype = signals.dtype
     if input_dtype == np.float32:
         dtype = np.complex64
     elif input_dtype == np.float64:
@@ -1127,7 +1127,7 @@ def stft(
             windowed_frame = frame * window
             pad_length = fft_length - frame_length
             windowed_frame = np.pad(windowed_frame, [(0, pad_length)])
-            windowed_frame = np.ndarray.astype(windowed_frame, dtype)
+            windowed_frame = np.array(windowed_frame, dtype=dtype)
 
             fft_frame = np.fft.fft(windowed_frame, axis=-1)
             slit = int((fft_length // 2 + 1))
@@ -1145,4 +1145,4 @@ def stft(
             return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
 
     to_return = stft_helper(signals, frame_length, frame_step, fft_length)
-    return np.ndarray.astype(to_return, dtype)
+    return np.array(to_return, dtype=dtype)
