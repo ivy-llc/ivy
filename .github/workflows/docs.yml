@@ -5,47 +5,14 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
   update-docs:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Checkout 🛎️ Doc-builder
-        uses: actions/checkout@v3
+      - name: Trigger docs workflow
+        uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
-          repository: unifyai/doc-builder
-          path: .doc-builder
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Build docs
-        run: |
-          ./.doc-builder/make_docs_without_docker.sh ..
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: 'docs/build'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
-
+          owner: unifyai
+          repo: ivy
+          workflow_file_name: docs.yml
+          github_token: ${{ secrets.IVY_BRANCH_TOKEN }}
