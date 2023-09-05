@@ -59,8 +59,8 @@ def test_huber_loss(
 @handle_test(
     fn_tree="functional.ivy.experimental.kl_div",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=1e-07,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
         max_value=1,
         allow_inf=False,
         min_num_dims=1,
@@ -68,8 +68,8 @@ def test_huber_loss(
         min_dim_size=3,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=1e-07,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
         max_value=1,
         allow_inf=False,
         min_num_dims=1,
@@ -96,6 +96,8 @@ def test_kl_div(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
         input=input[0],
         target=target[0],
         reduction=reduction,

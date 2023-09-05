@@ -461,7 +461,6 @@ def kl_div(
     >>> ivy.kl_div(input, target, reduction='batchmean')
     ivy.array(0.0916)
 
-
     >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
     >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
     >>> ivy.kl_div(input, target, reduction='none')
@@ -491,4 +490,4 @@ def kl_div(
     else:
         loss = ivy.inplace_update(out, loss) if out is not None else loss
 
-    return ivy.astype(loss, ivy.float64)
+    return loss

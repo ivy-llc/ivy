@@ -63,7 +63,7 @@ def kl_div(
     target: JaxArray,
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
 ) -> JaxArray:
     input = jnp.clip(input, 1e-7, 1)
     target = jnp.clip(target, 1e-7, 1)
@@ -75,10 +75,12 @@ def kl_div(
     loss = jnp.sum(input * jnp.log(input / target), axis=-1)
 
     if reduction == "mean":
-        return jnp.mean(loss)
+        loss = jnp.mean(loss)
     elif reduction == "sum":
-        return jnp.sum(loss)
+        loss = jnp.sum(loss)
     elif reduction == "batchmean":
-        return jnp.sum(loss) / size[0]
+        loss = jnp.sum(loss) / size[0]
     else:
-        return loss
+        pass
+
+    return loss

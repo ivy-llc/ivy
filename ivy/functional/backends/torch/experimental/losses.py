@@ -102,7 +102,6 @@ def soft_margin_loss(
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
-            "float16",
             "uint8",
             "int8",
             "int16",
