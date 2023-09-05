@@ -16,6 +16,30 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 
 
 @st.composite
+def _get_castable_float_dtype_nan(draw, min_value=None, max_value=None):
+    available_dtypes = helpers.get_dtypes("float")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=6,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            min_value=min_value,
+            max_value=max_value,
+            allow_nan=True,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    return dtype1, [values], axis, dtype2
+
+
+@st.composite
 def _get_dtype_value1_value2_cov(
     draw,
     available_dtypes,
@@ -619,6 +643,41 @@ def test_nanmedian(
         axis=axis,
         keepdims=keep_dims,
         overwrite_input=overwriteinput,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.nanprod",
+    dtype_x_axis_castable=_get_castable_float_dtype_nan(),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    initial=st.integers(min_value=-5, max_value=5),
+)
+def test_nanprod(
+    *,
+    dtype_x_axis_castable,
+    keep_dims,
+    test_flags,
+    initial,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    x = x[0]
+    helpers.test_function(
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        rtol_=1e-1,
+        atol_=1e-1,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x,
+        axis=axis,
+        keepdims=keep_dims,
+        dtype=castable_dtype,
+        initial=initial,
     )
 
 

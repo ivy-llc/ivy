@@ -167,6 +167,31 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanprod(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(
+        np.nanprod(
+            a=a, axis=axis, dtype=dtype, keepdims=keepdims, out=out, initial=initial
+        )
+    )
+
+
+nanprod.support_native_out = True
+
+
 def _validate_quantile(q):
     if isinstance(q, float):
         q = np.asarray(q)
