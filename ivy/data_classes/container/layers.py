@@ -1026,11 +1026,11 @@ class _ContainerWithLayers(ContainerBase):
     @staticmethod
     def _static_multi_head_attention(
         query: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         /,
         *,
-        num_heads: Optional[Union[int, ivy.Container]] = 8,
+        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        num_heads: Union[int, ivy.Container] = 8,
         scale: Optional[Union[float, ivy.Container]] = None,
         attention_mask: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
@@ -1054,22 +1054,23 @@ class _ContainerWithLayers(ContainerBase):
         out_proj_bias: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
-        is_causal: Optional[Union[bool, ivy.Container]] = False,
-        return_attention_weights: Optional[Union[bool, ivy.Container]] = False,
-        average_attention_weights: Optional[Union[bool, ivy.Container]] = True,
-        dropout: Optional[Union[float, ivy.Container]] = 0.0,
-        training: Optional[Union[bool, ivy.Container]] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        is_causal: Union[bool, ivy.Container] = False,
+        return_attention_weights: Union[bool, ivy.Container] = False,
+        average_attention_weights: Union[bool, ivy.Container] = True,
+        dropout: Union[float, ivy.Container] = 0.0,
+        training: Union[bool, ivy.Container] = False,
+        key_chains: Optional[
+            Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+    ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "multi_head_attention",
             query,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=num_heads,
             scale=scale,
             attention_mask=attention_mask,
@@ -1094,11 +1095,11 @@ class _ContainerWithLayers(ContainerBase):
 
     def multi_head_attention(
         self: ivy.Container,
-        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         /,
         *,
-        num_heads: Optional[Union[int, ivy.Container]] = 8,
+        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        num_heads: Union[int, ivy.Container] = 8,
         scale: Optional[Union[float, ivy.Container]] = None,
         attention_mask: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
@@ -1122,21 +1123,21 @@ class _ContainerWithLayers(ContainerBase):
         out_proj_bias: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
-        is_causal: Optional[Union[bool, ivy.Container]] = False,
-        return_attention_weights: Optional[Union[bool, ivy.Container]] = False,
-        average_attention_weights: Optional[Union[bool, ivy.Container]] = True,
-        dropout: Optional[Union[float, ivy.Container]] = 0.0,
-        training: Optional[Union[bool, ivy.Container]] = False,
+        is_causal: Union[bool, ivy.Container] = False,
+        return_attention_weights: Union[bool, ivy.Container] = False,
+        average_attention_weights: Union[bool, ivy.Container] = True,
+        dropout: Union[float, ivy.Container] = 0.0,
+        training: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+    ) -> ivy.Container:
         return self._static_multi_head_attention(
             self,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=num_heads,
             scale=scale,
             attention_mask=attention_mask,
