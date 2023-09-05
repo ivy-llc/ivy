@@ -108,7 +108,7 @@ def l1_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
     if not isinstance(x, paddle.Tensor):
-        x = paddle.to_tensor(x, dtype=x.dtype)
+        x = paddle.to_tensor(x)
     if axis is None:
         axis = list(range(x.ndim))
     elif isinstance(axis, int):
