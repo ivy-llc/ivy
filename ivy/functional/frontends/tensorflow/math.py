@@ -11,6 +11,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     handle_tf_dtype,
     to_ivy_dtype,
 )
+from ivy.framework_handler import get_backend as _get_backend
 
 
 @with_unsupported_dtypes(
@@ -240,6 +241,27 @@ def divide_no_nan(x, y, name="divide_no_nan"):
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
         x / y,
     )
+
+@to_ivy_arrays_and_back
+def digamma(x, name=None):
+    """
+       Computes the digamma function.
+
+       Args:
+           x (array): Input array.
+           name (str): Name for the operation (optional).
+
+       Returns:
+           array: The result of the digamma function applied to the input.
+
+       Raises:
+           NotImplementedError: If the backend is not TensorFlow.
+       """
+    backend = _get_backend(x)
+    if backend == 'tensorflow':
+        return ivy.array(ivy.digamma(x), ivy.array([0], ivy.int32))
+    else:
+        raise NotImplementedError(f'digamma is not implemented for backend: {backend}')
 
 
 @to_ivy_arrays_and_back
