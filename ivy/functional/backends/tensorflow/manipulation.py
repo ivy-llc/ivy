@@ -337,22 +337,33 @@ def clip(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
         promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
         promoted_type = ivy.as_native_dtype(
             ivy.promote_types(promoted_type, x_max.dtype)
         )
-        x = tf.cast(x, promoted_type)
-        x_min = tf.cast(x_min, promoted_type)
         x_max = tf.cast(x_max, promoted_type)
-    if tf.size(x) == 0:
-        ret = x
-    elif x.dtype == tf.bool:
-        ret = tf.clip_by_value(tf.cast(x, tf.float16), x_min, x_max)
-        ret = tf.cast(ret, x.dtype)
+    x = tf.cast(x, promoted_type)
+    if x_min is not None:
+        x_min = tf.cast(x_min, promoted_type)
+    cond = True
+    if x_min is not None and x_max is not None:
+        if tf.math.reduce_any(tf.experimental.numpy.greater(x_min, x_max)):
+            cond = False
+    if cond:
+        return tf.experimental.numpy.clip(x, x_min, x_max)
     else:
-        ret = tf.clip_by_value(x, x_min, x_max)
-    return ret
+        return tf.experimental.numpy.minimum(
+            x_max, tf.experimental.numpy.maximum(x, x_min)
+        )
 
 
 def unstack(
