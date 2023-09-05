@@ -3200,3 +3200,54 @@ def test_tensorflow_zeta(
         x=x[0],
         q=x[1],
     )
+
+#approxmaxk
+@handle_frontend_test(
+        fn_tree="tensorflow.math.approx_max_k",
+        dtype_and_x = helpers.dtype_and_values(
+            available_dtypes = helpers.get_dtypes('float'),
+            num_arrays = 1,
+
+        ),
+        k=st.integers(min_value=0, max_value=5),
+        recall_target = helpers.number_helpers.floats(
+            min_value = 0,
+            max_value = 1
+            
+        ),
+        reduction_dimension = st.integers(min_value=-1,max_value=10),
+        reduction_input_size_override =st.integers(min_value=-1,max_value=10),
+        aggregate_to_topk = st.booleans(),
+        test_with_out=st.just(False)
+)
+def test_tensorflow_approx_max_k(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+    k,
+    recall_target,
+    reduction_dimension,
+    reduction_input_size_override,
+    aggregate_to_topk,
+):
+        input_dtype, x = dtype_and_x
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            fn_tree = fn_tree,
+            frontend = frontend,
+            test_flags= test_flags,
+            on_device= on_device,
+            x=x[0],
+            k= k,
+            recall_target = recall_target,
+            reduction_dimension= reduction_dimension,
+            reduction_input_size_override = reduction_input_size_override,
+            aggregate_to_topk = aggregate_to_topk,
+        )
+
+
