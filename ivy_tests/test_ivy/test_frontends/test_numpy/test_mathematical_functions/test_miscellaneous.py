@@ -396,7 +396,6 @@ def test_numpy_gradient(
     fn_tree,
     on_device,
 ):
-
     input_dtype, x, axis = dtype_input_axis
     test_flags.num_positional_args = 2
     kw = {}
