@@ -1,7 +1,7 @@
 Applied Libraries
 =================
 
-In other parts of the overview, we have focused on the the Ivy framework itself.
+In other parts of the overview, we have focused on the Ivy framework itself.
 Here, we explore how Ivy has been used to create a suite of libraries in various fields related to ML.
 Aside from being useful tools for ML developers in any framework, these libraries are a perfect showcase of what is possible using Ivy!
 
@@ -83,7 +83,7 @@ We optimize for a specific starting state of the environment:
    :width: 100%
 
 We show demos of each of the environments :code:`cartpole`, :code:`mountain_car`, :code:`pendulum`, :code:`reacher`, and :code:`swimmer` solved using supervised learning via a policy network.
-We train a policy which is conditioned on the environment state, and the starting state is then randomized between training steps:
+We train a policy that is conditioned on the environment state, and the starting state is then randomized between training steps:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/ivy_gym/demo_b.gif?raw=true
    :align: center
@@ -92,7 +92,7 @@ We train a policy which is conditioned on the environment state, and the startin
 Ivy Memory
 ----------
 
-`Ivy Memory <https://github.com/unifyai/memory>`_ provides differentiable memory modules, including learnt modules such as Neural Turing Machines (NTM), but also parameter-free modules such as End-to-End Egospheric Spatial Memory (ESM).
+`Ivy Memory <https://github.com/unifyai/memory>`_ provides differentiable memory modules, including learned modules such as Neural Turing Machines (NTM), but also parameter-free modules such as End-to-End Egospheric Spatial Memory (ESM).
 
 For example, in this demo we learn to copy a sequence using :code:`ivy_memory.NTM`:
 
