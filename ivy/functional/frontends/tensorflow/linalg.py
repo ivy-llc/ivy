@@ -160,6 +160,39 @@ def inv(input, adjoint=False, name=None):
     return ivy.inv(input, adjoint=adjoint)
 
 
+def tridiagonal_solve(
+    diagonals,
+    rhs,
+    diagonals_format='compact',
+    transpose_rhs=False,
+    conjugate_rhs=False,
+    name=None,
+    partial_pivoting=True,
+    perturb_singular=False,
+):
+    if transpose_rhs is True:
+        rhs_copy = ivy.matrix_transpose(rhs)
+    if conjugate_rhs is True:
+        rhs_copy = ivy.conj(rhs)
+    if not transpose_rhs and not conjugate_rhs:
+        rhs_copy = ivy.array(rhs)
+
+    if diagonals_format == 'matrix':
+        return ivy.solve(diagonals, rhs_copy)
+    elif diagonals_format in ['sequence', 'compact']:
+        diagonals = ivy.array(diagonals)
+        dim = diagonals[0].shape[0]
+        diagonals[[0, -1], [-1, 0]] = 0
+        dummy_idx = [0, 0]
+        indices = ivy.array([[(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
+                            [(i, i) for i in range(dim)],
+                            [dummy_idx] + [(i + 1, i) for i in range(dim - 1)]])
+        constructed_matrix = ivy.scatter_nd(indices, diagonals, shape=ivy.array([dim, dim]))
+        return ivy.solve(constructed_matrix, rhs_copy)
+    else:
+        raise "Unexpected diagonals_format"
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 def l2_normalize(x, axis=None, epsilon=1e-12, name=None):

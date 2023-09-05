@@ -578,6 +578,48 @@ def test_tensorflow_inv(
     )
 
 
+# tridiagonal_solve
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tridiagonal_solve",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-100,
+        max_value=100,
+        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    adjoint=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tridiagonal_solve(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+    adjoint,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        adjoint=adjoint,
+    )
+
+
 # l2_normalize
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.l2_normalize",
