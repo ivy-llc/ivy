@@ -840,9 +840,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3])
@@ -980,9 +979,8 @@ def clip_vector_norm(
     ret
         An array with the vector norm downscaled to the max norm if needed.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -1069,9 +1067,8 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0., 1., 2.]])
@@ -1461,8 +1458,8 @@ def default(
     ret
         x if x exists (is not None), else default.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :code:`Any` input:
 
     >>> x = None
@@ -1873,24 +1870,28 @@ def einops_rearrange(
 
     Suppose we have a set of 32 images in "h w c" format (height-width-channel)
     and concatenate images along height (vertical axis), 960 = 32 * 30
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
     # Concatenate images along horizontal axis, 1280 = 32 * 40
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
     >>> print(x.shape)
     (30, 1280, 3)
 
     # Reorder axes to "b c h w" format for deep learning
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
     >>> print(x.shape)
     (32, 3, 30, 40)
 
     # Flatten each image into a vector, 3600 = 30 * 40 * 3
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
@@ -1898,6 +1899,7 @@ def einops_rearrange(
 
     # Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
     # 128 = 32 * 2 * 2
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c',
     ... h1=2, w1=2)
@@ -2769,9 +2771,8 @@ def get_item(
     ret
         New array with the values gathered at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> print(ivy.get_item(x, query))
@@ -2841,9 +2842,8 @@ def set_item(
     ret
         the array with updated values at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])
