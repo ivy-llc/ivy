@@ -489,9 +489,10 @@ def test_torch_max_pool2d(
         max_dims=5,
         min_side=1,
         max_side=5,
-        explicit_or_str_padding=True,
+        only_explicit_padding=True,
         return_dilation=True,
-    ).filter(lambda x: x[4] != "VALID" and x[4] != "SAME"),
+        data_format="channel_first",
+    ),
     test_with_out=st.just(False),
     ceil_mode=st.booleans(),
 )
