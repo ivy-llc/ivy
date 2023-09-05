@@ -60,6 +60,39 @@ def add_n(inputs, name=None):
 def angle(input, name=None):
     return ivy.angle(input)
 
+@to_ivy_arrays_and_back
+def approx_max_k(input_tensor, k, recall_target = 0.95, 
+                 reduction_dimension = -1, reduction_input_size_override = -1,
+                 aggregate_to_topk = True, name = None):
+    
+
+    if k > ivy.astype(ivy.prod(input_tensor),ivy.int32,copy=False).size:
+        raise ValueError("k should be less than or equal to the size of input_tensor.")
+    if not 0 <= recall_target <= 1:
+        raise ValueError("recall_target should be between 0 and 1.")
+        
+    sorted_indices = ivy.argsort(input_tensor, descending=True)
+    
+    sorted_values = ivy.gather(input_tensor, sorted_indices, batch_dims = -1)
+    
+    threshold_index = ivy.cast(ivy.math.ceil(recall_target * k), ivy.int32) - 1  # Adjust for 0-based index
+    if threshold_index >= ivy.size(sorted_values):
+        threshold_index = ivy.size(sorted_values) - 1  # Cap the index
+
+    threshold_value = sorted_values[threshold_index]
+    
+    candidates_mask = input_tensor >= threshold_value
+    candidate_indices = ivy.where(candidates_mask)[:, 0]
+    
+    candidate_values = ivy.gather(input_tensor, candidate_indices)
+    sorted_candidate_indices = ivy.argsort(candidate_values, direction='DESCENDING')
+    top_k_indices = ivy.gather(candidate_indices, sorted_candidate_indices[:k])
+    
+    top_k_values = ivy.gather(input_tensor, top_k_indices)
+    
+    return top_k_values, top_k_indices
+
+
 
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
