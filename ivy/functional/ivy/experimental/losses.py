@@ -312,8 +312,7 @@ def smooth_l1_loss(
     }
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.0, 2.0, 3.0])
