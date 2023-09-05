@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.sklearn.utils.validation import column_or_1d
 
 
 class BaseCrossValidator(metaclass=ABCMeta):
@@ -75,9 +76,7 @@ class StratifiedKFold(KFold):
     def _iter_test_indices(self, X=None, y=None, groups=None):
         ivy.seed(self.random_state)
         y = ivy.array(y)
-        shape = y.shape
-        if len(shape) == 2 or shape[1] == 1:
-            y = ivy.reshape(y, (-1,))
+        y = column_or_1d(y)
         _, y_idx, y_inv, _ = ivy.unique_all(y, return_index=True, return_inverse=True)
         class_perm = ivy.unique_inverse(y_idx)
         y_encoded = class_perm[y_inv]

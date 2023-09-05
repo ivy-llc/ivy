@@ -141,6 +141,11 @@ class Tensor:
     def sinh(self, name=None):
         return paddle_frontend.Tensor(ivy.sinh(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def lerp_(self, y, weight, name=None):
+        self.ivy_array = paddle_frontend.lerp(self, y, weight).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(self, axis=None, keepdim=False, dtype=None, name=None):
         return paddle_frontend.Tensor(
@@ -467,6 +472,11 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.reciprocal(ivy.sqrt(self._ivy_array)))
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def rsqrt_(self, name=None):
+        self.ivy_array = self.rsqrt().ivy_array
+        return self
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def reciprocal(self, name=None):
         return paddle_frontend.reciprocal(self)
 
@@ -723,3 +733,6 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):
         return ivy.remainder(self._ivy_array, y)
+
+    def is_floating_point(self):
+        return paddle_frontend.is_floating_point(self._ivy_array)

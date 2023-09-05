@@ -1863,6 +1863,38 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
+                "int8",
+                "int16",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float64",
+            )
+        },
+        "torch",
+    )
+    def random_(
+        self,
+        from_=0,
+        to=None,
+        *,
+        generator=None,
+    ):
+        if to is None:
+            if ivy.is_float_dtype(self.ivy_array):
+                to = ivy.finfo(self.dtype).max
+            else:
+                to = ivy.iinfo(self.dtype).max
+        self.ivy_array = ivy.random_uniform(
+            low=from_, high=to, shape=self.size(), dtype=self.dtype
+        )
+        return self.ivy_array
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
                 "float16",
                 "bfloat16",
             )
@@ -1892,6 +1924,29 @@ class Tensor:
         arr[ivy.to_list(index)] = value
         arr = torch_frontend.moveaxis(self, 0, dim)
         return arr
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "float16",
+                "complex128",
+                "complex64",
+                "bool",
+            )
+        },
+        "torch",
+    )
+    def unique_consecutive(self, return_inverse, return_counts, dim):
+        return torch_frontend.unique_consecutive(
+            self, return_inverse, return_counts, dim
+        )
 
     @with_unsupported_dtypes(
         {
