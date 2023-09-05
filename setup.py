@@ -18,11 +18,66 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
+from packaging import tags
+import os
+import json
+import requests
+import itertools
 import re
+from tqdm import tqdm
+
+
+def _get_paths(binaries, root_dir=""):
+    paths = []
+    if isinstance(binaries, str):
+        return [os.path.join(root_dir, binaries)]
+    elif isinstance(binaries, dict):
+        for k, v in binaries.items():
+            paths += _get_paths(v, os.path.join(root_dir, k))
+    else:
+        for i in binaries:
+            paths += _get_paths(i, root_dir)
+    return paths
 
 
 def _strip(line):
     return line.split(" ")[0].split("#")[0].split(",")[0]
+
+
+all_tags = list(tags.sys_tags())
+binaries = json.load(open("binaries.json"))
+paths = _get_paths(binaries)
+end = False
+pbar = None
+spinner = itertools.cycle(["-", "\\", "|", "/"])
+print(f"Locating the binaries {next(spinner)} ", end="")
+
+
+for tag in all_tags:
+    print(f"\rLocating the binaries {next(spinner)} ", end="")
+    if end:
+        pbar.close()
+        break
+    for i, path in enumerate(paths):
+        folders = path.split(os.sep)
+        folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
+        file_name = f"{file_path[:-3]}_{tag}.so"
+        search_path = f"compiler/{file_name}"
+        r = requests.get(
+            f"https://github.com/vedpatwardhan/ivy/raw/fixes/{search_path}",
+            timeout=20,
+        )
+        if r.status_code == 200:
+            if pbar is None:
+                print()
+                print("Downloading binaries ...")
+                pbar = tqdm(total=len(paths))
+            with open(path, "wb") as f:
+                f.write(r.content)
+            end = path == paths[-1]
+            pbar.update(1)
+        else:
+            break
 
 
 this_directory = Path(__file__).parent

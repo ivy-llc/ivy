@@ -18,7 +18,6 @@ with_time_logs/
 *.csv
 *.csv#
 *.ods
-*.json
 *.jpg
 *.jpeg
 *.png
