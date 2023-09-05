@@ -108,7 +108,8 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Draws samples from a uniform distribution. Samples are uniformly distributed over
+    """
+    Draws samples from a uniform distribution. Samples are uniformly distributed over
     the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
     other words, any value within the given interval is equally likely to be drawn by
     uniform.
@@ -143,9 +144,8 @@ def random_uniform(
     ret
         Drawn samples from the parameterized uniform distribution.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> ivy.random_uniform()
     ivy.array(0.26431865)
 
@@ -257,9 +257,8 @@ def random_normal(
      ret
         Drawn samples from the parameterized normal distribution.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> ivy.random_normal()
     ivy.array(-0.22346112)
 
