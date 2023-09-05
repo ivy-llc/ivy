@@ -15,9 +15,7 @@ def fft(a, n=None, axis=-1, norm=None):
 def fft2(a, s=None, axes=(-2, -1), norm=None):
     if norm is None:
         norm = "backward"
-    if ivy.dtype(a) == "complex128":
-        return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex128")
-    return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype="complex64")
+    return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
 
 
 @to_ivy_arrays_and_back
