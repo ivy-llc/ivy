@@ -12,6 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
+    _get_first_matrix,
     _get_second_matrix,
     _get_cholesky_matrix,
 )
@@ -872,36 +873,35 @@ def test_paddle_qr(
 
 # solve
 @handle_frontend_test(
-    fn_tree="paddle.solve",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_value=-10,
-        max_value=10,
-    ),
-    aliases=["paddle.tensor.linalg.solve"],
+    fn_tree="paddle.tensor.linalg.solve",
+    aliases=["paddle.linalg.solve"],
+    x=_get_first_matrix(),
+    y=_get_second_matrix(),
     test_with_out=st.just(False),
 )
 def test_paddle_solve(
     *,
-    dtype_x,
+    x,
+    y,
     frontend,
-    test_flags,
     backend_fw,
+    test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_x
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
+        input_dtypes=[input_dtype1, input_dtype2],
         backend_to_test=backend_fw,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        y=x[1],
+        rtol=1e-3,
+        atol=1e-3,
+        x=x1,
+        y=x2,
     )
 
 

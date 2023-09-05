@@ -183,10 +183,10 @@ def qr(x, mode="reduced", name=None):
 
 
 # solve
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def solve(x1, x2, name=None):
-    return ivy.solve(x1, x2)
+def solve(x, y, name=None):
+    return ivy.solve(x, y)
 
 
 # transpose
