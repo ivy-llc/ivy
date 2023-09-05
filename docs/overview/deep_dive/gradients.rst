@@ -18,7 +18,7 @@ Example Usage of the Gradient API
 The :func:`ivy.execute_with_gradients` function signature
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Following is pseudo function signature for the :func:`ivy.execute_with_gradients` function,
+Following is the pseudo function signature for the :func:`ivy.execute_with_gradients` function,
 
 .. code-block:: python
     
@@ -33,7 +33,7 @@ Following is pseudo function signature for the :func:`ivy.execute_with_gradients
 The :code:`func` in the input can be any user-defined function that returns a single scalar or any arbitrary nest of scalars.
 By scalars, we are referring to zero-dimensional arrays.
 
-So for example, following are some valid outputs by the :code:`func`,
+So for example, the following are some valid outputs by the :code:`func`,
 
 .. code-block:: python
     
@@ -85,7 +85,7 @@ Custom Gradient Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are various scenarios where users may want to define custom gradient computation rules for their functions.
-Some of these are numerical stability, smoothing and clipping of the computed gradients.
+Some of these are numerical stability, smoothing, and clipping of the computed gradients.
 Ivy provides the :func:`ivy.bind_custom_gradient_function` function to allow users to bind custom gradient computation logic to their functions.
 
 Following is an example of usage of :func:`ivy.bind_custom_gradient_function`,
@@ -127,7 +127,7 @@ Our policy on gradients
 * There is no explicit variable class or any public-facing function for adding gradient support to an ivy.Array.
 * The gradient functions in ivy implicitly convert all arrays to support gradient computation before computing gradients and detach all arrays after computing gradients.
 * We don't retain any previously tracked computations in arrays by frameworks like torch for e.g. 
-* This makes our gradient API disambiguous, flexible and easy to debug.
+* This makes our gradient API disambiguous, flexible, and easy to debug.
 * Any framework-specific tracking of computations or variable classes should be handled in the corresponding frontends.
 
 Gradient APIs of frameworks

@@ -65,7 +65,7 @@ Therefore, in order to avoid this potential conflict:
 There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open task`_.
 
 
-**NOTE:** Type hints, docstrings and examples are not required when working on frontend functions.
+**NOTE:** Type hints, docstrings, and examples are not required when working on frontend functions.
 
 
 **Frontend Arrays**
@@ -241,7 +241,7 @@ Similar to the omitted argument in the NumPy example above, the :code:`name` arg
 Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
 Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.
 
-Additionally TensorFlow only allows explicit casting, therefore there are no promotion rules in the TensorFlow frontend, except in the case of array like or scalar inputs, which get casted to the dtype of the other argument if it's a :class:`Tensor`, or the default dtype if both arguments are array like or scalar.
+Additionally, TensorFlow only allows explicit casting, therefore there are no promotion rules in the TensorFlow frontend, except in the case of array like or scalar inputs, which get casted to the dtype of the other argument if it's a :class:`Tensor`, or the default dtype if both arguments are array like or scalar.
 The function :func:`check_tensorflow_casting` is added to functions with multiple arguments such as :func:`add`, and it ensures the second argument is the same type as the first, just as TensorFlow does.
 
 .. code-block:: python
@@ -287,7 +287,7 @@ Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle thes
     )
 
 The decorator :code:`map_raw_ops_alias` here, takes the existing behaviour of :func:`tf_frontend.math.argmax` as its first parameter, and changes all its arguments to key-word only. The argument :code:`kwargs_to_update` is a dictionary indicating all updates in arguments names to be made, in the case of :func:`tf.raw_ops.ArgMax`, :code:`dimension` is replacing :code:`axis`.
-The wrapper mentioned above is implemnted here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
+The wrapper mentioned above is implemented here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
 
 **PyTorch**
 
@@ -316,7 +316,7 @@ Looking at the `torch.tan`_ documentation, we can mimic the same arguments, and 
 Short Frontend Implementations
 -----------------------------
 
-Ideally all frontend functions should call the equivalent Ivy function and only be one line long. This is mainly because compositional implementations are bound to be slower than direct backend implementation calls.
+Ideally, all frontend functions should call the equivalent Ivy function and only be one line long. This is mainly because compositional implementations are bound to be slower than direct backend implementation calls.
 
 In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#id4>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 
@@ -448,7 +448,7 @@ Under the hood, this simply calls the frontend :func:`np_frontend.argsort` funct
 **Special Method**
 
 Some examples referring to the special methods would make things more clear.
-For example lets take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
+For example let's take a look at how :meth:`tf_frontend.tensor.__add__` is implemented and how it's reverse :meth:`tf_frontend.tensor.__radd__` is implemented.
 
 .. code-block:: python
 
@@ -535,10 +535,10 @@ The function can be accessed through calling :func:`promote_types_of_<frontend>_
         input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
         return ivy.add(input, other, alpha=alpha, out=out)
 
-Although under most cases, array operands being passed into an arithmetic operation function should be the same data type, using the data type promotion rules can add a layer of sanity check to prevent data precision losses or exceptions from further arithmetic operations.
+Although in most cases, array operands being passed into an arithmetic operation function should be the same data type, using the data type promotion rules can add a layer of sanity check to prevent data precision losses or exceptions from further arithmetic operations.
 
 TensorFlow is a framework where casting is completely explicit, except for array likes and scalars.
-As such there are not promotion rules we replicate for the TensorFlow frontend, instead we check if the two arguments of the function are the same type using :func:`check_tensorflow_casting`.
+As such there are no promotion rules we replicate for the TensorFlow frontend, instead we check if the two arguments of the function are the same type using :func:`check_tensorflow_casting`.
 
 .. code-block:: python
 
@@ -649,11 +649,11 @@ This section outlines a policy that should serve as a guide for handling duplica
 
 Essentially, there are two types of duplicate functions;
 
-1. Functions that are listed in multiple namespaces but are callable from the same path, for example :func:`asarray` is listed in `manipulation routines` and `creation routines` however this function called from the same path as :func:`np.asarray`.
+1. Functions that are listed in multiple namespaces but are callable from the same path, for example :func:`asarray` is listed in `manipulation routines` and `creation routines` however this function is called from the same path as :func:`np.asarray`.
 
 2. Functions that are listed in multiple namespaces but are callable from different paths, for example the function :func:`tf.math.tan` and :func:`tf.raw_ops.Tan`.
 
-When listing frontend functions, extra care should be taken to keep note of these two type of duplicate functions.
+When listing frontend functions, extra care should be taken to keep note of these two types of duplicate functions.
 
 * For duplicate functions of the first type, we should list the function once in any namespace where it exists and leave it out of all other namespaces.
 
@@ -664,7 +664,7 @@ When listing frontend functions, extra care should be taken to keep note of thes
 Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
 If the function is an alias, you should check if there is an implementation that can be aliased.
 
-* If an implementation exist then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/main/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
+* If an implementation exists then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/main/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
 
 * If there is no implementation to be aliased then feel free to contribute the implementation first, then go ahead to create the alias.
 
