@@ -27,9 +27,18 @@ BACKENDS_TESTS_DIR = Path("ivy_tests/test_ivy/test_functional").resolve()
 FRONTENDS_TESTS_DIR = Path("ivy_tests/test_ivy/test_frontends").resolve()
 IGNORE_FILES = ["__init__", "func_wrapper", "helpers"]
 NN_FILES = ["activations", "layers", "losses", "norms"]
+REGEX_DICT = {
+    "function_names": re.compile(r"def ([A-Za-z]\w*)\("),
+    "dtype_decorators": re.compile(
+        r"@(with_(?:un)?supported_(?:device_and_)?dtypes)\("
+    ),
+    "imported_wrappers": re.compile(
+        r"from ivy\.func_wrapper import"
+        r" (?:\(\s*((?:\w+,?\s*)+)\)|((?:\w+,?[^\S\r\n]*)+))\n"
+    ),
+}
 
 
-# TODO: don't hardcode these
 DTYPE_CLASSES = [
     ("numeric", set(ivy.all_numeric_dtypes)),
     ("integer", set(ivy.all_int_dtypes)),
@@ -39,7 +48,6 @@ DTYPE_CLASSES = [
 ]
 
 
-# TODO: don't hardcode these
 CURRENT_VERSIONS = {
     "jax": "0.4.14",
     "numpy": "1.25.2",
@@ -54,21 +62,31 @@ DTYPE_DECORATORS = {
     "with_supported_device_and_dtypes",
     "with_unsupported_device_and_dtypes",
 }
+"""
+TODO list (prioritised):
+
+########## MUST HAVE ############
+#. remove false positives from the backend is_dtype_err functions
+
+########## SHOULD HAVE #######
+#. get it working for frontends
+#. get it working for methods
+#. keep the device decorator if I didn't test that device
+
+########## NICE TO HAVE ########
+#. remove false negatives from the backend is_dtype_err functions
+#. remove hard-coded version numbers
+#. iterate over versions of a framework
+#. prettify the output to make it easier to read
+#. decide intelligently which functions to run on (e.g. based on git diffs)
+#. hook into something to run automatically
+
+########## FOR MAINTENANCE ########
+#. remove hard-coded dtype classes
+#. big ol' refactor and cleanup
+"""
 
 
-# TODO list:
-# - make sure adding the decorator imports works right in cases where there wasn't an import already, or where we want to remove the entire import  # noqa
-# - decide how to deal with uncertain cases (interactive mode? just write it and ask the user to check? flag to switch between these? send a warning?)  # noqa
-# - make sure I don't overgeneralise (maybe gpu doesn't seem usable, but that's just because of the machine I'm on)  # noqa
-# - related to that, make sure that if there's an existing dtype decorator referencing a version/device I didn't test, make sure I include that data when I write the new version (maybe I could read that in before I "compile" the decorator and use it to modify the data structure)  # noqa
-# - add new function types: method, frontend, frontend method (for now, I assume its a backend function)  # noqa
-# - add ability to iterate over versions of a framework (talk to multiversion support people)  # noqa
-# - hook the script into *something* so it runs automatically
-# - have some smart way of deciding which functions to run on (maybe a flag that tells it to look at the most recent `git diff`s and only check the functions that have been changed) # noqa
-# - fix other TODO comments left in the file
-
-
-# TODO: make sure these functions are absolutely right; convert them to regex and give them awareness of the input dtype if need be  # noqa
 def is_dtype_err_jax(e):
     return "does not accept dtype" in str(e)
 
@@ -115,10 +133,9 @@ def _path_to_test_path(file_path: Path):
 
 
 def _extract_fn_names(file_path: Path):
-    fn_name_regex = r"def ([A-Za-z]\w*)\("
     with open(file_path, "r") as file:
         text = file.read()
-    return re.findall(fn_name_regex, text)
+    return REGEX_DICT["function_names"].findall(text)
 
 
 def _import_module_from_path(module_path: Path, module_name="test_file"):
@@ -138,7 +155,6 @@ def _type_list_to_tuple_string(dtype_list):
     )
 
 
-# TODO: clean this up, check whether removing empty tuples is needed
 def _get_decorator_string(
     dtype_lists, is_supported, version_no, version_string="backend_version"
 ):
@@ -407,17 +423,6 @@ class BackendFileTester:
             print()
 
     def write_decorators(self):
-        is_dtype_dec_regex = r"@with_(un)?supported_(device_and_)?dtypes\("
-        get_dtype_decs_regex = r"@(with_(?:un)?supported_(?:device_and_)?dtypes)\("
-        get_imported_decs_regex = (
-            r"from ivy\.func_wrapper import"
-            r" (?:\(\s*((?:\w+,?\s*)+)\)|((?:\w+,?[^\S\r\n]*)+))\n"
-        )
-        replace_imported_decs_regex = (
-            r"from ivy\.func_wrapper import"
-            r" (?:\(\s*(?:\w+,?\s*)+\)|(?:\w+,?[^\S\r\n]*)+)\n"
-        )
-
         # read in the code file
         with open(self.file_path, "r") as f:
             code_text = f.readlines()
@@ -451,7 +456,7 @@ class BackendFileTester:
 
                 # check for the start of a dtype decorator
                 if start_of_decorator is None:
-                    if re.search(is_dtype_dec_regex, line):
+                    if REGEX_DICT["dtype_decorators"].search(line):
                         start_of_decorator = decorator_start_idx + i
 
                 # if we're in a decorator, check if we've seen the end of it yet, and
@@ -482,11 +487,12 @@ class BackendFileTester:
         code_text = "".join(code_text)
 
         # get all the decorators that are used in it
-        all_decorators = set(re.findall(get_dtype_decs_regex, code_text))
+        all_decorators = set(REGEX_DICT["dtype_decorators"].findall(code_text))
 
         # get all the decorators that are imported
         matches = [
-            g1 + "," + g2 for g1, g2 in re.findall(get_imported_decs_regex, code_text)
+            g1 + "," + g2
+            for g1, g2 in REGEX_DICT["imported_wrappers"].findall(code_text)
         ]
         imported_decorators = {
             item.strip() for match in matches for item in match.split(",")
@@ -494,20 +500,36 @@ class BackendFileTester:
         imported_decorators.discard("")
 
         # just in case any other functions are imported
-        desired_decorators = list(
-            (imported_decorators - DTYPE_DECORATORS) | all_decorators
-        )
+        desired_decorators = (imported_decorators - DTYPE_DECORATORS) | all_decorators
 
         # write the import statement to the file
         if self.verbosity >= 2:
             print()
             print(f"Previously imported wrappers: {list(imported_decorators)}")
             print(f"Updating to import {desired_decorators}")
-        code_text = re.sub(
-            replace_imported_decs_regex,
-            f"from ivy.func_wrapper import {', '.join(desired_decorators)}\n",
-            code_text,
-        )
+
+        if desired_decorators != imported_decorators:
+            if len(desired_decorators) == 0:
+                code_text = REGEX_DICT["imported_wrappers"].sub("", code_text)
+                code_text = code_text.replace("from . import backend_version\n", "", 1)
+            else:
+                decorator_import_string = (
+                    "from ivy.func_wrapper import"
+                    f" {', '.join(list(desired_decorators))}\n"
+                )
+                if len(imported_decorators) == 0:
+                    code_text = code_text.replace(
+                        "import ivy\n",
+                        "import ivy\n"
+                        + decorator_import_string
+                        + "from . import backend_version\n",
+                        1,
+                    )
+                else:
+                    code_text = REGEX_DICT["imported_wrappers"].sub(
+                        decorator_import_string,
+                        code_text,
+                    )
 
         if self.safety_mode:
             print("File write suppressed due to safety mode.")
