@@ -10,7 +10,7 @@ def l1_normalize(
     axis: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(x, jax.Array):
+    if not isinstance(x, JaxArray):
         x=jnp.array(x)
     if axis is None:
         norm = jnp.sum(jnp.abs(jnp.ravel(x)))
