@@ -18,7 +18,9 @@ def _invert_permutation_helper(draw, for_frontend_test=False):
     )
     if for_frontend_test or draw(st.booleans()):
         perm = np.array(perm)
-    dtype = draw(st.sampled_from(["int32", "int64"] if not for_frontend_test else ["int64"]))
+    dtype = draw(
+        st.sampled_from(["int32", "int64"] if not for_frontend_test else ["int64"])
+    )
     return dtype, perm
 
 
