@@ -10,9 +10,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_out,
 )
 
-from ivy.functional.frontends.torch.func_wrapper import (
-    outputs_to_frontend_arrays,
-)
+
 from ivy.func_wrapper import with_supported_dtypes
 
 
