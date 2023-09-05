@@ -609,6 +609,19 @@ def test_paddle_cholesky(
         upper=upper,
     )
 
+#histogram
+@handle_frontend_test(
+        fn_tree = "paddle.histogram",
+        dtype_and_z=helpers.dtype_and_values(
+            available_dtype=helpers.get_dtypes("float,integer")
+            min_value=0,
+            max_value-100,
+            ),
+        aliases=["paddle.tensor.linalg.histogram"],
+        test_with_out=st.just(False),
+)
+def test_histogram(
+
 
 # bmm
 @handle_frontend_test(

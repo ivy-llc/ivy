@@ -5,6 +5,7 @@ from ivy.functional.frontends.paddle import promote_types_of_paddle_inputs
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+import matplotlib.plot as plt
 
 
 @with_supported_dtypes(
@@ -193,3 +194,27 @@ def bincount(x, weights=None, minlength=0, name=None):
 def dist(x, y, p=2):
     ret = ivy.vector_norm(ivy.subtract(x, y), ord=p)
     return ivy.reshape(ret, (1,))
+
+
+@with_supported_dtypes({"2.4.1 and above": ("float64", "float32")}, "paddle")
+@to_ivy_arrays_and_back
+def histogram(data, bins=10, xlabel='Value', ylabel='Frequency', title='Histogram'):
+    """
+    Create a histogram plot.
+
+    Parameters:
+        data (list or numpy array): The data for which to create the histogram.
+        bins (int or list, optional): Number of bins or bin edges for the histogram.
+        xlabel (str, optional): Label for the x-axis.
+        ylabel (str, optional): Label for the y-axis.
+        title (str, optional): Title for the histogram plot.
+
+    Returns:
+        None (displays the histogram plot).
+    """
+    plt.hist(data, bins=bins, alpha=0.5, color='b')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.show()
+    return histogram(data, bins=5, xlabel='Value', ylabel='Frequency', title='Example Histogram')
