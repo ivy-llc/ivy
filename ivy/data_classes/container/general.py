@@ -4244,7 +4244,15 @@ class _ContainerWithGeneral(ContainerBase):
         return self.static_strides(self)
 
     @staticmethod
-    def static_exists(x: ivy.Container, /) -> ivy.Container:
+    def _static_exists(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.exists. This method simply wraps
         the function, and so the docstring for ivy.exists also applies to this method
@@ -4253,12 +4261,86 @@ class _ContainerWithGeneral(ContainerBase):
         Parameters
         ----------
         x
-            input container.
+            The input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
         ret
-            True if x is not None, else False.
+            A boolean container detaling if any of the leaf nodes are None.
+            True if not None, False if None.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0,4,5]), b=ivy.array([2,2,0]))
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: True, b: True }
+
+        >>> x = ivy.Container(a=[1,2], b=None)
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: True, b: False }
+
+        >>> x = ivy.Container(a={"d": 1, "c": 3}, b={"d": 20, "c": None})
+        >>> y = x._static_exists(x)
+        >>> print(y)
+        { a: { c: True, d: True }, b: { c: False, d: True } }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "exists",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def exists(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            A boolean container detaling if any of the leaf nodes are None.
+            True if not None, False if None.
 
         Examples
         --------
@@ -4277,22 +4359,10 @@ class _ContainerWithGeneral(ContainerBase):
         >>> print(y)
         { a: { c: True, d: True }, b: False }
         """
-        return ContainerBase.cont_multi_map_in_function("exists", x)
-
-    def exists(self: ivy.Container, /) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.exists. This method simply wraps
-        the function, and so the docstring for ivy.exists also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input container.
-
-        Returns
-        -------
-        ret
-            True if x is not None, else False.
-        """
-        return self.static_exists(self)
+        return self._static_exists(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
