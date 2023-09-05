@@ -1939,9 +1939,6 @@ def flatten_and_to_np(*, backend: str, ret):
     ret_flat = flatten(backend=backend, ret=ret)
     with BackendHandler.update_backend(backend) as ivy_backend:
         ret = [ivy_backend.to_numpy(x) for x in ret_flat]
-    for i in range(len(ret_flat)):
-        if str(ret_flat[i].dtype) != str(ret[i].dtype):
-            ret[i] = np.array(ret_flat[i])
     return ret
 
 

@@ -6,7 +6,7 @@ import ivy
 from copy import deepcopy
 
 # local
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
@@ -114,6 +114,10 @@ def _validate_quantile(q):
     return True
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float64", "float32")},
+    backend_version,
+)
 def nanprod(
     a: paddle.Tensor,
     /,
@@ -584,8 +588,8 @@ def __find_cummax(
         isinstance(x.tolist()[0], list)
         and len(x[0].shape) >= 1
         and (
-            (type(x[0]) == paddle.Tensor)
-            or (type(x[0]) == ivy.data_classes.array.array.Array)
+            (type(x[0]) is paddle.Tensor)
+            or (type(x[0]) is ivy.data_classes.array.array.Array)
         )
     ):
         if axis >= 1:
@@ -636,7 +640,7 @@ def __find_cummax(
                 values.append(y)
             indices.append(n)
 
-    if type(x) == paddle.Tensor:
+    if type(x) is paddle.Tensor:
         return paddle.to_tensor(values, dtype=x.dtype), paddle.to_tensor(
             indices, dtype="int64"
         )
