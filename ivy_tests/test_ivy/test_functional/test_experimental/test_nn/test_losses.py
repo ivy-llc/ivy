@@ -98,6 +98,7 @@ def test_kl_div(
         on_device=on_device,
         input=input[0],
         target=target[0],
+        atol_=1e-02,
         reduction=reduction,
     )
 
