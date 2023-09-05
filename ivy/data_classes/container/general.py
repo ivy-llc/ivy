@@ -697,6 +697,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Decrement by a value
+
         >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_decrement(x, 1.5)
         >>> print(y)
@@ -706,6 +707,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         Decrement by a Container
+
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> z = ivy.inplace_decrement(x, y)
@@ -837,6 +839,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Increment by a value
+
         >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]),b=ivy.array([0., -25., 50.]))
         >>> y = ivy.inplace_increment(x, 1.5)
         >>> print(y)
@@ -846,6 +849,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         Increment by a Container
+
         >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
         >>> z = ivy.inplace_increment(x, y)

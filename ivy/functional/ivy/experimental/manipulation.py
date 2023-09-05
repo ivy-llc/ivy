@@ -33,6 +33,51 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+# Helpers #
+# ------- #
+
+
+def _to_tf_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [[pad_width] * 2] * ndim
+    elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
+        pad_width = pad_width * ndim
+    return pad_width
+
+
+def _check_paddle_pad(
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            (
+                (
+                    mode == "reflect"
+                    and reflect_type == "even"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or mode in ["edge", "wrap"]
+            )
+            and len(input_shape) <= ndim_limit
+        )
+    )
+
+
+def _to_paddle_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [pad_width] * (2 * ndim)
+    else:
+        if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
+            pad_width = pad_width * ndim
+        pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
+    return pad_width
+
+
 @handle_exceptions
 @handle_nestable
 @handle_partial_mixed_function
@@ -747,14 +792,28 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = padded[left_slice]
+    left_chunk = (
+        left_chunk.astype("float32") if ivy.is_int_dtype(left_chunk) else left_chunk
+    )
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
-    left_stat = ivy.round(left_stat) if "int" in left_chunk.dtype else left_stat
+    left_stat = (
+        ivy.round(left_stat).astype(padded.dtype)
+        if ivy.is_int_dtype(padded)
+        else left_stat
+    )
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = padded[right_slice]
+    right_chunk = (
+        right_chunk.astype("float32") if ivy.is_int_dtype(right_chunk) else right_chunk
+    )
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
-    right_stat = ivy.round(right_stat) if "int" in right_chunk.dtype else right_stat
+    right_stat = (
+        ivy.round(right_stat).astype(padded.dtype)
+        if ivy.is_int_dtype(padded)
+        else right_stat
+    )
     return left_stat, right_stat
 
 
@@ -800,39 +859,39 @@ def _set_reflect_both(padded, axis, width_pair, method, include_edge=False):
 def _set_wrap_both(padded, axis, width_pair):
     left_pad, right_pad = width_pair
     period = padded.shape[axis] - right_pad - left_pad
-    new_left_pad = 0
-    new_right_pad = 0
-    if left_pad > 0:
+    while left_pad > 0:
         right_slice = _slice_at_axis(
             slice(
-                -right_pad - min(period, left_pad),
-                -right_pad if right_pad != 0 else None,
+                -width_pair[1] - min(period, left_pad),
+                -width_pair[1] if width_pair[1] != 0 else None,
             ),
             axis,
         )
         right_chunk = padded[right_slice]
         if left_pad > period:
             pad_area = _slice_at_axis(slice(left_pad - period, left_pad), axis)
-            new_left_pad = left_pad - period
+            left_pad = left_pad - period
         else:
             pad_area = _slice_at_axis(slice(None, left_pad), axis)
+            left_pad = 0
         padded[pad_area] = right_chunk
-    if right_pad > 0:
+    while right_pad > 0:
         left_slice = _slice_at_axis(
             slice(
-                left_pad,
-                left_pad + min(period, right_pad),
+                width_pair[0],
+                width_pair[0] + min(period, right_pad),
             ),
             axis,
         )
         left_chunk = padded[left_slice]
         if right_pad > period:
             pad_area = _slice_at_axis(slice(-right_pad, -right_pad + period), axis)
-            new_right_pad = right_pad - period
+            right_pad = right_pad - period
         else:
             pad_area = _slice_at_axis(slice(-right_pad, None), axis)
+            right_pad = 0
         padded[pad_area] = left_chunk
-    return new_left_pad, new_right_pad, padded
+    return padded
 
 
 def _pad_simple(array, pad_width, fill_value=None):
@@ -966,6 +1025,7 @@ def _check_arguments(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1148,12 +1208,9 @@ def pad(
     )
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return padded
+        if not ivy.is_array(constant_values) or constant_values.dtype != input.dtype:
+            constant_values = ivy.asarray(constant_values, dtype=input.dtype)
+        return _interior_pad(input, constant_values, pad_width)
     pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
@@ -1214,10 +1271,7 @@ def pad(
                 )
     elif mode == "wrap":
         for axis, (left_index, right_index) in zip(axes, pad_width):
-            while left_index > 0 or right_index > 0:
-                left_index, right_index, padded = _set_wrap_both(
-                    padded, axis, (left_index, right_index)
-                )
+            padded = _set_wrap_both(padded, axis, (left_index, right_index))
     return padded
 
 
@@ -1946,7 +2000,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = ivy.full(new_shape, padding_value)
+            new_array = ivy.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -2549,7 +2603,6 @@ def choose(
 
     Parameters
     ----------
-
     arr
         The source array.
     choices
@@ -2562,12 +2615,11 @@ def choose(
 
     Returns
     -------
-
     ret
         The returned array has the same shape as `indices`.
+
     Examples
     --------
-
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
                         [20, 21, 22, 23], [30, 31, 32, 33]])
     >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
