@@ -153,6 +153,56 @@ def l1_loss(
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
 
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def l2_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "sum",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    """
+    Computes half the L2 norm of an array without the sqrt .
+
+    Parameters
+    ----------
+    input: Union[ivy.Array, ivy.NativeArray]
+        Input array containing input values.
+    reduction : str, optional
+        Reduction method for the output loss. Options:
+        "none" (no reduction), "mean" (mean of losses),
+        "sum" (sum of losses). Default: "mean".
+    out : Optional[ivy.Array], optional
+        Optional output array for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ivy.Array
+        The L2 loss of the given input.
+
+    Examples
+    --------
+    >>>x=ivy.array([0.5,1.5,9])
+    >>>y=ivy.array([0.1,2,1e-2])
+    >>>print(ivy.l2_loss(x))
+    ivy.array(41.75)
+    >>>print(ivy.l2_loss(x-y))
+    ivy.array(40.61505127)
+    """
+
+    loss= ivy.pow(input,2)
+    if reduction == "sum":
+        return ivy.divide(ivy.sum(loss, out=out),2)
+    elif reduction == "mean":
+        return ivy.divide(ivy.mean(loss, out=out),2)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss
 
 @handle_exceptions
 @handle_nestable
