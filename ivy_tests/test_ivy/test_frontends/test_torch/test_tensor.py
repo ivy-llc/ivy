@@ -5761,6 +5761,26 @@ def test_torch_tensor_detach_(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
+def test_torch_tensor_get_device(
+        dtype_x,
+        backend_fw,
+):
+    ivy.set_backend(backend_fw)
+    _, data = dtype_x
+    x = Tensor(data[0])
+    ivy.utils.assertions.check_equal(x.get_device, -1, as_array=False)
+    x = Tensor(data[0], "gpu:0")
+    ivy.utils.assertions.check_equal(x.get_device, 0, as_array=False)
+    x = Tensor(data[0], "tpu:3")
+    ivy.utils.assertions.check_equal(x.get_device, 3, as_array=False)
+    ivy.previous_backend()
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
 def test_torch_tensor_device(
         dtype_x,
         backend_fw,
@@ -5778,16 +5798,14 @@ def test_torch_tensor_device(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_cuda(dtype_x, backend_fw):
     ivy.set_backend(backend_fw)
     _, data = dtype_x
-    x = Tensor(data[0], device="cuda")
-    device = "cuda"
-    ivy.utils.assertions.check_equal(x.device, device, as_array=False)
-    x.device = not "cuda"
-    ivy.utils.assertions.check_equal(x.device, not "cuda", as_array=False)
+    x = Tensor(data[0], device="gpu:0")
+    device = "gpu:0"
+    ivy.utils.assertions.check_equal(x.cuda, device, as_array=False)
     ivy.previous_backend()
 
 
@@ -9799,6 +9817,119 @@ def test_torch_tensor_not_equal(
         on_device=on_device,
     )
 
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="not_equal_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+)
+def test_torch_tensor_not_equal_(
+        dtype_and_x,
+        frontend,
+        frontend_method_data,
+        init_flags,
+        method_flags,
+        on_device,
+        backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="ne",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+)
+def test_torch_tensor_ne(
+        dtype_and_x,
+        frontend,
+        frontend_method_data,
+        init_flags,
+        method_flags,
+        on_device,
+        backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="ne_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+)
+def test_torch_tensor_ne_(
+        dtype_and_x,
+        frontend,
+        frontend_method_data,
+        init_flags,
+        method_flags,
+        on_device,
+        backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
+        on_device=on_device,
+    )
 
 # numpy
 @handle_frontend_method(

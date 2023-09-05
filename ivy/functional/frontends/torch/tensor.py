@@ -100,12 +100,19 @@ class Tensor:
     def is_leaf(self):
         return self._is_leaf
 
+    @property
+    def get_device(self):
+        if self.device == "cpu":
+            return -1
+        else:
+            return int(self.devices.split(':')[-1])
+
     # Setters #
     # --------#
 
     @device.setter
     def cuda(self):
-        self.device = "cuda"
+        self.device = "gpu:0"
 
     @ivy_array.setter
     def ivy_array(self, array):
@@ -489,6 +496,10 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def not_equal(self, other, *, out=None):
         return torch_frontend.not_equal(self, other, out=out)
+
+    def not_equal_(self, other, *, out=None):
+        self.ivy_array = self.not_equal(other).ivy_array
+        return self
 
     def equal(self, other):
         return torch_frontend.equal(self, other)
@@ -1979,6 +1990,9 @@ class Tensor:
 
     def ne(self, other):
         return self.not_equal(other)
+
+    def ne_(self, other):
+        return self.not_equal_(other)
 
     @with_unsupported_dtypes(
         {
