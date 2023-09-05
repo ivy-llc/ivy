@@ -280,8 +280,11 @@ def nll_loss(
 
     ivy.assertions.check_true(
         input_dims - 1 == label_dims or input_dims == label_dims,
-        message="Expected input_dims - 1 = label_dims or input_dims == label_dims "
-                "(got input_dims %d, label_dims %d)" % (input_dims, label_dims),
+        message=(
+            "Expected input_dims - 1 = label_dims or input_dims == label_dims "
+            "(got input_dims %d, label_dims %d)"
+        )
+        % (input_dims, label_dims),
     )
     ivy.assertions.check_true(
         input_dims >= 2,
