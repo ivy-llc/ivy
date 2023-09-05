@@ -797,7 +797,11 @@ def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
 # test adapted from tensorly
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_outer_product.py#L22
 @pytest.mark.skip(
-    reason="ivy.tensordot does not support batched_modes argument for the moment"
+    reason=(
+        "ivy.tensordot does not support batched_modes argument for the moment. "
+        "TODO please remove this when the functionality is added. "
+        "see https://github.com/unifyai/ivy/issues/21914"
+    )
 )
 def test_batched_outer_product():
     batch_size = 3
