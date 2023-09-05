@@ -57,11 +57,11 @@ DTYPE_DECORATORS = {
 
 
 # TODO list:
+# - make sure adding the decorator imports works right in cases where there wasn't an import already, or where we want to remove the entire import  # noqa
 # - decide how to deal with uncertain cases (interactive mode? just write it and ask the user to check? flag to switch between these? send a warning?)  # noqa
 # - make sure I don't overgeneralise (maybe gpu doesn't seem usable, but that's just because of the machine I'm on)  # noqa
 # - related to that, make sure that if there's an existing dtype decorator referencing a version/device I didn't test, make sure I include that data when I write the new version (maybe I could read that in before I "compile" the decorator and use it to modify the data structure)  # noqa
 # - add new function types: method, frontend, frontend method (for now, I assume its a backend function)  # noqa
-# - add command line args (to specify certains folders/files/functions/backends/devices/versions/types) (partially done)  # noqa
 # - add ability to iterate over versions of a framework (talk to multiversion support people)  # noqa
 # - hook the script into *something* so it runs automatically
 # - have some smart way of deciding which functions to run on (maybe a flag that tells it to look at the most recent `git diff`s and only check the functions that have been changed) # noqa
@@ -167,11 +167,24 @@ def _get_decorator_string(
 
 
 class BackendFileTester:
-    def __init__(self, file_path: Path, devices=[], fn_names=[]):
+    def __init__(
+        self,
+        file_path: Path,
+        devices=[],
+        fn_names=[],
+        verbosity=0,
+        handle_unsure="supported",
+        safety_mode=False,
+    ):
         self.file_path = file_path
+        if verbosity >= 1:
+            print()
+            print(self.file_path)
         for i in range(1, len(self.file_path.parents)):
             if self.file_path.parents[i].stem == "backends":
                 self.backend = self.file_path.parents[i - 1].stem
+                if verbosity >= 2:
+                    print(f"Backend: {self.backend}")
                 break
         else:
             raise Exception("No backend was identified.")
@@ -182,6 +195,10 @@ class BackendFileTester:
         self.dtypes = ()
         self.fn_names = fn_names
         self.skip_fns = set()
+
+        self.verbosity = verbosity
+        self.handle_unsure = handle_unsure
+        self.safety_mode = safety_mode
 
         self.current_dtype = None
         self.current_fn_name = None
@@ -216,6 +233,20 @@ class BackendFileTester:
             for fn_name in self.fn_names
         }
 
+        if self.verbosity >= 1:
+            if self.verbosity >= 2:
+                print(f"Testing with devices: {self.devices}")
+                print(f"Testing with dtypes: {self.dtypes}")
+                print(f"Test file path: {self.test_path}")
+            print(f"Discovered {len(self.fn_names)} functions.")
+            if self.verbosity >= 2:
+                print("  " + ", ".join(self.fn_names))
+            print()
+            print()
+
+        if self.verbosity == 1:
+            print("Results: ", end="")
+
         self.decorators = {}
 
         self.is_set_up = True
@@ -223,49 +254,128 @@ class BackendFileTester:
     def iterate_dtypes(self):
         for dtype in self.dtypes:
             self.current_dtype = dtype
+            if self.verbosity == 2:
+                print()
+                print(f"DType {dtype}: ", end="")
             yield dtype
 
     def iterate_fn_names(self):
         for fn_name in self.fn_names:
-            if fn_name in self.skip_fns:
+            if fn_name is None:
+                if self.verbosity >= 1:
+                    print("X", end="")
                 continue
             self.current_fn_name = fn_name
             yield fn_name
-        for f in self.skip_fns:
-            self.fn_names.remove(f)
-        self.skip_fns = set()
 
     def iterate_devices(self):
         for device in self.devices:
             self.current_device = device
+            if self.verbosity == 3:
+                print()
+                print(
+                    f"{self.file_path}::{self.current_fn_name}"
+                    "[DType={self.current_dtype},Device={self.current_device}]: ",
+                    end="",
+                )
             yield device
 
-    def remove_fn(self, fn_name):
+    def remove_fn(self, fn_name, reason):
         if fn_name in self.fn_names:
-            self.skip_fns.add(fn_name)
+            i = self.fn_names.index(fn_name)
+            self.fn_names[i] = None
+            if self.verbosity >= 1:
+                print("X", end="")
+            self.skip_fns.add((fn_name, reason))
 
     def set_result(self, result, err=None):
+        if result == "unsure" and self.handle_unsure == "error":
+            raise err
         value = self.current_dtype if err is None else (self.current_dtype, err)
         self.result[self.current_fn_name][self.current_device][result].add(value)
+        if self.verbosity == 3:
+            print(result)
+        elif self.verbosity >= 1:
+            char = (
+                "S"
+                if result == "supported"
+                else "U" if result == "unsupported" else "?"
+            )
+            print(char, end="")
+
+    def resolve_unsure(self):
+        self.fn_names = [func for func in self.fn_names if func is not None]
+        if self.verbosity >= 1:
+            for func, reason in self.skip_fns:
+                print()
+                print()
+                print(f"Skipped function {func}: {reason}")
+
+        first_unsure = True
+        for f in self.fn_names:
+            for d in self.devices:
+                if len(self.result[f][d]["unsure"]) == 0:
+                    del self.result[f][d]["unsure"]
+                    continue
+
+                if self.handle_unsure in ["supported", "unsupported"]:
+                    if self.verbosity >= 1:
+                        for dtype, reason in self.result[f][d]["unsure"]:
+                            if first_unsure:
+                                print()
+                                print()
+                                print(f"Marking as {self.handle_unsure}:")
+                                print()
+                                first_unsure = False
+                            print(
+                                f"{self.file_path}::{f}[DType={dtype},Device={d}] with"
+                                f" error:\n  {reason}"
+                            )
+                            print()
+                    self.result[f][d][self.handle_unsure].update(
+                        {t for t, _ in self.result[f][d]["unsure"]}
+                    )
+                    del self.result[f][d]["unsure"]
+
+                if self.handle_unsure == "interactive":
+                    for dtype, reason in self.result[f][d]["unsure"]:
+                        print(
+                            f"{self.file_path}::{f}[DType={dtype},Device={d}] threw"
+                            f" error {reason}"
+                        )
+                        mark_as = "?"
+                        while mark_as not in ["S", "U"]:
+                            raw = input(
+                                "Please mark as (S)upported or (U)nsupported (or"
+                                " (E)xit): "
+                            )
+                            mark_as = raw[0].upper()
+                            if mark_as == "E":
+                                raise SystemExit()
+                        mark_as = "supported" if mark_as == "S" else "unsupported"
+                        self.result[f][d][mark_as].add(dtype)
+                    del self.result[f][d]["unsure"]
 
     def print_result(self):
+        if self.verbosity < 2:
+            return
+        print()
         print(f"Printing results for {self.file_path}:\n")
         for f in self.fn_names:
             for d in self.devices:
                 print(f, d)
                 print("Supported:", self.result[f][d]["supported"])
                 print("Unsupported:", self.result[f][d]["unsupported"])
-                print("Unsure:", self.result[f][d]["unsure"])
                 print("\n")
 
     def create_decorators(self):
+        if self.verbosity >= 2:
+            print()
+            print("Generating decorators:")
         for f in self.fn_names:
             device_and_dtypes = {}
             for d in self.devices:
-                # assume remaining "unsure" should be marked as supported
-                supported = self.result[f][d]["supported"] | {
-                    t for t, _ in self.result[f][d]["unsure"]
-                }
+                supported = self.result[f][d]["supported"]
                 unsupported = self.result[f][d]["unsupported"]
 
                 # reduce to classes where possible
@@ -281,12 +391,20 @@ class BackendFileTester:
             total_supported = sum(len(device_and_dtypes[d][0]) for d in self.devices)
             total_unsupported = sum(len(device_and_dtypes[d][1]) for d in self.devices)
             use_supported = total_supported <= total_unsupported
-            for d in self.devices:
-                device_and_dtypes[d] = device_and_dtypes[d][0 if use_supported else 1]
-            self.decorators[f] = _get_decorator_string(
-                device_and_dtypes, use_supported, CURRENT_VERSIONS[self.backend]
-            )
-            print(f, self.decorators[f])
+            if total_unsupported == 0:
+                self.decorators[f] = None
+            else:
+                for d in self.devices:
+                    device_and_dtypes[d] = device_and_dtypes[d][
+                        0 if use_supported else 1
+                    ]
+                self.decorators[f] = _get_decorator_string(
+                    device_and_dtypes, use_supported, CURRENT_VERSIONS[self.backend]
+                )
+            if self.verbosity >= 2:
+                print(f"  {f}: {self.decorators[f]}")
+        if self.verbosity >= 2:
+            print()
 
     def write_decorators(self):
         is_dtype_dec_regex = r"@with_(un)?supported_(device_and_)?dtypes\("
@@ -303,7 +421,6 @@ class BackendFileTester:
         # read in the code file
         with open(self.file_path, "r") as f:
             code_text = f.readlines()
-        print(code_text[15])
 
         # find each function in it
         for func in self.fn_names:
@@ -311,10 +428,8 @@ class BackendFileTester:
                 if f"def {func}(" in v:
                     def_index = i
                     break
-            else:
-                print(
-                    f"WARNING: no definition of {func} found in {self.file_path}"
-                )  # TODO: make it an actual warning
+            if self.verbosity >= 3:
+                print(f"{func} found at line no. {def_index+1}")
 
             # read all the lines that could be decorators (i.e. they're immediately
             # above the `def` line)
@@ -352,11 +467,16 @@ class BackendFileTester:
 
             # remove dtype decorators that already exist
             for i, j in indices_to_remove:
+                if self.verbosity >= 2:
+                    print(f"Removing existing decorator from {func}")
                 del code_text[i:j]
                 def_index -= j - i
 
             # add the new decorator
-            code_text.insert(def_index, self.decorators[func] + "\n")
+            if self.decorators[func] is not None:
+                if self.verbosity >= 2:
+                    print(f"Adding decorator to {func}")
+                code_text.insert(def_index, self.decorators[func] + "\n")
 
         # combine the lines into a single string
         code_text = "".join(code_text)
@@ -379,14 +499,21 @@ class BackendFileTester:
         )
 
         # write the import statement to the file
+        if self.verbosity >= 2:
+            print()
+            print(f"Previously imported wrappers: {list(imported_decorators)}")
+            print(f"Updating to import {desired_decorators}")
         code_text = re.sub(
             replace_imported_decs_regex,
             f"from ivy.func_wrapper import {', '.join(desired_decorators)}\n",
             code_text,
         )
 
-        with open(self.file_path, "w") as f:
-            f.write(code_text)
+        if self.safety_mode:
+            print("File write suppressed due to safety mode.")
+        else:
+            with open(self.file_path, "w") as f:
+                f.write(code_text)
 
 
 def _get_nested_np_arrays(nest):
@@ -522,14 +649,22 @@ def mock_test_function(
         )
 
 
-def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
+def run_dtype_setter(
+    files_list: List[Path],
+    devices=DEVICES,
+    fn_names=[],
+    options={"verbosity": 0, "handle_unsure": "supported", "safety_mode": False},
+):
     helpers.test_function = mock.Mock(wraps=mock_test_function)
     sys.modules["ivy_tests.test_ivy.helpers"] = helpers
 
     test_globals._set_backend("tensorflow")
 
+    if options["verbosity"] >= 1:
+        print("============== RUNNING =============")
+
     for file in files_list:
-        test_handler = BackendFileTester(file, devices, fn_names)
+        test_handler = BackendFileTester(file, devices, fn_names, **options)
         test_handler.setup_test()
 
         for dtype in test_handler.iterate_dtypes():
@@ -541,9 +676,7 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
             for fn_name in test_handler.iterate_fn_names():
                 test_fn = f"test_{fn_name}"
                 if test_fn not in test_file.__dict__:
-                    # TODO: turn this into a real warning
-                    print(f"Warning: no {test_fn} to match {fn_name} in {file}")
-                    test_handler.remove_fn(fn_name)
+                    test_handler.remove_fn(fn_name, "no test function")
                     continue
 
                 kwargs = (
@@ -567,6 +700,8 @@ def run_dtype_setter(files_list: List[Path], devices=DEVICES, fn_names=[]):
                             test_handler.set_result("unsupported")
                         else:
                             test_handler.set_result("unsure", e)
+
+        test_handler.resolve_unsure()
         test_handler.print_result()
         test_handler.create_decorators()
         test_handler.write_decorators()
@@ -614,7 +749,39 @@ def main():
         default=[],
         help="specify devices to check. Others will be skipped.",
     )
+    parser.add_argument(
+        "-u",
+        "--unsure",
+        choices=["supported", "unsupported", "interactive", "error"],
+        default="supported",
+        help=(
+            "specify how to classify unknown error messages. Can be"
+            " supported/unsupported, interactive (you will be shown the error message"
+            " and asked to decide), or error (an error will be raised when an unknown"
+            " message is found)."
+        ),
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="verbosity",
+        action="count",
+        default=0,
+        help="set the verbosity level.",
+    )
+    parser.add_argument(
+        "--safety-mode",
+        dest="safety_mode",
+        action="store_true",
+        help="activate a debug mode which prevents actually writing to files.",
+    )
     args = parser.parse_args()
+
+    if args.safety_mode:
+        print("Safety mode on.")
+
+    if args.verbosity >= 1:
+        print("========= COLLECTING FILES =========")
 
     reduced_paths: List[Path] = []
 
@@ -639,12 +806,26 @@ def main():
         if p.is_file():
             files_list.append(p)
 
+    if args.verbosity >= 1:
+        print(f"Discovered {len(files_list)} files.")
+        if args.verbosity >= 3:
+            print("  " + "\n  ".join([str(file) for file in files_list]))
+
     if args.devices is not None:
         devices = [d + ":0" if d in ["gpu", "tpu"] else d for d in args.devices]
     else:
         devices = DEVICES
 
-    run_dtype_setter(files_list, devices, args.functions)
+    run_dtype_setter(
+        files_list,
+        devices,
+        args.functions,
+        {
+            "verbosity": args.verbosity,
+            "handle_unsure": args.unsure,
+            "safety_mode": args.safety_mode,
+        },
+    )
 
 
 if __name__ == "__main__":
