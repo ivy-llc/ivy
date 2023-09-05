@@ -483,10 +483,12 @@ def kl_div(
     loss = ivy.sum(input * ivy.log(input / target), axis=-1)
 
     if reduction == "sum":
-        return ivy.sum(loss, out=out)
+        loss = ivy.sum(loss, out=out)
     elif reduction == "mean":
-        return ivy.mean(loss, out=out)
+        loss = ivy.mean(loss, out=out)
     elif reduction == "batchmean":
-        return ivy.sum(loss, out=out) / size[0]
+        loss = ivy.sum(loss, out=out) / size[0]
     else:
-        return ivy.inplace_update(out, loss) if out is not None else loss
+        loss = ivy.inplace_update(out, loss) if out is not None else loss
+
+    return ivy.astype(loss, ivy.float64)
