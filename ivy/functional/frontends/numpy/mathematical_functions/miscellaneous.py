@@ -334,6 +334,12 @@ def convolve(a, v, mode="full"):
 
 
 @to_ivy_arrays_and_back
+def gradient(f, *varargs, axis = None, edge_order = 1):
+    edge_order = edge_order if edge_order is not None else 1
+    return ivy.gradient(f, spacing = varargs, axis = axis, edge_order = edge_order)
+
+
+@to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def interp(x, xp, fp, left=None, right=None, period=None):
     return ivy.interp(x, xp, fp, left=left, right=right, period=period)
@@ -362,9 +368,3 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 @to_ivy_arrays_and_back
 def real_if_close(a, tol=100):
     return ivy.array(a)  # ivy doesn't yet support complex numbers
-
-
-@to_ivy_arrays_and_back
-def gradient(f, *varargs, axis = None, edge_order = 1):
-    edge_order = edge_order if edge_order is not None else 1
-    return ivy.gradient(f, spacing = varargs, axis = axis, edge_order = edge_order)
