@@ -1184,11 +1184,12 @@ def test_put_along_axis(
     on_device,
 ):
     dtype, x, indices, values, axis = args
+    test_flags.ground_truth_backend = "torch"
     helpers.test_function(
         input_dtypes=[dtype, "int64", dtype],
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         arr=x,
         indices=indices,

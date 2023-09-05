@@ -1,7 +1,8 @@
 import ivy
 import numpy as np
 import torch
-import paddle
+
+# import paddle
 
 from typing import Optional
 
@@ -32,19 +33,19 @@ def put_along_axis(
     return ret
 
 
-ivy.set_backend("torch")
+# ivy.set_backend("torch")
 
 # x = np.array([[-1, -1], [-1, -1]], dtype=np.float64)
 # idx = np.array([[0, 0]], dtype=np.int64)
 # vals = np.array([[1, 1]], dtype=np.float64)
 
-# x = np.array([[0, 0, 8],[0, 0, 0],[0, 0, 0]], dtype=np.float32)
-# idx = np.array([[0, 0, 0]], dtype=np.int64)
-# vals = np.array([[2, 2, 2]], dtype=np.float32)
+x = np.array([[0, 0, 8], [0, 0, 0], [0, 0, 0]], dtype=np.float32)
+idx = np.array([[0, 0, 0]], dtype=np.int64)
+vals = np.array([[2, 2, 2]], dtype=np.float32)
 
-x = np.array([[0, 0], [0, 0]], dtype=np.float32)
-idx = np.array([[0, 0]], dtype=np.int64)
-vals = np.array([[1, 1]], dtype=np.float32)
+# x = np.array([[0, 0], [0, 0]], dtype=np.float32)
+# idx = np.array([[0, 0]], dtype=np.int64)
+# vals = np.array([[1, 1]], dtype=np.float32)
 
 # x = np.array([0], dtype=np.float32)
 # idx = np.array([0, 0], dtype=np.int64)
@@ -61,9 +62,9 @@ torch_x = torch.tensor(x)
 torch_idx = torch.tensor(idx)
 torch_vals = torch.tensor(vals)
 
-paddle_x = paddle.to_tensor(x)
-paddle_idx = paddle.to_tensor(idx)
-paddle_vals = paddle.to_tensor(vals)
+# paddle_x = paddle.to_tensor(x)
+# paddle_idx = paddle.to_tensor(idx)
+# paddle_vals = paddle.to_tensor(vals)
 
 # ret_torch = torch.scatter_reduce(torch_x, axis, torch_idx, torch_vals, "sum")
 # print(ret_torch)
@@ -82,10 +83,10 @@ print(torch_ret)
 torch_backend_ret = put_along_axis(torch_x, torch_idx, torch_vals, axis, mode="sum")
 print(torch_backend_ret)
 
-paddle_ret = paddle.put_along_axis(
-    paddle_x, paddle_idx, paddle_vals, axis, reduce="add"
-)
-print(paddle_ret)
+# paddle_ret = paddle.put_along_axis(
+#     paddle_x, paddle_idx, paddle_vals, axis, reduce="multiply"
+# )
+# print(paddle_ret)
 
 # np.put_along_axis(x, idx, vals, axis)
 # print(x)

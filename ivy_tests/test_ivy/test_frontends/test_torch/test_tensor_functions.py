@@ -229,14 +229,14 @@ def test_torch_scatter_reduce(
     backend_fw,
 ):
     input_dtype, x, indices, value, axis = args
-    test_flags.num_positional_args = 4
+    test_flags.ground_truth_backend = "torch"
     helpers.test_frontend_function(
         input_dtypes=[input_dtype, "int64", input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
         input=x,
         dim=axis,
         index=indices,
