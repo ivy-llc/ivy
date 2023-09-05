@@ -62,7 +62,6 @@ def index_nest(
     >>> y = [1]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    >>> z
     {
         a: ivy.array([3., 4.]),
         b: 60
@@ -218,7 +217,35 @@ def set_nest_at_index(
 
 
 @handle_exceptions
-def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
+    """
+    Recursively inserts a value into a nested data structure at a specified index.
+
+    This function traverses a nested data structure and inserts the provided `value`
+    at the specified `index`.
+
+    Parameters
+    ----------
+    nest : Iterable
+        The nested data structure.
+    index : Tuple
+        The index specifying the location where the `value` should be inserted.
+    value : object
+        The value to be inserted.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> nest = [[1, 2], [3, 4]]
+    >>> index = (1, 1)
+    >>> value = 99
+    >>> insert_into_nest_at_index(nest, index, value)
+    >>> print(nest)
+    [[1, 2], [3, 99, 4]]
+    """
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -600,7 +627,8 @@ def map_nest_at_indices(
     >>> function = lambda x : x ** 2
     >>> ivy.map_nest_at_indices(nest, indices, function)
     >>> print(nest)
-    ivy.array([[-9., 8., -17.], [11., -3., 5.]])
+    ivy.array([[ -9.,  64., -17.],
+           [ 11.,   9.,  25.]])
     """
     is_tuple = isinstance(nest, tuple)
     nest_type = type(nest) if is_tuple else lambda x: x

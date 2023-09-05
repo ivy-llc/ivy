@@ -8,7 +8,6 @@ Array API Tests
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
-.. _`array api tests forum`: https://discord.com/channels/799879767196958751/1028297759738040440
 .. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
@@ -28,7 +27,7 @@ Since Ivy aims to unify machine learning frameworks, it makes sense that we valu
 The test suite is included in the ivy repository as a submodule in the folder `test_array_api`_, which we keep updated with the upstream test suite.
 The array-api tests repository is maintained by a group of developers unconnected to Ivy.
 We have made the decision to import the test suite directly from this repository rather than having our own fork.
-This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy master branch.
+This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy main branch.
 Instead, the change must be made to the array-api repository directly and then our submodule must be updated with the commands:
 
 .. code-block:: none
@@ -36,10 +35,18 @@ Instead, the change must be made to the array-api repository directly and then o
         # to initialise local config file and fetch + checkout submodule (not needed everytime)
         git submodule update --init --recursive
 
-        # pulls changes from upstream remote repo and merges them
+        # pulls changes from the upstream remote repo and merges them
         git submodule update --recursive --remote --merge
 
-and only *then* can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the source array-api repository.
+Sometimes you will face strange behaviour when staging changes from Ivy's main repo which includes submodule updates.
+And this is being caused by your submodule being out of date because we update the submodule iteratively. You can get around this by running the following command:
+
+.. code-block:: none
+
+        # Updating your submodule to the latest commit
+        git submodule update --remote
+
+and only *then* can changes to the submodule be pushed to ivy-main, i.e. only when these changes exist in the source array-api repository.
 See the `git website`_ for further information on working with submodules.
 
 Running the Tests
@@ -64,7 +71,7 @@ Using the terminal, you can run all array-api tests in a given file for a certai
         # /ivy
         /bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
 
-You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
+You can change the argument with any of our supported frameworks - tensorflow, numpy, torch, or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
 You can also run a specific test, as often running *all* tests in a file is excessive.
 To make this work, you should set the backend explicitly in the `_array_module.py` file, which you can find in the `array_api_tests` submodule.
@@ -153,7 +160,7 @@ You may also need to include the hypothesis import of `reproduce_failure` as sho
 
 The test should then include the inputs which led to the previous failure and recreate it.
 If you are taking the :code:`@reproduce_failure` decorator from a CI stack trace and trying to reproduce it locally, you may find that sometimes the local test unexpectedly passes.
-This is usually caused by a discrepancy in your local source code and ivy-master, so try pulling from master to sync the behaviour.
+This is usually caused by a discrepancy in your local source code and ivy-main, so try pulling from the main to sync the behaviour.
 
 Test Skipping
 -------------
@@ -199,7 +206,7 @@ The fact that the skip instruction itself contains the exact input conditions th
 
 This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_ or in the `array api tests forum`_ !
+If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_!
 
 **Video**
 
