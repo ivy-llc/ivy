@@ -108,7 +108,7 @@ def l1_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
     if axis is None:
-        axis = list(range(x.ndim))
+        axis = list(range(ivy.array(x).ndim))
     elif isinstance(axis, int):
         axis = [axis]
     else:
