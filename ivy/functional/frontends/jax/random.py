@@ -427,6 +427,7 @@ def maxwell(key, shape=None, dtype="float64"):
     x = (z**2) * ivy.exp(-(z**2) / 2)
     return x
 
+
 def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
     return ivy.random_uniform(
         low=minval, high=maxval, shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1])
@@ -440,7 +441,7 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
         "0.4.14 and below": (
             "float16",
             "bfloat16",
-        )
+        ), uint32,
     },
     "jax",  
 )
