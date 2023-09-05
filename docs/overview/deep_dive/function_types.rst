@@ -52,7 +52,7 @@ These are generally implemented as light wrapping around an existing function in
 
 Primary functions must both be specified in :mod:`ivy/functional/ivy/category_name.py` and also in each of the backend files :mod:`ivy/functional/backends/backend_name/category_name.py`.
 
-The function in :mod:`ivy/functional/ivy/category_name.py` includes the type hints, docstring and docstring examples (explained in more detail in the subsequent sections), but does not include an actual implementation.
+The function in :mod:`ivy/functional/ivy/category_name.py` includes the type hints, docstring, and docstring examples (explained in more detail in the subsequent sections), but does not include an actual implementation.
 
 Instead, in :mod:`ivy/functional/ivy/category_name.py`, primary functions simply defer to the backend-specific implementation.
 
@@ -88,7 +88,7 @@ Compositional Functions
 -----------------------
 
 *Compositional* functions on the other hand **do not** have backend-specific implementations.
-They are implemented as a *composition* of other Ivy functions, which themselves can be either compositional, primary or mixed (explained below).
+They are implemented as a *composition* of other Ivy functions, which themselves can be either compositional, primary, or mixed (explained below).
 
 Therefore, compositional functions are only implemented in :mod:`ivy/functional/ivy/category_name.py`, and there are no implementations in any of the backend files :mod:`ivy/functional/backends/backend_name/category_name.py`.
 
@@ -133,7 +133,7 @@ Partial Mixed Functions
 There may be instances wherein the native backend function does not encompass the full range of possible cases that ivy wants to support.
 One example of this is :code:`ivy.linear` for which the torch native function :code:`torch.nn.functional.linear` only supports the :code:`weight` argument
 to be a 2 dimensional tensor while as ivy also allows the :code:`weight` argument to be 3 dimensional. While achieving the objective of having superset
-behaviour across the backends, native functionality of frameworks should be made use of as much as possible. Even if a framework-specific function
+behaviour across the backends, the native functionality of frameworks should be made use of as much as possible. Even if a framework-specific function
 doesn't provide complete superset behaviour, we should still make use of the partial behaviour that it provides and then add more logic for the
 remaining part. This is explained in detail in the :ref:`Maximizing Usage of Native Functionality` section. Ivy allows this partial support with the help of the `partial_mixed_handler`_
 attribute which should be added to the backend implementation with a boolean function that specifies some condition on the inputs to switch between the compositional
@@ -225,7 +225,7 @@ Convenience Functions
 A final group of functions are the *convenience* functions (briefly mentioned above).
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.
-Convenience functions can be *primary*, *compositional*, *mixed* or *standalone* functions.
+Convenience functions can be *primary*, *compositional*, *mixed*, or *standalone* functions.
 Many are also *nestable*.
 This is another categorization which is **not** mutually exclusive, as outlined by the Venn diagram below:
 

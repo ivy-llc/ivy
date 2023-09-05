@@ -186,8 +186,8 @@ def median(
     ret
         The median of the array elements.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
     >>> ivy.median(a)
     3.5
@@ -240,8 +240,8 @@ def nanmean(
     ret
         The nanmean of the array elements.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> a = ivy.array([[1, ivy.nan], [3, 4]])
     >>> ivy.nanmean(a)
     2.6666666666666665
