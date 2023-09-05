@@ -7,8 +7,8 @@ Formatting
 .. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
-Currently Ivy follows `black`_ code style, and `flake8`_ formatter in order to ensure that our code is consistent,
-readable and bug free. This deep-dive will explain how to use these tools to ensure that your code is formatted
+Currently, Ivy follows the `black`_ code style, and `flake8`_ formatter in order to ensure that our code is consistent,
+readable, and bug free. This deep-dive will explain how to use these tools to ensure that your code is formatted
 correctly.
 
 Please ensure to conform to the formatting rules before submitting a pull request. You are encouraged to take a look
@@ -17,7 +17,7 @@ these coding style guides before you start contributing to Ivy.
 Lint Checks
 -----------
 
-In addition to `black`_ and `flake8`_, Ivy uses other linters to help automate the formatting process, specially for
+In addition to `black`_ and `flake8`_, Ivy uses other linters to help automate the formatting process, especially for
 issues `flake8`_ detects but doesn't fix automatically. In addition to that, we validate docstring as part of our
 linting process. You can learn more about our docstring formatting in the :ref:`Docstrings` section.
 
@@ -124,7 +124,7 @@ but you can use the following links to set up the formatting:
 Common Issues with Pre-Commit
 -----------------------------
 
-As pre-commit hook runs before each commit, when it fails it provides an error message that's readable on terminals
+As the pre-commit hook runs before each commit, when it fails it provides an error message that's readable on terminals
 but not on IDE GUIs. So you might see a cryptic error message like one of the following:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/formatting/vscode_error.png?raw=true
@@ -145,7 +145,7 @@ Continuous Integration
 We have multiple GitHub actions to check and fix the formatting of the code. They can be divided into lint checks and
 lint formatting (or lint-bot).
 
-All the check we do are made by pre-commit, you don't need to worry about lint errors arising from the CI checks that
+All the checks we do are made by pre-commit, you don't need to worry about lint errors arising from the CI checks that
 are not caught by pre-commit.
 
 Lint Checks
@@ -157,7 +157,7 @@ We have a GitHub action that runs:
 2. Every pull request
 
 The important check is the one that runs on every pull request. You should expect this check to pass if you have
-pre-commit correctly set up. Note that you can also reformat your code directly from GitHub making a comment with
+pre-commit correctly set up. Note that you can also reformat your code directly from GitHub by making a comment with
 ``ivy-gardener``, we will go through more details about it in the next section.
 
 Lint Formatting
@@ -172,7 +172,7 @@ The first action is to ensure that the code in the whole codebase is always form
 is to reformat the files you changed in your PR directly on GitHub. This is useful in case if you didn't setup 
 pre-commit correctly or if you or one of our maintainers want to reformat your code remotely.
 
-Under the hood, when ``ivy-gardener`` is found in a comment, a ivy bot will trigger the same set of lint checks 
+Under the hood, when ``ivy-gardener`` is found in a comment, an ivy bot will trigger the same set of lint checks 
 as in the pre-commit process. Then the suggested changes produced in the checks will be applied automatically as
 a new commit if there is any. 
 
@@ -183,7 +183,7 @@ be applied by the ``ivy-gardener`` properly.
 
 On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes 
 suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you 
-should try give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it 
+should try to give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it 
 another try, or manually resolve the formatting errors by commiting the changes yourself.
 
 **Round Up**

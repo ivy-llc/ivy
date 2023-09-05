@@ -83,10 +83,10 @@ Conversion Wrappers
 Inference Wrappers
 ^^^^^^^^^^^^^^^^^^
 
-#.  `infer_dtype`_ : This wrapping function infers the `dtype` argument to be passed to a function based on the  array arguments passed to it.
+#.  `infer_dtype`_ : This wrapping function infers the `dtype` argument to be passed to a function based on the array arguments passed to it.
     If :code:`dtype` is explicitly passed to the function, then it is used directly.
     This wrapping function could be found in functions from the `creation submodule`_ such as `zeros`_ where we then allow the user to not enter the :code:`dtype` argument to such functions.
-#.  `infer_device`_ : Similar to the `infer_dtype`_ wrapping function, the `infer_device`_ function wrapping  infers the :code:`device` argument to be passed to a function based on the first array argument passed to it.
+#.  `infer_device`_ : Similar to the `infer_dtype`_ wrapping function, the `infer_device`_ function wrapping infers the :code:`device` argument to be passed to a function based on the first array argument passed to it.
     This wrapping function is also used a lot in functions from the `creation submodule`_ such as `asarray`_, where we want to create the `ivy.Array` on the same device as the input array.
 
 Out Argument Support

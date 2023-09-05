@@ -25,7 +25,7 @@ Arrays
 .. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
 .. _`NumPy's`: https://numpy.org/doc/stable/user/basics.dispatch.html#basics-dispatch
 .. _`PyTorch's`: https://pytorch.org/docs/stable/notes/extending.html#extending-torch
-There are two types of array in Ivy, there is the :class:`ivy.NativeArray` and also the :class:`ivy.Array`.
+There are two types of arrays in Ivy, there is the :class:`ivy.NativeArray` and also the :class:`ivy.Array`.
 
 Native Array
 ------------
@@ -44,7 +44,7 @@ All functions in the Ivy functional API which accept *at least one array argumen
 The only exceptions to this are functions in the `nest <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/nest.py>`_ module and the `meta <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/meta.py>`_ module, which have no instance method implementations.
 
 The organization of these instance methods follows the same organizational structure as the files in the functional API.
-The :class:`ivy.Array` class `inherits`_ from many category-specific array classes, such as `ArrayWithElementwise`_, each of which implement the category-specific instance methods.
+The :class:`ivy.Array` class `inherits`_ from many category-specific array classes, such as `ArrayWithElementwise`_, each of which implements the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally, but passes in :code:`self._data` as the first *array* argument.
 `ivy.Array.add`_ is a good example.
