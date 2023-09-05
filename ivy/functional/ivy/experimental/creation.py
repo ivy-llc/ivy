@@ -98,8 +98,8 @@ def hann_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
@@ -193,8 +193,8 @@ def kaiser_bessel_derived_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
@@ -293,16 +293,17 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Return the indices of the lower triangular part of a row by col matrix in a
-    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
-    row coordinates of all indices and the second row contains column coordinates.
-    Indices are ordered based on rows and then columns.  The lower triangular part
-    of the matrix is defined as the elements on and below the diagonal.  The argument
-    k controls which diagonal to consider. If k = 0, all elements on and below the main
-    diagonal are retained. A positive value excludes just as many diagonals below the
-    main diagonal, and similarly a negative value includes just as many diagonals
-    above the main diagonal. The main diagonal are the set of indices
-    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
+    """
+    Return the indices of the lower triangular part of a row by col matrix in a 2-by-N
+    shape (tuple of two N dimensional arrays), where the first row contains row
+    coordinates of all indices and the second row contains column coordinates. Indices
+    are ordered based on rows and then columns.  The lower triangular part of the matrix
+    is defined as the elements on and below the diagonal.  The argument k controls which
+    diagonal to consider. If k = 0, all elements on and below the main diagonal are
+    retained. A positive value excludes just as many diagonals below the main diagonal,
+    and similarly a negative value includes just as many diagonals above the main
+    diagonal. The main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
+    n_cols}−1].
 
     Notes
     -----
@@ -371,7 +372,6 @@ def tril_indices(
     >>> x = ivy.tril_indices(2,4,-100)
     >>> print(x)
     (ivy.array([]), ivy.array([]))
-
     """
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
@@ -391,10 +391,10 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
-    the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
+    """
+    Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having the
+    same ``shape`` as the first and last dim of input array ``x``. input array ``x``
     should to be 2D.
-
 
     Parameters
     ----------
@@ -423,9 +423,8 @@ def eye_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances as a replacement to any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([[0, 1],[2, 3]])
@@ -452,7 +451,6 @@ def eye_like(
         b: ivy.array([[1., 0.],
                       [0., 1.]])
     }
-
     """
     shape = ivy.shape(x, as_array=True)
     dim = len(shape)
@@ -717,12 +715,14 @@ def blackman_window(
         The data type to produce. Must be a floating point type.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         The array containing the window.
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     >>> ivy.blackman_window(4, periodic = True)
     ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
     >>> ivy.blackman_window(7, periodic = False)
@@ -747,7 +747,7 @@ def random_tucker(
     orthogonal: Optional[bool] = False,
     seed: Optional[int] = None,
     non_negative: Optional[bool] = False,
-) -> ivy.TuckerTensor:
+) -> Union[ivy.TuckerTensor, ivy.Array]:
     """
     Generate a random Tucker tensor.
 
@@ -804,6 +804,63 @@ def random_tucker(
         return ivy.TuckerTensor((core, factors))
 
 
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_cp(
+    shape: Sequence[int],
+    rank: int,
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    orthogonal: Optional[bool] = False,
+    seed: Optional[int] = None,
+    normalise_factors: Optional[bool] = True,
+) -> Union[ivy.CPTensor, ivy.Array]:
+    """
+    Generate a random CP tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the CP decomposition
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    orthogonal
+        if True, creates a tensor with orthogonal components
+    seed
+        seed for generating random numbers
+
+    Returns
+    -------
+        ivy.CPTensor
+    """
+    rank = ivy.CPTensor.validate_cp_rank(shape, rank)
+    if (rank > min(shape)) and orthogonal:
+        warnings.warn(
+            "Can only construct orthogonal tensors when rank <= min(shape) but got "
+            f"a tensor with min(shape)={min(shape)} < rank={rank}"
+        )
+
+    factors = [
+        (ivy.random_uniform(shape=(s, rank), dtype=dtype, seed=seed)) for s in shape
+    ]
+    weights = ivy.ones((rank,), dtype=dtype)
+    if orthogonal:
+        factors = [ivy.qr(factor)[0] for factor in factors]
+
+    if full:
+        return ivy.CPTensor.cp_to_tensor((weights, factors))
+    elif normalise_factors:
+        return ivy.CPTensor.cp_normalize((weights, factors))
+    else:
+        return ivy.CPTensor((weights, factors))
+
+
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -825,6 +882,7 @@ def trilu(
         on and above the specified diagonal ``k``. The lower triangular part
         of the matrix is defined as the elements on and below the specified
         diagonal ``k``.
+
     Parameters
     ----------
     x
@@ -839,6 +897,7 @@ def trilu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret

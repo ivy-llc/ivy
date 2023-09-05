@@ -6,6 +6,10 @@ import ivy
 from ivy.functional.frontends.mxnet.numpy.ndarray import ndarray
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _ivy_array_to_mxnet(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         return ndarray(x)
@@ -26,6 +30,43 @@ def _native_to_ivy_array(x):
 
 def _to_ivy_array(x):
     return _mxnet_frontend_array_to_ivy(_native_to_ivy_array(x))
+
+
+# --- Main --- #
+# ------------ #
+
+
+def handle_mxnet_out(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_mxnet_out(*args, out=None, **kwargs):
+        if len(args) > (out_pos + 1):
+            out = args[out_pos]
+            kwargs = {
+                **dict(
+                    zip(
+                        list(inspect.signature(fn).parameters.keys())[
+                            out_pos + 1 : len(args)
+                        ],
+                        args[out_pos + 1 :],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:out_pos]
+        elif len(args) == (out_pos + 1):
+            out = args[out_pos]
+            args = args[:-1]
+        if ivy.exists(out):
+            if not isinstance(out, ndarray):
+                raise ivy.utils.exceptions.IvyException(
+                    "Out argument must be an ivy.frontends.mxnet.numpy.ndarray object"
+                )
+            return fn(*args, out=out.ivy_array, **kwargs)
+        return fn(*args, **kwargs)
+
+    out_pos = list(inspect.signature(fn).parameters).index("out")
+    _handle_mxnet_out.handle_numpy_out = True
+    return _handle_mxnet_out
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -79,36 +120,3 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     instances.
     """
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
-
-
-def handle_mxnet_out(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _handle_mxnet_out(*args, out=None, **kwargs):
-        if len(args) > (out_pos + 1):
-            out = args[out_pos]
-            kwargs = {
-                **dict(
-                    zip(
-                        list(inspect.signature(fn).parameters.keys())[
-                            out_pos + 1 : len(args)
-                        ],
-                        args[out_pos + 1 :],
-                    )
-                ),
-                **kwargs,
-            }
-            args = args[:out_pos]
-        elif len(args) == (out_pos + 1):
-            out = args[out_pos]
-            args = args[:-1]
-        if ivy.exists(out):
-            if not isinstance(out, ndarray):
-                raise ivy.utils.exceptions.IvyException(
-                    "Out argument must be an ivy.frontends.mxnet.numpy.ndarray object"
-                )
-            return fn(*args, out=out.ivy_array, **kwargs)
-        return fn(*args, **kwargs)
-
-    out_pos = list(inspect.signature(fn).parameters).index("out")
-    _handle_mxnet_out.handle_numpy_out = True
-    return _handle_mxnet_out

@@ -186,8 +186,8 @@ def median(
     ret
         The median of the array elements.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
     >>> ivy.median(a)
     3.5
@@ -240,8 +240,8 @@ def nanmean(
     ret
         The nanmean of the array elements.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> a = ivy.array([[1, ivy.nan], [3, 4]])
     >>> ivy.nanmean(a)
     2.6666666666666665
@@ -513,26 +513,6 @@ def igamma(
         ivy.array([0.3614, 0.2085])
     """
     return ivy.current_backend().igamma(a, x=x, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-def nanquantile(
-    a: ivy.Array,
-    q: Union[ivy.Array, float],
-    /,
-    *,
-    axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    return ivy.current_backend(a).nanquantile(
-        a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
-    )
 
 
 @handle_exceptions

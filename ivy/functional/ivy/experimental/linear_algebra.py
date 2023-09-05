@@ -201,9 +201,8 @@ def diagflat(
     ret
         The 2-D output array.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1,2], [3,4]])
@@ -350,8 +349,8 @@ def eig(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w, v = ivy.eig(x)
@@ -404,8 +403,8 @@ def eigvals(
     w
         Not necessarily ordered array(..., N) of eigenvalues in complex type.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w = ivy.eigvals(x)
@@ -1610,10 +1609,11 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
+@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def dot(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],

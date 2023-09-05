@@ -122,6 +122,7 @@ class DefaultDevice:
         Examples
         --------
         A "gpu" as device:
+
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -137,18 +138,7 @@ class DefaultDevice:
 
 
 def handle_soft_device_variable(*args, fn, **kwargs):
-    ivy.set_array_mode(False)
-    default_device = ivy.default_device()
-    args, kwargs = ivy.nested_map(
-        [args, kwargs],
-        lambda x: (
-            ivy.to_device(x, default_device)
-            if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
-            else x
-        ),
-    )
-    ivy.unset_array_mode()
-    return fn(*args, **kwargs)
+    return ivy.current_backend().handle_soft_device_variable(*args, fn=fn, **kwargs)
 
 
 # Helpers #
@@ -162,6 +152,20 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_idx)
     dev_handles[device] = handle
     return handle
+
+
+def _shift_native_arrays_on_default_device(*args, **kwargs):
+    with ivy.ArrayMode(False):
+        default_device = ivy.default_device(as_native=True)
+        args, kwargs = ivy.nested_map(
+            [args, kwargs],
+            lambda x: (
+                ivy.to_device(x, default_device)
+                if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
+                else x
+            ),
+        )
+    return args, kwargs, default_device
 
 
 # Device Queries #
@@ -199,7 +203,7 @@ def get_all_ivy_arrays_on_dev(
     all_arrays = list()
     for obj in gc.get_objects():
         if (
-            type(obj) == ivy.data_classes.array.array.Array
+            obj is ivy.data_classes.array.array.Array
             and ivy.is_ivy_array(obj)
             and ivy.dev(obj) == device
         ):
@@ -1245,10 +1249,8 @@ def function_supported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        (
-            "supported_devices and unsupported_devices attributes cannot both "
-            "exist in a particular backend"
-        ),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1298,10 +1300,8 @@ def function_unsupported_devices(
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        (
-            "supported_devices and unsupported_devices attributes cannot both "
-            "exist in a particular backend"
-        ),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
