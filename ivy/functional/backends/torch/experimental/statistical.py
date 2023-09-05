@@ -199,6 +199,8 @@ def nanprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
     a = a.type(dtype)
     a = torch.nan_to_num(a, nan=1.0)
     if a.dtype == torch.float16:
@@ -206,14 +208,14 @@ def nanprod(
     if axis == ():
         return a.type(dtype)
     if axis is None:
-        return torch.prod(input=a, out=out).type(dtype)
+        return torch.prod(input=a, out=out).type(dtype) * initial
     if isinstance(axis, tuple) or isinstance(axis, list):
         for i in axis:
             a = torch.prod(a, dim=i, keepdim=keepdims, out=out).type(dtype)
             if a.dtype == torch.float16:
                 a = a.type(torch.float32)
-        return a.type(dtype)
-    return torch.prod(a, dim=axis, keepdim=keepdims, out=out).type(dtype)
+        return a.type(dtype) * initial
+    return torch.prod(a, dim=axis, keepdim=keepdims, out=out).type(dtype) * initial
 
 
 nanprod.support_native_out = True

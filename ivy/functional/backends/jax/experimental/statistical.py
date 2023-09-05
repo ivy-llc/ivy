@@ -177,7 +177,9 @@ def nanprod(
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+    return jnp.nanprod(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out, initial=initial
+    )
 
 
 def quantile(

@@ -135,12 +135,14 @@ def nanprod(
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
     a = a.cast(dtype)
+    if initial is None:
+        initial = 1
     if a.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
         a = paddle.nan_to_num(a.cast("float64"), nan=1.0)
-        ret = paddle.prod(a, axis=axis, keepdim=keepdims)
+        ret = paddle.prod(a, axis=axis, keepdim=keepdims) * initial
     else:
         a = paddle.nan_to_num(a, nan=1.0)
-        ret = paddle.prod(a, axis=axis, keepdim=keepdims)
+        ret = paddle.prod(a, axis=axis, keepdim=keepdims) * initial
 
     if isinstance(axis, Sequence):
         if len(axis) == a.ndim:

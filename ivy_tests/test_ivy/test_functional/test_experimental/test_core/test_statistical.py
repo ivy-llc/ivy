@@ -651,9 +651,17 @@ def test_nanmedian(
     dtype_x_axis_castable=_get_castable_float_dtype_nan(),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
+    initial=st.integers(min_value=-5, max_value=5),
 )
 def test_nanprod(
-    *, dtype_x_axis_castable, keep_dims, test_flags, backend_fw, fn_name, on_device
+    *,
+    dtype_x_axis_castable,
+    keep_dims,
+    test_flags,
+    initial,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     x = x[0]
@@ -669,6 +677,7 @@ def test_nanprod(
         axis=axis,
         keepdims=keep_dims,
         dtype=castable_dtype,
+        initial=initial,
     )
 
 

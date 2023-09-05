@@ -137,8 +137,13 @@ def nanprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.experimental.numpy.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype)
+    return (
+        tf.experimental.numpy.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype)
+        * initial
+    )
 
 
 def _validate_quantile(q):

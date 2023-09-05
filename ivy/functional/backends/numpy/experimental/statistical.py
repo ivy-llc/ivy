@@ -183,7 +183,9 @@ def nanprod(
         dtype = _infer_dtype(a.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(
-        np.nanprod(a=a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+        np.nanprod(
+            a=a, axis=axis, dtype=dtype, keepdims=keepdims, out=out, initial=initial
+        )
     )
 
 
