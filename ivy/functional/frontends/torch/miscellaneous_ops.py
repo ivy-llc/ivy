@@ -457,5 +457,6 @@ def corrcoef(input):
 
 @to_ivy_arrays_and_back
 def cdist(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
-    return ivy.cdist(x1, x2, p=p, compute_mode=compute_mode)
+    return ivy.linalg.pairwise_distances(x1, x2, p=p)
+
 
