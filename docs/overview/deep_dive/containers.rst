@@ -73,7 +73,7 @@ If the only array argument is the :code:`out` argument, then we do not implement
 For example, we do not implement an instance method for `ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 As is the case for :class:`ivy.Array`, the organization of these instance methods follows the same organizational structure as the files in the functional API.
-The :class:`ivy.Container` class `inherits`_ from many category-specific array classes, such as `ContainerWithElementwise`_, each of which implement the category-specific instance methods.
+The :class:`ivy.Container` class `inherits`_ from many category-specific array classes, such as `ContainerWithElementwise`_, each of which implements the category-specific instance methods.
 
 As with :class:`ivy.Array`, given the simple set of rules which underpin how these instance methods should all be implemented, if a source-code implementation is not found, then this `instance method is added`_ programmatically. This serves as a helpful backup in cases where some instance methods are accidentally missed out.
 
@@ -85,7 +85,7 @@ API Special Methods
 
 All non-operator special methods are implemented in `ContainerBase`_, which is the abstract base class for all containers.
 These special methods include `__repr__`_ which controls how the container is printed in the terminal, `__getattr__`_ that primarily enables keys in the underlying :code:`dict` to be queried as attributes, whereas if no attribute, item or method is found which matches the name provided on the container itself, then the leaves will also be recursively traversed, searching for the attribute.
-If it turns out to be a callable function on the leaves, then it will call the function on each leaf and update the leaves with the returned results, for more detailed explanation with examples, see code block below.
+If it turns out to be a callable function on the leaves, then it will call the function on each leaf and update the leaves with the returned results, for a more detailed explanation with examples, see the code block below.
 `__setattr__`_ that enables attribute setting to update the underlying :code:`dict`, `__getitem__`_ that enables the underlying :code:`dict` to be queried via a chain of keys, `__setitem__`_ that enables the underlying :code:`dict` to be set via a chain of keys, `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`, and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
 
 .. code-block:: python
@@ -128,7 +128,7 @@ If it turns out to be a callable function on the leaves, then it will call the f
     }
 
     print(len(x.shape))
-    # doesn't work because Python in low-level C has restriction on return type of `len` to be `int`
+    # doesn't work because Python in low-level C has a restriction on the return type of `len` to be `int`
 
     print(num_dims.real)
     {
@@ -140,7 +140,7 @@ If it turns out to be a callable function on the leaves, then it will call the f
     }
 
     print(bin(num_dims))
-    # doesn't work because some Python built-in functions have enforce on input argument types
+    # doesn't work because some Python built-in functions have enforcement on input argument types
 
     # external method flexibility enables positional and keyword arguments to be passed into the attribute
     y = ivy.Container(l1=[1, 2, 3], c1=ivy.Container(l1=[3, 2, 1], l2=[4, 5, 6]))
@@ -205,7 +205,7 @@ This wrapper causes the function to be applied at each leaf of any containers pa
 More information on this can be found in the `Function Wrapping <https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/docs/partial_source/deep_dive/function_wrapping.rst>`_ section of the Deep Dive.
 
 Additionally, any nestable function which returns multiple arrays, will return the same number of containers for its container counterpart.
-This property makes the function symmetric with regards to the input-output behavior, irrespective of whether :class:`ivy.Array` or :class:`ivy.Container` instances are based used.
+This property makes the function symmetric with regards to the input-output behavior, irrespective of whether :class:`ivy.Array` or :class:`ivy.Container` instances are used.
 Any argument in the input can be replaced with a container without changing the number of inputs, and the presence or absence of ivy.Container instances in the input should not change the number of return values of the function.
 In other words, if containers are detected in the input, then we should return a separate container for each array that the function would otherwise return.
 
@@ -271,7 +271,7 @@ Take the example below, the nested structures of containers :code:`x` and :code:
 The shared key chains (chains of keys, used for indexing the container) are :code:`a` and :code:`d`.
 The key chains unique to :code:`x` are :code:`a/b`, :code:`a/c`, :code:`d/e` and :code:`d/f`.
 The unique key chains all share the same base structure as all other containers (in this case only one other container, :code:`y`).
-Therefore, the containers :code:`x` and :code:`y` have shared nested structure.
+Therefore, the containers :code:`x` and :code:`y` have a shared nested structure.
 
 When calling *nestable* functions on containers with non-identical structure, then the shared leaves of the shallowest container are broadcast to the leaves of the deepest container.
 
@@ -320,7 +320,7 @@ Adding these containers together would result in the following:
         }
     }
 
-An example of containers which **do not** have shared nested structure is given below:
+An example of containers which **do not** have a shared nested structure is given below:
 
 .. code-block:: python
 

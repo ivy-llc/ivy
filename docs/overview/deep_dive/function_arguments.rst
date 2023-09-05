@@ -10,7 +10,7 @@ Function Arguments
 
 Here, we explain how the function arguments differ between the placeholder implementation at :mod:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at :mod:`ivy/functional/backends/backend_name/category_name.py`.
 
-Many of these points are already adressed in the previous sections: :ref:`Arrays`, :ref:`Data Types`, :ref:`Devices` and :ref:`Inplace Updates`.
+Many of these points are already addressed in the previous sections: :ref:`Arrays`, :ref:`Data Types`, :ref:`Devices` and :ref:`Inplace Updates`.
 However, we thought it would be convenient to revisit all of these considerations in a single section, dedicated to function arguments.
 
 As for type-hints, all functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough type-hints.
@@ -160,7 +160,7 @@ We always return an :class:`ivy.Array` instance to ensure that any subsequent Iv
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__div__` etc.) being called on the array class.
 
 :class:`ivy.NativeArray` instances are also not permitted for the :code:`out` argument, which is used in many functions.
-This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively serves the same purpose as the function return when no :code:`out` argument is specified.
+This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively serves the same purpose as the function return when no :code:`out` argument is specified.
 This is all explained in more detail in the :ref:`Arrays` section.
 
 out Argument
@@ -172,7 +172,7 @@ The :code:`out` argument is explained in more detail in the :ref:`Inplace Update
 dtype and device arguments
 --------------------------
 
-In the Ivy API at :mod:`ivy/functional/ivy/category_name.py`, the :code:`dtype` and :code:`device` arguments should both always be provided as keyword-only arguments, with default value of :code:`None`.
+In the Ivy API at :mod:`ivy/functional/ivy/category_name.py`, the :code:`dtype` and :code:`device` arguments should both always be provided as keyword-only arguments, with a default value of :code:`None`.
 In contrast, these arguments should both be added as required arguments in the backend implementation at :mod:`ivy/functional/backends/backend_name/category_name.py`.
 In a nutshell, by the time the backend implementation is entered, the correct :code:`dtype` and :code:`device` to use have both already been correctly handled by code which is wrapped around the backend implementation.
 This is further explained in the :ref:`Data Types` and :ref:`Devices` sections respectively.
