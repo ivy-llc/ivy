@@ -479,7 +479,6 @@ def subtract(x, y, name=None):
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "float32",
             "float64",
             "int64",
         )

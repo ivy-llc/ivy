@@ -2101,9 +2101,14 @@ def test_paddle_subtract(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.sum",
+    fn_tree="paddle.sum",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        shared_dtype=True,
+        allow_inf=False,
+        safety_factor_scale="log",
     ),
 )
 def test_paddle_sum(
