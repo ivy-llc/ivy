@@ -2295,6 +2295,7 @@ def test_paddle_stanh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
     scale_a,
     scale_b,
 ):
@@ -2303,6 +2304,7 @@ def test_paddle_stanh(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
