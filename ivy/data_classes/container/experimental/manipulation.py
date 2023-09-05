@@ -3678,3 +3678,60 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             thresholded tensor on which the operator has been applied
         """
         return self.static_soft_thresholding(self, threshold, out=out)
+
+    @staticmethod
+    def static_column_stack(
+        xs: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.column_stack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.column_stack also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "column_stack",
+            xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def column_stack(
+        self: ivy.Container,
+        /,
+        xs: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.column_stack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.column_stack also applies to this method with minimal
+        changes.
+        """
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
+        return self.static_column_stack(
+            new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

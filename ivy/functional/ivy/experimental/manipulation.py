@@ -2632,3 +2632,21 @@ def choose(
     ivy.array([20, 1, 12, 3])
     """
     return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+
+
+@handle_device_shifting
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_out_argument
+@handle_nestable
+@handle_backend_invalid
+@handle_exceptions
+def column_stack(
+    arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    arrays = [ivy.reshape(x, shape=(-1, 1)) if x.ndim < 2 else x for x in arrays]
+
+    return ivy.hstack(arrays, out=out)
