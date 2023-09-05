@@ -113,7 +113,7 @@ def eigh(
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
     )
-    eigenvalues, eigenvectors = jnp.linalg.eigh(x, UPLO=UPLO)
+    eigenvalues, eigenvectors = jnp.linalg.eigh(x, UPLO=UPLO, symmetrize_input=False)
     return result_tuple(eigenvalues, eigenvectors)
 
 
