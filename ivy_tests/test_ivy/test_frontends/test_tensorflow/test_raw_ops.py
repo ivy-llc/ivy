@@ -1817,6 +1817,45 @@ def test_tensorflow_FFT(  # NOQA
     )
 
 
+# FFT2D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT2D",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_FFT2D(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
 # fill
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Fill",
