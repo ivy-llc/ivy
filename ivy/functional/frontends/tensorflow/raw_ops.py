@@ -548,6 +548,11 @@ def FFT(*, input, name="FFT"):
 
 
 @to_ivy_arrays_and_back
+def FFT2D(*, input, name="FFT2D"):
+    return ivy.astype(ivy.fft2(input, dim=(-2, -1)), input.dtype)
+
+
+@to_ivy_arrays_and_back
 def Fill(*, dims, value, name="Full"):
     return ivy.full(dims, value)
 
@@ -749,6 +754,12 @@ def Sinh(*, x, name="Sinh"):
 @to_ivy_arrays_and_back
 def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
+
+
+# Softsign
+@to_ivy_arrays_and_back
+def Softsign(*, features, name="Softsign"):
+    return ivy.softsign(features)
 
 
 @to_ivy_arrays_and_back

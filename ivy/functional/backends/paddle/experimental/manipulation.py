@@ -1,7 +1,16 @@
 from collections import namedtuple
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    List,
+    Any,
+    Literal,
+    Callable,
+)
 from numbers import Number
-
 
 from .. import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
@@ -9,6 +18,10 @@ import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_supported_device_and_dtypes
+from ivy.functional.ivy.experimental.manipulation import (
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
 
 # Code from cephes for i0
 
@@ -103,6 +116,60 @@ def moveaxis(
     if isinstance(destination, tuple):
         source = list(destination)
     return paddle.moveaxis(a, source, destination)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+    backend_version,
+)
+def pad(
+    input: paddle.Tensor,
+    pad_width: Union[Sequence[Sequence[int]], paddle.Tensor, int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "reflect",
+            "wrap",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[paddle.Tensor], int] = 1,
+    constant_values: Number = 0,
+    end_values: Number = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+) -> paddle.Tensor:
+    constant_values = (
+        float(constant_values)
+        if not isinstance(constant_values, float)
+        else constant_values
+    )
+    pad_width = _to_paddle_padding(pad_width, input.ndim)
+    mode = "replicate" if mode == "edge" else "circular" if mode == "wrap" else mode
+    data_format = "NCL" if input.ndim == 1 else "NCHW" if input.ndim == 2 else "NCDHW"
+    return (
+        paddle.nn.functional.pad(
+            input.unsqueeze(0).unsqueeze(0),
+            pad_width,
+            mode=mode,
+            value=constant_values,
+            data_format=data_format,
+        )
+        .squeeze(0)
+        .squeeze(0)
+    )
+
+
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_paddle_pad(
+            mode, reflect_type, args[1], args[0].shape, constant_values, 3
+        )
+    )
+)
 
 
 @with_supported_dtypes(
