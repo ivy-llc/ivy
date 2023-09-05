@@ -65,9 +65,6 @@ def expand_dims(
     out_shape = _calculate_out_shape(axis, x.shape)
     if 0 in x.shape:
         return paddle.empty(out_shape, dtype=x.dtype)
-    if copy:
-        newarr = paddle.clone(x)
-        return newarr.reshape(out_shape)
     # reshape since unsqueeze sets a maximum limit of dimensions
     return x.reshape(out_shape)
 
@@ -141,19 +138,6 @@ def reshape(
         ]
     if len(x.shape) == 0:
         x = paddle.reshape(x, shape=[1])
-    if copy:
-        newarr = paddle.clone(x)
-        if order == "F":
-            ret = _reshape_fortran_paddle(newarr, shape)
-            if out_scalar:
-                return paddle_backend.squeeze(ret, axis=0)
-
-            return ret
-        ret = paddle.reshape(newarr, shape)
-        if out_scalar:
-            return paddle_backend.squeeze(ret, axis=0)
-
-        return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
@@ -369,7 +353,7 @@ def tile(
         new_shape = [*x.shape[:5], -1]
         reshaped_tensor = paddle.reshape(x, new_shape)
         new_repeats = repeats[:5] + [math.prod(repeats[5:])]
-        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats).data
+        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats)
         tiled_shape = tuple(s * r for s, r in zip(x.shape, repeats))
         result = paddle.reshape(tiled_reshaped_tensor, tiled_shape)
         return result
@@ -460,7 +444,26 @@ def clip(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle_backend.minimum(paddle_backend.maximum(x, x_min), x_max)
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        x = paddle_backend.maximum(
+            paddle.cast(x, promoted_type), paddle.cast(x_min, promoted_type)
+        )
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+        x = paddle_backend.minimum(
+            paddle.cast(x, promoted_type), paddle.cast(x_max, promoted_type)
+        )
+    return x
 
 
 def unstack(
