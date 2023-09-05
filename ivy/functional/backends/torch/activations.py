@@ -18,7 +18,9 @@ from . import backend_version
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def relu(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.relu(x)
 
 
@@ -28,6 +30,7 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
+    complex_mode="jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
@@ -39,6 +42,7 @@ def gelu(
     /,
     *,
     approximate: bool = False,
+    complex_mode="jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if approximate:
@@ -71,21 +75,30 @@ def softmax(
     return torch.nn.functional.softmax(x, axis)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("complex", "float16", "bfloat16")}, backend_version
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def softplus(
     x: torch.Tensor,
     /,
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
+    complex_mode="jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     kwargs = {
         k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
     }
     return torch.nn.functional.softplus(x, **kwargs)
+
+
+# Softsign
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def softsign(x: torch.Tensor, /, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    # return x / (1 + torch.abs(x))
+    return torch.nn.functional.softsign(x)
+
+
+softsign.support_native_out = True
 
 
 @with_unsupported_dtypes(
