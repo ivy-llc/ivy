@@ -5,15 +5,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 import ivy.functional.frontends.numpy as np_frontend
 
 
-@to_ivy_arrays_and_back
-def putmask(a, mask, values, /):
-    if values.size == 0:
-        return
-    if values.size != a.size:
-        values = np_frontend.resize(values, a.shape)
-    a[mask] = values[mask]
-
-
 class AxisConcatenator:
     # allow ma.mr_ to override this
     concatenate = staticmethod(np_frontend.concatenate)
@@ -166,6 +157,15 @@ def fill_diagonal(a, val, wrap=False):
     temp = ivy.flatten(a)
     temp[:end:step] = val
     a = ivy.reshape(temp, shape)
+
+
+@to_ivy_arrays_and_back
+def putmask(a, mask, values, /):
+    if values.size == 0:
+        return
+    if values.size != a.size:
+        values = np_frontend.resize(values, a.shape)
+    a[mask] = values[mask]
 
 
 c_ = CClass()
