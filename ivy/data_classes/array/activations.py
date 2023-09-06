@@ -300,7 +300,7 @@ class _ArrayWithActivations(abc.ABC):
         /,
         *,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.mish. This method simply wraps the

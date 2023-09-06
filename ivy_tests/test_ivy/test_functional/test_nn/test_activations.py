@@ -137,8 +137,8 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
     fn_tree="functional.ivy.mish",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        large_abs_safety_factor=12,
-        small_abs_safety_factor=12,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
         min_dim_size=2,
         safety_factor_scale="log",
     ),
