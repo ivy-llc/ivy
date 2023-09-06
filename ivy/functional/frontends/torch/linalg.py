@@ -148,8 +148,8 @@ def lstsq(a, b, rcond=None, driver=None):
         )
 
     a_dtype = a.dtype
-    a = ivy.astype(a, ivy.float64)
-    b = ivy.astype(b, ivy.float64)
+    # a = ivy.astype(a, ivy.float64)
+    # b = ivy.astype(b, ivy.float64)
 
     q, r = ivy.qr(a)
     r_inv = ivy.pinv(r)
