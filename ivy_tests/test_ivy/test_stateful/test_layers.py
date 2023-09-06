@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
     test_layers as exp_layers_tests,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
-    _valid_dct,
+    valid_dct,
 )
 
 all_constant_initializers = (ivy.Zeros, ivy.Ones)
@@ -893,7 +893,7 @@ def test_conv3d_transpose_layer(
 
 @handle_method(
     method_tree="Dct.__call__",
-    dtype_x_and_args=_valid_dct(),
+    dtype_x_and_args=valid_dct(),
 )
 def test_dct(
     *,
@@ -1115,7 +1115,7 @@ def test_embedding_layer(
 # FFT
 @handle_method(
     method_tree="FFT.__call__",
-    x_and_fft=exp_layers_tests._x_and_fft(),
+    x_and_fft=exp_layers_tests.x_and_fft(),
 )
 def test_fft_layer(
     *,
@@ -1641,6 +1641,102 @@ def test_sequential_layer(
     assert np.allclose(
         ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
     )
+
+
+# Transformer #
+# ----------- #
+@st.composite
+def transformer_data(draw):
+    dtype = draw(
+        helpers.get_dtypes("float", full=False).filter(lambda x: x != ["float16"])
+    )
+    query_dim = draw(st.integers(min_value=1, max_value=128))
+    key_dim = draw(st.integers(min_value=1, max_value=128))
+    value_dim = draw(st.integers(min_value=1, max_value=128))
+    num_heads = draw(st.integers(min_value=1, max_value=8))
+    ff_dim = draw(st.integers(min_value=1, max_value=512))
+    dropout_rate = draw(st.floats(min_value=0.0, max_value=0.9))
+    max_sequence_length = draw(st.integers(min_value=1, max_value=1000))
+
+    return (
+        dtype,
+        query_dim,
+        key_dim,
+        value_dim,
+        num_heads,
+        ff_dim,
+        dropout_rate,
+        max_sequence_length,
+    )
+
+
+@handle_method(
+    method_tree="Transformer.__call__",
+    transformer_data=transformer_data(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    method_num_positional_args=helpers.num_positional_args(
+        fn_name="Transformer._forward"
+    ),
+    build_mode=st.just("on_init"),
+)
+def test_transformer_layer(
+    transformer_data,
+    init_with_v,
+    method_with_v,
+    build_mode,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    (
+        input_dtype,
+        query_dim,
+        key_dim,
+        value_dim,
+        num_heads,
+        ff_dim,
+        dropout_rate,
+        max_sequence_length,
+    ) = transformer_data
+    ret_np_flat, ret_np_from_gt_flat = helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "query_dim": query_dim,
+            "key_dim": key_dim,
+            "value_dim": value_dim,
+            "num_heads": num_heads,
+            "ff_dim": ff_dim,
+            "dropout_rate": dropout_rate,
+            "max_sequence_length": max_sequence_length,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "inputs": np.random.randn(
+                batch_size=32, max_sequence_length=1000, input_dim=(224, 224, 3)
+            ).astype(input_dtype[0]),
+            "training": True,
+        },
+        class_name=class_name,
+        method_name=method_name,
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_values=False,
+        return_flat_np_arrays=True,
+        on_device=on_device,
+    )
+    assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
 
 
 all_initializers = (
