@@ -115,15 +115,18 @@ def log_softmax(
 ):
     return tf.nn.log_softmax(x, axis)
 
-
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
 def mish(
     x: Tensor,
     /,
     *,
     out: Optional[Tensor] = None,
 ) -> Tensor:
-    return x * tf.math.tanh(tf.math.softplus(x))
+    if "complex" in str(x.dtype):
+        x_norm = tf.math.log1p(tf.exp(x))
+    else:
+        x_norm = tf.math.softplus(x)
+    return tf.multiply(x, tf.math.tanh(x_norm))
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)

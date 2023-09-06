@@ -125,13 +125,16 @@ def log_softmax(
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
-            "complex",
+            "bfloat16",
             "float16",
         )
     },
     backend_version,
 )
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    if torch.is_complex(x):
+        x_norm = torch.log1p(x.exp())
+        return torch.multiply(x, x_norm.tanh())
     return torch.nn.functional.mish(x)
 
 

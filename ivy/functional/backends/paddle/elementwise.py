@@ -719,9 +719,12 @@ def tanh(
     ]:
         return paddle.tanh(x.astype("float32")).astype(x.dtype)
     if paddle.is_complex(x):
-        tanh_a = paddle.tanh(paddle.real(x))
-        tan_b = paddle.tan(paddle.imag(x))
-        return (tanh_a + 1j * tan_b) / (1 + 1j * (tanh_a * tan_b))
+        const = paddle.to_tensor(1j, dtype=x.dtype)
+        tanh_a = paddle.cast(paddle.tanh(x.real()), x.dtype)
+        tan_b = paddle.cast(paddle.tan(x.imag()), x.dtype)
+        term1 = tanh_a + paddle.multiply(tan_b, const)
+        term2 = (1 + paddle.multiply(const, (tanh_a * tan_b)))
+        return term1 / term2
     return paddle.tanh(x)
 
 
