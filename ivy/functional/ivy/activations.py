@@ -669,6 +669,9 @@ def mish(
     """
     Apply the mish activation function element-wise.
 
+    If the input is complex we apply the mish function to the input
+    ``mish(x) = x * tanh(log(1+ e^x))``.
+
     Parameters
     ----------
     x
