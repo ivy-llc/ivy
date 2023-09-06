@@ -14,6 +14,11 @@ submodules = (
     "test_stateful",
     "test_misc",
     "test_scipy",
+    "test_pandas",
+    "test_mindspore",
+    "test_onnx",
+    "test_sklearn",
+    "test_xgboost"
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -28,6 +33,11 @@ db_dict = {
     "test_misc": ["misc", 19],
     "test_paddle": ["paddle", 20],
     "test_scipy": ["scipy", 21],
+    "test_pandas": ["pandas", 22],
+    "test_mindspore": ["mindspore", 23],
+    "test_onnx": ["onnx", 24],
+    "test_sklearn": ["sklearn", 25],
+    "test_xgboost": ["xgboost", 26]
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
