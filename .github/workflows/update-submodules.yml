@@ -18,7 +18,7 @@ jobs:
 
       - name: Update submodules
         run: |
-          git config --global user.email "ivydl.team@gmail.com"
+          git config --global user.email "ivy.branch@lets-unify.ai"
           git config --global user.name "ivy-branch"
           git submodule update --remote docs/demos
           git add .
