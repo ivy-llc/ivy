@@ -81,6 +81,12 @@ def ceil(x, /):
     return ivy.ceil(x)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def clip(a, a_min=None, a_max=None, out=None):
+    return ivy.array(ivy.clip(a, a_min, a_max), dtype=a.dtype)
+
+
 @to_ivy_arrays_and_back
 def conj(x, /):
     return ivy.conj(x)
@@ -281,6 +287,12 @@ def frexp(x, /):
 def gcd(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.gcd(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def gradient(f, *varargs, axis=None, edge_order=None):
+    edge_order = edge_order if edge_order is not None else 1
+    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
 
 
 @to_ivy_arrays_and_back

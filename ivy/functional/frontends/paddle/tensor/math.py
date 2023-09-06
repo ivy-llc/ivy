@@ -58,6 +58,14 @@ def amax(x, axis=None, keepdims=False):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amin(x, axis=None, keepdim=False, name=None):
+    return ivy.min(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128", "float32", "float64")},
     "paddle",
 )
@@ -106,6 +114,12 @@ def atanh(x, name=None):
 @to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def ceil_(x, name=None):
+    return ivy.ceil(x, out=x)
 
 
 @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
@@ -158,6 +172,13 @@ def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
     return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def digamma(x, name=None):
+    digamma_fun = ivy.digamma
+    return ivy.array(digamma_fun(x), dtype=x.dtype)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def divide(x, y, name=None):
@@ -170,10 +191,16 @@ def erf(x, name=None):
     return ivy.erf(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def exp_(x, name=None):
+    return ivy.inplace_update(x, exp(x))
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float16", "float32", "float64")}, "paddle")
@@ -188,6 +215,12 @@ def expm1(x, name=None):
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_divide(x, y, name=None):
+    return ivy.floor_divide(x, y)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
@@ -223,6 +256,17 @@ def gcd(x, y, name=None):
 @to_ivy_arrays_and_back
 def heaviside(x, y, name=None):
     return ivy.heaviside(x, y)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def inner(x, y, name=None):
+    result = ivy.inner(x, y)
+    if (x.shape == () and y.shape == (1,)) or (x.shape == (1,) and y.shape == ()):
+        result = result.reshape((1,))
+    elif x.shape == (1,) and y.shape == (1,):
+        result = result.reshape((1,))
+    return result
 
 
 @with_supported_dtypes(
@@ -267,6 +311,12 @@ def lcm(x, y, name=None):
 @to_ivy_arrays_and_back
 def lerp(x, y, weight, name=None):
     return ivy.lerp(x, y, weight)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def lerp_(x, y, weight, name=None):
+    return ivy.inplace_update(x, lerp(x, y, weight))
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -318,6 +368,14 @@ def maximum(x, y, name=None):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
+def min(x, axis=None, keepdim=False, name=None):
+    return ivy.min(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
@@ -334,6 +392,14 @@ def mm(input, mat2, name=None):
 @to_ivy_arrays_and_back
 def multiply(x, y, name=None):
     return ivy.multiply(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def nansum(x, axis=None, dtype=None, name=None):
+    return ivy.nansum(x, axis=axis, dtype=dtype)
 
 
 @with_supported_dtypes(
@@ -379,6 +445,12 @@ def reciprocal(x, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def reciprocal_(x, name=None):
+    return ivy.inplace_update(x, reciprocal(x))
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def remainder(x, y, name=None):
     return ivy.remainder(x, y)
 
@@ -403,7 +475,7 @@ def rsqrt(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def rsqrt_(x, name=None):
-    return ivy.inplace_update(x, ivy.reciprocal(ivy.inplace_update(x, ivy.sqrt(x))))
+    return ivy.inplace_update(x, reciprocal(sqrt(x)))
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
@@ -438,11 +510,17 @@ def sqrt(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def sqrt_(x, name=None):
+    return ivy.inplace_update(x, sqrt(x))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
     # TODO this function will be simplified as soon as the ivy.stanh(x,a,b) is added
