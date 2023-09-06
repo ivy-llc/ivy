@@ -6,10 +6,21 @@
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Overview
+  :caption: The Basics
 
   overview/get_started.rst
-  Examples <demos/index.rst>
+  demos/quickstart.ipynb
+  Setting Up the Compiler <compiler/setting_up.rst>
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Demos
+
+  demos/learn_the_basics.rst
+  demos/guides.rst
+  demos/examples_and_demos.rst
 
 
 .. toctree::
@@ -37,9 +48,8 @@
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Compiling and Transpiling
+  :caption: API Reference
 
-  compiler/setting_up.rst
   compiler/compiler.rst
   compiler/transpiler.rst
 
@@ -47,7 +57,6 @@
 .. autosummary::
   :toctree: docs/functional
   :template: top_functional_toc.rst
-  :caption: API Reference
   :recursive:
   :hide-table:
 
