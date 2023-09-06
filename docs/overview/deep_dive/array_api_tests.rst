@@ -35,10 +35,10 @@ Instead, the change must be made to the array-api repository directly and then o
         # to initialise local config file and fetch + checkout submodule (not needed everytime)
         git submodule update --init --recursive
 
-        # pulls changes from upstream remote repo and merges them
+        # pulls changes from the upstream remote repo and merges them
         git submodule update --recursive --remote --merge
 
-Sometimes you will face strange behaviour when staging changes from Ivy main repo which includes submodule updates.
+Sometimes you will face strange behaviour when staging changes from Ivy's main repo which includes submodule updates.
 And this is being caused by your submodule being out of date because we update the submodule iteratively. You can get around this by running the following command:
 
 .. code-block:: none
@@ -71,7 +71,7 @@ Using the terminal, you can run all array-api tests in a given file for a certai
         # /ivy
         /bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
 
-You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
+You can change the argument with any of our supported frameworks - tensorflow, numpy, torch, or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
 You can also run a specific test, as often running *all* tests in a file is excessive.
 To make this work, you should set the backend explicitly in the `_array_module.py` file, which you can find in the `array_api_tests` submodule.
@@ -160,7 +160,7 @@ You may also need to include the hypothesis import of `reproduce_failure` as sho
 
 The test should then include the inputs which led to the previous failure and recreate it.
 If you are taking the :code:`@reproduce_failure` decorator from a CI stack trace and trying to reproduce it locally, you may find that sometimes the local test unexpectedly passes.
-This is usually caused by a discrepancy in your local source code and ivy-main, so try pulling from main to sync the behaviour.
+This is usually caused by a discrepancy in your local source code and ivy-main, so try pulling from the main to sync the behaviour.
 
 Test Skipping
 -------------
