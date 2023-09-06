@@ -15,36 +15,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 
-# eigvalsh
-@handle_frontend_test(
-    fn_tree="numpy.linalg.eigvalsh",
-    x=_get_dtype_and_matrix(symmetric=True),
-    UPLO=st.sampled_from(["L", "U"]),
-)
-def test_numpy_eigvalsh(
-    x,
-    UPLO,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, xs = x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        a=xs,
-        UPLO=UPLO,
-    )
-
-
 # eig
 @handle_frontend_test(
     fn_tree="numpy.linalg.eig",
@@ -71,7 +41,7 @@ def test_numpy_eig(
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
-    """make symmetric positive-definite since ivy does not support complex data dtypes
+    """Make symmetric positive-definite since ivy does not support complex data dtypes
     currently."""
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
@@ -158,3 +128,33 @@ def test_numpy_eigh(
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
+
+
+# eigvalsh
+@handle_frontend_test(
+    fn_tree="numpy.linalg.eigvalsh",
+    x=_get_dtype_and_matrix(symmetric=True),
+    UPLO=st.sampled_from(["L", "U"]),
+)
+def test_numpy_eigvalsh(
+    x,
+    UPLO,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, xs = x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        a=xs,
+        UPLO=UPLO,
+    )
