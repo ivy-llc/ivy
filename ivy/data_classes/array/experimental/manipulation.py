@@ -1348,6 +1348,20 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         This method simply wraps the function, and so the docstring for
         ivy.column_stack also applies to this method with minimal
         changes.
+
+        Parameters
+        ----------
+        self
+            Array that will be stacked at the begining of the provided array iterable.
+        arrays
+            Arrays to be stacked.
+        out
+            Output array.
+
+        Returns
+        -------
+        ret
+            Stacked input.
         """
         if not isinstance(arrays, (list, tuple)):
             arrays = [arrays]

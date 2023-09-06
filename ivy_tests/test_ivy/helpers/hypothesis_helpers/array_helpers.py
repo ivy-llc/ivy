@@ -2212,7 +2212,9 @@ def create_concatenable_arrays_dtypes(
         )
     else:
         num_dims = len(common_shape)
-    input_dtypes = draw(helpers.array_dtypes(available_dtypes=dtypes))
+    input_dtypes = draw(
+        helpers.array_dtypes(num_arrays=num_arrays, available_dtypes=dtypes)
+    )
     array_shapes = [common_shape.copy() for i in range(num_arrays)]
     if num_dims > 0 and concat_dim is not None:
         unique_dims = draw(

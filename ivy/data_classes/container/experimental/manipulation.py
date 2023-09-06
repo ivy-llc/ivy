@@ -3696,6 +3696,30 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.column_stack also applies to this method with minimal
         changes.
+
+        Parameters
+        ----------
+        xs
+            Container with leaves to stack.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            An output container with the results.
         """
         return ContainerBase.cont_multi_map_in_function(
             "column_stack",
@@ -3724,8 +3748,34 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.column_stack also applies to this method with minimal
         changes.
+
+        Parameters
+        ----------
+        self
+            Container with leaves to stack with leaves of other arrays/containers.
+        xs
+            Container with other leaves to join.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            An output container with the results.
         """
-        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else list(xs).copy()
         new_xs.insert(0, self.cont_copy())
         return self.static_column_stack(
             new_xs,
