@@ -675,3 +675,112 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             tol=tol,
             verbose=verbose,
         )
+
+    def dot(
+        self: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+        Compute the dot product between two arrays `a` and `b` using the current
+        backend's implementation. The dot product is defined as the sum of the element-
+        wise product of the input arrays.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        b
+            Second input array.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        ret
+            The dot product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = ivy.dot(a, b)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> b = ivy.array([[5, 6], [7, 8]])
+        >>> c = ivy.empty_like(a)
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[19, 22],
+            [43, 50]])
+
+        >>> a = ivy.array([[1.1, 2.3, -3.6]])
+        >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+        >>> c = ivy.zeros((1, 1))
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[-15.28]])
+        """
+        return ivy.dot(self._data, b, out=out)
+
+    def general_inner_product(
+        self: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        n_modes: Optional[int] = None,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.general_inner_product. This method
+        simply wraps the function, and so the docstring for ivy.general_inner_product
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input tensor.
+        b
+            second input tensor.
+        n_modes
+            int, default is None. If None, the traditional inner product is returned
+            (i.e. a float) otherwise, the product between the `n_modes` last modes of
+            `a` and the `n_modes` first modes of `b` is returned. The resulting tensor's
+            order is `len(a) - n_modes`.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+            The inner product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([1, 2])
+        >>> b = ivy.array([4, 5])
+        >>> result = a.general_inner_product(b)
+        >>> print(result)
+        ivy.array(14)
+
+        >>> a = ivy.array([[1, 1], [1, 1]])
+        >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
+        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> print(result)
+        ivy.array([[2, 3, 4, 5],
+            [2, 3, 4, 5]])
+        """
+        return ivy.general_inner_product(self, b, n_modes, out=out)

@@ -12,6 +12,15 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     "paddle",
 )
 @to_ivy_arrays_and_back
+def normal(mean=0.0, std=1.0, shape=None, name=None):
+    return ivy.random_normal(mean=mean, std=std, shape=shape)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def poisson(x, name=None):
     return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
 
