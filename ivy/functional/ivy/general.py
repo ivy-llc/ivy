@@ -1351,7 +1351,7 @@ def has_nans(
 
 
 @handle_exceptions
-def exists(x: Any) -> bool:
+def exists(x: Any, /) -> bool:
     """
     Check as to whether the input is None or not.
 
