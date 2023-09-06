@@ -10,16 +10,14 @@
 
   overview/get_started.rst
   Examples <demos/index.rst>
-  overview/glossary.rst
-  overview/faq.rst
 
 
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Users
+  :caption: Background
 
-  overview/background.rst
+  overview/motivation.rst
   overview/related_work.rst
   overview/extensions.rst
 
@@ -32,6 +30,8 @@
   overview/design.rst
   overview/contributing.rst
   overview/deep_dive.rst
+  overview/glossary.rst
+  overview/faq.rst
 
 
 .. toctree::
