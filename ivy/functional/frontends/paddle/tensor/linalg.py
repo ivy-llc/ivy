@@ -124,8 +124,6 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
         ret = ivy.vector_norm(x.flatten(), ord=p, axis=-1)
         if keepdim:
             ret = ret.reshape([1] * len(x.shape))
-        if len(ret.shape) == 0:
-            return ivy.array([ret])
         return ret
 
     if isinstance(axis, tuple):
@@ -166,10 +164,6 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
     else:
         raise ValueError
 
-    if len(ret.shape) == 0:
-        ret = ivy.array(
-            [ret]
-        )  # this is done so as to match shape of output from paddle
     return ret
 
 
@@ -181,11 +175,18 @@ def pinv(x, rcond=1e-15, hermitian=False, name=None):
     return ivy.pinv(x, rtol=rcond)
 
 
-# solve
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+# qr
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def solve(x1, x2, name=None):
-    return ivy.solve(x1, x2)
+def qr(x, mode="reduced", name=None):
+    return ivy.qr(x, mode=mode)
+
+
+# solve
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def solve(x, y, name=None):
+    return ivy.solve(x, y)
 
 
 # transpose

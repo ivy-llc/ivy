@@ -9,18 +9,15 @@
   :caption: Overview
 
   overview/get_started.rst
-  Examples <https://unify.ai/demos/>
-  overview/glossary.rst
-  overview/faq.rst
+  Examples <demos/index.rst>
 
 
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Users
+  :caption: Background
 
-  overview/background.rst
-  overview/design.rst
+  overview/motivation.rst
   overview/related_work.rst
   overview/extensions.rst
 
@@ -30,8 +27,11 @@
   :maxdepth: -1
   :caption: Contributors
 
-  overview/deep_dive.rst
+  overview/design.rst
   overview/contributing.rst
+  overview/deep_dive.rst
+  overview/glossary.rst
+  overview/faq.rst
 
 
 .. toctree::
