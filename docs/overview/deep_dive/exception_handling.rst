@@ -6,7 +6,7 @@ Exception Handling
 
 As Ivy is unifying multiple backends, various issues are seen during exception handling:
 
-#. each backend throws their own exceptions
+#. each backend throws its own exceptions
 #. exceptions thrown are backend-specific, therefore inconsistent
 
 To unify the handling of exceptions and assertions, Ivy includes a custom exception class and decorator, which are explained further in the following sub-sections.
@@ -86,12 +86,12 @@ encountering stack traces that extend through Ivy and JAX functions.
 Therefore, options are made available for the stack traces to either truncate
 at the frontend or ivy level, or in other cases, no truncation at all.
 
-Let's look at the 3 different modes with example of :code:`ivy.all` below!
+Let's look at the 3 different modes with an example of :code:`ivy.all` below!
 
 1. Full
 
 This is the default mode and keeps the complete stack traces. All :code:`numpy`
-frontend, ivy specific and native :code:`jax` stack traces are displayed.
+frontend, ivy specific, and native :code:`jax` stack traces are displayed.
 The format of the error displayed in this mode is :code:`Ivy error: backend name: backend function name: native error: error message`
 
 .. code-block:: none
@@ -131,7 +131,7 @@ The format of the error displayed in this mode is :code:`Ivy error: backend name
       File "/ivy/ivy/utils/exceptions.py", line 217, in _handle_exceptions
         raise ivy.utils.exceptions.IvyIndexError(
 
-    IvyIndexError: jax: all: ValueError: axis 2 is out of bounds for array of dimension 1
+    IvyIndexError: jax: all: ValueError: axis 2 is out of bounds for an array of dimension 1
 
 
 2. Frontend-only
@@ -163,7 +163,7 @@ In this case, the format of the error is :code:`Ivy error: backend name: backend
       File "/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 24, in all
         ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
 
-    IvyIndexError: jax: all: axis 2 is out of bounds for array of dimension 1
+    IvyIndexError: jax: all: axis 2 is out of bounds for an array of dimension 1
 
 
 3. Ivy specific
@@ -218,7 +218,7 @@ The format of the error displayed is the same as the :code:`frontend` mode above
       File "/ivy/ivy/utils/exceptions.py", line 217, in _handle_exceptions
         raise ivy.utils.exceptions.IvyIndexError(
 
-    IvyIndexError: jax: all: axis 2 is out of bounds for array of dimension 1
+    IvyIndexError: jax: all: axis 2 is out of bounds for an array of dimension 1
 
 
 Ivy :code:`func_wrapper` Pruning
@@ -260,7 +260,7 @@ shown too.
       File "/ivy/ivy/utils/exceptions.py", line 217, in _handle_exceptions
         raise ivy.utils.exceptions.IvyIndexError(
 
-    IvyIndexError: jax: all: ValueError: axis 2 is out of bounds for array of dimension 1
+    IvyIndexError: jax: all: ValueError: axis 2 is out of bounds for an array of dimension 1
 
 
 2. Frontend-only
@@ -285,13 +285,13 @@ observed from the example below.
       File "/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py", line 24, in all
         ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
 
-    IvyIndexError: jax: all: axis 2 is out of bounds for array of dimension 1
+    IvyIndexError: jax: all: axis 2 is out of bounds for an array of dimension 1
 
 
 3. Ivy specific
 
 As the wrappers occur in :code:`ivy` itself, all backend and frontend wrappers
-remain visible in the ivy-specific mode. By hidding the func wrapper traces,
+remain visible in the ivy-specific mode. By hiding the func wrapper traces,
 the stack becomes cleaner and displays the ivy backend and frontend
 exception messages only.
 
@@ -318,7 +318,7 @@ exception messages only.
       File "/ivy/ivy/utils/exceptions.py", line 217, in _handle_exceptions
         raise ivy.utils.exceptions.IvyIndexError(
 
-    IvyIndexError: jax: all: axis 2 is out of bounds for array of dimension 1
+    IvyIndexError: jax: all: axis 2 is out of bounds for an array of dimension 1
 
 :code:`@handle_exceptions` Decorator
 ----------------------------
@@ -404,7 +404,7 @@ In NumPy,
     >>> x = ivy.array([0,0,1])
     >>> ivy.all(x, axis=2)
     <error_stack>
-    numpy.AxisError: axis 2 is out of bounds for array of dimension 1
+    numpy.AxisError: axis 2 is out of bounds for an array of dimension 1
 
 In PyTorch,
 
@@ -426,7 +426,7 @@ In NumPy,
     >>> x = ivy.array([0,0,1])
     >>> ivy.all(x, axis=2)
     <error_stack>
-    IvyIndexError: numpy: all: AxisError: axis 2 is out of bounds for array of dimension 1
+    IvyIndexError: numpy: all: AxisError: axis 2 is out of bounds for an array of dimension 1
 
 In PyTorch,
 
@@ -443,7 +443,7 @@ Consistency in Errors
 ---------------------
 
 For consistency, we make sure that the same type of Exception is raised for the same type of error regardless of the backend set.
-Lets take an example of :func:`ivy.all` again. In Jax, :code:`ValueError` is raised when the axis is out of bounds,
+Let's take an example of :func:`ivy.all` again. In Jax, :code:`ValueError` is raised when the axis is out of bounds,
 and for Numpy, :code:`AxisError` is raised. To unify the behaviour, we raise :code:`IvyIndexError` for both cases.
 
 In Numpy,

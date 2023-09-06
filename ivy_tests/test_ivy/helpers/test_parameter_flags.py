@@ -36,6 +36,7 @@ BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
 BuiltTraceStrategy = st.just(False)
 BuiltFrontendArrayStrategy = st.booleans()
+BuiltTranspileStrategy = st.just(False)
 BuiltPrecisionModeStrategy = st.booleans()
 
 
@@ -47,7 +48,8 @@ flags_mapping = {
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
     "inplace": "BuiltInplace",
-    "test_trace": "BuiltTraceStrategy",
+    "test_trace": "BuiltCompileStrategy",
+    "transpile": "BuiltTranspileStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
 }
 
@@ -169,6 +171,7 @@ class FrontendFunctionTestFlags(TestFlags):
         native_arrays,
         test_trace,
         generate_frontend_arrays,
+        transpile,
         precision_mode,
     ):
         self.num_positional_args = num_positional_args
@@ -178,6 +181,7 @@ class FrontendFunctionTestFlags(TestFlags):
         self.as_variable = as_variable
         self.test_trace = test_trace
         self.generate_frontend_arrays = generate_frontend_arrays
+        self.transpile = transpile
         self.precision_mode = precision_mode
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
@@ -201,6 +205,7 @@ class FrontendFunctionTestFlags(TestFlags):
             f"as_variable={self.as_variable}. "
             f"test_trace={self.test_trace}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
+            f"transpile={self.transpile}."
             f"precision_mode={self.precision_mode}. "
         )
 
@@ -219,6 +224,7 @@ def frontend_function_flags(
     native_arrays,
     test_trace,
     generate_frontend_arrays,
+    transpile,
     precision_mode,
 ):
     return draw(
@@ -231,6 +237,7 @@ def frontend_function_flags(
             native_arrays=native_arrays,
             test_trace=test_trace,
             generate_frontend_arrays=generate_frontend_arrays,
+            transpile=transpile,
             precision_mode=precision_mode,
         )
     )
