@@ -115,6 +115,7 @@ def log_softmax(
 ):
     return tf.nn.log_softmax(x, axis)
 
+
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
 def mish(
     x: Tensor,

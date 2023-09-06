@@ -184,6 +184,7 @@ def log_softmax(
     ret = paddle_backend.subtract(paddle_backend.subtract(x, x_max), ret)
     return ret
 
+
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )
