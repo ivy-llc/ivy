@@ -23,6 +23,81 @@ from . import backend_version
 def cholesky(
     x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    """
+    Compute the Cholesky decomposition of the x matrix.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        Input array having shape (..., M, M) and whose innermost two dimensions form
+        square symmetric positive-definite matrices. Should have a floating-point data
+        type.
+    upper : bool, optional
+        If True, the result must be the upper-triangular Cholesky factor U. If False,
+        the result must be the lower-triangular Cholesky factor L. Default: False.
+    out : np.ndarray, optional
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    np.ndarray
+        An array containing the Cholesky factors for each square matrix. If upper is
+        False, the returned array must contain lower-triangular matrices; otherwise, the
+        returned array must contain upper-triangular matrices. The returned array must
+        have a floating-point data type determined by Type Promotion Rules and must have
+        the same shape as x.
+
+    Examples
+    --------
+    With np.ndarray input:
+
+    >>> x = np.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> l = cholesky(x, upper=False)
+    >>> print(l)
+    np.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+              [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+              [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+              [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+              [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = np.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> y = np.zeros([5, 5])
+    >>> cholesky(x, upper=False, out=y)
+    >>> print(y)
+    np.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+              [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+              [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+              [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+              [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = np.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> cholesky(x, upper=False, out=x)
+    >>> print(x)
+    np.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+              [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+              [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+              [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+              [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = np.array([[1., -2.], [2., 5.]])
+    >>> u = cholesky(x, upper=False)
+    >>> print(u)
+    np.array([[ 1., -2.],
+              [ 0.,  1.]])
+    """
     if not upper:
         ret = np.linalg.cholesky(x)
     else:
