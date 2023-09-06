@@ -626,8 +626,6 @@ def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
     if cached and backend in compiled_backends.keys():
         cached_backend = compiled_backends[backend][-1]
-        if not cached_backend.native_inplace_support:
-            _handle_inplace_mode()
         return cached_backend
     with _importlib.LocalIvyImporter():
         ivy_pack = _importlib._import_module("ivy")
@@ -657,5 +655,7 @@ def with_backend(backend: str, cached: bool = True):
         compiled_backends[backend].append(ivy_pack)
     except KeyError:
         compiled_backends[backend] = [ivy_pack]
-    _handle_inplace_mode()
+    if ivy.backend != backend:
+        # to avoid warning users when not using set_backend with ivy.Array.__repr__
+        _handle_inplace_mode()
     return ivy_pack
