@@ -1397,6 +1397,41 @@ def test_tensorflow_log_poisson_loss(
         atol=1e-2,
     )
 
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.l2_loss",
+    dtype_target_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=0,
+        max_value=1,
+        min_num_dims=1,
+        max_num_dims=5,
+        shared_dtype=True,
+    ),
+    compute_full_loss=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_l2_loss(
+    *,
+    dtype_target_inputs,
+    compute_full_loss,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, input_values = dtype_target_inputs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t = input_values,
+    )
+
 
 # max_pool1d
 @handle_frontend_test(

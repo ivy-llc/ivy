@@ -49,6 +49,19 @@ class _ArrayWithLossesExperimental(abc.ABC):
         """
         return ivy.l1_loss(self._data, target, reduction=reduction, out=out)
 
+    def l2_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: Optional[str] = "sum",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+
+        """
+        placeholder
+        """
+        return ivy.l2_loss(self._data)
+
     def huber_loss(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],

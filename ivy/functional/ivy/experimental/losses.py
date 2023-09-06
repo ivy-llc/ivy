@@ -159,6 +159,27 @@ def l1_loss(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+def l2_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "sum",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    loss= ivy.pow(input,2)
+    if reduction == "sum":
+        return ivy.divide(ivy.sum(loss, out=out),2)
+    elif reduction == "mean":
+        return ivy.divide(ivy.mean(loss, out=out),2)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def huber_loss(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
