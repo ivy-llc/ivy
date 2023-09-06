@@ -88,13 +88,15 @@ def kl_div(
     if len(size) < 1:
         size = [1]
 
-    loss = input * np.log(input / target)
+    loss = np.sum(input * np.log(input / target))
 
     if reduction == "mean":
-        return np.mean(loss, axis=-1)
+        loss = np.mean(loss)
     elif reduction == "sum":
-        return np.sum(loss, axis=-1)
+        loss = np.sum(loss)
     elif reduction == "batchmean":
-        return np.sum(loss, axis=-1) / size[0]
+        loss = np.sum(loss) / size[0]
     else:
-        return loss
+        pass
+
+    return loss

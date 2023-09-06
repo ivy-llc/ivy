@@ -466,24 +466,21 @@ def kl_div(
     >>> ivy.kl_div(input, target, reduction='none')
     ivy.array([0.0378], [0.1453])
     """
-    if input.shape != target.shape:
-        raise ValueError(
-            "the shape of input tensor should be equal to target tensor, but found"
-            " inputs with different sizes"
-        )
+    input = ivy.clip(input, 1e-7, 1)
+    target = ivy.clip(target, 1e-7, 1)
 
     size = ivy.shape(input)
     if len(size) < 1:
         size = [1]
 
-    loss = input * ivy.log(input / target)
+    loss = ivy.sum(input * ivy.log(input / target))
 
     if reduction == "sum":
-        loss = ivy.sum(loss, out=out, axis=-1)
+        loss = ivy.sum(loss, out=out)
     elif reduction == "mean":
-        loss = ivy.mean(loss, out=out, axis=-1)
+        loss = ivy.mean(loss, out=out)
     elif reduction == "batchmean":
-        loss = ivy.sum(loss, out=out, axis=-1) / size[0]
+        loss = ivy.sum(loss, out=out) / size[0]
     else:
         loss = ivy.inplace_update(out, loss) if out is not None else loss
 
