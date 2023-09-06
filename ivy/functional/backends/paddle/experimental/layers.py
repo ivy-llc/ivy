@@ -479,7 +479,7 @@ def rfftn(
 
 @with_supported_dtypes(
     {
-        "2.5.0 and below": (
+        "2.5.1 and below": (
             "complex64",
             "complex128",
         )

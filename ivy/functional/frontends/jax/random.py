@@ -312,18 +312,20 @@ def pareto(key, b, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
-            "uint16",
-            "uint32",
+        "0.4.14 and below": (
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
 )
 def maxwell(key, shape=None, dtype="float64"):
-    shape = shape + (3,)
     seed = _get_seed(key)
-    z = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
-    return ivy.vector_norm(z, axis=-1, dtype=dtype)
+    # generate uniform random numbers between 0 and 1
+    z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    # applying inverse transform sampling
+    x = (z**2) * ivy.exp(-(z**2) / 2)
+    return x
 
 
 @handle_jax_dtype
@@ -331,21 +333,20 @@ def maxwell(key, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.14 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
-    "jax",
+    "jax",  
 )
 def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
     seed = _get_seed(key)
-    x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    x = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
     z_1 = ivy.subtract(x, loc)
     if scale != 0:
-        z = ivy.divide(z_1 / scale)
-        z2 = ivy.multiply(z,z)
-        maxwell = ivy.multiply(z2, ivy.exp(-(z**2) / 2))
-        coefficient = ivy.divide(1, (2 * ivy.pi * scale))
+        z = z_1 / scale
+        maxwell = (z**2) * ivy.exp(-(z**2) / 2)
+        coefficient = 1 / (2 * ivy.pi * scale)
         double_maxwell = ivy.multiply(coefficient, maxwell)
     else:
         double_maxwell = ivy.full(shape, loc)

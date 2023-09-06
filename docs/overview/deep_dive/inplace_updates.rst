@@ -22,7 +22,6 @@ Inplace Updates
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
-.. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
 .. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 
 
@@ -31,7 +30,7 @@ This enables much more control over the memory-efficiency of the program, preven
 
 The function `ivy.inplace_update`_ enables explicit inplace updates.
 :func:`ivy.inplace_update` is a *primary* function, and the backend-specific implementations for each backend are presented below.
-We also explain the rational for why each implementation is the way it is, and the important differences.
+We also explain the rationale for why each implementation is the way it is, and the important differences.
 
 This is one particular area of the Ivy code where, technically speaking, the function :func:`ivy.inplace_update` will result in subtly different behaviour for each backend, unless the :code:`ensure_in_backend` flag is set to :code:`True`.
 
@@ -241,7 +240,7 @@ TensorFlow functions also never returns views so additional logic is added to fu
 PyTorch **does** natively support inplace updates, and so :code:`x_native` is updated inplace with :code:`val_native`.
 Following this, an inplace update is then also performed on the :class:`ivy.Array` instance, if provided in the input.
 
-PyTorch also supports views for most manipulation and indexing operation as with NumPy but it lacks that functionality with a few functions such as :func:`flip`.
+PyTorch also supports views for most manipulation and indexing operations as with NumPy but it lacks that functionality with a few functions such as :func:`flip`.
 Additional logic had to be added to support view functionality for those functions (described in a section below).
 
 The function :func:`ivy.inplace_update` is also *nestable*, meaning it can accept :class:`ivy.Container` instances in the input.
@@ -452,7 +451,7 @@ When :code:`copy` is not specified explicitly, then an inplace update is perform
 Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
 If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
 If both are specified, then priority is given to the more general :code:`out` argument.
-As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html#function-wrapping>`_.
 
 
 Views
@@ -464,7 +463,7 @@ More information about these arrays can be found in `NumPy's documentation <http
 This essentially means that any inplace update on the original array or any of its views will cause all the other views to be updated as well since they reference the same memory buffer.
 
 We want to keep supporting NumPy and PyTorch inplace updates whenever we can and superset backend behaviour, however it is not trivial to replicate this in JAX and TensorFlow.
-The main reason is because these frameworks do not natively support inplace updates so even if multiple native arrays are referencing the same memory buffer, you would ever be able to update it once for all of them.
+The main reason is because these frameworks do not natively support inplace updates so even if multiple native arrays are referencing the same memory buffer, you would never be able to update it once for all of them.
 Therefore views and their updates must be tracked through Ivy and extra logic has been added to update views in the case an inplace update happens to any array which is meant to be referencing the same memory.
 We call views tracked and updated by Ivy functional views as they work with a functional paradigm.
 
@@ -472,7 +471,7 @@ What functions return views is mostly dictated by NumPy since it has the most ex
 Every function with this wrapper should also have a :code:`copy` argument such that Ivy maintains a way to prevent views from being created if necessary.
 What that wrapper does is update a few :class:`ivy.Array` attributes which help keep track of views, how they were created, and which arrays should be updated together.
 These attributes are then used in the :func:`ivy.inplace_update` to update all the arrays which are meant to be referencing the same memory, at least to NumPy's standard.
-Of course these are normally only used with a JAX and TensorFlow backend since NumPy and PyTorch natively update their views and Ivy does not need to do any extra handling except for a few functions where PyTorch fails to return views when NumPy does.
+Of course, these are normally only used with a JAX and TensorFlow backend since NumPy and PyTorch natively update their views and Ivy does not need to do any extra handling except for a few functions where PyTorch fails to return views when NumPy does.
 The functions currently implemented in the Ivy API where PyTorch fails to return views at the time of writing are :func:`ivy.flip`, :func:`ivy.rot90`, :func:`ivy.flipud`, :func:`ivy.fliplr`.
 In the case one of those functions is used with a Pytorch backend, additional logic has been added to make the returns of those functions behave as views of the original that made them.
 
@@ -515,7 +514,7 @@ Here's a brief description of what happens during an inplace operation with a Py
 
 This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_ or in the `inplace updates forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_!
 
 
 **Video**

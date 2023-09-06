@@ -21,8 +21,10 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_shapes,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
+from collections.abc import Hashable
 
 
 # Helpers #
@@ -244,6 +246,7 @@ Iinfo = None
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -306,9 +309,10 @@ def astype(
     ivy.array([1., 2.])
 
     >>> x = ivy.array([3.141, 2.718, 1.618])
+    >>> y = ivy.zeros_like(x)
     >>> ivy.astype(x, ivy.int32, out=y)
     >>> print(y)
-    ivy.array([3, 2, 1])
+    ivy.array([3., 2., 1.])
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> ivy.astype(x, ivy.float64, out=x)
@@ -331,13 +335,13 @@ def astype(
         b: ivy.array([True, False, False])
     }
 
-    Using :class:`ivy.Array` instance method:
+    With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> print(x.astype(ivy.float64))
     ivy.array([[-1., -2.],  [0.,  2.]])
 
-    Using :class:`ivy.Container` instance method:
+    With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([False,True,True]),
     ...                   b=ivy.array([3.14, 2.718, 1.618]))
@@ -351,6 +355,7 @@ def astype(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
@@ -429,11 +434,12 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
-@to_native_arrays_and_back
 @inputs_to_native_shapes
+@to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
 def broadcast_to(
@@ -513,8 +519,8 @@ def can_cast(
     /,
 ) -> bool:
     """
-    Determine if one data type can be cast to another data type according to
-    :ref:`type-promotion` rules.
+    Determine if one data type can be cast to another data type according to :ref:`type-
+    promotion` rules.
 
     Parameters
     ----------
@@ -569,20 +575,18 @@ def can_cast(
     ...                   b=ivy.array([3, 4, 5]))
     >>> print(ivy.can_cast(x, 'int64'))
     {
-        a: false,
-        b: true
+        a: False,
+        b: True
     }
     """
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
-    try:
-        dtype = ivy.promote_types(from_, to)
-        return dtype == to
-    except KeyError:
-        return False
+    dtype = ivy.promote_types(from_, to)
+    return dtype == to
 
 
 @handle_exceptions
+@handle_backend_invalid
 @inputs_to_native_arrays
 @handle_device_shifting
 def finfo(
@@ -670,6 +674,7 @@ def finfo(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @inputs_to_native_arrays
 @handle_device_shifting
 def iinfo(
@@ -746,6 +751,7 @@ def iinfo(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_device_shifting
@@ -961,11 +967,7 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     ret
         True if data type is hashable else False
     """
-    try:
-        hash(dtype_in)
-        return True
-    except TypeError:
-        return False
+    return isinstance(dtype_in, Hashable)
 
 
 @handle_exceptions
@@ -1052,7 +1054,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
-    <dtype:'uint16'>
+    uint16
 
     With :code:`str` input:
 
@@ -1610,6 +1612,7 @@ def default_complex_dtype(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_device_shifting
@@ -1686,10 +1689,8 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1739,10 +1740,8 @@ def function_unsupported_dtypes(
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1836,7 +1835,7 @@ def is_bool_dtype(
             True
             if ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (bool, np.bool)) and not type(x) == int,
+                lambda x: isinstance(x, (bool, np.bool)) and x is not int,
             )
             else False
         )
@@ -1878,10 +1877,8 @@ def is_int_dtype(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1., 2., 3.])
-    >>> x.dtype
-    float32
-    >>> print(ivy.is_int_dtype(x))
-    False
+    >>> print(ivy.is_int_dtype(x), x.dtype)
+    False float32
 
     With :class:`ivy.NativeArray` input:
 
@@ -1898,14 +1895,10 @@ def is_int_dtype(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
-    >>> x.a.dtype
-    float32
-    >>> x.b.dtype
-    int32
     >>> print(ivy.is_int_dtype(x))
     {
-        a: false,
-        b: true
+        a: False,
+        b: True
     }
     """
     if ivy.is_array(dtype_in):
@@ -1930,7 +1923,7 @@ def is_int_dtype(
                     isinstance(x, (int, np.integer))
                     or (ivy.is_array(x) and "int" in ivy.dtype(x))
                 )
-                and not type(x) == bool,
+                and x is not bool,
             )
             else False
         )
@@ -1952,7 +1945,7 @@ def check_float(x: Any) -> bool:
     ret
         "True" if the input is a float or a float-like object, otherwise "False".
     """
-    return isinstance(x, (int, np.float)) and not type(x) == bool
+    return isinstance(x, (int, float)) and x is not bool
 
 
 @handle_exceptions
@@ -2128,28 +2121,16 @@ def promote_types(
         The type that both input types promote to
     """
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
-    query.sort(key=lambda x: str(x))
     query = tuple(query)
+    if query not in ivy.promotion_table:
+        query = (query[1], query[0])
 
     def _promote(query):
         if array_api_promotion:
             return ivy.array_api_promotion_table[query]
         return ivy.promotion_table[query]
 
-    try:
-        ret = _promote(query)
-    except KeyError:
-        # try again with the dtypes swapped
-        query = (query[1], query[0])
-        try:
-            ret = _promote(query)
-        except KeyError:
-            raise ivy.utils.exceptions.IvyDtypePromotionError(
-                "these dtypes ({} and {}) are not type promotable, ".format(
-                    type1, type2
-                )
-            )
-    return ret
+    return _promote(query)
 
 
 @handle_exceptions
@@ -2550,7 +2531,4 @@ def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     >>> ivy.is_native_array(ivy.float64)
     False
     """
-    try:
-        return current_backend(None).is_native_dtype(dtype_in)
-    except ValueError:
-        return False
+    return current_backend(None).is_native_dtype(dtype_in)
