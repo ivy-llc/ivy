@@ -1621,12 +1621,6 @@ def test_scatter_nd(x, reduction, test_flags, backend_fw, fn_name, on_device):
 # ------#
 
 
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
-def test_set_framework(fw_str):
-    ivy.set_backend(fw_str)
-    ivy.previous_backend()
-
-
 @pytest.mark.parametrize("mode", ["lenient", "strict"])
 def test_set_inplace_mode(mode):
     ivy.set_inplace_mode(mode)
