@@ -30,7 +30,6 @@
 
   overview/motivation.rst
   overview/related_work.rst
-  overview/extensions.rst
 
 
 .. toctree::
