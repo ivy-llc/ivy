@@ -48,7 +48,7 @@ def _strip(line):
 all_tags = list(tags.sys_tags())
 binaries = json.load(open("binaries.json"))
 paths = _get_paths(binaries)
-end = False
+terminate = False
 pbar = None
 spinner = itertools.cycle(["-", "\\", "|", "/"])
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
@@ -56,7 +56,7 @@ print(f"Locating binaries {next(spinner)} ", end="")
 
 for tag in all_tags:
     print(f"\rLocating binaries {next(spinner)} ", end="")
-    if end:
+    if terminate:
         pbar.close()
         break
     for i, path in enumerate(paths):
@@ -75,7 +75,7 @@ for tag in all_tags:
                 pbar = tqdm(total=len(paths))
             with open(path, "wb") as f:
                 f.write(r.content)
-            end = path == paths[-1]
+            terminate = path == paths[-1]
             pbar.update(1)
         else:
             break
