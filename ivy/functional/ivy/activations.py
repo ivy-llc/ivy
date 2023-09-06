@@ -452,6 +452,7 @@ def sigmoid(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
