@@ -4,6 +4,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("uint8")}, backend_version)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
