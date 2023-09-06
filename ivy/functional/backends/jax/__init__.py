@@ -23,6 +23,19 @@ register_pytree_node(
 )
 
 
+# make ivy.Array compatible with jax pytree traversal
+def _array_flatten(tree):
+    return ((tree.data,), None)
+
+
+def _array_unflatten(aux_data, children):
+    if type(*children) == object:
+        return children
+    return ivy.Array(*children)
+
+
+register_pytree_node(ivy.Array, _array_flatten, _array_unflatten)
+
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
