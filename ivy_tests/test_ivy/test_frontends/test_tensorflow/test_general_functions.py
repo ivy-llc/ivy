@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -2397,6 +2398,9 @@ def test_tensorflow_zeros(
     fn_tree,
     on_device,
 ):
+    if ivy.current_backend_str() == "paddle":
+        # Paddle only supports ndim from 0 to 9
+        assume(input.shape[0] < 10)
     helpers.test_frontend_function(
         shape=input,
         input_dtypes=dtype,
@@ -2412,7 +2416,7 @@ def test_tensorflow_zeros(
 @handle_frontend_test(
     fn_tree="tensorflow.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
