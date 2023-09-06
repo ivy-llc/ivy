@@ -312,6 +312,7 @@ def setxor1d(ar1, ar2, assume_unique=False):
 
 @to_ivy_arrays_and_back
 def unpackbits(x, /, *, axis=None, count=None, bitorder="big"):
+    x = ivy.asarray(x)
     bits = ivy.arange(8, dtype="uint8")
     if bitorder == "big":
         bits = bits[::-1]
