@@ -296,7 +296,7 @@ def unpackbits(x, /, *, axis=None, count=None, bitorder="big"):
     x = ivy.swapaxes(x, axis, -1)
 
     unpacked = (
-        (x[..., None] & ivy.expand_dims(bits, axis=tuple(range(x.rdim)))) > 0
+        (x[..., None] & ivy.expand_dims(bits, axis=tuple(range(x.ndim)))) > 0
     ).astype("uint8")
     unpacked = ivy.reshape(unpacked, list(unpacked.shape[:-2] + (-1,)))
     if count is not None:
