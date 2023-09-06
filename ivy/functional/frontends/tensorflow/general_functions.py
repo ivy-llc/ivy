@@ -141,6 +141,22 @@ def constant(value, dtype=None, shape=None, name=None):
     return EagerTensor(value)
 
 
+@to_ivy_arrays_and_back
+def control_dependencies(*dependent_operations):
+    def decorator(main_operation):
+        def wrapper(*args, **kwargs):
+            # Execute dependent operations
+            for op in dependent_operations:
+                op()
+
+            # Execute the main operation
+            return main_operation(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
 @handle_tf_dtype
 def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
     if dtype:

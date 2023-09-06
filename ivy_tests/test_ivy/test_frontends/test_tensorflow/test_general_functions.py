@@ -2355,6 +2355,36 @@ def test_tensorflow_unravel_index(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.control_dependencies",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtypes=helpers.get_dtypes("numeric", full=False),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_control_dependencies(
+    dtype_and_xs,
+    dtypes,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        inputs=xs,
+        dtypes=dtypes,
+    )
+
+
 # @handle_frontend_test(
 #     fn_tree="tensorflow.zeros_initializer",
 #     shape=helpers.get_shape(
