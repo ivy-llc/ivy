@@ -1,5 +1,5 @@
-Transpiler
-==========
+``ivy.transpile`` / ``ivy.unify``
+=================================
 
 ..
 
@@ -241,7 +241,7 @@ still working on some rough edges. These include:
    the inference to be correct. 
 
 Keep in mind that the transpiler uses the graph compiler under the hood, so the 
-`sharp bits of the compiler <https://unify.ai/docs/ivy/compiler/compiler.html#sharp-bits>`_ 
+`sharp bits of the compiler <https://unify.ai/docs/ivy/overview/one_liners/compile.html#sharp-bits>`_ 
 apply here as well!
 
 Examples
