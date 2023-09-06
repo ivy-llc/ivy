@@ -7,7 +7,6 @@
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Overview
 
   Home <self>
 
@@ -58,8 +57,7 @@
   :maxdepth: -1
   :caption: API Reference
 
-  compiler/compiler.rst
-  compiler/transpiler.rst
+  overview/one_liners.rst
 
 
 .. autosummary::
