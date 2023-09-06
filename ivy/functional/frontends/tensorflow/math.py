@@ -228,6 +228,11 @@ def cumsum(x, axis, exclusive=False, reverse=False, name=None):
 
 
 @to_ivy_arrays_and_back
+def digamma(x, name=None):
+    return ivy.digamma(x)
+
+
+@to_ivy_arrays_and_back
 def divide(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
@@ -241,14 +246,6 @@ def divide_no_nan(x, y, name="divide_no_nan"):
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
         x / y,
     )
-
-
-@to_ivy_arrays_and_back
-def digamma(x, name=None):
-    dtype = ivy.dtype(x)
-    if dtype in ["complex64", "complex128"]:
-        return ivy.digamma(ivy.real(x)) + 1j * ivy.digamma(ivy.imag(x))
-    return ivy.digamma(x)
 
 
 @to_ivy_arrays_and_back

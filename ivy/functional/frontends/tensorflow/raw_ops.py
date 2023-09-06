@@ -49,8 +49,8 @@ Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 Cosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cosh))
 Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
 Cumsum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumsum))
-Div = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.divide))
 Digamma = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.digamma))
+Div = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.divide))
 Einsum = to_ivy_arrays_and_back(
     with_supported_dtypes(
         {
