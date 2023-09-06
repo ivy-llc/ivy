@@ -297,7 +297,6 @@ def nll_loss(
 
     if weight is None:
         weight = ivy.ones(ivy.shape(input[0]))
-    input = ivy.log_softmax(input)
     loss = ivy.zeros(ivy.shape(label))
     for i in range(0, ivy.shape(loss)[0]):
         loss[i] = -weight[label[i]] * input[i][label[i]]
