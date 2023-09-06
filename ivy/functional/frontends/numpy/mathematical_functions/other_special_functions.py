@@ -9,6 +9,13 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
+def sinc(x):
+    if ivy.get_num_dims(x) == 0:
+        x = ivy.astype(x, ivy.float64)
+    return ivy.sinc(x)
+
+
+@to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def unwrap(p, discont=None, axis=-1, *, period=2 * ivy.pi):
     p = ivy.asarray(p)
@@ -35,10 +42,3 @@ def unwrap(p, discont=None, axis=-1, *, period=2 * ivy.pi):
     up = ivy.array(p, copy=True, dtype=dtype)
     up[slice1] = p[slice1] + ph_correct.cumsum(axis)
     return up
-
-
-@to_ivy_arrays_and_back
-def sinc(x):
-    if ivy.get_num_dims(x) == 0:
-        x = ivy.astype(x, ivy.float64)
-    return ivy.sinc(x)

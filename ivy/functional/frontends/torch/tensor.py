@@ -1964,6 +1964,7 @@ class Tensor:
     )
     def cummax(self, dim):
         return torch_frontend.cummax(self, dim)
+
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
