@@ -53,6 +53,7 @@ array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
 exception_trace_mode_stack = list()
+inplace_mode_stack = list()
 trace_mode_dict = dict()
 trace_mode_dict["frontend"] = "ivy/functional/frontends"
 trace_mode_dict["ivy"] = "ivy/"
@@ -839,9 +840,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3])
@@ -979,9 +979,8 @@ def clip_vector_norm(
     ret
         An array with the vector norm downscaled to the max norm if needed.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -1068,9 +1067,8 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0., 1., 2.]])
@@ -1353,7 +1351,7 @@ def has_nans(
 
 
 @handle_exceptions
-def exists(x: Any) -> bool:
+def exists(x: Any, /) -> bool:
     """
     Check as to whether the input is None or not.
 
@@ -1460,8 +1458,8 @@ def default(
     ret
         x if x exists (is not None), else default.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :code:`Any` input:
 
     >>> x = None
@@ -1872,24 +1870,28 @@ def einops_rearrange(
 
     Suppose we have a set of 32 images in "h w c" format (height-width-channel)
     and concatenate images along height (vertical axis), 960 = 32 * 30
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
     # Concatenate images along horizontal axis, 1280 = 32 * 40
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
     >>> print(x.shape)
     (30, 1280, 3)
 
     # Reorder axes to "b c h w" format for deep learning
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
     >>> print(x.shape)
     (32, 3, 30, 40)
 
     # Flatten each image into a vector, 3600 = 30 * 40 * 3
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
@@ -1897,6 +1899,7 @@ def einops_rearrange(
 
     # Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
     # 128 = 32 * 2 * 2
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c',
     ... h1=2, w1=2)
@@ -2768,9 +2771,8 @@ def get_item(
     ret
         New array with the values gathered at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> print(ivy.get_item(x, query))
@@ -2840,9 +2842,8 @@ def set_item(
     ret
         the array with updated values at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])
@@ -2917,7 +2918,6 @@ def _numel(shape):
 
 
 def _broadcast_to(input, target_shape):
-    input = ivy.squeeze(input)
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
         return ivy.reshape(input, target_shape)
     else:
@@ -3040,6 +3040,79 @@ def inplace_update(
 
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+ivy.inplace_mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+
+
+@handle_exceptions
+def set_inplace_mode(mode: str = "lenient") -> None:
+    """
+    Set the memory management behavior for in-place updates in Ivy.
+
+    By default, Ivy creates new arrays in the backend for in-place updates.
+    However, this behavior can be controlled by the user
+    using the 'inplace_mode' parameter.
+
+    Parameters
+    ----------
+    mode : str
+        The mode for memory management during in-place updates.
+        - 'lenient': (Default) In this mode, new arrays will be created during
+                    in-place updates to avoid breaking existing code.
+                    This is the default behavior.
+        - 'strict': In this mode, an error will be raised if the
+                    'inplace_update' function is called
+                    in a backend that doesn't support inplace updates natively.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> set_inplace_mode('lenient')
+    >>> ivy.inplace_mode
+    'lenient'
+
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    Note
+    ----
+    Enabling strict mode can help users have more control over memory management
+    but may lead to errors if the backend doesn't support inplace updates natively.
+    """
+    global inplace_mode_stack
+    inplace_modes = ["lenient", "strict"]
+    ivy.utils.assertions.check_elem_in_list(
+        mode, inplace_modes, False, f"inplace mode must be one of {inplace_modes}"
+    )
+    inplace_mode_stack.append(mode)
+    ivy.__setattr__("inplace_mode", mode, True)
+
+
+@handle_exceptions
+def unset_inplace_mode() -> None:
+    """
+    Reset the memory management behavior for in-place updates in Ivy to the previous
+    state.
+
+    Examples
+    --------
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    >>> unset_inplace_mode()
+    >>> ivy.inplace_mode
+    'lenient'
+    """
+    global inplace_mode_stack
+    if inplace_mode_stack:
+        inplace_mode_stack.pop(-1)
+        mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+        ivy.__setattr__("inplace_mode", mode, True)
 
 
 @handle_exceptions

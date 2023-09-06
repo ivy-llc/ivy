@@ -201,9 +201,8 @@ def diagflat(
     ret
         The 2-D output array.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1,2], [3,4]])
@@ -350,8 +349,8 @@ def eig(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w, v = ivy.eig(x)
@@ -404,8 +403,8 @@ def eigvals(
     w
         Not necessarily ordered array(..., N) of eigenvalues in complex type.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w = ivy.eigvals(x)
@@ -1610,10 +1609,11 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
+@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def dot(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -1666,3 +1666,90 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a, b, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def general_inner_product(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    n_modes: Optional[int] = None,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Generalised inner products between tensors.
+
+        Takes the inner product between the last (respectively first)
+        `n_modes` of `a` (respectively `b`)
+
+    Parameters
+    ----------
+    a
+        first input tensor.
+    b
+        second input tensor.
+    n_modes
+        int, default is None. If None, the traditional inner product is returned
+        (i.e. a float) otherwise, the product between the `n_modes` last modes of
+        `a` and the `n_modes` first modes of `b` is returned. The resulting tensor's
+        order is `len(a) - n_modes`.
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns
+    -------
+        The inner product of the input arrays.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> print(result)
+    ivy.array(32)
+
+    >>> a = ivy.array([1, 2])
+    >>> b = ivy.array([4, 5])
+    >>> result = ivy.general_inner_product(a, b)
+    >>> print(result)
+    ivy.array(14)
+
+    >>> a = ivy.array([[1, 1], [1, 1]])
+    >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
+    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> print(result)
+    ivy.array([[2, 3, 4, 5],
+       [2, 3, 4, 5]])
+    """
+    shape_a = a.shape
+    shape_b = b.shape
+    if n_modes is None:
+        if shape_a != shape_b:
+            raise ValueError(
+                "Taking a generalised product between two tensors without specifying"
+                " common modes is equivalent to taking inner product.This requires"
+                f" a.shape == b.shape.However, got shapes {a.shape} and {b.shape}"
+            )
+        return ivy.sum(ivy.multiply(a, b), out=out)
+
+    common_modes = shape_a[len(shape_a) - n_modes :]
+    if common_modes != shape_b[:n_modes]:
+        raise ValueError(
+            f"Incorrect shapes for inner product along {n_modes} common modes."
+            f"Shapes {shape_a.shape} and {shape_b.shape}"
+        )
+
+    common_size = int(ivy.prod(common_modes)) if len(common_modes) != 0 else 0
+    output_shape = shape_a[:-n_modes] + shape_b[n_modes:]
+    inner_product = ivy.dot(
+        ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
+    )
+    return ivy.reshape(inner_product, output_shape, out=out)

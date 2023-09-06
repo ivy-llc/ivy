@@ -139,6 +139,7 @@ def eager_benchmark(
     Examples
     --------
     With an :code:`ivy` function:
+
     >>> import ivy
     >>> from benchmark import eager_benchmark
     >>> ivy.set_backend("torch")
