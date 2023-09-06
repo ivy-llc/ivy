@@ -4,7 +4,7 @@ Get Started
 ..
 
    If you want to use **Ivy's compiler and transpiler**, make sure to follow the 
-   :ref:`setting up instructions for the API key <Ivy's compiler and transpiler>`
+   :ref:`setting up instructions for the API key <overview/get_started:Ivy's compiler and transpiler>`
    after installing Ivy!
 
 

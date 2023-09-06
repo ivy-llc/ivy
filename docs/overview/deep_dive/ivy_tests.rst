@@ -616,7 +616,7 @@ It would be helpful to keep in mind the following points while writing test -:
 
 Testing Partial Mixed Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-As explained in the :ref:`Function Types` section, partial mixed functions are a special type of mixed functions that either utilize the compositional implementation
+As explained in the `Function Types <function_types.rst>`_ section, partial mixed functions are a special type of mixed functions that either utilize the compositional implementation
 or the primary implementation depending on some conditions on the input. Therefore, the data-types supported by partial mixed functions depend on which implementation will
 be used for the given input. For example, when :code:`function_supported_dtypes` is called with respect to `ivy.linear` with torch backend, the following output is returned:
 

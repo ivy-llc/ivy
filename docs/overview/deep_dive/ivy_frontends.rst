@@ -409,7 +409,7 @@ Classes and Instance Methods
 ----------------------------
 
 Most frameworks include instance methods and special methods on their array class for common array processing functions, such as :func:`reshape`, :func:`expand_dims` and :func:`add`.
-This simple design choice comes with many advantages, some of which are explained in our :ref:`Ivy Array` section.
+This simple design choice comes with many advantages, some of which are explained in our `Ivy Array <../design/ivy_as_a_framework/ivy_array.rst>`_ section.
 
 **Important Note**
 Before implementing the instance method or special method, make sure that the regular function in the specific frontend is already implemented.
@@ -516,7 +516,7 @@ For example, :class:`numpy.matrix` has an instance method of :meth:`any`:
         return any(self.A, axis=axis, out=out)
 
 We need to create these frontend array classes and all of their instance methods and also their special methods such that we are able to transpile code which makes use of these methods.
-As explained in :ref:`Ivy as a Transpiler`, when transpiling code we first extract the computation graph in the source framework.
+As explained in `Ivy as a Transpiler <../design/ivy_as_a_transpiler.rst>`_, when transpiling code we first extract the computation graph in the source framework.
 In the case of instance methods, we then replace each of the original instance methods in the extracted computation graph with these new instance methods defined in the Ivy frontend class.
 
 Frontend Data Type Promotion Rules

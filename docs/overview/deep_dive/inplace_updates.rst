@@ -256,14 +256,14 @@ This could for example be the input array itself, but can also be any other arra
 All Ivy functions which return a single array should support inplace updates via the :code:`out` argument.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
 However, as discussed above, if the function is *nestable* then :class:`ivy.Container` instances are also supported.
-:class:`ivy.Container` is omitted from the type hint in such cases, as explained in the :ref:`Function Arguments` section.
+:class:`ivy.Container` is omitted from the type hint in such cases, as explained in the `Function Arguments <function_arguments.rst>`_ section.
 
 When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :class:`ivy.Array` (or :class:`ivy.Container` if *nestable*).
 However, when :code:`out` is specified, then the return is provided as an inplace update of the :code:`out` argument provided.
 This can for example be the same as the input to the function, resulting in a simple inplace update of the input.
 
 In the case of :class:`ivy.Array` return types, the :code:`out` argument is predominantly handled in `handle_out_argument`_.
-As explained in the :ref:`Function Wrapping` section, this wrapping is applied to every function with the :code:`@handle_out_argument` decorator dynamically during `backend setting`_.
+As explained in the `Function Wrapping <function_wrapping.rst>`_ section, this wrapping is applied to every function with the :code:`@handle_out_argument` decorator dynamically during `backend setting`_.
 
 **Primary Functions**
 
@@ -435,7 +435,7 @@ Technically, this could be handled using the `handle_out_argument`_ wrapping, bu
 
 **Mixed Functions**
 
-As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected. We must add the :code:`handle_out_argument` to the :code:`add_wrappers`key of
+As explained in the `Function Types <function_types.rst>`_ section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected. We must add the :code:`handle_out_argument` to the :code:`add_wrappers`key of
 the :code:`mixed_backend_wrappers` attribute so that the decorator gets added to the primary implementation when the backend is set. Here's an `example`_ from the linear function.
 
 

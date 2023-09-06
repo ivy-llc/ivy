@@ -801,7 +801,7 @@ The CI Pipeline runs the entire collection of Frontend Tests for the frontend th
 You will need to make sure the Frontend Test is passing for each Ivy Frontend function you introduce/modify.
 If a test fails on the CI, you can see details about the failure under `Details -> Run Frontend Tests` as shown in `CI Pipeline`_.
 
-You can also run the tests locally before making a PR. See the relevant :ref:`Setting Up Testing in PyCharm` section for instructions on how to do so.
+You can also run the tests locally before making a PR. See the relevant :ref:`overview/contributing/setting_up:Setting Up Testing in PyCharm` section for instructions on how to do so.
 
 Frontend Framework Testing Configuration
 ----------------------------------------

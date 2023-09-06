@@ -491,7 +491,7 @@ The example above further emphasizes that the graph compiler creates a computati
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
 However, when compiling native framework code, we are only able to compile a graph for that same framework.
 For example, we cannot take torch code and compile this into tensorflow code.
-However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
+However, we can transpile torch code into tensorflow code (see `Ivy as a Transpiler <ivy_as_a_transpiler.rst>`_ for more details).
 
 The graph compiler does not compile to C++, CUDA, or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
