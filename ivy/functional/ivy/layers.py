@@ -710,11 +710,11 @@ def scaled_dot_product_attention(
 @handle_array_function
 def multi_head_attention(
     query: Union[ivy.Array, ivy.NativeArray],
-    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     /,
     *,
-    num_heads: Optional[int] = 8,
+    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    num_heads: int = 8,
     scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -724,12 +724,12 @@ def multi_head_attention(
     out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    is_causal: Optional[bool] = False,
-    return_attention_weights: Optional[bool] = False,
-    average_attention_weights: Optional[bool] = True,
-    dropout: Optional[float] = 0.0,
-    training: Optional[bool] = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    is_causal: bool = False,
+    return_attention_weights: bool = False,
+    average_attention_weights: bool = True,
+    dropout: float = 0.0,
+    training: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Apply multi-head attention to inputs x. This is an implementation of multi-headed

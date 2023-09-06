@@ -728,13 +728,69 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         ivy.array([[-15.28]])
         """
         return ivy.dot(self._data, b, out=out)
-    
-    def tt_matrix_to_tensor(
+
+    def general_inner_product(
         self: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        n_modes: Optional[int] = None,
         /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.general_inner_product. This method
+        simply wraps the function, and so the docstring for ivy.general_inner_product
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input tensor.
+        b
+            second input tensor.
+        n_modes
+            int, default is None. If None, the traditional inner product is returned
+            (i.e. a float) otherwise, the product between the `n_modes` last modes of
+            `a` and the `n_modes` first modes of `b` is returned. The resulting tensor's
+            order is `len(a) - n_modes`.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+            The inner product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([1, 2])
+        >>> b = ivy.array([4, 5])
+        >>> result = a.general_inner_product(b)
+        >>> print(result)
+        ivy.array(14)
+
+        >>> a = ivy.array([[1, 1], [1, 1]])
+        >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
+        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> print(result)
+        ivy.array([[2, 3, 4, 5],
+            [2, 3, 4, 5]])
+        """
+        return ivy.general_inner_product(self, b, n_modes, out=out)
+    
+    def tt_matrix_to_tensor(
+            self: Union[ivy.Array, ivy.NativeArray],
+            /,
+            *,
+            out: Optional[ivy.Array] = None,
+        ) -> ivy.Array:
         """
         Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
         wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
@@ -780,3 +836,6 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
           [ 2.40518808,  1.16882598]]]])
         """
         return ivy.tt_matrix_to_tensor(self._data, out=out)
+    
+    
+    
