@@ -14,9 +14,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_value=0,
         max_value=1000,
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=10,
         min_dim_size=2,
-        max_dim_size=2,
+        max_dim_size=10,
     ),
 )
 def test_paddle_exponential_(
