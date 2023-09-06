@@ -24,8 +24,87 @@ from ivy import promote_types_of_inputs
     backend_version,
 )
 def cholesky(
-    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
-) -> JaxArray:
+    x: Union[jnp.DeviceArray, jnp.ShapedArray],
+    /,
+    *,
+    upper: bool = False,
+    out: Optional[jnp.DeviceArray] = None,
+) -> jnp.DeviceArray:
+    """
+    Compute the Cholesky decomposition of the x matrix.
+
+    Parameters
+    ----------
+    x : jnp.DeviceArray or jnp.ShapedArray
+        Input array having shape (..., M, M) and whose innermost two dimensions form
+        square symmetric positive-definite matrices. Should have a floating-point data
+        type.
+    upper : bool, optional
+        If True, the result must be the upper-triangular Cholesky factor U. If False,
+        the result must be the lower-triangular Cholesky factor L. Default: False.
+    out : jnp.DeviceArray, optional
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    jnp.DeviceArray
+        An array containing the Cholesky factors for each square matrix. If upper is
+        False, the returned array must contain lower-triangular matrices; otherwise, the
+        returned array must contain upper-triangular matrices. The returned array must
+        have a floating-point data type determined by Type Promotion Rules and must have
+        the same shape as x.
+
+    Examples
+    --------
+    With jnp.DeviceArray input:
+
+    >>> x = jnp.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> l = cholesky(x, upper=False)
+    >>> print(l)
+    jnp.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = jnp.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> y = jnp.zeros([5, 5])
+    >>> cholesky(x, upper=False, out=y)
+    >>> print(y)
+    jnp.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = jnp.array([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> cholesky(x, upper=False, out=x)
+    >>> print(x)
+    jnp.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = jnp.array([[1., -2.], [2., 5.]])
+    >>> u = cholesky(x, upper=False)
+    >>> print(u)
+    jnp.array([[ 1., -2.],
+               [ 0.,  1.]])
+    """
     if not upper:
         ret = jnp.linalg.cholesky(x)
     else:
