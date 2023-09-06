@@ -128,7 +128,7 @@ At some point, a member of our team will assess whether it should be added, and 
 
 After this, you then have two options for how to proceed:
 
-#. Try to implement the function as a composition of currently present ivy functions, as explained in the "Temporary Compositions" sub-section of the :ref:`Ivy Frontends` guide, and add the :code:`#ToDo` comment in the implementation as explained.
+#. Try to implement the function as a composition of currently present ivy functions, as explained in the :ref:`Short Frontend Implementations` sub-section of the :ref:`Ivy Frontends` guide, and add the :code:`#ToDo` comment in the implementation as explained.
    Once the PR is merged, your sub-task issue will then be closed as normal.
 #. Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
    You could also choose to work on another open task entirely at this point if you wanted to.
