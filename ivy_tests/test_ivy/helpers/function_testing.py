@@ -2340,7 +2340,8 @@ def flatten_and_to_np(*, backend: str, ret):
     # flatten the return
     ret_flat = flatten(backend=backend, ret=ret)
     with BackendHandler.update_backend(backend) as ivy_backend:
-        return [ivy_backend.to_numpy(x) for x in ret_flat]
+        ret = [ivy_backend.to_numpy(x) for x in ret_flat]
+    return ret
 
 
 def flatten_frontend_to_np(*, backend: str, ret, frontend_array_fn=None):
