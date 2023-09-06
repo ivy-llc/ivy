@@ -111,6 +111,28 @@ def ifftshift(x, axes=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
+def ihfft(x, n=None, axis=-1, norm="backward", name=None):
+    """Compute the IFFT of a real spectrum signal, resulting in a Hermitian spectrum
+    signal."""
+    # Determine the input shape and axis length
+    input_shape = x.shape
+    input_len = input_shape[axis]
+
+    # Calculate n if not provided
+    if n is None:
+        n = 2 * (input_len - 1)
+
+    # Perform the IFFT along the specified axis
+    result = ivy.ifft(x, axis, n=n, norm=norm)
+
+    return ivy.real(result)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     if n is None:
         n = 2 * (x.shape[axis] - 1)
