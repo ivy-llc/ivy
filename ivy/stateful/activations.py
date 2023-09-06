@@ -174,7 +174,6 @@ class Softmax(Module):
         self,
         axis: int = -1,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-
     ):
         """
         Apply the SOFTMAX activation function.
@@ -186,7 +185,6 @@ class Softmax(Module):
         complex_mode
             Specifies how to handle complex input. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
-
         """
 
         Module.__init__(self)
