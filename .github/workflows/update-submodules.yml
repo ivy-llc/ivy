@@ -22,5 +22,5 @@ jobs:
           git config --global user.name "ivy-seed"
           git submodule update --remote docs/demos
           git add .
-          git commit -m "Update submodules 🤖"
+          git commit -m "Update demos 🤖"
           git push origin main
