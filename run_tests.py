@@ -46,9 +46,10 @@ def get_submodule(test_path):
     for name in submodules:
         if name in test_path:
             if name == "test_functional":
-                coll = db_dict["test_functional/" + test_path[-2]]
-            elif name == "test_experimental":
-                coll = db_dict["test_experimental/" + test_path[-2]]
+                if len(test_path) > 3 and test_path[3] == "test_experimental":
+                    coll = db_dict["test_experimental/" + test_path[4]]
+                else:
+                    coll = db_dict["test_functional/" + test_path[-2]]
             else:
                 coll = db_dict[name]
             break
