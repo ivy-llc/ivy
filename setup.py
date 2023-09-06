@@ -64,8 +64,8 @@ for tag in all_tags:
         file_name = f"{file_path[:-3]}_{tag}.so"
         search_path = f"compiler/{file_name}"
         r = requests.get(
-            f"https://github.com/vedpatwardhan/ivy/raw/fixes/{search_path}",
-            timeout=20,
+            f"https://github.com/unifyai/binaries/raw/main/{search_path}",
+            timeout=40,
         )
         if r.status_code == 200:
             if pbar is None:
