@@ -716,7 +716,7 @@ class Tensor:
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def stanh(self, scale_a=0.67, scale_b=1.7159, name=None):
-        return paddle_frontend.stanh(self._ivy_array, scale_a=scale_a, scale_b=scale_b)
+        return paddle_frontend.stanh(self, scale_a=scale_a, scale_b=scale_b)
 
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
