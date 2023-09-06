@@ -41,6 +41,7 @@ def relu6(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> 
     return tf.nn.relu6(x)
 
 
+@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, backend_version)
 def logsigmoid(
     input: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
 ) -> Tensor:
