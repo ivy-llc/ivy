@@ -11,7 +11,6 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     handle_tf_dtype,
     to_ivy_dtype,
 )
-from ivy.framework_handler import get_backend as _get_backend
 
 
 @with_unsupported_dtypes(
