@@ -130,6 +130,7 @@ def inv_ex(A, *, check_errors=False, out=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 def lstsq(a, b, rcond=None, driver=None):
+    a, b = torch_frontend.promote_types_of_torch_inputs(a, b)
     a_num_dim = a.get_num_dims()
     b_num_dim = b.get_num_dims()
     if a_num_dim < 2:
