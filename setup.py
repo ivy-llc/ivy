@@ -44,6 +44,7 @@ def _strip(line):
     return line.split(" ")[0].split("#")[0].split(",")[0]
 
 
+# Download all relevant binaries in binaries.json
 all_tags = list(tags.sys_tags())
 binaries = json.load(open("binaries.json"))
 paths = _get_paths(binaries)
@@ -51,7 +52,6 @@ end = False
 pbar = None
 spinner = itertools.cycle(["-", "\\", "|", "/"])
 print(f"Locating binaries {next(spinner)} ", end="")
-
 
 for tag in all_tags:
     print(f"\rLocating binaries {next(spinner)} ", end="")
