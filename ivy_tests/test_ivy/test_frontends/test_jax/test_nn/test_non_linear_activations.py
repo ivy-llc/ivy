@@ -271,8 +271,6 @@ def test_jax_hard_swish(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-02,
-        atol=1e-02,
         x=x[0],
     )
 
@@ -612,7 +610,7 @@ def test_jax_relu6(
 @handle_frontend_test(
     fn_tree="jax.nn.selu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="log",
@@ -645,7 +643,7 @@ def test_jax_selu(
 @handle_frontend_test(
     fn_tree="jax.nn.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",

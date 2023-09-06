@@ -412,16 +412,6 @@ def selu(
 selu.jax_like = _selu_jax_like
 
 
-def _silu_jax_like(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    fn_original=None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    return ivy.multiply(x, ivy.sigmoid(x))
-
-
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -478,9 +468,6 @@ def silu(
     ivy.array([[-0.2784,  3.7168,  1.8708], [ 1.4374,  4.1379, -0.0089]])
     """
     return current_backend(x).silu(x, out=out)
-
-
-silu.jax_like = _silu_jax_like
 
 
 def _elu_jax_like(

@@ -90,6 +90,8 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     backend_version,
 )
 def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.multiply(x, paddle_backend.sigmoid(x))
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.silu(x)
     return F.silu(x.cast("float32")).cast(x.dtype)
