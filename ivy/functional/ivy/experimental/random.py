@@ -59,6 +59,7 @@ def dirichlet(
 
     Examples
     --------
+
     >>> alpha = [1.0, 2.0, 3.0]
     >>> ivy.dirichlet(alpha)
     ivy.array([0.10598304, 0.21537054, 0.67864642])
@@ -240,6 +241,7 @@ def poisson(
 
     Examples
     --------
+
     >>> lam = [1.0, 2.0, 3.0]
     >>> ivy.poisson(lam)
     ivy.array([1., 4., 4.])

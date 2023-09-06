@@ -349,6 +349,7 @@ def arange(
 
     Examples
     --------
+
     >>> stop = 5
     >>> x = ivy.arange(stop)
     >>> print(x)
@@ -528,6 +529,7 @@ def zeros(
     Examples
     --------
     With :class:`ivy.NativeShape` input:
+
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
@@ -1891,12 +1893,14 @@ def native_array(
     [1 2 3]
 
     With :class:`np.ndarray` input:
+
     >>> y = np.array([4, 5, 6])
     >>> y_native = ivy.native_array(y)
     >>> print(y_native)
     [4 5 6]
 
     With :class:`ivy.Array` input:
+
     >>> z = ivy.array([7, 8, 9])
     >>> z_native = ivy.native_array(z)
     >>> print(z_native)
@@ -2106,6 +2110,7 @@ def logspace(
     ivy.array([ 10,  21,  46, 100])
 
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2])
     >>> y = ivy.array([4, 5])
     >>> print(ivy.logspace(x, y, 4))
@@ -2260,6 +2265,7 @@ def triu_indices(
 
     Examples
     --------
+
     >>> x = ivy.triu_indices(4,4,0)
     >>> print(x)
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),

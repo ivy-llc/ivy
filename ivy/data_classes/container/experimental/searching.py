@@ -42,6 +42,7 @@ class _ContainerWithSearchingExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> indices = ivy.Container(a=ivy.array([22, 41, 37])), b=ivy.array([30, 2]))
         >>> ivy.Container.static_unravel_index(indices, (7,6))
         {
@@ -90,6 +91,7 @@ class _ContainerWithSearchingExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> indices = ivy.Container(a=ivy.array([22, 41, 37])), b=ivy.array([30, 2]))
         >>> indices.unravel_index((7, 6))
         {

@@ -104,6 +104,7 @@ def set_precise_mode(mode: bool) -> None:
 
     Examples
     --------
+
     >>> ivy.set_precise_mode(False)
     >>> ivy.precise_mode
     False
@@ -127,6 +128,7 @@ def unset_precise_mode() -> None:
 
     Examples
     --------
+
     >>> ivy.set_precise_mode(False)
     >>> ivy.precise_mode
     False
@@ -262,6 +264,7 @@ def is_native_array(
 
     Examples
     --------
+
     >>> x = ivy.array([0, 1, 2])
     >>> ivy.is_native_array(x)
     False
@@ -299,6 +302,7 @@ def is_ivy_array(
 
     Examples
     --------
+
     >>> x = ivy.array([0, 1, 2])
     >>> ivy.is_ivy_array(x)
     True
@@ -331,6 +335,7 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
 
     Examples
     --------
+
     >>> x = ivy.array([0, 1, 2])
     >>> print(ivy.is_array(x))
     True
@@ -365,6 +370,7 @@ def is_ivy_container(x: Any, /) -> bool:
 
     Examples
     --------
+
     >>> x = ivy.Container()
     >>> print(ivy.is_ivy_container(x))
     True
@@ -395,6 +401,7 @@ def set_array_mode(mode: bool) -> None:
 
     Examples
     --------
+
     >>> ivy.set_array_mode(False)
     >>> ivy.array_mode
     False
@@ -417,6 +424,7 @@ def unset_array_mode() -> None:
 
     Examples
     --------
+
     >>> ivy.set_array_mode(False)
     >>> ivy.array_mode
     False
@@ -447,6 +455,7 @@ def set_nestable_mode(mode: bool) -> None:
 
     Examples
     --------
+
     >>> ivy.set_nestable_mode(False)
     >>> ivy.nestable_mode
     False
@@ -469,6 +478,7 @@ def unset_nestable_mode() -> None:
 
     Examples
     --------
+
     >>> ivy.set_nestable_mode(False)
     >>> ivy.nestable_mode
     False
@@ -502,6 +512,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
 
     Examples
     --------
+
     >>> ivy.set_exception_trace_mode("ivy")
     >>> ivy.exception_trace_mode
     'ivy'
@@ -526,6 +537,7 @@ def unset_exception_trace_mode() -> None:
 
     Examples
     --------
+
     >>> ivy.set_exception_trace_mode("ivy")
     >>> ivy.exception_trace_mode
     'ivy'
@@ -560,6 +572,7 @@ def set_show_func_wrapper_trace_mode(mode: bool) -> None:
 
     Examples
     --------
+
     >>> ivy.set_show_func_wrapper_trace_mode(False)
     >>> ivy.show_func_wrapper_trace_mode
     False
@@ -582,6 +595,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 
     Examples
     --------
+
     >>> ivy.set_show_func_wrapper_trace_mode(False)
     >>> ivy.show_func_wrapper_trace_mode
     False
@@ -630,6 +644,7 @@ def array_equal(
 
     Examples
     --------
+
     >>> x = ivy.array([1,0,1])
     >>> y = ivy.array([1,0,-1])
     >>> z = ivy.array_equal(x,y)
@@ -1160,6 +1175,7 @@ def fourier_encode(
 
     Examples
     --------
+
     >>> x = ivy.array([1,2,3])
     >>> y = 1.5
     >>> z = ivy.fourier_encode(x,y)
@@ -1250,6 +1266,7 @@ def value_is_nan(
 
     Examples
     --------
+
     >>> x = ivy.array([451])
     >>> y = ivy.value_is_nan(x)
     >>> print(y)
@@ -1653,6 +1670,7 @@ def arg_names(receiver):
 
     Examples
     --------
+
     >>> x = ivy.arg_names(ivy.tan)
     >>> print(x)
     ['x', 'out']
@@ -1689,6 +1707,7 @@ def match_kwargs(
 
     Examples
     --------
+
     >>> o = ivy.zeros(3)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
@@ -1907,6 +1926,7 @@ def einops_rearrange(
     (128, 15, 20, 3)
 
     # Space-to-depth operation
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h h1) (w w1) c -> b h w (c h1 w1)', h1=2,
     ... w1=2)
@@ -2082,6 +2102,7 @@ def set_min_denominator(val: float) -> None:
 
     Examples
     --------
+
     >>> x = ivy.min_denominator
     >>> print(x)
     1e-12
@@ -2105,6 +2126,7 @@ def unset_min_denominator() -> None:
 
     Examples
     --------
+
     >>> ivy.set_min_denominator(1e-10)
     >>> y = ivy.min_denominator
     >>> print(y)
@@ -2137,6 +2159,7 @@ def set_min_base(val: float) -> None:
 
     Examples
     --------
+
     >>> x = ivy.min_base
     >>> print(x)
     1e-05
@@ -2160,6 +2183,7 @@ def unset_min_base() -> None:
 
     Examples
     --------
+
     >>> ivy.set_min_base(1e-07)
     >>> y = ivy.min_base
     >>> print(y)
@@ -2388,11 +2412,14 @@ def get_all_arrays_in_memory() -> List[Union[ivy.Array, ivy.NativeArray]]:
 
     Examples
     --------
+
     >>> ivy.get_all_arrays_in_memory()
     []
+
     >>> x = ivy.get_all_arrays_in_memory()
     >>> x
     []
+
     >>> y = ivy.array([0, 1, 2])
     >>> x
     [ivy.array([0, 1, 2])]
@@ -2424,11 +2451,14 @@ def num_arrays_in_memory() -> int:
 
     Examples
     --------
+
     >>> ivy.num_arrays_in_memory()
     0
+
     >>> x = ivy.num_arrays_in_memory()
     >>> x
     0
+
     >>> y = ivy.array([0, 1, 2])
     >>> x
     1
@@ -2469,6 +2499,7 @@ def set_queue_timeout(timeout: float):
 
     Examples
     --------
+
     >>> x = ivy.set_queue_timeout(10)
     >>> x = ivy.queue_timeout
     >>> print(x)
@@ -2492,6 +2523,7 @@ def unset_queue_timeout() -> None:
 
     Examples
     --------
+
     >>> ivy.set_queue_timeout(10.0)
     >>> y = ivy.queue_timeout
     >>> print(y)
@@ -2523,6 +2555,7 @@ def set_tmp_dir(tmp_dr: str) -> None:
 
     Examples
     --------
+
     >>> x = ivy.tmp_dir
     >>> print(x)
     /tmp
@@ -2545,6 +2578,7 @@ def unset_tmp_dir() -> None:
 
     Examples
     --------
+
     >>> ivy.set_tmp_dir("/my_dir")
     >>> y = ivy.tmp_dir
     >>> print(y)
@@ -2773,6 +2807,7 @@ def get_item(
 
     Examples
     --------
+
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> print(ivy.get_item(x, query))
@@ -2844,6 +2879,7 @@ def set_item(
 
     Examples
     --------
+
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])
@@ -2851,6 +2887,7 @@ def set_item(
     >>> print(x)
 
     ivy.array([10, 10, 20])
+
     >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
     >>> query = ([1, 1])
     >>> val = ivy.array([10, 10])
@@ -3070,6 +3107,7 @@ def set_inplace_mode(mode: str = "lenient") -> None:
 
     Examples
     --------
+
     >>> set_inplace_mode('lenient')
     >>> ivy.inplace_mode
     'lenient'
@@ -3100,6 +3138,7 @@ def unset_inplace_mode() -> None:
 
     Examples
     --------
+
     >>> set_inplace_mode('strict')
     >>> ivy.inplace_mode
     'strict'
@@ -3291,6 +3330,7 @@ def scatter_flat(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
     >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
     >>> out = ivy.array([0, 0, 0, 0, 0, 0, 0, 0])
@@ -3300,6 +3340,7 @@ def scatter_flat(
 
 
     With :class:`ivy.Array` input:
+
     >>> indices = ivy.array([1, 0, 1, 0, 2, 2, 3, 3])
     >>> updates = ivy.array([9, 2, 0, 2, 3, 2, 1, 8])
     >>> size = 8
@@ -3308,6 +3349,7 @@ def scatter_flat(
 
 
     With :class:`ivy.Container` and :class:`ivy.Array` input:
+
     >>> indices = ivy.array([1, 0, 1, 0, 2, 2, 3, 3])
     >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]),
     ...                 b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
@@ -3320,6 +3362,7 @@ def scatter_flat(
 
 
     With :class:`ivy.Container` input:
+
     >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]),
     ...                 b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
     >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]),
@@ -3665,6 +3708,7 @@ def shape(
 
     Examples
     --------
+
     >>> x = ivy.array([[-1, 0, 1], [1, 0, -1]])
     >>> y = ivy.shape(x)
     >>> z = ivy.shape(x, as_array = True)
@@ -3692,6 +3736,7 @@ def set_shape_array_mode(mode: bool) -> None:
 
     Examples
     --------
+
     >>> ivy.set_shape_array_mode(False)
     >>> ivy.shape_array_mode
     False
@@ -3713,6 +3758,7 @@ def unset_shape_array_mode() -> None:
 
     Examples
     --------
+
     >>> ivy.set_shape_array_mode(True)
     >>> ivy.shape_array_mode
     True
@@ -4151,6 +4197,7 @@ def isin(
 
     Examples
     --------
+
     >>> x = ivy.array([[10, 7, 4], [3, 2, 1]])
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.isin(x, y)
@@ -4190,6 +4237,7 @@ def itemsize(
 
     Examples
     --------
+
     >>> x = ivy.array([1,2,3], dtype=ivy.float64)
     >>> ivy.itemsize(x)
     8
@@ -4223,6 +4271,7 @@ def strides(
 
     Examples
     --------
+
     >>> x = ivy.array([[1, 5, 9], [2, 6, 10]])
     >>> ivy.strides(x)
     (4, 8)

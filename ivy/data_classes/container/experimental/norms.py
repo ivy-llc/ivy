@@ -47,6 +47,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0.5, 1.5, 2.5], [3.5, 4.5, 5.5]])))
         ...                    b=ivy.array([[-1., -1.], [-1., -0.5]]]))
         >>> y = ivy.Container.static_l1_normalize(x, axis=1)
@@ -162,6 +163,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0.5, 1.5, 2.5], [3.5, 4.5, 5.5]])))
         ...                    b=ivy.array([[-1., -1.], [-1., -0.5]]]))
         >>> y = ivy.Container.static_l2_normalize(x, axis=1)
@@ -226,6 +228,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0.5, 1.5, 2.5], [3.5, 4.5, 5.5]]),
         ...                    b=ivy.array([[-1., -1.], [-1., -0.5]]))
         >>> y = x.l2_normalize(axis=1)
@@ -803,6 +806,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0.5, 1.5, 2.5], [3.5, 4.5, 5.5]])))
         ...                    b=ivy.array([[-1., -1.], [-1., -0.5]]]))
         >>> y = ivy.Container.static_lp_normalize(x, p=1, axis=1)
@@ -869,6 +873,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0.5, 1.5, 2.5], [3.5, 4.5, 5.5]]),
         ...                    b=ivy.array([[-1., -1.], [-1., -0.5]]))
         >>> y = x.lp_normalize(axis=1)

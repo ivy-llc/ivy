@@ -53,6 +53,7 @@ class _ContainerWithNorms(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
         ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> normalized_idxs = [0]
@@ -64,6 +65,7 @@ class _ContainerWithNorms(ContainerBase):
                           [0.24053511, 0.24053511, 0.24053511]])
         }
         With multiple :class:`ivy.Container` inputs:
+
         >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
         ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
         >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})

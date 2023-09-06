@@ -51,6 +51,7 @@ def l1_normalize(
 
     Examples
     --------
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.l1_normalize(x, axis=1)
     >>> print(y)
@@ -93,6 +94,7 @@ def l2_normalize(
 
     Examples
     --------
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.l2_normalize(x, axis=1)
     >>> print(y)
@@ -479,6 +481,7 @@ def lp_normalize(
 
     Examples
     --------
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.lp_normalize(x, p=1, axis=1)
     >>> print(y)

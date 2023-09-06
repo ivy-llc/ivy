@@ -418,6 +418,7 @@ def test_function(
 
     Examples
     --------
+
     >>> input_dtypes = 'float64'
     >>> as_variable_flags = False
     >>> with_out = False
@@ -431,6 +432,7 @@ def test_function(
         native_arrays,
         container_flags,
         none)
+
     >>> fw = "torch"
     >>> fn_name = "abs"
     >>> x = np.array([-1])
@@ -449,6 +451,7 @@ def test_function(
         native_arrays,
         container_flags,
         none)
+
     >>> fw = "numpy"
     >>> fn_name = "add"
     >>> x1 = np.array([1, 3, 4])

@@ -59,9 +59,11 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.zeros((3, 4, 5))
         >>> x.moveaxis(0, -1).shape
         (4, 5, 3)
+
         >>> x.moveaxis(-1, 0).shape
         (5, 3, 4)
         """
@@ -96,6 +98,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([-1.5, 0, 2.0])
         >>> x2 = ivy.array([0.5])
         >>> ivy.heaviside(x1, x2)
@@ -142,6 +145,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> m = ivy.diag([1, 2, 3])
         >>> m.flipud()
         ivy.array([[ 0.,  0.,  3.],
@@ -167,6 +171,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2]])
         >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
         >>> print(x.vstack(y))
@@ -199,6 +204,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2]])
         >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
         >>> print(x.vstack(y))
@@ -355,6 +361,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> m = ivy.diag([1, 2, 3])
         >>> m.fliplr()
         ivy.array([[0, 0, 1],
@@ -388,6 +395,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2, 3]])
         >>> x.i0()
         ivy.array([1.26606588, 2.2795853 , 4.88079259])
@@ -444,6 +452,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> x.flatten()
         ivy.array([1, 2, 3, 4])
@@ -479,6 +488,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             [ 4, 19, 16, 17],
             [ 2, 12,  8, 14]]]]
             )
+
         >>> x.flatten(start_dim = 1, end_dim = 2)
         ivy.array(
             [[[ 5,  5,  0,  6],
@@ -594,12 +604,14 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> ary = ivy.array(
             [[[0.,  1.],
               [2.,  3.]],
              [[4.,  5.],
               [6.,  7.]]]
             )
+
         >>> ary.vsplit(2)
         [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
         """
@@ -641,12 +653,14 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> ary = ivy.array(
             [[[ 0.,   1.,   2.,   3.],
               [ 4.,   5.,   6.,   7.]],
              [[ 8.,   9.,  10.,  11.],
               [12.,  13.,  14.,  15.]]]
         )
+
         >>> ary.dsplit(2)
         [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
         ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
@@ -685,6 +699,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a1 = ivy.array([[1,2,3]])
         >>> a2 = ivy.array(4)
         >>> a1.atleast_1d(a2,5,6)
@@ -709,6 +724,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([2, 3, 4])
         >>> x.dstack(y)
@@ -756,6 +772,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a1 = ivy.array([[1,2,3]])
         >>> a2 = ivy.array(4)
         >>> a1.atleast_2d(a2,5,6)
@@ -797,6 +814,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a1 = ivy.array([[1,2,3]])
         >>> a2 = ivy.array([4,8])
         >>> a1.atleast_3d(a2,5,6)
@@ -842,6 +860,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
         >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
         >>> y = arr.take_along_axis(indices, 1)
@@ -886,12 +905,14 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> ary = ivy.array(
             [[0.,  1., 2., 3.],
              [4.,  5., 6,  7.],
              [8.,  9., 10., 11.],
              [12., 13., 14., 15.]]
             )
+
         >>> ary.hsplit(2)
         [ivy.array([[ 0.,  1.],
                     [ 4.,  5.],

@@ -37,6 +37,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, 1, 2])
         >>> ret = x.is_native_array()
         >>> print(ret)
@@ -65,6 +66,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, 1, 2])
         >>> ret = x.is_ivy_array()
         >>> print(ret)
@@ -93,6 +95,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, 1, 2])
         >>> print(x.is_array())
         True
@@ -117,6 +120,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, 1, 2])
         >>> print(x.is_ivy_container())
         False
@@ -149,6 +153,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([1, 1, 0, 0, 1, -1])
         >>> x2 = ivy.array([1, 1, 0, 0, 1, -1])
         >>> y = x1.all_equal(x2)
@@ -188,6 +193,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.has_nans()
         >>> print(y)
@@ -232,6 +238,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2.])
         >>> y = ivy.array([0, 1])
         >>> gather = x.gather(y)
@@ -327,6 +334,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([1])
         >>> z = x.gather_nd(y)
@@ -506,6 +514,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
         >>> print(y)
         ivy.array([[[5, 5, 5], [4, 4, 4]], [[2, 2, 2], [3, 3, 3]]])
+
         >>> print(y.shape)
         (2, 2, 3)
         """
@@ -796,6 +805,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1,0])
         >>> y = ivy.array([1,0])
         >>> z = x.array_equal(y)
@@ -912,6 +922,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = 1.5
         >>> z = x.fourier_encode(y)
@@ -1006,6 +1017,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3, 1.2])
         >>> y = x.exists()
         >>> print(y)
@@ -1053,6 +1065,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3, 1.2])
         >>> y = x.default(0)
         >>> print(y)
@@ -1298,6 +1311,7 @@ class _ArrayWithGeneral(abc.ABC):
         Examples
         --------
         With :class:`ivy.Array` input:
+
         >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
         >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
         >>> size = 8
@@ -1307,6 +1321,7 @@ class _ArrayWithGeneral(abc.ABC):
 
 
         With :class:`ivy.Array` input:
+
         >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
         >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
         >>> out = ivy.array([0, 0, 0, 0, 0, 0, 0, 0])
@@ -1388,6 +1403,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[10, 7, 4], [3, 2, 1]])
         >>> y = ivy.array([1, 2, 3])
         >>> x.isin(y)

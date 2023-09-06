@@ -226,6 +226,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0., 1.],
         ...                                [2., 3.]]),
         ...                   b=ivy.array([[4., 5.],
@@ -310,6 +311,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([2, 1, 5, 9]), b=ivy.array([3, 7, 2, 11]))
         >>> y = ivy.Container.static_split(x, num_or_size_splits=2)
         >>> print(y)
@@ -393,6 +395,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([2, 1, 5, 9]), b=ivy.array([3, 7, 2, 11]))
         >>> y = x.split(num_or_size_splits=2)
         >>> print(y)
@@ -459,6 +462,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
         >>> y = ivy.Container.static_permute_dims(x, axes=(1, 0))
         >>> print(y)
@@ -521,6 +525,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
         >>> y = x.permute_dims(axes=(1, 0))
         >>> print(y)
@@ -908,6 +913,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
         ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
         >>> y = x.reshape((2,3))
@@ -1093,6 +1099,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.roll(1)
         >>> print(y)
@@ -1165,6 +1172,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
         ...                   b=ivy.array([[[11.], [12.]]]))
         >>> y = ivy.Container.static_squeeze(x, 0)
@@ -1247,6 +1255,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
         ...                   b=ivy.array([[[11.], [12.]]]))
         >>> y = x.squeeze(axis=2)
@@ -1328,6 +1337,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> z = ivy.Container.static_stack(x,axis = 1)
         >>> print(z)
@@ -1428,6 +1438,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.stack([y])
@@ -1472,6 +1483,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_repeat(2)
         >>> print(y)
@@ -1530,6 +1542,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.repeat(2)
         >>> print(y)
@@ -1583,6 +1596,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container.static_tile((2,3))
         >>> print(y)
@@ -1639,6 +1653,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = x.tile((2,3))
         >>> print(y)
@@ -1697,6 +1712,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([1, 2, 3]), b = ivy.array([4, 5, 6]))
         >>> y = ivy.Container.static_constant_pad(x, pad_width = [[2, 3]])
         >>> print(y)
@@ -1756,6 +1772,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([1, 2, 3]), b = ivy.array([4, 5, 6]))
         >>> y = x.constant_pad(pad_width = [[2, 3]])
         >>> print(y)
@@ -2023,6 +2040,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([[1, 2, 3], [4, 5, 6]])
         >>> b = ivy.array([[7, 8, 9], [10, 11, 12]])
         >>> x = ivy.Container(a = a, b = b)
@@ -2106,6 +2124,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+
         >>> y = ivy.Container.static_unstack(x, axis=0)
         >>> print(y)
         [{
@@ -2122,6 +2141,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+
         >>> y = ivy.Container.static_unstack(x, axis=1, keepdims=True)
         >>> print(y)
         [{
@@ -2203,6 +2223,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
                             b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+
         >>> x.unstack(axis=0)
         [{
             a: ivy.array([[1, 2],
@@ -2368,6 +2389,7 @@ class _ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.clip(1,2)
         >>> print(y)

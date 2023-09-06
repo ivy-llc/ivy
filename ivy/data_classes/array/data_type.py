@@ -166,6 +166,7 @@ class _ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> print(x.dtype)
         float32
@@ -182,6 +183,7 @@ class _ArrayWithDataTypes(abc.ABC):
         """
         Examples
         -------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.dtype()
         >>> print(y)
@@ -206,6 +208,7 @@ class _ArrayWithDataTypes(abc.ABC):
 
         Example
         -------
+
         >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float32)
         >>> print(x.finfo())
         finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)
@@ -231,6 +234,7 @@ class _ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-119,122,14], dtype=ivy.int8))
         >>> x.iinfo()
         iinfo(min=-128, max=127, dtype=int8)
@@ -261,6 +265,7 @@ class _ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3], dtype=ivy.int8)
         >>> x.is_float_dtype()
         False
@@ -296,6 +301,7 @@ class _ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, 1, 2])
         >>> print(x.dtype)
         int32

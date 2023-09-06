@@ -70,6 +70,7 @@ def cross_entropy(
 
     Examples
     --------
+
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
     >>> print(ivy.cross_entropy(x, y))

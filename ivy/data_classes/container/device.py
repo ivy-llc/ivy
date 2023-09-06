@@ -20,6 +20,7 @@ class _ContainerWithDevice(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),
         ...                   b=ivy.native_array([1, 2, 4, 5, 7]))
         >>> as_native = ivy.Container(a=True, b=False)
@@ -49,6 +50,7 @@ class _ContainerWithDevice(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),
         ...                   b=ivy.native_array([[1, 2], [4, 5]]))
         >>> as_native = ivy.Container(a=False, b=True)
@@ -112,6 +114,7 @@ class _ContainerWithDevice(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),
         ...                   b=ivy.native_array([[1, 2], [4, 5]]))
         >>> y = ivy.Container.static_to_device(x, 'cpu')
@@ -179,6 +182,7 @@ class _ContainerWithDevice(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),
         ...                   b=ivy.native_array([[1, 2], [4, 5]]))
         >>> y = x.to_device('cpu')

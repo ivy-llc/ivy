@@ -41,6 +41,7 @@ def array_bools(
 
     Examples
     --------
+
     >>> array_bools(size=5)
     [False, True, False, False, False]
 
@@ -91,6 +92,7 @@ def list_of_size(*, x, size):
 
     Examples
     --------
+
     >>> list_of_size(
     ...     x=st.sampled_from([-1, 5, 9]),
     ...     size=4,
@@ -182,6 +184,7 @@ def lists(
 
     Examples
     --------
+
     >>> lists(
     ...     x=st.sampled_from([-1, 5, 9]),
     ...     min_size=4,
@@ -392,6 +395,7 @@ def dtype_and_values(
 
     Examples
     --------
+
     >>> dtype_and_values(
     ...     num_arrays=3,
     ... )
@@ -668,6 +672,7 @@ def dtype_values_axis(
 
     Examples
     --------
+
     >>> dtype_values_axis()
     (['int16'], [array(29788, dtype=int16)])
 
@@ -1274,6 +1279,7 @@ def arrays_and_axes(
 
     Examples
     --------
+
     >>> arrays_and_axes(
     ...     allow_none=False,
     ...     min_num_dims=1,
@@ -1472,6 +1478,7 @@ def array_values(
 
     Examples
     --------
+
     >>> array_values(
     ...     dtype=get_dtypes("valid"),
     ...     shape=get_shape(),

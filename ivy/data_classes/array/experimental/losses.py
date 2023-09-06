@@ -41,6 +41,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 2.0, 3.0])
         >>> y = ivy.array([0.7, 1.8, 2.9])
         >>> z = x.l1_loss(y)
@@ -87,6 +88,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> true = ivy.array([2, 4, 7, 1])
         >>> pred = ivy.array([2.5, 3.5, 8, 0.8])
         >>> loss = true.huber_loss(pred, delta=1.0)
@@ -136,6 +138,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3, 4])
         >>> y = ivy.array([2, 2, 2, 2])
         >>> z = x.smooth_l1_loss(y, beta=0.5)
@@ -180,6 +183,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 1, 0])
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.soft_margin_loss(y)

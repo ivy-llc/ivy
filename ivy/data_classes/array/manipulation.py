@@ -100,6 +100,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-4.7, -2.3, 0.7]) #x.shape->(3,)
         >>> y = x.expand_dims() #y.shape->(1, 3)
         >>> print(y)
@@ -149,6 +150,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.flip()
         >>> print(y)
@@ -271,6 +273,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
         >>> y = x.reshape((3,2))
         >>> print(y)
@@ -331,6 +334,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.roll(1)
         >>> print(y)
@@ -385,6 +389,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[[0.],[ 1.]]])
         >>> y = x.squeeze(axis=2)
         >>> print(y)
@@ -428,6 +433,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2])
         >>> y = ivy.array([5, 6])
         >>> print(x.stack(y, axis=1))
@@ -479,6 +485,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
         >>> y = x.clip(1., 5.)
         >>> print(y)
@@ -521,6 +528,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> y = x.constant_pad(pad_width = [[2, 3]])
         >>> print(y)
@@ -562,6 +570,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2.])
         >>> y= x.repeat(2)
         >>> print(y)
@@ -613,6 +622,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([4, 6, 5, 3])
         >>> y = x.split()
         >>> print(y)
@@ -714,6 +724,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[0], [1], [2]])
         >>> y = x.tile((3,2))
         >>> print(y)
@@ -765,6 +776,7 @@ class _ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2], [3, 4]])
         >>> y = x.unstack(axis=0)
         >>> print(y)

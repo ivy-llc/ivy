@@ -64,6 +64,7 @@ def log_poisson_loss(
 
     Examples
     --------
+
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
     >>> print(ivy.log_poisson_loss(x, z))
@@ -135,10 +136,12 @@ def l1_loss(
 
     Examples
     --------
+
     >>> x = ivy.array([1.0, 2.0, 3.0])
     >>> y = ivy.array([0.5, 2.5, 2.0])
     >>> print(ivy.l1_loss(x, y))
     ivy.array(0.6)
+
     >>> a = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> b = ivy.array([[0.5, 1.5], [2.5, 3.5]])
     >>> print(ivy.l1_loss(a, b))
@@ -195,6 +198,7 @@ def huber_loss(
 
     Examples
     --------
+
     >>> true = ivy.array([2, 4, 7, 1])
     >>> pred = ivy.array([2.5, 3.5, 8, 0.8])
     >>> huber_loss(true, pred, delta=1.0)
@@ -258,22 +262,27 @@ def smooth_l1_loss(
 
     Examples
     --------
+
     >>> input = ivy.array([1.0, 2.0, 3.0])
     >>> target = ivy.array([2.5, 1.8, 3.2])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(0.3467)
+
     >>> input = ivy.array([1.0, 2.0, 3.0])
     >>> target = ivy.array([6.0, 2.0, 3.0])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(1.5)
+
     >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
     >>> target = ivy.array([2.5, 3.5, 5.5, 6.5])
     >>> loss = ivy.smooth_l1_loss(input, target, beta=1.5, reduction='sum')
     ivy.array(0.5)
+
     >>> input = ivy.array([0.8, 1.2, 2.5, 3.7])
     >>> target = ivy.array([0.9, 1.0, 2.3, 3.6])
     >>> loss = ivy.smooth_l1_loss(input, target, beta=0.5, reduction='none')
     ivy.array([0.0133, 0.0250, 0.0056, 0.0025])
+
     >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
     >>> target = ivy.array([2.5, 3.5, 5.5, 6.5])
     >>> loss = ivy.smooth_l1_loss(input, target, beta=0.2, reduction='mean')
@@ -385,6 +394,7 @@ def soft_margin_loss(
 
     Examples
     --------
+
     >>> input = ivy.array([1, 0, 1, 0])
     >>> target = ivy.array([0.8, 0.2, -0.6, 1.5])
     >>> ivy.soft_margin_loss(input, target)

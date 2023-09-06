@@ -58,6 +58,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(
         >>>     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
         >>>     b=ivy.native_array([[7, 8, 9], [10, 5, 1]])
@@ -132,6 +133,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(
         ...     a=ivy.array([[1, 2, 3], [4, 5, 6]]),
         ...     b=ivy.native_array([[7, 8, 9], [10, 5, 1]]))

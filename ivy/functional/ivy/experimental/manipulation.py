@@ -171,6 +171,7 @@ def flatten(
          [ 4, 19, 16, 17],
          [ 2, 12,  8, 14]]]]
          )
+
     >>> ivy.flatten(x, start_dim = 1, end_dim = 2)
     ivy.array(
         [[[ 5,  5,  0,  6],
@@ -280,9 +281,11 @@ def moveaxis(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.zeros((3, 4, 5))
     >>> ivy.moveaxis(x, 0, -1).shape
     (4, 5, 3)
+
     >>> ivy.moveaxis(x, -1, 0).shape
     (5, 3, 4)
     """
@@ -375,6 +378,7 @@ def flipud(
 
     Examples
     --------
+
     >>> m = ivy.diag([1, 2, 3])
     >>> ivy.flipud(m)
     ivy.array([[ 0.,  0.,  3.],
@@ -410,11 +414,13 @@ def vstack(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([2, 3, 4])
     >>> ivy.vstack((x, y))
     ivy.array([[1, 2, 3],
            [2, 3, 4]])
+
     >>> ivy.vstack((x, y, x, y))
     ivy.array([[1, 2, 3],
                [2, 3, 4],
@@ -455,14 +461,17 @@ def hstack(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([2, 3, 4])
     >>> ivy.hstack((x, y))
     ivy.array([1, 2, 3, 2, 3, 4])
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([0, 0, 0])
     >>> ivy.hstack((x, y, x))
     ivy.array([1, 2, 3, 0, 0, 0, 1, 2, 3])
+
     >>> y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
     >>> print(ivy.hstack(y))
     ivy.array([[5, 6, 7, 8]])
@@ -679,6 +688,7 @@ def fliplr(
 
     Examples
     --------
+
     >>> m = ivy.diag([1, 2, 3])
     >>> ivy.fliplr(m)
     ivy.array([[0, 0, 1],
@@ -718,6 +728,7 @@ def i0(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3])
     >>> ivy.i0(x)
     ivy.array([1.26606588, 2.2795853 , 4.88079259])
@@ -1326,12 +1337,14 @@ def vsplit(
 
     Examples
     --------
+
     >>> ary = ivy.array(
         [[[0.,  1.],
           [2.,  3.]],
          [[4.,  5.],
           [6.,  7.]]]
         )
+
     >>> ivy.vsplit(ary, 2)
     [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
     """
@@ -1380,12 +1393,14 @@ def dsplit(
 
     Examples
     --------
+
     >>> ary = ivy.array(
         [[[ 0.,   1.,   2.,   3.],
           [ 4.,   5.,   6.,   7.]],
          [[ 8.,   9.,  10.,  11.],
           [12.,  13.,  14.,  15.]]]
         )
+
     >>> ivy.dsplit(ary, 2)
     [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
@@ -1425,12 +1440,15 @@ def atleast_1d(
 
     Examples
     --------
+
     >>> ary1 = ivy.array(5)
     >>> ivy.atleast_1d(ary1)
     ivy.array([5])
+
     >>> ary2 = ivy.array([[3,4]])
     >>> ivy.atleast_1d(ary2)
     ivy.array([[3, 4]])
+
     >>> ivy.atleast_1d(6,7,8)
     [ivy.array([6]), ivy.array([7]), ivy.array([8])]
     """
@@ -1463,12 +1481,14 @@ def dstack(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([2, 3, 4])
     >>> ivy.dstack((x, y))
     ivy.array([[[1, 2],
                 [2, 3],
                 [3, 4]]])
+
     >>> x = ivy.array([[1], [2], [3]])
     >>> y = ivy.array([[2], [3], [4]])
     >>> ivy.dstack((x, y))
@@ -1513,12 +1533,15 @@ def atleast_2d(
 
     Examples
     --------
+
     >>> ary1 = ivy.array(5)
     >>> ivy.atleast_2d(ary1)
     ivy.array([[5]])
+
     >>> ary2 = ivy.array([[[3,4]]])
     >>> ivy.atleast_2d(ary2)
     ivy.array([[[3, 4]]])
+
     >>> ivy.atleast_2d(6,7,8)
     [ivy.array([[6]]), ivy.array([[7]]), ivy.array([[8]])]
     """
@@ -1562,13 +1585,16 @@ def atleast_3d(
 
     Examples
     --------
+
     >>> ary1 = ivy.array([5,6])
     >>> ivy.atleast_3d(ary1)
     ivy.array([[[5],
             [6]]])
+
     >>> ary2 = ivy.array([[[3,4]]])
     >>> ivy.atleast_3d(ary2)
     ivy.array([[[3, 4]]])
+
     >>> ary3 = ivy.array([[3,4],[9,10]])
     >>> ivy.atleast_3d(6,7,ary3)
     [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[ 3],
@@ -1621,6 +1647,7 @@ def take_along_axis(
 
     Examples
     --------
+
     >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
     >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
     >>> y = ivy.take_along_axis(arr, indices, 1)
@@ -1672,12 +1699,14 @@ def hsplit(
 
     Examples
     --------
+
     >>> ary = ivy.array(
             [[0.,  1., 2., 3.],
              [4.,  5., 6,  7.],
              [8.,  9., 10., 11.],
              [12., 13., 14., 15.]]
             )
+
     >>> ivy.hsplit(ary, 2)
         [ivy.array([[ 0.,  1.],
                     [ 4.,  5.],
@@ -1709,6 +1738,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
     Examples
     --------
+
     >>> x = [(3, 3), (3, 1)]
     >>> print(ivy.broadcast_shapes(*x))
     (3, 3)
@@ -1808,6 +1838,7 @@ def put_along_axis(
 
     Examples
     --------
+
     >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
     >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
     >>> values = ivy.array([[9, 8, 7], [6, 5, 4]])
@@ -1884,6 +1915,7 @@ def as_strided(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> ivy.as_strided(x, (4, 3), (8, 8))
     ivy.array([[1, 2, 3],
@@ -2167,6 +2199,7 @@ def unique_consecutive(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1, 1, 2, 2, 3, 1, 1, 2])
     >>> ivy..unique_consecutive(x)
     Results(values=ivy.array([1, 2, 3, 1, 2]),
@@ -2620,13 +2653,17 @@ def choose(
 
     Examples
     --------
+
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
                         [20, 21, 22, 23], [30, 31, 32, 33]])
+
     >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
     ivy.array([20, 31, 12, 3])
+
     >>> arr = ivy.array([2, 4, 1, 0])
     >>> print(choose(arr, choices, mode='clip')) # 4 goes to 3 (4-1)
     ivy.array([20, 31, 12, 3])
+
     >>> arr = ivy.array([2, 4, 1, 0])
     >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
     ivy.array([20, 1, 12, 3])

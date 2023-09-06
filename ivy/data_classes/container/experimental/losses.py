@@ -140,6 +140,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = ivy.Container(a=ivy.array([2, 2, 2]), b=ivy.array([5, 5, 5]))
         >>> z = x.l1_loss(y)
@@ -219,6 +220,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([1, 0, 2]), b=ivy.array([3, 2, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),
         b=ivy.array([0.8, 0.2, 0.2]))
+
         >>> z = ivy.Container.static_smooth_l1_loss(x, y)
         >>> print(z)
         {
@@ -231,6 +233,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         >>> x = ivy.array([1 , 0, 2])
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),
         b=ivy.array([0.8, 0.2, 0.2]))
+
         >>> z = ivy.Container.static_smooth_l1_loss(x, y)
         >>> print(z)
         {
@@ -307,9 +310,11 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 0, 2]), b=ivy.array([3, 2, 1]))
         >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),
         b=ivy.array([0.8, 0.2, 0.2]))
+
         >>> z = x.smooth_l1_loss(y)
         >>> print(z)
         {
@@ -388,6 +393,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([1, 0, 3]), b=ivy.array([0, 0, 2]))
         >>> y = ivy.Container(a=ivy.array([1.5, 0.2, 2.8]), b=ivy.array([0.5, 0.2, 1.9])
         )
+
         >>> z = ivy.Container.static_huber_loss(x, y, delta=1.0)
         >>> print(z)
         {
@@ -400,6 +406,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         >>> x = ivy.array([1, 0, 3])
         >>> y = ivy.Container(a=ivy.array([1.5, 0.2, 2.8]), b=ivy.array([0.5, 0.2, 1.9])
         )
+
         >>> z = ivy.Container.static_huber_loss(x, y, delta=1.0)
         >>> print(z)
         {
@@ -473,9 +480,11 @@ class _ContainerWithLossesExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 0, 3]), b=ivy.array([0, 0, 2]))
         >>> y = ivy.Container(a=ivy.array([1.5, 0.2, 2.8]), b=ivy.array([0.5, 0.2, 1.9])
         )
+
         >>> z = x.huber_loss(y, delta=1.0)
         >>> print(z)
         {

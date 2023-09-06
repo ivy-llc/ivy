@@ -53,6 +53,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
         >>> y = ivy.Container.static_is_native_array(x)
         >>> print(y)
@@ -112,6 +113,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
         >>> y = x.is_native_array()
         >>> print(y)
@@ -288,6 +290,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
         >>> y = ivy.Container.static_is_array(x)
         >>> print(y)
@@ -347,6 +350,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1]), b=ivy.native_array([2, 3]))
         >>> y = x.is_array()
         >>> print(y)
@@ -777,6 +781,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Using :class:`ivy.Container` instance method:
+
         >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),
         ...                   b=ivy.array([1.5, -0.3, 0]),
         ...                   c=ivy.array([-4.7, -5.4, 7.5]))
@@ -919,6 +924,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         Using :class:`ivy.Container` instance method:
+
         >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),
         ...                   b=ivy.array([1.5, -0.3, 0]),
         ...                   c=ivy.array([-4.7, -5.4, 7.5]))
@@ -1266,6 +1272,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([1,2]),
         ...                   b = ivy.array([3,4]))
         >>> y = 1.5
@@ -1362,6 +1369,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([1,2]),
         ...                   b = ivy.array([3,4]))
         >>> y = 1.5
@@ -1537,6 +1545,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
         ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.Container(a = ivy.array([0, 1]),
@@ -1600,6 +1609,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
@@ -1654,6 +1664,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = x.has_nans()
         >>> print(y)
@@ -1979,6 +1990,7 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
+
         >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]),
         ...                 b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
         >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]),
@@ -2048,6 +2060,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),
         ...                   b=ivy.array([[0., 100., 200.],[300.,400.,500.]]))
         >>> y = ivy.Container(a=ivy.array([1,0]),
@@ -2117,6 +2130,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[[0., 10.], [20.,30.]],
         ...                                [[40.,50.], [60.,70.]]]),
         ...                   b=ivy.array([[[0., 100.], [200.,300.]],
@@ -2191,6 +2205,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
         ...                                [3.66, 24.29, 3.64]]),
         ...                   b=ivy.array([[4.96, 1.52, -10.67],
@@ -2266,6 +2281,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[[5, 4, 3],
         ...                                 [11, 2, 9]],
         ...                                [[3, 5, 7],
@@ -2341,6 +2357,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
         ...                   b=ivy.array([[1, 2], [4, 5]]))
         >>> repeated = ivy.Container.static_einops_repeat(
@@ -2416,6 +2433,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
         ...                   b=ivy.array([[1, 2], [4, 5]]))
         >>> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
@@ -2561,6 +2579,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([425]), b=ivy.array([float('nan')]))
         >>> y = x.value_is_nan()
         >>> print(y)
@@ -3011,6 +3030,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
         >>> y = ivy.Container.stable_divide(x, 0.5)
         >>> print(y)
@@ -3117,6 +3137,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.asarray([3., 6.]), b=ivy.asarray([9., 12.]))
         >>> y = x.stable_divide(5)
         >>> print(y)
@@ -3200,6 +3221,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
         >>> y = ivy.Container.stable_pow(x, 2)
         >>> print(y)
@@ -3289,6 +3311,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.asarray([2, 4]), b=ivy.asarray([6, 8]))
         >>> y = x.stable_pow(2)
         >>> print(y)
@@ -3465,6 +3488,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
         ...                                [-4, -5, -6]]),
         ...                 b=ivy.array([[7, 8, 9],
@@ -3807,11 +3831,13 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
         >>> ivy.Container.static_get_num_dims(x)
         {
             b: 2
         }
+
         >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]]
         ...                                    [[0,0,0],[0,0,0],[0,0,0]],
         ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
@@ -3819,6 +3845,7 @@ class _ContainerWithGeneral(ContainerBase):
         {
             b: 3
         }
+
         >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
         ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
         ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
@@ -3827,6 +3854,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: 3,
             c: 2
         }
+
         >>> ivy.Container.static_get_num_dims(x, as_array=True)
         {
             b: ivy.array(3),
@@ -3884,11 +3912,13 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
         >>> a.get_num_dims()
         {
             b: 2
         }
+
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
         ...                                    [[0,0,0],[0,0,0],[0,0,0]],
         ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
@@ -3896,6 +3926,7 @@ class _ContainerWithGeneral(ContainerBase):
         {
             b: 3
         }
+
         >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
         ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
         ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
@@ -3904,6 +3935,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: 3,
             c: 2
         }
+
         >>> a.get_num_dims(as_array=True)
         {
             b: ivy.array(3),
@@ -3962,6 +3994,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([[0., 1.], [1. ,0.]])
         >>> b = ivy.array([[-2., 1.], [1. ,2.]])
         >>> c = ivy.array([[0., 1.], [1. ,0.]])
@@ -4027,6 +4060,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([[0., 1.], [1. ,0.]])
         >>> b = ivy.array([[-2., 1.], [1. ,2.]])
         >>> c = ivy.array([[0., 1.], [1. ,0.]])

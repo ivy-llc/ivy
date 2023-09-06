@@ -1347,6 +1347,7 @@ def conv2d_transpose(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
     >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
@@ -1367,6 +1368,7 @@ def conv2d_transpose(
     ivy.Shape(1, 258, 258, 32)
 
     With one :class:`ivy.Container` inputs:
+
     >>> x = ivy.full((1, 6, 6, 1), 2.7)
     >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
@@ -1379,6 +1381,7 @@ def conv2d_transpose(
     }
 
     With multiple :class:`ivy.Container` inputs:
+
     >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
     >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])

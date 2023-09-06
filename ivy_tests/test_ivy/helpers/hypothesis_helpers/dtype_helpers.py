@@ -148,6 +148,7 @@ def get_dtypes(
 
     Examples
     --------
+
     >>> get_dtypes()
     ['float16',
         'uint8',
@@ -278,6 +279,7 @@ def array_dtypes(
 
     Examples
     --------
+
     >>> array_dtypes(
     ...     available_dtypes=get_dtypes("numeric"),
     ...     shared_dtype=True,

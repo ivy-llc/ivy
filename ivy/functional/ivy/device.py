@@ -193,6 +193,7 @@ def get_all_ivy_arrays_on_dev(
 
     Examples
     --------
+
     >>> x = ivy.array([1,0,2])
     >>> y = ivy.dev(x)
     >>> z = ivy.get_all_ivy_arrays_on_dev(y)
@@ -229,6 +230,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
     Examples
     --------
+
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -270,6 +272,7 @@ def print_all_ivy_arrays_on_dev(
 
     Examples
     --------
+
     >>> x = ivy.array([[1,0,2], [3,2,1]])
     >>> y = ivy.dev(x)
     >>> ivy.print_all_ivy_arrays_on_dev(y)
@@ -305,9 +308,11 @@ def set_soft_device_mode(mode: bool) -> None:
         boolean whether to move input arrays
     Examples
     --------
+
     >>> ivy.set_soft_device_mode(False)
     >>> ivy.soft_device_mode
     False
+
     >>> ivy.set_soft_device_mode(True)
     >>> ivy.soft_device_mode
     True
@@ -326,9 +331,11 @@ def unset_soft_device_mode() -> None:
 
     Examples
     --------
+
     >>> ivy.set_soft_device_mode(False)
     >>> ivy.soft_device_mode
     False
+
     >>> ivy.unset_soft_device_mode()
     >>> ivy.soft_device_mode
     True
@@ -404,6 +411,7 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
 
     Examples
     --------
+
     >>> y = ivy.as_ivy_dev('cpu')
     >>> print(y)
     cpu
@@ -468,6 +476,7 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> N
 
     Examples
     --------
+
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
@@ -494,6 +503,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 
     Examples
     --------
+
     >>> x = ivy.total_mem_on_dev("cpu")
     >>> print(x)
     53.66700032
@@ -541,6 +551,7 @@ def used_mem_on_dev(
 
     Examples
     --------
+
     >>> x = ivy.used_mem_on_dev("cpu", process_specific = False)
     >>> print(x)
     6.219563008
@@ -601,6 +612,7 @@ def percent_used_mem_on_dev(
 
     Examples
     --------
+
     >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = False)
     >>> print(x)
     94.036902561555
@@ -656,14 +668,19 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 
     Example
     -------
+
     >>> ivy.dev_util('cpu')
     13.4
+
     >>> ivy.dev_util('gpu:0')
     7.8
+
     >>> ivy.dev_util('cpu')
     93.4
+
     >>> ivy.dev_util('gpu:2')
     57.4
+
     >>> ivy.dev_util('cpu')
     84.2
     """
@@ -694,6 +711,7 @@ def gpu_is_available() -> bool:
 
     Examples
     --------
+
     >>> print(ivy.gpu_is_available())
     False
     """
@@ -717,6 +735,7 @@ def num_cpu_cores(*, logical: bool = True) -> int:
 
     Examples
     --------
+
     >>> print(ivy.num_cpu_cores(logical=False))
     2
     """
@@ -738,6 +757,7 @@ def num_gpus() -> int:
 
     Examples
     --------
+
     >>> print(ivy.num_gpus())
     1
     """
@@ -756,6 +776,7 @@ def tpu_is_available() -> bool:
 
     Examples
     --------
+
     >>> print(ivy.tpu_is_available())
     False
     """
@@ -797,6 +818,7 @@ def default_device(
 
     Examples
     --------
+
     >>> ivy.default_device()
     device(type='cpu')
 
@@ -851,6 +873,7 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
 
     Examples
     --------
+
     >>> ivy.set_default_device("cpu")
     >>> ivy.default_device()
     'cpu'
@@ -878,9 +901,11 @@ def unset_default_device() -> None:
 
     Examples
     --------
+
     >>> ivy.set_default_device("gpu:0")
     >>> ivy.default_device()
     "gpu:0"
+
     >>> ivy.unset_default_device()
     >>> ivy.default_device()
     "cpu"
@@ -932,6 +957,7 @@ def to_device(
 
     Examples
     --------
+
     >>> x = ivy.array([1., 2., 3.])
     >>> x = ivy.to_device(x, 'cpu')
     >>> print(x.device)
@@ -969,6 +995,7 @@ def split_factor(
 
     Examples
     --------
+
     >>> x = ivy.split_factor()
     >>> print(x)
     0.0
@@ -999,6 +1026,7 @@ def set_split_factor(
 
     Examples
     --------
+
     >>> print(ivy.default_device())
     cpu
 
@@ -1243,6 +1271,7 @@ def function_supported_devices(
 
     Examples
     --------
+
     >>> import ivy
     >>> print(ivy.function_supported_devices(ivy.ones))
     ('cpu', 'gpu')
@@ -1295,6 +1324,7 @@ def function_unsupported_devices(
 
     Examples
     --------
+
     >>> print(ivy.function_unsupported_devices(ivy.ones))
     ('tpu',)
     """

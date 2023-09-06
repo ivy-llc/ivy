@@ -80,6 +80,7 @@ def max_pool1d(
 
     Examples
     --------
+
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> print(ivy.max_pool1d(x, 2, 2, 'SAME'))
     ivy.array([[[ 4.,  5.,  6.,  7.],
@@ -87,11 +88,13 @@ def max_pool1d(
 
            [[16., 17., 18., 19.],
             [20., 21., 22., 23.]]])
+
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> print(ivy.max_pool1d(x, 2, 2, 'VALID'))
     ivy.array([[[ 4.,  5.,  6.,  7.]],
 
        [[16., 17., 18., 19.]]])
+
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True)) # noqa
     ivy.array([[[ 1.,  3.],
@@ -164,6 +167,7 @@ def max_unpool1d(
 
     Examples
     --------
+
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> pool_result = ivy.max_pool1d(x, 2, 2, 'SAME')
     >>> print(pool_result)
@@ -172,6 +176,7 @@ def max_unpool1d(
 
            [[16., 17., 18., 19.],
             [20., 21., 22., 23.]]])
+
     >>> unpool_result = ivy.max_unpool1d(pool_result, indices, 2, 2, 'SAME')
     >>> print(unpool_result)
     ivy.array([[[ 0.,  4.,  0.,  5.,  0.,  6.,  0.,  7.,  0.,  0.,  0.,  0.],
@@ -239,6 +244,7 @@ def max_pool2d(
 
     Examples
     --------
+
     >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
     >>> print(ivy.max_pool2d(x, (2, 2), (1, 1), 'SAME'))
     ivy.array([[[[ 2.,  3.],
@@ -327,6 +333,7 @@ def max_pool3d(
 
     Examples
     --------
+
     >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
     >>> print(ivy.max_pool3d(x, 2, 2, 'VALID'))
     ivy.array([[[[[14., 15.]]]],
@@ -334,6 +341,7 @@ def max_pool3d(
 
 
        [[[[38., 39.]]]]])
+
     >>> print(ivy.max_pool3d(x, 2, 2, 'SAME'))
     ivy.array([[[[[14., 15.]]],
 
@@ -416,6 +424,7 @@ def avg_pool1d(
 
     Examples
     --------
+
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> print(ivy.avg_pool1d(x, 2, 2, 'SAME'))
     ivy.array([[[ 2.,  3.,  4.,  5.],
@@ -423,6 +432,7 @@ def avg_pool1d(
 
            [[14., 15., 16., 17.],
             [20., 21., 22., 23.]]])
+
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> print(ivy.avg_pool1d(x, 2, 2, 'VALID'))
     ivy.array([[[ 2.,  3.,  4.,  5.]],
@@ -496,6 +506,7 @@ def avg_pool2d(
 
     Examples
     --------
+
     >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
     >>> print(ivy.avg_pool2d(x, (2, 2), (1, 1), 'SAME'))
     ivy.array([[[[ 1.,  2.],
@@ -506,6 +517,7 @@ def avg_pool2d(
            [[[ 7.,  8.],
              [ 9., 10.],
              [10., 11.]]]])
+
     >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
     >>> print(ivy.avg_pool2d(x, 3, 1, 'VALID'))
     ivy.array([[[[ 8.,  9.]],
@@ -586,6 +598,7 @@ def avg_pool3d(
 
     Examples
     --------
+
     >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
     >>> print(ivy.avg_pool3d(x,2,2,'VALID'))
     ivy.array([[[[[ 7.,  8.]]]],
@@ -593,6 +606,7 @@ def avg_pool3d(
 
 
            [[[[31., 32.]]]]])
+
     >>> print(ivy.avg_pool3d(x,2,2,'SAME'))
     ivy.array([[[[[ 7.,  8.]]],
 
@@ -668,6 +682,7 @@ def pool(
 
     Examples
     --------
+
     >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
     >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
     ivy.array([[[[ 1.,  2.],
@@ -676,6 +691,7 @@ def pool(
             [[[ 7.,  8.],
                 [ 9., 10.],
                 [10., 11.]]]])
+
     >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
     >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
     ivy.array([[[[ 8.,  9.]],
@@ -978,11 +994,13 @@ def fft(
 
     Examples
     --------
+
     >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0)
     ivy.array([-3.44509285e-16+1.14423775e-17j,  8.00000000e+00-8.11483250e-16j,
             2.33486982e-16+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j,
             9.95799250e-17+2.33486982e-16j,  0.00000000e+00+7.66951701e-17j,
             1.14423775e-17+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j])
+
     >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, n=16)
     ivy.array([-3.44509285e-16+1.14423775e-17j,  1.00000000e+00+5.02733949e+00j,
         8.00000000e+00-8.11483250e-16j,  1.00000000e+00-5.02733949e+00j,
@@ -992,6 +1010,7 @@ def fft(
         0.00000000e+00+7.66951701e-17j,  1.00000000e+00+1.98912367e-01j,
         1.14423775e-17+1.22464680e-16j,  1.00000000e+00+6.68178638e-01j,
         0.00000000e+00+1.22464680e-16j,  1.00000000e+00+1.49660576e+00j])
+
     >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, norm="ortho")
     ivy.array([-1.21802426e-16+4.04549134e-18j,  2.82842712e+00-2.86902654e-16j,
         8.25501143e-17+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j,
@@ -1063,6 +1082,7 @@ def dropout1d(
     ivy.array([[[1, 1, 1]]])
 
     With one :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([100, 200, 300]).reshape([1, 1, 3]),
     ...                   b=ivy.array([400, 500, 600]).reshape([1, 1, 3]))
     >>> y = ivy.dropout1d(x, 0.5)
@@ -1241,11 +1261,13 @@ def ifft(
 
     Examples
     --------
+
     >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0)
     ivy.array([-4.30636606e-17+1.43029718e-18j,  0.00000000e+00+1.53080850e-17j,
                 1.43029718e-18+1.53080850e-17j,  0.00000000e+00+9.58689626e-18j,
                 1.24474906e-17+2.91858728e-17j,  0.00000000e+00+1.53080850e-17j,
                 2.91858728e-17+1.53080850e-17j,  1.00000000e+00-1.01435406e-16j])
+
     >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0, n=16)
     ivy.array([-2.15318303e-17+7.15148591e-19j,  6.25000000e-02+9.35378602e-02j,
                 0.00000000e+00+7.65404249e-18j,  6.25000000e-02+4.17611649e-02j,
@@ -1255,6 +1277,7 @@ def ifft(
                 0.00000000e+00+7.65404249e-18j,  6.25000000e-02-9.35378602e-02j,
                 1.45929364e-17+7.65404249e-18j,  6.25000000e-02-3.14208718e-01j,
                 5.00000000e-01-5.07177031e-17j,  6.25000000e-02+3.14208718e-01j])
+
     >>> ivy.ifft(np.exp(2j * np.pi * np.arange(8) / 8), 0, norm="ortho")
     ivy.array([-1.21802426e-16+4.04549134e-18j,  0.00000000e+00+4.32978028e-17j,
                 4.04549134e-18+4.32978028e-17j,  0.00000000e+00+2.71158374e-17j,
@@ -1301,6 +1324,7 @@ def embedding(
 
     Examples
     --------
+
     >>> weights = ivy.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
     >>> indices = ivy.array([0, 2])
     >>> print(ivy.embedding(weights, indices, max_norm=5))
@@ -2591,6 +2615,7 @@ def reduce_window(
 
     Examples
     --------
+
     >>> x = ivy.array([[1, 2, 3, 4],
     >>>                [5, 6, 7, 8],
     >>>                [9, 10, 11, 12]])
@@ -2680,6 +2705,7 @@ def fft2(
 
     Examples
     --------
+
     >>> x = ivy.array([[0, 0, 0, 0, 0],
     ...                [1, 1, 1, 1, 1],
     ...                [2, 2, 2, 2, 2],
@@ -2762,6 +2788,7 @@ def ifftn(
 
     Examples
     --------
+
     >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
     ...                 0.98193269+0.49560517j],
     ...                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
@@ -2848,6 +2875,7 @@ def rfftn(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
     >>> result = ivy.rfftn(x, s=(4,))
     >>> print(result)

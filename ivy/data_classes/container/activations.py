@@ -56,6 +56,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_relu(x)
         >>> print(y)
@@ -121,6 +122,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.relu()
         >>> print(y)
@@ -188,6 +190,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = ivy.Container.static_leaky_relu(x)
         >>> print(y)
@@ -256,6 +259,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = x.leaky_relu()
         >>> print(y)
@@ -324,6 +328,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
         >>> y = ivy.Container.static_gelu(x)
         >>> print(y)
@@ -391,6 +396,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))
         >>> y = x.gelu()
             print(y)
@@ -452,6 +458,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = ivy.Container.static_sigmoid(x)
         >>> print(y)
@@ -511,6 +518,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = x.sigmoid()
         >>> print(y)
@@ -573,6 +581,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = ivy.Container.static_softmax(x)
         >>> print(y)
@@ -636,6 +645,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = x.softmax()
         >>> print(y)
@@ -706,6 +716,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
         >>> y = ivy.Container.static_softplus(x)
         >>> print(y)
@@ -785,6 +796,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
         >>> y = x.softplus()
         >>> print(y)
@@ -856,6 +868,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
         >>> y = ivy.Container.static_log_softmax(x)
         >>> print(y)
@@ -926,6 +939,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
         >>> y = x.log_softmax()
         >>> print(y)
@@ -994,6 +1008,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_mish(x)
         >>> print(y)
@@ -1054,6 +1069,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.mish()
         >>> print(y)
@@ -1114,6 +1130,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
         >>> x = ivy.hardswish(x, out=x)
         >>> x
@@ -1174,6 +1191,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
         >>> x = ivy.hardswish(x, out=x)
         >>> x

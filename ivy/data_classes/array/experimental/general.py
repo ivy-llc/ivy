@@ -42,6 +42,7 @@ class _ArrayWithGeneralExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
         >>> x.reduce(0, ivy.add, 0)
         ivy.array([6, 15])

@@ -145,6 +145,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_kaiser_window(x, True, 5)
         {
@@ -203,6 +204,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_kaiser_window(x, True, 5)
         {
@@ -262,6 +264,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_kaiser_bessel_derived_window(x, True, 5)
         {
@@ -321,6 +324,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5))
         >>> x.kaiser_bessel_derived_window(True, 5)
         {
@@ -383,6 +387,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_hamming_window(x, periodic=True, alpha=0.2, beta=2)
         {
@@ -445,6 +450,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5))
         >>> x.hamming_window(periodic=True, alpha=0.2, beta=2)
         {
@@ -490,6 +496,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_vorbis_window(x)
         {
@@ -541,6 +548,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=3, b=5))
         >>> x.vorbis_window()
         {
@@ -666,8 +674,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
                               b=ivy.array([4.5, -5.3, -0, -2.3]))
+
         >>> y = ivy.Container.static_eye_like(x)
         >>> print(y)
         {
@@ -743,6 +753,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
         >>> y = x.eye_like()
         >>> print(y)
@@ -992,6 +1003,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.Container.static_blackman_window(x)
         {
@@ -1044,6 +1056,7 @@ class _ContainerWithCreationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=3, b=5)
         >>> ivy.blackman_window(x)
         {

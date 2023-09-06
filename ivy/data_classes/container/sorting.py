@@ -187,6 +187,7 @@ class _ContainerWithSorting(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([7, 2, 1]),
         ...                   b=ivy.array([3, 2]))
         >>> y = x.argsort(axis=-1, descending=True, stable=False)
@@ -282,6 +283,7 @@ class _ContainerWithSorting(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),
         ...                   b=ivy.array([8, 1]))
         >>> y = x.sort()
@@ -415,6 +417,7 @@ class _ContainerWithSorting(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.Container(x = ivy.asarray([[8, 9, 6],[6, 2, 6]]),
         ...                   y = ivy.asarray([[7, 2],[3, 4]])
         >>> a.msort()

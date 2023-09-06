@@ -53,12 +53,14 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.max_pool1d(2, 2, 'SAME'))
         ivy.array([[[ 4.,  5.,  6.,  7.],
                 [ 8.,  9., 10., 11.]],
                [[16., 17., 18., 19.],
                 [20., 21., 22., 23.]]])
+
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.max_pool1d(2, 2, 'VALID'))
         ivy.array([[[ 4.,  5.,  6.,  7.]],
@@ -121,6 +123,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
         >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
         ivy.array([[[[ 2.,  3.],
@@ -198,10 +201,12 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
         >>> print(x.max_pool3d(2, 2, 'VALID'))
         ivy.array([[[[[14., 15.]]]],
            [[[[38., 39.]]]]])
+
         >>> print(x.max_pool3d(2, 2, 'SAME'))
         ivy.array([[[[[14., 15.]]],
             [[[22., 23.]]]],
@@ -264,6 +269,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.avg_pool1d(2, 2, 'SAME'))
         ivy.array([[[ 2.,  3.,  4.,  5.],
@@ -336,6 +342,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
         >>> print(x.max_pool2d((2, 2), (1, 1), 'SAME'))
         ivy.array([[[[ 2,  3],
@@ -411,10 +418,12 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
         >>> print(x.avg_pool3d(2, 2, 'VALID'))
         ivy.array([[[[[ 7.,  8.]]]],
                [[[[31., 32.]]]]])
+
         >>> print(x.avg_pool3d(2, 2, 'SAME'))
         ivy.array([[[[[ 7.,  8.]]],
                 [[[19., 20.]]]],
@@ -469,6 +478,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
         >>> x.dct(type=2, norm="ortho")
         ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
@@ -518,6 +528,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
         >>> x.idct(type=2, norm="ortho")
         ivy.array([ 79.49862671, -70.37691498,  30.00390816, -23.58938599,
@@ -574,6 +585,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array((np.exp(2j * np.pi * np.arange(8) / 8)))
         >>> a.fft(0)
         ivy.array([-3.44509285e-16+1.14423775e-17j,  8.00000000e+00-8.11483250e-16j,
@@ -630,6 +642,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array((np.exp(2j * np.pi * np.arange(8) / 8)))
         >>> a.ifft(0)
         ivy.array([-4.30636606e-17+1.43029718e-18j,  0.00000000e+00+1.53080850e-17j,
@@ -932,6 +945,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2, 3, 4],
         >>>                [5, 6, 7, 8],
         >>>                [9, 10, 11, 12]])
@@ -995,11 +1009,13 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[0, 0, 0, 0, 0],
                         [1, 1, 1, 1, 1],
                         [2, 2, 2, 2, 2],
                         [3, 3, 3, 3, 3],
                         [4, 4, 4, 4, 4]])
+
         >>> ivy.fft2(a)
         array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
                 0.  +0.j        ,   0.  +0.j        ],
@@ -1059,6 +1075,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
         ...                 0.98193269+0.49560517j],
         ...                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
@@ -1073,6 +1090,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 -0.08371392+0.17252843j],
                [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
                  0.05344324+0.07972424j]])
+
         >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
         ...                 0.98193269+0.49560517j],
         ...                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,

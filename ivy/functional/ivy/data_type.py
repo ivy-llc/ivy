@@ -547,7 +547,7 @@ def can_cast(
 
     Examples
     --------
-     With :class:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
     True
@@ -1093,6 +1093,7 @@ def default_float_dtype(
 
     Examples
     --------
+
     >>> ivy.default_float_dtype()
     'float32'
 
@@ -1181,6 +1182,7 @@ def infer_default_dtype(
 
     Examples
     --------
+
     >>> ivy.set_default_int_dtype("int32")
     >>> ivy.infer_default_dtype("int8")
     'int8'
@@ -1235,6 +1237,7 @@ def default_dtype(
 
     Examples
     --------
+
     >>> ivy.default_dtype()
     'float32'
 
@@ -1328,6 +1331,7 @@ def default_int_dtype(
 
     Examples
     --------
+
     >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
     >>> ivy.default_int_dtype()
     'int16'
@@ -1443,6 +1447,7 @@ def default_uint_dtype(
 
     Examples
     --------
+
     >>> ivy.set_default_uint_dtype(ivy.UintDtype("uint16"))
     >>> ivy.default_uint_dtype()
     'uint16'
@@ -1543,6 +1548,7 @@ def default_complex_dtype(
 
     Examples
     --------
+
     >>> ivy.default_complex_dtype()
     'complex64'
 
@@ -1734,6 +1740,7 @@ def function_unsupported_dtypes(
 
     Examples
     --------
+
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
     ('float16','uint16','uint32','uint64')
@@ -1779,6 +1786,7 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> 
 
     Examples
     --------
+
     >>> print(ivy.invalid_dtype(None))
     False
 
@@ -1970,6 +1978,7 @@ def is_float_dtype(
 
     Examples
     --------
+
     >>> x = ivy.is_float_dtype(ivy.float32)
     >>> print(x)
     True
@@ -2021,6 +2030,7 @@ def is_uint_dtype(
 
     Examples
     --------
+
     >>> ivy.is_uint_dtype(ivy.UintDtype("uint16"))
     True
 
@@ -2069,6 +2079,7 @@ def is_complex_dtype(
 
     Examples
     --------
+
     >>> ivy.is_complex_dtype(ivy.ComplexDtype("complex64"))
     True
 
@@ -2150,11 +2161,13 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     >>> ivy.set_default_dtype(ivy.bool)
     >>> ivy.default_dtype_stack
     ['bool']
+
     >>> ivy.unset_default_dtype()
 
     >>> ivy.set_default_dtype("float64")
     >>> ivy.default_dtype_stack
     ['float64']
+
     >>> ivy.unset_default_dtype()
 
     With :class:`ivy.NativeDtype` input:
@@ -2237,6 +2250,7 @@ def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
 
     Examples
     --------
+
     >>> ivy.set_default_uint_dtype(ivy.UintDtype("uint8"))
     >>> ivy.default_uint_dtype()
     'uint8'
@@ -2312,6 +2326,7 @@ def unset_default_dtype():
 
     Examples
     --------
+
     >>> ivy.set_default_dtype(ivy.int32)
     >>> ivy.set_default_dtype(ivy.bool)
     >>> ivy.default_dtype_stack
@@ -2337,6 +2352,7 @@ def unset_default_float_dtype():
 
     Examples
     --------
+
     >>> ivy.set_default_float_dtype(ivy.float32)
     >>> ivy.set_default_float_dtype(ivy.float64)
     >>> ivy.default_float_dtype_stack
@@ -2362,6 +2378,7 @@ def unset_default_int_dtype():
 
     Examples
     --------
+
     >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
     >>> ivy.default_int_dtype()
     'int16'
@@ -2382,6 +2399,7 @@ def unset_default_uint_dtype():
 
     Examples
     --------
+
     >>> ivy.set_default_uint_dtype(ivy.UintDtype("uint8"))
     >>> ivy.default_uint_dtype()
     'uint8'
@@ -2402,6 +2420,7 @@ def unset_default_complex_dtype():
 
     Examples
     --------
+
     >>> ivy.set_default_complex_dtype(ivy.complex64)
     >>> ivy.set_default_complex_dtype(ivy.complex128)
     >>> ivy.default_complex_dtype_stack
@@ -2433,6 +2452,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
 
     Examples
     --------
+
     >>> print(ivy.valid_dtype(None))
     True
 
@@ -2523,6 +2543,7 @@ def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
 
     Examples
     --------
+
     >>> ivy.set_backend('numpy')
     >>> ivy.is_native_dtype(np.int32)
     True

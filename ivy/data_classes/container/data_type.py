@@ -62,6 +62,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> c = ivy.Container(a=ivy.array([False,True,True]),
         ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> ivy.Container.static_astype(c, ivy.int32)
@@ -459,6 +460,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
         ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
@@ -519,6 +521,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
         ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
@@ -569,6 +572,7 @@ class _ContainerWithDataTypes(ContainerBase):
         """
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
         >>> y = x.dtype()
         >>> print(y)
@@ -805,6 +809,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> c = ivy.Container(x=ivy.array([12,-1800,1084], dtype=ivy.int16),
         ...                   y=ivy.array([-40000,99,1], dtype=ivy.int32))
         >>> y = ivy.Container.static_iinfo(c)
@@ -865,6 +870,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
         ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))
         >>> c.iinfo()
@@ -962,6 +968,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.static_is_float_dtype(ivy.float32)
         >>> print(x)
         True
@@ -1036,6 +1043,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.is_float_dtype(ivy.float32)
         >>> print(x)
         True
@@ -1173,6 +1181,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container.static_is_complex_dtype(ivy.complex64)
         >>> print(x)
         True
@@ -1235,6 +1244,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.is_complex_dtype(ivy.complex64)
         >>> print(x)
         True
@@ -1291,6 +1301,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([0, 1, 2]),
         ...                   b = ivy.array([3., 4., 5.]))
         >>> print(x.a.dtype, x.b.dtype)
@@ -1349,6 +1360,7 @@ class _ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([3, 3, 3]))
         >>> print(x.a.dtype)
         int32

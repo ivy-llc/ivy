@@ -72,6 +72,7 @@ class _ArrayWithCreation(abc.ABC):
         >>> x
         array([[6.90786433e-310, 6.90786433e-310],
                [6.90786433e-310, 6.90786433e-310]])
+
         >>> ivy.asarray(x)
         ivy.array([[6.90786433e-310, 6.90786433e-310],
                [6.90786433e-310, 6.90786433e-310]])
@@ -499,6 +500,7 @@ class _ArrayWithCreation(abc.ABC):
         >>> y = 5
         >>> ivy.one_hot(x, 5, out=z)
         ivy.array([[1., 0., 0., 0., 0.]])
+
         >>> print(z)
         ivy.array([[1., 0., 0., 0., 0.]])
         """

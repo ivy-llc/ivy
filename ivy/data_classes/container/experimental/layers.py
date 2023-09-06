@@ -58,6 +58,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12.).reshape((2,2,3))
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -135,6 +136,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12.).reshape((2,2,3))
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -212,6 +214,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -287,6 +290,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(24.).reshape((1, 2, 3, 4))
         >>> b = ivy.arange(48.).reshape((2, 4, 3, 2))
         >>> x = ivy.Container(a=a, b=b)
@@ -366,6 +370,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -444,6 +449,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
         >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
         >>> x = ivy.Container(a=a, b=b)
@@ -518,6 +524,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12.).reshape((2,2,3))
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -594,6 +601,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12.).reshape((2,2,3))
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -674,6 +682,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -754,6 +763,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -833,6 +843,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
@@ -914,6 +925,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
         >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
         >>> x = ivy.Container(a=a, b=b)
@@ -1061,6 +1073,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
         >>> x.dct(type=2, norm='ortho')
@@ -1199,6 +1212,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
         ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
         >>> x.idct(type=2, norm='ortho')
@@ -1265,6 +1279,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
         >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
         >>> c = ivy.Container(a=a, b=b)
@@ -1337,6 +1352,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
         >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
         >>> c = ivy.Container(a=a, b=b)
@@ -1408,6 +1424,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
         >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
         >>> c = ivy.Container(a=a, b=b)
@@ -1475,6 +1492,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array(np.array([ 6.+0.j, -2.+2.j, -2.+0.j, -2.-2.j]))
         >>> b = ivy.array(np.exp(2j * np.pi * np.arange(8) / 8))
         >>> c = ivy.Container(a=a, b=b)
@@ -2141,6 +2159,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(
         ...         a=ivy.array([[0.247306+0.908323j, 0.494955+0.90395j,
         ...                       0.98193269+0.49560517j],

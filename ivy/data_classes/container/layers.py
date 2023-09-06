@@ -157,6 +157,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3],
         ...                                [11., 22., 33.]]),
         ...                   b=ivy.array([[1.245, 0.278, 4.105],
@@ -249,6 +250,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
         ...                   b=ivy.array([7., 8., 9.]))
         >>> y = ivy.Container.static_dropout(x, 0.3)
@@ -337,6 +339,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[1., 2., 3.], [4., 5., 6.]]),
         ...                   b=ivy.array([7., 8., 9.]))
         >>> y = x.dropout(0.3)
@@ -413,6 +416,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]).reshape([1, 1, 3]),
         ...                   b=ivy.array([4, 5, 6]).reshape([1, 1, 3]))
         >>> y = ivy.Container.static_dropout1d(x, 0.5)
@@ -485,6 +489,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]).reshape([1, 1, 3]),
         ...                   b=ivy.array([4, 5, 6]).reshape([1, 1, 3]))
         >>> y = x.dropout1d(x, 0.5)
@@ -618,6 +623,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
         ...                   b=ivy.array([[400, 500, 600]]))
         >>> y = x.dropout2d(0.5)
@@ -1226,6 +1232,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]),
         ...                   b=ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
         >>> filters = ivy.array([[[0., 0.5, 1.], [0.25, 0.5, 0.75], [-0.5, 0., 0.5 ]]])
@@ -1322,6 +1329,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[[2., 3., 4.], [5., 6., 7.]]]),
         ...                   b=ivy.array([[[7., 8., 9.], [10., 11., 12]]]))
         >>> filters = ivy.array([[[0., 0.5, 1.], [0.25, 0.5, 0.75], [-0.5, 0., 0.5 ]]])
@@ -1412,6 +1420,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
         ...                   b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
         >>> filters = ivy.array([[2., 0., 1.],
@@ -1502,6 +1511,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
         ...                   b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
         >>> filters = ivy.array([[2, 0, 1],
@@ -1598,6 +1608,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]),
         ...                   b=ivy.random_normal(mean=0, std=1, shape=[1, 56, 3]))
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
@@ -1691,6 +1702,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]),
         ...                   b=ivy.random_normal(mean=0, std=1, shape=[1, 56, 3]))
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
@@ -1781,6 +1793,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
         >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
@@ -1880,6 +1893,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
         >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
@@ -1970,6 +1984,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> b = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> inp = ivy.Container(a=a, b=b)
@@ -2043,6 +2058,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> b = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> inp = ivy.Container(a=a, b=b)
@@ -2388,6 +2404,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32) )
         >>> filters = ivy.ones((3, 3, 3, 1, 1)).astype(ivy.float32)
         >>> result = x.conv3d(filters, 2, 'SAME')
@@ -2497,6 +2514,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(
         ...     a=ivy.random_normal(shape=(5, 20, 3)),
         ...     b=ivy.random_normal(shape=(5, 20, 3))
@@ -2609,6 +2627,7 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(
         ...     a=ivy.array([[1, 2, 3, 4],
         ...                  [5, 6, 7, 8],

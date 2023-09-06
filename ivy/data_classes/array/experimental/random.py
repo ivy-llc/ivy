@@ -44,6 +44,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> alpha = ivy.array([1.0, 2.0, 3.0])
         >>> alpha.dirichlet()
         ivy.array([0.10598304, 0.21537054, 0.67864642])
@@ -204,6 +205,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> lam = ivy.array([1.0, 2.0, 3.0])
         >>> lam.poisson()
         ivy.array([1., 4., 4.])

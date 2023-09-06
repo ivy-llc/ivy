@@ -111,6 +111,7 @@ class _ContainerWithSearching(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([[4., 0., -1.], [2., -3., 6]])
         >>> b = ivy.array([[1., 2., 3.], [1., 1., 1.]])
         >>> x = ivy.Container(a=a, b=b)
@@ -381,6 +382,7 @@ class _ContainerWithSearching(ContainerBase):
 
         Examples
         --------
+
         >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
         >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
         >>> res = ivy.Container.static_where((x1.a > x2.a), x1, x2)
@@ -427,6 +429,7 @@ class _ContainerWithSearching(ContainerBase):
 
         Examples
         --------
+
         >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
         >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
         >>> res = x1.where((x1.a > x2.a), x2)

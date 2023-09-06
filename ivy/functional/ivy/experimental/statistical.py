@@ -188,9 +188,11 @@ def median(
 
     Examples
     --------
+
     >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
     >>> ivy.median(a)
     3.5
+
     >>> ivy.median(a, axis=0)
     ivy.array([6.5, 4.5, 2.5])
     """
@@ -242,9 +244,11 @@ def nanmean(
 
     Examples
     --------
+
     >>> a = ivy.array([[1, ivy.nan], [3, 4]])
     >>> ivy.nanmean(a)
     2.6666666666666665
+
     >>> ivy.nanmean(a, axis=0)
     ivy.array([2.,  4.])
     """
@@ -301,13 +305,16 @@ def nanprod(
         The product of array elements over a given axis treating
         Not a Numbers (NaNs) as ones
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
+
     >>> a = ivy.array([[1, ivy.nan], [3, 4]])
     >>> ivy.nanprod(a)
     12.0
+
     >>> ivy.nanprod(a, axis=0)
     [3. 4.]
+
     >>> ivy.nanprod(a, axis=0, keepdims=True)
     [[3. 4.]]
     """
@@ -379,6 +386,7 @@ def quantile(
 
     Examples
     --------
+
     >>> a = ivy.array([[10., 7., 4.], [3., 2., 1.]])
     >>> q = ivy.array(0.5)
     >>> ivy.quantile(a, q)
@@ -485,8 +493,10 @@ def nanmedian(
     >>> ivy.nanmedian(x)
         ivy.array(23.)
     With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
+
     >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]),
             b=ivy.array([[12, 10, 34], [45, 23, ivy.nan]]))
+
     >>> ivy.nanmedian(x)
     {
         a: ivy.array(3.),
@@ -531,9 +541,11 @@ def bincount(
 
     Examples
     --------
+
     >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
     >>> a.bincount(a)
         3.0
+
     >>> a.bincount(a, axis=0)
         array([6.5, 2. , 2.5])
     """
@@ -575,6 +587,7 @@ def igamma(
 
     Examples
     --------
+
     >>> a = ivy.array([2.5])
     >>> x = ivy.array([1.7, 1.2])
     >>> a.igamma(x)
@@ -658,6 +671,7 @@ def cov(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([[1, 2, 3],
     ...                [4, 5, 6]])
     >>> y = x[0].cov(x[1])
@@ -666,6 +680,7 @@ def cov(
            [1., 1.]])
 
     With :class:`ivy.Container` inputs:
+
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
     >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
     >>> z = ivy.Container.static_cov(x, y)
@@ -678,6 +693,7 @@ def cov(
     }
 
     With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.Container(a=ivy.array([3. ,2. ,1.]), b=ivy.array([-1., -2., -3.]))
     >>> z = ivy.cov(x, y)
@@ -690,6 +706,7 @@ def cov(
     }
 
     With :class:`ivy.Array` input and rowVar flag set to False (True by default):
+
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
     >>> y = x[0].cov(x[1], rowVar=False)
@@ -698,6 +715,7 @@ def cov(
            [1., 1.]])
 
     With :class:`ivy.Array` input and bias flag set to True (False by default):
+
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
     >>> y = x[0].cov(x[1], bias=True)
@@ -706,6 +724,7 @@ def cov(
            [0.66666667, 0.66666667]])
 
     With :class:`ivy.Array` input with both fweights and aweights given:
+
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
     >>> fw = ivy.array([1,2,3])
@@ -893,6 +912,7 @@ def cummin(
     >>> y = ivy.cummin(x)
     >>> print(y)
     ivy.array([1, 1, 1, 0])
+
     >>> x = ivy.array([[6, 4, 2],
     ...                [1, 3, 0]])
     >>> y = ivy.zeros((2,3))

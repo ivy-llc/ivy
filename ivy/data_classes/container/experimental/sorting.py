@@ -145,6 +145,7 @@ class _ContainerWithSortingExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.Container(x = ivy.asarray([[9,4,0,4,0,2,1],[1,5,1,4,3,4,4]]),
         ...                   y = ivy.asarray([[1, 5, 2],[3, 4, 4]])
         >>> a.lexsort()

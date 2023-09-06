@@ -38,6 +38,7 @@ def invert_permutation(
 
     Examples
     --------
+
     >>> a = ivy.asarray([0, 3, 1, 2])
     >>> ivy.invert_permutation(a)
     ivy.array([0, 2, 3, 1])
@@ -86,6 +87,7 @@ def lexsort(
 
     Examples
     --------
+
     >>> a = [1,5,1,4,3,4,4] # First column
     >>> b = [9,4,0,4,0,2,1] # Second column
     >>> ivy.lexsort([b, a]) # Sort by a, then by b

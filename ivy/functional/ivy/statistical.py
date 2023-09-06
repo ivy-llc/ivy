@@ -589,6 +589,7 @@ def std(
 
     Examples
     --------
+
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.std(x)
     >>> print(y)
@@ -881,6 +882,7 @@ def var(
     ivy.array(0.08966666)
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),
     ...                   b=ivy.array([0.7, 0.1, 0.9]))
     >>> y = ivy.var(x)
@@ -1102,6 +1104,7 @@ def cumprod(
     >>> x = ivy.array([[2, 3],
                        [5, 7],
                        [11, 13]])
+
     >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
@@ -1148,6 +1151,7 @@ def cumprod(
                           b=ivy.array([[3, 4],
                                        [4, 5],
                                        [5, 6]]))
+
     >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
@@ -1166,6 +1170,7 @@ def cumprod(
                             b=ivy.array([[3, 4],
                                         [4, 5],
                                         [5, 6]]))
+
     >>> x.cumprod(axis=0, exclusive=True, out=x)
     >>> print(x)
     {

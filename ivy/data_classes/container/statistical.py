@@ -379,6 +379,7 @@ class _ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]),
         ...                   b=ivy.array([3.0, 4.0, 5.0]))
         >>> y = x.var()
@@ -473,6 +474,7 @@ class _ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),
         ...                   b=ivy.array([0.7, 0.1, 0.9]))
         >>> y = ivy.Container.static_var(x)
@@ -1086,6 +1088,7 @@ class _ContainerWithStatistical(ContainerBase):
                           [11, 6, 0],
                           [13, 7, 0]])
         }
+
         >>> x = ivy.Container(a=ivy.array([[1],
         ...                                [1]]),
         ...                   b=ivy.array([[6, 8, 7],
@@ -1341,6 +1344,7 @@ class _ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> ivy.Container.static_cumprod(x, axis=1, exclusive=True, out=y)
         >>> print(y)
@@ -1430,6 +1434,7 @@ class _ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         {

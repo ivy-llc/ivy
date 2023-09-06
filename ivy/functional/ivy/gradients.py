@@ -574,6 +574,7 @@ def grad(func: Callable, argnums: Union[int, Sequence[int]] = 0) -> Callable:
 
     Examples
     --------
+
     >>> x = ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]])
     >>> func = lambda x: ivy.mean(ivy.square(x))
     >>> grad_fn = ivy.grad(func)

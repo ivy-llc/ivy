@@ -176,6 +176,7 @@ class _ContainerWithRandom(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]), b=ivy.array([8.7,9.8,4.5]))
         >>> x.random_uniform(high=17.4)
         {
@@ -463,6 +464,7 @@ class _ContainerWithRandom(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([7.5,6.7,0.9]),
         ...                   b=ivy.array([8.7,9.8,4.5]))
         >>> x.random_normal(std=17.4)
@@ -901,6 +903,7 @@ class _ContainerWithRandom(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([7,6,0]),
         ...                   b=ivy.array([8,9,4]))
         >>> x.randint(30)
@@ -1073,6 +1076,7 @@ class _ContainerWithRandom(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([7, 6, 0]),
         ...                   b=ivy.array([8, 9, 4]))
         >>> ivy.Container.static_shuffle(x)
@@ -1140,6 +1144,7 @@ class _ContainerWithRandom(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([5, 2, 9]),
         ...                   b=ivy.array([7, 1, 6]))
         >>> y = ivy.Container.shuffle(x)

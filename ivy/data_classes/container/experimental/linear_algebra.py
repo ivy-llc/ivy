@@ -159,6 +159,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
         >>> beta = ivy.array([0.,2.])
         >>> y = alpha.eigh_tridiagonal(beta)
@@ -243,6 +244,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=[1,2])
         >>> ivy.diagflat(x, k=1)
         {
@@ -299,6 +301,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.Container(x=ivy.array([1,2]), y=ivy.array(50))
         >>> b = ivy.Container(x=ivy.array([3,4]), y=ivy.array(9))
         >>> ivy.Container.static_kron(a, b)
@@ -336,6 +339,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.Container(x=ivy.array([1,2]), y=ivy.array([50]))
         >>> b = ivy.Container(x=ivy.array([3,4]), y=ivy.array(9))
         >>> a.kron(b)
@@ -386,10 +390,12 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.array([[[1., 0.],
                             [0., 1.]],
                             [[2., 0.],
                             [0., 2.]]])
+
         >>> ivy.matrix_exp(x)
         ivy.array([[[2.7183, 1.0000],
                     [1.0000, 2.7183]],
@@ -431,6 +437,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> c = ivy.Container({'x':{'xx':x}})
         >>> ivy.Container.eig(c)
@@ -439,6 +446,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
                     xx: (tuple(2), <class ivy.array.array.Array>, shape=[2, 2])
                 }
         }
+
         >>> ivy.Container.eig(c)['x']['xx']
         (
             ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
@@ -484,6 +492,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> c = ivy.Container({'x':{'xx':x}})
         >>> c.eig()
@@ -492,6 +501,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
                     xx: (tuple(2), <class ivy.array.array.Array>, shape=[2, 2])
                 }
         }
+
         >>>c.eig()['x']['xx']
         (
             ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
@@ -537,6 +547,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> c = ivy.Container({'x':{'xx':x}})
         >>> ivy.Container.eigvals(c)
@@ -545,6 +556,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
                 xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
             }
         }
+
         >>> ivy.Container.eigvals(c)['x']['xx']
         ivy.array([-0.37228132+0.j,  5.37228132+0.j])
         """
@@ -584,6 +596,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> c = ivy.Container({'x':{'xx':x}})
         >>> c.eigvals()
@@ -592,6 +605,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
                 xx: ivy.array([-0.37228132+0.j, 5.37228132+0.j])
             }
         }
+
         >>> c.eigvals()['x']['xx']
         ivy.array([-0.37228132+0.j,  5.37228132+0.j])
         """
@@ -632,10 +646,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = np.array([[1.-1.j, 2.+2.j],
                           [3.+3.j, 4.-4.j]])
+
         >>> y = np.array([[1.-2.j, 3.+4.j],
                           [1.-0.j, 2.+6.j]])
+
         >>> c = ivy.Container(a=ivy.array(x), b=ivy.array(y))
         >>> ivy.Container.static_adjoint(c)
         {
@@ -668,8 +685,10 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = np.array([[1.-1.j, 2.+2.j],
                           [3.+3.j, 4.-4.j]])
+
         >>> c = ivy.Container(a=ivy.array(x))
         >>> c.adjoint()
         {
@@ -757,6 +776,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
         ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
         >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)),
@@ -812,6 +832,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> ivy.Container.static_cond(x)
         ivy.array(14.933034)
@@ -857,6 +878,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> c = ivy.Container(a=x)
         >>> c.cond()

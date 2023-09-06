@@ -53,6 +53,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
         ...                   b=ivy.array([3.5, 4.5, 5.5]))
         >>> y = ivy.Container.static_sinc(x)
@@ -115,6 +116,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),
         ...                   b=ivy.array([3.5, 4.5, 5.5]))
         >>> y = x.sinc()
@@ -450,6 +452,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
         >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
         >>> ivy.Container.static_copysign(x1, x2)
@@ -457,6 +460,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             a: ivy.array([-0., -1., -2.]),
             b: ivy.array(1.)
         }
+
         >>> ivy.Container.static_copysign(23, x1)
         {
             a: ivy.array([23., 23., 23.]),
@@ -504,6 +508,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
         >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
         >>> x1.copysign(x2)
@@ -511,6 +516,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             a: ivy.array([-0., -1., -2.]),
             b: ivy.array(1.)
         }
+
         >>> x1.copysign(-1)
         {
             a: ivy.array([-0., -1., -2.]),
@@ -1391,6 +1397,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
         >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
         >>> y = x1.allclose(x2)
@@ -1484,8 +1491,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),
                               b=ivy.array([1, 2, 4, 7, 0]))
+
         >>> ivy.Container.static_diff(x)
         {
             a: ivy.array([ 1,  2,  3, -7]),
@@ -1550,8 +1559,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),
                               b=ivy.array([1, 2, 4, 7, 0]))
+
         >>> x.diff()
         {
             a: ivy.array([1, 2, 3, -7]),
@@ -1969,6 +1980,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> coordinates = ivy.Container(
         >>>     a=(ivy.array([-2., -1., 1., 4.]),),
         >>>     b=(ivy.array([2., 1., -1., -4.]),)
@@ -2352,6 +2364,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
         ...                   b=ivy.array([7.9, 0.31+3.3j, -4.2-5.9j]))
         >>> z = ivy.Container.static_conj(x)
@@ -2478,6 +2491,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
         >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
         >>> ivy.Container.static_ldexp(x1, x2)
@@ -2526,6 +2540,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
         >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
         >>> x1.ldexp(x2)
@@ -2584,6 +2599,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> end = ivy.array([10.])
         >>> weight = 1.1
@@ -2593,6 +2609,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             a: ivy.array([11., 10.90000057, 10.80000019]),
             b: ivy.array([10.70000076, 10.60000038, 10.5])
         }
+
         >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
         >>> end = ivy.Container(a=ivy.array([5]))
         >>> weight = ivy.Container(a=0.5)
@@ -2649,6 +2666,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> input = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
         >>> end = ivy.Container(a=ivy.array([10, 10, 10]), b=ivy.array([20, 20, 20]))
         >>> weight = ivy.Container(a=ivy.array(0.5), b=ivy.array([0.4, 0.5, 0.6]))
@@ -2702,6 +2720,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
         >>> ivy.Container.static_frexp(x)
         {
@@ -2798,6 +2817,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]),
         >>> b = ivy.array([-1.5, 5.3, -10.7]))
         >>> ivy.Container.static_modf(x)
@@ -2843,6 +2863,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]),
         >>> b = ivy.array([-1.5, 5.3, -10.7]))
         >>> x.modf()
@@ -2960,6 +2981,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             container including the digamma function computed element-wise
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1, 0.5]), b=ivy.array([2.0, 3.0])
         >>> x.digamma()
         {
@@ -3020,10 +3042,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             container including the sparsified tensor computed element-wise
         Examples
         --------
+
         >>> x = ivy.Container(
                 a=ivy.reshape(ivy.arange(100), (10, 10)),
                 b=ivy.reshape(ivy.arange(100), (10, 10)),
             )
+
         >>> ivy.Container.static_sparsify_tensor(x, 10)
             {
                 a: (<class ivy.data_classes.array.array.Array> shape=[10, 10]),

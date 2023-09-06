@@ -642,6 +642,7 @@ def softsign(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1.0, 2.0, 3.0])
     >>> y = ivy.softsign(x)
     >>> print(y)
