@@ -1811,11 +1811,11 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-@handle_exceptions
-@handle_nestable
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_partial_mixed_function
-@inputs_to_ivy_arrays
+@handle_nestable
+@handle_exceptions
 def put_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
