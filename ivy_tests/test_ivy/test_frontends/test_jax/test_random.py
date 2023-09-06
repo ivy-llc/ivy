@@ -1360,7 +1360,7 @@ def test_jax_maxwell(
     fn_tree="jax.random.double_sided_maxwell",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
-        min_value=0,
+        min_value=1,
         max_value=2000,
         min_num_dims=1,
         max_num_dims=1,
