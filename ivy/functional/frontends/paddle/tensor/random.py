@@ -12,7 +12,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     "paddle",
 )
 @to_ivy_arrays_and_back
-def exponential_(x, lam=0.1, name=None):
+def exponential_(x, lam=1.0, name=None):
     return ivy.multiply(lam, ivy.exp(ivy.multiply(-lam, x)))
 
 
