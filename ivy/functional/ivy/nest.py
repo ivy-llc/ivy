@@ -1036,7 +1036,7 @@ def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
     fn: Callable,
-    include_derived: Optional[Union[Dict[type, bool], bool]] = None,
+    include_derived: Optional[Union[Dict[str, bool], bool]] = None,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
     to_mutable: bool = False,
     max_depth: Optional[int] = None,
@@ -1160,14 +1160,13 @@ def nested_map(
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
-        include_derived = {str(tuple): True, str(list): True, str(dict): True}
+        include_derived = {"tuple": True, "list": True, "dict": True}
     elif not include_derived:
         include_derived = {}
-    for t in (tuple, list, dict):
+    for t in ("tuple", "list", "dict"):
         if t not in include_derived:
-            include_derived[str(t)] = False
+            include_derived[t] = False
     # to ensure all keys are strings
-    include_derived = {str(key): value for key, value in include_derived.items()}
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
@@ -1184,7 +1183,7 @@ def nested_map(
         _tuple_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[str(tuple)]
+            if include_derived["tuple"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
@@ -1192,7 +1191,7 @@ def nested_map(
         _list_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[str(list)]
+            if include_derived["list"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
@@ -1200,7 +1199,7 @@ def nested_map(
         _dict_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[str(dict)]
+            if include_derived["dict"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
