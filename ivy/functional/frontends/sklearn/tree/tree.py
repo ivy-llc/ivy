@@ -265,18 +265,17 @@ class Tree:
         self.nodes = [] #replaced it with array since this array will contain nodes 
         self.value = None
         self.value_stride = None
-
-        dummy = 0
-        size_t_dtype = np.array(dummy).dtype
+        
+        size_t_dtype = "float32"
 
         n_classes = _check_n_classes(n_classes, size_t_dtype)
 
         # Input/Output layout
         self.n_features = n_features
         self.n_outputs = n_outputs
-        self.n_classes = np.zeros(n_outputs, dtype=size_t_dtype)
+        self.n_classes = ivy.zeros(n_outputs, dtype=size_t_dtype)
 
-        self.max_n_classes = np.max(n_classes)
+        self.max_n_classes = ivy.max(n_classes)
         self.value_stride = n_outputs * self.max_n_classes
 
         for k in range(n_outputs):
@@ -320,9 +319,7 @@ class Tree:
     def _resize_c(self, capacity=float('inf')):
         raise NotImplementedError
 
-
-    def _add_node(self, parent, is_left, is_leaf, feature, threshold, impurity,
-              n_node_samples, weighted_n_node_samples, missing_go_to_left):
+    def _add_node(self, parent, is_left, is_leaf, feature, threshold, impurity, n_node_samples, weighted_n_node_samples, missing_go_to_left):
         """
         Add a node to the tree.
 
@@ -331,11 +328,6 @@ class Tree:
         Returns -1 on error.
         """
         node_id = self.node_count
-
-        #no need to resize since python reallocates lists dynamically
-        # if node_id >= self.capacity:
-        #     if self._resize_c() != 0:
-        #         return -1 #throw error if resize not possible
 
         node = Node()  #self.nodes contains a list of nodes, it returns the node at node_id location
         self.nodes.append(node)
@@ -518,7 +510,7 @@ class Tree:
             raise ValueError("X should be in csr_matrix format, got %s" % type(X))
 
         if X.dtype != DTYPE:
-            raise ValueError("X.dtype should be np.float32, got %s" % X.dtype)
+            raise ValueError("X.dtype should be float32, got %s" % X.dtype)
 
         # Extract input
         X_data = X.data
@@ -529,14 +521,14 @@ class Tree:
         n_features = X.shape[1]
 
         # Initialize output
-        indptr = np.zeros(n_samples + 1, dtype=np.intp)
-        indices = np.zeros(n_samples * (1 + self.max_depth), dtype=np.intp)
+        indptr = ivy.zeros(n_samples + 1, dtype="int32")
+        indices = ivy.zeros(n_samples * (1 + self.max_depth), dtype="int32")
 
         # Initialize auxiliary data-structure
         feature_value = 0.0
         node = None
-        X_sample = np.zeros(n_features, dtype=DTYPE)
-        feature_to_sample = np.full(n_features, -1, dtype=np.intp)
+        X_sample = ivy.zeros(n_features, dtype=DTYPE)
+        feature_to_sample = ivy.full(n_features, -1, dtype="int32")
 
         for i in range(n_samples):
             node = self.nodes
@@ -566,7 +558,7 @@ class Tree:
             indptr[i + 1] += 1
 
         indices = indices[:indptr[n_samples]]
-        data = np.ones(shape=len(indices), dtype=np.intp)
+        data = ivy.ones(shape=len(indices), dtype="int32")
         out = csr_matrix((data, indices, indptr), shape=(n_samples, self.node_count))
 
         return out
@@ -741,8 +733,8 @@ class Tree:
                         stack_size += 1
 
         # Sanity check. Should never happen.
-        if not (0.999 < np.sum(weight_stack) < 1.001):
-            raise ValueError("Total weight should be 1.0 but was %.9f" % np.sum(weight_stack))
+        if not (0.999 < ivy.sum(weight_stack) < 1.001):
+            raise ValueError("Total weight should be 1.0 but was %.9f" % ivy.sum(weight_stack))
 
 
 def _check_n_classes(n_classes, expected_dtype):
