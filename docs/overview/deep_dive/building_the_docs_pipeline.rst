@@ -84,7 +84,7 @@ To build the docs through docker you use this command:
 
     docker run -v /path/to/project:/project unifyai/doc-builder
 
-You can also add options described in the :ref:`The convenience script` section.
+You can also add options described in the :ref:`overview/deep_dive/building_the_docs_pipeline:The convenience script` section.
 
 .. code-block:: bash
     
@@ -167,7 +167,7 @@ The last directive is ``autosummary``, which is used to automatically generate a
 of contents for a module, as well as the documentation itself automatically by
 discovering the docstrings of the module. This is a custom directive, built on the original
 `autosummary`_
-extension. We will explain in detail how did we change it, in :ref:`Custom Extensions`.
+extension. We will explain in detail how did we change it, in :ref:`overview/deep_dive/building_the_docs_pipeline:Custom Extensions`.
 
 ``partial_conf.py``
 ~~~~~~~~~~~~~~~~~~~
@@ -194,7 +194,7 @@ Here we are overriding the ``ivy_toctree_caption_map`` configuration, which is u
 customize the title of the table of contents for each module. 
 ``ivy_toctree_caption_map`` is one of the configuration options we have in our
 ``custom_autosummary`` extension, which will be covered extensively in 
-:ref:`Custom Extensions`.
+:ref:`overview/deep_dive/building_the_docs_pipeline:Custom Extensions`.
 
 ``prebuild.sh``
 ~~~~~~~~~~~~~~~

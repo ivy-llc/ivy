@@ -3,7 +3,6 @@ Formatting
 
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 .. _`black`: https://black.readthedocs.io/en/stable/index.html
-.. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 .. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
@@ -19,7 +18,7 @@ Lint Checks
 
 In addition to `black`_ and `flake8`_, Ivy uses other linters to help automate the formatting process, especially for
 issues `flake8`_ detects but doesn't fix automatically. In addition to that, we validate docstring as part of our
-linting process. You can learn more about our docstring formatting in the :ref:`Docstrings` section.
+linting process. You can learn more about our docstring formatting in the `Docstrings <docstrings.rst>`_ section.
 
 We use the following linters:
 
