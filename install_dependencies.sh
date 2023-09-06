@@ -1,3 +1,4 @@
+sudo apt-get update
 sudo apt-get install pandoc -y
 pip install -r requirements/requirements.txt
 if [[ $(arch) == 'arm64' ]]; then
