@@ -23,7 +23,7 @@ When calling `this function`_ for setting the backend, the following steps are p
 #. loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and (a) add the primary function from the backend if it exists, (b) else add the compositional function from :code:`ivy_original_dict`.
 #. `wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`.
    Wrapping is used in order to avoid excessive code duplication in every backend function implementation.
-   This is explained in more detail in the next section: :ref:`Function Wrapping`.
+   This is explained in more detail in the next section: `Function Wrapping <function_wrapping.rst>`_.
 
 It's helpful to look at an example:
 
