@@ -234,13 +234,14 @@ def test_numpy_fromfunction(
     )
 
 
+# fromiter
 @handle_frontend_test(
     fn_tree="numpy.fromiter",
-    iterable=st.lists(st.floats(), min_size=1, max_size=10),
+    iter=st.lists(st.floats(), min_size=1, max_size=10),
     dtype=helpers.get_dtypes("numeric"),
 )
 def test_numpy_fromiter(
-    iterable,
+    iter,
     dtype,
     frontend,
     backend_fw,
@@ -249,7 +250,7 @@ def test_numpy_fromiter(
     on_device,
 ):
     helpers.test_frontend_function(
-        iterable=iterable,
+        iter=iter,
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
