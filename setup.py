@@ -60,6 +60,8 @@ for tag in all_tags:
         pbar.close()
         break
     for i, path in enumerate(paths):
+        if os.path.exists(path):
+            continue
         folders = path.split(os.sep)
         folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
         file_name = f"{file_path[:-3]}_{tag}.so"
