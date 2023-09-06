@@ -278,6 +278,33 @@ def array_for_adaptive(
     return dtypes, arrays, output_size
 
 
+# Transformer #
+# ----------- #
+@st.composite
+def transformer_data(draw):
+    dtype = draw(
+        helpers.get_dtypes("float", full=False).filter(lambda x: x != ["float16"])
+    )
+    query_dim = draw(st.integers(min_value=1, max_value=128))
+    key_dim = draw(st.integers(min_value=1, max_value=128))
+    value_dim = draw(st.integers(min_value=1, max_value=128))
+    num_heads = draw(st.integers(min_value=1, max_value=8))
+    ff_dim = draw(st.integers(min_value=1, max_value=512))
+    dropout_rate = draw(st.floats(min_value=0.0, max_value=0.9))
+    max_sequence_length = draw(st.integers(min_value=1, max_value=1000))
+
+    return (
+        dtype,
+        query_dim,
+        key_dim,
+        value_dim,
+        num_heads,
+        ff_dim,
+        dropout_rate,
+        max_sequence_length,
+    )
+
+
 # --- Main --- #
 # ------------ #
 
@@ -1640,33 +1667,6 @@ def test_sequential_layer(
         return
     assert np.allclose(
         ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
-    )
-
-
-# Transformer #
-# ----------- #
-@st.composite
-def transformer_data(draw):
-    dtype = draw(
-        helpers.get_dtypes("float", full=False).filter(lambda x: x != ["float16"])
-    )
-    query_dim = draw(st.integers(min_value=1, max_value=128))
-    key_dim = draw(st.integers(min_value=1, max_value=128))
-    value_dim = draw(st.integers(min_value=1, max_value=128))
-    num_heads = draw(st.integers(min_value=1, max_value=8))
-    ff_dim = draw(st.integers(min_value=1, max_value=512))
-    dropout_rate = draw(st.floats(min_value=0.0, max_value=0.9))
-    max_sequence_length = draw(st.integers(min_value=1, max_value=1000))
-
-    return (
-        dtype,
-        query_dim,
-        key_dim,
-        value_dim,
-        num_heads,
-        ff_dim,
-        dropout_rate,
-        max_sequence_length,
     )
 
 
