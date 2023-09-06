@@ -430,25 +430,29 @@ def asarray(
     ret
         An array interpretation of x.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With list of lists as input:
+
     >>> ivy.asarray([[1,2],[3,4]])
     ivy.array([[1, 2],
                [3, 4]])
 
     With tuple of lists as input:
+
     >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
     ivy.array([[1.39999998, 5.5999999 , 5.5       ],
                [3.0999999 , 9.10000038, 7.5       ]])
 
     With ndarray as input:
+
     >>> x = ivy.np.ndarray(shape=(2,2), order='C')
     >>> ivy.asarray(x)
     ivy.array([[6.90786433e-310, 6.90786433e-310],
                [6.90786433e-310, 6.90786433e-310]])
 
     With :class:`ivy.Container` as input:
+
     >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
     >>> ivy.asarray(x)
     {
@@ -692,8 +696,8 @@ def full_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :code:`int` datatype:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -804,9 +808,8 @@ def ones_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -920,9 +923,8 @@ def zeros_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -1263,9 +1265,8 @@ def eye(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances as a replacement to any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :'n_rows' input:
 
     >>> x = ivy.eye(3)
@@ -1409,9 +1410,8 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With float input:
 
     >>> x = ivy.linspace(1, 2, 3)
@@ -1523,9 +1523,8 @@ def meshgrid(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2])
@@ -1636,9 +1635,8 @@ def full(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Shape` input:
 
     >>> shape = ivy.Shape((2,2))
@@ -2089,8 +2087,8 @@ def logspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With float input:
 
     >>> print(ivy.logspace(1, 2, 4))
