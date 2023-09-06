@@ -472,21 +472,18 @@ def kl_div(
             " inputs with different sizes"
         )
 
-    input = ivy.clip(input, 1e-7, 1)
-    target = ivy.clip(target, 1e-7, 1)
-
     size = ivy.shape(input)
     if len(size) < 1:
         size = [1]
 
-    loss = ivy.sum(input * ivy.log(input / target), axis=-1)
+    loss = input * ivy.log(input / target)
 
     if reduction == "sum":
-        loss = ivy.sum(loss, out=out)
+        loss = ivy.sum(loss, out=out, axis=-1)
     elif reduction == "mean":
-        loss = ivy.mean(loss, out=out)
+        loss = ivy.mean(loss, out=out, axis=-1)
     elif reduction == "batchmean":
-        loss = ivy.sum(loss, out=out) / size[0]
+        loss = ivy.sum(loss, out=out, axis=-1) / size[0]
     else:
         loss = ivy.inplace_update(out, loss) if out is not None else loss
 
