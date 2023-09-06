@@ -2638,6 +2638,7 @@ def choose(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def column_stack(
     arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
