@@ -48,7 +48,7 @@ flags_mapping = {
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
     "inplace": "BuiltInplace",
-    "test_trace": "BuiltCompileStrategy",
+    "test_trace": "BuiltTraceStrategy",
     "transpile": "BuiltTranspileStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
 }
