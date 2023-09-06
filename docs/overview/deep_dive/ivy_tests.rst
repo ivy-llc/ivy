@@ -53,6 +53,14 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
+.. _`array_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L15
+.. _`array_bools`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L17
+.. _`reshape_shapes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L16
+.. _`get_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L178
+.. _`get_shape`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L67
+.. _`get_bounds`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L145
+.. _`subsets`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L48
+.. _`num_positional_args`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/testing_helpers.py#L78
 .. _`CI Pipeline`: continuous_integration.rst
 .. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
 
@@ -250,7 +258,7 @@ Writing Ivy Tests
 ^^^^^^^^^^^^^^^^^
 
 As mentioned previously, testing Ivy functions needs a lot of pre-processing and past-processing, using only :code:`given` decorator would not be sufficient
-to write an effective test, the following example describes how to implement a test for the function :code:`ivy.abs, using our test decorators and test helpers.
+to write an effective test, the following example describes how to implement a test for the function :code:`ivy.abs`, using our test decorators and test helpers.
 
 .. code-block:: python
     @handle_test(
@@ -483,7 +491,7 @@ Meaning if the input is to be treated as a container, at the same time, is it a 
 
 The generated values are then passed to the array creation functions inside the test function as tuples.
 
-9. `valid_axes`_ - This function generates valid axes for a given array dimension.
+9. valid_axes - This function generates valid axes for a given array dimension.
    For example -:
 
 .. code-block:: python
@@ -559,7 +567,7 @@ This function should be used in places where the result doesn’t depend on the 
 
 **Note** - Under the hood, **array_values** strategy is called if the data type is *integer*, and **none_or_list_of_floats** is called when the data type is *float*.
 
-15. `get_probs`_ -  This is used to generate a tuple containing two values.
+15. get_probs -  This is used to generate a tuple containing two values.
     The first one being the *unnormalized probabilities* for all elements in a population, the second one being the *population size*.
     For example-:
 

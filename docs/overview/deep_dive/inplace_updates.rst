@@ -9,7 +9,6 @@ Inplace Updates
 .. _`jax.numpy.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.tan.html?highlight=tan
 .. _`presence of this attribute`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L341
 .. _`by the backend function`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L372
-.. _`by the wrapper`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L377
 .. _`handled by the wrapper`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L373
 .. _`_wrap_fn`: https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69
 .. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
@@ -17,8 +16,6 @@ Inplace Updates
 .. _`ivy.reshape`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/manipulation.py#L418
 .. _`ivy.astype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L46
 .. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/creation.py#L114
-.. _`wrapping`:
-.. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
@@ -28,7 +25,7 @@ Inplace Updates
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program, preventing old unused arrays from being kept in memory for any longer than is strictly necessary.
 
-The function `ivy.inplace_update`_ enables explicit inplace updates.
+The function :func:`ivy.inplace_update` enables explicit inplace updates.
 :func:`ivy.inplace_update` is a *primary* function, and the backend-specific implementations for each backend are presented below.
 We also explain the rationale for why each implementation is the way it is, and the important differences.
 
@@ -313,7 +310,7 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 
     tan.support_native_out = True
 
-It's very important to ensure the :code:`support_native_out` attribute is not added to backend implementations that do not handle the :code:`out` argument, as the `presence of this attribute`_ dictates whether the argument should be handled `by the backend function`_ or `by the wrapper`_.
+It's very important to ensure the :code:`support_native_out` attribute is not added to backend implementations that do not handle the :code:`out` argument, as the `presence of this attribute`_ dictates whether the argument should be handled `by the backend function`_ or `by the wrapper <function_wrapping.rst>`_.
 
 This distinction only concerns how the inplace update is applied to the native array, which is operated upon directly by the backend.
 If :code:`out` is specified in an Ivy function, then an inplace update is always **also** performed on the :class:`ivy.Array` instance itself, which is how :code:`out` is provided to the function originally.
@@ -351,7 +348,7 @@ Here we still have the :attr:`support_native_out` attribute since we want to tak
 However, in the :code:`else` statement, the last operation is :func:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update can't be performed by torch here.
 This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensure the native inplace update is performed, as well as the :class:`ivy.Array` inplace update.
 
-Another case where we need to use :func:`ivy.inplace_update`_ with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
+Another case where we need to use :func:`ivy.inplace_update` with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
 
 .. code-block:: python
  
