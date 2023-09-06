@@ -51,6 +51,7 @@ paths = _get_paths(binaries)
 end = False
 pbar = None
 spinner = itertools.cycle(["-", "\\", "|", "/"])
+version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 print(f"Locating binaries {next(spinner)} ", end="")
 
 for tag in all_tags:
@@ -64,7 +65,7 @@ for tag in all_tags:
         file_name = f"{file_path[:-3]}_{tag}.so"
         search_path = f"compiler/{file_name}"
         r = requests.get(
-            f"https://github.com/unifyai/binaries/raw/main/{search_path}",
+            f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
             timeout=40,
         )
         if r.status_code == 200:
