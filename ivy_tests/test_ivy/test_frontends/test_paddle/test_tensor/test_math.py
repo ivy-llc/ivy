@@ -932,6 +932,41 @@ def test_paddle_floor(
     )
 
 
+# floor_divide
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.floor_divide",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_floor_divide(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        atol=1e-5,
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.fmax",
     dtypes_and_x=helpers.dtype_and_values(
@@ -2131,41 +2166,6 @@ def test_paddle_sin(
     )
 
 
-# floor_divide
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.floor_divide",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
-        num_arrays=2,
-        allow_inf=False,
-        shared_dtype=True,
-    ),
-)
-def test_paddle_floor_divide(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-        atol=1e-5,
-    )
-
-
 # diff
 # sinh
 @handle_frontend_test(
@@ -2345,6 +2345,39 @@ def test_paddle_subtract(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.sum",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+)
+def test_paddle_sum(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
     )
 
 

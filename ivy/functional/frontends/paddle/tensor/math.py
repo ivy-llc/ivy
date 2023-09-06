@@ -217,6 +217,12 @@ def floor(x, name=None):
     return ivy.floor(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_divide(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
@@ -510,12 +516,6 @@ def square(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def floor_divide(x, y, name=None):
-    return ivy.floor_divide(x, y)
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
 def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
     # TODO this function will be simplified as soon as the ivy.stanh(x,a,b) is added
     exp_ax = ivy.exp(ivy.multiply(scale_a, x))
@@ -530,6 +530,25 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
     return ivy.subtract(x, y)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float64",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sum(x, axis=None, dtype=None, keepdim=False, name=None):
+    return ivy.sum(
+        x,
+        axis=axis,
+        keepdims=keepdim,
+        dtype=dtype,
+    )
 
 
 @with_supported_dtypes(
