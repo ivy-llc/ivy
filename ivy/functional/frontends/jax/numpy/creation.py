@@ -165,6 +165,11 @@ def in1d(ar1, ar2, assume_unique=False, invert=False):
         return (ar1_flat[:, None] == ar2_flat[None, :]).any(axis=-1)
 
 
+@to_ivy_arrays_and_back
+def integer(x):
+    return ivy.astype(x, ivy.int64)
+
+
 @inputs_to_ivy_arrays
 def iterable(y):
     return hasattr(y, "__iter__") and y.ndim > 0
