@@ -142,7 +142,7 @@ PyTorch:
         device: torch.device,
     ) -> Tensor:
 
-This makes it clear that these backend-specific functions are only enterred into once the correct :code:`device` has been determined.
+This makes it clear that these backend-specific functions are only entered into once the correct :code:`device` has been determined.
 
 However, the :code:`device` argument for functions without the :code:`@infer_device` decorator is **not** handled by `infer_device`_, and so these defaults must be handled by the backend-specific implementations themselves, by calling :func:`ivy.default_device` internally.
 
@@ -174,7 +174,7 @@ are moved to :code:`ivy.default_device()` while performing :code:`ivy.add` opera
     y = ivy.array([34], device="gpu:0")
     ivy.add(x, y)
 
-The priority of device shifting is following in this mode:
+The priority of device shifting is the following in this mode:
 
 #. The ``device`` argument.
 #. device the arrays are on.
@@ -242,7 +242,7 @@ The priority of device shifting is following in this mode:
 
 This is a function which plays a crucial role in the :code:`handle_device_shifting` decorator. The purpose of this function is to ensure that the function :code:`fn` passed to it is executed on the device passed in :code:`device_shifting_dev` argument. If it is passed as :code:`None`, then the function will be executed on the default device.
 
-Most of the backend implementations are very similar, first they move all the arrays to the desired device using :code:`ivy.nested_map` and then execute the function inside the device handling context manager from that native framework. The prupose of executing the function inside the context manager is to handle the functions that do not accept any arrays, the only way in that case to let the native framework know on which device we want the function to be executed on is through the context manager. This approach is used in most backend implementations with the exceptions being tensorflow, where we dont have to move all the tensors to the desired device because just using its context manager is enough, it moves all the tensors itself internally, and numpy, since it only accepts `cpu` as device.
+Most of the backend implementations are very similar, first they move all the arrays to the desired device using :code:`ivy.nested_map` and then execute the function inside the device handling context manager from that native framework. The purpose of executing the function inside the context manager is to handle the functions that do not accept any arrays, the only way in that case to let the native framework know on which device we want the function to be executed on is through the context manager. This approach is used in most backend implementations with the exception being tensorflow, where we don't have to move all the tensors to the desired device because just using its context manager is enough, it moves all the tensors itself internally, and numpy, since it only accepts `cpu` as a device.
 
 **Forcing Operations on User Specified Device**
 

@@ -92,7 +92,7 @@ Any function in the functional API that receives a ``dtype`` argument will make 
 Data Type Promotion
 -------------------
 
-In order to ensure that the same data type is always returned when operations are performed on arrays with different data types, regardless of which backend framework is set, Ivy has it's own set of data type promotion rules and corresponding  functions.
+In order to ensure that the same data type is always returned when operations are performed on arrays with different data types, regardless of which backend framework is set, Ivy has it's own set of data type promotion rules and corresponding functions.
 These rules build directly on top of the `rules <https://data-apis.org/array-api/latest/API_specification/type_promotion.html>`_ outlined in the `Array API Standard`_.
 
 The rules are simple: all data type promotions in Ivy should adhere to this `promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L366>`_,
@@ -189,7 +189,7 @@ Arguments in other Functions
 All ``dtype`` arguments are keyword-only.
 All creation functions include the ``dtype`` argument, for specifying the data type of the created array.
 Some other non-creation functions also support the ``dtype`` argument, such as :func:`ivy.prod` and :func:`ivy.sum`, but most functions do not include it.
-The non-creation functions which do support it are generally functions that involve a compounding reduction across the array, which could result in overflows, and so an explicit ``dtype`` argument is useful to handling such cases.
+The non-creation functions which do support it are generally functions that involve a compounding reduction across the array, which could result in overflows, and so an explicit ``dtype`` argument is useful for handling such cases.
 
 The ``dtype`` argument is handled in the `infer_dtype`_ wrapper, for all functions which have the decorator :code:`@infer_dtype`.
 This function calls `ivy.default_dtype`_ in order to determine the correct data type.
@@ -310,7 +310,7 @@ Some backend functions (implemented in :mod:`ivy/functional/backends/<some_backe
 Only one of these decorators can be specified for any given function.
 In the case of :attr:`@with_supported_dtypes` it is assumed that all unmentioned data types are unsupported, and in the case of :attr:`@with_unsupported_dtypes` it is assumed that all unmentioned data types are supported.
 
-The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding  version of the backend framework and the current version of the backend framework on the user's system.
+The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding version of the backend framework and the current version of the backend framework on the user's system.
 Based on that, the version specific unsupported dtypes and devices are set for the given function everytime the function is called.
 
 For Backend Functions:
@@ -443,7 +443,7 @@ For example, ``uint8`` is not supported for :func:`ivy.prod` with a torch backen
 The reason for this is that the `Array API Standard`_ mandates that :func:`prod` upcasts the unsigned integer return to have the same number of bits as the default integer data type.
 By default, the default integer data type in Ivy is ``int32``, and so we should return an array of type ``uint32`` despite the input arrays being of type ``uint8``.
 However, torch does not support ``uint32``, and so we cannot fully adhere to the requirements of the standard for ``uint8`` inputs.
-Rather than breaking this rule and returning arrays of type ``uint8`` only with a torch backend, we instead opt to remove official support entirely for this combination of data type, function and backend framework.
+Rather than breaking this rule and returning arrays of type ``uint8`` only with a torch backend, we instead opt to remove official support entirely for this combination of data type, function, and backend framework.
 This will avoid all of the potential confusion that could arise if we were to have inconsistent and unexpected outputs when using officially supported data types in Ivy.
 
 
@@ -532,7 +532,7 @@ It can also be set by calling :code:`ivy.downcast_data_types()` with the optiona
 :code:`crosscast_data_types` is for cases when a function doesn't support :code:`int` dtypes, but supports :code:`float` and vice-versa. In such cases,
 we cast to the default supported :code:`float` dtype if it's the unsupported integer case or we cast to the default supported :code:`int` dtype if it's the unsupported :code:`float` case.
 
-The :code:`cast_data_types` mode is the combination of all the three modes that we discussed till now. It works it way from crosscasting to upcasting and finally to downcasting to provide support
+The :code:`cast_data_types` mode is the combination of all the three modes that we discussed till now. It works its way from crosscasting to upcasting and finally to downcasting to provide support
 for any unsupported dtype that is encountered by the functions.
 
 This is the unsupported dtypes for :code:`exmp1`. It doesn't support :code:`float16`. We will see how we can
@@ -626,7 +626,7 @@ if these are the prime concerns of the user.
 
 
 Together with these modes we provide some level of flexibility to users when they encounter functions that don't support a dtype which is otherwise supported by the backend. However, it should
-be well understood that this may lead to loss of precision and/or increase in memory consumption.
+be well understood that this may lead to loss of precision and/or an increase in memory consumption.
 
 
 
