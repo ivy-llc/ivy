@@ -18,7 +18,6 @@
 
   overview/get_started.rst
   demos/quickstart.ipynb
-  Setting Up the Compiler <compiler/setting_up.rst>
 
 
 .. toctree::
