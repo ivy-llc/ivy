@@ -134,7 +134,7 @@ Keyword-only parameters will mandate the use of argument names when calling func
 Similar arguments can be kept together in the argument list, rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
-Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
+Arrays always have a type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
 The reasons for each of these features are explained in the following sections.
 
@@ -165,7 +165,7 @@ Again, the reasons for these features are explained in the following sections.
 Submodule Helper Functions
 --------------------------
 
-At times, helper functions specific to submodule is required to:
+At times, helper functions specific to the submodule are required to:
 
 * keep the code clean and readable
 * be imported in their respective backend implementations
