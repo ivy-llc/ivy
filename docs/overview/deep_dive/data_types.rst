@@ -195,10 +195,22 @@ This table focuses on numerical accuracy at the cost of a higher memory footprin
 #. It still leaves int64 and uint64 promotion undefined, because there is no standard floating point type with enough bits of mantissa to represent their full range of values. We could relax the precision constraint and use ``float64`` as the upper bound for this case.
 #. Some operations result in types that are much wider than necessary; for example mixed operations between ``uint16`` and float16 would promote all the way to ``float64``, which is not ideal.
 
+.. code-block:: python
+
+    with ivy.PreciseMode(True):
+        print(ivy.promote_types("float32","int32"))
+    # float64
+
 Non-Precise Promotion Table
 """""""""""""""""""""""""""""""""
 The advantage of this approach is that, outside unsigned ints, it avoids all wider-than-necessary promotions: you can never get an f64 output without a 64-bit input, and you can never get an ``float32`` output without a 32-bit input: this results in convenient semantics for working on accelerators while avoiding unwanted 64-bit values. This feature of giving primacy to floating point types resembles the type promotion behavior of PyTorch.
 the disadvantage of this approach is that mixed float/integer promotion is very prone to precision loss: for example, ``int64`` (with a maximum value of 9.2*10^18 can be promoted to ``float16`` (with a maximum value of 6.5*10^4, meaning most representable values will become inf, but we are fine accepting potential loss of precision (but not loss of magnitude) in mixed type promotion which satisfies most of the use cases in deep learning scenarios.
+
+.. code-block:: python
+
+    with ivy.PreciseMode(False):
+        print(ivy.promote_types("float32","int32"))
+    # float32
 
 Arguments in other Functions
 -------------------
