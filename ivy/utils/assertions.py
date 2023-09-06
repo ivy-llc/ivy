@@ -196,14 +196,14 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
     if (
         not (
             (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and (isinstance(fill_value, int) or ivy.isinf(fill_value))
+            and (isinstance(fill_value, (int,float,bool)) or ivy.isinf(fill_value))
         )
         and not (
             ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
         )
         and not (
             ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, (float, np.float32))
+            and isinstance(fill_value, (float, np.float32,int,bool))
             or isinstance(fill_value, bool)
         )
     ):
