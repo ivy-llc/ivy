@@ -704,7 +704,7 @@ class Tensor:
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def std(self, axis=None, unbiased=True, keepdim=False, name=None):
-        return paddle_frontend.std(self._ivy_array, axis=axis, correction=int(unbiased), keepdims=keepdim)
+        return paddle_frontend.std(self, axis=axis, unbiased=unbiased, keepdim=keepdim)
 
     @with_supported_dtypes(
         {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
