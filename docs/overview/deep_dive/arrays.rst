@@ -85,7 +85,7 @@ Therefore, most functions in Ivy must adopt the following pipeline:
 #. call the backend-specific function, passing in these :class:`ivy.NativeArray` instances
 #. convert all of the :class:`ivy.NativeArray` instances which are returned from the backend function back into :class:`ivy.Array` instances, and return
 
-Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and `outputs_to_ivy_arrays`_ wrappers, as explained in the :ref:`Function Wrapping` section.
+Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and `outputs_to_ivy_arrays`_ wrappers, as explained in the `Function Wrapping <function_wrapping.rst>`_ section.
 
 All Ivy functions *also* accept :class:`ivy.NativeArray` instances in the input.
 This is for a couple of reasons.
@@ -93,11 +93,11 @@ Firstly, :class:`ivy.Array` instances must be converted to :class:`ivy.NativeArr
 Secondly, this makes it easier to combine backend-specific code with Ivy code, without needing to explicitly wrap any arrays before calling sections of Ivy code.
 
 Therefore, all input arrays to Ivy functions have type :code:`Union[ivy.Array, ivy.NativeArray]`, whereas the output arrays have type :class:`ivy.Array`.
-This is further explained in the :ref:`Function Arguments` section.
+This is further explained in the `Function Arguments <function_arguments.rst>`_ section.
 
 However, :class:`ivy.NativeArray` instances are not permitted for the :code:`out` argument, which is used in most functions.
 This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively serves the same purpose as the function return.
-This is further explained in the :ref:`Inplace Updates` section.
+This is further explained in the `Inplace Updates <inplace_updates.rst>`_ section.
 
 As a final point, extra attention is required for *compositional* functions, as these do not directly defer to a backend implementation.
 If the first line of code in a compositional function performs operations on the input array, then this will call the special methods on an :class:`ivy.NativeArray` and not on an :class:`ivy.Array`.

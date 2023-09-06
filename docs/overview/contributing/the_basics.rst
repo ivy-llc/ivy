@@ -10,7 +10,6 @@ The Basics
 .. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
-.. _`Ivy Experimental API Open Task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api
 
 Getting Help
 ------------
@@ -54,7 +53,7 @@ We make extensive use of `ToDo list issues <https://github.com/unifyai/ivy/issue
 
 We have a clear process for contributors to engage with such ToDo lists:
 
-a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: `function reformatting <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#function-formatting>`_, `frontend APIs <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis>`_ and `ivy experimental API <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api>`_.
+a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: :ref:`overview/contributing/open_tasks:Function Formatting`, :ref:`overview/contributing/open_tasks:Frontend APIs` and :ref:`overview/contributing/open_tasks:Ivy Experimental API`.
 
 b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 

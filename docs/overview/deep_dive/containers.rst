@@ -185,7 +185,7 @@ As for the special methods which are `implemented`_ in the main :class:`ivy.Cont
 
 As a result, the operator functions will make use of the special methods of the lefthand passed input objects if available, otherwise it will make use of the reverse special method of the righthand operand.
 For instance, if the lefthand operand at any given leaf of the container in an :class:`ivy.Array`, then the operator function will make calls to the special methods of this array object.
-As explained in the :ref:`Arrays` section of the Deep Dive, these special methods will in turn call the corresponding functions from the ivy functional API.
+As explained in the `Arrays <arrays.rst>`_ section of the Deep Dive, these special methods will in turn call the corresponding functions from the ivy functional API.
  
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to :func:`ivy.add`, :func:`ivy.subtract`, :func:`ivy.multiply` and :func:`ivy.divide` respectively if the lefthand operand is an :class:`ivy.Array` object.
 Otherwise, these special methods will be called on whatever objects are at the leaves of the container, such as int, float, :class:`ivy.NativeArray` etc.
@@ -193,10 +193,10 @@ Otherwise, these special methods will be called on whatever objects are at the l
 Nestable Functions
 ------------------
 
-As introduced in the :ref:`Function Types` section, most functions in Ivy are *nestable*, which means that they can accept :class:`ivy.Container` instances in place of **any** of the arguments.
+As introduced in the `Function Types <function_types.rst>`_ section, most functions in Ivy are *nestable*, which means that they can accept :class:`ivy.Container` instances in place of **any** of the arguments.
 
 Here, we expand on this explanation.
-Please check out the explanation in the :ref:`Function Types` section first.
+Please check out the explanation in the `Function Types <function_types.rst>`_ section first.
 
 **Explicitly Nestable Functions**
 

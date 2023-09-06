@@ -38,7 +38,7 @@ However, for the time being, we are focusing exclusively on Python, in order to 
 Wrapper Frameworks
 ------------------
 Ivy is itself a Python Wrapper Framework.
-The biggest difference between Ivy and all others listed in the :ref:`Wrapper Frameworks` section is that Ivy supports transpilations between frameworks, while all other frameworks only enable the creation of entirely new code which itself is framework-agnostic.
+The biggest difference between Ivy and all others listed in the `Wrapper Frameworks <wrapper_frameworks.rst>`_ section is that Ivy supports transpilations between frameworks, while all other frameworks only enable the creation of entirely new code which itself is framework-agnostic.
 There are also other more subtle differences.
 For example, Ivy includes both a low level fully functional API and a high level stateful API, offering both low level control and high level convenience.
 In contrast, `EagerPy`_ and `TensorLy`_ both only include functional APIs, `Thinc`_ only includes a high level stateful API, and `NeuroPod`_ only supports an even higher level wrapper for deployment.
@@ -51,7 +51,7 @@ It therefore extends what is possible in any of the specific individual framewor
 
 Graph Tracers
 -------------
-Ivy’s :ref:`Graph Compiler` exhibits similar properties to many of the framework-specific graph tracers.
+Ivy’s `Graph Compiler <../one_liners/compile>`_ exhibits similar properties to many of the framework-specific graph tracers.
 Ivy’s graph compiler employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
 Of all the graph tracers, Ivy’s graph compiler is most similar to `torch.fx`_.
 This is because :code:`torch.fx` also operates entirely in Python, without deferring to lower level languages for tracing and extracting the computation graph or the intermediate representation.
@@ -99,7 +99,7 @@ However, again they do nothing to address the challenge of running code from one
 
 ML-Unifying Companies
 ---------------------
-The ML-unifying companies `Quansight`_, `OctoML`_ and `Modular`_ are/were directly involved with the `Array API Standard`_, `Apache TVM`_ and `MLIR`_ respectively, as explained in the :ref:`ML-Unifying Companies` section.
+The ML-unifying companies `Quansight`_, `OctoML`_ and `Modular`_ are/were directly involved with the `Array API Standard`_, `Apache TVM`_ and `MLIR`_ respectively, as explained in the `ML-Unifying Companies <ml_unifying_companies.rst>`_ section.
 For the same reasons that Ivy as a framework is complementary to these three frameworks, Ivy as a company is also complementary to these three companies.
 Firstly, we are adhering to the `Array API Standard`_ defined by Quansight.
 In essence, they have written the standard and we have implemented it, which is pretty much as complementary as it gets.

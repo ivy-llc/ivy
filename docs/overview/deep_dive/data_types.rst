@@ -80,7 +80,7 @@ Data Type Module
 The `data_type.py`_ module provides a variety of functions for working with data types.
 A few examples include :func:`ivy.astype` which copies an array to a specified data type, :func:`ivy.broadcast_to` which broadcasts an array to a specified shape, and :func:`ivy.result_type` which returns the dtype that results from applying the type promotion rules to the arguments.
 
-Many functions in the :mod:`data_type.py` module are *convenience* functions, which means that they do not directly modify arrays, as explained in the :ref:`Function Types` section.
+Many functions in the :mod:`data_type.py` module are *convenience* functions, which means that they do not directly modify arrays, as explained in the `Function Types <function_types.rst>`_ section.
 
 For example, the following are all convenience functions:
 `ivy.can_cast`_, which determines if one data type can be cast to another data type according to type-promotion rules, `ivy.dtype <https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096>`__, which gets the data type for the input array, `ivy.set_default_dtype`_, which sets the global default data dtype, and `ivy.default_dtype`_, which returns the correct data type to use.
@@ -221,7 +221,7 @@ The non-creation functions which do support it are generally functions that invo
 
 The ``dtype`` argument is handled in the `infer_dtype`_ wrapper, for all functions which have the decorator :code:`@infer_dtype`.
 This function calls `ivy.default_dtype`_ in order to determine the correct data type.
-As discussed in the :ref:`Function Wrapping` section, this is applied to all applicable functions dynamically during `backend setting`_.
+As discussed in the `Function Wrapping <function_wrapping.rst>`_ section, this is applied to all applicable functions dynamically during `backend setting`_.
 
 Overall, `ivy.default_dtype`_ infers the data type as follows:
 
