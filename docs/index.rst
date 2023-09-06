@@ -3,6 +3,15 @@
 .. include:: ../README.md
   :parser: myst_parser.sphinx_
 
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Overview
+
+  Home <self>
+
+
 .. toctree::
   :hidden:
   :maxdepth: -1
