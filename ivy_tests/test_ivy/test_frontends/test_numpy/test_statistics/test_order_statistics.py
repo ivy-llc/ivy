@@ -58,27 +58,30 @@ def test_numpy_nanpercentile(
 # percentile
 @handle_frontend_test(
     fn_tree="numpy.percentile",
-    dtype_values_axis=_statistical_dtype_values(
+    dtype_values_a=_statistical_dtype_values(function="percentile"),
+    dtype_values_q=_statistical_dtype_values(
         function="percentile", min_value=0, max_value=100
     ),
     keep_dims=st.booleans(),
 )
 def test_numpy_percentile(
-    dtype_values_axis,
+    dtype_values_a,
+    dtype_values_q,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
     keep_dims,
 ):
-    input_dtypes, values, axis = dtype_values_axis
+    input_dtypes, values_a, axis = dtype_values_a
+    _, values_q, _ = dtype_values_q
     if isinstance(axis, tuple):
         axis = axis[0]
 
     helpers.test_frontend_function(
-        a=values[0][0],
-        q=values[0][1],
-        axis=axis if values[0][0].ndim >= 1 else None,
+        a=values_a[0],
+        q=values_q[0],
+        axis=axis if values_a[0].ndim >= 1 else None,
         out=None,
         backend_to_test=backend_fw,
         overwrite_input=None,
