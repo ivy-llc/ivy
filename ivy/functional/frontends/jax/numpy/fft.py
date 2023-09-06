@@ -27,3 +27,10 @@ def fftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+
+
+@to_ivy_arrays_and_back
+def ifft(a, n=None, axis=-1, norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.ifft(a, axis, norm=norm, n=n)
