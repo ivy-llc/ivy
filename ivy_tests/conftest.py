@@ -45,6 +45,8 @@ def is_db_available(master=False, credentials=None):
 
 
 def pytest_terminal_summary(terminalreporter):
+    from .test_ivy.conftest import mod_backend
+
     session = terminalreporter._session
 
     if session.testscollected == 0:
@@ -54,6 +56,9 @@ def pytest_terminal_summary(terminalreporter):
     text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
     text = text.center(terminalreporter._screen_width, "=")
     terminalreporter.write(content=Fore.GREEN + text)
+    for key in mod_backend:
+        if mod_backend[key]:
+            mod_backend[key][0].terminate()
 
 
 def pytest_addoption(parser):

@@ -2,7 +2,8 @@ Building the Docs
 =================
 
 This document describes how to build the Ivy docs. If you want to know more about how
-our custom building pipeline work, check our :ref:`Building the Docs Pipeline` deep dive
+our custom building pipeline work, check our `Building the Docs Pipeline 
+<../deep_dive/building_the_docs_pipline.rst>`_ deep dive
 
 Building the Docs using Docker
 ------------------------------
@@ -88,6 +89,6 @@ Then, run the following command to build the docs:
     cd doc-builder
     ./make_docs_without_docker.sh <ivy directory or applied library directory>
 
-The script will install required dependencies for `sphinx <https://www.sphinx-doc.org>`_
+The script will install the required dependencies for `sphinx <https://www.sphinx-doc.org>`_
 which is used to build the docs, as well as dependencies required by Ivy or the Ivy 
 applied library. Then it will build the docs for Ivy and store it in ``docs/build``.
