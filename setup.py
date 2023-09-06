@@ -50,11 +50,11 @@ paths = _get_paths(binaries)
 end = False
 pbar = None
 spinner = itertools.cycle(["-", "\\", "|", "/"])
-print(f"Locating the binaries {next(spinner)} ", end="")
+print(f"Locating binaries {next(spinner)} ", end="")
 
 
 for tag in all_tags:
-    print(f"\rLocating the binaries {next(spinner)} ", end="")
+    print(f"\rLocating binaries {next(spinner)} ", end="")
     if end:
         pbar.close()
         break
