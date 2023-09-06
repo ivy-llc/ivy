@@ -190,13 +190,40 @@ def _mha_helper(draw):
                 max_value=2,
             )
         )
-
+    static_k = draw(st.one_of(
+        helpers.array_values(
+            shape=k.shape,
+            dtype=dtype[0],
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        ),
+        st.none(),
+    ))
+    static_v = draw(st.one_of(
+        helpers.array_values(
+            shape=v.shape,
+            dtype=dtype[0],
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        ),
+        st.none(),
+    ))
     in_proj_bias = draw(
         helpers.array_values(
             dtype=dtype[0], shape=(3 * _embed_dim), min_value=0, max_value=10
         )
         | st.none()
     )
+    bias_st = st.one_of(
+        helpers.array_values(
+            dtype=dtype[0], shape=(_embed_dim,), min_value=0, max_value=10
+        ),
+        st.none(),
+    )
+    bias_k = draw(bias_st)
+    bias_v = draw(bias_st)
     _out_dim = draw(helpers.ints(min_value=4, max_value=16))
     out_proj_weights = draw(
         helpers.array_values(
@@ -220,6 +247,10 @@ def _mha_helper(draw):
         )
         | st.none()
     )
+    key_padding_mask = draw(st.one_of(
+        helpers.array_values(dtype="bool", shape=(_num_queries, _num_queries)),
+        st.none(),
+    ))
     return (
         dtype,
         q,
@@ -234,6 +265,11 @@ def _mha_helper(draw):
         out_proj_weights,
         in_proj_bias,
         out_proj_bias,
+        key_padding_mask,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
     )
 
 
@@ -1204,17 +1240,19 @@ def test_lstm_update(*, dtype_lstm, test_flags, backend_fw, fn_name, on_device):
     fn_tree="functional.ivy.multi_head_attention",
     dtype_mha=_mha_helper(),
     scale=st.one_of(st.floats(), st.none()),
+    add_zero_attn=st.just(False),  # st.booleans()
     dropout=st.floats(min_value=0, max_value=0.99),
-    training=st.just(False),  # st.booleans(), disabled until proper testing is used
+    training=st.just(False),  # st.booleans()
     is_causal=st.booleans(),
     return_attention_weights=st.booleans(),
     average_attention_weights=st.booleans(),
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
     scale,
+    add_zero_attn,
     dropout,
     training,
     is_causal,
@@ -1239,6 +1277,11 @@ def test_multi_head_attention(
         out_proj_weights,
         in_proj_bias,
         out_proj_bias,
+        key_padding_mask,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
     ) = dtype_mha
     helpers.test_function(
         input_dtypes=dtype,
@@ -1266,6 +1309,12 @@ def test_multi_head_attention(
         average_attention_weights=average_attention_weights,
         dropout=dropout,
         training=training,
+        key_padding_mask=key_padding_mask,
+        bias_k=bias_k,
+        bias_v=bias_v,
+        static_k=static_k,
+        static_v=static_v,
+        add_zero_attn=add_zero_attn,
     )
 
 
