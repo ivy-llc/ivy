@@ -1,4 +1,4 @@
-Background
+Motivation
 ==========
 
 | (a) :ref:`ML Explosion`
@@ -15,6 +15,6 @@ Background
    :maxdepth: -1
    :caption: Background
 
-   background/ml_explosion.rst
-   background/why_unify.rst
-   background/standardization.rst
+   motivation/ml_explosion.rst
+   motivation/why_unify.rst
+   motivation/standardization.rst
