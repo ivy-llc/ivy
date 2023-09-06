@@ -292,6 +292,46 @@ def test_kaiser_window(
     )
 
 
+# mel_weight_matrix
+@handle_test(
+    fn_tree="functional.ivy.experimental.mel_weight_matrix",
+    num_mel_bins=helpers.ints(min_value=5, max_value=10),
+    dft_length=helpers.ints(min_value=5, max_value=10),
+    sample_rate=helpers.ints(min_value=1000, max_value=2000),
+    lower_edge_hertz=helpers.floats(min_value=0.0, max_value=5.0),
+    upper_edge_hertz=helpers.floats(min_value=5.0, max_value=10.0),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_mel_weight_matrix(
+    *,
+    num_mel_bins,
+    dft_length,
+    sample_rate,
+    lower_edge_hertz,
+    upper_edge_hertz,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    helpers.test_function(
+        input_dtypes=[],
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        rtol_=0.05,
+        atol_=0.05,
+        fn_name=fn_name,
+        num_mel_bins=num_mel_bins,
+        dft_length=dft_length,
+        sample_rate=sample_rate,
+        lower_edge_hertz=lower_edge_hertz,
+        upper_edge_hertz=upper_edge_hertz,
+    )
+
+
 # ndenumerate
 @handle_test(
     fn_tree="functional.ivy.experimental.ndenumerate",
@@ -546,33 +586,6 @@ def test_unsorted_segment_sum(
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
-        fn_name=fn_name,
-        data=data,
-        segment_ids=segment_ids,
-        num_segments=num_segments,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.unsorted_segment_sum",
-    d_x_n_s=valid_unsorted_segment_min_inputs(),
-    test_with_out=st.just(False),
-    test_gradients=st.just(False),
-)
-def test_unsorted_segment_sum(
-    *,
-    d_x_n_s,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    dtypes, data, num_segments, segment_ids = d_x_n_s
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
         fn_name=fn_name,
         data=data,
         segment_ids=segment_ids,

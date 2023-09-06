@@ -53,7 +53,7 @@ def _to_ivy(x: Any) -> Any:
 def to_ivy(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     nested: bool = False,
-    include_derived: Optional[Dict[type, bool]] = None,
+    include_derived: Optional[Dict[str, bool]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """
     Return the input array converted to an ivy.Array instance if it is a native array
@@ -84,7 +84,7 @@ def to_ivy(
 
 def args_to_ivy(
     *args: Iterable[Any],
-    include_derived: Optional[Dict[type, bool]] = None,
+    include_derived: Optional[Dict[str, bool]] = None,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
     """
@@ -115,7 +115,7 @@ def args_to_ivy(
 def to_native(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     nested: bool = False,
-    include_derived: Optional[Dict[type, bool]] = None,
+    include_derived: Optional[Dict[str, bool]] = None,
     cont_inplace: bool = False,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
@@ -157,7 +157,7 @@ def to_native(
 
 def args_to_native(
     *args: Iterable[Any],
-    include_derived: Dict[type, bool] = None,
+    include_derived: Dict[str, bool] = None,
     cont_inplace: bool = False,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
     **kwargs: Dict[str, Any],
