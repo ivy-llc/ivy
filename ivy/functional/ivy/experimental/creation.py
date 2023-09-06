@@ -98,8 +98,8 @@ def hann_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
@@ -193,8 +193,8 @@ def kaiser_bessel_derived_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
@@ -423,9 +423,8 @@ def eye_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances as a replacement to any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([[0, 1],[2, 3]])
@@ -721,8 +720,9 @@ def blackman_window(
     -------
     ret
         The array containing the window.
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     >>> ivy.blackman_window(4, periodic = True)
     ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
     >>> ivy.blackman_window(7, periodic = False)
@@ -910,3 +910,55 @@ def trilu(
     instances in place of any of the arguments.
     """
     return current_backend(x).trilu(x, k=k, upper=upper, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    """
+    Generate a MelWeightMatrix that can be used to re-weight a Tensor containing a
+    linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins frequency
+    information based on the [lower_edge_hertz, upper_edge_hertz]
+
+    range on the mel scale. This function defines the mel scale in terms of a frequency
+    in hertz according to the following formula: mel(f) = 2595 * log10(1 + f/700)
+
+    Parameters
+    ----------
+    num_mel_bins
+        The number of bands in the mel spectrum.
+    dft_length
+        The size of the original DFT obtained from (n_fft / 2 + 1).
+    sample_rate
+        Samples per second of the input signal.
+    lower_edge_hertz
+        Lower bound on the frequencies to be included in the mel spectrum.
+    upper_edge_hertz
+        The desired top edge of the highest frequency band.
+
+    Returns
+    -------
+    ret
+        MelWeightMatrix of shape:  [frames, num_mel_bins].
+
+    Examples
+    --------
+    >>> ivy.mel_weight_matrix(3,3,8000)
+    ivy.array([[0.        ,0.        , 0.],
+              [0.        ,0. , 0.75694758],
+              [0.        ,0. , 0.       ]])
+    """
+    return ivy.current_backend().mel_weight_matrix(
+        num_mel_bins,
+        dft_length,
+        sample_rate,
+        lower_edge_hertz,
+        upper_edge_hertz,
+    )
