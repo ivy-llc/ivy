@@ -182,17 +182,21 @@ The user expects specific behaviour and memory constraints whenever they specify
 Therefore, Ivy does not upcast specific values to improve the stability or precision of the computation.
 
 Precise Mode
--------------------
+~~~~~~~~~~~~~~~
+
 There are cases that arise in mixed promotion (Integer and Float, Complex and Float) that aren't covered by the Array API Standard promotion table, and depending on each use case,
 the mixed promotion rules differ as observed in different frameworks, for example Tensorflow leaves integer/floating mixed promotion undefined to make behavior utterly predictable (at some cost to user convenience), while Numpy avoids precision loss at all costs even if that meant casting the arrays to wider-than-necessary dtypes
 
-Precise Promotion Table:
+Precise Promotion Table
+"""""""""""""""""""""""""
+
 This table focuses on numerical accuracy at the cost of a higher memory footprint. A 16-bit signed or unsigned integer cannot be represented at full precision by a 16-bit float, which has only 10 bits of mantissa. Therefore, it might make sense to promote integers to floats represented by twice the number of bits. There are two disadvantages of this approach:
 
 #. It still leaves int64 and uint64 promotion undefined, because there is no standard floating point type with enough bits of mantissa to represent their full range of values. We could relax the precision constraint and use ``float64`` as the upper bound for this case.
 #. Some operations result in types that are much wider than necessary; for example mixed operations between ``uint16`` and float16 would promote all the way to ``float64``, which is not ideal.
 
-Non-Precise Promotion Table:
+Non-Precise Promotion Table
+"""""""""""""""""""""""""""""""""
 The advantage of this approach is that, outside unsigned ints, it avoids all wider-than-necessary promotions: you can never get an f64 output without a 64-bit input, and you can never get an ``float32`` output without a 32-bit input: this results in convenient semantics for working on accelerators while avoiding unwanted 64-bit values. This feature of giving primacy to floating point types resembles the type promotion behavior of PyTorch.
 the disadvantage of this approach is that mixed float/integer promotion is very prone to precision loss: for example, ``int64`` (with a maximum value of 9.2*10^18 can be promoted to ``float16`` (with a maximum value of 6.5*10^4, meaning most representable values will become inf, but we are fine accepting potential loss of precision (but not loss of magnitude) in mixed type promotion which satisfies most of the use cases in deep learning scenarios.
 
