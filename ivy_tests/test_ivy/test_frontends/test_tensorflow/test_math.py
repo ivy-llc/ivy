@@ -766,6 +766,7 @@ def test_tensorflow_cumsum(  # NOQA
     fn_tree="tensorflow.math.digamma",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
     ),
     test_with_out=st.just(False),
 )
