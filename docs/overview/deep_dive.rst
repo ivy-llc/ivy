@@ -46,40 +46,43 @@ We're excited for you to get involved! 🦾
 | (k) :ref:`Formatting` 📋
 | How the code is automatically formatted
 |
-| (l) :ref:`Function Arguments` 📑
+| (l) :ref:`Ivy-Lint` 📋
+| Ivy's Custom Code Formatters
+|
+| (m) :ref:`Function Arguments` 📑
 | How to add the correct function arguments
 |
-| (m) :ref:`Docstrings` 📄
+| (n) :ref:`Docstrings` 📄
 | How to properly write docstrings
 |
-| (n) :ref:`Docstring Examples` 💯
+| (o) :ref:`Docstring Examples` 💯
 | How to add useful examples to the docstrings
 |
-| (o) :ref:`Array API Tests` 🤝
+| (p) :ref:`Array API Tests` 🤝
 | How we're borrowing the test suite from the Array API Standard
 |
-| (p) :ref:`Ivy Tests` 🧪
+| (q) :ref:`Ivy Tests` 🧪
 | How to add new tests for each Ivy function
 |
-| (q) :ref:`Ivy Frontends` ➡
+| (r) :ref:`Ivy Frontends` ➡
 | How to implement frontend functions
 |
-| (r) :ref:`Ivy Frontend Tests` 🧪
+| (s) :ref:`Ivy Frontend Tests` 🧪
 | How to add new tests for each frontend function
 |
-| (s) :ref:`Exception Handling` ⚠
+| (t) :ref:`Exception Handling` ⚠
 | How to handle exceptions and assertions in a function
 |
-| (t) :ref:`Continuous Integration` 🔁
+| (u) :ref:`Continuous Integration` 🔁
 | Ivy Tests running on the Repository
 |
-| (u) :ref:`Gradients` 🔁
+| (v) :ref:`Gradients` 🔁
 | Everything about our Gradients API
 |
-| (v) :ref:`Operating Modes` 🧮
+| (w) :ref:`Operating Modes` 🧮
 | Everything about modes Ivy can operate in, along with their purposes
 |
-| (w) :ref:`Building the Docs Pipeline` 📚
+| (x) :ref:`Building the Docs Pipeline` 📚
 | How are we building our docs
 .. toctree::
    :hidden:
@@ -97,6 +100,7 @@ We're excited for you to get involved! 🦾
    deep_dive/inplace_updates.rst
    deep_dive/function_wrapping.rst
    deep_dive/formatting.rst
+   deep_dive/ivy_lint.rst
    deep_dive/function_arguments.rst
    deep_dive/docstrings.rst
    deep_dive/docstring_examples.rst

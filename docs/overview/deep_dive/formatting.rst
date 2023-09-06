@@ -77,6 +77,7 @@ You should expect to see something similar to the following output when you run 
     flake8...................................................................Passed
     docformatter.............................................................Passed
     pydocstyle...............................................................Passed
+    ivy-lint.................................................................Passed
     [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
     [formatting-docs 3516aed563] Test commit
     1 file changed, 1 insertion(+)
@@ -99,6 +100,7 @@ If something goes wrong, you will see the following output:
     flake8...................................................................Passed
     docformatter.............................................................Passed
     pydocstyle...............................................................Passed
+    ivy-lint.................................................................Passed
     [INFO] Restored changes from ~/.cache/pre-commit/patch1687898304-8072.
 
 You will notice that some files have changed if you checked ``git status``, you'll need to add them and commit again.
