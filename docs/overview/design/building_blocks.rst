@@ -1,8 +1,6 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://unify.ai/docs/ivy/overview/deep_dive/inplace_updates.html#out-argument
- 
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
 
@@ -73,7 +71,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch, and NumPy, and 
 
     stack.support_native_out = True
 
-There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the `out argument`_ natively.
+There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the :ref:`overview/deep_dive/inplace_updates:out argument` natively.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
 For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.

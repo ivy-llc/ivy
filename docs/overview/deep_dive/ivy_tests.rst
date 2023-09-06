@@ -13,7 +13,7 @@ Ivy Tests
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
 .. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
-.. _`Function Types`: https://unify.ai/docs/ivy/overview/deep_dive/function_types.html
+.. _`Function Types`: function_types.rst
 .. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
@@ -53,9 +53,7 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
-.. _`Setting Up Testing in PyCharm`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-testing-in-pycharm
-.. _`Setting up for Free`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-for-free
+.. _`CI Pipeline`: continuous_integration.rst
 .. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -843,7 +841,7 @@ You will need to make sure the Ivy Test is passing for each Ivy function you int
 If a test fails on the CI, you can see details about the failure under `Details -> Run Ivy <module> Tests` as shown in `CI Pipeline`_.
 
 You can also run the tests locally before making a PR. The instructions differ according to the IDE you are using. For
-PyCharm and Visual Studio Code you can refer to the `Setting Up Testing in PyCharm`_ section and `Setting up for Free`_
+PyCharm and Visual Studio Code you can refer to the :ref:`overview/contributing/setting_up:Setting Up Testing in PyCharm` section and :ref:`overview/contributing/setting_up:Setting up for Free`
 section respectively.
 
 Re-Running Failed Ivy Tests

@@ -241,7 +241,7 @@ still working on some rough edges. These include:
    the inference to be correct. 
 
 Keep in mind that the transpiler uses the graph compiler under the hood, so the 
-`sharp bits of the compiler <https://unify.ai/docs/ivy/overview/one_liners/compile.html#sharp-bits>`_ 
+:ref:`sharp bits of the compiler <overview/one_liners/compile:Sharp bits>` 
 apply here as well!
 
 Examples

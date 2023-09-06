@@ -1,16 +1,16 @@
 Ivy Frontend Tests
 ==================
 
-.. _`here`: https://unify.ai/docs/ivy/design/ivy_as_a_transpiler.html
+.. _`here`: ../design/ivy_as_a_transpiler.rst
 .. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`Function Wrapping`: https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html
-.. _`open task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html
-.. _`Ivy Tests`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
+.. _`Function Wrapping`: function_wrapping.rst
+.. _`open task`: ../contributing/open_tasks.rst
+.. _`Ivy Tests`: ivy_tests.rst
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
+.. _`CI Pipeline`: continuous_integration.rst
 
 
 Introduction

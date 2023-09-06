@@ -52,7 +52,7 @@ changes, but we can't ensure everything will work as expected!
 
 If you are planning to contribute, you want to run the tests, or you are looking 
 for more in-depth instructions, it's probably best to check out 
-the `Contributing - Setting Up <https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up>`_ page, 
+the `Contributing - Setting Up <contributing/setting_up.rst>`_ page, 
 where OS-specific and IDE-specific instructions and video tutorials to install Ivy are available!
 
 

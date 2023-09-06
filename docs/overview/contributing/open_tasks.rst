@@ -14,7 +14,7 @@ Here, we explain all tasks which are currently open for contributions from the c
 This section of the docs will be updated frequently, whereby new tasks will be added and completed tasks will be removed.
 The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific `ToDo List Issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
-Please read about `ToDo List Issues <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
+Please read about :ref:`overview/contributing/the_basics:ToDo List Issues` in detail before continuing.
 All tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which instead focus on the steps to complete only once a sub-task has been allocated to you.
 
@@ -234,7 +234,7 @@ There is only one central ToDo list `issue <https://github.com/unifyai/ivy/issue
 
 A general workflow for these tasks would be:
 
-#. Analyze the function type, we have a very detailed section for it in the deep dive `Function Types Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html>`_
+#. Analyze the function type, we have a very detailed section for it in the deep dive `Function Types Guide <../deep_dive/function_types.rst>`_
 #. Every function will have a different file structure according to the function type, refer to :ref:`overview/contributing/open_tasks:Where to place a backend function` subsection below.
 #. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
@@ -252,7 +252,7 @@ Extending the Ivy API
 
 We primarily invite contributors to work on the tasks listed as :ref:`overview/contributing/open_tasks:Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the :ref:`Ivy Experimental API Open Task <overview/contributing/open_tasks:Ivy Experimental API>`.
 
-However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in :ref:`overview/contributing/open_tasks:Creating an Issue on Ivy's GitHub using a Template`.
 
 In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
 
@@ -268,15 +268,15 @@ There are multiple types of backend functions as discussed above, we will go thr
 **Primary Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation
-(where ivy.current_backend(x).function_name() is called), refer to the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
+(where ivy.current_backend(x).function_name() is called), refer to the :ref:`Ivy API Guide <overview/deep_dive/navigating_the_code:Ivy API>`
 to get a clearer picture of how this must be done. Then, implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`,
-you can refer to the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
+you can refer to the :ref:`Backend API Guide <overview/deep_dive/navigating_the_code:Backend API>` for this.
 
 **Compositional Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, we will not use the primary function approach in this
 case, the implementation will be a composition of functions from Ivy's functional API. You can refer to
-`Compositional Functions Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#compositional-functions>`_ for a better understanding of this.
+:ref:`overview/deep_dive/function_types:Compositional Functions` for a better understanding of this.
 You don't need to add any implementation in any other file in this case.
 
 **Mixed Functions**
@@ -288,8 +288,8 @@ will be a composition of functions from Ivy's functional API. After you are done
 
 **Other Function Types**
 
-`Standalone Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#standalone-functions>`_, `Nestable Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#nestable-functions>`_ and
-`Convenience Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#convenience-functions>`_ are the ones which you will rarely come across
+:ref:`overview/deep_dive/function_types:Standalone Functions`, :ref:`overview/deep_dive/function_types:Nestable Functions` and
+:ref:`overview/deep_dive/function_types:Convenience Functions` are the ones which you will rarely come across
 while implementing a function from the ToDo List but they are an essential part of the Ivy API.
 
 
