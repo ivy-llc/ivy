@@ -723,7 +723,7 @@ def tanh(
         tanh_a = paddle.cast(paddle.tanh(x.real()), x.dtype)
         tan_b = paddle.cast(paddle.tan(x.imag()), x.dtype)
         term1 = tanh_a + paddle.multiply(tan_b, const)
-        term2 = (1 + paddle.multiply(const, (tanh_a * tan_b)))
+        term2 = 1 + paddle.multiply(const, (tanh_a * tan_b))
         return term1 / term2
     return paddle.tanh(x)
 
