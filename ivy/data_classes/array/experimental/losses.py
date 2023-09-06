@@ -49,6 +49,49 @@ class _ArrayWithLossesExperimental(abc.ABC):
         """
         return ivy.l1_loss(self._data, target, reduction=reduction, out=out)
 
+    def l2_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: Optional[str] = "sum",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+
+        """
+        ivy.Array instance method variant of l2_loss. This method simply wraps the
+        function, and so the docstring for l2_loss also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input: Union[ivy.Array, ivy.NativeArray]
+            Input array containing input values.
+        reduction : str, optional
+            Reduction method for the output loss. Options:
+            "none" (no reduction),
+            "mean" (mean of losses),
+            "sum" (sum of losses).
+            Default: "sum".
+        out : Optional[ivy.Array], optional
+            Optional output array for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ivy.Array
+            The L2 loss of the given input.
+
+        Examples
+        --------
+        >>>x=ivy.array([0.5,1.5,9])
+        >>>y=ivy.array([0.1,2,1e-2])
+        >>>print(ivy.l2_loss(x))
+        ivy.array(41.75)
+        >>>print(ivy.l2_loss(x-y))
+        ivy.array(40.61505127)
+        """
+        return ivy.l2_loss(self._data)
+
     def huber_loss(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],

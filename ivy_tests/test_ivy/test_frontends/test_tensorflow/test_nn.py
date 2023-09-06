@@ -1397,6 +1397,8 @@ def test_tensorflow_log_poisson_loss(
         compute_full_loss=compute_full_loss,
         atol=1e-2,
     )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.l2_loss",
     dtype_target_inputs=helpers.dtype_and_values(

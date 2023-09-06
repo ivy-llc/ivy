@@ -153,6 +153,7 @@ def l1_loss(
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
 
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -175,8 +176,10 @@ def l2_loss(
         Input array containing input values.
     reduction : str, optional
         Reduction method for the output loss. Options:
-        "none" (no reduction), "mean" (mean of losses),
-        "sum" (sum of losses). Default: "mean".
+        "none" (no reduction),
+        "mean" (mean of losses),
+        "sum" (sum of losses).
+        Default: "sum".
     out : Optional[ivy.Array], optional
         Optional output array for writing the result to.
         It must have a shape that the inputs broadcast to.
@@ -203,6 +206,7 @@ def l2_loss(
         return ivy.divide(ivy.mean(loss, out=out),2)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
+
 
 @handle_exceptions
 @handle_nestable

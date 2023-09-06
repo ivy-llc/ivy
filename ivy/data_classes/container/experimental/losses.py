@@ -161,6 +161,56 @@ class _ContainerWithLossesExperimental(ContainerBase):
         )
 
     @staticmethod
+    def _static_l2_loss(
+        input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: Optional[Union[str, ivy.Container]] = "mean",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Dummy_documentation
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "l2_loss",
+            input,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def l2_loss(
+        self: ivy.Container,
+        /,
+        *,
+        reduction: Optional[Union[str, ivy.Container]] = "mean",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Dummy_documentation
+        """
+        return self._static_l2_loss(
+            self,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def _static_smooth_l1_loss(
         input: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         target: Union[ivy.Container, ivy.Array, ivy.NativeArray],
