@@ -21,7 +21,7 @@ def _batched_outer_data(draw):
     shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes(),
             shape=shape,
             large_abs_safety_factor=20,
             small_abs_safety_factor=20,

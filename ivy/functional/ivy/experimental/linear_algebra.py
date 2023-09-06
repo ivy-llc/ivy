@@ -1780,15 +1780,10 @@ def batched_outer(
 
             n_samples = current_shape[0]
 
-            if n_samples != result_shape[0]:
-                raise ValueError(
-                    f"Tensor {i} has a batch-size of {n_samples} but those before had a"
-                    f" batch-size of {result_shape[0]}, all tensors should have the"
-                    " same batch-size."
-                )
+            _check_same_batch_size(i, n_samples, result_shape)
 
             shape_1 = result_shape + (1,) * current_size
-            shape_2 = (n_samples,) + (1,) * result_size + current_shape[1:]
+            shape_2 = (n_samples,) + (1,) * result_size + tuple(current_shape[1:])
 
             result = ivy.reshape(result, shape_1) * ivy.reshape(tensor, shape_2)
         else:
@@ -1801,3 +1796,12 @@ def batched_outer(
         result = ivy.inplace_update(out, result)
 
     return result
+
+
+def _check_same_batch_size(i, n_samples, result_shape):
+    if n_samples != result_shape[0]:
+        raise ValueError(
+            f"Tensor {i} has a batch-size of {n_samples} but those before had a"
+            f" batch-size of {result_shape[0]}, all tensors should have the"
+            " same batch-size."
+        )
