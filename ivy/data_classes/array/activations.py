@@ -135,8 +135,8 @@ class _ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        out: Optional[ivy.Array] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sigmoid.
@@ -148,12 +148,12 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         self
             Input array
-        out
-            optional output array for writing the result to. It must have the same shape
-            the input broadcast to default: None
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array for writing the result to. It must have the same shape
+            the input broadcast to default: None
 
         Returns
         -------
@@ -168,7 +168,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.269, 0.731, 0.881])
         """
-        return ivy.sigmoid(self._data, out=out, complex_mode=complex_mode)
+        return ivy.sigmoid(self._data, complex_mode=complex_mode, out=out)
 
     def softmax(
         self: ivy.Array,
@@ -331,8 +331,8 @@ class _ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        out: Optional[ivy.Array] = None,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Apply the hardswish activation function element-wise.
@@ -341,12 +341,12 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         x
             input array
-        out
-            optional output array, for writing the result to. It must have
-            a shape that the inputs broadcast to.
         complex_mode
             optional specifier for how to handle complex data types. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -372,4 +372,4 @@ class _ArrayWithActivations(abc.ABC):
             b: ivy.array([0., 5.])
         }
         """
-        return ivy.hardswish(self._data, out=out, complex_mode=complex_mode)
+        return ivy.hardswish(self._data, complex_mode=complex_mode, out=out)

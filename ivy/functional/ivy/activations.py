@@ -379,8 +379,8 @@ def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the sigmoid function element-wise.
@@ -389,13 +389,13 @@ def sigmoid(
     ----------
     x
         input array.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         input broadcast to.
         default: None
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -739,8 +739,8 @@ def hardswish(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[ivy.Array] = None,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the hardswish activation function element-wise.
@@ -749,12 +749,12 @@ def hardswish(
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------

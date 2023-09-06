@@ -44,7 +44,7 @@ thresholded_relu.support_native_out = True
 
 @_scalar_output_to_0d_array
 def relu6(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.minimum(np.maximum(x, 0, dtype=x.dtype), 6, out=out, dtype=x.dtype)
 
@@ -55,14 +55,14 @@ relu6.support_native_out = True
 @with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def logsigmoid(
-    input: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+    input: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return -(np.log1p(np.exp(-(input))))
 
 
 @_scalar_output_to_0d_array
 def selu(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     alpha = 1.6732632423543772848170429916717
     scale = 1.0507009873554804934193349852946
@@ -77,7 +77,7 @@ selu.support_native_out = True
 
 @_scalar_output_to_0d_array
 def silu(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None, complex_mode="jax"
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.asarray(x * (1 / (1 + np.exp(-x))))
     if ivy.exists(out):
@@ -97,8 +97,8 @@ def elu(
     /,
     *,
     alpha: float = 1.0,
-    out: Optional[np.ndarray] = None,
     complex_mode="jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # exp = np.expm1(x)
     ret = np.where(x > 0, x, np.multiply(alpha, np.expm1(x))).astype(x.dtype)

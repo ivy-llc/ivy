@@ -253,7 +253,7 @@ class SiLU(Module):
         ----------
         complex_mode
             Specifies how to handle complex input. See
-            `ivy.func_wrapper.handle_complex_input` for more detail.
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -283,7 +283,7 @@ class Sigmoid(Module):
         ----------
         complex_mode
             Specifies how to handle complex input. See
-            `ivy.func_wrapper.handle_complex_input` for more detail.
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -343,7 +343,7 @@ class ReLU6(Module):
         ----------
         complex_mode
             Specifies how to handle complex input. See
-            `ivy.func_wrapper.handle_complex_input` for more detail.
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -373,7 +373,7 @@ class Hardswish(Module):
         ----------
         complex_mode
             Specifies how to handle complex input. See
-            `ivy.func_wrapper.handle_complex_input` for more detail.
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -451,7 +451,7 @@ class SeLU(Module):
         ----------
         complex_mode
             Specifies how to handle complex input. See
-            `ivy.func_wrapper.handle_complex_input` for more detail.
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)
@@ -503,7 +503,7 @@ class LogSigmoid(Module):
         ----------
         complex_mode
             Specifies how to handle complex input. See
-            `ivy.func_wrapper.handle_complex_input` for more detail.
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         self._complex_mode = complex_mode
         Module.__init__(self)

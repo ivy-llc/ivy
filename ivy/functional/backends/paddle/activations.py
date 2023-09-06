@@ -90,7 +90,7 @@ def gelu(
     {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )
 def sigmoid(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
         return 1.0 / (1.0 + paddle_backend.exp(-x))
@@ -201,6 +201,6 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     backend_version,
 )
 def hardswish(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None, complex_mode="jax"
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return F.hardswish(x)

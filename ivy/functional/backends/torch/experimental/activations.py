@@ -34,7 +34,7 @@ def thresholded_relu(
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def relu6(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.nn.functional.relu6(x)
 
@@ -43,7 +43,7 @@ def relu6(
     {"2.0.1 and below": ("float16", "int16", "int32", "int64", "bool")}, backend_version
 )
 def logsigmoid(
-    input: torch.Tensor, /, *, out: Optional[torch.Tensor] = None, complex_mode="jax"
+    input: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if torch.is_complex(input):
         return torch.log(torch.sigmoid(input))
@@ -51,7 +51,9 @@ def logsigmoid(
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def selu(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     ret = torch.nn.functional.selu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
@@ -59,7 +61,9 @@ def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def silu(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.nn.functional.silu(x)
 
 
@@ -69,8 +73,8 @@ def elu(
     /,
     *,
     alpha: float = 1.0,
-    out: Optional[torch.Tensor] = None,
     complex_mode="jax",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ret = torch.nn.functional.elu(x, alpha)
     if ivy.exists(out):

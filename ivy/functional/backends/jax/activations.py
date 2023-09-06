@@ -41,7 +41,7 @@ def relu(
 
 
 def sigmoid(
-    x: JaxArray, /, *, out: Optional[JaxArray] = None, complex_mode="jax"
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
 ) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
@@ -100,6 +100,6 @@ def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
 
 
 def hardswish(
-    x: JaxArray, /, *, out: Optional[JaxArray] = None, complex_mode="jax"
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jax.nn.hard_swish(x)

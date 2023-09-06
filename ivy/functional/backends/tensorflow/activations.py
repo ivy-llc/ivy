@@ -45,7 +45,7 @@ def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> T
 
 
 def sigmoid(
-    x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
+    x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.sigmoid(x)
 
@@ -126,6 +126,6 @@ def mish(
 
 
 def hardswish(
-    x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
+    x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
 ) -> Tensor:
     return x * tf.nn.relu6(x + 3) / 6

@@ -37,13 +37,13 @@ def thresholded_relu(
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
 
-def relu6(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> Tensor:
+def relu6(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu6(x)
 
 
 @with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, backend_version)
 def logsigmoid(
-    input: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax"
+    input: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
 ) -> Tensor:
     if input.dtype in [tf.complex64, tf.complex128]:
         return tf.math.log(tf.nn.sigmoid(input))
@@ -51,14 +51,14 @@ def logsigmoid(
 
 
 @with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, backend_version)
-def selu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> Tensor:
+def selu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     ret = tf.nn.selu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
 
 
-def silu(x: Tensor, /, *, out: Optional[Tensor] = None, complex_mode="jax") -> Tensor:
+def silu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     ret = tf.nn.silu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
@@ -71,8 +71,8 @@ def elu(
     /,
     *,
     alpha: float = 1.0,
-    out: Optional[Tensor] = None,
     complex_mode="jax",
+    out: Optional[Tensor] = None,
 ) -> Tensor:
     alpha = tf.cast(alpha, x.dtype)
     ret = tf.cast(tf.where(x > 0, x, tf.multiply(alpha, tf.math.expm1(x))), x.dtype)
