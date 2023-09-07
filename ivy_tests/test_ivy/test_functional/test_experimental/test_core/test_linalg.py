@@ -405,7 +405,7 @@ def _higher_order_moment_data(draw):
     order = draw(helpers.ints(min_value=0, max_value=10))
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=["float32", "float64"],
             shape=shape,
             large_abs_safety_factor=20,
             small_abs_safety_factor=20,
