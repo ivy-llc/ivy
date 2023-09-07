@@ -2,7 +2,7 @@ Building the Docs
 =================
 
 This document describes how to build the Ivy docs. If you want to know more about how
-our custom building pipeline work, check our `Building the Docs Pipeline 
+our custom building pipeline work, check our `Building the Docs Pipeline
 <../deep_dive/building_the_docs_pipline.rst>`_ deep dive
 
 Building the Docs using Docker
@@ -23,11 +23,11 @@ This script will build the docs for Ivy and store it in ``docs/build``.
 Using existing image on Docker Hub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can also use the ``unifyai/doc-builder`` image hosted on 
-`Docker Hub <https://hub.docker.com/r/unifyai/doc-builder>`_ to build the 
+You can also use the ``unifyai/doc-builder`` image hosted on
+`Docker Hub <https://hub.docker.com/r/unifyai/doc-builder>`_ to build the
 docs. This will be helpful if you want to build the docs for Ivy applied libraries.
 
-Run ``docker run`` to build the docs. The following command will build the docs for 
+Run ``docker run`` to build the docs. The following command will build the docs for
 the project in the current directory and output them to ``docs/build``.
 
 .. code-block:: bash
@@ -67,7 +67,7 @@ Building the Docs without Docker
 --------------------------------
 
 You can also build the docs without Docker. You will first need to clone the
-``unifyai/doc-builder`` repository. Then use the convenience script 
+``unifyai/doc-builder`` repository. Then use the convenience script
 ``make_docs_without_docker.sh``.
 
 Run this command if you are using HTTPS:
@@ -90,5 +90,5 @@ Then, run the following command to build the docs:
     ./make_docs_without_docker.sh <ivy directory or applied library directory>
 
 The script will install the required dependencies for `sphinx <https://www.sphinx-doc.org>`_
-which is used to build the docs, as well as dependencies required by Ivy or the Ivy 
+which is used to build the docs, as well as dependencies required by Ivy or the Ivy
 applied library. Then it will build the docs for Ivy and store it in ``docs/build``.

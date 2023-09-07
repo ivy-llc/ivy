@@ -2105,7 +2105,7 @@ class _ContainerWithLayers(ContainerBase):
         filter_format
             Either "channel_first" or "channel_last". Defaults to "channel_last".
         x_dilations
-            The dilation factor for each dimension of input. (Default value = 1)    
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         bias
@@ -2190,7 +2190,7 @@ class _ContainerWithLayers(ContainerBase):
         filter_format
             Either "channel_first" or "channel_last". Defaults to "channel_last".
         x_dilations
-            The dilation factor for each dimension of input. (Default value = 1)    
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         bias

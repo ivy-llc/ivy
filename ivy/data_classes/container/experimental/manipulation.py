@@ -554,7 +554,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             Container with a rotated view of m.
-            
+
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
@@ -2057,7 +2057,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
-            
+
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply

@@ -1347,7 +1347,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> b = x.get_num_dims(as_array=False)
         >>> print(b)
         3
-        
+
         >>> b = x.get_num_dims(as_array=True)
         >>> print(b)
         ivy.array(3)

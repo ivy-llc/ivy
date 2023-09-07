@@ -261,7 +261,7 @@ However, these functions are specified to have key-word only arguments and in so
 In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.
 
 .. code-block:: python
-    
+
     # in ivy/functional/frontends/tensorflow/math.py
     @to_ivy_arrays_and_back
     def argmax(input, axis, output_type=None, name=None):

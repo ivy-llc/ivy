@@ -167,7 +167,7 @@ ivy.tan()
 **TensorFlow**
 
 .. code-block:: python
-        
+
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
     @handle_frontend_test(
         fn_tree="tensorflow.math.tan",
@@ -624,9 +624,9 @@ for example, :code:`ndarray.__add__` would expect an array as input, despite the
 **Important Helper Functions**
 
 :func:`@handle_frontend_method` requires 3 keyword only parameters:
-    - :code:`class_tree` A full path to the array class in **Ivy** namespace. 
+    - :code:`class_tree` A full path to the array class in **Ivy** namespace.
     - :code:`init_tree` A full path to initialization function.
-    - :code:`method_name` The name of the method to test. 
+    - :code:`method_name` The name of the method to test.
 
 :func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
   - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.

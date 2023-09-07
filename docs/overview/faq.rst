@@ -53,7 +53,7 @@ For some backends, shape-checking will be performed during the compilation phase
 
 GPU handling
 ------------
-**Q:** How does Ivy handle GPU usage? 
+**Q:** How does Ivy handle GPU usage?
 
 **A:** Ivy handles GPU usage by simply wrapping the backend frameworks, so Ivy will use GPUs in the same manner as the backend framework does.
 E.g. When using a torch backend, torch will be a dependency of Ivy, and its handling of GPU functionalities will be inherited and extended upon by Ivy.

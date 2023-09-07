@@ -437,7 +437,7 @@ expected. :sweat_smile:
 
 ``` bash
 git clone https://github.com/unifyai/ivy.git
-cd ivy 
+cd ivy
 pip install --user -e .
 ```
 
@@ -1526,7 +1526,7 @@ device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
 # training hyperparams
 optimizer= ivy.Adam(1e-4)
-batch_size = 64 
+batch_size = 64
 num_epochs = 20
 num_classes = 10
 
@@ -1600,7 +1600,7 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
         f.writerows(metrics)
 
 
-# assuming the dataset(images and classes) are already prepared in a folder      
+# assuming the dataset(images and classes) are already prepared in a folder
 train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
 ```
 

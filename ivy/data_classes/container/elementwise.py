@@ -6243,7 +6243,7 @@ class _ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
-        
+
         Examples
         --------
         With :code:`ivy.Container` inputs:

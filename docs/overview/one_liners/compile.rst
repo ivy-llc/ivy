@@ -6,29 +6,29 @@
    ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
 
 
-When we call an Ivy function, there is always a small performance hit due to added 
-Python wrapping. This overhead becomes increasingly noticeable when we use large 
-models with multiple function calls. The Graph Compiler improves the performance of 
-Ivy by removing the extra wrapping around each function call. 
+When we call an Ivy function, there is always a small performance hit due to added
+Python wrapping. This overhead becomes increasingly noticeable when we use large
+models with multiple function calls. The Graph Compiler improves the performance of
+Ivy by removing the extra wrapping around each function call.
 
-The Graph Compiler takes in any Ivy function, framework-specific (backend) function, 
-or composition of both, and produces a simplified executable computation graph composed 
+The Graph Compiler takes in any Ivy function, framework-specific (backend) function,
+or composition of both, and produces a simplified executable computation graph composed
 of functions from the backend functional API only, which results in:
 
-- Simplified code: The Graph Compiler simplifies the code by removing all the wrapping 
+- Simplified code: The Graph Compiler simplifies the code by removing all the wrapping
   and functions that don't contribute to the output: print statements, loggers, etc.
-- Improved performance: The compiled graph has no performance overhead due to Ivy's 
-  function wrapping, likewise, redundant operations from the original function are also 
+- Improved performance: The compiled graph has no performance overhead due to Ivy's
+  function wrapping, likewise, redundant operations from the original function are also
   removed, increasing its overall performance.
 
 Compiler API
 ------------
 
 .. py:function:: ivy.compile(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to = None, include_generators = True, array_caching = True, return_backend_compiled_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
-    
-    Compiles a ``Callable`` or set of them into an Ivy graph. If ``args`` or ``kwargs`` are specified, 
+
+    Compiles a ``Callable`` or set of them into an Ivy graph. If ``args`` or ``kwargs`` are specified,
     compilation is performed eagerly, otherwise, compilation will happen lazily.
-    
+
     :param objs: Callable(s) to compile and create a graph of.
     :type objs: ``Callable``
     :param stateful: List of instances to be considered stateful during the graph compilation.
@@ -91,12 +91,12 @@ In this case, the compiled graph would be:
 From the graph, we can observe that:
 
 1. As ``x`` and ``y`` are the only variables used when calculating the returned value ``z``,
-   the non-contributing variable(s), ``k`` was not included in the graph. Function calls that 
+   the non-contributing variable(s), ``k`` was not included in the graph. Function calls that
    don't contribute to the output like the ``print`` function were also excluded.
-2. As we set the backend to ``torch`` during the compilation process, the compiled 
+2. As we set the backend to ``torch`` during the compilation process, the compiled
    functions are torch functions, and the input and output types are torch tensors.
-3. The tensor shape in the graph only indicates the shape of the inputs the graph was 
-   traced with. The compiler doesn't impose additional restrictions on the shape or 
+3. The tensor shape in the graph only indicates the shape of the inputs the graph was
+   traced with. The compiler doesn't impose additional restrictions on the shape or
    datatype of the input array(s).
 
 .. code-block:: python
@@ -114,17 +114,17 @@ From the graph, we can observe that:
 Eager vs lazy Compilation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The graph compiler runs the original function under the hood and tracks its computation 
-to create the compiled graph. The **eager compilation** method traces the graph in the 
-corresponding function call with the specified inputs before we use the compiled 
+The graph compiler runs the original function under the hood and tracks its computation
+to create the compiled graph. The **eager compilation** method traces the graph in the
+corresponding function call with the specified inputs before we use the compiled
 function.
 
-Instead of compiling functions before using them, Ivy also allows you to compile the 
-function dynamically. This can be done by passing only the function to the 
-compile method and not including the function arguments. In this case, the output will be a 
-``LazyGraph`` instead of a ``Graph`` instance. When this ``LazyGraph`` object is first invoked with 
-function arguments, it compiles the function and returns the output of the compiled 
-function. Once the graph has been initialized, calls to the ``LazyGraph`` object will 
+Instead of compiling functions before using them, Ivy also allows you to compile the
+function dynamically. This can be done by passing only the function to the
+compile method and not including the function arguments. In this case, the output will be a
+``LazyGraph`` instead of a ``Graph`` instance. When this ``LazyGraph`` object is first invoked with
+function arguments, it compiles the function and returns the output of the compiled
+function. Once the graph has been initialized, calls to the ``LazyGraph`` object will
 use the compiled function to compute the outputs directly.
 
 .. code-block:: python
@@ -138,18 +138,18 @@ use the compiled function to compute the outputs directly.
     # Compile and return the output
     out = lazy_graph(x, y)
 
-To sum up, lazy compilation enables you to delay the compilation process until you have 
-the necessary inputs during execution. This is particularly useful in cases like 
-compiling libraries, where it’s not feasible to provide valid arguments for every 
+To sum up, lazy compilation enables you to delay the compilation process until you have
+the necessary inputs during execution. This is particularly useful in cases like
+compiling libraries, where it’s not feasible to provide valid arguments for every
 function call.
 
-Now let's look at additional functionalities that you can find in the 
+Now let's look at additional functionalities that you can find in the
 compiler.
 
 Array caching
 ~~~~~~~~~~~~~
 
-The compiler is able to cache constant arrays and their operations through the 
+The compiler is able to cache constant arrays and their operations through the
 ``array_caching`` flag, reducing computation time after compilation.
 
 .. code-block:: python
@@ -166,15 +166,15 @@ The compiler is able to cache constant arrays and their operations through the
 
     comp_func = ivy.compile(fn, args=(x,))
 
-When calling ``ivy.compile()``, the ``array_caching`` argument is set to ``True`` by 
+When calling ``ivy.compile()``, the ``array_caching`` argument is set to ``True`` by
 default, which returns the following graph.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/compiler/figure2.png
 
-This shows that by caching the constant operation in the graph, a simpler graph can be 
-obtained. However, if desired, this argument can be set to ``False``, which results in the 
-graph below. This ultimately results in a trade-off between time and memory, as 
-cached results need to be stored in memory but if they are not cached these operations 
+This shows that by caching the constant operation in the graph, a simpler graph can be
+obtained. However, if desired, this argument can be set to ``False``, which results in the
+graph below. This ultimately results in a trade-off between time and memory, as
+cached results need to be stored in memory but if they are not cached these operations
 need to be performed.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/compiler/figure3.png
@@ -195,7 +195,7 @@ are included as nodes or "baked" into the graph.
         a = torch.randint(0, 100, size=[1])
         z = x ** a
         return z + torch.rand([1])
-        
+
     comp_func = ivy.compile(fn, include_generators=True, args=(x,))
 
 Returns:
@@ -224,7 +224,7 @@ Returns:
 Stateful
 ~~~~~~~~
 
-Finally, you can also track ``__setattr__`` and ``__getattr__`` methods of 
+Finally, you can also track ``__setattr__`` and ``__getattr__`` methods of
 arbitrary classes using the ``stateful`` parameters.
 
 .. code-block:: python
@@ -248,34 +248,34 @@ arbitrary classes using the ``stateful`` parameters.
 Sharp bits
 ----------
 
-As some parts of the graph compiler are still under development, there are some sharp 
-bits to take into account when using it. All of these points are WIP, so they'll be 
+As some parts of the graph compiler are still under development, there are some sharp
+bits to take into account when using it. All of these points are WIP, so they'll be
 removed soon!
 
-1. **Dynamic control flow**: The compiled graph is built using function tracing at the 
-   moment, so dynamic control flow such as conditional branches or conditional loops 
-   will not be registered correctly. As an example, if there is a while loop in your 
-   code that depends on a changing value, the number of iterations in the final graph 
-   will be the same as the number of iterations performed with the input passed to the 
+1. **Dynamic control flow**: The compiled graph is built using function tracing at the
+   moment, so dynamic control flow such as conditional branches or conditional loops
+   will not be registered correctly. As an example, if there is a while loop in your
+   code that depends on a changing value, the number of iterations in the final graph
+   will be the same as the number of iterations performed with the input passed to the
    compile function.
-2. **Non-framework-specific code**: As the compiler traces the function using the 
-   functional API of the underlying framework, any piece of code inside the model that 
-   is not from the said framework will not be correctly registered, this includes other 
-   frameworks code (such as NumPy statements inside a torch model) or python statements 
+2. **Non-framework-specific code**: As the compiler traces the function using the
+   functional API of the underlying framework, any piece of code inside the model that
+   is not from the said framework will not be correctly registered, this includes other
+   frameworks code (such as NumPy statements inside a torch model) or python statements
    such as len().
-3. **Incorrectly cached parts of the graph**: There are certain cases where compilation 
+3. **Incorrectly cached parts of the graph**: There are certain cases where compilation
    can succeed but hide some cached parts of the graph which shouldn't really be cached.
-   To check this, it's recommended to compile with a noise array of the same shape and 
+   To check this, it's recommended to compile with a noise array of the same shape and
    then check if the output of the original function and the compiled graph with another
-   input is the same. If you find out that the graph is not right, feel free to open an 
-   `issue <https://github.com/unifyai/ivy/issues>`_ with a minimal example and we'll look 
+   input is the same. If you find out that the graph is not right, feel free to open an
+   `issue <https://github.com/unifyai/ivy/issues>`_ with a minimal example and we'll look
    into it!
 
 Examples
 --------
 
-Below, we compile a ResNet50 model from 
-`Hugging Face <https://huggingface.co/microsoft/resnet-50>`_ and use it to classify the 
+Below, we compile a ResNet50 model from
+`Hugging Face <https://huggingface.co/microsoft/resnet-50>`_ and use it to classify the
 breed of a cat.
 
 .. code-block:: python

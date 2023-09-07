@@ -63,7 +63,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master${{ matrix.branch }}
-          pip install pydriller pymongo 
+          pip install pydriller pymongo
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           mkdir .ivy

@@ -1397,11 +1397,11 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
-    
+
     hermitian
         indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x``
         is assumed to be Hermitian, enabling a more efficient method for finding
-        eigenvalues, but x is not checked inside the function. 
+        eigenvalues, but x is not checked inside the function.
         Instead, We just use the lower triangular of the matrix to compute.
         Default: ``False``.
     out
