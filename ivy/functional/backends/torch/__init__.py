@@ -8,6 +8,10 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": torch.__version__.split("+")[0]}
 
+# Registering ivy.Array as trackable submodule
+if hasattr(torch, "_dynamo"):
+    torch._dynamo.config.traceable_tensor_subclasses = (ivy.Array,)
+
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
