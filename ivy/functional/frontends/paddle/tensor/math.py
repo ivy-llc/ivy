@@ -574,6 +574,12 @@ def tanh(x, name=None):
     return ivy.tanh(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def tanh_(x, name=None):
+    return ivy.inplace_update(x, tanh(x))
+
+
 @with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
