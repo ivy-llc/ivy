@@ -33,7 +33,10 @@ Usage
 -----
 
 As we mentioned, ``ivy.unify()`` is an alias for ``ivy.transpile(..., to="ivy", ...)``.
-So you can ues it in the same way as ``ivy.transpile()``.
+So you can use it in the same way as ``ivy.transpile()``. In this case, instead of
+getting a graph composed of functions from the functional API of the target framework,
+the function will return a graph fully composed of ivy functions, allowing you to run
+the graph in any framework directly.
 
 .. code-block:: python
 
