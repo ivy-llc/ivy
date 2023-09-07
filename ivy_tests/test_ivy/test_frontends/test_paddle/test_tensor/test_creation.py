@@ -581,7 +581,7 @@ def test_paddle_random_uniform(
     high = 10
 
     helpers.test_frontend_function(
-        dtype=input_dtype,
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
