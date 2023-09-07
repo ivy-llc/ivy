@@ -23,6 +23,5 @@ def column_or_1d(y, *, warn=False):
     if len(shape) == 2 and shape[1] == 1:
         y = ivy.reshape(y, (-1,))
     elif len(shape) > 2:
-        raise ValueError(
-            "y should be a 1d array or a column vector")
+        raise ValueError("y should be a 1d array or a column vector")
     return y
