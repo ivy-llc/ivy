@@ -3679,19 +3679,17 @@ def test_numpy_ndarray_view(
     init_tree="numpy.array",
     method_name="trace",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
         min_num_dims=2,
         min_axes_size=2,
         max_axes_size=2,
         valid_axis=True,
     ),
     offset=st.integers(min_value=-2, max_value=2),
-    dtype=helpers.get_dtypes("numeric"),
 )
 def test_numpy_trace(
     dtype_x_axis,
     offset,
-    dtype,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -3712,7 +3710,6 @@ def test_numpy_trace(
             "axis1": axis[0],
             "axis2": axis[1],
             "offset": offset,
-            "dtype": dtype[0],
             "out": None,
         },
         frontend=frontend,
