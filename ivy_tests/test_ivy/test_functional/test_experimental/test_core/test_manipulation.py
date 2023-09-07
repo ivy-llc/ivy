@@ -423,7 +423,10 @@ def _st_col_row_stack_arrays(draw, stack_dim):
                 arrays += arrays_0D
                 dtypes += dtypes_0D
 
-    return arrays, dtypes
+    arrays_dtypes = draw(st.permutations(list(zip(arrays, dtypes))))
+    arrays, dtypes = list(zip(*arrays_dtypes))
+
+    return list(arrays), list(dtypes)
 
 
 def _st_tuples_or_int(n_pairs, min_val=0):
