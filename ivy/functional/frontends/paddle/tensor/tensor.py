@@ -714,6 +714,10 @@ class Tensor:
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def stanh(self, scale_a=0.67, scale_b=1.7159, name=None):
+        return paddle_frontend.stanh(self, scale_a=scale_a, scale_b=scale_b)
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
         "paddle",
@@ -726,3 +730,6 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):
         return ivy.remainder(self._ivy_array, y)
+
+    def is_floating_point(self):
+        return paddle_frontend.is_floating_point(self._ivy_array)
