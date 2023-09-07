@@ -2909,7 +2909,7 @@ def sliding_window(
     >>> x = ivy.array([[1, 2, 3, 4],
     >>>                [5, 6, 7, 8],
     >>>                [9, 10, 11, 12]])
-    >>> ivy.sliding_window(x, (2, 2), (1, 1), 1, "VALID")
+    >>> ivy.sliding_window(x, (2, 2))
     ivy.array([[[ 1,  2,  5,  6],
                 [ 2,  3,  6,  7],
                 [ 3,  4,  7,  8]],
@@ -2919,5 +2919,10 @@ def sliding_window(
                 [ 7,  8, 11, 12]]])
     """
     return ivy.current_backend(input).sliding_window(
-        input, window_size, stride, dilation, padding, data_format=data_format
+        input,
+        window_size,
+        stride=stride,
+        dilation=dilation,
+        padding=padding,
+        data_format=data_format,
     )
