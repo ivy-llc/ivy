@@ -562,6 +562,8 @@ def test_paddle_ones_like(
 # random_uniform
 @handle_frontend_test(
     fn_tree="paddle.uniform",
+    low=helpers.floats(min_value=-1, max_value=10),
+    high=helpers.floats(min_value=1, max_value=10),
     dtype_and_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
     ),
@@ -569,6 +571,8 @@ def test_paddle_ones_like(
 )
 def test_paddle_random_uniform(
     *,
+    low,
+    high,
     dtype_and_shape,
     on_device,
     fn_tree,
@@ -577,8 +581,6 @@ def test_paddle_random_uniform(
     test_flags,
 ):
     input_dtype, x, shape = dtype_and_shape
-    low = 0.0
-    high = 1.0
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
