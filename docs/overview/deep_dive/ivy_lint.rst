@@ -9,7 +9,8 @@ Overview
 Existing Formatters
 -------------------
 
-### FunctionOrderingFormatter
+FunctionOrderingFormatter
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `FunctionOrderingFormatter` is designed to ensure a specific order of declarations in Python files. It sorts functions, classes, and assignments in the codebase according to a predefined hierarchy.
 
