@@ -725,7 +725,7 @@ def tanh(
             paddle.complex(tanh_a, tan_b),
             paddle.complex(
                 paddle.ones_like(tanh_a),
-                paddle.multiply(tanh_a, tan_b)
+                paddle.multiply(tanh_a, tan_b),
             )
         )
     return paddle.tanh(x)

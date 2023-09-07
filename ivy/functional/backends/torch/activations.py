@@ -122,14 +122,7 @@ def log_softmax(
     return torch.nn.functional.log_softmax(x, axis)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "float16",
-        )
-    },
-    backend_version,
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version,)
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if torch.is_complex(x):
         x_norm = torch.log1p(x.exp())
