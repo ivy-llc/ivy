@@ -382,13 +382,13 @@ class Logit(Module):
         """
         Apply the LOGIT activation function.
 
-       Parameters
-       ----------
-       eps
-            The epsilon value for the logit formation. Default: ``None``.
-       complex_mode
-            optional specifier for how to handle complex data types. See
-            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        Parameters
+        ----------
+        eps
+             The epsilon value for the logit formation. Default: ``None``.
+        complex_mode
+             optional specifier for how to handle complex data types. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
         Module.__init__(self)
         self._eps = eps
