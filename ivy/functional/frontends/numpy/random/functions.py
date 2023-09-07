@@ -310,3 +310,8 @@ def zipf(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.floor(ivy.pow(1 / (1 - u), 1 / a))
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def exponential(scale=1.0, size=None):
+    return ivy.exponential(scale=scale, shape=size, dtype="float64")
