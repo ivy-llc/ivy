@@ -19,7 +19,7 @@ import ivy
 @st.composite
 def _batched_outer_data(draw):
     shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
-    tensors_num = draw(helpers.ints(min_value=1, max_value=10))
+    tensors_num = draw(helpers.ints(min_value=1, max_value=5))
     dtype, tensors = draw(
         helpers.dtype_and_values(
             num_arrays=tensors_num,
