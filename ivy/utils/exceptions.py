@@ -391,14 +391,14 @@ def handle_exceptions(fn: Callable) -> Callable:
         except InvalidBackendException as e:
             _configure_stack_trace(e.__traceback__)
             raise e
-        except (Exception, IvyBackendException) as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyBackendException(
-                fn.__name__, str(e), include_backend=True
-            )
         except InplaceUpdateException as e:
             _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.InplaceUpdateException(
+                fn.__name__, str(e), include_backend=True
+            )
+        except (Exception, IvyBackendException) as e:
+            _configure_stack_trace(e.__traceback__)
+            raise ivy.utils.exceptions.IvyBackendException(
                 fn.__name__, str(e), include_backend=True
             )
 
