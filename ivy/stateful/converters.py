@@ -9,9 +9,6 @@ import ivy
 
 from ivy.utils.backend import current_backend
 
-# helpers
-frontend_arrays = []
-
 
 def to_ivy_module(
     native_module=None,
