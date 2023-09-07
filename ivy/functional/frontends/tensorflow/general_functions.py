@@ -286,6 +286,16 @@ def linspace(start, stop, num, name=None, axis=0):
 
 
 @to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    sparse = False
+    indexing = "xy"
+    if "indexing" in kwargs:
+        indexing = kwargs["indexing"]
+
+    return ivy.meshgrid(*args, sparse=sparse, indexing=indexing)
+
+
+@to_ivy_arrays_and_back
 def no_op(name=None):
     return
 
