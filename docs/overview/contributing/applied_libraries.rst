@@ -139,4 +139,4 @@ Example - Ivy Robot
 
 These examples should hopefully give you a good understanding of what is required when developing the Ivy applied libraries.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `pycharm channel`_, `docker channel`_, `pre-commit channel`_, `pip packages channel`_ or `other channel`_, depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ in the `pycharm channel`_, `docker channel`_, `pre-commit channel`_ or `pip packages channel`_, depending on the question!

@@ -172,6 +172,13 @@ def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
     return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def digamma(x, name=None):
+    digamma_fun = ivy.digamma
+    return ivy.array(digamma_fun(x), dtype=x.dtype)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def divide(x, y, name=None):
@@ -190,6 +197,12 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def exp_(x, name=None):
+    return ivy.inplace_update(x, exp(x))
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float16", "float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def expm1(x, name=None):
@@ -202,6 +215,12 @@ def expm1(x, name=None):
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_divide(x, y, name=None):
+    return ivy.floor_divide(x, y)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
@@ -292,6 +311,12 @@ def lcm(x, y, name=None):
 @to_ivy_arrays_and_back
 def lerp(x, y, weight, name=None):
     return ivy.lerp(x, y, weight)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def lerp_(x, y, weight, name=None):
+    return ivy.inplace_update(x, lerp(x, y, weight))
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -485,11 +510,17 @@ def sqrt(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def sqrt_(x, name=None):
+    return ivy.inplace_update(x, sqrt(x))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
     # TODO this function will be simplified as soon as the ivy.stanh(x,a,b) is added
