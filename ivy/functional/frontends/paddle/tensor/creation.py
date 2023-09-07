@@ -146,7 +146,7 @@ def ones_like(x, /, *, dtype=None, name=None):
 
 # []-22965
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "float16", "unint16")},
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "float16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
