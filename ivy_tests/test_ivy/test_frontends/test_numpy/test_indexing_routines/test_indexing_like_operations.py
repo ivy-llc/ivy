@@ -155,7 +155,7 @@ def test_numpy_put_along_axis(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.take",
+    fn_tree="numpy.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
@@ -167,7 +167,7 @@ def test_numpy_put_along_axis(
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_take(
+def test_numpy_take_along_axis(
     *,
     dtype_x_indices_axis,
     test_flags,
