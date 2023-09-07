@@ -102,26 +102,13 @@ def avg_pool2d(
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False):
-  """
-  This function implements the max_pool3d operation and takes all arguments as input.
-
-  Args:
-    input: The input tensor. This tensor must have the shape `(batch_size, in_channels, depth, height, width)`.
-    kernel_size: The size of the pooling region. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor.
-    stride: The stride of the pooling operation. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor.
-    padding: The padding of the pooling operation. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor.
-    dilation: The dilation of the pooling operation. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor.
-    ceil_mode: Whether to use ceil or floor mode for calculating the output shape.
-
-  Returns:
-    A tensor of the same shape as the input tensor, except that the depth, height, and width dimensions are all reduced by the stride size.
-  """
 
   # Check the shapes of the input and kernel tensors.
 
   if input.shape[2:] != kernel_size:
     raise ValueError("The shape of the input tensor must be the same as the shape of the kernel tensor.")
-
+   kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+   padding = _broadcast_pooling_helper(padding, "3d", name="padding")
   # Check the stride argument.
 
   if stride is not None:
@@ -129,7 +116,8 @@ def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode
       stride = (stride,) * 3
     if len(stride) != 3:
       raise ValueError("The stride argument must be a single number or a tuple of three numbers.")
-
+  if stride is None:
+        stride = kernel_size
   # Check the padding argument.
 
   if not isinstance(padding, (tuple, list)):
