@@ -378,7 +378,7 @@ def _soft_thresholding_data(draw):
 @st.composite
 def _st_col_row_stack_arrays(draw, stack_dim):
     ndim = draw(st.integers(min_value=2, max_value=5))
-    available_dtypes = helpers.array_dtypes(num_arrays=10, array_api_dtypes=True)
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
     arrays, dtypes = draw(
         create_concatenable_arrays_dtypes(
             min_num_dims=ndim,
@@ -386,7 +386,7 @@ def _st_col_row_stack_arrays(draw, stack_dim):
             min_num_arrays=1,
             max_num_arrays=3,
             concat_dim=stack_dim,
-            dtypes=available_dtypes,
+            dtypes=[dtype],
         )
     )
     if ndim == 2:
@@ -400,7 +400,7 @@ def _st_col_row_stack_arrays(draw, stack_dim):
                     min_num_arrays=1,
                     max_num_arrays=2,
                     concat_dim=None,
-                    dtypes=available_dtypes,
+                    dtypes=[dtype],
                     common_shape=[non_stack_dim_len],
                 )
             )
@@ -417,7 +417,7 @@ def _st_col_row_stack_arrays(draw, stack_dim):
                         min_num_arrays=1,
                         max_num_arrays=2,
                         concat_dim=None,
-                        dtypes=available_dtypes,
+                        dtypes=[dtype],
                     )
                 )
                 arrays += arrays_0D

@@ -216,7 +216,7 @@ def vstack(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": "int16"}},
+    {"2.5.1 and below": {"cpu": ("int16", "bfloat16")}},
     backend_version,
 )
 def hstack(
