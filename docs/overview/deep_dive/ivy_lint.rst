@@ -4,7 +4,7 @@ Ivy-Lint: Ivy's Custom Code Formatters
 Overview
 --------
 
-`ivy-lint` is a specialized suite of formatters designed to ensure that code in the Ivy codebase adheres to certain standards and organization. The formatters under `ivy-lint` address specific concerns not covered by other standard Python formatters. Although currently it mainly includes the `FunctionOrderingFormatter`, plans are in motion to expand this suite to cater to other code organizational needs.
+`ivy-lint` is a specialized suite of formatters crafted for the Ivy codebase. It addresses unique formatting requirements not catered to by standard Python formatters. While the suite currently highlights the `FunctionOrderingFormatter`, we're continually expanding to include more formatters tailored to Ivy's needs.
 
 Existing Formatters
 -------------------
@@ -12,59 +12,47 @@ Existing Formatters
 FunctionOrderingFormatter
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `FunctionOrderingFormatter` is designed to ensure a specific order of declarations in Python files. It sorts functions, classes, and assignments in the codebase according to a predefined hierarchy.
+This formatter ensures a standardized order of declarations within Python files, organizing functions, classes, and assignments based on a hierarchy designed for the Ivy codebase.
 
-**Purpose**: The primary objective of this formatter is to impose order in the code files by sorting Python declarations.
+**Purpose**: To bring a sense of uniformity and structure to the code files by sorting various Python declarations.
 
-**Target Files**: It targets specific files that match patterns defined in `FILE_PATTERN`.
-
-The `FunctionOrderingFormatter` in `ivy-lint` is a specialized formatter designed to ensure a specific order of declarations in Python files. It sorts the functions, classes, and assignments in the codebase according to a predefined hierarchy.
+**Target Files**: It is crafted to work on particular files that align with predefined patterns.
 
 How the Formatter Works:
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Header Removal**: 
-    - Before any ordering is performed, the existing headers in the source code are removed using the regex pattern defined in `HEADER_PATTERN`.
+1. **Header Management**: 
+   - Removes pre-existing headers in the source code based on specific patterns.
 
-2. **Extracting Node Comments**: 
-    - The formatter extracts AST nodes along with their leading comments from the source code. Leading comments are those found right above a declaration or a statement.
-    - The method `_extract_all_nodes_with_comments` provides this extraction, and `_extract_node_with_leading_comments` aids by retrieving a specific node's comments.
+2. **Comments Handling**: 
+   - Extracts code components along with their leading comments, ensuring that relevant comments are retained during the reordering process.
 
-3. **Building Dependency Graphs**: 
-    - To understand and maintain inherent relationships, dependency graphs are constructed.
-    - **Class Dependencies**: A graph (`class_dependency_graph`) is built to understand class inheritance. Nodes represent class names, and directed edges represent inheritance. The `class_build_dependency_graph` method facilitates this.
-    - **Assignment Dependencies**: Another graph (`assignment_dependency_graph`) captures dependencies among assignments. For instance, if one assignment depends on the value from another assignment, this relationship is represented in the graph. This is facilitated by the `assignment_build_dependency_graph` method.
+3. **Dependency Handling**: 
+   - Constructs dependency graphs to understand and maintain the relationships between classes and assignments.
 
 4. **Sorting Logic**:
-    - The `sort_key` function dictates the order in which nodes are arranged:
-        1. Imports are prioritized.
-        2. Assignments come next, with various considerations. If assignments depend on another assignment or a function/class, they are given priority.
-        3. Classes follow, based on the inheritance chain.
-        4. Functions come in two categories: Helper (private with names starting with "_") and API functions (public). They're sorted accordingly.
-    - Any module-level docstring is preserved and positioned at the beginning.
-    - Comments are retained with their associated code sections.
-    - Helper functions are grouped under the `# --- Helpers --- #` header, while the primary functions come under `# --- Main --- #`.
-   
+   - Prioritizes imports, followed by assignments based on certain dependencies, then classes, and finally functions.
+   - Preserves module-level docstrings at the top of the file.
+   - Organizes helper functions and primary functions into separate sections for clarity.
+
 5. **File Processing**:
-    - If a file matches the `FILE_PATTERN`, the formatter reads its content and applies the rearrangement logic.
-    - The reordered code is then written back to the file.
-    - If there's a `SyntaxError` during the process, the formatter will notify that the provided file does not contain valid Python code.
+   - Processes files that align with certain patterns, rearranging their content as needed.
 
 Integration and Usage
 ---------------------
 
-To utilize any formatter within `ivy-lint`, integrate it as part of a pre-commit hook. When the hook triggers (usually before committing changes to a repository), the formatters in `ivy-lint` check each file and, if necessary, process them to ensure they adhere to the desired standards.
+To get the best out of `ivy-lint`, integrate it within a pre-commit hook. This ensures that whenever code changes are about to be committed, the suite checks and, if needed, formats the files to align with Ivy's standards.
 
-For a step-by-step guide on integrating `ivy-lint` with your development workflow, refer to our comprehensive [pre-commit guide].
+For comprehensive details on weaving `ivy-lint` into your development practices, kindly refer to our [formatting guide].
 
 Contribution
 ------------
 
-We welcome contributions to `ivy-lint`! If you have an idea for a new formatter or improvements for the existing ones, please raise an issue on our GitHub repository or discuss it with us on our `discord`_ channel.
+We’re always thrilled to welcome contributions to `ivy-lint`. If you're brimming with ideas for a new formatter or can enhance our existing ones, please connect with us either on our GitHub repository or our `discord` channel.
 
 Round Up
 --------
 
-`ivy-lint` is an essential tool in Ivy's arsenal to maintain code consistency and readability. As we move forward, we anticipate the addition of more specialized formatters to address Ivy's evolving needs.
+`ivy-lint` stands as a testament to Ivy's commitment to code clarity and uniformity. As the landscape of our needs shifts, we foresee further refining and expanding our suite of formatters.
 
-For any queries or discussions, please join us on `discord`_ in the `formatting channel`_!
+For all discussions or inquiries, you're always welcome on `discord` in the `formatting channel`.
