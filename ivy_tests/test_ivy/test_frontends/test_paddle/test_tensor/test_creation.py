@@ -732,8 +732,9 @@ def test_paddle_triu_indices(
     fn_tree="paddle.uniform",
     min=st.floats(min_value=-1, max_value=10),
     max=st.floats(min_value=-1, max_value=10),
-    dtype_and_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), ret_shape=True
+    dtype=st.sampled_from(helpers.get_dtypes("valid")),
+    shape=st.tuples(
+        st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5)
     ),
     test_with_out=st.just(False),
 )
@@ -741,17 +742,16 @@ def test_paddle_uniform(
     *,
     min,
     max,
-    dtype_and_shape,
+    dtype,
+    shape,
     on_device,
     fn_tree,
     backend_fw,
     frontend,
     test_flags,
 ):
-    input_dtype, x, shape = dtype_and_shape
-
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
