@@ -3883,8 +3883,9 @@ class ContainerBase(dict, abc.ABC):
                                     (
                                         f"{name} = {v[i]}"
                                         if v[i].size < self._print_limit
-                                        else "{} = {}, shape={}".format(
-                                            name, type(v[i]), list(v[i].shape)
+                                        else (
+                                            f"{name} = {type(v[i])},"
+                                            f" shape={list(v[i].shape)}"
                                         )
                                     )
                                     for i, name in enumerate(v._fields)

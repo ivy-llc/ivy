@@ -23,7 +23,7 @@ result_config = {
 
 def make_clickable(url, name):
     return (
-        '<a href="{}" rel="noopener noreferrer" '.format(url)
+        f'<a href="{url}" rel="noopener noreferrer" '
         + f'target="_blank"><img src={name}></a>'
     )
 

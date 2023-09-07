@@ -18,7 +18,7 @@ submodules = (
     "test_mindspore",
     "test_onnx",
     "test_sklearn",
-    "test_xgboost"
+    "test_xgboost",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -37,7 +37,7 @@ db_dict = {
     "test_mindspore": ["mindspore", 23],
     "test_onnx": ["onnx", 24],
     "test_sklearn": ["sklearn", 25],
-    "test_xgboost": ["xgboost", 26]
+    "test_xgboost": ["xgboost", 26],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
@@ -47,7 +47,7 @@ result_config = {
 
 def make_clickable(url, name):
     return (
-        '<a href="{}" rel="noopener noreferrer" '.format(url)
+        f'<a href="{url}" rel="noopener noreferrer" '
         + f'target="_blank"><img src={name}></a>'
     )
 

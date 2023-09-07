@@ -341,8 +341,8 @@ def visualize_speed_up(
                 ax.violinplot(query["percent_speed_up"])
             else:
                 warnings.warn(
-                    "No records matching the filters passed"
-                    "backend={} and device={}".format(backend, device)
+                    f"No records matching the filters passedbackend={backend} and"
+                    f" device={device}"
                 )
     plt.savefig(output_path)
     print(f"plot saved to {output_path} ...")
