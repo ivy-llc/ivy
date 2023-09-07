@@ -252,11 +252,10 @@ def loggamma(key, a, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {"0.4.14 and below": ("float16", "bfloat16")},
 )
-def logistic(key, shape=None, dtype="float64"):
+def logistic(key, shape=(), dtype="float64"):
     seed = _get_seed(key)
     uniform_x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
-    # Could also be ivy.log(uniform_x / (1 - uniform_x)) should check this is faster
-    return ivy.log(uniform_x) - ivy.log(1 - uniform_x)
+    return ivy.log(ivy.divide(uniform_x, ivy.subtract(1.0, uniform_x)))
 
 
 @handle_jax_dtype
