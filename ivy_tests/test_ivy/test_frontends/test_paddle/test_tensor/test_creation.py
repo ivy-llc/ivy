@@ -747,12 +747,14 @@ def test_paddle_uniform(
     dtype_and_shape,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
     dtype, shape = dtype_and_shape
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
