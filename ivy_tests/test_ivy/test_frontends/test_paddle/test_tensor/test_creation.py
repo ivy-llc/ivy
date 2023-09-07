@@ -589,8 +589,8 @@ def test_paddle_random_uniform(
         on_device=on_device,
         test_values=False,
         shape=shape,
-        low=low,
-        high=high,
+        min=low,
+        max=high,
     )
 
 
