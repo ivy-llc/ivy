@@ -450,11 +450,12 @@ def test_adaptive_avg_pool1d(
         ),
         helpers.ints(min_value=1, max_value=5),
     ),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
 )
 def test_adaptive_avg_pool2d(
-    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
+    *, dtype_and_x, output_size, data_format, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -464,6 +465,7 @@ def test_adaptive_avg_pool2d(
         on_device=on_device,
         fn_name=fn_name,
         input=x[0],
+        data_format=data_format,
         output_size=output_size,
     )
 

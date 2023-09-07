@@ -2277,7 +2277,7 @@ def adaptive_avg_pool1d(
     output_size
         Spatial output size.
     data_format
-        Defaults to "NCW".
+        NWC" or "NCW". Defaults to "NCW".
 
     Returns
     -------
