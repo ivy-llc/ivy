@@ -101,7 +101,7 @@ def avg_pool2d(
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False):
+def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False,data_format="NCHW", name=None):
 
   # Check the shapes of the input and kernel tensors.
 
@@ -141,7 +141,8 @@ def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode
       stride=stride,
       padding=padding,
       dilation=dilation,
-      ceil_mode=ceil_mode)   
+      ceil_mode=ceil_mode,
+      data_format = data_format)   
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
