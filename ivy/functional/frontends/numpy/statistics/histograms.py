@@ -8,12 +8,22 @@ from ivy.func_wrapper import with_supported_dtypes
 def bincount(x, /, weights=None, minlength=0):
     return ivy.bincount(x, weights=weights, minlength=minlength)
 
+
+
 #histogram
 # @with_supported_dtypes({"1.25.2 and below": ("int64",)}, "numpy")
 # @to_ivy_arrays_and_back
 # def histogram(a, bins=10, range=None, density=None, weights=None):
 #     return ivy.histogram(a, bins=bins, range=range, weights=weights)
-@with_supported_dtypes({"1.25.2 and below": ("int64", "float64",)}, "numpy")
+@with_supported_dtypes(
+    {
+        "1.25.2 and below": (
+            "int64",
+            "float64",
+        )
+    },
+    "numpy",
+)
 @to_ivy_arrays_and_back
 def histogram(a, bins=10, range=None, density=None, weights=None):
     if range:

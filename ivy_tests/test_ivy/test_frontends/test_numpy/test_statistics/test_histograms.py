@@ -89,5 +89,5 @@ def test_numpy_histogram(
         bins=bins,
         range=range,
         density=density,
-        weights=weights
+        weights=weights,
     )
