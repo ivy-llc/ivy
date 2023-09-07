@@ -102,14 +102,14 @@ def avg_pool2d(
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_pool3d(
-    input,
-    kernel_size,
-    stride=None,
-    padding=0,
-    dilation=1,
-    ceil_mode=False,
-    data_format="NCHW",
-    name=None,
+    input: ivy.Array,
+    kernel_size: ivy.Shape,
+    stride: Optional[ivy.Shape] = None,
+    padding: int = 0,
+    dilation: Optional[ivy.Shape] = None,
+    ceil_mode: bool = False,
+    data_format: str = "NCHW",
+    name: Optional[str] = None,
 ):
 
   """
@@ -157,28 +157,16 @@ def max_pool3d(
 
   # Create a 3D max pooling operation.
 
-  if ceil_mode:
-    return ivy.pool(
-        input,
-        mode="max",
-        data_format=data_format,
-        window_shape=(kernel_size, kernel_size, kernel_size),
-        stride=stride,
-        padding=padding,
-        dilation=dilation,
-        method="ceil",
-    )
-  else:
-    return ivy.pool(
-        input,
-        mode="max",
-        data_format=data_format,
-        window_shape=(kernel_size, kernel_size, kernel_size),
-        stride=stride,
-        padding=padding,
-        dilation=dilation,
-        method="floor",
-    )
+  return ivy.pool(
+      input,
+      mode="max",
+      data_format=data_format,
+      window_shape=kernel_size,
+      stride=stride,
+      padding=padding,
+      dilation=dilation,
+      method="ceil",
+  )
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
