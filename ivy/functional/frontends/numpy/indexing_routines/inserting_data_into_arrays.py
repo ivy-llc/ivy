@@ -160,7 +160,7 @@ def fill_diagonal(a, val, wrap=False):
 
 
 @to_ivy_arrays_and_back
-def putmask(a, mask, values, /):
+def putmask(a, /, mask, values):
     if values.size == 0:
         return
     if values.size != a.size:
