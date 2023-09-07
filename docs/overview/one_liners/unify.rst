@@ -55,4 +55,50 @@ Sharp bits
 ``ivy.unify()`` has the same sharp bits as ``ivy.transpile()``. You can know more about
 them in the :ref:`overview/one_liners/transpile:Sharp bits` section of the transpiler.
 
-.. TODO add more examples explaining how unify is different from transpile
+Examples
+--------
+
+Below, we will define a function in torch and try to call it with different native
+arguments.
+
+Here we will define the torch function and unify it:
+
+.. code-block:: python
+
+  import ivy
+  import torch
+
+  def normalize(x):
+      mean = torch.mean(x)
+      std = torch.std(x)
+      return torch.div(torch.sub(x, mean), std)
+
+    normalize = ivy.unify(normalize, source="torch")
+
+Now we can call the function with different ivy backends:
+
+.. code-block:: python
+
+  import numpy as np
+  import jax.numpy as jnp
+  import tensorflow as tf
+
+  # create random numpy arrays for testing
+  x = np.random.uniform(size=10).astype(np.float32)
+  ivy.set_backend("numpy")
+  print(normalize(x))
+
+  # jax
+  x_ = jnp.array(x)
+  ivy.set_backend("jax")
+  print(normalize(x_))
+
+  # tensorflow
+  x_ = tf.constant(x)
+  ivy.set_backend("tensorflow")
+  print(normalize(x_))
+
+  # torch
+  x_ = torch.tensor(x)
+  ivy.set_backend("torch")
+  print(normalize(x_))
