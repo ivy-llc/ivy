@@ -2153,6 +2153,30 @@ def test_torch_mul(
     )
 
 
+# mvlgamma
+@handle_frontend_test(
+    fn_tree="torch.mvlgamma",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
+    p=helpers.ints(min_value=1, max_value=11),
+)
+def test_torch_mvlgamma(
+    *, dtype_and_input, frontend, test_flags, fn_tree, backend_fw, on_device, p
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        p=p,
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.nan_to_num",
     dtype_and_x=helpers.dtype_and_values(
