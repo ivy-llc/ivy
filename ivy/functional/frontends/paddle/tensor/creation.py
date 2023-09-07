@@ -144,18 +144,6 @@ def ones_like(x, /, *, dtype=None, name=None):
     return ivy.ones_like(x, dtype=dtype)
 
 
-# []-22965
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def random_uniform(low, high, shape, device=None, dtype=None):
-    return ivy.random_uniform(
-        low=low, high=high, shape=shape, device=device, dtype=dtype
-    )
-
-
 @to_ivy_arrays_and_back
 def to_tensor(data, /, *, dtype=None, place=None, stop_gradient=True):
     array = ivy.array(data, dtype=dtype, device=place)
@@ -216,6 +204,16 @@ def triu_indices(row, col=None, offset=0, dtype="int64"):
         return arr
     arr = ivy.astype(arr, dtype)
     return arr
+
+
+# []-22965
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def uniform(low, high, shape, device=None, dtype=None):
+    return ivy.uniform(low=low, high=high, shape=shape, device=device, dtype=dtype)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "int8"}, "paddle")
