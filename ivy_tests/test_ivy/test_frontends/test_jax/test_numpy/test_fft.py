@@ -48,6 +48,57 @@ def test_jax_numpy_fft(
     )
 
 
+# fft2
+@handle_frontend_test(
+    fn_tree="jax.numpy.fft.fft2",
+    dtype_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        num_arrays=1,
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        allow_inf=False,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    axes=st.sampled_from([(0, 1), (-1, -2), (1, 0)]),
+    s=st.tuples(
+        st.integers(min_value=2, max_value=256), st.integers(min_value=2, max_value=256)
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward", None]),
+)
+def test_jax_numpy_fft2(
+    dtype_values,
+    s,
+    axes,
+    norm,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, values = dtype_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=values[0],
+        s=s,
+        axes=axes,
+        norm=norm,
+        atol=1e-02,
+        rtol=1e-02,
+    )
+
+
 # fftshift
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.fftshift",
