@@ -4,8 +4,6 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
-import paddle
-
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -423,7 +421,8 @@ def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
 @to_ivy_arrays_and_back
 def increment(x, value=1.0):
     if x.size == 1:
-        return ivy.inplace_increment(x, value)
+        return ivy.inplace_increment(ivy.copy_array(x), value)
     else:
-        # Call paddle to return the correct exception
-        return paddle.increment(paddle.to_tensor(ivy.to_native(x)), value)
+        return ValueError(
+            "(InvalidArgument) The number of elements in Input(X) should be 1."
+        )
