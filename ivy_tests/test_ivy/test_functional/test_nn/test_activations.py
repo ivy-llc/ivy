@@ -157,7 +157,7 @@ def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        x=x[0],
+        x=x,
     )
 
 

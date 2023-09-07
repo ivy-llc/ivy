@@ -125,7 +125,6 @@ def log_softmax(
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
-            "bfloat16",
             "float16",
         )
     },
