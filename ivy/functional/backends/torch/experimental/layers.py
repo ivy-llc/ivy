@@ -1026,7 +1026,7 @@ def sliding_window(
         input_shape = input.shape
         extend_dims = max(0, 4 - len(input_shape))
         new_shape = (1,) * extend_dims + input_shape
-        input = input.view(*new_shape).float()
+        input = input.reshape(new_shape).float()
 
     # check padding and convert to right format
     if isinstance(padding, str):
