@@ -2940,7 +2940,7 @@ def _broadcast_to(input, target_shape):
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-# @handle_device_shifting
+@handle_device_shifting
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
