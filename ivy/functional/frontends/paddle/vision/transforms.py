@@ -204,3 +204,4 @@ def adjust_contrast(img, contrast_factor):
     else:
         raise ValueError("channels of input should be either 1 or 3.")
     return adjusted_image
+    
