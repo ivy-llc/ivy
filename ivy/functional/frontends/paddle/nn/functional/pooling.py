@@ -102,15 +102,33 @@ def avg_pool2d(
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_pool3d(
-    input, 
-    kernel_size, 
-    stride=None, 
-    padding=0, 
-    dilation=1, 
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
     ceil_mode=False,
-    data_format="NCHW", 
-    name=None
+    data_format="NCHW",
+    name=None,
 ):
+
+  """
+  This function implements the max_pool3d operation and takes all arguments as input.
+
+  Args:
+    input: The input tensor. This tensor must have the shape `(batch_size, in_channels, depth, height, width)`.
+    kernel_size: The size of the pooling region. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor.
+    stride: The stride of the pooling operation. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor. If None, defaults to kernel_size.
+    padding: The padding of the pooling operation. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor.
+    dilation: The dilation of the pooling operation. This can be a single number or a tuple of three numbers, one for each dimension of the input tensor.
+    ceil_mode: Whether to use ceil or floor mode for calculating the output shape.
+    data_format: The data format of the input tensor. Can be "NCHW" or "NHWC".
+    name: The name of the operation.
+
+  Returns:
+    A tensor of the same shape as the input tensor, except that the depth, height, and width dimensions are all reduced by the stride size.
+  """
+
   # Check the shapes of the input and kernel tensors.
 
   if len(input.shape) < 3:
@@ -118,18 +136,10 @@ def max_pool3d(
 
   if input.shape[2:] != kernel_size:
     raise ValueError("The shape of the input tensor must be the same as the shape of the kernel tensor.")
-      
-   kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
-   padding = _broadcast_pooling_helper(padding, "3d", name="padding")
-  # Check the stride argument.
 
-  if stride is not None:
-    if not isinstance(stride, (tuple, list)):
-      stride = (stride,) * 3
-    if len(stride) != 3:
-      raise ValueError("The stride argument must be a single number or a tuple of three numbers.")
   if stride is None:
-        stride = kernel_size
+    stride = kernel_size
+
   # Check the padding argument.
 
   if not isinstance(padding, (tuple, list)):
@@ -145,27 +155,29 @@ def max_pool3d(
     if len(dilation) != 3:
       raise ValueError("The dilation argument must be a single number or a tuple of three numbers.")
 
-  # Create a 3D max pooling operation return the output tensor. 
+  # Create a 3D max pooling operation.
+
   if ceil_mode:
     return ivy.pool(
         input,
-        mode='max',
-        data_format = data_format,
+        mode="max",
+        data_format=data_format,
         window_shape=kernel_size,
         stride=stride,
         padding=padding,
         dilation=dilation,
-        method='ceil')
+        method="ceil",
+    )
   else:
     return ivy.pool(
         input,
-        mode='max',
-        data_format = data_format,
+        mode="max",
+        data_format=data_format,
         window_shape=kernel_size,
         stride=stride,
         padding=padding,
         dilation=dilation,
-        method='floor'
+        method="floor",
     )
 
 @to_ivy_arrays_and_back
