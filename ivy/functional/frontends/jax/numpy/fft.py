@@ -12,6 +12,13 @@ def fft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
+def fft2(a, s=None, axes=(-2, -1), norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.array(ivy.fft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 def fftshift(x, axes=None, name=None):
     shape = x.shape
