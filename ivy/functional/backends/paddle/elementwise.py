@@ -833,30 +833,30 @@ def round(
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
 
-        one = paddle.to_tensor(1, dtype='int64')
+        one = paddle.to_tensor(1, dtype="int64")
 
         # check if the number is even or odd
-        is_even = paddle.bitwise_and(paddle_backend.trunc(x).astype('int64'), one) == 0
+        is_even = paddle.bitwise_and(paddle_backend.trunc(x).astype("int64"), one) == 0
 
         # round the number to the nearest integer
-        round_x = paddle.sign(x) * paddle.where(is_even, paddle.floor(x.abs()), paddle.ceil(x.abs()))
+        round_x = paddle.sign(x) * paddle.where(
+            is_even, paddle.floor(x.abs()), paddle.ceil(x.abs())
+        )
 
         # if the number was rounded up from an even number
         #   round the number down to the nearest even number
         return paddle.where(
             paddle.logical_and(
-                paddle.bitwise_and(round_x.astype('int64'), one) == 1.0,
+                paddle.bitwise_and(round_x.astype("int64"), one) == 1.0,
                 is_even,
             ),
             round_x - 1.0,
-            round_x
+            round_x,
         )
 
     if x.dtype not in [paddle.float32, paddle.float64]:
         if paddle.is_complex(x):
-            return paddle.complex(
-                _np_round(x.real()), _np_round(x.imag())
-            )
+            return paddle.complex(_np_round(x.real()), _np_round(x.imag()))
         return _np_round(x.astype("float32")).astype(x.dtype)
     return _np_round(x).astype(x.dtype)
 
