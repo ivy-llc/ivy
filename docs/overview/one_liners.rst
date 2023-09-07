@@ -18,7 +18,7 @@ One liners
     .. grid-item-card:: ``ivy.unify()``
         :link: one_liners/transpile.rst
 
-        Transpiles an object into Ivy code. It's an alias to 
+        Transpiles an object into Ivy code. It's an alias to
         ``ivy.transpile(..., to="ivy", ...)``
 
 .. toctree::
