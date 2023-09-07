@@ -120,7 +120,7 @@ def test_jax_eigh(
 
 # qr
 @handle_frontend_test(
-    fn_tree="jax.numpy.linalg.qr",
+    fn_tree="jax.lax.linalg.qr",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
