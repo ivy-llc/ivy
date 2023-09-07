@@ -1966,6 +1966,25 @@ class Tensor:
         return torch_frontend.cummax(self, dim)
 
     @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def triu(self, diagonal=0):
+        return torch_frontend.triu(self, diagonal)
+
+    @with_unsupported_dtypes(
         {"2.0.1 and below": ("bfloat16",)},
         "torch",
     )
