@@ -911,6 +911,60 @@ def test_tensorflow_foldl(
     )
 
 
+# foldr
+@handle_frontend_test(
+    fn_tree="tensorflow.foldr",
+    fn=st.sampled_from(
+        [
+            lambda a, b: a + b,
+            lambda a, b: a - b,
+            lambda a, b: a * b,
+        ],
+    ),
+    initializer=st.one_of(st.none(), st.floats(min_value=-1e3, max_value=1e3)),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=-1e3,
+        max_value=1e3,
+        max_dim_size=10,
+        max_num_dims=4,
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+    parallel_iterations=st.just(10),
+    swap_memory=st.booleans(),
+    name=st.none(),
+)
+def test_tensorflow_foldr(
+    *,
+    fn,
+    initializer,
+    dtype_and_values,
+    frontend,
+    backend_fw,
+    fn_tree,
+    test_flags,
+    parallel_iterations,
+    swap_memory,
+    name,
+):
+    dtype, elems = dtype_and_values
+    elems = np.atleast_1d(elems)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        fn=fn,
+        elems=elems,
+        initializer=initializer,
+        backend_to_test=backend_fw,
+        parallel_iterations=parallel_iterations,
+        swap_memory=swap_memory,
+        name=name,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+    )
+
+
 # gather
 @handle_frontend_test(
     fn_tree="tensorflow.gather",
@@ -1862,6 +1916,28 @@ def test_tensorflow_stack(
         on_device=on_device,
         values=values,
         axis=axis,
+    )
+
+
+# stop_gradient
+@handle_frontend_test(
+    fn_tree="tensorflow.stop_gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_tensorflow_stop_gradient(
+    *, dtype_and_x, test_flags, backend_fw, fn_tree, frontend, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
