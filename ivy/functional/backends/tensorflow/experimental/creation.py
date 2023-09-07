@@ -1,13 +1,12 @@
 # global
 
 from typing import Union, Optional, Tuple
-
 import tensorflow as tf
 
 # local
-import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .. import backend_version
+
 
 # Array API Standard #
 # -------------------#
@@ -88,10 +87,6 @@ def tril_indices(
             ret[0].append(i)
             ret[1].append(j)
 
-    if device is not None:
-        with tf.device(ivy.as_native_dev(device)):
-            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
-
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
@@ -101,3 +96,61 @@ def unsorted_segment_min(
     num_segments: Union[int, tf.Tensor],
 ) -> tf.Tensor:
     return tf.math.unsorted_segment_min(data, segment_ids, num_segments)
+
+
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if size < 2:
+        return tf.ones([size], dtype=tf.result_type(size, 0.0))
+    if periodic:
+        count = tf.arange(size) / size
+    else:
+        count = tf.linspace(start=0, stop=size, num=size)
+
+    return (0.42 - 0.5 * tf.cos(2 * tf.pi * count)) + (
+        0.08 * tf.cos(2 * tf.pi * 2 * count)
+    )
+
+
+def unsorted_segment_sum(
+    data: tf.Tensor,
+    segment_ids: tf.Tensor,
+    num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
+def trilu(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if upper:
+        return tf.experimental.numpy.triu(x, k)
+    return tf.experimental.numpy.tril(x, k)
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 125.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    return tf.signal.linear_to_mel_weight_matrix(
+        num_mel_bins,
+        dft_length,
+        sample_rate,
+        lower_edge_hertz=lower_edge_hertz,
+        upper_edge_hertz=upper_edge_hertz,
+    )
