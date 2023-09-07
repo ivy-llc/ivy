@@ -186,7 +186,6 @@ class Softmax(Module):
             Specifies how to handle complex input. See
             ``ivy.func_wrapper.handle_complex_input`` for more detail.
         """
-
         Module.__init__(self)
         self._axis = axis
         self._complex_mode = complex_mode
