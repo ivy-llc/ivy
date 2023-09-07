@@ -561,7 +561,7 @@ def test_paddle_ones_like(
 
 # random_uniform
 @handle_frontend_test(
-    fn_tree="paddle.random_uniform",
+    fn_tree="paddle.uniform",
     dtype_and_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
     ),
