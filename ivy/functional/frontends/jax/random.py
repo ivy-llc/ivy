@@ -407,6 +407,17 @@ def t(key, df, shape=(), dtype="float64"):
     g = ivy.gamma(half_df, 1.0, shape=shape, dtype=dtype, seed=seed)
     return n * ivy.sqrt(ivy.divide(half_df, g))
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("float16", "bfloat16")},
+    "jax",
+)
+def logistic(key, loc=0.0, scale=1.0, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    uniform_x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    x = ivy.log(uniform_x / (1 - uniform_x))
+    return loc + scale * x
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
