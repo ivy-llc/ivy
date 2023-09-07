@@ -638,7 +638,7 @@ the steps explained below will help you in setting up a less resource-intensive 
 
       pip install git+https://github.com/unifyai/ivy.git
 
-#. If you want to set up a local repository, you can do so by following `this guide <https://unify.ai/docs/ivy/overview/contributing/setting_up.html#forking-and-cloning-the-repo>`_ 
+#. If you want to set up a local repository, you can do so by following :ref:`this guide <overview/contributing/setting_up:Forking and cloning the repo>`
    as explained above and install the required development dependencies by running:
 
    .. code-block:: none
