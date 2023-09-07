@@ -730,8 +730,8 @@ def test_paddle_triu_indices(
 # random_uniform
 @handle_frontend_test(
     fn_tree="paddle.uniform",
-    low=st.floats(min_value=-1, max_value=10),
-    high=st.floats(min_value=-1, max_value=10),
+    min=st.floats(min_value=-1, max_value=10),
+    max=st.floats(min_value=-1, max_value=10),
     dtype_and_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
     ),
@@ -739,8 +739,8 @@ def test_paddle_triu_indices(
 )
 def test_paddle_uniform(
     *,
-    low,
-    high,
+    min,
+    max,
     dtype_and_shape,
     on_device,
     fn_tree,
@@ -759,8 +759,8 @@ def test_paddle_uniform(
         on_device=on_device,
         test_values=False,
         shape=shape,
-        low=low,
-        high=high,
+        min=min,
+        max=max,
     )
     
 
