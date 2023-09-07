@@ -2285,11 +2285,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def _static_sliding_window(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         window_size: Union[int, Tuple[int, int], Tuple[int, int, int], ivy.Container],
+        /,
+        *,
         stride: Union[int, Tuple[int, int], ivy.Container] = 1,
         dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
         padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
-        /,
-        *,
         data_format="NCHW",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -2334,7 +2334,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ...                  [17, 18, 19, 20],
         ...                  [21, 22, 23, 24]])
         ... )
-        >>> result = ivy.Container._static_sliding_window(x, (2, 2), 1, 1, 'VALID')
+        >>> result = ivy.Container._static_sliding_window(x, (2, 2))
         >>> print(result)
         {
             a: ivy.array([[[ 1,  2,  5,  6],
@@ -2358,9 +2358,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
             "sliding_window",
             input,
             window_size,
-            stride,
-            dilation,
-            padding,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
             data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2371,11 +2371,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def sliding_window(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         window_size: Union[int, Tuple[int, int], Tuple[int, int, int], ivy.Container],
+        /,
+        *,
         stride: Union[int, Tuple[int, int], ivy.Container] = 1,
         dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
         padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
-        /,
-        *,
         data_format="NCHW",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -2420,7 +2420,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ...                  [17, 18, 19, 20],
         ...                  [21, 22, 23, 24]])
         ... )
-        >>> x.sliding_window((2, 2), 1, 1, 'VALID')
+        >>> x.sliding_window((2, 2))
         {
             a: ivy.array([[[ 1,  2,  5,  6],
                            [ 2,  3,  6,  7],
@@ -2442,9 +2442,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         return self._static_sliding_window(
             self,
             window_size,
-            stride,
-            dilation,
-            padding,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
             data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,

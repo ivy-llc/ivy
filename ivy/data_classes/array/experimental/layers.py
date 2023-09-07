@@ -1121,11 +1121,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
     def sliding_window(
         self: ivy.Array,
         window_size: Union[int, Tuple[int, int], Tuple[int, int, int]],
+        /,
+        *,
         stride: Union[int, Tuple[int, int]] = 1,
         dilation: Union[int, Tuple[int, int]] = 1,
         padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
-        /,
-        *,
         data_format="NCHW",
     ) -> ivy.Array:
         """
@@ -1159,7 +1159,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> x = ivy.array([[1, 2, 3, 4],
         >>>                [5, 6, 7, 8],
         >>>                [9, 10, 11, 12]])
-        >>> x.sliding_window((2, 2), (1, 1), 1, "VALID")
+        >>> x.sliding_window((2, 2))
         ivy.array([[[ 1,  2,  5,  6],
                     [ 2,  3,  6,  7],
                     [ 3,  4,  7,  8]],
@@ -1169,5 +1169,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
                     [ 7,  8, 11, 12]]])
         """
         return ivy.sliding_window(
-            self._data, window_size, stride, dilation, padding, data_format=data_format
+            self._data,
+            window_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+            data_format=data_format,
         )

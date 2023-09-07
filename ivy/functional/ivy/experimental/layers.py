@@ -2872,11 +2872,11 @@ def rfftn(
 def sliding_window(
     input: Union[ivy.Array, ivy.NativeArray],
     window_size: Union[int, Tuple[int, int], Tuple[int, int, int]],
+    /,
+    *,
     stride: Union[int, Tuple[int, int]] = 1,
     dilation: Union[int, Tuple[int, int]] = 1,
     padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
-    /,
-    *,
     data_format="NCHW",
 ):
     """

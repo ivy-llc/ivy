@@ -315,6 +315,11 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
         raise ivy.utils.exceptions.IvyException("only batched 4D inputs are supported")
     float_input = ivy.astype(input, ivy.float16)
     ret = ivy.sliding_window(
-        float_input, kernel_size, stride, dilation, padding, data_format="NCHW"
+        float_input,
+        kernel_size,
+        stride=stride,
+        dilation=dilation,
+        padding=padding,
+        data_format="NCHW",
     )
     return ret.astype(input.dtype)
