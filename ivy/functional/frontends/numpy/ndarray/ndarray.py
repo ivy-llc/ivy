@@ -621,13 +621,12 @@ class ndarray:
     def round(self, decimals=0, out=None):
         return np_frontend.round(self, decimals=decimals, out=out)
 
-    def trace(self, *, offset=0, axis1=0, axis2=1, dtype=None, out=None):
+    def trace(self, *, offset=0, axis1=0, axis2=1, out=None):
         return np_frontend.trace(
             self,
             offset=offset,
             axis1=axis1,
             axis2=axis2,
-            dtype=dtype,
             out=out,
         )
 
