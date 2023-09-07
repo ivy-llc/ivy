@@ -38,7 +38,7 @@ def _logit_jax_like(
         ivy.multiply(
             const,
             imag.astype(x.dtype),
-        )
+        ),
     )
     output = ivy.log(
         ivy.divide(
@@ -46,8 +46,8 @@ def _logit_jax_like(
             ivy.subtract(
                 ivy.array(1).astype(x.dtype),
                 x,
-            )
-        )
+            ),
+        ),
     )
     return output
 
