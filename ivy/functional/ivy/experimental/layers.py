@@ -2602,7 +2602,11 @@ def reduce_window(
     op = operand
     init_value = _cast_init(init_value, op.dtype)
     slid_wind_vals = ivy.current_backend(operand).sliding_window(
-        operand, window_dimensions, window_strides, base_dilation, padding
+        operand,
+        window_dimensions,
+        stride=window_strides,
+        dilation=base_dilation,
+        padding=padding,
     )
     ret = ivy.reduce(slid_wind_vals, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
@@ -2915,12 +2919,10 @@ def sliding_window(
                 [ 6,  7, 10, 11],
                 [ 7,  8, 11, 12]]])
     """
-    res = ivy.current_backend(input).sliding_window(
+    return ivy.current_backend(input).sliding_window(
         input,
         window_size,
         stride=stride,
         dilation=dilation,
         padding=padding,
     )
-
-    return res.astype(input.dtype)
