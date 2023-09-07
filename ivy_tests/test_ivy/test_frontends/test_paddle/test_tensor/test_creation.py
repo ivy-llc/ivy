@@ -577,6 +577,8 @@ def test_paddle_random_uniform(
     test_flags,
 ):
     input_dtype, x, shape = dtype_and_shape
+    low = (-1,)
+    high = 1
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -587,6 +589,8 @@ def test_paddle_random_uniform(
         on_device=on_device,
         test_values=False,
         shape=shape,
+        low=low,
+        high=high,
     )
 
 
