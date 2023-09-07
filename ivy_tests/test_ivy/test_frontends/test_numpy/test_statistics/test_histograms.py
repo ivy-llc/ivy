@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
 # bincount
 @handle_frontend_test(
     fn_tree="numpy.bincount",
@@ -43,6 +44,7 @@ def test_numpy_bincount(
         weights=None,
         minlength=0,
     )
+
 
 # histogram
 @handle_frontend_test(
