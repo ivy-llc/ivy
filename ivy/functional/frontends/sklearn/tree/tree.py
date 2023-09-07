@@ -4,6 +4,9 @@ from scipy.sparse import issparse
 from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
+from ._splitter import SplitRecord
+
+
 # Define constants
 INFINITY = ivy.inf
 EPSILON = ivy.finfo(ivy.double).eps
@@ -68,35 +71,35 @@ class TreeBuilder:
             X = X.tocsc() #tocsc() is a method provided by the scipy.sparse module in the SciPy library. It's used to convert a sparse matrix to the Compressed Sparse Column (CSC) format. 
             X.sort_indices() #This is done to ensure that the indices of non-zero elements within the matrix are sorted in ascending order.
 
-            if X.data.dtype != DTYPE:
-                X.data = np.ascontiguousarray(X.data, dtype=DTYPE)
+            if X.data.dtype != "float32":
+                X.data = ivy.ascontiguousarray(X.data, dtype="float32")
 
-            if X.indices.dtype != np.int32 or X.indptr.dtype != np.int32:
+            if X.indices.dtype != "int32" or X.indptr.dtype != "int32":
                 raise ValueError("No support for np.int64 index-based sparse matrices")
 
-        elif X.dtype != DTYPE:
+        elif X.dtype != "float32":
             # since we have to copy, we will make it Fortran for efficiency
-            X = np.asfortranarray(X, dtype=DTYPE)
+            X = ivy.asfortranarray(X, dtype="float32")
 
-        if y.base.dtype != DTYPE or not y.base.flags.contiguous:
-            y = np.ascontiguousarray(y, dtype=DTYPE)
+        if y.base.dtype != "float32" or not y.base.flags.contiguous:
+            y = ivy.ascontiguousarray(y, dtype="float32")
 
         if (
             sample_weight is not None and
             (
-                sample_weight.base.dtype != DOUBLE or
+                sample_weight.base.dtype != "float32" or
                 not sample_weight.base.flags.contiguous
             )
         ):
-            sample_weight = np.asarray(sample_weight, dtype=DOUBLE, order="C")
+            sample_weight = ivy.asarray(sample_weight, dtype="float32", order="C")
 
         return X, y, sample_weight
 
 
 
-
 # Depth first builder ---------------------------------------------------------
 # A record on the stack for depth-first tree growing
+
 class StackRecord:
     def __init__(self, start, end, depth, parent, is_left, impurity, n_constant_features):
         self.start = start
@@ -106,12 +109,6 @@ class StackRecord:
         self.is_left = is_left
         self.impurity = impurity
         self.n_constant_features = n_constant_features
-
-
-
-
-
-
 
 
 class DepthFirstTreeBuilder(TreeBuilder):
@@ -142,11 +139,6 @@ class DepthFirstTreeBuilder(TreeBuilder):
         # Check input
         X, y, sample_weight = self._check_input(X, y, sample_weight)
 
-        # Initial capacity
-        init_capacity = (2 ** (tree.max_depth + 1)) - 1 if tree.max_depth <= 10 else 2047
-
-        tree._resize(init_capacity)
-
         # Parameters
         splitter = self.splitter
         max_depth = self.max_depth
@@ -172,7 +164,7 @@ class DepthFirstTreeBuilder(TreeBuilder):
                 n_constant_features=0
             )
         )
-        weighted_n_node_samples = np.zeros(1, dtype=np.double)
+        weighted_n_node_samples = ivy.zeros(1, dtype="float32")
         while stack:
             stack_record = stack.pop()
 
@@ -191,7 +183,7 @@ class DepthFirstTreeBuilder(TreeBuilder):
                 depth >= max_depth
                 or n_node_samples < min_samples_split
                 or n_node_samples < 2 * min_samples_leaf
-                or np.sum(sample_weight[start:end]) < 2 * min_weight_leaf
+                or ivy.sum(sample_weight[start:end]) < 2 * min_weight_leaf
             )
 
             if is_left:
@@ -216,12 +208,9 @@ class DepthFirstTreeBuilder(TreeBuilder):
                 split.threshold if not is_leaf else 0,
                 impurity,
                 n_node_samples,
-                np.sum(sample_weight[start:end]),
+                ivy.sum(sample_weight[start:end]),
                 split.missing_go_to_left,
             )
-
-            if node_id == np.iinfo(np.intp).max:
-                raise MemoryError()
 
             splitter.node_value(tree.value + node_id * tree.value_stride)
 
@@ -363,7 +352,7 @@ class Tree:
         # Get the internal data as a NumPy array
         internal_data = self._get_value_ndarray()
         # Use the predictions to index the internal data
-        out = internal_data[predictions] #not sure if this accurately translates to .take(self.apply(X), axis=0, mode='clip')
+        out = internal_data[predictions] # not sure if this accurately translates to .take(self.apply(X), axis=0, mode='clip')
         # Reshape the output if the model is single-output
         if self.n_outputs == 1:
             out = out.reshape(X.shape[0], self.max_n_classes)
@@ -436,7 +425,7 @@ class Tree:
                 if feature_to_sample[node.feature] == i:
                     feature_value = X_sample[node.feature]
                 else:
-                    feature_value = ivy.array(0,dtype="float32") #feature value is computed during training
+                    feature_value = ivy.array(0, dtype="float32")  # feature value is computed during training
 
                 threshold = ivy.array(node.threshold, dtype="float32")
                 if feature_value <= threshold:
@@ -450,14 +439,12 @@ class Tree:
         return out
     
     def decision_path(self, X):
-        """Finds the decision path (=node) for each sample in X."""
         if issparse(X):
             return self._decision_path_sparse_csr(X)
         else:
             return self._decision_path_dense(X)
 
     def _decision_path_dense(self, X):
-        """Finds the decision path (=node) for each sample in X."""
 
         # Check input
         if not isinstance(X, ivy.data_classes.array.array.Array):
@@ -503,13 +490,12 @@ class Tree:
     
     #not tested
     def _decision_path_sparse_csr(self, X):
-        """Finds the decision path (=node) for each sample in X."""
 
         # Check input
         if not isspmatrix_csr(X):
             raise ValueError("X should be in csr_matrix format, got %s" % type(X))
 
-        if X.dtype != DTYPE:
+        if X.dtype != "float32":
             raise ValueError("X.dtype should be float32, got %s" % X.dtype)
 
         # Extract input
@@ -527,7 +513,7 @@ class Tree:
         # Initialize auxiliary data-structure
         feature_value = 0.0
         node = None
-        X_sample = ivy.zeros(n_features, dtype=DTYPE)
+        X_sample = ivy.zeros(n_features, dtype="float32")
         feature_to_sample = ivy.full(n_features, -1, dtype="int32")
 
         for i in range(n_samples):
@@ -564,15 +550,6 @@ class Tree:
         return out
 
     def compute_node_depths(self):
-        """Compute the depth of each node in a tree.
-
-        .. versionadded:: 1.3
-
-        Returns
-        -------
-        depths : ivy of shape (self.node_count,), dtype="int32"
-            The depth of each node in the tree.
-        """
         depths = ivy.zeros(self.node_count, dtype="int32")
         children_left = self.children_left
         children_right = self.children_right
@@ -622,11 +599,6 @@ class Tree:
         return importances
     
     def _get_value_ndarray(self):
-        """Wraps value as a 3-dimensional NumPy array.
-
-        The array keeps a reference to this Tree, which manages the underlying
-        memory.
-        """
         shape = (
             int(self.node_count),
             int(self.n_outputs),
@@ -640,12 +612,6 @@ class Tree:
     This array can be used to access and manipulate the tree's nodes efficiently in Python.
     '''
     def _get_node_tensor(self):
-        """Wraps nodes as a PyTorch tensor.
-
-        The tensor keeps a reference to this Tree, which manages the underlying
-        memory. Individual fields are publicly accessible as properties of the Tree.
-        """
-        
         # Create a tensor with a custom data type for the tree nodes
         nodes_tensor = ivy.zeros(self.node_count, dtype="float32")
 
@@ -672,28 +638,8 @@ class Tree:
     Partial dependence helps understand how the model's predictions change with variations in specific features while keeping other features constant.
     '''   
     def compute_partial_dependence(self, X, target_features, out):
-        """
-        Partial dependence of the response on the target_feature set.
-
-        For each sample in X, a tree traversal is performed.
-        Each traversal starts from the root with weight 1.0.
-
-        At each non-leaf node that splits on a target feature, either the left child or the right child is visited based on the feature value of the current sample, and the weight is not modified.
-        At each non-leaf node that splits on a complementary feature, both children are visited, and the weight is multiplied by the fraction of training samples that went to each child.
-
-        At each leaf, the value of the node is multiplied by the current weight (weights sum to 1 for all visited terminal nodes).
-
-        Parameters
-        ----------
-        X : numpy.ndarray, shape (n_samples, n_target_features)
-            The grid points on which the partial dependence should be evaluated.
-        target_features : numpy.ndarray, shape (n_target_features)
-            The set of target features for which the partial dependence should be evaluated.
-        out : numpy.ndarray, shape (n_samples)
-            The value of the partial dependence function on each grid point.
-        """
         weight_stack = ivy.zeros(self.node_count, dtype="float32")
-        node_idx_stack = np.zeros(self.node_count, dtype="int32")
+        node_idx_stack = ivy.zeros(self.node_count, dtype="int32")
         stack_size = 0
 
         for sample_idx in range(X.shape[0]):
