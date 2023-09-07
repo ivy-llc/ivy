@@ -36,7 +36,7 @@ def _random_tr_data(draw):
     dtype = draw(st.sampled_from(["float32", "float64"]))
     full = draw(st.booleans())
     seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
-    return shape, rank, dtype[0], full, seed
+    return shape, rank, dtype, full, seed
 
 
 @st.composite
