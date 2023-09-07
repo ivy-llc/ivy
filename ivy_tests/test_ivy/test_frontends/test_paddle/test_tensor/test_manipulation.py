@@ -470,7 +470,7 @@ def test_paddle_repeat_interleave(
     dtype, values, repeats, axis, _ = dtype_values_repeats_axis_output_size
 
     helpers.test_frontend_function(
-        input_dtypes=dtype[1],
+        input_dtypes=[dtype[0][0], dtype[1][0]],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
