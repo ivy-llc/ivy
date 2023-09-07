@@ -2179,7 +2179,8 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     def batched_outer(
-        self: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        self: ivy.Container,
+        tensors: Sequence[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
         /,
         *,
         out: Optional[ivy.Array] = None,
@@ -2228,7 +2229,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
               [5.5999999 , 6.4000001 ]]]]])
         """
         return self.static_batched_outer(
-            self,
+            (self, *tensors),
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,

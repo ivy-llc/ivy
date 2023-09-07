@@ -1838,7 +1838,7 @@ def batched_outer(
     --------
     >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
     >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
-    >>> result = ivy.batched_outer(a, b)
+    >>> result = ivy.batched_outer([a, b])
     >>> print(result)
     ivy.array([[[[[0.1, 0.2],
           [0.30000001, 0.40000001]],

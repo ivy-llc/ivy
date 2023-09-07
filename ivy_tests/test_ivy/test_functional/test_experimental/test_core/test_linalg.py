@@ -19,8 +19,10 @@ import ivy
 @st.composite
 def _batched_outer_data(draw):
     shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
-    dtype, x = draw(
+    tensors_num = draw(helpers.ints(min_value=1, max_value=10))
+    dtype, tensors = draw(
         helpers.dtype_and_values(
+            num_arrays=tensors_num,
             available_dtypes=helpers.get_dtypes(),
             shape=shape,
             large_abs_safety_factor=20,
@@ -28,8 +30,7 @@ def _batched_outer_data(draw):
             safety_factor_scale="log",
         )
     )
-    tensors_num = draw(helpers.ints(min_value=1, max_value=10))
-    return dtype, x[0], tensors_num
+    return dtype, tensors
 
 
 @st.composite
@@ -404,7 +405,7 @@ def _higher_order_moment_data(draw):
     order = draw(helpers.ints(min_value=0, max_value=10))
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("valid"),
             shape=shape,
             large_abs_safety_factor=20,
             small_abs_safety_factor=20,
@@ -802,14 +803,14 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
     data=_batched_outer_data(),
 )
 def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
-    input_dtypes, x, tensors_num = data
+    input_dtypes, tensors = data
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
         input_dtypes=input_dtypes,
-        tensors=[x] * tensors_num,
+        tensors=tensors,
     )
 
 

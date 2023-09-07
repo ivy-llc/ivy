@@ -827,7 +827,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.higher_order_moment(self._data, order, out=out)
 
     def batched_outer(
-        self: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        self: ivy.Array,
+        tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
         /,
         *,
         out: Optional[ivy.Array] = None,
@@ -871,4 +872,4 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
              [[4.        , 4.80000019],
               [5.5999999 , 6.4000001 ]]]]])
         """
-        return ivy.batched_outer(self._data, out=out)
+        return ivy.batched_outer((self._data, *tensors), out=out)
