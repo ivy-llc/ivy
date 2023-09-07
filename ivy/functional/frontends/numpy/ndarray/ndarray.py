@@ -407,6 +407,29 @@ class ndarray:
         with open(fid, "w") as f:
             f.write(string)
 
+    def setfield(self, val, dtype, offset=0):
+
+        new_dtype = np_frontend.to_ivy_dtype(dtype)
+
+        # Check if the new dtype is valid for the given value.
+        try:
+            cast_val = ivy.cast(val, new_dtype)
+        except Exception as e:
+            raise ValueError("Cannot cast value to the given dtype.") from e
+
+        # If offset is 0, just set the value directly.
+        if offset == 0:
+            self.ivy_array = ivy.array(cast_val)
+            return
+
+        # If offset is non-zero, we need to handle the placement of the value.
+        # For simplicity, let's assume the offset is in terms of elements, not bytes.
+        if offset >= len(self.ivy_array):
+            raise ValueError("Offset is larger than the array size.")
+
+        # Replace the value at the specified offset.
+        self.ivy_array[offset] = cast_val
+
     def tolist(self) -> list:
         return self._ivy_array.to_list()
 
