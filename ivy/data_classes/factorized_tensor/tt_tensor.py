@@ -71,17 +71,18 @@ class TTTensor(FactorizedTensor):
 
             if not len(ivy.shape(factor)) == 3:
                 raise ValueError(
-                    "TT expresses a tensor as third order factors (tt-cores).\n"
-                    f"However, tl.ndim(factors[{index}]) = {len(ivy.shape(factor))}"
+                    "TT expresses a tensor as third order factors"
+                    f" (tt-cores).\nHowever, len(ivy.shape(factors[{index}])) ="
+                    f" {len(ivy.shape(factor))}"
                 )
 
             if index and ivy.shape(factors[index - 1])[2] != current_rank:
                 raise ValueError(
                     "Consecutive factors should have matching ranks\n -- e.g."
-                    " tl.shape(factors[0])[2]) == tl.shape(factors[1])[0])\nHowever,"
-                    f" tl.shape(factor[{index-1}])[2] =="
+                    " ivy.shape(factors[0])[2]) == ivy.shape(factors[1])[0])\nHowever,"
+                    f" ivy.shape(factor[{index-1}])[2] =="
                     f" {ivy.shape(factors[index - 1])[2]} but"
-                    f" tl.shape(factor[{index}])[0] == {current_rank} "
+                    f" ivy.shape(factor[{index}])[0] == {current_rank} "
                 )
 
             if (index == 0) and current_rank != 1:
@@ -302,8 +303,8 @@ class TTTensor(FactorizedTensor):
             elif n_dim + 1 != len(rank):
                 message = (
                     "Provided incorrect number of ranks. Should verify len(rank) =="
-                    f" tl.ndim(tensor)+1, but len(rank) = {len(rank)} while"
-                    f" tl.ndim(tensor) + 1  = {n_dim+1}"
+                    f" len(ivy.shape(tensor)) + 1, but len(rank) = {len(rank)} while"
+                    f" len(ivy.shape(tensor)) + 1  = {n_dim+1}"
                 )
                 raise (ValueError(message))
 
