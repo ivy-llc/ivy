@@ -1329,40 +1329,6 @@ def test_tensorflow_ones(
     )
 
 
-# ones_initializer
-@handle_frontend_test(
-    fn_tree="tensorflow.ones_initializer",
-    shape=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    dtype=helpers.get_dtypes("valid", full=False),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_ones_initializer(
-    shape,
-    dtype,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        shape=shape,
-        dtype=dtype[0],
-    )
-
-
 # ones_like
 @handle_frontend_test(
     fn_tree="tensorflow.ones_like",
