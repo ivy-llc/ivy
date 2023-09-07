@@ -83,10 +83,3 @@ class QArray(Array):
             # TODO: Implement affine dequantize
             return ret_data
         return ret_data
-
-    def fallback(self):
-        pass
-        
-# def quantize_array(obj, dtype) -> QArray:
-#     if isinstance(dtype, ivy.float16):
-#         pass
