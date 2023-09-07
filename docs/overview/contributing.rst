@@ -32,10 +32,10 @@ The contributor guide is split into the sections below, it's best to go from sta
 |
 | (f) `Applied Libraries <contributing/applied_libraries.rst>`_
 | Getting started with our applied libraries! 📚
-| 
+|
 | (g) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
-| 
+|
 | (g) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 

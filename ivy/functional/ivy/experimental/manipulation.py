@@ -496,8 +496,8 @@ def rot90(
     m
         Input array of two or more dimensions.
     copy
-        boolean indicating whether or not to copy the input array. 
-        If True, the function must always copy. 
+        boolean indicating whether or not to copy the input array.
+        If True, the function must always copy.
         If False, the function must never copy.
         In case copy is False we avoid copying by returning a view of the input array.
     k
