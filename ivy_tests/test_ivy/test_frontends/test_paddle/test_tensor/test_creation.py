@@ -748,7 +748,7 @@ def test_paddle_uniform(
     frontend,
     test_flags,
 ):
-    input_dtype, x, shape = dtype_and_shape
+    input_dtype, shape = dtype_and_shape
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
