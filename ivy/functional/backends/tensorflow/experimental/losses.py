@@ -72,4 +72,6 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> tf.Tensor:
+    input = tf.clip_by_value(input, 1e-7, 1)
+    target = tf.clip_by_value(target, 1e-7, 1)
     return tf.keras.losses.KLDivergence(input, target, reduction=reduction)

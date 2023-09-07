@@ -119,6 +119,8 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> torch.Tensor:
+    input = torch.clip(input, 1e-7, 1)
+    target = torch.clip(target, 1e-7, 1)
     return torch.nn.functional.kl_div(
         input,
         target,
