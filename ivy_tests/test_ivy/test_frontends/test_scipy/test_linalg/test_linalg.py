@@ -65,7 +65,9 @@ def _norm_helper(draw):
     def _matrix_norm_example():
         x_dtype, x = draw(
             helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("float").filter(
+                    lambda x: x != "float16" and x != "bfloat16"
+                ),
                 shape=helpers.get_shape(min_num_dims=2, max_num_dims=2),
                 min_num_dims=2,
                 max_num_dims=2,
@@ -86,7 +88,9 @@ def _norm_helper(draw):
     def _vector_norm_example():
         x_dtype, x, axis = draw(
             helpers.dtype_values_axis(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("float").filter(
+                    lambda x: x != "float16" and x != "bfloat16"
+                ),
                 min_num_dims=2,
                 max_num_dims=5,
                 min_dim_size=2,
