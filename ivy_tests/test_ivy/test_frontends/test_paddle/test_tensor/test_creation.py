@@ -732,9 +732,13 @@ def test_paddle_triu_indices(
     fn_tree="paddle.uniform",
     min=st.floats(min_value=-1, max_value=10),
     max=st.floats(min_value=-1, max_value=10),
-    dtype=st.sampled_from(helpers.get_dtypes("valid")),
-    shape=st.tuples(
-        st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5)
+    dtype=helpers.get_dtypes("valid", full=False),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
     ),
     test_with_out=st.just(False),
 )
