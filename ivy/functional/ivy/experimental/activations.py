@@ -32,24 +32,9 @@ def _logit_jax_like(
         real = ivy.where(ivy.logical_or(real > 1, real < 0), ivy.nan, real)
     else:
         real = ivy.clip(real, eps, 1 - eps)
-    const = ivy.array(1j, dtype=x.dtype)
-    x = ivy.add(
-        real.astype(x.dtype),
-        ivy.multiply(
-            const,
-            imag.astype(x.dtype),
-        ),
-    )
-    output = ivy.log(
-        ivy.divide(
-            x,
-            ivy.subtract(
-                ivy.array(1).astype(x.dtype),
-                x,
-            ),
-        ),
-    )
-    return output
+    z = ivy.add(real, ivy.multiply(ivy.array(1j, dtype=x.dtype), imag))
+    z = ivy.log(z / (1 - z))
+    return z
 
 
 @handle_exceptions
