@@ -174,7 +174,7 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False, conjugate=False):
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
-        ).filter(lambda x: "float16" not in x)
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -213,7 +213,7 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
-        ).filter(lambda x: "float16" not in x)
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")

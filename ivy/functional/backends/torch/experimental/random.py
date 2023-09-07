@@ -110,7 +110,7 @@ def bernoulli(
     probs: Union[float, torch.Tensor],
     *,
     logits: Union[float, torch.Tensor] = None,
-    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    shape: Optional[Union[torch.Tensor, Sequence[int]]] = None,
     device: torch.device,
     dtype: torch.dtype,
     seed: Optional[int] = None,

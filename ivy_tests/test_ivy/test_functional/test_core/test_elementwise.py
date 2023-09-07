@@ -1814,7 +1814,7 @@ def test_sinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="log",
-    ).filter(lambda x: x[0][0] not in ["bfloat16"]),
+    ),
 )
 def test_sqrt(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x

@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import List
 from unittest import mock
-from hypothesis import find
+from hypothesis import find, strategies as st, errors as hyp_errors
 import numpy as np  # used by the (mock) test function
 import re
 
@@ -26,9 +26,17 @@ FRONTENDS_DIR = Path("ivy/functional/frontends").resolve()
 BACKENDS_TESTS_DIR = Path("ivy_tests/test_ivy/test_functional").resolve()
 FRONTENDS_TESTS_DIR = Path("ivy_tests/test_ivy/test_frontends").resolve()
 IGNORE_FILES = ["__init__", "func_wrapper", "helpers"]
+REMAP_FILES = {"linear_algebra": "test_linalg", "data_type": "test_dtype"}
 NN_FILES = ["activations", "layers", "losses", "norms"]
+ARRAY_OR_DTYPE_CLASSES = [
+    "ivy.Array",
+    "ivy.data_classes.array.array.Array",
+    "ivy.NativeArray",
+    "ivy.Dtype",
+    "ivy.NativeDtype",
+]
 REGEX_DICT = {
-    "function_names": re.compile(r"def ([A-Za-z]\w*)\("),
+    "function_names": re.compile(r"(?:^|\n)\s*def ([A-Za-z]\w*)\("),
     "dtype_decorators": re.compile(
         r"@(with_(?:un)?supported_(?:device_and_)?dtypes)\("
     ),
@@ -39,13 +47,13 @@ REGEX_DICT = {
 }
 
 
-DTYPE_CLASSES = [
-    ("numeric", set(ivy.all_numeric_dtypes)),
-    ("integer", set(ivy.all_int_dtypes)),
-    ("unsigned", set(ivy.all_uint_dtypes)),
-    ("float", set(ivy.all_float_dtypes)),
-    ("complex", set(ivy.all_complex_dtypes)),
-]
+DTYPE_CLASSES = {
+    "numeric": set(ivy.all_numeric_dtypes),
+    "integer": set(ivy.all_int_dtypes),
+    "unsigned": set(ivy.all_uint_dtypes),
+    "float": set(ivy.all_float_dtypes),
+    "complex": set(ivy.all_complex_dtypes),
+}
 
 
 CURRENT_VERSIONS = {
@@ -66,6 +74,7 @@ DTYPE_DECORATORS = {
 TODO list (prioritised):
 
 ########## MUST HAVE ############
+#. skip tests that don't use one of the functions I've mocked (many roll their own)
 #. remove false positives from the backend is_dtype_err functions
 
 ########## SHOULD HAVE #######
@@ -87,38 +96,88 @@ TODO list (prioritised):
 """
 
 
-def is_dtype_err_jax(e):
-    return "does not accept dtype" in str(e)
+class NoTestException(Exception):
+    pass
 
 
-def is_dtype_err_np(e):
+class FromFunctionException(Exception):
+    def __init__(self, message, e):
+        super().__init__(self, message)
+        self.wrapped_error = e
+
+
+def _is_dtype_err_jax(e, dtype):
+    dtype_err_substrings = [
+        f"does not accept dtype {dtype}. Accepted dtypes are",
+        f"Unsupported dtype {dtype}",
+        "Unsupported input type",
+        f"does not accept dtype {dtype} at position",
+        "cannot take arguments of type",
+        f"must be a float dtype, got {dtype}",
+        f"A.dtype={dtype} is not supported.",
+        f"data type <class 'numpy.{dtype}'> not inexact",
+        "data type <class 'numpy.bool_'> not inexact",
+        "data type <class 'ml_dtypes.bfloat16'> not inexact",
+        (
+            "requires real- or complex-valued inputs (input dtype that is a sub-dtype"
+            f" of np.inexact), but got {dtype}"
+        ),
+        f"must be a float or complex dtype, got {dtype}",
+        "[[False False]] must be lesser than [[False False]]",
+    ]
+    only_if_complex = [
+        (
+            "requires real-valued outputs (output dtype that is a sub-dtype of"
+            f" np.floating), but got {dtype}"
+        ),
+        "can't convert complex to int",
+        "only real valued inputs supported for",
+        "does not support complex input",
+        "must be a float dtype, got complex",
+    ]
+    only_non_int = [
+        f"must have integer or boolean type, got indexer with type {dtype}",
+        "Invalid integer data type",
+        "Arguments to jax.numpy.gcd must be integers",
+        f"only accepts integer dtypes, got {dtype}",
+        f" must have an integer type; got {dtype}",
+    ]
+    substrings_to_check = (
+        dtype_err_substrings
+        + (only_if_complex if dtype in DTYPE_CLASSES["complex"] else [])
+        + (only_non_int if dtype not in DTYPE_CLASSES["integer"] else [])
+    )
+    return any(s in str(e) for s in substrings_to_check)
+
+
+def _is_dtype_err_np(e):
     return "not supported for the input types" in str(e)
 
 
-def is_dtype_err_paddle(e):
+def _is_dtype_err_paddle(e):
     return "Selected wrong DataType" in str(e)
 
 
-def is_dtype_err_tf(e: ivy.exceptions.IvyException):
+def _is_dtype_err_tf(e: ivy.exceptions.IvyException):
     return ("Value for attr 'T' of" in str(e)) or ("`features.dtype` must be" in str(e))
 
 
-def is_dtype_err_torch(e):
+def _is_dtype_err_torch(e):
     return ("not implemented for" in str(e)) or ("inputs not supported for" in str(e))
 
 
 is_dtype_err = {
-    "jax": is_dtype_err_jax,
+    "jax": _is_dtype_err_jax,
     "mindspore": lambda _: False,  # TODO
     "mxnet": lambda _: False,  # TODO
-    "numpy": is_dtype_err_np,
+    "numpy": _is_dtype_err_np,
     "onnx": lambda _: False,  # TODO
-    "paddle": is_dtype_err_paddle,
+    "paddle": _is_dtype_err_paddle,
     "pandas": lambda _: False,  # TODO
     "scipy": lambda _: False,  # TODO
     "sklearn": lambda _: False,  # TODO
-    "tensorflow": is_dtype_err_tf,
-    "torch": is_dtype_err_torch,
+    "tensorflow": _is_dtype_err_tf,
+    "torch": _is_dtype_err_torch,
     "xgboost": lambda _: False,  # TODO
 }
 
@@ -128,7 +187,10 @@ def _path_to_test_path(file_path: Path):
     if file_path.parent.stem == "experimental":
         out = out / "test_experimental"
     out = out / ("test_nn" if file_path.stem in NN_FILES else "test_core")
-    out = out / f"test_{file_path.stem}.py"
+    if file_path.stem in REMAP_FILES:
+        out = out / (REMAP_FILES[file_path.stem] + ".py")
+    else:
+        out = out / f"test_{file_path.stem}.py"
     return out
 
 
@@ -239,11 +301,18 @@ class BackendFileTester:
             self.fn_names = list(set(self.fn_names) & set(discovered_fn_names))
 
         if not self.test_path.exists():
-            raise Exception(f"No test file matching {self.file_path}")
+            if self.verbosity >= 1:
+                print(f"Skipping; no file at {self.test_path}")
+            raise NoTestException(f"No test file matching {self.file_path}")
 
         self.result = {
             fn_name: {
-                device: {"supported": set(), "unsupported": set(), "unsure": set()}
+                device: {
+                    "supported": set(),
+                    "unsupported": set(),
+                    "unsure": set(),
+                    "skipped": set(),
+                }
                 for device in self.devices
             }
             for fn_name in self.fn_names
@@ -278,7 +347,7 @@ class BackendFileTester:
     def iterate_fn_names(self):
         for fn_name in self.fn_names:
             if fn_name is None:
-                if self.verbosity >= 1:
+                if self.verbosity >= 1 and self.verbosity < 3:
                     print("X", end="")
                 continue
             self.current_fn_name = fn_name
@@ -291,7 +360,7 @@ class BackendFileTester:
                 print()
                 print(
                     f"{self.file_path}::{self.current_fn_name}"
-                    "[DType={self.current_dtype},Device={self.current_device}]: ",
+                    f"[DType={self.current_dtype},Device={self.current_device}]: ",
                     end="",
                 )
             yield device
@@ -300,7 +369,10 @@ class BackendFileTester:
         if fn_name in self.fn_names:
             i = self.fn_names.index(fn_name)
             self.fn_names[i] = None
-            if self.verbosity >= 1:
+            if self.verbosity == 3:
+                print()
+                print(f"{self.file_path}::{fn_name}: skipped")
+            elif self.verbosity >= 1:
                 print("X", end="")
             self.skip_fns.add((fn_name, reason))
 
@@ -315,7 +387,11 @@ class BackendFileTester:
             char = (
                 "S"
                 if result == "supported"
-                else "U" if result == "unsupported" else "?"
+                else (
+                    "U"
+                    if result == "unsupported"
+                    else "X" if result == "skipped" else "?"
+                )
             )
             print(char, end="")
 
@@ -332,9 +408,8 @@ class BackendFileTester:
             for d in self.devices:
                 if len(self.result[f][d]["unsure"]) == 0:
                     del self.result[f][d]["unsure"]
-                    continue
 
-                if self.handle_unsure in ["supported", "unsupported"]:
+                elif self.handle_unsure in ["supported", "unsupported"]:
                     if self.verbosity >= 1:
                         for dtype, reason in self.result[f][d]["unsure"]:
                             if first_unsure:
@@ -353,7 +428,7 @@ class BackendFileTester:
                     )
                     del self.result[f][d]["unsure"]
 
-                if self.handle_unsure == "interactive":
+                elif self.handle_unsure == "interactive":
                     for dtype, reason in self.result[f][d]["unsure"]:
                         print(
                             f"{self.file_path}::{f}[DType={dtype},Device={d}] threw"
@@ -365,12 +440,35 @@ class BackendFileTester:
                                 "Please mark as (S)upported or (U)nsupported (or"
                                 " (E)xit): "
                             )
+                            if raw == "":
+                                continue
                             mark_as = raw[0].upper()
                             if mark_as == "E":
                                 raise SystemExit()
                         mark_as = "supported" if mark_as == "S" else "unsupported"
                         self.result[f][d][mark_as].add(dtype)
                     del self.result[f][d]["unsure"]
+
+        first_skip = True
+        for f in self.fn_names:
+            for d in self.devices:
+                if len(self.result[f][d]["skipped"]) > 0 and self.verbosity >= 1:
+                    if first_skip:
+                        print()
+                        print()
+                        print("Unable to test:")
+                        print()
+                        first_skip = False
+                    for dtype, reason in self.result[f][d]["skipped"]:
+                        print(
+                            f"{self.file_path}::{f}[DType={dtype},Device={d}] with"
+                            f" error:\n {reason}"
+                        )
+                        print()
+                self.result[f][d]["supported"].update(
+                    {t for t, _ in self.result[f][d]["skipped"]}
+                )
+                del self.result[f][d]["skipped"]
 
     def print_result(self):
         if self.verbosity < 2:
@@ -395,7 +493,7 @@ class BackendFileTester:
                 unsupported = self.result[f][d]["unsupported"]
 
                 # reduce to classes where possible
-                for cls, types in DTYPE_CLASSES:
+                for cls, types in DTYPE_CLASSES.items():
                     if types.issubset(supported):
                         supported = supported - types
                         supported.add(cls)
@@ -538,6 +636,12 @@ class BackendFileTester:
                 f.write(code_text)
 
 
+def _kwargs_to_args_n_kwargs(num_positional_args, kwargs):
+    args = [v for v in list(kwargs.values())[:num_positional_args]]
+    kwargs = {k: kwargs[k] for k in list(kwargs.keys())[num_positional_args:]}
+    return args, kwargs
+
+
 def _get_nested_np_arrays(nest):
     indices = ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
 
@@ -562,7 +666,7 @@ def mock_test_function(
     **all_as_kwargs_np,
 ):
     # split the arguments into their positional and keyword components
-    args_np, kwargs_np = helpers.kwargs_to_args_n_kwargs(
+    args_np, kwargs_np = _kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
 
@@ -661,14 +765,10 @@ def mock_test_function(
         else:
             target_fn = ivy_backend.__dict__[fn_name]
 
-        helpers.get_ret_and_flattened_np_array(
-            backend_to_test,
-            target_fn,
-            *args,
-            test_compile=test_flags.test_compile,
-            precision_mode=test_flags.precision_mode,
-            **kwargs,
-        )
+        try:
+            target_fn(*args, **kwargs)
+        except Exception as e:
+            raise FromFunctionException(str(e), e)
 
 
 def run_dtype_setter(
@@ -687,27 +787,54 @@ def run_dtype_setter(
 
     for file in files_list:
         test_handler = BackendFileTester(file, devices, fn_names, **options)
-        test_handler.setup_test()
+        try:
+            test_handler.setup_test()
+        except NoTestException:
+            continue
 
         for dtype in test_handler.iterate_dtypes():
-            helpers.get_dtypes = mock.Mock(return_value=[dtype])
+            helpers.get_dtypes = mock.Mock(return_value=st.just([dtype]))
             sys.modules["ivy_tests.test_ivy.helpers"] = helpers
 
             test_file = _import_module_from_path(test_handler.test_path)
 
             for fn_name in test_handler.iterate_fn_names():
                 test_fn = f"test_{fn_name}"
-                if test_fn not in test_file.__dict__:
-                    test_handler.remove_fn(fn_name, "no test function")
-                    continue
+
+                # we only need to check these once for each function
+                if dtype == test_handler.dtypes[0]:
+                    if test_fn not in test_file.__dict__:
+                        test_handler.remove_fn(fn_name, "no test function")
+                        continue
+                    if "hypothesis" not in test_file.__dict__[test_fn].__dict__:
+                        test_handler.remove_fn(fn_name, "test does not use hypothesis")
+                        continue
+
+                    # Ideally we'd be doing this with something like
+                    # typing.get_type_hints or inspect.signature but there are weird
+                    # edge cases that those don't work for (e.g. ivy.asarray breaks
+                    # typing.get_type_hints)
+                    if not any(
+                        t in str(p)
+                        for t in ARRAY_OR_DTYPE_CLASSES
+                        for p in ivy.__dict__[fn_name].__annotations__.values()
+                    ):
+                        test_handler.remove_fn(
+                            fn_name, "function does not take array or dtype inputs"
+                        )
+                        continue
 
                 kwargs = (
                     test_file.__dict__[test_fn].__dict__["hypothesis"]._given_kwargs
                 )
-                min_example = {
-                    k: find(specifier=v, condition=lambda _: True)
-                    for k, v in kwargs.items()
-                }
+                min_example = {}
+                try:
+                    for k, v in kwargs.items():
+                        min_example[k] = find(specifier=v, condition=lambda _: True)
+                except Exception as e:
+                    for device in test_handler.iterate_devices():
+                        test_handler.set_result("skipped", "In hypothesis: " + str(e))
+                    continue
 
                 for device in test_handler.iterate_devices():
                     try:
@@ -717,11 +844,18 @@ def run_dtype_setter(
                             on_device=device,
                         )
                         test_handler.set_result("supported")
-                    except Exception as e:
-                        if is_dtype_err[test_handler.backend](e):
+                    except FromFunctionException as ffe:
+                        e = ffe.wrapped_error
+                        if is_dtype_err[test_handler.backend](e, dtype):
                             test_handler.set_result("unsupported")
                         else:
-                            test_handler.set_result("unsure", e)
+                            test_handler.set_result("unsure", str(e))
+                    except hyp_errors.UnsatisfiedAssumption:
+                        test_handler.set_result("skipped", "Unsatisfied assumption")
+                    except Exception as e:
+                        test_handler.set_result(
+                            "skipped", "In test function: " + str(e)
+                        )
 
         test_handler.resolve_unsure()
         test_handler.print_result()

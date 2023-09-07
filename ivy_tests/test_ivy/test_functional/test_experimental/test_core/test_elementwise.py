@@ -392,7 +392,7 @@ def test_diff(
         max_num_dims=3,
         min_dim_size=1,
         max_dim_size=3,
-    ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
+    ),
     ground_truth_backend="tensorflow",
 )
 def test_digamma(
