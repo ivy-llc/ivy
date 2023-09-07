@@ -129,7 +129,7 @@ def inv_ex(A, *, check_errors=False, out=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
-def lstsq(a, b, rcond=None, driver=None):
+def lstsq(a, b, rcond=None, driver="gels"):
     a, b = torch_frontend.promote_types_of_torch_inputs(a, b)
     a_num_dim = a.get_num_dims()
     b_num_dim = b.get_num_dims()
@@ -156,17 +156,17 @@ def lstsq(a, b, rcond=None, driver=None):
     solution = ivy.matmul(ivy.matmul(r_inv, ivy.matrix_transpose(q)), b)
     solution = ivy.astype(solution, a_dtype)
 
-    if driver == "gelsd" or driver == "gelss":
-        _, s, _ = ivy.svd(a)
-    else:
-        s = ivy.array([])
-        s = ivy.astype(s, a_dtype)
+    s = ivy.array([])
+    s = ivy.astype(s, a_dtype)
 
     rank = ivy.matrix_rank(a)
     rank = ivy.astype(rank, ivy.int64)
+    # rank = ivy.array([])
+    # rank = ivy.astype(rank, ivy.int64)
 
     residuals = ivy.array([])
     residuals = ivy.astype(residuals, a_dtype)
+    # residuals = b - ivy.matmul(a, solution)
     return solution, residuals, rank, s
 
 

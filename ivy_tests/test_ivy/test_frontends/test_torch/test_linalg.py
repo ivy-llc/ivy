@@ -1324,4 +1324,5 @@ def test_torch_lstsq(
         atol=1e-03,
         a=values[0],
         b=values[1],
+        driver="gelsy",
     )
