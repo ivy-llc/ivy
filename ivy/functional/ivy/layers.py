@@ -768,13 +768,13 @@ def multi_head_attention(
         The mask to apply to the query-key values. Default is ``None``.
         *[batch_shape,num_queries,num_keys]*.
     in_proj_weights
-        The weights used to project query, key and value *[3*E, E].
+        The weights used to project query, key and value *[3*E, query/key/value_dim].
     q_proj_weights
-        The weights used to project query if in_proj_weights is None *[new_E, E].
+        The weights used to project query if in_proj_weights is None *[E, query_dim].
     k_proj_weights
-        The weights used to project key if in_proj_weights is None *[new_E, E].
+        The weights used to project key if in_proj_weights is None *[E, key_dim].
     v_proj_weights
-        The weights used to project value if in_proj_weights is None *[new_E, E].
+        The weights used to project value if in_proj_weights is None *[E, value_dim].
     out_proj_weights
         The weights used to project the output.
     in_proj_bias
@@ -796,8 +796,8 @@ def multi_head_attention(
     add_zero_attn
         A boolean flag indicating whether to add a batch of zeros to key and value.
     return_attention_weights
-        If True, returns attention_weights alongside the output
-        as a tuple (output, attenion_weights). Defaults to `False`.
+        If True, returns attention_weights alongside the output as a tuple
+        (output, attenion_weights). Defaults to `False`.
     average_attention_weights
         If true, indicates that the returned ``attention_weights`` should be averaged
         across heads. Otherwise, ``attention_weights`` are provided separately per head.
@@ -848,34 +848,35 @@ def multi_head_attention(
         )
     else:
         q, k, v = query, key, value
-    if ivy.exists(static_k) and ivy.exists(static_v):
+    if ivy.exists(static_k):
         k = static_k
+    if ivy.exists(static_v):
         v = static_v
-    batch_size, q_seq_length, emb_dim = q.shape[0], q.shape[1], q.shape[-1]
-    k_seq_length = k.shape[1]
+    batch_dim, num_queries, emb_dim = q.shape
+    num_keys = k.shape[1]
     ivy.assertions.check_true(
         emb_dim % num_heads == 0, "features must be divisible by number of heads"
     )
     dims_per_head = emb_dim // num_heads
-    if ivy.exists(bias_k):
-        k = k + bias_k
-    if ivy.exists(bias_v):
-        v = v + bias_v
+
+    if bias_k is not None and bias_v is not None:
+        k = ivy.concat([k, ivy.tile(bias_k, (batch_dim*num_heads, 1, 1))], axis=1)
+        v = ivy.concat([v, ivy.tile(bias_v, (batch_dim*num_heads, 1, 1))], axis=1)
 
     # add extra batch of zeros to key and value
     if add_zero_attn:
-        zero_attn_shape = (batch_size * num_heads, 1, dims_per_head)
+        zero_attn_shape = (batch_dim * num_heads, 1, dims_per_head)
         k = ivy.concat([k, ivy.zeros(zero_attn_shape, dtype=k.dtype)], axis=1)
         v = ivy.concat([v, ivy.zeros(zero_attn_shape, dtype=v.dtype)], axis=1)
 
     # isolate heads
-    q = q.reshape((batch_size, q_seq_length, num_heads, dims_per_head)).permute_dims(
+    q = q.reshape((batch_dim, num_queries, num_heads, dims_per_head)).permute_dims(
         (0, 2, 1, 3)
     )
-    k = k.reshape((batch_size, k_seq_length, num_heads, dims_per_head)).permute_dims(
+    k = k.reshape((batch_dim, -1, num_heads, dims_per_head)).permute_dims(
         (0, 2, 3, 1)
     )
-    v = v.reshape((batch_size, k_seq_length, num_heads, dims_per_head)).permute_dims(
+    v = v.reshape((batch_dim, -1, num_heads, dims_per_head)).permute_dims(
         (0, 2, 1, 3)
     )
 
@@ -887,23 +888,32 @@ def multi_head_attention(
     # apply attention mask
     if is_causal:
         attention_mask = ivy.where(
-            ivy.tril(ivy.ones((q_seq_length, q_seq_length))) == 0.0, float("-inf"), 0
+            ivy.tril(ivy.ones((num_queries, num_keys))) == 0.0, float("-inf"), 0
         )
-    if add_zero_attn and ivy.exists(attention_mask):
-        attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 1)])
-    if attention_mask is not None:
-        attn_scores += ivy.expand_dims(attention_mask, axis=0)
+    if ivy.exists(attention_mask):
+        if ivy.is_int_dtype(attention_mask):
+            attention_mask = attention_mask.astype(ivy.bool)
+        if attention_mask.ndim == 2:
+            attention_mask = ivy.tile(attention_mask, (batch_dim * num_heads, 1, 1))
+        if bias_k is not None and bias_v is not None:
+            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
+        if add_zero_attn:
+            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
+        attention_mask = ivy.expand_dims(attention_mask, axis=0)
+        attn_scores = ivy.where(attention_mask, float("-inf"), attn_scores)
 
     # apply key_padding_mask
     if key_padding_mask is not None:
-        if add_zero_attn and ivy.exists(key_padding_mask):
+        if key_padding_mask.ndim == 1:
+            key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
+        if add_zero_attn:
             key_padding_mask = ivy.pad(key_padding_mask, [(0, 0), (0, 1)])
-        key_padding_mask = ivy.expand_dims(
-            ivy.expand_dims(key_padding_mask, axis=1), axis=2
-        )
-        attn_scores = attn_scores.reshape((batch_size, num_heads, q_seq_length, k_seq_length))
-        attn_scores = ivy.where(key_padding_mask < 0.0, float("-inf"), attn_scores)
-        attn_scores = attn_scores.reshape((batch_size * num_heads, q_seq_length, k_seq_length))
+        if bias_k is not None and bias_v is not None:
+            key_padding_mask = ivy.pad(key_padding_mask, [(0, 0), (0, 1)])
+        key_padding_mask = ivy.tile(key_padding_mask, (1, num_heads, num_queries, 1))
+        attn_scores = attn_scores.reshape((batch_dim, num_heads, num_queries, -1))
+        attn_scores = ivy.where(key_padding_mask, float("-inf"), attn_scores)
+        attn_scores = attn_scores.reshape((batch_dim * num_heads, num_queries, -1))
 
     # get attention weights
     attn_weights = ivy.softmax(attn_scores, axis=-1)
@@ -912,7 +922,7 @@ def multi_head_attention(
     # get attention output
     attention_out = ivy.matmul(attn_weights, v)
     attention_out = attention_out.permute_dims((0, 2, 1, 3)).reshape(
-        (batch_size, q_seq_length, -1)
+        (batch_dim, num_queries, -1)
     )
     if ivy.exists(out_proj_weights):
         attention_out = ivy.linear(attention_out, out_proj_weights, bias=out_proj_bias)
