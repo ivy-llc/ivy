@@ -8,6 +8,37 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
+    fn_tree="paddle.tensor.random.exponential_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=2,
+        max_dim_size=10,
+    ),
+)
+def test_paddle_exponential_(
+    fn_tree,
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.normal",
     input_dtypes=st.sampled_from([["float32"], ["float64"]]),
     shape=helpers.get_shape(
