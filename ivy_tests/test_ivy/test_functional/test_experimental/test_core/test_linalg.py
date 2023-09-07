@@ -1118,7 +1118,7 @@ def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device
     input_dtypes, x, order = data
     if backend_fw == "paddle":
         # to avoid large dimension results since paddle don't support them
-        order = min(order, 3)
+        order = min(order, 2)
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
