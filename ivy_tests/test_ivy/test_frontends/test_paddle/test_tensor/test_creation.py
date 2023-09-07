@@ -731,9 +731,9 @@ def test_paddle_triu_indices(
 @handle_frontend_test(
     fn_tree="paddle.uniform",
     min=helpers.floats(min_value=-1, max_value=0),
-    max=helpers.floats(min_value=0.1, max_value=1),
+    max=helpers.floats(min_value=0, max_value=1),
     dtype_and_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=1000,
         max_num_dims=1,
