@@ -101,7 +101,16 @@ def avg_pool2d(
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False,data_format="NCHW", name=None):
+def max_pool3d(
+    input, 
+    kernel_size, 
+    stride=None, 
+    padding=0, 
+    dilation=1, 
+    ceil_mode=False,
+    data_format="NCHW", 
+    name=None
+):
   # Check the shapes of the input and kernel tensors.
 
   if len(input.shape) < 3:
@@ -137,15 +146,27 @@ def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode
       raise ValueError("The dilation argument must be a single number or a tuple of three numbers.")
 
   # Create a 3D max pooling operation return the output tensor. 
-
-  return ivy.max_pool3d(
-      input,
-      kernel_size=kernel_size,
-      stride=stride,
-      padding=padding,
-      dilation=dilation,
-      ceil_mode=ceil_mode,
-      data_format = data_format)   
+  if ceil_mode:
+    return ivy.pool(
+        input,
+        mode='max',
+        data_format = data_format,
+        window_shape=kernel_size,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        method='ceil')
+  else:
+    return ivy.pool(
+        input,
+        mode='max',
+        data_format = data_format,
+        window_shape=kernel_size,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        method='floor'
+    )
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
