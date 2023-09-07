@@ -20,9 +20,7 @@ module_map = {
 
 
 def keys_to_delete_from_db(all_tests, module, data, current_key=""):
-    """
-    Recursively navigate and identify keys not in the list.
-    """
+    """Recursively navigate and identify keys not in the list."""
     keys_for_deletion = []
 
     for key, value in data.items():
@@ -58,7 +56,7 @@ submodules = (
     "test_mindspore",
     "test_onnx",
     "test_sklearn",
-    "test_xgboost"
+    "test_xgboost",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -77,8 +75,10 @@ db_dict = {
     "test_mindspore": ["mindspore", 23],
     "test_onnx": ["onnx", 24],
     "test_sklearn": ["sklearn", 25],
-    "test_xgboost": ["xgboost", 26]
+    "test_xgboost": ["xgboost", 26],
 }
+
+
 def get_submodule(test_path):
     test_path = test_path.split("/")
     for name in submodules:
@@ -114,7 +114,9 @@ def main():
         collection = db[collection_name]
         for document in collection.find({}):
             print(document)
-            undesired_keys = keys_to_delete_from_db(all_tests, module_map[collection_name], document)
+            undesired_keys = keys_to_delete_from_db(
+                all_tests, module_map[collection_name], document
+            )
             for key in undesired_keys:
                 print(key)
                 # collection.update_one({"_id": document["_id"]}, {"$unset": {key: 1}})
