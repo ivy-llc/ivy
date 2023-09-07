@@ -215,9 +215,7 @@ def promote_types_torch(
 
 @handle_exceptions
 def promote_types_of_torch_inputs(
-    x1: Union[ivy.Array, Number, Iterable[Number]],
-    x2: Union[ivy.Array, Number, Iterable[Number]],
-    /,
+    *args: Union[ivy.Array, Number, Iterable[Number]],
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Promote the dtype of the given native array inputs to a common dtype based on type
@@ -230,23 +228,31 @@ def promote_types_of_torch_inputs(
     tensor-like objects, otherwise it might give unexpected results.
     """
     # Ignore type of 0-dim arrays to mimic torch
-    x1 = ivy.asarray(x1)
-    x2 = ivy.asarray(x2)
-    type1 = ivy.default_dtype(item=x1).strip("u123456789")
-    type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if not x1.shape == () and x2.shape == () and type1 == type2:
-        x2 = ivy.asarray(
-            x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
+    args = [ivy.asarray(x) for x in args]
+    dtypes = tuple(ivy.default_dtype(item=x).strip("u123456789") for x in args)
+    if len(set(dtypes)) == 1:
+        target_non_empty_shape_index = ivy.nested_argwhere(
+            args, lambda x: not x.shape == (), stop_after_n_found=1
         )
-    elif x1.shape == () and not x2.shape == () and type1 == type2:
-        x1 = ivy.asarray(
-            x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
-        )
-    elif x1.dtype != x2.dtype:
-        promoted = promote_types_torch(x1.dtype, x2.dtype)
-        x1 = ivy.asarray(x1, dtype=promoted)
-        x2 = ivy.asarray(x2, dtype=promoted)
-    return x1, x2
+        non_empty_array_val = ivy.multi_index_nest(args, target_non_empty_shape_index)
+
+        empty_shape_index = ivy.nested_argwhere(args, lambda x: x.shape == ())
+        empty_array_vals = ivy.multi_index_nest(args, empty_shape_index)
+
+        def nested_multi(x):
+            x = ivy.asarray(
+                x,
+                dtype=non_empty_array_val.dtype,
+                device=ivy.default_device(item=non_empty_array_val, as_native=False),
+            )
+            return x
+
+        ivy.nested_map(empty_array_vals, nested_multi)
+    else:
+        for arg in args:
+            promoted = promote_types_torch(arg.dtype, args[0].dtype)
+            arg = ivy.asarray(arg, dtype=promoted)
+    return args
 
 
 from . import nn
