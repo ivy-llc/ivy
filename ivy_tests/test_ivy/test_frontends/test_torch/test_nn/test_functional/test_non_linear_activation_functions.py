@@ -1,11 +1,12 @@
 # global
 import ivy
 from hypothesis import assume, strategies as st
-import random
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
 
 
 # --- Helpers --- #
@@ -95,170 +96,6 @@ def _x_and_scaled_attention(draw, dtypes):
         | st.none()
     )
     return dtype, query, key, value, mask
-
-
-@st.composite
-def mha_forward_args(draw, dtypes):
-    dtype = draw(dtypes)
-    embed_dim = draw(helpers.ints(min_value=2, max_value=4))
-    batch_size = draw(helpers.ints(min_value=1, max_value=2)) * 3
-    seq_len = draw(helpers.ints(min_value=2, max_value=4))
-    shape = (
-        seq_len,
-        batch_size,
-        embed_dim,
-    )
-
-    heads = draw(helpers.ints(min_value=1, max_value=4))
-    head_dim = embed_dim // heads
-    if head_dim * heads != embed_dim:
-        heads = 1
-        head_dim = embed_dim
-
-    if dtype[0] == "float32":
-        is_causal = False
-    else:
-        is_causal = draw(helpers.array_bools(size=1))[0]
-
-    q = draw(
-        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
-    )
-    k = draw(
-        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
-    )
-    v = draw(
-        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
-    )
-    in_proj_weight = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim * 3, embed_dim),
-        )
-    )
-    in_proj_bias = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim * 3,),
-        )
-    )
-
-    if random.randint(0, 1) == 0:
-        use_separate_proj_weight = True
-        q_proj_weight = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                min_value=0.1,
-                max_value=1,
-                shape=(embed_dim, embed_dim),
-            )
-        )
-        k_proj_weight = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                min_value=0.1,
-                max_value=1,
-                shape=(embed_dim, embed_dim),
-            )
-        )
-        v_proj_weight = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                min_value=0.1,
-                max_value=1,
-                shape=(embed_dim, embed_dim),
-            )
-        )
-    else:
-        use_separate_proj_weight = False
-        q_proj_weight = None
-        k_proj_weight = None
-        v_proj_weight = None
-
-    out_proj_weight = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim, embed_dim),
-        )
-    )
-    out_proj_bias = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim,),
-        )
-    )
-    bias_k = random.choice(
-        [
-            draw(
-                helpers.array_values(
-                    dtype=dtype[0],
-                    min_value=0.1,
-                    max_value=1,
-                    shape=(embed_dim,),
-                )
-            ),
-            None,
-        ]
-    )
-    bias_v = bias_k
-
-    if bias_k is None:
-        static_k = random.choice(
-            [
-                draw(
-                    helpers.array_values(
-                        dtype=dtype[0],
-                        min_value=0.1,
-                        max_value=1,
-                        shape=(batch_size * heads, seq_len, head_dim),
-                    )
-                ),
-                None,
-            ]
-        )
-        static_v = static_k
-    else:
-        static_k = None
-        static_v = None
-
-    attn_mask = ivy.ones((seq_len, seq_len), dtype=dtype[0])
-    key_padding_mask = random.choice(
-        [
-            ivy.random_normal(shape=(seq_len, seq_len), dtype=dtype[0]) > 0,
-            None,
-        ]
-    )
-
-    return (
-        dtype,
-        q,
-        k,
-        v,
-        heads,
-        use_separate_proj_weight,
-        embed_dim,
-        in_proj_weight,
-        in_proj_bias,
-        out_proj_weight,
-        out_proj_bias,
-        q_proj_weight,
-        k_proj_weight,
-        v_proj_weight,
-        bias_k,
-        bias_v,
-        static_k,
-        static_v,
-        attn_mask,
-        key_padding_mask,
-        is_causal,
-    )
 
 
 # --- Main --- #
@@ -852,14 +689,7 @@ def test_torch_mish(
 # multi_head_attention_forward
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
-    dtype_mha_args=mha_forward_args(
-        dtypes=helpers.get_dtypes("valid"),
-    ),
-    add_zero_attn=st.just(False),
-    dropout_p=st.sampled_from([0.0, 0.1, 0.2]),
-    training=st.booleans(),
-    need_weights=st.booleans(),
-    average_attn_weights=st.booleans(),
+    dtype_mha_args=_mha_helper(),
     test_with_out=st.just(False),
 )
 def test_torch_multi_head_attention_forward(
@@ -869,11 +699,6 @@ def test_torch_multi_head_attention_forward(
     frontend,
     test_flags,
     dtype_mha_args,
-    add_zero_attn,
-    dropout_p,
-    training,
-    need_weights,
-    average_attn_weights,
     backend_fw,
 ):
     (
@@ -882,24 +707,33 @@ def test_torch_multi_head_attention_forward(
         k,
         v,
         heads,
-        use_separate_proj_weight,
-        embed_dim,
+        attn_mask,
         in_proj_weight,
-        in_proj_bias,
-        out_proj_weight,
-        out_proj_bias,
         q_proj_weight,
         k_proj_weight,
         v_proj_weight,
+        out_proj_weight,
+        in_proj_bias,
+        out_proj_bias,
+        key_padding_mask,
         bias_k,
         bias_v,
         static_k,
         static_v,
-        attn_mask,
-        key_padding_mask,
+        _,
+        add_zero_attn,
+        dropout_p,
+        training,
         is_causal,
+        need_weights,
+        average_attn_weights,
     ) = dtype_mha_args
-
+    if k is None and v is None:
+        k = v = q
+    q, k, v = [
+        np.expand_dims(x, 0) if len(x.shape) == 2 else np.swapaxes(x, 0, 1)
+        for x in [q, k, v]
+    ]
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -911,7 +745,7 @@ def test_torch_multi_head_attention_forward(
         query=q,
         key=k,
         value=v,
-        embed_dim_to_check=embed_dim,
+        embed_dim_to_check=q.shape[-1],
         num_heads=heads,
         in_proj_weight=in_proj_weight,
         in_proj_bias=in_proj_bias,
@@ -925,7 +759,7 @@ def test_torch_multi_head_attention_forward(
         key_padding_mask=key_padding_mask,
         need_weights=need_weights,
         attn_mask=attn_mask,
-        use_separate_proj_weight=use_separate_proj_weight,
+        use_separate_proj_weight=in_proj_weight is None,
         q_proj_weight=q_proj_weight,
         k_proj_weight=k_proj_weight,
         v_proj_weight=v_proj_weight,
