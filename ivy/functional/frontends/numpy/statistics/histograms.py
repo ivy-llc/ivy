@@ -10,7 +10,7 @@ def bincount(x, /, weights=None, minlength=0):
 
 
 
-#histogram
+# histogram
 # @with_supported_dtypes({"1.25.2 and below": ("int64",)}, "numpy")
 # @to_ivy_arrays_and_back
 # def histogram(a, bins=10, range=None, density=None, weights=None):
