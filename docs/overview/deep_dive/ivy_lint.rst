@@ -43,7 +43,7 @@ Integration and Usage
 
 To get the best out of `ivy-lint`, integrate it within a pre-commit hook. This ensures that whenever code changes are about to be committed, the suite checks and, if needed, formats the files to align with Ivy's standards.
 
-For comprehensive details on weaving `ivy-lint` into your development practices, kindly refer to our [formatting guide].
+For comprehensive details on weaving `ivy-lint` into your development practices, kindly refer to our `formatting guide <formatting.rst>`_.
 
 Contribution
 ------------
