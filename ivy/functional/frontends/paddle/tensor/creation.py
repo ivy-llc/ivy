@@ -145,10 +145,6 @@ def ones_like(x, /, *, dtype=None, name=None):
 
 
 # []-22965
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
-    "paddle",
-)
 @to_ivy_arrays_and_back
 def random_uniform(low, high, shape, device=None, dtype=None):
     return ivy.random_uniform(
