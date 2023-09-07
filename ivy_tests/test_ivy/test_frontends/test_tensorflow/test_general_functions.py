@@ -1151,6 +1151,51 @@ def test_tensorflow_linspace(
     )
 
 
+# meshgrid
+@handle_frontend_test(
+    fn_tree="tensorflow.meshgrid",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=2,
+        min_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_meshgrid(
+    *,
+    dtype_and_values,
+    indexing,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, arrays = dtype_and_values
+    arrays = arrays[0]
+    kwargs = {}
+
+    for i, array in enumerate(arrays):
+        kwargs[f"a{i}"] = array
+
+    kwargs["indexing"] = indexing
+
+    test_flags.num_positional_args = len(arrays)
+    test_flags.generate_frontend_arrays = False
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
+    )
+
+
 # no_op
 @handle_frontend_test(
     fn_tree="tensorflow.no_op",
