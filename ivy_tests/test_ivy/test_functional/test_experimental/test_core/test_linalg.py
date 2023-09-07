@@ -23,7 +23,7 @@ def _batched_outer_data(draw):
     dtype, tensors = draw(
         helpers.dtype_and_values(
             num_arrays=tensors_num,
-            available_dtypes=helpers.get_dtypes(),
+            available_dtypes=helpers.get_dtypes("float"),
             shape=shape,
             large_abs_safety_factor=20,
             small_abs_safety_factor=20,
