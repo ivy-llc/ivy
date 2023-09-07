@@ -45,12 +45,6 @@ All of these new words can get confusing! We've created a glossary to help nail 
     Automatic Code Conversions
         Allows code to be converted from one framework to another whilst retaining its functional assets.
 
-    Applied Libraries
-        Suite of various machine learning libraries that have been built using the Ivy framework.
-
-    Ivy Builder
-        Helpful classes and functions for creating training workflows.
-
     Primary Functions
         Primary functions are the lowest level building blocks in Ivy and are generally implemented as light wrapping around an existing function in the backend framework, which serves a near-identical purpose.
 
