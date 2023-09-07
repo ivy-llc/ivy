@@ -102,11 +102,14 @@ def avg_pool2d(
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False,data_format="NCHW", name=None):
-
   # Check the shapes of the input and kernel tensors.
+
+  if len(input.shape) < 3:
+    raise ValueError("The input tensor must have at least three dimensions.")
 
   if input.shape[2:] != kernel_size:
     raise ValueError("The shape of the input tensor must be the same as the shape of the kernel tensor.")
+      
    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
   # Check the stride argument.
