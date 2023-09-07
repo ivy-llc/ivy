@@ -39,11 +39,11 @@ from ivy.func_wrapper import (
 # --------#
 
 
-def asarray_handle_nestable(fn: Callable) -> Callable:
+def _asarray_handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
     @functools.wraps(fn)
-    def _asarray_handle_nestable(*args, **kwargs):
+    def _asarray_handle_nestable_wrapper(*args, **kwargs):
         """
         Call `fn` with the *nestable* property of the function correctly handled. This
         means mapping the function to the container leaves if any containers are passed
@@ -71,8 +71,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
         # the passed arguments, returning an ivy or a native array.
         return fn(*args, **kwargs)
 
-    _asarray_handle_nestable.handle_nestable = True
-    return _asarray_handle_nestable
+    _asarray_handle_nestable_wrapper.handle_nestable = True
+    return _asarray_handle_nestable_wrapper
 
 
 def _ivy_to_native(x):
@@ -126,9 +126,9 @@ def _remove_np_bfloat16(obj):
     return obj
 
 
-def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
+def _asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
+    def _asarray_to_native_arrays_and_back_wrapper(*args, dtype=None, **kwargs):
         """
         Wrap `fn` so that input arrays are all converted to `ivy.NativeArray` instances
         and return arrays are all converted to `ivy.Array` instances.
@@ -147,12 +147,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
-    return _asarray_to_native_arrays_and_back
+    return _asarray_to_native_arrays_and_back_wrapper
 
 
-def asarray_infer_dtype(fn: Callable) -> Callable:
+def _asarray_infer_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _asarray_infer_dtype(*args, dtype=None, **kwargs):
+    def _asarray_infer_dtype_wrapper(*args, dtype=None, **kwargs):
         """
         Determine the correct `dtype`, and then calls the function with the `dtype`
         passed explicitly. This wrapper is specifically for the backend implementations
@@ -204,13 +204,13 @@ def asarray_infer_dtype(fn: Callable) -> Callable:
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
-    _asarray_infer_dtype.infer_dtype = True
-    return _asarray_infer_dtype
+    _asarray_infer_dtype_wrapper.infer_dtype = True
+    return _asarray_infer_dtype_wrapper
 
 
-def asarray_infer_device(fn: Callable) -> Callable:
+def _asarray_infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _asarray_infer_device(*args, device=None, **kwargs):
+    def _asarray_infer_device_wrapper(*args, device=None, **kwargs):
         """
         Determine the correct `device`, and then calls the function with the `device`
         passed explicitly. This wrapper is specifically for the backend implementations
@@ -243,11 +243,11 @@ def asarray_infer_device(fn: Callable) -> Callable:
         # call the function with device provided explicitly
         return fn(*args, device=device, **kwargs)
 
-    _asarray_infer_device.infer_device = True
-    return _asarray_infer_device
+    _asarray_infer_device_wrapper.infer_device = True
+    return _asarray_infer_device_wrapper
 
 
-def asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
+def _asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_native_shapes(*args, **kwargs):
         new_arg = _shape_to_native(args[0])
