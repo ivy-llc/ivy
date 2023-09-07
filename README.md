@@ -322,63 +322,6 @@ The model\'s output can be visualized as follows:
    <img width="50%" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/regressor_lq.gif">
 </div>
 
-Last but not least, we are also working on specific extensions totally
-written in Ivy and therefore usable within any framework, covering
-topics like [Mechanics](https://github.com/unifyai/mech), [Computer
-Vision](https://github.com/unifyai/vision),
-[Robotics](https://github.com/unifyai/robot), a [Reinforcement Learning
-Gym](https://github.com/unifyai/gym),
-[Memory](https://github.com/unifyai/memory) and implementation of
-various [Models](https://github.com/unifyai/models) or [Builder
-tools](https://github.com/unifyai/builder) with trainers, data loaders
-and more!
-
-<br/>
-<div align="center">
-<a class="only-dark" href="https://github.com/unifyai/mech#gh-dark-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_mech_dark.png#gh-dark-mode-only">
-</a>
-<a class="only-light" href="https://github.com/unifyai/mech#gh-light-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_mech.png#gh-light-mode-only">
-</a>
-<a class="only-dark" href="https://github.com/unifyai/vision#gh-dark-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_vision_dark.png#gh-dark-mode-only">
-</a>
-<a class="only-light" href="https://github.com/unifyai/vision#gh-light-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_vision.png#gh-light-mode-only">
-</a>
-<a class="only-dark" href="https://github.com/unifyai/robot#gh-dark-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_robot_dark.png#gh-dark-mode-only">
-</a>
-<a class="only-light" href="https://github.com/unifyai/robot#gh-light-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_robot.png#gh-light-mode-only">
-</a>
-<a class="only-dark" href="https://github.com/unifyai/gym#gh-dark-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_gym_dark.png#gh-dark-mode-only">
-</a>
-<a class="only-light" href="https://github.com/unifyai/gym#gh-light-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_gym.png#gh-light-mode-only">
-</a>
-<a class="only-dark" href="https://github.com/unifyai/memory#gh-dark-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_memory_dark.png#gh-dark-mode-only">
-</a>
-<a class="only-light" href="https://github.com/unifyai/memory#gh-light-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_memory.png#gh-light-mode-only">
-</a>
-<a class="only-dark" href="https://github.com/unifyai/builder#gh-dark-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_builder_dark.png#gh-dark-mode-only">
-</a>
-<a class="only-light" href="https://github.com/unifyai/builder#gh-light-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_builder.png#gh-light-mode-only">
-</a>
-<a class="only-dark" href="https://github.com/unifyai/models#gh-dark-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_models_dark.png#gh-dark-mode-only">
-</a>
-<a class="only-light" href="https://github.com/unifyai/models#gh-light-mode-only">
-    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_models.png#gh-light-mode-only">
-</a>
-</div>
-<br clear="all" />
 
 As always, you can find more information about [Ivy as a framework in
 the
