@@ -320,6 +320,5 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
         stride=stride,
         dilation=dilation,
         padding=padding,
-        data_format="NCHW",
     )
     return ret.astype(input.dtype)

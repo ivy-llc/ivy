@@ -1126,7 +1126,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         stride: Union[int, Tuple[int, int]] = 1,
         dilation: Union[int, Tuple[int, int]] = 1,
         padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
-        data_format="NCHW",
     ) -> ivy.Array:
         """
         Slide a window of specified dimension over all elements of an array.
@@ -1146,8 +1145,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             padding to apply before and after each spatial dimension.
         dilation
             The stride between elements within a sliding window, must be > 0.
-        data_format
-            "NHWC" or "NCHW". Defaults to "NCHW".
 
         Returns
         -------
@@ -1174,5 +1171,4 @@ class _ArrayWithLayersExperimental(abc.ABC):
             stride=stride,
             dilation=dilation,
             padding=padding,
-            data_format=data_format,
         )

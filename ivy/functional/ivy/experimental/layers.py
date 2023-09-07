@@ -2877,7 +2877,6 @@ def sliding_window(
     stride: Union[int, Tuple[int, int]] = 1,
     dilation: Union[int, Tuple[int, int]] = 1,
     padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
-    data_format="NCHW",
 ):
     """
     Slide a window of specified dimension over all elements of an array.
@@ -2896,8 +2895,6 @@ def sliding_window(
         apply before and after each spatial dimension.
     dilation
         The stride between elements within a sliding window, must be > 0.
-    data_format
-        "NHWC" or "NCHW". Defaults to "NCHW".
 
     Returns
     -------
@@ -2918,11 +2915,12 @@ def sliding_window(
                 [ 6,  7, 10, 11],
                 [ 7,  8, 11, 12]]])
     """
-    return ivy.current_backend(input).sliding_window(
+    res = ivy.current_backend(input).sliding_window(
         input,
         window_size,
         stride=stride,
         dilation=dilation,
         padding=padding,
-        data_format=data_format,
     )
+
+    return res.astype(input.dtype)

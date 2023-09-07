@@ -2290,7 +2290,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         stride: Union[int, Tuple[int, int], ivy.Container] = 1,
         dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
         padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
-        data_format="NCHW",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -2316,8 +2315,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             padding to apply before and after each spatial dimension.
         dilation
             The stride between elements within a sliding window, must be > 0.
-        data_format
-            "NHWC" or "NCHW". Defaults to "NCHW".
 
         Returns
         -------
@@ -2361,7 +2358,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             stride=stride,
             dilation=dilation,
             padding=padding,
-            data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2376,7 +2372,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         stride: Union[int, Tuple[int, int], ivy.Container] = 1,
         dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
         padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
-        data_format="NCHW",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -2402,8 +2397,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             padding to apply before and after each spatial dimension.
         dilation
             The stride between elements within a sliding window, must be > 0.
-        data_format
-            "NHWC" or "NCHW". Defaults to "NCHW".
 
         Returns
         -------
@@ -2445,7 +2438,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             stride=stride,
             dilation=dilation,
             padding=padding,
-            data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

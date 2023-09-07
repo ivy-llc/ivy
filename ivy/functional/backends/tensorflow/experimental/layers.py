@@ -1429,6 +1429,13 @@ def rfftn(
         return tf.cast(result, tf.complex128)
 
 
+def _to_4d(x):
+    t = x  # Start with the original tensor
+    while len(t.shape) < 4:  # Continue expanding dimensions until 4D
+        t = tf.expand_dims(t, axis=0)
+    return t
+
+
 def sliding_window(
     input: Union[tf.Tensor, tf.Variable],
     kernel_size: Union[int, Tuple[int, int]],
@@ -1436,12 +1443,12 @@ def sliding_window(
     *,
     stride: Union[int, Tuple[int, int]] = 1,
     dilation: Union[int, Tuple[int, int]] = 1,
-    padding: Union[str, int, Tuple[int, int]] = 1,
-    data_format: str = "NCHW",
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
 ) -> Union[tf.Tensor, tf.Variable]:
-    if data_format == "NCHW":
-        # transpose input to "NHWC" acceptable to tensorflow
-        input = tf.transpose(input, (0, 2, 3, 1))
+    if len(input.shape) != 4:
+        input = _to_4d(input)
+
+    input = tf.transpose(input, (0, 2, 3, 1))
 
     kernel_size = (
         [1]
@@ -1470,9 +1477,4 @@ def sliding_window(
                 f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
             )
 
-    res = tf.image.extract_patches(input, kernel_size, stride, dilation, padding)
-
-    if data_format == "NCHW":
-        return tf.transpose(res, (0, 3, 1, 2))
-
-    return res
+    return tf.image.extract_patches(input, kernel_size, stride, dilation, padding)

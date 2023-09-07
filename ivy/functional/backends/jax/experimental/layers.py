@@ -882,8 +882,7 @@ def sliding_window(
     *,
     stride: Union[int, Tuple[int, int]] = 1,
     dilation: Union[int, Tuple[int, int]] = 1,
-    padding: Union[str, int, Tuple[int, int]] = 0,
-    data_format: str = None,
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
 ) -> JaxArray:
     k_size, stride, padding, dilation = map(
         lambda x: tuple([x] * len(input.shape)) if isinstance(x, int) else x,

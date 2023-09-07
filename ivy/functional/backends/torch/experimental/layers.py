@@ -1020,18 +1020,13 @@ def sliding_window(
     stride: Union[int, Tuple[int, int]] = 1,
     dilation: Union[int, Tuple[int, int]] = 1,
     padding: Union[str, int, Tuple[int, int]] = 0,
-    data_format: str = "NHWC",
 ) -> torch.Tensor:
-    if input.ndim == 4:
-        if data_format == "NHWC":
-            input = input.permute(0, 3, 1, 2)
-
-    else:
-        # convert input to 4D tensor unfold only accepts 4D data
+    if input.ndim != 4:
+        # convert input to 4D tensor as unfold only accepts 4D data
         input_shape = input.shape
         extend_dims = max(0, 4 - len(input_shape))
         new_shape = (1,) * extend_dims + input_shape
-        input = input.view(*new_shape)
+        input = input.view(*new_shape).float()
 
     # check padding and convert to right format
     if isinstance(padding, str):
@@ -1056,9 +1051,4 @@ def sliding_window(
     dilation = (dilation,) * 2 if isinstance(dilation, int) else dilation
     stride = (stride,) * 2 if isinstance(stride, int) else stride
 
-    res = torch.nn.functional.unfold(input, kernel_size, dilation, padding, stride)
-
-    if data_format == "NHWC":
-        return res.permute(0, 2, 3, 1)
-
-    return res
+    return torch.nn.functional.unfold(input, kernel_size, dilation, padding, stride)
