@@ -1416,7 +1416,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            Input array having shape (..., M, N) and whose innermost two deimensions 
+            Input array having shape (..., M, N) and whose innermost two deimensions
             form MxN matrices. Should have a floating-point data type.
         ord
             Order of the norm. Default is "fro".
@@ -1445,7 +1445,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
@@ -1466,7 +1466,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([4.24, 11.4, 19.2]),
-            b: ivy.array([[[3.7]], 
+            b: ivy.array([[[3.7]],
                           [[11.2]]])
         }
         """
@@ -1504,7 +1504,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         self
-            Container having shape (..., M, N) and whose innermost two dimensions 
+            Container having shape (..., M, N) and whose innermost two dimensions
             form MxN matrices. Should have a floating-point data type.
         ord
             Order of the norm. Default is "fro".
@@ -1553,8 +1553,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_norm(ord=ord, axis=axis, keepdims=k)
         >>> print(y)
         {
-            a: ivy.array([[[4.24]], 
-                         [[11.4]], 
+            a: ivy.array([[[4.24]],
+                         [[11.4]],
                          [[19.2]]]),
             b: ivy.array([4., 12.])
         }
@@ -3311,5 +3311,108 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             self,
             N=N,
             increasing=increasing,
+            out=out,
+        )
+
+    @staticmethod
+    def static_general_inner_product(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        n_modes: Optional[Union[int, ivy.Container]] = None,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.general_inner_product. This method
+        simply wraps the function, and so the docstring for ivy.general_inner_product
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            First input container containing input array.
+        x2
+            First input container containing input array.
+        n_modes
+            int, default is None. If None, the traditional inner product is returned
+            (i.e. a float) otherwise, the product between the `n_modes` last modes of
+            `x1` and the `n_modes` first modes of `x2` is returned. The resulting
+            tensor's order is `len(x1) - n_modes`.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output container in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            Container including the inner product tensor.
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+                a=ivy.reshape(ivy.arange(4), (2, 2)),
+                b=ivy.reshape(ivy.arange(8), (2, 4)),
+            )
+        >>> ivy.Container.general_inner_product(x, 1)
+            {
+                a: ivy.array(6),
+                b: ivy.array(28)
+            }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "general_inner_product",
+            x1,
+            x2,
+            n_modes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def general_inner_product(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        n_modes: Optional[Union[int, ivy.Container]] = None,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.general_inner_product.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.general_inner_product also applies to this method with
+        minimal changes.
+        """
+        return self.static_general_inner_product(
+            self,
+            x2,
+            n_modes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
