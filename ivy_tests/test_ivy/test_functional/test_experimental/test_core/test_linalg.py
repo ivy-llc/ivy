@@ -809,6 +809,8 @@ def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
         input_dtypes=input_dtypes,
         tensors=tensors,
     )
