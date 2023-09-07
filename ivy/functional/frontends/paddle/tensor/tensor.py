@@ -108,6 +108,11 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def ceil_(self):
+        self.ivy_array = self.ceil().ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
     def numel(self):
         return paddle_frontend.numel(self)
@@ -135,6 +140,11 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sinh(self, name=None):
         return paddle_frontend.Tensor(ivy.sinh(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def lerp_(self, y, weight, name=None):
+        self.ivy_array = paddle_frontend.lerp(self, y, weight).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(self, axis=None, keepdim=False, dtype=None, name=None):
@@ -229,6 +239,26 @@ class Tensor:
             ret = ivy.clip(self._ivy_array, min, max)
         return paddle_frontend.Tensor(ret)
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def clip_(self, min=None, max=None, name=None):
+        ivy.utils.assertions.check_all_or_any_fn(
+            min,
+            max,
+            fn=ivy.exists,
+            type="any",
+            limit=[1, 2],
+            message="at most one of min or max can be None",
+        )
+        if min is None:
+            self._ivy_array = ivy.minimum(self._ivy_array, max)
+        elif max is None:
+            self._ivy_array = ivy.maximum(self._ivy_array, min)
+        else:
+            self._ivy_array = ivy.clip(self._ivy_array, min, max)
+        return self
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def tanh(self, name=None):
         return paddle_frontend.Tensor(ivy.tanh(self._ivy_array))
@@ -247,6 +277,13 @@ class Tensor:
     def isinf(self, name=None):
         return paddle_frontend.Tensor(ivy.isinf(self._ivy_array))
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "uint16")}, "paddle")
+    def unsqueeze_(self, axis=None, name=None):
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.expand_dims(self._ivy_array, axis=axis)
+        ).ivy_array
+        return self
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def square(self, name=None):
         return paddle_frontend.Tensor(ivy.square(self._ivy_array))
@@ -261,6 +298,20 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cholesky(self, upper=False, name=None):
         return paddle_frontend.Tensor(ivy.cholesky(self._ivy_array, upper=upper))
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("float16", "uint16", "int16")}, "paddle"
+    )
+    def squeeze_(self, axis=None, name=None):
+        if isinstance(axis, int) and self.ndim > 0:
+            if self.shape[axis] > 1:
+                return self
+        if len(self.shape) == 0:
+            return self
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.squeeze(self._ivy_array, axis=axis)
+        ).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def multiply(self, y, name=None):
@@ -412,6 +463,11 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def rsqrt(self, name=None):
         return paddle_frontend.Tensor(ivy.reciprocal(ivy.sqrt(self._ivy_array)))
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def rsqrt_(self, name=None):
+        self.ivy_array = self.rsqrt().ivy_array
+        return self
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def reciprocal(self, name=None):
@@ -658,6 +714,22 @@ class Tensor:
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def stanh(self, scale_a=0.67, scale_b=1.7159, name=None):
+        return paddle_frontend.stanh(self, scale_a=scale_a, scale_b=scale_b)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+        "paddle",
+    )
+    def argmin(self, axis=None, keepdim=False, dtype=None, name=None):
+        return paddle_frontend.argmin(
+            self._ivy_array, axis=axis, keepdim=keepdim, dtype=dtype
+        )
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):
         return ivy.remainder(self._ivy_array, y)
+
+    def is_floating_point(self):
+        return paddle_frontend.is_floating_point(self._ivy_array)
