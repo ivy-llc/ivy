@@ -1,6 +1,6 @@
 """Converters from Native Modules to Ivy Modules."""
 # global
-from typing import Optional, Dict, List, Union
+from typing import Optional, Dict, List
 import re  # noqa
 import inspect
 
@@ -8,146 +8,9 @@ import inspect
 import ivy
 
 from ivy.utils.backend import current_backend
-import numpy as np
 
 # helpers
 frontend_arrays = []
-
-ARRAY_TO_BACKEND = {
-    "ndarray": "numpy",
-    "NewNDArray": "numpy",
-    "Tensor": "torch",
-    "Parameter": "torch",
-    "EagerTensor": "tensorflow",
-    "ResourceVariable": "tensorflow",
-    "DeviceArray": "jax",
-    "Array": "jax",
-    "ArrayImpl": "jax",
-}
-
-
-def nest_array_to_new_backend(
-    nest, with_numpy=False, native=True, to_ignore=None, shallow=True
-):
-    return ivy.nested_map(
-        nest,
-        lambda x: array_to_new_backend(x, native=native, with_numpy=with_numpy),
-        include_derived=True,
-        to_ignore=to_ignore,
-        shallow=shallow,
-    )
-
-
-def array_to_new_backend(
-    x: Union[ivy.Array, ivy.NativeArray],
-    native: bool = False,
-    with_numpy: bool = False,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    if with_numpy and isinstance(x, np.ndarray):
-        return x
-    native_x = x.data if isinstance(x, ivy.Array) else x
-    native_x_type = type(native_x).__name__
-
-    # Modify native_type here since @tf.function converts tf.EagerTensor into
-    # tf.Tensor when running @tf.function on a transpiled graph
-    if ivy.current_backend_str() == "tensorflow":
-        import tensorflow as tf
-
-        native_x_type = (
-            "EagerTensor"
-            if not tf.executing_eagerly() and isinstance(native_x, tf.Tensor)
-            else native_x_type
-        )
-
-    # Check for paddle first, as it shares the 'Tensor' native_x_type with torch
-    if "paddle" in str(native_x.__class__) and ivy.current_backend_str() == "paddle":
-        if native:
-            return native_x
-        else:
-            return x
-
-    # Check if the other possible backends match with the native data type
-    if (
-        native_x_type in ARRAY_TO_BACKEND
-        and ARRAY_TO_BACKEND[native_x_type] == ivy.current_backend_str()
-    ):
-        if ivy.current_backend_str() == "torch":
-            # torch and paddle both use 'Tensor', so we need to check that this is a torch tensor
-            if "torch" in str(native_x.__class__):
-                return x
-            else:  # if it's actually a paddle tensor, convert to an ivy array
-                ret = ivy.array(native_x.numpy())
-                return ret.data if native else ret
-        return x
-
-    if is_frontend_array(x):
-        return x
-    if native_x_type not in ARRAY_TO_BACKEND:
-        return x
-    native_x = (
-        native_x.detach().cpu()
-        if native_x_type in ["Parameter", "Tensor"]
-        else native_x
-    )
-    np_intermediary = np.array(native_x)
-    ret = ivy.array(np_intermediary)
-    return ret.data if native else ret
-
-
-def _to_native(x, inplace: bool = False, to_ignore: tuple = None):
-    to_ignore = ivy.default(to_ignore, ())
-    if isinstance(x, to_ignore):
-        return x
-    if isinstance(x, ivy.Array):
-        return x.data
-    elif isinstance(x, ivy.Shape):
-        return x.shape
-    elif is_frontend_array(x):
-        return x.ivy_array.data
-    elif is_frontend_shape(x):
-        return x.ivy_shape.shape
-    elif isinstance(x, ivy.Container):
-        return x.cont_map(
-            lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
-        )
-    return x
-
-
-def is_frontend_array(x) -> bool:
-    if not frontend_arrays:
-        import ivy.functional.frontends.numpy as np_frontend
-
-        frontend_arrays.append(np_frontend.ndarray)
-
-        if ivy.current_backend_str() == "jax":
-            import ivy.functional.frontends.jax as jax_frontend
-
-            frontend_arrays.append(jax_frontend.Array)
-
-        elif ivy.current_backend_str() == "torch":
-            import ivy.functional.frontends.torch as torch_frontend
-
-            frontend_arrays.append(torch_frontend.Tensor)
-
-        elif ivy.current_backend_str() == "tensorflow":
-            import ivy.functional.frontends.tensorflow as tf_frontend
-
-            frontend_arrays.append(tf_frontend.EagerTensor)
-
-    x_cls = str(x.__class__)
-    array_names = ["Array", "ndarray", "Tensor"]
-
-    return "frontends" in x_cls and any(
-        array_like in x_cls for array_like in array_names
-    )
-
-
-def is_frontend_shape(x) -> bool:
-    x_cls = str(x.__class__)
-    shape_names = ["Size"]
-    return "frontends" in x_cls and any(
-        shape_like in x_cls for shape_like in shape_names
-    )
 
 
 def to_ivy_module(
@@ -594,13 +457,10 @@ class ModuleConverters:
                 ivy.set_backend("torch")
                 # Again assuming backend is torch when running this function
                 self._ivy_module.v = self._ivy_module.v.cont_map(
-                    lambda x, kc: _to_native(x, inplace=True)
-                )
-                ivy_module_weights_in_torch_tensor = self._ivy_module.v.cont_map(
-                    lambda x, kc: array_to_new_backend(x, native=True)
+                    lambda x, kc: ivy.to_native(x, cont_inplace=True)
                 )
 
-                ivy_module_weights_in_torch_tensor.cont_map(
+                self._ivy_module.v.cont_map(
                     lambda x, kc: self.register_parameter(
                         name=kc, param=torch.nn.Parameter(x)
                     )
@@ -620,9 +480,11 @@ class ModuleConverters:
                         lambda _, kc: self._parameters[kc]
                     )
                     self._parameters_converted = True
-                # can only use ivy.Module's __call__ only since it has been compiled to be used with torch
+                # can only use ivy.Module's __call__ only since it has been compiled to
+                # be used with torch
                 ret = self._ivy_module(*args, **kwargs, v=self._ivy_module.v)
-                # Output however could be in ivy.Array form (when ivy_module has not been compiled)
+                # Output however could be in ivy.Array form (when ivy_module has
+                # not been compiled)
                 # So converting to native tensor again
                 return ivy.to_native(ret, nested=True)
 
@@ -672,9 +534,8 @@ class ModuleConverters:
                             name=kc,
                             shape=x.shape,
                             dtype=x.dtype,
-                            init=lambda shape, dtype: array_to_new_backend(
-                                _to_native(self._ivy_module.v[kc], inplace=True),
-                                native=True,
+                            init=lambda shape, dtype: ivy.to_native(
+                                self._ivy_module.v[kc], cont_inplace=True
                             ),
                         )
                     )
@@ -688,14 +549,14 @@ class ModuleConverters:
                             name=kc,
                             shape=x.shape,
                             dtype=x.dtype,
-                            init=lambda shape, dtype: array_to_new_backend(
-                                _to_native(self._ivy_module.v[kc], inplace=True),
-                                native=True,
+                            init=lambda shape, dtype: ivy.to_native(
+                                self._ivy_module.v[kc], cont_inplace=True
                             ),
                         )
                     )
                 elif not self._parameters_converted:
-                    # if we are using all parameters, we would eventually have to call `hk.get_parameter` for every param,
+                    # if we are using all parameters, we would eventually have to call
+                    # `hk.get_parameter` for every param,
                     # so it's okay to call here, won't result in slowdowns
                     # TODO: see if we can remove `array_to_new_backend` from here.
                     prev_backend = ivy.current_backend_str()
@@ -705,12 +566,12 @@ class ModuleConverters:
                             name=kc,
                             shape=x.shape,
                             dtype=x.dtype,
-                            init=lambda shape, dtype: array_to_new_backend(
-                                _to_native(self._ivy_module.v[kc], inplace=True),
-                                native=True,
-                            ),  # this won't be used here tho
-                        )
+                            init=lambda shape, dtype: ivy.to_native(
+                                self._ivy_module.v[kc], cont_inplace=True
+                            ),
+                        ),  # this won't be used here tho
                     )
+
                     if prev_backend:
                         ivy.set_backend(prev_backend)
                     self._parameters_converted = True
@@ -748,9 +609,8 @@ class ModuleConverters:
                     lambda x, kc: self.param(
                         # "vars",
                         kc,
-                        lambda _, shape, dtype: array_to_new_backend(
-                            _to_native(self._ivy_module.v[kc], inplace=True),
-                            native=True,
+                        lambda _, shape, dtype: ivy.to_native(
+                            self._ivy_module.v[kc], cont_inplace=True
                         ),
                         x.shape,
                         x.dtype,
@@ -807,12 +667,9 @@ class ModuleConverters:
                 ivy.set_backend("tensorflow")
 
                 self._ivy_module.v = self._ivy_module.v.cont_map(
-                    lambda x, kc: _to_native(x, inplace=True)
+                    lambda x, kc: ivy.to_native(x, cont_inplace=True)
                 )
 
-                self._ivy_module.v = self._ivy_module.v.cont_map(
-                    lambda x, kc: array_to_new_backend(x, native=True)
-                )
                 self._ivy_module.v.cont_map(
                     lambda x, kc: self.add_weight(
                         name=kc, shape=x.shape, dtype=x.dtype, trainable=True
@@ -848,17 +705,18 @@ class ModuleConverters:
                         lambda _, kc: params[kc]
                     )
                     self._parameters_converted = True
-                # need to call with the weights passed since compilation was done with it
+                # need to call with the weights passed since compilation was done
+                # with it
                 ret = self._ivy_module(*args, **kwargs, v=self._ivy_module.v)
                 if isinstance(ret, tuple):
                     return ivy.args_to_native(*ret)
                 return ivy.to_native(ret)
 
             def __call__(self, *args, **kwargs):
-                ivy.set_backend("tensorflow")
-                args = nest_array_to_new_backend(args, native=True)
-                kwargs = nest_array_to_new_backend(kwargs, native=True)
-                ivy.previous_backend()
+                # ivy.set_backend("tensorflow")
+                # args = nest_array_to_new_backend(args, native=True)
+                # kwargs = nest_array_to_new_backend(kwargs, native=True)
+                # ivy.previous_backend()
 
                 return super(TranspiledKerasModel, self).__call__(*args, **kwargs)
 
@@ -899,11 +757,9 @@ class ModuleConverters:
                 ivy.set_backend("paddle")
 
                 self._ivy_module.v = self._ivy_module.v.cont_map(
-                    lambda x, kc: _to_native(x, inplace=True)
+                    lambda x, kc: ivy.to_native(x, cont_inplace=True)
                 )
-                self._ivy_module.v = self._ivy_module.v.cont_map(
-                    lambda x, kc: array_to_new_backend(x, native=True)
-                )
+
                 self._ivy_module.v = self._ivy_module.v.cont_map(
                     lambda x, kc: self.create_parameter(
                         shape=x.shape,
