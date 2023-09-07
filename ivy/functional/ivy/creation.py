@@ -1961,7 +1961,7 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
-    
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -1993,11 +1993,11 @@ def one_hot(
     >>> z = x.one_hot(y)
     >>> print(z)
     {
-        a: ivy.array([[0., 1., 0., 0., 0.], 
+        a: ivy.array([[0., 1., 0., 0., 0.],
                     [0., 0., 1., 0., 0.]]),
-        b: ivy.array([[0., 0., 0., 1., 0.], 
+        b: ivy.array([[0., 0., 0., 1., 0.],
                     [0., 1., 0., 0., 0.]]),
-        c: ivy.array([[0., 0., 1., 0., 0.], 
+        c: ivy.array([[0., 0., 1., 0., 0.],
                     [0., 0., 0., 1., 0.]])
     }
 

@@ -312,7 +312,7 @@ One thing to note here is the :code:`test_flags` variable in the test function. 
 The test flags can also be generated explicitly like this -:
 
 .. code-block:: python
-    
+
     @handle_test(
         as_variable_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
         native_array_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any> ),
@@ -631,7 +631,7 @@ be used for the given input. For example, when :code:`function_supported_dtypes`
     {'compositional': ('float32', 'int8', 'uint8', 'float64', 'int16', 'int32', 'int64'), 'primary': ('bool', 'float32', 'int8', 'uint8', 'float64', 'int64', 'int16', 'int32')}
 
 As can be seen from the above output that the data-types supported will depend on the implementation used for the given input. It's because of this reason that we need a slightly
-different pipeline for testing partial mixed functions. Basically, while writing the strategies for the tests of these functions, we need to first determine which implementation 
+different pipeline for testing partial mixed functions. Basically, while writing the strategies for the tests of these functions, we need to first determine which implementation
 will be used and then based on that generate the data to test the function. Here's an example from the test of :code:`ivy.linear` function:
 
 
@@ -684,8 +684,8 @@ will be used and then based on that generate the data to test the function. Here
 
 As can be seen from the above code, a boolean parameter :code:`mixed_fn_compos` is generated first to determine whether to generate test data for
 the compositional implementation or the primary one. When it is equal to :code:`True`, the relevant data for the compositional implementation should
-be generated and when :code:`False`, data corresponding to the primary implementation should be generated. Another boolean, :code:`is_torch_backend` 
-is to be used to determine if the current backend is :code:`torch`. Then these booleans are used together in this :code:`if` condition: 
+be generated and when :code:`False`, data corresponding to the primary implementation should be generated. Another boolean, :code:`is_torch_backend`
+is to be used to determine if the current backend is :code:`torch`. Then these booleans are used together in this :code:`if` condition:
 :code:`if is_torch_backend and not mixed_fn_compos` and :code:`weight_shape` is updated to be 2 dimensional because the torch backend implementation
 only supports 2 dimensional weights. Notice that the parameter :code:`mixed_fn_compos` is also be passed to :code:`helpers.get_dtypes` and
 :code:`helpers.ints` functions so that the dtypes corresponding to the implementation to be tested are returned. In general, :code:`helpers.get_dtypes`,
