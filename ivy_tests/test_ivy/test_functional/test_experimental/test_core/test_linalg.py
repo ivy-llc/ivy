@@ -18,8 +18,8 @@ import ivy
 # batched_outer
 @st.composite
 def _batched_outer_data(draw):
-    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
-    tensors_num = draw(helpers.ints(min_value=1, max_value=4))
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=3))
+    tensors_num = draw(helpers.ints(min_value=1, max_value=5))
     dtype, tensors = draw(
         helpers.dtype_and_values(
             num_arrays=tensors_num,
@@ -402,7 +402,7 @@ def _get_dtype_value1_value2_cov(
 @st.composite
 def _higher_order_moment_data(draw):
     shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
-    order = draw(helpers.ints(min_value=0, max_value=3))
+    order = draw(helpers.ints(min_value=0, max_value=10))
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=["float32", "float64"],
@@ -804,6 +804,9 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
 )
 def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, tensors = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        tensors = tensors[:3]
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -1113,6 +1116,9 @@ def test_general_inner_product(*, data, test_flags, backend_fw, fn_name, on_devi
 )
 def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, x, order = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        order = min(order, 3)
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
