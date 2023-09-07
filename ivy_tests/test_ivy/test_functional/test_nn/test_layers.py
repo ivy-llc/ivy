@@ -244,10 +244,11 @@ def _mha_helper(draw):
     )
     if len(_batch_dim) and draw(st.booleans()):
         _mask_shape = (_num_batches*num_heads, *_mask_shape)
+    _mask_dtype = draw(st.sampled_from(['bool', 'uint8', *draw(helpers.get_dtypes('float'))]))
     attention_mask = draw(
         st.one_of(
             helpers.array_values(
-                dtype=st.sampled_from(['bool', 'uint8', helpers.get_dtypes('float')]),
+                dtype=_mask_dtype,
                 allow_inf=True,
                 shape=_mask_shape,
             ),
