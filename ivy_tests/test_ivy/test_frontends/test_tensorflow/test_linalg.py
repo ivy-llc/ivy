@@ -203,7 +203,7 @@ def _get_tridiagonal_dtype_matrix_format(draw):
             [dummy_idx] + [[i + 1, i] for i in range(m - 1)],
         ]
         matrix = ivy.gather_nd(matrix, indices)
-        if diagonals_format is "sequence":
+        if diagonals_format == "sequence":
             matrix = list(matrix)
     return input_dtype, matrix, diagonals_format
 
