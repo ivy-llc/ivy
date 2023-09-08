@@ -278,5 +278,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `d
 .. raw:: html
 
     <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/watch?v=RZmTUwTYhKI&ab_channel=Ivy" class="video">
+    src="https://www.youtube.com/embed/RZmTUwTYhKI" class="video">
     </iframe>
