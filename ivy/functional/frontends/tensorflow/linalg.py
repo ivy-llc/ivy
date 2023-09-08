@@ -460,3 +460,49 @@ def tensorsolve(a, b, axes):
 @to_ivy_arrays_and_back
 def trace(x, name=None):
     return ivy.trace(x, axis1=-2, axis2=-1)
+
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+
+
+def tridiagonal_matmul(main_diag, upper_diag, lower_diag, matrix):
+    """
+    Multiply a tridiagonal matrix by a given matrix.
+    
+    Parameters:
+        main_diag  The main diagonal of the tridiagonal matrix.
+        upper_diag  The diagonal above the main diagonal.
+        lower_diag The diagonal below the main diagonal.
+        matrix  The matrix to be multiplied.
+
+    Returns:
+       The result of the matrix multiplication.
+    """
+    
+    n = ivy.shape(main_diag)[0]
+    result = ivy.zeros_like(matrix)
+
+    # Multiply the main diagonal
+    result = ivy.add(result, ivy.mul(ivy.diag(main_diag), matrix))
+
+    # Multiply the upper diagonal and shift the result one column to the right
+    result = ivy.add(result, ivy.mul(ivy.diag(ivy.concat([ivy.zeros([n - 1, 1]), upper_diag], axis=1), k=1), matrix[:, :-1]))
+
+    # Multiply the lower diagonal and shift the result one column to the left
+    result = ivy.add(result, ivy.mul(ivy.diag(ivy.concat([lower_diag, ivy.zeros([n - 1, 1])], axis=1), k=-1), matrix[:, 1:]))
+
+    return result

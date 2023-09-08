@@ -1228,3 +1228,42 @@ def test_tensorflow_trace(
         fn_tree=fn_tree,
         x=x[0],
     )
+    
+#tridiagonal matmul
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tridiagonal_matmul",  
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=(4, 4),  # Adjust the shape as needed
+        num_arrays=4,  # Adjust the number of arrays as needed
+        shared_dtype=True,
+        min_value=-1,
+        max_value=100,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tridiagonal_matmul(
+    *,
+    dtype_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, main_diag, upper_diag, lower_diag, matrix = dtype_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,  
+        main_diag=main_diag, 
+        upper_diag=upper_diag, 
+        lower_diag=lower_diag, 
+        matrix=matrix
+    )
+
+
