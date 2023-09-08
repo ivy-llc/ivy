@@ -2,7 +2,7 @@
 
 import argparse
 import importlib
-import inspect
+import os
 import sys
 from pathlib import Path
 from typing import List
@@ -75,6 +75,8 @@ TODO list (prioritised):
 
 ########## MUST HAVE ############
 #. skip tests that don't use one of the functions I've mocked (many roll their own)
+#. don't change the support for dtypes that I had to skip or devices I didn't test
+    (requires refactoring the decorator generating/writing logic)
 #. remove false positives from the backend is_dtype_err functions
 
 ########## SHOULD HAVE #######
@@ -104,6 +106,28 @@ class FromFunctionException(Exception):
     def __init__(self, message, e):
         super().__init__(self, message)
         self.wrapped_error = e
+
+
+class SuppressPrint:
+    def __init__(self, out=True, err=False):
+        self.out = out
+        self.err = err
+
+    def __enter__(self):
+        if self.out:
+            self._original_stdout = sys.stdout
+            sys.stdout = open(os.devnull, "w")
+        if self.err:
+            self._original_stderr = sys.stderr
+            sys.stderr = open(os.devnull, "w")
+
+    def __exit__(self, *args):
+        if self.out:
+            sys.stdout.close()
+            sys.stdout = self._original_stdout
+        if self.err:
+            sys.stderr.close()
+            sys.stderr = self._original_stderr
 
 
 def _is_dtype_err_jax(e, dtype):
@@ -397,6 +421,45 @@ class BackendFileTester:
 
     def resolve_unsure(self):
         self.fn_names = [func for func in self.fn_names if func is not None]
+
+        first_skip = True
+        for f in self.fn_names:
+            if all(
+                len(self.result[f][d]["skipped"]) == len(self.dtypes)
+                for d in self.devices
+            ):
+                reasons = {
+                    r for d in self.devices for _, r in self.result[f][d]["skipped"]
+                }
+                self.fn_names[self.fn_names.index(f)] = None
+                self.skip_fns.add(
+                    (f, "all functions skipped with reasons: " + "; ".join(reasons))
+                )
+                for d in self.devices:
+                    del self.result[f][d]["skipped"]
+                continue
+
+            for d in self.devices:
+                if len(self.result[f][d]["skipped"]) > 0 and self.verbosity >= 1:
+                    if first_skip:
+                        print()
+                        print()
+                        print("Unable to test:")
+                        print()
+                        first_skip = False
+                    for dtype, reason in self.result[f][d]["skipped"]:
+                        print(
+                            f"{self.file_path}::{f}[DType={dtype},Device={d}] with"
+                            f" error:\n {reason}"
+                        )
+                        print()
+                self.result[f][d]["supported"].update(
+                    {t for t, _ in self.result[f][d]["skipped"]}
+                )
+                del self.result[f][d]["skipped"]
+
+        self.fn_names = [func for func in self.fn_names if func is not None]
+
         if self.verbosity >= 1:
             for func, reason in self.skip_fns:
                 print()
@@ -448,27 +511,6 @@ class BackendFileTester:
                         mark_as = "supported" if mark_as == "S" else "unsupported"
                         self.result[f][d][mark_as].add(dtype)
                     del self.result[f][d]["unsure"]
-
-        first_skip = True
-        for f in self.fn_names:
-            for d in self.devices:
-                if len(self.result[f][d]["skipped"]) > 0 and self.verbosity >= 1:
-                    if first_skip:
-                        print()
-                        print()
-                        print("Unable to test:")
-                        print()
-                        first_skip = False
-                    for dtype, reason in self.result[f][d]["skipped"]:
-                        print(
-                            f"{self.file_path}::{f}[DType={dtype},Device={d}] with"
-                            f" error:\n {reason}"
-                        )
-                        print()
-                self.result[f][d]["supported"].update(
-                    {t for t, _ in self.result[f][d]["skipped"]}
-                )
-                del self.result[f][d]["skipped"]
 
     def print_result(self):
         if self.verbosity < 2:
@@ -644,7 +686,6 @@ def _kwargs_to_args_n_kwargs(num_positional_args, kwargs):
 
 def _get_nested_np_arrays(nest):
     indices = ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
-
     ret = ivy.multi_index_nest(nest, indices)
     return ret, indices, len(ret)
 
@@ -696,74 +737,40 @@ def mock_test_function(
     with helpers.BackendHandler.update_backend(backend_to_test) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
-            v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
+            v if ivy_backend.is_float_dtype(d) else False
             for v, d in zip(test_flags.as_variable, input_dtypes)
         ]
 
-    # update instance_method flag to only be considered if the
-    # first term is either an ivy.Array or ivy.Container
-    instance_method = test_flags.instance_method and (
-        not test_flags.native_arrays[0] or test_flags.container[0]
-    )
+        # create args
+        args = ivy_backend.copy_nest(args_np, to_mutable=False)
+        ivy_backend.set_nest_at_indices(
+            args,
+            arrays_args_indices,
+            test_flags.apply_flags(
+                arg_np_arrays,
+                input_dtypes,
+                0,
+                backend=backend_to_test,
+                on_device=on_device,
+            ),
+        )
 
-    args, kwargs = helpers.create_args_kwargs(
-        backend=backend_to_test,
-        args_np=args_np,
-        arg_np_vals=arg_np_arrays,
-        args_idxs=arrays_args_indices,
-        kwargs_np=kwargs_np,
-        kwarg_np_vals=kwarg_np_arrays,
-        kwargs_idxs=arrays_kwargs_indices,
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-    )
+        # create kwargs
+        kwargs = ivy_backend.copy_nest(kwargs_np, to_mutable=False)
+        ivy_backend.set_nest_at_indices(
+            kwargs,
+            arrays_kwargs_indices,
+            test_flags.apply_flags(
+                kwarg_np_arrays,
+                input_dtypes,
+                len(arg_np_arrays),
+                backend=backend_to_test,
+                on_device=on_device,
+            ),
+        )
 
-    with helpers.BackendHandler.update_backend(backend_to_test) as ivy_backend:
-        # If function doesn't have an out argument but an out argument is given
-        # or a test with out flag is True
-        if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
-            getattr(ivy_backend, fn_name)
-        ).parameters:
-            raise Exception(f"Function {fn_name} does not have an out parameter")
-
-        # Run either as an instance method or from the API directly
-        instance = None
-        if instance_method:
-            array_or_container_mask = [
-                (not native_flag) or container_flag
-                for native_flag, container_flag in zip(
-                    test_flags.native_arrays, test_flags.container
-                )
-            ]
-
-            # Boolean mask for args and kwargs True if an entry's
-            # test Array flag is True or test Container flag is true
-            args_instance_mask = array_or_container_mask[
-                : test_flags.num_positional_args
-            ]
-            kwargs_instance_mask = array_or_container_mask[
-                test_flags.num_positional_args :
-            ]
-
-            if any(args_instance_mask):
-                instance, args = helpers._find_instance_in_args(
-                    backend_to_test, args, arrays_args_indices, args_instance_mask
-                )
-            else:
-                instance, kwargs = helpers._find_instance_in_args(
-                    backend_to_test, kwargs, arrays_kwargs_indices, kwargs_instance_mask
-                )
-
-            if test_flags.test_compile:
-                target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
-                    fn_name
-                )(*args, **kwargs)
-                args = [instance, *args]
-            else:
-                target_fn = instance.__getattribute__(fn_name)
-        else:
-            target_fn = ivy_backend.__dict__[fn_name]
+        # Ignore the instance method flag and run it directly from the API
+        target_fn = ivy_backend.__dict__[fn_name]
 
         try:
             target_fn(*args, **kwargs)
@@ -829,8 +836,9 @@ def run_dtype_setter(
                 )
                 min_example = {}
                 try:
-                    for k, v in kwargs.items():
-                        min_example[k] = find(specifier=v, condition=lambda _: True)
+                    with SuppressPrint():
+                        for k, v in kwargs.items():
+                            min_example[k] = find(specifier=v, condition=lambda _: True)
                 except Exception as e:
                     for device in test_handler.iterate_devices():
                         test_handler.set_result("skipped", "In hypothesis: " + str(e))
@@ -838,11 +846,12 @@ def run_dtype_setter(
 
                 for device in test_handler.iterate_devices():
                     try:
-                        test_file.__dict__[test_fn].original(
-                            **min_example,
-                            backend_fw=test_handler.backend,
-                            on_device=device,
-                        )
+                        with SuppressPrint():
+                            test_file.__dict__[test_fn].original(
+                                **min_example,
+                                backend_fw=test_handler.backend,
+                                on_device=device,
+                            )
                         test_handler.set_result("supported")
                     except FromFunctionException as ffe:
                         e = ffe.wrapped_error
