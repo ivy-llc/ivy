@@ -1,27 +1,53 @@
+# global
+from hypothesis import strategies as st
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_input_and_matrices,
+    _get_dtype_and_3dbatch_matrices,
+)
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _test_paddle_take_helper(draw):
+    mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
+
+    safe_bounds = mode == "raise"
+
+    dtypes, xs, indices, _, _ = draw(
+        helpers.array_indices_axis(
+            array_dtypes=helpers.get_dtypes("float_and_integer"),
+            indices_dtypes=["int32", "int64"],
+            valid_bounds=safe_bounds,
+        )
+    )
+
+    return dtypes, xs, indices, mode
 
 
 # --- Main --- #
 # ------------ #
 
 
-# ceil_
+# abs
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.ceil_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
+    fn_tree="paddle.abs",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
-def test_paddle_ceil_(
+def test_paddle_abs(
     *,
     dtype_and_x,
+    on_device,
+    fn_tree,
     frontend,
     test_flags,
-    fn_tree,
     backend_fw,
-    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -35,40 +61,70 @@ def test_paddle_ceil_(
     )
 
 
-# exp_
+# acos
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.exp_",
+    fn_tree="paddle.acos",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_acos(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
+# acosh
+@handle_frontend_test(
+    fn_tree="paddle.acosh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_acosh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
+# add
+@handle_frontend_test(
+    fn_tree="paddle.add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_exp_(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# lerp_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.lerp_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=3,
+        num_arrays=2,
         allow_inf=False,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
@@ -76,7 +132,298 @@ def test_paddle_exp_(
         shared_dtype=True,
     ),
 )
-def test_paddle_lerp_(
+def test_paddle_add(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# addmm
+@handle_frontend_test(
+    fn_tree="paddle.addmm",
+    dtype_input_xy=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_paddle_addmm(
+    *,
+    dtype_input_xy,
+    beta,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input, x, y = dtype_input_xy
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        x=x[0],
+        y=y[0],
+        beta=beta,
+        alpha=alpha,
+    )
+
+
+# amax
+@handle_frontend_test(
+    fn_tree="paddle.amax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_amax(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# amin
+@handle_frontend_test(
+    fn_tree="paddle.amin",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+    ),
+    keepdim=st.booleans(),
+)
+def test_paddle_amin(
+    *,
+    dtype_and_x,
+    keepdim,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        keepdim=keepdim,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64", "complex64", "complex128"],
+    ),
+)
+def test_paddle_angle(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# any
+@handle_frontend_test(
+    fn_tree="paddle.any",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=["bool"],
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_paddle_any(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+        axis=axis,
+        keepdim=False,
+    )
+
+
+# asin
+@handle_frontend_test(
+    fn_tree="paddle.asin",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_asin(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# asinh
+@handle_frontend_test(
+    fn_tree="paddle.asinh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_asinh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
+# atan
+@handle_frontend_test(
+    fn_tree="paddle.atan",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_atan(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# atan2
+@handle_frontend_test(
+    fn_tree="paddle.atan2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+)
+def test_paddle_atan2(
     *,
     dtype_and_x,
     on_device,
@@ -95,81 +442,23 @@ def test_paddle_lerp_(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        weight=x[2],
     )
 
 
-# reciprocal_
+# atanh
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.reciprocal_",
+    fn_tree="paddle.atanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_reciprocal_(
+def test_paddle_atanh(
     *,
     dtype_and_x,
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
     test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# round_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.round_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-    ),
-)
-def test_paddle_round_(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# rsqrt_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.rsqrt_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_rsqrt_(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
@@ -184,43 +473,14 @@ def test_paddle_rsqrt_(
     )
 
 
-# sqrt_
+# ceil
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.sqrt_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_sqrt_(
-    *,
-    dtype_and_x,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-
-# ceil_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.ceil_",
+    fn_tree="paddle.ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_ceil_(
+def test_paddle_ceil(
     *,
     dtype_and_x,
     frontend,
@@ -243,7 +503,7 @@ def test_paddle_ceil_(
 
 # conj
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.conj",
+    fn_tree="paddle.conj",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -299,7 +559,7 @@ def test_paddle_cos(
 
 # cosh
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.cosh",
+    fn_tree="paddle.cosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -328,7 +588,7 @@ def test_paddle_cosh(
 
 # cumprod
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.cumprod",
+    fn_tree="paddle.cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
@@ -390,7 +650,7 @@ def test_paddle_deg2rad(
 
 # diff
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.diff",
+    fn_tree="paddle.diff",
     dtype_n_x_n_axis=helpers.dtype_values_axis(
         available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
@@ -441,7 +701,7 @@ def test_paddle_diff(
 
 # digamma
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.digamma",
+    fn_tree="paddle.digamma",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
@@ -506,7 +766,7 @@ def test_paddle_divide(
 
 #  erf
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.erf",
+    fn_tree="paddle.erf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -560,34 +820,6 @@ def test_paddle_exp(
     )
 
 
-# exp_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.exp_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_exp_(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # expm1
 @handle_frontend_test(
     fn_tree="paddle.expm1",
@@ -618,7 +850,7 @@ def test_paddle_expm1(
 
 # floor
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.floor",
+    fn_tree="paddle.floor",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -646,7 +878,7 @@ def test_paddle_floor(
 
 # floor_divide
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.floor_divide",
+    fn_tree="paddle.floor_divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=-10,
@@ -737,7 +969,7 @@ def test_paddle_fmin(
 
 # frac
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.frac",
+    fn_tree="paddle.frac",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
@@ -803,7 +1035,7 @@ def test_paddle_gcd(
 
 # heaviside
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.heaviside",
+    fn_tree="paddle.heaviside",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -838,7 +1070,7 @@ def test_paddle_heaviside(
 
 # inner
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.inner",
+    fn_tree="paddle.inner",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=-10,
@@ -955,7 +1187,7 @@ def test_paddle_isnan(
 
 # kron
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.kron",
+    fn_tree="paddle.kron",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1021,7 +1253,7 @@ def test_paddle_lcm(
 
 # lerp
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.lerp",
+    fn_tree="paddle.lerp",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
@@ -1055,45 +1287,9 @@ def test_paddle_lerp(
     )
 
 
-# lerp_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.lerp_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=3,
-        allow_inf=False,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        shared_dtype=True,
-    ),
-)
-def test_paddle_lerp_(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-        weight=x[2],
-    )
-
-
 # lgamma
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.lgamma",
+    fn_tree="paddle.lgamma",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
@@ -1237,7 +1433,7 @@ def test_paddle_logit(
 
 # max
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.max",
+    fn_tree="paddle.max",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
@@ -1302,7 +1498,7 @@ def test_paddle_maximum(
 
 # min
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.min",
+    fn_tree="paddle.min",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
@@ -1366,7 +1562,7 @@ def test_paddle_minimum(
 
 # mm
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.mm",
+    fn_tree="paddle.mm",
     dtype_xy=_get_dtype_input_and_matrices(),
 )
 def test_paddle_mm(
@@ -1428,7 +1624,7 @@ def test_paddle_multiply(
 
 # nansum
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.nansum",
+    fn_tree="paddle.nansum",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         valid_axis=True,
@@ -1491,7 +1687,7 @@ def test_paddle_neg(
 
 # outer
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.outer",
+    fn_tree="paddle.outer",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
@@ -1556,7 +1752,7 @@ def test_paddle_pow(
 
 # prod
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.prod",
+    fn_tree="paddle.prod",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -1647,34 +1843,6 @@ def test_paddle_reciprocal(
     )
 
 
-# reciprocal_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.reciprocal_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_reciprocal_(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # remainder
 @handle_frontend_test(
     fn_tree="paddle.remainder",
@@ -1710,44 +1878,9 @@ def test_paddle_remainder(
     )
 
 
-# remainder_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.remainder_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        allow_inf=False,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        shared_dtype=True,
-    ),
-)
-def test_paddle_remainder_(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
 # round
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.round",
+    fn_tree="paddle.round",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
@@ -1774,38 +1907,9 @@ def test_paddle_round(
     )
 
 
-# round_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.round_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-    ),
-)
-def test_paddle_round_(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # rsqrt
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.rsqrt",
+    fn_tree="paddle.rsqrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -1831,36 +1935,8 @@ def test_paddle_rsqrt(
     )
 
 
-# rsqrt_
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.rsqrt_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_rsqrt_(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.sgn",
+    fn_tree="paddle.sgn",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=1,
@@ -1895,7 +1971,7 @@ def test_paddle_sgn(
 
 # sign
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.sign",
+    fn_tree="paddle.sign",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -1980,7 +2056,7 @@ def test_paddle_sinh(
 
 # sqrt
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.sqrt",
+    fn_tree="paddle.sqrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -2006,37 +2082,9 @@ def test_paddle_sqrt(
     )
 
 
-# sqrt_
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.sqrt_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_sqrt_(
-    *,
-    dtype_and_x,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # square
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.square",
+    fn_tree="paddle.square",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -2064,7 +2112,7 @@ def test_paddle_square(
 
 # stanh
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.stanh",
+    fn_tree="paddle.stanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -2160,7 +2208,7 @@ def test_paddle_take(
 
 # tan
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.tan",
+    fn_tree="paddle.tan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -2189,8 +2237,7 @@ def test_paddle_tan(
 
 # tanh
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.tanh",
-    aliases=["paddle.tanh", "paddle.nn.functional.tanh"],
+    fn_tree="paddle.tanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
