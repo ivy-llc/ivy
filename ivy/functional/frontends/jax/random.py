@@ -399,7 +399,8 @@ def poisson(key, lam, shape=None, dtype=None):
 )
 def rademacher(key, shape, dtype="int64"):
     seed = _get_seed(key)
-    a = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    a_1 = ivy.ones(shape=shape, dtype=dtype)
+    a = ivy.multiply(a_1, 0.5)
     b = ivy.bernoulli(a, shape=shape, dtype="float32", seed=seed)
     b = ivy.astype(b, dtype)
     return 2 * b - 1
