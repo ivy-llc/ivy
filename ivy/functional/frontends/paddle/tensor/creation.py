@@ -221,7 +221,7 @@ def triu_indices(row, col=None, offset=0, dtype="int64"):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def uniform(shape, min=-1.0, max=1.0, seed=0, name=None):
+def uniform(shape, min=-1.0, max=1.0, seed=0, name=None, dtype=None):
     return ivy.uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
 
 
