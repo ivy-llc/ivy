@@ -138,11 +138,9 @@ def max_pool3d(
         input,
         kernel_size,
         stride,
-        padding,
+        padding,g
         dilation,
-        mode="max",
-        data_format=data_format,
-        window_shape=(kernel_size, kernel_size, kernel_size),
+        data_format,
         method="ceil" if ceil_mode else "floor",
     )
 
