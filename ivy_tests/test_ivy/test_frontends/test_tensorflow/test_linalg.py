@@ -579,22 +579,6 @@ def test_tensorflow_inv(
 
 
 # tridiagonal_solve
-def tridiagonal_matrix_filter(x):
-    dim = x.shape[0]
-    if ivy.abs(ivy.det(x)) < 1e-3:
-        return False
-    for i in range(dim):
-        for j in range(dim):
-            cell = x[i][j]
-            if i == j or i == j-1 or i == j+1:
-                if cell == 0:
-                    return False
-            else:
-                if cell != 0:
-                    return False
-    return True
-
-
 @st.composite
 def _get_tridiagonal_matrix(draw):
     input_dtype_strategy = st.shared(
@@ -654,6 +638,25 @@ def test_tensorflow_tridiagonal_solve(
         transpose_rhs=transpose_rhs,
         conjugate_rhs=conjugate_rhs,
     )
+
+
+def tridiagonal_matrix_filter(x):
+    dim = x.shape[0]
+    if ivy.abs(ivy.det(x)) < 1e-3:
+        return False
+    for i in range(dim):
+        for j in range(dim):
+            cell = x[i][j]
+            if i == j or i == j-1 or i == j+1:
+                if cell == 0:
+                    return False
+            else:
+                if cell != 0:
+                    return False
+    return True
+
+
+
 
 
 # l2_normalize
