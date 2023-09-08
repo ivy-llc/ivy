@@ -324,6 +324,17 @@ def in_top_k(target, pred, k, name=None):
     return ivy.array([val in top_k.values for val in target])
 
 
+@to_ivy_arrays_and_back
+def invert_permutation(x, name=None):
+    x = ivy.array(x)
+    size = ivy.size(x)
+    identity = ivy.arange(size)
+    inverted = ivy.zeros_like(x)
+    inverted = ivy.scatter_update(inverted, x, identity)
+    return ivy.invert_permutation(inverted)
+
+
+
 @with_supported_dtypes(
     {
         "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
