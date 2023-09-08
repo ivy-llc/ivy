@@ -14,6 +14,11 @@ submodules = (
     "test_stateful",
     "test_misc",
     "test_scipy",
+    "test_pandas",
+    "test_mindspore",
+    "test_onnx",
+    "test_sklearn",
+    "test_xgboost",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -28,6 +33,11 @@ db_dict = {
     "test_misc": ["misc", 19],
     "test_paddle": ["paddle", 20],
     "test_scipy": ["scipy", 21],
+    "test_pandas": ["pandas", 22],
+    "test_mindspore": ["mindspore", 23],
+    "test_onnx": ["onnx", 24],
+    "test_sklearn": ["sklearn", 25],
+    "test_xgboost": ["xgboost", 26],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
@@ -46,9 +56,10 @@ def get_submodule(test_path):
     for name in submodules:
         if name in test_path:
             if name == "test_functional":
-                coll = db_dict["test_functional/" + test_path[-2]]
-            elif name == "test_experimental":
-                coll = db_dict["test_experimental/" + test_path[-2]]
+                if len(test_path) > 3 and test_path[3] == "test_experimental":
+                    coll = db_dict["test_experimental/" + test_path[4]]
+                else:
+                    coll = db_dict["test_functional/" + test_path[-2]]
             else:
                 coll = db_dict[name]
             break
@@ -177,6 +188,8 @@ if __name__ == "__main__":
     db_multi = cluster["Ivy_tests_multi"]
     db_gpu = cluster["Ivy_tests_multi_gpu"]
     db_priority = cluster["Ivy_tests_priority"]
+    if with_gpu:
+        os.system("docker pull unifyai/multicuda:base_and_requirements")
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
