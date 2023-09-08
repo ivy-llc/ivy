@@ -1256,7 +1256,7 @@ def test_tensorflow_trace(
     fn_tree="tensorflow.linalg.tridiagonal_solve",
     x=_get_tridiagonal_matrix(),
     y=_get_second_matrix(),
-    diagonals_format=st.sampled_from(['matrix']),
+    diagonals_format=st.sampled_from(["matrix"]),
     transpose_rhs=st.just(False),
     conjugate_rhs=st.booleans(),
 )
@@ -1299,7 +1299,7 @@ def tridiagonal_matrix_filter(x):
     for i in range(dim):
         for j in range(dim):
             cell = x[i][j]
-            if i == j or i == j-1 or i == j+1:
+            if i == j or i == j - 1 or i == j + 1:
                 if cell == 0:
                     return False
             else:

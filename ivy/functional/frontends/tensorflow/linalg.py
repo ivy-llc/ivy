@@ -502,7 +502,7 @@ def tridiagonal_solve(
             [
                 [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
                 [(i, i) for i in range(dim)],
-                [dummy_idx] + [(i + 1, i) for i in range(dim - 1)]
+                [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
             ]
         )
         constructed_matrix = ivy.scatter_nd(
