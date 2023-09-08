@@ -6,7 +6,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.attribute.imag",
+    fn_tree="paddle.imag",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -33,7 +33,7 @@ def test_paddle_imag(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.attribute.is_complex",
+    fn_tree="paddle.is_complex",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -60,7 +60,7 @@ def test_paddle_is_complex(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.attribute.is_floating_point",
+    fn_tree="paddle.is_floating_point",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -87,7 +87,7 @@ def test_paddle_is_floating_point(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.attribute.is_integer",
+    fn_tree="paddle.is_integer",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -114,7 +114,7 @@ def test_paddle_is_integer(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.attribute.rank",
+    fn_tree="paddle.rank",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -141,7 +141,7 @@ def test_paddle_rank(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.attribute.real",
+    fn_tree="paddle.real",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),

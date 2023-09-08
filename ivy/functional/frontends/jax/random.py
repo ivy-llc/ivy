@@ -251,6 +251,7 @@ def loggamma(key, a, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"0.4.14 and below": ("float16", "bfloat16")},
+    "jax",
 )
 def logistic(key, shape=(), dtype="float64"):
     seed = _get_seed(key)
