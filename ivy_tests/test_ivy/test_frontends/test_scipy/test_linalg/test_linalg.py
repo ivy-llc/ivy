@@ -66,7 +66,7 @@ def _norm_helper(draw):
         x_dtype, x = draw(
             helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float").filter(
-                    lambda x: x != "float16" and x != "bfloat16"
+                    lambda x: x not in ["float16", "bfloat16"]
                 ),
                 shape=helpers.get_shape(min_num_dims=2, max_num_dims=2),
                 min_num_dims=2,
@@ -89,7 +89,7 @@ def _norm_helper(draw):
         x_dtype, x, axis = draw(
             helpers.dtype_values_axis(
                 available_dtypes=helpers.get_dtypes("float").filter(
-                    lambda x: x != "float16" and x != "bfloat16"
+                    lambda x: x not in ["float16", "bfloat16"]
                 ),
                 min_num_dims=2,
                 max_num_dims=5,
