@@ -151,7 +151,6 @@ class LogSoftmax(Module):
         self,
         axis: int = -1,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-
     ):
         """
         Apply the LOG SOFTMAX activation function.

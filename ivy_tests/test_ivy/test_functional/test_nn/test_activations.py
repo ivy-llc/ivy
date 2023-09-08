@@ -131,6 +131,7 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
         axis=axis,
     )
 
+
 # mish
 @handle_test(
     fn_tree="functional.ivy.mish",

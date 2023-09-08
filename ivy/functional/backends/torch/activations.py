@@ -106,7 +106,10 @@ def softsign(x: torch.Tensor, /, out: Optional[torch.Tensor] = None) -> torch.Te
 softsign.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version,)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16",)},
+    backend_version,
+)
 def log_softmax(
     x: torch.Tensor,
     /,

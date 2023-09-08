@@ -301,7 +301,12 @@ class _ArrayWithActivations(abc.ABC):
         >>> y = x.log_softmax(x)
         ivy.array([-1.62, -0.221, -7.82 ])
         """
-        return ivy.log_softmax(self._data, axis=axis, complex_mode=complex_mode, out=out)
+        return ivy.log_softmax(
+            self._data,
+            axis=axis,
+            complex_mode=complex_mode,
+            out=out,
+        )
 
     def mish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
