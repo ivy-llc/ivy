@@ -42,31 +42,3 @@ def precision_score(y_true, y_pred, *, average="binary", sample_weight=None):
     else:
         raise ValueError("Invalid value for 'average'.")
     return precision
-
-
-""" Test for precision_score
-
-import pytest
-from sklearn.metrics import precision_score as sk_precision_score
-
-# Import the precision_score function you provided
-from your_module import precision_score
-
-# Generate some example data
-y_true = ivy.array([0, 1, 1, 0, 1, 0])
-y_pred = ivy.array([0, 1, 0, 1, 0, 1])
-
-def test_precision_score():
-    # Calculate precision using above defined function
-    ivy_precision = precision_score(y_true, y_pred)
-
-    # Calculate precision using scikit-learn for comparison
-    sklearn_precision = sk_precision_score(ivy.to_numpy(y_true), ivy.to_numpy(y_pred))
-
-    # Check if both values are equal within a small tolerance
-    assert ivy.to_numpy(ivy_precision) == pytest.approx(sklearn_precision, abs=1e-5)
-
-# Run the test
-if __name__ == "__main__":
-    test_precision_score()
-"""
