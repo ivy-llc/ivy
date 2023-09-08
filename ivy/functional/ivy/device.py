@@ -689,16 +689,15 @@ def gpu_is_available() -> bool:
 
     Returns
     -------
-    ret: bool
-        Boolean, indicating whether a GPU is available.
+    ret
+        Boolean, as to whether a gpu is available.
 
     Examples
     --------
-    >>> print(gpu_is_available())
+    >>> print(ivy.gpu_is_available())
     False
     """
-
-    return ivy.current_backend().is_gpu_available()
+    return ivy.current_backend().gpu_is_available()
 
 
 @handle_exceptions
