@@ -1251,7 +1251,7 @@ def test_tridiagonal_matmul(
     fn_tree,
     on_device,
 ):
-    input_dtype, main_diag, upper_diag, lower_diag, matrix = dtype_x
+    input_dtype, data  = dtype_x
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1260,10 +1260,10 @@ def test_tridiagonal_matmul(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,  
-        main_diag=main_diag, 
-        upper_diag=upper_diag, 
-        lower_diag=lower_diag, 
-        matrix=matrix
+        main_diag= data[0], 
+        upper_diag= data[1], 
+        lower_diag= data[2], 
+        matrix=data[4]
     )
 
 
