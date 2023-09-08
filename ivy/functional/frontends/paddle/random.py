@@ -80,6 +80,14 @@ def randint_like(x, low=0, high=None, dtype=None, name=None):
     return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=None)
 
 
+def rnormal(shape, dtype=None, name=None):
+    if dtype not in ["float32", "float64"]:
+        raise ivy.exceptions.IvyError(
+            "Unsupported dtype for randn, only float32 and float64 are supported, "
+        )
+    return ivy.random_normal(shape=shape, dtype=dtype, seed=None)
+
+
 def randn(shape, dtype=None, name=None):
     if dtype not in ["float32", "float64"]:
         raise ivy.exceptions.IvyError(
