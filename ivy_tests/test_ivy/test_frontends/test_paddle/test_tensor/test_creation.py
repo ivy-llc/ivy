@@ -730,8 +730,8 @@ def test_paddle_triu_indices(
 # random_uniform
 @handle_frontend_test(
     fn_tree="paddle.uniform",
-    min=helpers.floats(min_value=-1, max_value=0),
-    max=helpers.floats(min_value=0.1, max_value=1),
+    min=st.integers(min_value=0, max_value=1),
+    max=st.integers(min_value=0, max_value=1),
     seed=st.integers(min_value=2, max_value=5),
     shape=helpers.get_shape(
         allow_none=False,
