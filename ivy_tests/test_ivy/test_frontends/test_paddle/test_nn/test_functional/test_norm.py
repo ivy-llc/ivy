@@ -100,7 +100,7 @@ def test_your_batch_norm(
     frontend,
     on_device,
     backend_fw,
-    fn_tree,
+    fn_tree ,
 ):
     dtype, x, mean, variance, offset, scale, training, _ = values_tuple  # Adjust input data as needed
     helpers.test_frontend_function(

@@ -20,5 +20,5 @@ def normalize(x, p=2, axis=1, epsilon=1e-12, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def batch_norm(x, mean, variance, offset=None, scale=None, training=False, eps=1e-5, momentum=0.1, data_format="NSC", name=None):
+def batch_norm(x, mean, variance, offset=None, scale=None, training=False, eps=1e-5, momentum=0.1, data_format="NSC", name=None ):
     return ivy.batch_norm(x, mean, variance, offset=offset, scale=scale, training=training, eps=eps, momentum=momentum, data_format=data_format)
