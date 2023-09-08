@@ -12,11 +12,6 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
-    with_unsupported_dtypes,
-    infer_device,
-    infer_dtype,
-    outputs_to_ivy_arrays,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1315,40 +1310,3 @@ def einsum(
     }
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_ivy_arrays
-def nanmax(a, axis=None, keepdims=False):
-    """
-    Compute the maximum value of an array while ignoring NaN values.
-
-    Parameters
-    ----------
-    - a (array-like): Input array.
-    - axis (int, optional): Axis or axes along which to operate. Default is None.
-    - keepdims (bool, optional): If True, retains reduced \
-    dimensions with size 1. Default is False.
-
-    Returns
-    -------
-    - Maximum value of the elements in x, ignoring NaN values.
-
-    Example:
-    >>> import ivy
-    >>> a = ivy.array([1.0, 2.0, ivy.nan, 4.0, 5.0])
-    >>> nanmax(a)
-    array(5., dtype=float32)
-    """
-    # Create a mask for NaN values in the input array
-    mask = ivy.isnan(a)
-
-    # Replace NaN values with negative infinity
-    masked_a = ivy.where(mask, -ivy.inf, a)
-
-    # Compute the maximum value of the masked array
-    return ivy.max(masked_a, axis=axis, keepdims=keepdims)
