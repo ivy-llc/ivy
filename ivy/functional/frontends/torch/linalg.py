@@ -191,13 +191,10 @@ def multi_dot(tensors, *, out=None):
 )
 def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
     if dim is None and not (ord is None):
-        if input.ndim not in (1, 2):
-            raise ValueError("Improper number of dimensions to norm.")
+        if input.ndim == 1:
+            ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
         else:
-            if input.ndim == 1:
-                ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
-            else:
-                ret = ivy.matrix_norm(input, keepdims=keepdim, ord=ord)
+            ret = ivy.matrix_norm(input, keepdims=keepdim, ord=ord)
     elif dim is None and ord is None:
         input = ivy.flatten(input)
         ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2)
