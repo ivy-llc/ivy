@@ -185,7 +185,7 @@ def _get_tridiagonal_dtype_matrix_format(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    diagonals_format = draw(st.sampled_from(["compact", "matrix", None]))
+    diagonals_format = draw(st.sampled_from(["compact", "sequence", "matrix", None]))
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -194,7 +194,7 @@ def _get_tridiagonal_dtype_matrix_format(draw):
             max_value=5,
         ).filter(tridiagonal_matrix_filter)
     )
-    if diagonals_format in ["compact", None]:
+    if diagonals_format in ["compact", "sequence", None]:
         m = matrix.shape[0]
         dummy_idx = [0, 0]
         indices = [
@@ -203,6 +203,8 @@ def _get_tridiagonal_dtype_matrix_format(draw):
             [dummy_idx] + [[i + 1, i] for i in range(m - 1)],
         ]
         matrix = ivy.gather_nd(matrix, indices)
+        if diagonals_format is "sequence":
+            matrix = list(matrix)
     return input_dtype, matrix, diagonals_format
 
 
