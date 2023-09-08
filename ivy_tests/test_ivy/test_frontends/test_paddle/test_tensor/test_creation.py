@@ -740,7 +740,7 @@ def test_paddle_triu_indices(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=helpers.get_dtypes("float", full=False, key="dtype"),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_paddle_uniform(
     fn_tree,
