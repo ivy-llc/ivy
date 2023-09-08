@@ -1024,22 +1024,6 @@ def _check_arguments(
     )
 
 
-def _ndindex(shape):
-    # Create a range for each dimension based on the given shape
-    ranges = [range(dim_size) for dim_size in shape]
-
-    def product(*args, repeat=1):
-        """Create a cartesian product of the ranges."""
-        pools = [tuple(pool) for pool in args] * repeat
-        result = [[]]
-        for pool in pools:
-            result = [x + [y] for x in result for y in pool]
-        for prod in result:
-            yield tuple(prod)
-
-    return product(*ranges)
-
-
 def _handle_reduction_op(reduction, arr, indices, values):
     # TODO: implement correct flagging for accumulation
     accumulate = len(arr) != len(indices)
@@ -1882,8 +1866,8 @@ def put_along_axis(
     Ni, Nk = arr.shape[:axis], arr.shape[axis + 1 :]
     ret = ivy.zeros_like(arr)
 
-    for ii in _ndindex(Ni):
-        for kk in _ndindex(Nk):
+    for ii in ivy.ndindex(Ni):
+        for kk in ivy.ndindex(Nk):
             arr_1d = arr[ii + (slice(None),) + kk]
             indices_1d = indices[ii + (slice(None),) + kk]
             values_1d = values[ii + (slice(None),) + kk]
