@@ -5,7 +5,7 @@ import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import numpy as np
 import ivy
-from ivy import with_supported_dtypes
+from ivy import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from . import backend_version
 
@@ -140,15 +140,13 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     return result
 
 
-@with_supported_dtypes(
+@with_unsupported_dtypes(
     {
         "2.5.1 and below": (
-            "bool",
-            "uint16",
-            "float",
-            "int32",
-            "int64",
-            "complex",
+            "uint8",
+            "int8",
+            "int16",
+            "bfloat16",
         )
     },
     backend_version,

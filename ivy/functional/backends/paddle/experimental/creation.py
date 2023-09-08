@@ -32,7 +32,6 @@ def _kaiser_window(window_length, beta):
 # -------------------#
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -49,7 +48,6 @@ def kaiser_window(
         return _kaiser_window(window_length + 1, beta)[:-1].cast(dtype)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
 def vorbis_window(
     window_length: paddle.Tensor,
     *,
@@ -65,7 +63,6 @@ def vorbis_window(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": "float"}, backend_version)
 def hann_window(
     size: int,
     /,

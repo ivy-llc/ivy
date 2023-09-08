@@ -322,10 +322,6 @@ def corrcoef(
     raise IvyNotImplementedException()
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
-    backend_version,
-)
 def histogram(
     a: paddle.Tensor,
     /,
