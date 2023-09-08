@@ -187,6 +187,26 @@ def multi_dot(tensors, *, out=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
+)
+def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
+    if dim is None and not (ord is None):
+        if input.ndim == 1:
+            ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+        else:
+            ret = ivy.matrix_norm(input, keepdims=keepdim, ord=ord)
+    elif dim is None and ord is None:
+        input = ivy.flatten(input)
+        ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2)
+    if isinstance(dim, int):
+        ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+    elif isinstance(dim, tuple):
+        ret = ivy.matrix_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+    return ret
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
