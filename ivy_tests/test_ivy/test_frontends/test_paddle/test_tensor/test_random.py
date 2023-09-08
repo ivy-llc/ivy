@@ -38,6 +38,45 @@ def test_paddle_exponential_(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.tensor.random.rnormal",
+    input_dtypes=st.sampled_from([["float32"], ["float64"]]),
+    shape=helpers.get_shape(
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    mean=st.floats(
+        min_value=-10,
+        max_value=10,
+    ),
+    std=st.floats(
+        min_value=0,
+        max_value=10,
+    ),
+)
+def test_paddle_rnormal(
+    input_dtypes,
+    shape,
+    mean,
+    std,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        mean=mean,
+        std=std,
+        shape=shape,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.tensor.random.uniform_",
     min=helpers.floats(min_value=-1, max_value=0),
     max=helpers.floats(min_value=0.1, max_value=1),
