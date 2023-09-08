@@ -16,6 +16,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Optional[str] = "jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.logit(x, eps=eps, out=out)

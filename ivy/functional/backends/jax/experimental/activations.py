@@ -13,6 +13,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Optional[str] = "jax",
     out: Optional[JaxArray] = None,
 ):
     if eps is None:

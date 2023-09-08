@@ -15,6 +15,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Optional[str] = "jax",
     out: Optional[Tensor] = None,
 ) -> Tensor:
     x_dtype = x.dtype
