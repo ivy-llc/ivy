@@ -206,6 +206,26 @@ def triu_indices(row, col=None, offset=0, dtype="int64"):
     return arr
 
 
+# []-22965
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "bfloat16",
+            "float16",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def uniform(x, min=-1.0, max=1.0, seed=0, name=None):
+    x = ivy.array(x)
+    return ivy.uniform(low=min, high=max, shape=x.shape, dtype=x.dtype, seed=seed)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": "int8"}, "paddle")
 @to_ivy_arrays_and_back
 def zeros(shape, /, *, dtype=None, name=None):
