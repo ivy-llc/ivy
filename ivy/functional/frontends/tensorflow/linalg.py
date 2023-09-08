@@ -477,7 +477,7 @@ def trace(x, name=None):
 def tridiagonal_solve(
     diagonals,
     rhs,
-    diagonals_format='compact',
+    diagonals_format="compact",
     transpose_rhs=False,
     conjugate_rhs=False,
     name=None,
@@ -491,17 +491,23 @@ def tridiagonal_solve(
     if not transpose_rhs and not conjugate_rhs:
         rhs_copy = ivy.array(rhs)
 
-    if diagonals_format == 'matrix':
+    if diagonals_format == "matrix":
         return ivy.solve(diagonals, rhs_copy)
-    elif diagonals_format in ['sequence', 'compact']:
+    elif diagonals_format in ["sequence", "compact"]:
         diagonals = ivy.array(diagonals)
         dim = diagonals[0].shape[0]
         diagonals[[0, -1], [-1, 0]] = 0
         dummy_idx = [0, 0]
-        indices = ivy.array([[(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
-                            [(i, i) for i in range(dim)],
-                            [dummy_idx] + [(i + 1, i) for i in range(dim - 1)]])
-        constructed_matrix = ivy.scatter_nd(indices, diagonals, shape=ivy.array([dim, dim]))
+        indices = ivy.array(
+            [
+                [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
+                [(i, i) for i in range(dim)],
+                [dummy_idx] + [(i + 1, i) for i in range(dim - 1)]
+            ]
+        )
+        constructed_matrix = ivy.scatter_nd(
+            indices, diagonals, shape=ivy.array([dim, dim])
+        )
         return ivy.solve(constructed_matrix, rhs_copy)
     else:
         raise "Unexpected diagonals_format"
