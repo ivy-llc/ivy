@@ -179,24 +179,51 @@ class ArrayMode:
         return self
 
 
+
 def get_referrers_recursive(
-    item, depth=0, max_depth=None, seen_set=None, local_set=None
-):
+    item: object,
+    depth: int = 0,
+    max_depth: int = None,
+    seen_set: set = None,
+    local_set: set = None
+) -> ivy.Container:
     """
-    Summary.
+    Recursively retrieve referrers for an object.
+
+    This function recursively fetches referrers for the specified `item` up to a given `max_depth`.
 
     Parameters
     ----------
-    item
+    item : object
+        The object for which referrers should be retrieved.
+    depth : int, optional
+        Current depth in the recursion. (default is 0)
+    max_depth : int, optional
+        Maximum depth of recursion. If `None`, there's no depth limit. (default is None)
+    seen_set : set, optional
+        Set of seen referrer IDs to prevent duplicates. (default is None)
+    local_set : set, optional
+        Set of local referrer IDs to avoid redundancy. (default is None)
 
-    depth
-         (Default value = 0)
-    max_depth
-         (Default value = None)
-    seen_set
-         (Default value = None)
-    local_set
-         (Default value = None`)
+    Returns
+    -------
+    ivy.Container
+        A container representing referrers and their sub-referrers, respecting the `max_depth`.
+
+    Examples
+    --------
+    >>> import gc
+    >>> def example_function():
+    ...     obj = [1, 2, 3]
+    ...     return get_referrers_recursive(obj, max_depth=2)
+    >>> result = example_function()
+    >>> print(result)
+    Container(
+        'ref_id_1': Container(
+            'ref_id_2': 'tracked',
+            'ref_id_3': 'tracked'
+        )
+    )
     """
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
@@ -205,6 +232,7 @@ def get_referrers_recursive(
         alphabetical_keys=False,
         keyword_color_dict={"repr": "magenta"},
     )
+    
     referrers = [
         ref
         for ref in gc.get_referrers(item)
@@ -213,6 +241,7 @@ def get_referrers_recursive(
             and min([k in ref for k in ["depth", "max_depth", "seen_set", "local_set"]])
         )
     ]
+    
     local_set.add(str(id(referrers)))
     for ref in referrers:
         ref_id = str(id(ref))
@@ -220,27 +249,32 @@ def get_referrers_recursive(
             continue
         seen = ref_id in seen_set
         seen_set.add(ref_id)
-        refs_rec = lambda: get_referrers_recursive(
-            ref, depth + 1, max_depth, seen_set, local_set
-        )
+        
+        def get_referrers_recursive_inner():
+            return get_referrers_recursive(
+                ref, depth + 1, max_depth, seen_set, local_set
+            )
+        
         this_repr = "tracked" if seen else str(ref).replace(" ", "")
+        
         if not seen and (not max_depth or depth < max_depth):
             val = ivy.Container(
                 repr=this_repr,
                 alphabetical_keys=False,
                 keyword_color_dict={"repr": "magenta"},
             )
-            refs = refs_rec()
+            
+            refs = get_referrers_recursive_inner()
             for k, v in refs.items():
                 val[k] = v
         else:
             val = this_repr
         ret_cont[str(ref_id)] = val
+    
     return ret_cont
 
-
 @handle_exceptions
-@handle_backend_invalid
+@handle_backend_invalid    
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
