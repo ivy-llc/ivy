@@ -206,7 +206,7 @@ def test_paddle_randn(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.random.rnormal",
+    fn_tree="paddle.normal",
     input_dtypes=st.sampled_from([["float32"], ["float64"]]),
     shape=helpers.get_shape(
         min_num_dims=1,
