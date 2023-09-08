@@ -761,7 +761,7 @@ def test_paddle_uniform(
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
-        x=x_[0],
+        x_=x_[0],
         min=min,
         max=max,
         seed=seed,
