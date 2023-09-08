@@ -965,7 +965,7 @@ def test_frontend_function(
 
     # change ivy device to native devices
     if "device" in kwargs_frontend:
-        kwargs_frontend["device"] = frontend_config.as_native_dev(
+        kwargs_frontend["device"] = frontend_config.as_native_device(
             kwargs_frontend["device"]
         )
 
@@ -2092,7 +2092,7 @@ def test_frontend_method(
                 frontend_config.as_native_dtype(x)
                 if isinstance(x, frontend_config.Dtype)
                 else (
-                    frontend_config.as_native_dev(x)
+                    frontend_config.as_native_device(x)
                     if isinstance(x, frontend_config.Device)
                     else x
                 )
@@ -2114,7 +2114,7 @@ def test_frontend_method(
 
     # change ivy device to native devices
     if "device" in kwargs_method_frontend:
-        kwargs_method_frontend["device"] = frontend_config.as_native_dev(
+        kwargs_method_frontend["device"] = frontend_config.as_native_device(
             kwargs_method_frontend["device"]
         )
     frontend_creation_fn = getattr(
