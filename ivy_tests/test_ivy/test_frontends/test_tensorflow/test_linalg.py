@@ -1229,12 +1229,12 @@ def test_tensorflow_trace(
         x=x[0],
     )
     
-#tridiagonal matmul
+# tridiagonal matmul
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.tridiagonal_matmul",  
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=(4, 4),  # Adjust the shape as needed
+        shape=(3, 3),  # Adjust the shape as needed
         num_arrays=4,  # Adjust the number of arrays as needed
         shared_dtype=True,
         min_value=-1,
@@ -1252,7 +1252,6 @@ def test_tridiagonal_matmul(
     on_device,
 ):
     input_dtype, data = dtype_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1263,7 +1262,7 @@ def test_tridiagonal_matmul(
         main_diag=data[0], 
         upper_diag=data[1], 
         lower_diag=data[2], 
-        matrix=data[3]
+        matrix=data[3],
     )
 
 

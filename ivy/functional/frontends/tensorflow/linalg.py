@@ -497,12 +497,24 @@ def tridiagonal_matmul(main_diag, upper_diag, lower_diag, matrix):
     result = ivy.zeros_like(matrix)
 
     # Multiply the main diagonal
-    result = ivy.add(result, ivy.mul(ivy.diag(main_diag), matrix))
+    result = ivy.add(result, ivy.matmul(ivy.diag(main_diag), matrix))
 
     # Multiply the upper diagonal and shift the result one column to the right
-    result = ivy.add(result, ivy.mul(ivy.diag(ivy.concat([ivy.zeros([n - 1, 1]), upper_diag], axis=1), k=1), matrix[:, :-1]))
+    result = ivy.add(
+        result,
+        ivy.matmul(
+            ivy.diag(ivy.concat([ivy.zeros([n - 1, 1]), upper_diag], axis=1), k=1),
+            matrix[:, :-1],
+        ),
+    )
 
     # Multiply the lower diagonal and shift the result one column to the left
-    result = ivy.add(result, ivy.mul(ivy.diag(ivy.concat([lower_diag, ivy.zeros([n - 1, 1])], axis=1), k=-1), matrix[:, 1:]))
+    result = ivy.add(
+        result,
+        ivy.matmul(
+            ivy.diag(ivy.concat([lower_diag, ivy.zeros([n - 1, 1])], axis=1), k=-1),
+            matrix[:, 1:],
+        ),
+    )
 
     return result
