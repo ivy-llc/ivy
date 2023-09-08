@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Callable, Literal
 
 # local
 import ivy
@@ -14,7 +14,27 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_device_shifting,
     handle_backend_invalid,
+    handle_complex_input,
 )
+
+
+def _logit_jax_like(
+    x: Union[float, int, ivy.Array],
+    /,
+    *,
+    fn_original: Optional[Callable] = None,
+    eps: Optional[float] = None,
+    out: Optional[ivy.Array] = None,
+):
+    real = ivy.real(x)
+    imag = ivy.imag(x)
+    if eps is None:
+        real = ivy.where(ivy.logical_or(real > 1, real < 0), ivy.nan, real)
+    else:
+        real = ivy.clip(real, eps, 1 - eps)
+    z = ivy.add(real, ivy.multiply(ivy.array(1j, dtype=x.dtype), imag))
+    z = ivy.log(z / (1 - z))
+    return z
 
 
 @handle_exceptions
@@ -24,11 +44,13 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+@handle_complex_input
 def logit(
     x: Union[float, int, ivy.Array],
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -44,6 +66,9 @@ def logit(
         When eps is None the function outpus NaN where x < 0 or x > 1.
         and inf or -inf where x = 1 or x = 0, respectively.
         Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         Optional output array.
 
@@ -65,6 +90,9 @@ def logit(
     ivy.array([ 1.38629448,  1.38629448, -1.38629436])
     """
     return current_backend(x).logit(x, eps=eps, out=out)
+
+
+logit.jax_like = _logit_jax_like
 
 
 @handle_exceptions
