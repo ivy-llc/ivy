@@ -750,12 +750,14 @@ def test_paddle_uniform(
     seed,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
