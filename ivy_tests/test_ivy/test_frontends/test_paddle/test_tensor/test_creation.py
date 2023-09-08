@@ -737,7 +737,7 @@ def test_paddle_triu_indices(
         min_value=0,
         max_value=1000,
         min_num_dims=1,
-        max_num_dims=1
+        max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
     )
