@@ -2364,7 +2364,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
-        Computes the Short-time Fourier Transform of signals
+        Compute the Short-time Fourier Transform of signals
 
         Parameters
         ----------

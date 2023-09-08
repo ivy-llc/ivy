@@ -1131,7 +1131,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Computes the Short-time Fourier Transform of signals
+        Compute the Short-time Fourier Transform of signals
 
         Parameters
         ----------
