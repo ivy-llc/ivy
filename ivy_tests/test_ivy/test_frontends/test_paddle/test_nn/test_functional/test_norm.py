@@ -1,6 +1,6 @@
 # global
 from hypothesis import strategies as st
-
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
@@ -83,4 +83,38 @@ def test_paddle_normalize(
         x=x[0],
         p=p,
         axis=axis,
+    )
+
+
+
+@handle_frontend_test(
+    fn_tree="your_module.batch_norm",  # Replace 'your_module' with the actual module containing batch_norm
+    values_tuple=(ivy.float32, ivy.random.uniform(-1.0, 1.0, (16, 32, 32)), ivy.random.uniform(0.0, 1.0, (16, 32, 32)), None, None, False, 0.01),  # Adjust input data manually
+    eps=st.floats(min_value=0.01, max_value=0.1),  # Replace with your epsilon configuration
+)
+def test_your_batch_norm(
+    *,
+    values_tuple,
+    eps,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+):
+    dtype, x, mean, variance, offset, scale, training, _ = values_tuple  # Adjust input data as needed
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x,
+        mean=mean,
+        variance=variance,
+        offset=offset,
+        scale=scale,
+        training=training,
+        eps=eps,
     )
