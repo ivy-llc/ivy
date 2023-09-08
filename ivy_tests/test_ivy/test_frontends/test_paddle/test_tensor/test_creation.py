@@ -753,7 +753,7 @@ def test_paddle_uniform(
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -761,7 +761,7 @@ def test_paddle_uniform(
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
-        x=x[0],
+        x=x_[0],
         min=min,
         max=max,
         seed=seed,
