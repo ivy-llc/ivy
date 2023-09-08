@@ -45,23 +45,23 @@ def cholesky(
     ----------
     x : ivy.Array or ivy.NativeArray
         Input array having shape (..., M, M) and whose innermost two dimensions form
-        square symmetric positive-definite matrices. Should have a floating-point data
-        type.
+        square symmetric positive-definite matrices. Should have a floating-point 
+        data type.
     upper : bool, optional
         If True, the result must be the upper-triangular Cholesky factor U. If False,
         the result must be the lower-triangular Cholesky factor L. Default: False.
     out : ivy.Array, optional
-        Optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        Optional output array, for writing the result to. It must have a shape that 
+        the inputs broadcast to.
 
     Returns
     -------
     ivy.Array
         An array containing the Cholesky factors for each square matrix. If upper is
-        False, the returned array must contain lower-triangular matrices; otherwise, the
-        returned array must contain upper-triangular matrices. The returned array must
-        have a floating-point data type determined by Type Promotion Rules and must have
-        the same shape as x.
+        False, the returned array must contain lower-triangular matrices; otherwise,
+        the returned array must contain upper-triangular matrices. The returned array
+        must have a floating-point data type determined by Type Promotion Rules and 
+        must have the same shape as x.
 
     Examples
     --------
