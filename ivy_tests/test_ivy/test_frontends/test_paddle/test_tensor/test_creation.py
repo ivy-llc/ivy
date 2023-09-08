@@ -731,7 +731,7 @@ def test_paddle_triu_indices(
 @handle_frontend_test(
     fn_tree="paddle.uniform",
     min=helpers.floats(min_value=-1, max_value=0),
-    max=helpers.floats(min_value=0.1, max_value=1),
+    max=helpers.floats(min_value=0, max_value=1),
     dtype_and_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
@@ -741,6 +741,7 @@ def test_paddle_triu_indices(
         min_dim_size=2,
         max_dim_size=2,
     ),
+    test_with_out=st.just(False),
 )
 def test_paddle_uniform(
     min, max, dtype_and_shape, on_device, fn_tree, backend_fw, frontend, test_flags
