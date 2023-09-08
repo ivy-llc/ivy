@@ -657,5 +657,5 @@ def with_backend(backend: str, cached: bool = True):
         compiled_backends[backend] = [ivy_pack]
     if ivy.backend != backend:
         # to avoid warning users when not using set_backend with ivy.Array.__repr__
-        _handle_inplace_mode()
+        _handle_inplace_mode(ivy_pack=ivy_pack)
     return ivy_pack

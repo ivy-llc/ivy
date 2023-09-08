@@ -409,9 +409,11 @@ def handle_exceptions(fn: Callable) -> Callable:
 # Inplace Update
 
 
-def _handle_inplace_mode():
-    current_backend = ivy.current_backend_str()
-    if not ivy.native_inplace_support and ivy.inplace_mode == "lenient":
+def _handle_inplace_mode(ivy_pack=None):
+    if not ivy_pack:
+        ivy_pack = ivy
+    current_backend = ivy_pack.current_backend_str()
+    if not ivy_pack.native_inplace_support and ivy_pack.inplace_mode == "lenient":
         warnings.warn(
             f"The current backend: '{current_backend}' does not support "
             "inplace updates natively. Ivy would quietly create new arrays when "
