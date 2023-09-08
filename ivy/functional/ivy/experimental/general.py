@@ -63,6 +63,7 @@ def reduce(
 
     Examples
     --------
+
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
     >>> ivy.reduce(x, 0, ivy.add, 0)
     ivy.array([6, 15])

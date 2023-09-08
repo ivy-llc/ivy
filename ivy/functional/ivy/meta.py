@@ -608,6 +608,7 @@ def reptile_step(
     ...                                    num_tasks=num_tasks)
     >>> print(cost)
     ivy.array(1.4485182)
+
     >>> print(gradients)
     {
         latent: ivy.array([-139.9569855])
@@ -623,10 +624,12 @@ def reptile_step(
     ...                                            return_inner_v='first')
     >>> print(cost)
     ivy.array(0.9880483)
+
     >>> print(gradients)
     {
         latent: ivy.array([-13.01766968, -13.01766968])
     }
+
     >>> print(firsts)
     {
         latent: ivy.array([[1.02197957, 2.02197981]])

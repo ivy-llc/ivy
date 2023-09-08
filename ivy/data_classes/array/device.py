@@ -26,6 +26,7 @@ class _ArrayWithDevice(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])
         >>> y = x.dev(as_native=True)
         >>> print(y)
@@ -62,6 +63,7 @@ class _ArrayWithDevice(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([2, 5, 4, 1])
         >>> y = x.to_device('cpu')
         >>> print(y.device)

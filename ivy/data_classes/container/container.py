@@ -171,6 +171,7 @@ class Container(
             a: ivy.array([0, 1]),
             b: ivy.array([4, 9])
         }
+
         >>> x = ivy.Container(a=ivy.array([0, 1.2]), b=ivy.array([2.2, 3.]))
         >>> y = x ** 3.1
         >>> print(y)
@@ -281,6 +282,7 @@ class Container(
 
         Examples
         --------
+
         >>> x = 1
         >>> y = ivy.Container(a=3, b=4)
         >>> z = x + y
@@ -390,6 +392,7 @@ class Container(
 
         Examples
         --------
+
         >>> x = 1
         >>> y = ivy.Container(a=3, b=4)
         >>> z = x - y
@@ -1075,6 +1078,7 @@ class Container(
 
         Examples
         --------
+
         >>> a = 64
         >>> b = ivy.Container(a = ivy.array([0, 1, 2]),
         ...                   b = ivy.array([3, 4, 5]))

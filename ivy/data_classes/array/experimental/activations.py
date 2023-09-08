@@ -33,6 +33,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 0, 0.9])
         >>> z = x.logit()
         >>> print(z)
@@ -75,6 +76,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1., .2, 1.])
         >>> y = x.thresholded_relu(threshold=0.5)
         >>> print(y)
@@ -169,6 +171,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1., 2., 4., -10.])
         >>> z = x.logsigmoid()
         >>> print(z)
@@ -234,6 +237,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.silu()
         >>> print(y)
@@ -270,6 +274,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0.39, -0.85])
         >>> y = x.elu()
         >>> print(y)

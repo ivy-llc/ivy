@@ -96,6 +96,7 @@ def find_output_str(subscripts: str) -> str:
 
     Examples
     --------
+
     >>> oe.parser.find_output_str("ab,bc")
     'ac'
 
@@ -120,10 +121,12 @@ def find_output_shape(
 
     Examples
     --------
+
     >>> oe.parser.find_output_shape(["ab", "bc"], [(2, 3), (3, 4)], "ac")
     (2, 4)
 
     # Broadcasting is accounted for
+
     >>> oe.parser.find_output_shape(["a", "a"], [(4, ), (1, )], "a")
     (4,)
     """
@@ -143,6 +146,7 @@ def possibly_convert_to_numpy(x: Any) -> Any:  # possibly convert to native
 
     Examples
     --------
+
     >>> oe.parser.possibly_convert_to_numpy(5)
     array(5)
 
@@ -153,6 +157,7 @@ def possibly_convert_to_numpy(x: Any) -> Any:  # possibly convert to native
     array([5, 3])
 
     # Any class with a shape is passed through
+
     >>> class Shape:
     ...     def __init__(self, shape):
     ...         self.shape = shape
@@ -174,8 +179,10 @@ def convert_subscripts(old_sub: List[Any], symbol_map: Dict[Any, Any]) -> str:
 
     Examples
     --------
+
     >>>  oe.parser.convert_subscripts(['abc', 'def'], {'abc':'a', 'def':'b'})
     'ab'
+
     >>> oe.parser.convert_subscripts([Ellipsis, object], {object:'a'})
     '...a'
     """

@@ -63,17 +63,20 @@ def layer_norm(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> y = ivy.layer_norm(x, [0, 1], new_std=2.0)
     >>> print(y)
     ivy.array([[-2.68 , -0.894],
                [ 0.894,  2.68 ]])
+
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.layer_norm(x, [0], out=y)
     >>> print(y)
     ivy.array([[-1., -1., -1.],
                [ 1.,  1.,  1.]])
+
     >>> x = ivy.array([[0.0976, -0.3452,  1.2740],
     ...                [0.1047,  0.5886,  1.2732],
     ...                [0.7696, -1.7024, -2.2518]])
@@ -84,6 +87,7 @@ def layer_norm(
                [ 0.831,  0.421, 0.981 ],
                [ 1.26 , -1.05 , -1.28 ]])
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
     >>> x = ivy.array([[1., 2., 3.], [4., 5., 6.]])
     >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
     >>> y = ivy.layer_norm(x, normalized_idxs, new_std=1.25, offset=0.2)
@@ -95,6 +99,7 @@ def layer_norm(
                       [-1.53, 0., 1.53]])
     }
     With one :class:`ivy.Container` input:
+
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
     ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
     >>> normalized_idxs = [0]

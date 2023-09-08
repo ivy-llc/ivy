@@ -50,6 +50,7 @@ def lgamma(
 
     Examples
     --------
+
     >>> x = ivy.array([1.6, 2.6, 3.5])
     >>> y = x.lgamma()
     >>> print(y)
@@ -179,6 +180,7 @@ def fmax(
 
     Examples
     --------
+
     >>> x1 = ivy.array([2, 3, 4])
     >>> x2 = ivy.array([1, 5, 2])
     >>> ivy.fmax(x1, x2)
@@ -229,9 +231,11 @@ def float_power(
 
     Examples
     --------
+
     >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.float_power(x1, 3)
     ivy.array([1.,    8.,   27.,   64.,  125.])
+
     >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> x2 = ivy.array([2, 3, 3, 2, 1])
     >>> ivy.float_power(x1, x2)
@@ -275,12 +279,15 @@ def copysign(
 
     Examples
     --------
+
     >>> x1 = ivy.array([-1, 0, 23, 2])
     >>> x2 = ivy.array([1, -1, -10, 44])
     >>> ivy.copysign(x1, x2)
     ivy.array([  1.,  -0., -23.,   2.])
+
     >>> ivy.copysign(x1, -1)
     ivy.array([ -1.,  -0., -23.,  -2.])
+
     >>> ivy.copysign(-10, 1)
     ivy.array(10.)
     """
@@ -331,12 +338,15 @@ def count_nonzero(
 
     Examples
     --------
+
     >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
     >>> ivy.count_nonzero(a)
     ivy.array(7)
+
     >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
     >>> ivy.count_nonzero(a, axis=0)
     ivy.array([1, 2, 2, 2])
+
     >>> a = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
     >>> ivy.count_nonzero(a, axis=(0,1), keepdims=True)
     ivy.array([[[3, 4]]])
@@ -392,11 +402,14 @@ def nansum(
 
     Examples
     --------
+
     >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
     >>> ivy.nansum(a)
     10.0
+
     >>> ivy.nansum(a, axis=0)
     ivy.array([2.1, 5.8, 2.1])
+
     >>> ivy.nansum(a, axis=1)
     ivy.array([5.5, 4.5])
     """
@@ -457,12 +470,16 @@ def isclose(
 
     Examples
     --------
+
     >>> ivy.isclose([1e10,1e-7], [1.00001e10,1e-8])
     ivy.array([True, False])
+
     >>> ivy.isclose([1.0, ivy.nan], [1.0, ivy.nan], equal_nan=True)
     ivy.array([True, True])
+
     >>> ivy.isclose([1e-100, 1e-7], [0.0, 0.0], atol=0.0)
     ivy.array([False, False])
+
     >>> ivy.isclose([1e-10, 1e-10], [1e-20, 0.999999e-10], rtol=0.005, atol=0.0)
     ivy.array([False, True])
     """
@@ -501,6 +518,7 @@ def signbit(
 
     Examples
     --------
+
     >>> x = ivy.array([1, -2, 3])
     >>> ivy.signbit(x)
     ivy.array([False, True, False])
@@ -537,6 +555,7 @@ def hypot(
 
     Examples
     --------
+
     >>> a = ivy.array([3.0, 4.0, 5.0])
     >>> b = ivy.array([4.0, 5.0, 6.0])
     >>> ivy.hypot(a, b)
@@ -592,6 +611,7 @@ def diff(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 4, 7, 0])
     >>> ivy.diff(x)
     ivy.array([ 1,  2,  3, -7])
@@ -653,6 +673,7 @@ def allclose(
 
     Examples
     --------
+
     >>> x1 = ivy.array([1e10, 1e-7])
     >>> x2 = ivy.array([1.00001e10, 1e-8])
     >>> y = ivy.allclose(x1, x2)
@@ -707,6 +728,7 @@ def fix(
 
     Examples
     --------
+
     >>> x = ivy.array([2.1, 2.9, -2.1])
     >>> ivy.fix(x)
     ivy.array([ 2.,  2., -2.])
@@ -748,6 +770,7 @@ def nextafter(
 
     Examples
     --------
+
     >>> x1 = ivy.array([1.0e-50, 2.0e+50])
     >>> x2 = ivy.array([2.0, 1.0])
     >>> ivy.nextafter(x1, x2)
@@ -792,6 +815,7 @@ def zeta(
 
     Examples
     --------
+
     >>> x = ivy.array([5.0, 3.0])
     >>> q = ivy.array([2.0, 2.0])
     >>> ivy.zeta(x, q)
@@ -841,6 +865,7 @@ def gradient(
 
     Examples
     --------
+
     >>> spacing = (ivy.array([-2., -1., 1., 4.]),)
     >>> x = ivy.array([4., 1., 1., 16.], )
     >>> ivy.gradient(x, spacing=spacing)
@@ -913,6 +938,7 @@ def xlogy(
 
     Examples
     --------
+
     >>> x = ivy.zeros(3)
     >>> y = ivy.array([-1.0, 0.0, 1.0])
     >>> ivy.xlogy(x, y)
@@ -1032,12 +1058,14 @@ def conj(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([4.2-0j, 3j, 7+5j])
     >>> z = ivy.conj(x)
     >>> print(z)
     ivy.array([4.2-0.j, 0. -3.j, 7. -5.j])
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),
     ...                   b=ivy.array([5j, 5.32-6.55j, 3.001]))
     >>> z = ivy.conj(x)
@@ -1084,6 +1112,7 @@ def ldexp(
 
     Examples
     --------
+
     >>> x1 = ivy.array([1, 2, 3])
     >>> x2 = ivy.array([0, 1, 2])
     >>> ivy.ldexp(x1, x2)
@@ -1133,6 +1162,7 @@ def lerp(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> input = ivy.array([1, 2, 3])
     >>> end = ivy.array([10, 10, 10])
     >>> weight = 0.5
@@ -1157,6 +1187,7 @@ def lerp(
            [7.05000019, 7.0999999 , 7.1500001 ]])
 
     With :class:`ivy.Container` input:
+
     >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> end = ivy.array([10.])
     >>> weight = 1.1
@@ -1253,6 +1284,7 @@ def frexp(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3])
     >>> ivy.frexp(x)
     (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 2, 2]))
@@ -1290,6 +1322,7 @@ def modf(
 
     Examples
     --------
+
     >>> x = ivy.array([1.5, 2.7, 3.9])
     >>> ivy.modf(x)
     (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
@@ -1330,6 +1363,7 @@ def digamma(
 
     Examples
     --------
+
     >>> x = ivy.array([.9, 3, 3.2])
     >>> y = ivy.digamma(x)
     ivy.array([-0.7549271   0.92278427  0.9988394])
@@ -1367,6 +1401,7 @@ def sparsify_tensor(
 
     Examples
     --------
+
     >>> x = ivy.arange(100)
     >>> x = ivy.reshape(x, (10, 10))
     >>> sparsify_tensor(x, 10)

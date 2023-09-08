@@ -35,6 +35,7 @@ class _ArrayWithSearchingExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> indices = ivy.array([22, 41, 37])
         >>> indices.unravel_index((7,6))
         (ivy.array([3, 6, 6]), ivy.array([4, 5, 1]))

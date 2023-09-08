@@ -39,6 +39,7 @@ class _ArrayWithGradients(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> y = x.stop_gradient(preserve_type=True)
         >>> print(y)
@@ -145,6 +146,7 @@ class _ArrayWithGradients(abc.ABC):
 
         Examples
         --------
+
         >>> w = ivy.array([1., 2., 3.])
         >>> effective_grad = ivy.zeros(3)
         >>> lr = 3e-4

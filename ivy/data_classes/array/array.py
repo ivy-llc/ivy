@@ -546,6 +546,7 @@ class Array(
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
         >>> z = x + y
@@ -576,6 +577,7 @@ class Array(
 
         Examples
         --------
+
         >>> x = 1
         >>> y = ivy.array([4, 5, 6])
         >>> z = x + y
@@ -641,6 +643,7 @@ class Array(
 
         Examples
         --------
+
         >>> x = 1
         >>> y = ivy.array([4, 5, 6])
         >>> z = x - y
@@ -698,6 +701,7 @@ class Array(
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
         >>> z = x / y
@@ -823,6 +827,7 @@ class Array(
 
         Examples
         --------
+
         >>> x = ivy.array([6, 2, 3])
         >>> y = ivy.array([4, 5, 3])
         >>> z = x < y
@@ -853,6 +858,7 @@ class Array(
 
         Examples
         --------
+
         >>> x = ivy.array([6, 2, 3])
         >>> y = ivy.array([4, 5, 3])
         >>> z = x <= y
@@ -1166,6 +1172,7 @@ class Array(
 
         Examples
         --------
+
         >>> a = 32
         >>> b = ivy.array([0, 1, 2])
         >>> y = a >> b

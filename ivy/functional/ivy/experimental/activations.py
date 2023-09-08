@@ -54,6 +54,7 @@ def logit(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 0, 0.9])
     >>> z = ivy.logit(x)
     >>> print(z)
@@ -314,11 +315,13 @@ def selu(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
     >>> y = ivy.selu(x)
     >>> print(y)
     ivy.array([-1.11133075,  0.        ,  1.05070102,  2.10140204,  3.15210295,
             4.20280409,  5.25350523,  6.30420589,  7.35490704])
+
     >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
     >>> y = ivy.zeros(9)
     >>> ivy.selu(x, out = y)
@@ -327,6 +330,7 @@ def selu(
             4.20280409,  5.25350523,  6.30420589,  7.35490704])
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
     ...                   b=ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
     ...                   )
@@ -427,15 +431,18 @@ def elu(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.elu(x)
     >>> print(y)
     ivy.array([ 0.38999999, -0.57258511])
+
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.elu(x, out=y)
     >>> print(y)
     ivy.array([ 1.5, 0.69999999, -0.90928203])
+
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.elu(x, out=x)
@@ -443,6 +450,7 @@ def elu(
     ivy.array([[ 1.10000002,  2.20000005,  3.29999995],
            [-0.98772264, -0.99591321, -0.99863964]])
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
     >>> x = ivy.elu(x, out=x)
     >>> print(x)
@@ -475,6 +483,7 @@ def sequence_length(
 
     Examples
     --------
+
     >>> x = ivy.array([True, False, True])
     >>> y = ivy.sequence_length(x)
     >>> print(y)

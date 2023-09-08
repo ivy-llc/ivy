@@ -47,6 +47,7 @@ class _ArrayWithLosses(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, 0, 1, 0])
         >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
         >>> z = x.cross_entropy(y)
@@ -107,6 +108,7 @@ class _ArrayWithLosses(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.binary_cross_entropy(y)
@@ -167,6 +169,7 @@ class _ArrayWithLosses(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1 , 1, 0])
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.sparse_cross_entropy(y)

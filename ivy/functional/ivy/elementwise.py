@@ -2386,9 +2386,11 @@ def imag(
 
     Examples
     --------
+
     >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
     >>> b
     ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+
     >>> ivy.imag(b)
     ivy.array([2., 4., 6.])
     """
@@ -2429,11 +2431,14 @@ def angle(
 
     Examples
     --------
+
     >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
     >>> z
     ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+
     >>> ivy.angle(z)
     ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+
     >>> ivy.angle(z,deg=True)
     ivy.array([135., 135., -45.])
     """
@@ -2471,10 +2476,12 @@ def gcd(
 
     Examples
     --------
+
     >>> x1 = ivy.array([1, 2, 3])
     >>> x2 = ivy.array([4, 5, 6])
     >>> ivy.gcd(x1, x2)
     ivy.array([1.,    1.,   3.])
+
     >>> x1 = ivy.array([1, 2, 3])
     >>> ivy.gcd(x1, 10)
     ivy.array([1.,   2.,  1.])
@@ -2511,9 +2518,11 @@ def exp2(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3])
     >>> ivy.exp2(x)
     ivy.array([2.,    4.,   8.])
+
     >>> x = [5, 6, 7]
     >>> ivy.exp2(x)
     ivy.array([32.,   64.,  128.])
@@ -2958,6 +2967,7 @@ def fmin(
 
     Examples
     --------
+
     >>> x1 = ivy.array([2, 3, 4])
     >>> x2 = ivy.array([1, 5, 2])
     >>> ivy.fmin(x1, x2)
@@ -4371,6 +4381,7 @@ def logaddexp2(
 
     Examples
     --------
+
     >>> x1 = ivy.array([1, 2, 3])
     >>> x2 = ivy.array([4, 5, 6])
     >>> ivy.logaddexp2(x1, x2)
@@ -4822,9 +4833,11 @@ def nan_to_num(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3, nan])
     >>> ivy.nan_to_num(x)
     ivy.array([1.,    1.,   3.,   0.0])
+
     >>> x = ivy.array([1, 2, 3, inf])
     >>> ivy.nan_to_num(x, posinf=5e+100)
     ivy.array([1.,   2.,   3.,   5e+100])
@@ -6236,6 +6249,7 @@ def subtract(
 
     Examples
     --------
+
     >>> x = ivy.array([3, 6, 3])
     >>> y = ivy.array([2, 1, 6])
     >>> z = ivy.subtract(x, y)
@@ -6545,12 +6559,15 @@ def trapz(
 
     Examples
     --------
+
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3])
     4.0
+
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3], x=[4, 6, 8])
     8.0
+
     >>> y = ivy.array([1, 2, 3])
     >>> ivy.trapz([1,2,3], dx=2)
     8.0
@@ -6683,6 +6700,7 @@ def erf(
 
     Examples
     --------
+
     >>> x = ivy.array([0, 0.3, 0.7, 1.0])
     >>> ivy.erf(x)
     ivy.array([0., 0.328, 0.677, 0.842])
@@ -6906,6 +6924,7 @@ def reciprocal(
 
     Examples
     --------
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.reciprocal(x)
     >>> print(y)
@@ -7230,6 +7249,7 @@ def fmod(
 
     Examples
     --------
+
     >>> x1 = ivy.array([2, 3, 4])
     >>> x2 = ivy.array([1, 5, 2])
     >>> ivy.fmod(x1, x2)

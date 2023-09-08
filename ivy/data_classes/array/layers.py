@@ -183,6 +183,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 1, 1]).reshape([1, 1, 3])
         >>> y = x.dropout1d(0.5)
         >>> print(y)
@@ -231,6 +232,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 1, 1], [2, 2, 2]])
         >>> y = x.dropout2d(0.5)
         >>> print(y)
@@ -488,6 +490,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[[1., 2.], [3., 4.], [6., 7.], [9., 11.]]])  # NWC
         >>> filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)
         >>> result = x.conv1d(filters, (1,), 'VALID')
@@ -561,6 +564,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[[1., 2.], [3., 4.], [6., 7.], [9., 11.]]])  # NWC
         >>> filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)
         >>> result = x.conv1d_transpose(filters, (1,), 'VALID')
@@ -624,6 +628,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])
         >>> y = x.depthwise_conv2d(filters, 2, 'SAME')
@@ -691,6 +696,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[[[1.], [2.0],[3.]],
         ...                 [[1.], [2.0],[3.]],
         ...                 [[1.], [2.0],[3.]]]]) #NHWC
@@ -770,6 +776,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
         >>> y = x.conv2d_transpose(filters,2,'SAME',)
@@ -839,6 +846,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32)
 
         >>> filters = ivy.ones((1, 3, 3, 1, 1)).astype(ivy.float32)
@@ -912,6 +920,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
         >>> y = x.conv3d_transpose(filters, 2, 'SAME')
@@ -969,6 +978,7 @@ class _ArrayWithLayers(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.randint(0, 20, shape=(6, 20, 3))
         >>> h_i = ivy.random_normal(shape=(6, 5))
         >>> c_i = ivy.random_normal(shape=(6, 5))
@@ -978,6 +988,7 @@ class _ArrayWithLayers(abc.ABC):
 
         >>> result[0].shape
         (6, 20, 5)
+
         >>> result[1].shape
         (6, 5)
         """

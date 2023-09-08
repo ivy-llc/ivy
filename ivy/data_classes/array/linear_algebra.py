@@ -111,6 +111,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],
         ...               [1.0, 0.5, 0.0, 0.0, 0.0],
         ...               [2.0, 0.0, 3.0, 0.0, 0.0],
@@ -177,6 +178,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         """
         Examples
         --------
+
         >>> x = ivy.array([[2.,4.],[6.,7.]])
         >>> y = x.det()
         >>> print(y)
@@ -280,6 +282,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[0, 1, 2],
         >>>                [3, 4, 5],
         >>>                [6, 7, 8]])
@@ -390,6 +393,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         Examples
         --------
         Matrices of identical shapes
+
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = ivy.array([[5., 6.], [7., 8.]])
         >>> d = x.inner(y)
@@ -397,6 +401,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ivy.array([[17., 23.], [39., 53.]])
 
         # Matrices of different shapes
+
         >>> x = ivy.array([[1., 2.], [3., 4.],[5., 6.]])
         >>> y = ivy.array([[5., 6.], [7., 8.]])
         >>> d = x.inner(y)
@@ -404,6 +409,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ivy.array([[17., 23.], [39., 53.], [61., 83.]])
 
         # 3D matrices
+
         >>> x = ivy.array([[[1., 2.], [3., 4.]],
         ...                [[5., 6.], [7., 8.]]])
         >>> y = ivy.array([[[9., 10.], [11., 12.]],
@@ -491,6 +497,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1.1, 2.2, 3.3], [1.0, 2.0, 3.0]])
         >>> y = x.matrix_norm(ord=1)
         >>> print(y)
@@ -573,16 +580,19 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         Examples
         --------
         1. Full Matrix
+
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> ivy.matrix_rank(x)
         ivy.array(2.)
 
         2. Rank Deficient Matrix
+
         >>> x = ivy.array([[1., 0.], [0., 0.]])
         >>> ivy.matrix_rank(x)
         ivy.array(1.)
 
         3. 1 Dimension - rank 1 unless all 0
+
         >>> x = ivy.array([[1., 1.])
         >>> ivy.matrix_rank(x)
         ivy.array(1.)
@@ -656,6 +666,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5])
         >>> z = x.outer(y)
@@ -696,6 +707,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = x.pinv()
         >>> print(y)
@@ -790,6 +802,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1.0, 2.0],
         ...                [3.0, 4.0]])
         >>> y = x.slogdet()
@@ -942,6 +955,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = x.trace()
         >>> print(y)
@@ -1045,6 +1059,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> y = x.vector_norm()
         >>> print(y)
@@ -1091,6 +1106,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3, 5])
         >>> ivy.vander(x)
         ivy.array(

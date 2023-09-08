@@ -122,9 +122,11 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
         >>> a.median()
         3.5
+
         >>> a.median(axis=0)
         ivy.array([6.5, 4.5, 2.5])
         """
@@ -170,9 +172,11 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[1, ivy.nan], [3, 4]])
         >>> a.nanmean()
         2.6666666666666665
+
         >>> a.nanmean(axis=0)
         ivy.array([2.,  4.])
         """
@@ -224,9 +228,11 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[1, 2], [3, ivy.nan]])
         >>> a.nanprod(a)
         6.0
+
         >>> a.nanprod(a, axis=0)
         ivy.array([3., 2.])
         """
@@ -293,6 +299,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[10., 7., 4.], [3., 2., 1.]])
         >>> q = ivy.array(0.5)
         >>> a.quantile(q)
@@ -358,10 +365,12 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[0., 1., 2.], [2., 1., 0.]])
         >>> a.corrcoef()
             ivy.array([[ 1., -1.],
                        [-1.,  1.]])
+
         >>> a.corrcoef(rowvar=False)
             ivy.array([[ 1., nan, -1.],
                        [nan, nan, nan],
@@ -422,6 +431,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> a = ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.nanmedian()
             ivy.array(3.)
+
         >>> a.nanmedian(axis=0)
             ivy.array([6.5, 2. , 2.5])
         """
@@ -465,11 +475,14 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([0, 1, 1, 3, 2, 1, 7])
         >>> a.bincount()
             ivy.array([1, 3, 1, 1, 0, 0, 0, 1])
+
         >>> a.bincount(minlength=10)
             ivy.array([1, 3, 1, 1, 0, 0, 0, 1, 0, 0])
+
         >>> a.bincount(weights=ivy.array([0.3, 0.5, 0.2, 0.7, 1., 0.6, 1.]))
             ivy.array([0.3, 1.3, 1. , 0.7, 0. , 0. , 0. , 1. ])
         """
@@ -509,6 +522,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([2.5])
         >>> x = ivy.array([1.7, 1.2])
         >>> a.igamma(x)
@@ -582,6 +596,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2, 3],
         ...                [4, 5, 6]])
         >>> y = x[0].cov(x[1])
@@ -655,6 +670,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         ret
             Input array with cumulatively multiplied elements along the specified axis.
         --------
+
         >>> x = ivy.array([1, 2, 5, 4, 3])
         >>> y = x.cummax()
         >>> print(y)
@@ -725,6 +741,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         ret
             Input array with cumulatively multiplied elements along the specified axis.
         --------
+
         >>> x = ivy.array([1, 2, 3, 4, 5])
         >>> y = x.cummin()
         >>> print(y)

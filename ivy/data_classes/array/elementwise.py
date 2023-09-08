@@ -35,6 +35,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([2.6, -6.6, 1.6, -0])
         >>> y = x.abs()
         >>> print(y)
@@ -66,6 +67,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([2., 10.0, 1.0])
         >>> y = x.acosh()
         >>> print(y)
@@ -95,6 +97,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 0.0, -0.9])
         >>> y = x.acos()
         >>> print(y)
@@ -136,6 +139,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
         >>> z = x.add(y)
@@ -211,6 +215,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1., 0., 3.])
         >>> y = x.asinh()
         >>> print(y)
@@ -240,6 +245,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 0.5, -0.5])
         >>> y = x.atan()
         >>> print(y)
@@ -281,6 +287,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 0.5, 0.0, -0.5, 0.0])
         >>> y = ivy.array([1.0, 2.0, -1.5, 0, 1.0])
         >>> z = x.atan2(y)
@@ -304,6 +311,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
         >>> x.atan2(y)
         ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
+
         >>> y.atan2(x)
         ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
 
@@ -352,6 +360,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0.0, 0.5, -0.9])
         >>> y = x.atanh()
         >>> print(y)
@@ -391,6 +400,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([True, False])
         >>> y = ivy.array([True, True])
         >>> x.bitwise_and(y, out=y)
@@ -463,6 +473,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 6, 9])
         >>> y = x.bitwise_invert()
         >>> print(y)
@@ -506,6 +517,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
         >>> z = x.bitwise_or(y)
@@ -546,6 +558,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[2, 3, 4], [5, 10, 64]])
         >>> b = ivy.array([0, 1, 2])
         >>> y = a.bitwise_right_shift(b)
@@ -588,6 +601,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[89, 51, 32], [14, 18, 19]])
         >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
         >>> y = a.bitwise_xor(b)
@@ -618,6 +632,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
         >>> y = x.ceil()
         >>> print(y)
@@ -693,6 +708,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> print(x.cosh())
             ivy.array([1.54, 3.76, 10.1])
@@ -847,6 +863,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> print(x.exp())
         ivy.array([ 2.71828198,  7.38905573, 20.08553696])
@@ -876,6 +893,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
         >>> y = x.expm1()
         >>> print(y)
@@ -911,6 +929,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([5.5, -2.5, 1.5, -0])
         >>> y = x.floor()
         >>> print(y)
@@ -997,6 +1016,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([2, 3, 4])
         >>> x2 = ivy.array([1, 5, 2])
         >>> ivy.fmin(x1, x2)
@@ -1041,6 +1061,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([2., 5., 15.])
         >>> x2 = ivy.array([3., 2., 4.])
         >>> y = x1.greater(x2)
@@ -1081,6 +1102,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
         >>> z = x.greater_equal(y)
@@ -1112,6 +1134,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
         >>> y = x.isfinite()
         >>> print(y)
@@ -1270,6 +1293,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([2., 5., 15.])
         >>> x2 = ivy.array([3., 2., 4.])
         >>> y = x1.less(x2)
@@ -1406,6 +1430,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> y = x.log1p()
         >>> print(y)
@@ -1518,6 +1543,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([2., 5., 15.])
         >>> y = ivy.array([3., 2., 4.])
         >>> z = x.logaddexp(y)
@@ -1554,6 +1580,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([1, 2, 3])
         >>> x2 = ivy.array([4, 5, 6])
         >>> x1.logaddexp2(x2)
@@ -1720,6 +1747,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([True, False, True, False])
         >>> y = ivy.array([True, True, False, False])
         >>> z = x.logical_xor(y)
@@ -1815,6 +1843,7 @@ class _ArrayWithElementwise(abc.ABC):
         Examples
         --------
         With :class:`ivy.Array` inputs:
+
         >>> x = ivy.array([7, 9, 5])
         >>> y = ivy.array([9, 3, 2])
         >>> z = x.maximum(y)
@@ -2125,6 +2154,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([4+3j, 6+2j, 1-6j])
         >>> x.real()
         ivy.array([4., 6., 1.])
@@ -2266,6 +2296,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([5.7, -7.1, 0, -0, 6.8])
         >>> y = x.sign()
         >>> print(y)
@@ -2308,6 +2339,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2., 3.])
         >>> y = x.sin()
         >>> print(y)
@@ -2339,6 +2371,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> print(x.sinh())
             ivy.array([1.18, 3.63, 10.])
@@ -2455,6 +2488,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([5, 2, 3])
         >>> y = ivy.array([1, 2, 6])
         >>> z = x.subtract(y)
@@ -2508,13 +2542,16 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> y = ivy.array([1, 2, 3])
         >>> ivy.trapz(y)
         4.0
+
         >>> y = ivy.array([1, 2, 3])
         >>> x = ivy.array([4, 6, 8])
         >>> ivy.trapz(y, x=x)
         8.0
+
         >>> y = ivy.array([1, 2, 3])
         >>> ivy.trapz(y, dx=2)
         8.0
@@ -2545,6 +2582,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.tan()
         >>> print(y)
@@ -2584,6 +2622,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.tanh()
         >>> print(y)
@@ -2613,6 +2652,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
         >>> y = x.trunc()
         >>> print(y)
@@ -2641,6 +2681,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0, 0.3, 0.7, 1.0])
         >>> x.erf()
         ivy.array([0., 0.328, 0.677, 0.842])
@@ -2672,9 +2713,11 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> x.exp2()
         ivy.array([2.,    4.,   8.])
+
         >>> x = [5, 6, 7]
         >>> x.exp2()
         ivy.array([32.,   64.,  128.])
@@ -2709,10 +2752,12 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([1, 2, 3])
         >>> x2 = ivy.array([4, 5, 6])
         >>> x1.gcd(x2)
         ivy.array([1.,    1.,   3.])
+
         >>> x1 = ivy.array([1, 2, 3])
         >>> x1.gcd(10)
         ivy.array([1.,   2.,  1.])
@@ -2763,9 +2808,11 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3, nan])
         >>> x.nan_to_num()
         ivy.array([1.,    1.,   3.,   0.0])
+
         >>> x = ivy.array([1, 2, 3, inf])
         >>> x.nan_to_num(posinf=5e+100)
         ivy.array([1.,   2.,   3.,   5e+100])
@@ -2799,11 +2846,14 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
         >>> b
         ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+
         >>> ivy.imag(b)
         ivy.array([2., 4., 6.])
+
         >>> b.imag()
         ivy.array([2., 4., 6.])
         """
@@ -2839,12 +2889,15 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> ivy.set_backend('tensorflow')
         >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
         >>> z
         ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+
         >>> ivy.angle(z)
         ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+
         >>> ivy.set_backend('numpy')
         >>> ivy.angle(z,deg=True)
         ivy.array([135., 135., -45.])
@@ -2877,6 +2930,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.reciprocal()
         >>> print(y)
@@ -3010,6 +3064,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1j, 2+5j, 3.7-6j])
         >>> x.isreal()
         ivy.array([False, False, False])
@@ -3041,6 +3096,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
+
         >>> x1=ivy.array([2, 3, 4])
         >>> x2=ivy.array([5, 8, 15])
         >>> x1.lcm(x2)

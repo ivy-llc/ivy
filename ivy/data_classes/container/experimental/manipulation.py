@@ -65,6 +65,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
         >>> ivy.Container.static_moveaxis(x, 0, -1).shape
         {
@@ -126,6 +127,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
         >>> x.moveaxis(, 0, -1).shape
         {
@@ -169,6 +171,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With :class:`ivy.Array` input:
+
         >>> x1 = ivy.Container(a=ivy.array([-1.5, 0, 2.0]), b=ivy.array([3.0, 5.0])
         >>> x2 = ivy.Container(a=0.5, b=[1.0, 2.0])
         >>> ivy.Container.static_heaviside(x1, x2)
@@ -217,6 +220,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With :class:`ivy.Array` input:
+
         >>> x1 = ivy.Container(a=ivy.array([-1.5, 0, 2.0]), b=ivy.array([3.0, 5.0])
         >>> x2 = ivy.Container(a=0.5, b=[1.0, 2.0])
         >>> x1.heaviside(x2)
@@ -360,6 +364,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.vstack([y])
@@ -408,6 +413,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],
                               b=ivy.arange(3))
+
         >>> y = ivy.Container.static_vstack(c)
         >>> print(y)
         {
@@ -449,6 +455,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> z = x.hstack([y])
@@ -492,6 +499,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])])
         >>> ivy.Container.static_hstack(c)
         {
@@ -632,6 +640,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),
         ...                   b=ivy.array([[1,2,3,4],[7,8,9,10]]))
         >>> n = m.rot90()
@@ -1352,6 +1361,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> ary = ivy.Container(
                 a = ivy.array(
                         [[[0.,  1.],
@@ -1366,6 +1376,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                          [12., 13., 14., 15.]]
                     )
                 )
+
         >>> ivy.Container.static_vsplit(ary, 2)
         [{
             a: ivy.array([[[0., 1.],
@@ -1428,6 +1439,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> ary = ivy.Container(
                 a = ivy.array(
                         [[[0.,  1.],
@@ -1442,6 +1454,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                          [12., 13., 14., 15.]]
                     )
                 )
+
         >>> ary.vsplit(2)
         [{
             a: ivy.array([[[0., 1.],
@@ -1510,6 +1523,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> ary = ivy.Container(
             a = ivy.array(
                     [[[0.,  1.],
@@ -1524,6 +1538,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                       [12., 13., 14., 15.]]]
                 )
             )
+
         >>> ivy.Container.static_dsplit(ary, 2)
         [{
             a: ivy.array([[[0.], [2.]],
@@ -1584,6 +1599,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> ary = ivy.Container(
             a = ivy.array(
                     [[[0.,  1.],
@@ -1598,6 +1614,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                       [12., 13., 14., 15.]]]
                 )
             )
+
         >>> ary.dsplit(2)
         [{
             a: ivy.array([[[0.], [2.]],
@@ -1768,6 +1785,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> x.dstack([y])
@@ -1813,8 +1831,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],
                               b=ivy.arange(3))
+
         >>> ivy.Container.static_dstack(c)
         {
             a: ivy.array([[1, 0],
@@ -2301,6 +2321,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> ary = ivy.Container(
             a = ivy.array(
                     [[[0.,  1.],
@@ -2315,6 +2336,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                      12., 13., 14., 15.]
                 )
             )
+
         >>> ivy.Container.static_hsplit(ary, 2)
         [{
             a: ivy.array([[[0., 1.]],
@@ -2367,6 +2389,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> ary = ivy.Container(
             a = ivy.array(
                     [[[0.,  1.],
@@ -2381,6 +2404,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                      12., 13., 14., 15.]
                 )
             )
+
         >>> ary.hsplit(2)
         [{
             a: ivy.array([[[0., 1.]],
@@ -2433,6 +2457,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> shapes = ivy.Container(a = [(2, 3), (2, 1)],
         ...                        b = [(2, 3), (1, 3)],
         ...                        c = [(2, 3), (2, 3)],
@@ -2479,6 +2504,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> shapes = ivy.Container(a = (2, 3, 5),
         ...                        b = (2, 3, 1))
         >>> z = shapes.broadcast_shapes()
@@ -2726,6 +2752,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> z = ivy.Container.static_concat_from_sequence(x,new_axis = 1, axis = 1)
         >>> print(z)
@@ -2833,6 +2860,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
         >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
         >>> z = ivy.Container.static_concat_from_sequence([x,y],axis=1)

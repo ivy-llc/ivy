@@ -56,6 +56,7 @@ class _ContainerWithSet(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
         ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = ivy.Container.static_unique_all(x)
@@ -134,6 +135,7 @@ class _ContainerWithSet(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
         ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = x.unique_all()
@@ -209,6 +211,7 @@ class _ContainerWithSet(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
         ...                   b=ivy.array([1,2,1,3,4,1,3]))
         >>> y = ivy.Container.static_unique_counts(x)
@@ -363,6 +366,7 @@ class _ContainerWithSet(ContainerBase):
 
         Example
         -------
+
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = x.unique_values()
         >>> print(y)
@@ -442,6 +446,7 @@ class _ContainerWithSet(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),
         ...                   b=ivy.array([7,6,4,5,6,3,2]))
         >>> y = ivy.Container.static_unique_inverse(x)
@@ -507,6 +512,7 @@ class _ContainerWithSet(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),
         ...                   b=ivy.array([7,6,4,5,6,3,2]))
         >>> y = x.unique_inverse()

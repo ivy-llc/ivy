@@ -53,6 +53,7 @@ class _ArrayWithSorting(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 5, 2])
         >>> y = x.argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
@@ -83,6 +84,7 @@ class _ArrayWithSorting(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([7, 8, 6])
         >>> y = x.sort(axis=-1, descending=True, stable=False)
         >>> print(y)
@@ -122,6 +124,7 @@ class _ArrayWithSorting(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
         >>> a.msort()
         ivy.array(

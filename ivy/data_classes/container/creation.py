@@ -93,6 +93,7 @@ class _ContainerWithCreation(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` as input:
+
         >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
         >>> ivy.asarray(x)
         {
@@ -1121,6 +1122,7 @@ class _ContainerWithCreation(ContainerBase):
 
         Examples
         --------
+
         >>> import ivy.container.creation.static_logspace as static_logspace
         >>> x = ivy.Container(a = 1, b = 0)
         >>> y = ivy.Container(a = 4, b = 1)
@@ -1204,6 +1206,7 @@ class _ContainerWithCreation(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = 1, b = 0)
         >>> y = ivy.Container(a = 4, b = 1)
         >>> z = x.logspace(y, 4)

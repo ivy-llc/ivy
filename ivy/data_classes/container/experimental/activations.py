@@ -38,6 +38,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([1, 0, 0.9])
         >>> b = ivy.array([0.1, 2, -0.9])
         >>> x = ivy.Container(a=a, b=b)
@@ -95,6 +96,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([1, 0, 0.9])
         >>> b = ivy.array([0.1, 2, -0.9])
         >>> x = ivy.Container(a=a, b=b)
@@ -163,6 +165,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_thresholded_relu(x, threshold=0.5)
         >>> print(y)
@@ -227,6 +230,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.thresholded_relu(threshold=0.5)
         >>> print(y)
@@ -354,6 +358,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
         ...                   b = ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.]))
         >>> y = ivy.Container.static_relu6(x)
@@ -415,6 +420,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a = ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
         ...                   b= ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.]))
         >>> y = x.relu()
@@ -470,6 +476,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([1, 0, 0.9])
         >>> b = ivy.array([0.1, 2, -0.9])
         >>> x = ivy.Container(a=a, b=b)
@@ -523,6 +530,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.logsigmoid()
         >>> print(y)
@@ -582,6 +590,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_selu(x)
         >>> print(y)
@@ -642,6 +651,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.selu()
         >>> print(y)
@@ -702,6 +712,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_silu(x)
         >>> print(y)
@@ -762,6 +773,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.silu()
         >>> print(y)
@@ -824,6 +836,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = ivy.Container.static_elu(x)
         >>> print(y)
@@ -887,6 +900,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = x.elu()
         >>> print(y)

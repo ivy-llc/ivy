@@ -39,6 +39,7 @@ def if_else(
 
     Examples
     --------
+
     >>> x = 1
     >>> cond = x > 0
     >>> body_fn = lambda x: x + 1
@@ -97,6 +98,7 @@ def while_loop(
 
     Examples
     --------
+
     >>> i = 0
     >>> test_fn = lambda i: i < 3
     >>> body_fn = lambda i: i + 1
@@ -152,6 +154,7 @@ def for_loop(
 
     Example
     ----
+
     >>> def body_fn(k, args):
     >>>     print(k+1)
     >>>     return args

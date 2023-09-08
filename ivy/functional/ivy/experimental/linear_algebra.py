@@ -264,6 +264,7 @@ def kron(
 
     Examples
     --------
+
     >>> a = ivy.array([1,2])
     >>> b = ivy.array([3,4])
     >>> ivy.kron(a, b)
@@ -303,10 +304,12 @@ def matrix_exp(
 
     Examples
     --------
-        >>> x = ivy.array([[[1., 0.],
+
+    >>> x = ivy.array([[[1., 0.],
                             [0., 1.]],
                             [[2., 0.],
                             [0., 2.]]])
+
         >>> ivy.matrix_exp(x)
         ivy.array([[[2.7183, 1.0000],
                     [1.0000, 2.7183]],
@@ -352,6 +355,7 @@ def eig(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w, v = ivy.eig(x)
     >>> w; v
@@ -406,6 +410,7 @@ def eigvals(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w = ivy.eigvals(x)
     >>> w
@@ -455,8 +460,10 @@ def adjoint(
 
     Examples
     --------
-        >>> x = np.array([[1.-1.j, 2.+2.j],
+
+    >>> x = np.array([[1.-1.j, 2.+2.j],
                           [3.+3.j, 4.-4.j]])
+
         >>> x = ivy.array(x)
         >>> ivy.adjoint(x)
         ivy.array([[1.+1.j, 3.-3.j],
@@ -557,6 +564,7 @@ def cond(
 
     Examples
     --------
+
     >>> x = ivy.array([[1., 2.],
     ...                [3., 4.]])
     >>> ivy.cond(x)

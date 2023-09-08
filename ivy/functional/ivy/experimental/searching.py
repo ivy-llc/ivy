@@ -42,6 +42,7 @@ def unravel_index(
 
     Examples
     --------
+
     >>> indices = ivy.array([22, 41, 37])
     >>> ivy.unravel_index(indices, (7,6))
     (ivy.array([3, 6, 6]), ivy.array([4, 5, 1]))

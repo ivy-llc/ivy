@@ -56,6 +56,7 @@ class _ArrayWithRandom(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
         >>> x.random_uniform(high=10.2)
         ivy.array([[9.86, 4.89],
@@ -153,6 +154,7 @@ class _ArrayWithRandom(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[9.8, 3.4], [5.8, 7.2]])
         >>> x.random_normal(std=10.2)
         ivy.array([[19.   , -6.44 ],
@@ -305,6 +307,7 @@ class _ArrayWithRandom(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2], [0, 5]])
         >>> x.randint(10)
         ivy.array([[1, 5],
@@ -387,6 +390,7 @@ class _ArrayWithRandom(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([5, 2, 9])
         >>> y = x.shuffle()
         >>> print(y)

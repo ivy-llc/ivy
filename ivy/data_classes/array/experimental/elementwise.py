@@ -31,6 +31,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1., 2., 3.])
         >>> y = x.lgamma()
         >>> print(y)
@@ -67,6 +68,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
         >>> y = x.sinc()
         >>> print(y)
@@ -102,6 +104,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([2, 3, 4])
         >>> x2 = ivy.array([1, 5, 2])
         >>> x1.fmod(x2)
@@ -142,6 +145,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([2, 3, 4])
         >>> x2 = ivy.array([1, 5, 2])
         >>> ivy.fmax(x1, x2)
@@ -185,9 +189,11 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x1.float_power(3)
         ivy.array([1.,    8.,   27.,   64.,  125.])
+
         >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x2 = ivy.array([2, 3, 3, 2, 1])
         >>> x1.float_power(x2)
@@ -225,10 +231,12 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([0, 1, 2, 3])
         >>> x2 = ivy.array([-1, 1, -2, 2])
         >>> x1.copysign(x2)
         ivy.array([-0.,  1., -2.,  3.])
+
         >>> x2.copysign(-1)
         ivy.array([-1., -1., -2., -2.])
         """
@@ -273,13 +281,16 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 3])
         >>> x.count_nonzero()
         ivy.array(3)
+
         >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
         >>> x.count_nonzero(axis=0)
         ivy.array([[1, 2],
                [2, 2]])
+
         >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
         >>> x.count_nonzero(axis=(0,1), keepdims=True)
         ivy.array([[[3, 4]]])
@@ -327,11 +338,14 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
         >>> ivy.nansum(a)
         10.0
+
         >>> ivy.nansum(a, axis=0)
         ivy.array([2.1, 5.8, 2.1])
+
         >>> ivy.nansum(a, axis=1)
         ivy.array([5.5, 4.5])
         """
@@ -379,18 +393,22 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
         >>> b = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
         >>> a.isclose(b)
         ivy.array([[True, True, False],
                [False, True, True]])
+
         >>> a.isclose(b, equal_nan=True)
         ivy.array([[True, True, True],
                [True, True, True]])
+
         >>> a=ivy.array([1.0, 2.0])
         >>> b=ivy.array([1.0, 2.001])
         >>> a.isclose(b, atol=0.0)
         ivy.array([True, False])
+
         >>> a.isclose(b, rtol=0.01, atol=0.0)
         ivy.array([True, True])
         """
@@ -423,6 +441,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, -2, 3])
         >>> x.signbit()
         ivy.array([False, True, False])
@@ -459,6 +478,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([3.0, 4.0, 5.0])
         >>> y = ivy.array([4.0, 5.0, 6.0])
         >>> x.hypot(y)
@@ -506,6 +526,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([1e10, 1e-7])
         >>> x2 = ivy.array([1.00001e10, 1e-8])
         >>> y = x1.allclose(x2)
@@ -567,6 +588,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1, 2, 4, 7, 0])
         >>> x.diff()
         ivy.array([ 1,  2,  3, -7])
@@ -601,6 +623,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([2.1, 2.9, -2.1])
         >>> x.fix()
         ivy.array([ 2.,  2., -2.])
@@ -636,6 +659,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x1 = ivy.array([1.0e-50, 2.0e+50])
         >>> x2 = ivy.array([2.0, 1.0])
         >>> x1.nextafter(x2)
@@ -673,6 +697,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([5.0, 3.0])
         >>> q = ivy.array([2.0])
         >>> x.zeta(q)
@@ -716,6 +741,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> spacing = (ivy.array([-2., -1., 1., 4.]),)
         >>> x = ivy.array([4., 1., 1., 16.], )
         >>> ivy.gradient(x, spacing=spacing)
@@ -783,6 +809,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.zeros(3)
         >>> y = ivy.array([-1.0, 0.0, 1.0])
         >>> x.xlogy(y)
@@ -842,6 +869,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([4+3j, 6+2j, 1-6j])
         >>> x.conj()
         ivy.array([4-3j, 6-2j, 1+6j])
@@ -882,6 +910,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 2.0, 3.0, 4.0])
         >>> end = ivy.array([10.0, 10.0, 10.0, 10.0])
         >>> weight = 0.5
@@ -919,6 +948,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 2.0, 3.0])
         >>> y = ivy.array([3.0, 2.0, 1.0])
         >>> x.ldexp(y)
@@ -949,6 +979,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 2.0, 3.0])
         >>> x.frexp()
         ivy.array([[0.5, 0.5, 0.75], [1, 2, 2]])
@@ -978,6 +1009,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.5, 2.7, 3.9])
         >>> x.modf()
         (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
@@ -1015,6 +1047,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([.9, 3, 3.2])
         >>> y = ivy.digamma(x)
         ivy.array([-0.7549271   0.92278427  0.9988394])
@@ -1049,6 +1082,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.arange(100)
         >>> x = ivy.reshape(x, (10, 10))
         >>> x.sparsify_tensor(10)

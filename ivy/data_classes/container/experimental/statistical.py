@@ -261,6 +261,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
         >>> ivy.Container.static_moveaxis(x, 0, -1).shape
         {
@@ -314,6 +315,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(
         >>>     a=ivy.array([[10, 7, 4], [3, 2, 1]]),
         >>>     b=ivy.array([[1, 4, 2], [8, 7, 0]])
@@ -640,6 +642,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                               y=ivy.array([1., 2., 3., 4.]))
+
         >>> q = 0.5
         >>> b = ivy.Container.static_quantile(a, q)
         >>> print(b)
@@ -650,6 +653,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                               y=ivy.array([1., 2., 3., 4.]))
+
         >>> q = ivy.array([0.5, 0.75])
         >>> b = ivy.Container.static_quantile(a, q)
         >>> print(b)
@@ -660,6 +664,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                               y=ivy.array([1., 2., 3., 4.]))
+
         >>> q = ivy.array([0.5, 0.75])
         >>> b = ivy.Container.static_quantile(a, q, axis = 0)
         >>> print(b)
@@ -681,6 +686,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                               y=ivy.array([1., 2., 3., 4.]))
+
         >>> q = ivy.array([0.3, 0.7])
         >>> b = ivy.Container.static_quantile(a, q, axis = 0, interpolation="lower")
         >>> print(b)
@@ -972,6 +978,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]))
         >>> ivy.Container.static_nanmedian(x)
         {
@@ -1039,13 +1046,16 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input and default backend set as `numpy`:
+
         >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]),
                 b=ivy.array([[12, 10, 34], [45, 23, ivy.nan]]))
+
         >>> x.nanmedian()
         {
             a: ivy.array(3.),
             b: ivy.array(23.)
         }
+
         >>> x.nanmedian(axis=0)
         {
             a: ivy.array([6.5, 2., 2.5]),
@@ -1091,8 +1101,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([1, 1, 2, 2, 2, 3]),
                             b=ivy.array([1, 1, 2, 2, 2, 3]))
+
         >>> ivy.Container.static_bincount(x)
             {
                 a: array([0, 2, 3, 1])
@@ -1140,9 +1152,11 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.bincount(a)
             3.0
+
         >>> a.bincount(a, axis=0)
             array([6.5, 2. , 2.5])
         """
@@ -1182,6 +1196,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([2.5])
         >>> x = ivy.array([1.7, 1.2])
         >>> a.igamma(x)
@@ -1227,6 +1242,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> a = ivy.array([2.5])
         >>> x = ivy.array([1.7, 1.2])
         >>> a.igamma(x)
@@ -1313,6 +1329,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
+
         >>> x = ivy.array([1., 2., 3.])
         >>> y = ivy.Container(a=ivy.array([3. ,2. ,1.]), b=ivy.array([-1., -2., -3.]))
         >>> z = ivy.Container.static_cov(x, y)
@@ -1325,6 +1342,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         }
 
         With multiple :class:`ivy.Container` inputs:
+
         >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
         >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
         >>> z = ivy.Container.static_cov(x, y)
@@ -1429,6 +1447,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
         >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
         >>> z = x.cov(y)
@@ -1609,6 +1628,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> x.cummin(axis=1, out=y)
         {
@@ -1697,6 +1717,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> ivy.Container.static_cummax(x, axis=1, out=y)
         >>> print(y)
@@ -1790,6 +1811,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
                               b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> x.static_cummin(axis=1, out=y)
         {

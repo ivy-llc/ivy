@@ -146,6 +146,7 @@ def random_uniform(
 
     Examples
     --------
+
     >>> ivy.random_uniform()
     ivy.array(0.26431865)
 
@@ -259,6 +260,7 @@ def random_normal(
 
     Examples
     --------
+
     >>> ivy.random_normal()
     ivy.array(-0.22346112)
 
@@ -372,6 +374,7 @@ def multinomial(
 
     Examples
     --------
+
     >>> y = ivy.multinomial(10, 5)
     >>> print(y)
     ivy.array([[1, 8, 7, 8, 3]])
@@ -484,6 +487,7 @@ def randint(
 
     Examples
     --------
+
     >>> y = ivy.randint(0, 9, shape=(1,1))
     >>> print(y)
     ivy.array([[5]])
@@ -524,6 +528,7 @@ def seed(*, seed_value: int = 0) -> None:
 
     Examples
     --------
+
     >>> ivy.seed(seed_value=42)
     """
     return ivy.current_backend().seed(seed_value=seed_value)

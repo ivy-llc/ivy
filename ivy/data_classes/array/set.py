@@ -34,6 +34,7 @@ class _ArrayWithSet(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0., 1., 2. , 1. , 0.])
         >>> y = x.unique_counts()
         >>> print(y)
@@ -90,6 +91,7 @@ class _ArrayWithSet(abc.ABC):
 
         Examples
         --------
+
         >>> import ivy
         >>> x = ivy.array([1, 2, 2, 3, 4, 4, 4])
         >>> print(x.unique_values())
@@ -135,6 +137,7 @@ class _ArrayWithSet(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.randint(0, 10, shape=(2, 2), seed=0)
         >>> z = x.unique_all()
         >>> print(z)
@@ -173,6 +176,7 @@ class _ArrayWithSet(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0.3,0.4,0.7,0.4,0.2,0.8,0.5])
         >>> y = x.unique_inverse()
         >>> print(y)

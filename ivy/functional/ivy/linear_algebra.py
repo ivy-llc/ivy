@@ -1345,6 +1345,7 @@ def matrix_power(
 
     >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]),
                           b = ivy.array([[1., 0.], [0., 0.]]))
+
     >>> ivy.matrix_power(x,3)
     {
         a: ivy.array([[37., 54.],
@@ -1613,6 +1614,7 @@ def outer(
 
     Examples
     --------
+
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> y = ivy.array([[5., 6.],[7., 8.]])
     >>> d = ivy.outer(x,y)
@@ -1635,10 +1637,12 @@ def outer(
                         [3., 4.]],
                        [[5., 6.],
                         [7., 8.]]])
+
     >>> y = ivy.array([[[9., 10.],
                         [11., 12.]],
                        [[13., 14.],
                         [15., 16.]]])
+
     >>> d = ivy.outer(x, y)
     >>> print(d)
     ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],
@@ -1713,6 +1717,7 @@ def pinv(
 
     Examples
     --------
+
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> y = ivy.pinv(x)
     >>> print(y)
@@ -2611,6 +2616,7 @@ def vector_norm(
 
     Examples
     --------
+
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.vector_norm(x)
     >>> print(y)

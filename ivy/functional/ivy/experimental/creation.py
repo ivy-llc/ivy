@@ -54,6 +54,7 @@ def vorbis_window(
 
     Examples
     --------
+
     >>> ivy.vorbis_window(3)
     ivy.array([0.38268346, 1. , 0.38268352])
 
@@ -100,6 +101,7 @@ def hann_window(
 
     Examples
     --------
+
     >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
@@ -150,10 +152,13 @@ def kaiser_window(
 
     Examples
     --------
+
     >>> ivy.kaiser_window(5)
     ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])
+
     >>> ivy.kaiser_window(5, True, 5)
     ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])
+
     >>> ivy.kaiser_window(5, False, 5)
     ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])
     """
@@ -195,6 +200,7 @@ def kaiser_bessel_derived_window(
 
     Examples
     --------
+
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
@@ -253,10 +259,13 @@ def hamming_window(
 
     Examples
     --------
+
     >>> ivy.hamming_window(5)
     ivy.array([0.0800, 0.3979, 0.9121, 0.9121, 0.3979])
+
     >>> ivy.hamming_window(5, periodic=False)
     ivy.array([0.0800, 0.5400, 1.0000, 0.5400, 0.0800])
+
     >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
     ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
     """
@@ -337,6 +346,7 @@ def tril_indices(
 
     Examples
     --------
+
     >>> x = ivy.tril_indices(4,4,0)
     >>> print(x)
     (ivy.array([0, 1, 1, 2, 2, 2, 3, 3, 3, 3]),
@@ -499,6 +509,7 @@ def ndenumerate(
 
     Examples
     --------
+
     >>> a = ivy.array([[1, 2], [3, 4]])
     >>> for index, x in ivy.ndenumerate(a):
     >>>     print(index, x)
@@ -539,6 +550,7 @@ def ndindex(
 
     Examples
     --------
+
     >>> a = ivy.array([[1, 2], [3, 4]])
     >>> for index in ivy.ndindex(a):
     >>>     print(index)
@@ -580,6 +592,7 @@ def indices(
 
     Examples
     --------
+
     >>> ivy.indices((3, 2))
     ivy.array([[[0 0]
                 [1 1]
@@ -587,6 +600,7 @@ def indices(
                [[0 1]
                 [0 1]
                 [0 1]]])
+
     >>> ivy.indices((3, 2), sparse=True)
     (ivy.array([[0], [1], [2]]), ivy.array([[0, 1]]))
     """
@@ -723,8 +737,10 @@ def blackman_window(
 
     Examples
     --------
+
     >>> ivy.blackman_window(4, periodic = True)
     ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
+
     >>> ivy.blackman_window(7, periodic = False)
     ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
         6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
@@ -950,6 +966,7 @@ def mel_weight_matrix(
 
     Examples
     --------
+
     >>> ivy.mel_weight_matrix(3,3,8000)
     ivy.array([[0.        ,0.        , 0.],
               [0.        ,0. , 0.75694758],

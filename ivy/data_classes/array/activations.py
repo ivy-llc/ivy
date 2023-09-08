@@ -40,6 +40,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.relu()
         >>> print(y)
@@ -80,6 +81,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([0.39, -0.85])
         >>> y = x.leaky_relu()
         >>> print(y)
@@ -122,6 +124,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1.2, -0.6, 1.5])
         >>> y = x.gelu()
         >>> print(y)
@@ -154,6 +157,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1., 1., 2.])
         >>> y = x.sigmoid()
         >>> print(y)
@@ -194,6 +198,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1.0, 0, 1.0])
         >>> y = x.softmax()
         >>> print(y)
@@ -236,6 +241,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-0.3461, -0.6491])
         >>> y = x.softplus()
         >>> print(y)
@@ -288,6 +294,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1.0, -0.98, 2.3])
         >>> y = x.log_softmax()
         >>> print(y)
@@ -315,6 +322,7 @@ class _ArrayWithActivations(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.mish()
         >>> print(y)

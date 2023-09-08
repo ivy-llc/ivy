@@ -227,6 +227,7 @@ class _ArrayWithSearching(abc.ABC):
 
         Examples
         --------
+
         >>> condition = ivy.array([[True, False], [True, True]])
         >>> x1 = ivy.array([[1, 2], [3, 4]])
         >>> x2 = ivy.array([[5, 6], [7, 8]])

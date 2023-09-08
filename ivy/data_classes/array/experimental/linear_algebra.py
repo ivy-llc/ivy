@@ -63,6 +63,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> alpha = ivy.array([0., 1., 2.])
         >>> beta = ivy.array([0., 1.])
         >>> y = alpha.eigh_tridiagonal(beta)
@@ -96,6 +97,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([1,2])
         >>> x.diagflat(k=1)
         ivy.array([[0, 1, 0],
@@ -126,6 +128,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> a = ivy.array([1,2])
         >>> b = ivy.array([3,4])
         >>> a.diagflat(b)
@@ -141,10 +144,12 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[[1., 0.],
                             [0., 1.]],
                             [[2., 0.],
                             [0., 2.]]])
+
         >>> ivy.matrix_exp(x)
         ivy.array([[[2.7183, 1.0000],
                     [1.0000, 2.7183]],
@@ -164,6 +169,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> x.eig()
         (
@@ -185,6 +191,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> x.eigvals()
         ivy.array([-0.37228132+0.j,  5.37228132+0.j])
@@ -204,8 +211,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = np.array([[1.-1.j, 2.+2.j],
                           [3.+3.j, 4.-4.j]])
+
         >>> x = ivy.array(x)
         >>> x.adjoint()
         ivy.array([[1.+1.j, 3.-3.j],
@@ -230,6 +239,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> A = ivy.arange(2 * 3).reshape((2, 3))
         >>> B = ivy.arange(3 * 2).reshape((3, 2))
         >>> C = ivy.arange(2 * 2).reshape((2, 2))
@@ -249,6 +259,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1,2], [3,4]])
         >>> x.cond()
         ivy.array(14.933034373659268)

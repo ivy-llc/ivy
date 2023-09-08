@@ -47,6 +47,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[2, 3, 8],[1, 2, 1]])
         >>> y = x.eye_like()
         >>> print(y)
@@ -163,8 +164,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> ivy.blackman_window(4, periodic = True)
         ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
+
         >>> ivy.blackman_window(7, periodic = False)
         ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
         6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
@@ -249,6 +252,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
 
         Examples
         --------
+
         >>> x = ivy.array([[1, 2, 3],
         >>>                [1, 1, 1],
         >>>                [5,6,7  ]])
