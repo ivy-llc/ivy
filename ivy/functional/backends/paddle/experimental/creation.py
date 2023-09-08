@@ -230,3 +230,22 @@ def mel_weight_matrix(
         upper_edge_hertz,
     )
     return paddle.transpose(mel_mat, (1, 0))
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float16", "int8", "int16", "uint8", "complex", "bool")
+        }
+    },
+    backend_version,
+)
+def polyval(
+    coeffs: paddle.Tensor,
+    x: paddle.Tensor,
+) -> paddle.Tensor:
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = paddle.zeros_like(x)
+    for coeff in coeffs:
+        y = y * x + coeff
+    return paddle.cast(y, ivy.dtype(coeffs)).detach().numpy()
