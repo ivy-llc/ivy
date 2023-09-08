@@ -222,8 +222,7 @@ def triu_indices(row, col=None, offset=0, dtype="int64"):
 )
 @to_ivy_arrays_and_back
 def uniform(shape, min=-1.0, max=1.0, seed=0, name=None):
-    x = ivy.array(shape)
-    return ivy.uniform(low=min, high=max, shape=x.shape, dtype=x.dtype, seed=seed)
+    return ivy.uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
 
 
 @with_unsupported_dtypes({"2.5.1 and below": "int8"}, "paddle")
