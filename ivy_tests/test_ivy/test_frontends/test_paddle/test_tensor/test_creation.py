@@ -749,7 +749,6 @@ def test_paddle_uniform(
     max,
     seed,
     dtype_and_x,
-    backend_fw,
     frontend,
     test_flags,
 ):
@@ -757,11 +756,10 @@ def test_paddle_uniform(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
-        x=x[0],
+        shape=x[0],
         min=min,
         max=max,
         seed=seed,
