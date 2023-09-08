@@ -7,7 +7,6 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
-
 def abs(x, name=None):
     return ivy.abs(x)
 
@@ -89,6 +88,11 @@ def angle(x, name=None):
 def any(x, axis=None, keepdim=False, name=None):
     return ivy.any(x, axis=axis, keepdims=keepdim)
 
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def ceil_(x, name=None):
+    return ivy.ceil(x, out=x)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
