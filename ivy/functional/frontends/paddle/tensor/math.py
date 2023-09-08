@@ -1,5 +1,5 @@
 # local
-from ..math import *  # noqa: F401
+from ..math import exp, floor, lerp, reciprocal, sqrt  # noqa: F401
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
@@ -19,6 +19,12 @@ def ceil_(x, name=None):
 @to_ivy_arrays_and_back
 def exp_(x, name=None):
     return ivy.inplace_update(x, exp(x))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_(x, name=None):
+    return ivy.inplace_update(x, floor(x))
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
