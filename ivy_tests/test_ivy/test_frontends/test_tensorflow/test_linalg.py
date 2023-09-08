@@ -176,7 +176,7 @@ def _get_second_matrix(draw):
 
 
 @st.composite
-def _get_tridiagonal_matrix(draw):
+def _get_tridiagonal_dtype_matrix_format(draw):
     input_dtype_strategy = st.shared(
         st.sampled_from(draw(helpers.get_dtypes("float_and_complex"))),
         key="shared_dtype",
@@ -185,6 +185,7 @@ def _get_tridiagonal_matrix(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
+    diagonals_format = draw(st.sampled_from(["compact", "matrix", None]))
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -193,7 +194,16 @@ def _get_tridiagonal_matrix(draw):
             max_value=5,
         ).filter(tridiagonal_matrix_filter)
     )
-    return input_dtype, matrix
+    if diagonals_format in ["compact", None]:
+        m = matrix.shape[0]
+        dummy_idx = [0, 0]
+        indices = [
+            [[i, i + 1] for i in range(m - 1)] + [dummy_idx],
+            [[i, i] for i in range(m)],
+            [dummy_idx] + [[i + 1, i] for i in range(m - 1)],
+        ]
+        matrix = ivy.gather_nd(matrix, indices)
+    return input_dtype, matrix, diagonals_format
 
 
 # --- Main --- #
@@ -1254,9 +1264,8 @@ def test_tensorflow_trace(
 # tridiagonal_solve
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.tridiagonal_solve",
-    x=_get_tridiagonal_matrix(),
+    x=_get_tridiagonal_dtype_matrix_format(),
     y=_get_second_matrix(),
-    diagonals_format=st.sampled_from(["matrix"]),
     transpose_rhs=st.just(False),
     conjugate_rhs=st.booleans(),
 )
@@ -1264,7 +1273,6 @@ def test_tensorflow_tridiagonal_solve(
     *,
     x,
     y,
-    diagonals_format,
     transpose_rhs,
     conjugate_rhs,
     frontend,
@@ -1273,7 +1281,7 @@ def test_tensorflow_tridiagonal_solve(
     fn_tree,
     on_device,
 ):
-    input_dtype1, x1 = x
+    input_dtype1, x1, diagonals_format = x
     input_dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
