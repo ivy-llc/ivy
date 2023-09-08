@@ -288,7 +288,6 @@ def test_paddle_bincount(
         min_value=-10,
         max_value=10,
     ),
-    aliases=["paddle.tensor.linalg.bmm"],
     test_with_out=st.just(False),
 )
 def test_paddle_bmm(
@@ -315,7 +314,7 @@ def test_paddle_bmm(
 
 # cholesky
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.cholesky",
+    fn_tree="paddle.cholesky",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
@@ -350,7 +349,7 @@ def test_paddle_cholesky(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.cholesky_solve",
+    fn_tree="paddle.cholesky_solve",
     x=_get_second_matrix(),
     y=_get_paddle_cholesky_matrix(),
     test_with_out=st.just(False),
@@ -383,7 +382,7 @@ def test_paddle_cholesky_solve(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.cond",
+    fn_tree="paddle.cond",
     dtype_and_x=_get_dtype_and_matrix_non_singular(dtypes=["float32", "float64"]),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     test_with_out=st.just(False),
@@ -416,7 +415,7 @@ def test_paddle_cond(
 
 # cross
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.cross",
+    fn_tree="paddle.cross",
     dtype_x_y_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -490,7 +489,7 @@ def test_paddle_dist(
 
 # dot
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.dot",
+    fn_tree="paddle.dot",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
@@ -524,7 +523,7 @@ def test_paddle_dot(
 
 # eig
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.eig",
+    fn_tree="paddle.eig",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -571,7 +570,7 @@ def test_paddle_eig(
 
 # eigh
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.eigh",
+    fn_tree="paddle.eigh",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
@@ -621,7 +620,7 @@ def test_paddle_eigh(
 
 # eigvals
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.eigvals",
+    fn_tree="paddle.eigvals",
     dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -653,7 +652,7 @@ def test_paddle_eigvals(
 
 # eigvalsh
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.eigvalsh",
+    fn_tree="paddle.eigvalsh",
     dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
@@ -697,7 +696,6 @@ def test_paddle_eigvalsh(
         min_value=-10,
         max_value=10,
     ),
-    aliases=["paddle.tensor.linalg.matmul"],
     transpose_x=st.booleans(),
     transpose_y=st.booleans(),
     test_with_out=st.just(False),
@@ -730,7 +728,7 @@ def test_paddle_matmul(
 
 # matrix_power
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.matrix_power",
+    fn_tree="paddle.matrix_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -764,7 +762,7 @@ def test_paddle_matrix_power(
 
 # norm
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.norm",
+    fn_tree="paddle.norm",
     dtype_values_axis=_dtype_values_axis(),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
@@ -797,7 +795,7 @@ def test_paddle_norm(
 
 # pinv
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.pinv",
+    fn_tree="paddle.pinv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
@@ -842,7 +840,7 @@ def test_paddle_pinv(
 
 # qr
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.qr",
+    fn_tree="paddle.qr",
     dtype_and_x=_get_dtype_and_matrix(),
     mode=st.sampled_from(("reduced", "complete")),
     test_with_out=st.just(False),
@@ -873,8 +871,7 @@ def test_paddle_qr(
 
 # solve
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.solve",
-    aliases=["paddle.linalg.solve"],
+    fn_tree="paddle.solve",
     x=_get_first_matrix(),
     y=_get_second_matrix(),
     test_with_out=st.just(False),
