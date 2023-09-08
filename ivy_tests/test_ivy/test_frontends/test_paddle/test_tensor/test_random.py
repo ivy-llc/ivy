@@ -168,6 +168,36 @@ def test_paddle_randint(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.rnormal",
+    input_dtypes=st.sampled_from(["int32", "int64"]),
+    shape=helpers.get_shape(
+        allow_none=False, min_num_dims=1, max_num_dims=1, min_dim_size=2
+    ),
+    dtype=st.sampled_from(["float32", "float64"]),
+)
+def test_paddle_rnormal(
+    *,
+    input_dtypes,
+    shape,
+    dtype,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtypes],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        shape=shape,
+        dtype=dtype,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.randint_like",
     input_dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
