@@ -3,13 +3,31 @@
 .. include:: ../README.md
   :parser: myst_parser.sphinx_
 
+
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Overview
+
+  Home <self>
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: The Basics
 
   overview/get_started.rst
-  Examples <demos/index.rst>
+  demos/quickstart.ipynb
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Demos
+
+  demos/learn_the_basics.rst
+  demos/guides.rst
+  demos/examples_and_demos.rst
 
 
 .. toctree::
@@ -19,7 +37,6 @@
 
   overview/motivation.rst
   overview/related_work.rst
-  overview/extensions.rst
 
 
 .. toctree::
@@ -37,17 +54,14 @@
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Compiling and Transpiling
+  :caption: API Reference
 
-  compiler/setting_up.rst
-  compiler/compiler.rst
-  compiler/transpiler.rst
+  overview/one_liners.rst
 
 
 .. autosummary::
   :toctree: docs/functional
   :template: top_functional_toc.rst
-  :caption: API Reference
   :recursive:
   :hide-table:
 
