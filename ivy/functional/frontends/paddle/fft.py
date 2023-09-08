@@ -122,3 +122,70 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     if ivy.isreal(x):
         time_domain = ivy.real(time_domain)
     return time_domain
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def  stft(
+    x,
+    n_fft,
+    hop_length=None,
+    win_length=None,
+    window=None,
+    center=True,
+    pad_mode="reflect",
+    normalized=False,
+    onesided=True,
+    name=None,
+):
+    # Calculate the STFT
+    if win_length is None:
+        win_length = n_fft
+    if hop_length is None:
+        hop_length = n_fft // 4
+
+    if window is None:
+        window = ivy.ones(n_fft)  # Default rectangular window
+
+    # Ensure the input signal is Ivy array
+    x = ivy.array(x)
+
+    # Calculate the STFT
+    x_len = x.shape[-1]
+    num_frames = 1 + (x_len - n_fft) // hop_length
+    stft_result = ivy.zeros((num_frames, n_fft), dtype=x.dtype)
+
+    for t in range(num_frames):
+        start = t * hop_length
+        end = start + n_fft
+
+        if center:
+            pad_before = max(0, (win_length - n_fft) // 2)
+            pad_after = max(0, win_length - n_fft - pad_before)
+            padded_signal = ivy.pad(x[..., start:end], [(0, 0)] * (x.ndim - 1) + [(pad_before, pad_after)])
+        else:
+            padded_signal = x[..., start:end]
+
+        frame = padded_signal * window
+        frame_fft = ivy.fft(frame)
+        stft_result[t] = frame_fft
+
+    if onesided:
+        stft_result = stft_result[..., :n_fft // 2 + 1]
+
+    if normalized:
+        stft_result /= ivy.sqrt(n_fft)
+
+    return stft_result
