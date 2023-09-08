@@ -733,27 +733,26 @@ def test_paddle_triu_indices(
     min=helpers.floats(min_value=-1, max_value=0),
     max=helpers.floats(min_value=0.1, max_value=1),
     seed=st.integers(min_value=2, max_value=5),
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=1000,
+    shape=helpers.get_shape(
+        allow_none=False,
         min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
     ),
+    dtypes=helpers.get_dtypes("float", full=False, key="dtype"),
 )
 def test_paddle_uniform(
     fn_tree,
     min,
     max,
     seed,
-    dtype_and_x,
+    dtype,
+    shape,
     frontend,
     backend_fw,
     test_flags,
 ):
-    dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -761,7 +760,7 @@ def test_paddle_uniform(
         test_flags=test_flags,
         fn_tree=fn_tree,
         test_values=False,
-        shape=x[0],
+        shape=shape,
         min=min,
         max=max,
         seed=seed,
