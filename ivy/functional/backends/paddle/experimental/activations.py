@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 import paddle
 import paddle.nn.functional as F
 
@@ -10,9 +10,16 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
-def logit(x: paddle.Tensor, /, *, eps: Optional[float] = None, out=None):
+def logit(
+    x: paddle.Tensor,
+    /,
+    *,
+    eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out=None,
+):
     if x.dtype in [paddle.float32, paddle.float64]:
         return paddle.logit(x, eps)
     if eps is None:
