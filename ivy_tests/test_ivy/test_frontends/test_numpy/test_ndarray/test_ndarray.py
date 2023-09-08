@@ -3671,3 +3671,16 @@ def test_numpy_ndarray_view(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
+
+
+@given(
+    val=st.one_of(st.floats(allow_nan=False), st.integers(), st.booleans()),
+    dtype=st.sampled_from([np.int8, np.int16, np.int32, np.int64, np.float16, np.float32, np.float64]),
+    offset=st.integers(min_value=0, max_value=10)
+)
+def test_setfield(val, dtype, offset):
+    arr_np = np.array([val], dtype=dtype)
+    arr_ivy = ivy.array(arr_np)
+    np_result = arr_np.setfield(val, dtype=dtype, offset=offset)
+    ivy_result = arr_ivy.setfield(val, dtype=dtype, offset=offset)
+    assert_all_close(np_result, ivy_result, rtol=1e-5, atol=1e-5)
