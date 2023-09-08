@@ -170,6 +170,7 @@ def transpile(
 
 
 # TODO: include docstring
+# fixed docstring, check for PR
 def unify(
     *objs: Callable,
     source: Optional[str] = None,
@@ -178,6 +179,58 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
+    """
+    Unify and transpile one or more Callable objects from the source framework to the target framework.
+
+    This function takes one or more native Callable objects and transpiles them from the specified source framework
+    to the target framework. It provides a unified interface for working with different backend frameworks and allows
+    for seamless code execution across them.
+
+    Parameters:
+    objs (Callable):
+        One or more native Callable objects to be unified and transpiled.
+    source (Optional[str]):
+        The framework that the `objs` are originally from. If not provided, the function will attempt to infer it.
+    args (Optional[Tuple]):
+        If specified, arguments that will be used during transpilation.
+    kwargs (Optional[dict]):
+        If specified, keyword arguments that will be used during transpilation.
+    with_numpy (bool):
+        Whether to enable compatibility with NumPy when transpiling. Default is False.
+    **transpile_kwargs:
+        Additional keyword arguments to be passed to the transpiler.
+
+    Returns:
+    Callable:
+        A transpiled Callable object that can be executed in the target framework.
+
+    Examples:
+    --------
+
+    >>> import ivy
+    >>> ivy.set_backend("torch")
+    >>> x = ivy.array([1.])
+    >>> def fn(x):
+    ...     y = ivy.sum(x)
+    ...     z = ivy.prod(x)
+    ...     a = ivy.sin(y)
+    ...     b = ivy.cos(z)
+    ...     c = ivy.tan(z)
+    ...     i = ivy.round(a)
+    ...     j = ivy.floor(b)
+    ...     k = ivy.ceil(c)
+    ...     return i, j, k
+    >>> transpiled_fn = ivy.unify(fn, source="torch", args=(x,), with_numpy=True)
+
+    The `transpiled_fn` can now be executed in the specified target framework.
+
+    Note:
+    - This function is designed for interoperability between different backend frameworks, allowing you to work with
+      functions and models from various frameworks in a unified manner.
+    - The `with_numpy` parameter ensures that the transpiled code is compatible with NumPy, which can be useful when
+      working with functions that rely on NumPy features.
+
+    """
     if python_version[1] == "8":
         from ._compiler_38 import unify as _unify
     else:
@@ -190,3 +243,4 @@ def unify(
         with_numpy=with_numpy,
         **transpile_kwargs,
     )
+
