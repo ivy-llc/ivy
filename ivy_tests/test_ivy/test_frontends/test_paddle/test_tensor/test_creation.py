@@ -736,8 +736,10 @@ def test_paddle_triu_indices(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=1000,
-        max_num_dims=1,
-        min_dim_size=2
+        min_num_dims=1,
+        max_num_dims=1
+        min_dim_size=2,
+        max_dim_size=2,
     )
 )
 def test_paddle_uniform(
