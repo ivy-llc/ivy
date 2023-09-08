@@ -915,7 +915,7 @@ def test_frontend_function(
 
         if not test_values:
             ret = ivy_backend.nested_map(
-                ret, _frontend_array_to_ivy, include_derived={tuple: True}
+                ret, _frontend_array_to_ivy, include_derived={"tuple": True}
             )
 
         def arrays_to_numpy(x):
@@ -2377,7 +2377,7 @@ def get_ret_and_flattened_np_array(
                 return ivy_backend.to_ivy(x)
             return x
 
-        ret = ivy_backend.nested_map(ret, map_fn, include_derived={tuple: True})
+        ret = ivy_backend.nested_map(ret, map_fn, include_derived={"tuple": True})
         return ret, flatten_and_to_np(backend=backend_to_test, ret=ret)
 
 
@@ -2397,24 +2397,24 @@ def get_frontend_ret(
     with BackendHandler.update_backend(backend) as ivy_backend:
         if not as_ivy_arrays and test_compile:
             args, kwargs = ivy_backend.nested_map(
-                (args, kwargs), _frontend_array_to_ivy, include_derived={tuple: True}
+                (args, kwargs), _frontend_array_to_ivy, include_derived={"tuple": True}
             )
         with ivy_backend.PreciseMode(precision_mode):
             ret = frontend_fn(*args, **kwargs)
         if test_compile and frontend_array_function is not None:
             if as_ivy_arrays:
                 ret = ivy_backend.nested_map(
-                    ret, ivy_backend.asarray, include_derived={tuple: True}
+                    ret, ivy_backend.asarray, include_derived={"tuple": True}
                 )
             else:
                 ret = ivy_backend.nested_map(
                     ret,
                     arrays_to_frontend(backend, frontend_array_function),
-                    include_derived={tuple: True},
+                    include_derived={"tuple": True},
                 )
         elif as_ivy_arrays:
             ret = ivy_backend.nested_map(
-                ret, _frontend_array_to_ivy, include_derived={tuple: True}
+                ret, _frontend_array_to_ivy, include_derived={"tuple": True}
             )
     return ret
 
