@@ -1,3 +1,4 @@
+import pytest
 from hypothesis import strategies as st
 import numpy as np
 
@@ -453,6 +454,14 @@ def test_random_tr(
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+def test_random_tr_throws_error_when_rank_first_last_elem_not_equal():
+    rank = [2, 3]
+    shape = [1, 2, 3]
+    with pytest.raises(ValueError) as e:
+        ivy.random_tr(shape, rank)
+    assert e.value.args
 
 
 @handle_test(
