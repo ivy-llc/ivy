@@ -579,44 +579,80 @@ def test_tensorflow_inv(
 
 
 # tridiagonal_solve
+def tridiagonal_matrix_filter(x):
+    dim = x.shape[0]
+    if ivy.abs(ivy.det(x)) < 1e-3:
+        return False
+    for i in range(dim):
+        for j in range(dim):
+            cell = x[i][j]
+            if i == j or i == j-1 or i == j+1:
+                if cell == 0:
+                    return False
+            else:
+                if cell != 0:
+                    return False
+    return True
+
+
+@st.composite
+def _get_tridiagonal_matrix(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float_and_complex"))),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(tridiagonal_matrix_filter)
+    )
+    return input_dtype, matrix
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.tridiagonal_solve",
-    dtype_and_x=helpers.dtype_and_values(
-        num_arrays=2,
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-100,
-        max_value=100,
-        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda x: "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1][0])) != 0
-    ),
-    adjoint=st.booleans(),
-    test_with_out=st.just(False),
+    x=_get_tridiagonal_matrix(),
+    y=_get_second_matrix(),
+    diagonals_format=st.sampled_from(['matrix']),
+    transpose_rhs=st.just(False),
+    conjugate_rhs=st.booleans(),
 )
 def test_tensorflow_tridiagonal_solve(
     *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
+    x,
+    y,
+    diagonals_format,
+    transpose_rhs,
+    conjugate_rhs,
     frontend,
     backend_fw,
     test_flags,
-    adjoint,
+    fn_tree,
+    on_device,
 ):
-    dtype, x = dtype_and_x
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
     helpers.test_frontend_function(
-        input_dtypes=dtype,
-        rtol=1e-01,
-        atol=1e-01,
-        frontend=frontend,
+        input_dtypes=[input_dtype1, input_dtype2],
         backend_to_test=backend_fw,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        adjoint=adjoint,
+        rtol=1e-3,
+        atol=1e-3,
+        diagonals=x1,
+        rhs=x2,
+        diagonals_format=diagonals_format,
+        transpose_rhs=transpose_rhs,
+        conjugate_rhs=conjugate_rhs,
     )
 
 

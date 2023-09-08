@@ -160,6 +160,18 @@ def inv(input, adjoint=False, name=None):
     return ivy.inv(input, adjoint=adjoint)
 
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
 def tridiagonal_solve(
     diagonals,
     rhs,
