@@ -384,6 +384,22 @@ def mul(input, other, *, out=None):
     return ivy.multiply(input, other, out=out)
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def mvlgamma(input, p, *, out=None):
+    ivy.assertions.check_greater(
+        p, 1, allow_equal=True, message="p has to be greater than or equal to 1"
+    )
+    c = 0.25 * p * (p - 1) * ivy.log(ivy.pi, out=out)
+    b = 0.5 * ivy.arange((1 - p), 1, 1, dtype=input.dtype, device=input.device, out=out)
+    return (
+        ivy.sum(
+            ivy.lgamma(ivy.expand_dims(input, axis=-1) + b, out=out), axis=-1, out=out
+        )
+        + c
+    )
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):

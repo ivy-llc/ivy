@@ -452,11 +452,13 @@ def sigmoid(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -468,6 +470,9 @@ def softmax(
         Input array.
     axis
         The dimension softmax would be performed on. The default is ``None``.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -584,9 +589,8 @@ def softplus(
     ret
         an array containing the softplus activation of each element in ``x``.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-0.3461, -0.6491])
