@@ -1402,11 +1402,6 @@ def test_tensorflow_log_poisson_loss(
     dtype_target_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
-        min_value=0,
-        max_value=1,
-        min_num_dims=1,
-        max_num_dims=5,
-        shared_dtype=True,
     ),
     compute_full_loss=st.booleans(),
     test_with_out=st.just(False),

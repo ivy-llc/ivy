@@ -59,10 +59,25 @@ class _ContainerWithLossesExperimental(ContainerBase):
         --------
         With :class:`ivy.Container` inputs:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = ivy.Container(a=ivy.array([2, 2, 2]), b=ivy.array([5, 5, 5]))
-        >>> z = ivy.Container.static_l1_loss(x, y)
-        >>> print(z)
+               >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+               >>> y = ivy.Container(a=ivy.array([2, 2, 2]), b=ivy.array([5, 5, 5]))
+               >>> z = ivy.Container.static_l1_loss(x, y)
+               >>> print(z)
+               {
+                   a: ivy.array(1.),
+                   b: ivy.array(0.)
+               }
+
+               With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+               >>> x = ivy.array([1, 2, 3])
+               >>> y = ivy.Container(a=ivy.array([2, 2, 2]), b=ivy.array([5, 5, 5]))
+               >>> z = ivy.Container.static_l1_loss(x, y)
+               >>> print(z)
+               {
+                   a: ivy.array(1.),
+                   b: ivy.array(4.)
+               }
         {
             a: ivy.array(1.),
             b: ivy.array(0.)
@@ -136,7 +151,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The L1 loss between the input array and the targeticted values.
+            half the L2 norm of a container without the sqrt:
 
         Examples
         --------
@@ -173,7 +188,47 @@ class _ContainerWithLossesExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        placeholder
+               ivy.Container static method variant of ivy.l2_loss. This method simply wraps the
+               function, and so the docstring for ivy.l2_loss also applies to this method with
+               minimal changes.
+
+               Parameters
+               ----------
+               input
+                   input array or container.
+               reduction
+                   ``'mean'``: The output will be averaged.
+                   ``'sum'``: The output will be summed.
+                   ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+               key_chains
+                   The key-chains to apply or not apply the method to. Default is ``None``.
+               to_apply
+                   If input, the method will be applied to key_chains, otherwise key_chains
+                   will be skipped. Default is ``input``.
+               prune_unapplied
+                   Whether to prune key_chains for which the function was not applied.
+                   Default is ``False``.
+               map_sequences
+                   Whether to also map method to sequences (lists, tuples).
+                   Default is ``False``.
+               out
+                   optional output container, for writing the result to. It must have a shape
+                   that the inputs broadcast to.
+
+               Returns
+               -------
+               ret
+                   half the L2 norm of a container without the sqrt:
+
+               Examples
+
+                >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+                >>> z = ivy.Container._static_l2_loss(x)
+                >>> print(z)
+                {
+                    a: ivy.array(2.),
+                    b: ivy.array(12.5)
+                }
         """
         return ContainerBase.cont_multi_map_in_function(
             "l2_loss",
@@ -198,7 +253,47 @@ class _ContainerWithLossesExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        placeholder
+        ivy.Container instance method variant of ivy.l2_loss. This method simply wraps
+        the function, and so the docstring for ivy.l2_loss also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        reduction
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed.
+            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``input``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The L2 loss between the input array and the targeticted values.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+        >>> z = x.l2_loss()
+        >>> print(z)
+        {
+            a: ivy.array(2.),
+            b: ivy.array(12.5)
+        }
         """
         return self._static_l2_loss(
             self,

@@ -58,7 +58,33 @@ class _ArrayWithLossesExperimental(abc.ABC):
     ) -> ivy.Array:
 
         """
-        placeholder
+        ivy.Array instance method variant of ivy.l2_loss. This method simply wraps the
+        function, and so the docstring for ivy.l2_loss also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        reduction
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed.
+            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            half the L2 norm of an array  without the sqrt:
+
+        Examples
+        --------
+        >>> x = ivy.array([1,2,3,4,5,6])
+        >>> z = x.l2_loss()
+        >>> print(z)
+        ivy.array(45.5)
         """
         return ivy.l2_loss(self._data)
 

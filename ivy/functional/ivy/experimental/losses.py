@@ -166,6 +166,38 @@ def l2_loss(
     reduction: Optional[str] = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    """
+    Computes half the L2 norm without the sqrt:
+
+    Parameters
+    ----------
+    input : Union[ivy.Array, ivy.NativeArray]
+        Input array containing input values.
+    reduction : str, optional
+        Reduction method for the output loss. Options:
+        "none" (no reduction), "mean" (mean of losses),
+        "sum" (sum of losses). Default: "mean".
+    out : Optional[ivy.Array], optional
+        Optional output array for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+
+    Returns
+    -------
+    ivy.Array
+        The L2 loss of the given value
+
+    Examples
+    --------
+    >>> x = ivy.array([1,2,3])
+    >>> z = ivy.l2_loss(x)
+    >>> print(z)
+    ivy.array(7.)
+    >>>a = ivy.array([[1,2,3],[4,5,6]])
+    >>>b = ivy.l2_loss(a)
+    >>>print(b)
+    ivy.array(45.5)
+    """
     loss= ivy.pow(input,2)
     if reduction == "sum":
         return ivy.divide(ivy.sum(loss, out=out),2)
