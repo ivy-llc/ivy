@@ -73,7 +73,7 @@ class PreciseMode:
     """Precise Mode Context Manager."""
 
     # noinspection PyShadowingNames
-    def __init__(self, precise_mode):
+    def __init__(self, precise_mode: bool):
         self._precise_mode = precise_mode
 
     def __enter__(self):
