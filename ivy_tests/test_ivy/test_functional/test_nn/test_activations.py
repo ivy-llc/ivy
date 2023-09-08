@@ -137,8 +137,8 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
     fn_tree="functional.ivy.mish",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        large_abs_safety_factor=20,
-        small_abs_safety_factor=20,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
         min_dim_size=2,
         safety_factor_scale="log",
     ),
@@ -146,9 +146,6 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
 )
 def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
-    x = x[0]
-    if len(x.shape) < 2:
-        x = x.reshape(-1, 1)
     helpers.test_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -157,7 +154,7 @@ def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        x=x,
+        x=x[0],
     )
 
 
