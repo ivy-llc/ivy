@@ -87,6 +87,24 @@ def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
 
+@to_ivy_arrays_and_back
+def avg_pool2d(input, ksize, strides, padding="VALID", data_format="NHWC", name=None):
+
+  if data_format == "NHWC":
+    output = tf.nn.avg_pool(
+        input, ksize=[ksize[0], ksize[1]], strides=[strides[0], strides[1]], padding=padding
+    )
+  elif data_format == "NCHW":
+    output = tf.nn.avg_pool(
+        input, ksize=[ksize[0], ksize[1], 1, 1], strides=[strides[0], strides[1], 1, 1], padding=padding
+    )
+  else:
+    raise ValueError(f"Unsupported data format: {data_format}")
+
+  return output
+
+
+
 
 # avg_pool3d
 @to_ivy_arrays_and_back
