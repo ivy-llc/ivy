@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 import ivy
@@ -152,6 +152,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
     def logsigmoid(
         self: ivy.Array,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.logsigmoid. This method simply wraps
@@ -162,6 +163,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             Input array.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -179,7 +183,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(z)
         ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
         """
-        return ivy.logsigmoid(self._data)
+        return ivy.logsigmoid(self._data, complex_mode=complex_mode)
 
     def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
