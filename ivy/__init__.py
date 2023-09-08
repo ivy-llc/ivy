@@ -792,7 +792,7 @@ try:
     from .engines import XLA as xla
     from .engines import ivy2xla
 except:
-    from .engines import ivy2xla
+    pass
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
