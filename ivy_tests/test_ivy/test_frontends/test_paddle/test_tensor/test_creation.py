@@ -740,17 +740,10 @@ def test_paddle_triu_indices(
         max_num_dims=1,
         min_dim_size=2,
         max_dim_size=2,
-    )
+    ),
 )
 def test_paddle_uniform(
-    min,
-    max,
-    dtype_and_shape,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags
+    min, max, dtype_and_shape, on_device, fn_tree, backend_fw, frontend, test_flags
 ):
     dtype, shape = dtype_and_shape
     helpers.test_frontend_function(
@@ -763,7 +756,7 @@ def test_paddle_uniform(
         test_values=False,
         shape=shape[0],
         min=min,
-        max=max
+        max=max,
     )
     
 
