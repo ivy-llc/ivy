@@ -57,9 +57,8 @@ def dirichlet(
     ret
         The drawn samples, of shape (size, k).
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> alpha = [1.0, 2.0, 3.0]
     >>> ivy.dirichlet(alpha)
     ivy.array([0.10598304, 0.21537054, 0.67864642])
@@ -239,9 +238,8 @@ def poisson(
      ret
         Drawn samples from the poisson distribution
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> lam = [1.0, 2.0, 3.0]
     >>> ivy.poisson(lam)
     ivy.array([1., 4., 4.])
