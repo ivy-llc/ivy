@@ -1,7 +1,7 @@
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 import numpy as np
 
 # local
@@ -108,22 +108,20 @@ softsign.support_native_out = True
 
 @_scalar_output_to_0d_array
 def log_softmax(
-    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
         axis = -1
     x_max = np.max(x, axis=axis, keepdims=True)
-    if x_max.ndim > 0:
-        x_max[~np.isfinite(x_max)] = 0
-    elif not np.isfinite(x_max):
-        x_max = 0
-    exp_tmp = np.exp(x - x_max)
-
-    with np.errstate(divide="ignore"):
-        s = np.sum(exp_tmp, axis=axis, keepdims=True)
-        ret = np.log(s)
-
-    ret = x - x_max - ret
+    sub_tmp = np.subtract(x, x_max)
+    s = np.sum(np.exp(sub_tmp), axis=axis, keepdims=True)
+    ret = np.log(s)
+    ret = np.subtract(sub_tmp, ret)
     return ret
 
 

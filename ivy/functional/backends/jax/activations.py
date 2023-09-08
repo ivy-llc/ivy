@@ -6,7 +6,7 @@
 
 import jax
 import jax.numpy as jnp
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -86,7 +86,12 @@ def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def log_softmax(
-    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
 ):
     if axis is None:
         axis = -1

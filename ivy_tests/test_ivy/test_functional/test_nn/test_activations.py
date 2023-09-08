@@ -109,8 +109,8 @@ def test_leaky_relu(
 @handle_test(
     fn_tree="functional.ivy.log_softmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_num_dims=2,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -130,7 +130,6 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
         x=x[0],
         axis=axis,
     )
-
 
 # mish
 @handle_test(
