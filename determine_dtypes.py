@@ -75,7 +75,6 @@ TODO list (prioritised):
 
 ########## MUST HAVE ############
 #. skip tests that don't use one of the functions I've mocked (many roll their own)
-#. don't change the support for dtypes that I had to skip or devices I didn't test
 #. remove false positives from the backend is_dtype_err functions
 
 ########## SHOULD HAVE #######
@@ -172,19 +171,19 @@ def _is_dtype_err_jax(e, dtype):
     return any(s in str(e) for s in substrings_to_check)
 
 
-def _is_dtype_err_np(e):
+def _is_dtype_err_np(e, dtype):
     return "not supported for the input types" in str(e)
 
 
-def _is_dtype_err_paddle(e):
+def _is_dtype_err_paddle(e, dtype):
     return "Selected wrong DataType" in str(e)
 
 
-def _is_dtype_err_tf(e: ivy.exceptions.IvyException):
+def _is_dtype_err_tf(e, dtype):
     return ("Value for attr 'T' of" in str(e)) or ("`features.dtype` must be" in str(e))
 
 
-def _is_dtype_err_torch(e):
+def _is_dtype_err_torch(e, dtype):
     return ("not implemented for" in str(e)) or ("inputs not supported for" in str(e))
 
 
@@ -335,6 +334,8 @@ class BackendFileTester:
                     "unsupported": set(),
                     "unsure": set(),
                     "skipped": set(),
+                    "original_supported": None,
+                    "original_unsupported": None,
                 }
                 for device in self.devices
             }
@@ -479,7 +480,55 @@ class BackendFileTester:
                         indices_of_dtype_decs.append(
                             (start_of_decorator, decorator_start_idx + i + 1)
                         )
-                        # TODO: actually read the decorator text and add it to result
+                        left, _, right = dec_string.partition("{")
+                        inner_string = right.rpartition("}")[0]
+                        original_decorator_dict = eval("{" + inner_string + "}")
+                        sup_or_unsup = (
+                            "original_unsupported"
+                            if "unsupported" in left
+                            else "original_supported"
+                        )
+                        has_device = "device" in left
+                        for v in original_decorator_dict.keys():
+                            if has_device:
+                                for d, t in original_decorator_dict[v].items():
+                                    if d in ["gpu", "tpu"]:
+                                        d = d + ":0"
+                                    t = {
+                                        dtype
+                                        for dtype in t
+                                        if dtype not in DTYPE_CLASSES
+                                    }.union(
+                                        *[
+                                            DTYPE_CLASSES[dtype]
+                                            for dtype in t
+                                            if dtype in DTYPE_CLASSES
+                                        ]
+                                    )
+                                    if d in self.result[f]:
+                                        self.result[f][d][sup_or_unsup] = set(t)
+                                    else:
+                                        mark_unsupp = "unsupported" in left
+                                        this = set(t)
+                                        that = set(self.dtypes) - this
+                                        self.result[f][d] = {
+                                            "supported": that if mark_unsupp else this,
+                                            "unsupported": (
+                                                this if mark_unsupp else that
+                                            ),
+                                            "unsure": set(),
+                                            "skipped": set(),
+                                            "original_supported": None,
+                                            "original_unsupported": None,
+                                        }
+                            else:
+                                for d in self.devices:
+                                    self.result[f][d][sup_or_unsup] = set(
+                                        original_decorator_dict[v]
+                                    )
+                            # assume there is exactly one version of each framework
+                            # that's not true, but we'll deal with that later # TODO
+                            break
                         start_of_decorator = None
                         dec_string = ""
 
@@ -492,7 +541,7 @@ class BackendFileTester:
 
             device_and_dtypes = {}
             for d in self.devices:
-                # Handle skipped dtypes
+                # Report skipped dtypes (handling is later)
                 if len(self.result[f][d]["skipped"]) > 0 and self.verbosity >= 1:
                     print("Unable to test:")
                     for dtype, reason in self.result[f][d]["skipped"]:
@@ -501,9 +550,6 @@ class BackendFileTester:
                             f" error:\n {reason}"
                         )
                         print()
-                self.result[f][d]["supported"].update(  # TODO: change logic here
-                    {t for t, _ in self.result[f][d]["skipped"]}
-                )
 
                 # Handle unsure dtypes
                 if self.handle_unsure in ["supported", "unsupported"]:
@@ -516,6 +562,10 @@ class BackendFileTester:
                             )
                             print()
                     self.result[f][d][self.handle_unsure].update(
+                        {t for t, _ in self.result[f][d]["unsure"]}
+                    )
+                elif self.handle_unsure == "as_original":
+                    self.result[f][d]["skipped"].update(
                         {t for t, _ in self.result[f][d]["unsure"]}
                     )
                 elif self.handle_unsure == "interactive":
@@ -537,9 +587,25 @@ class BackendFileTester:
                                 raise SystemExit()
                         mark_as = "supported" if mark_as == "S" else "unsupported"
                         self.result[f][d][mark_as].add(dtype)
+
+                # Handle skipped dtypes (and unsure if using as_original)
+                for t, _ in self.result[f][d]["skipped"]:
+                    if (
+                        self.result[f][d]["original_supported"] is not None
+                        and t not in self.result[f][d]["original_supported"]
+                    ) or (
+                        self.result[f][d]["original_unsupported"] is not None
+                        and t in self.result[f][d]["original_unsupported"]
+                    ):
+                        self.result[f][d]["unsupported"].add(t)
+                    else:
+                        self.result[f][d]["supported"].add(t)
+
                 del self.result[f][d]["skipped"]
                 del self.result[f][d]["unsure"]
 
+            device_and_dtypes = {}
+            for d in self.result[f].keys():
                 # Reduce (un)supported dtype lists to type classes where possible
                 supported = self.result[f][d]["supported"]
                 unsupported = self.result[f][d]["unsupported"]
@@ -553,13 +619,13 @@ class BackendFileTester:
                 device_and_dtypes[d] = (supported, unsupported)
 
             # Generate updated decorator
-            total_supported = sum(len(device_and_dtypes[d][0]) for d in self.devices)
-            total_unsupported = sum(len(device_and_dtypes[d][1]) for d in self.devices)
+            total_supported = sum(len(s) for s, _ in device_and_dtypes.values())
+            total_unsupported = sum(len(u) for _, u in device_and_dtypes.values())
             use_supported = total_supported <= total_unsupported
             if total_unsupported == 0:
                 self.decorators[f] = None
             else:
-                for d in self.devices:
+                for d in device_and_dtypes.keys():
                     device_and_dtypes[d] = device_and_dtypes[d][
                         0 if use_supported else 1
                     ]
@@ -860,13 +926,13 @@ def main():
     parser.add_argument(
         "-u",
         "--unsure",
-        choices=["supported", "unsupported", "interactive", "error"],
+        choices=["supported", "unsupported", "interactive", "as_original", "error"],
         default="supported",
         help=(
             "specify how to classify unknown error messages. Can be"
             " supported/unsupported, interactive (you will be shown the error message"
-            " and asked to decide), or error (an error will be raised when an unknown"
-            " message is found)."
+            " and asked to decide), as_original (follow any existing dtype decorator)"
+            " or error (an error will be raised when an unknown message is found)."
         ),
     )
     parser.add_argument(
