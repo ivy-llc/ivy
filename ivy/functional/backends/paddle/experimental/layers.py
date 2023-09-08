@@ -558,7 +558,7 @@ def stft(
         dtype = "complex128"
 
     def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
-        if fft_length == None:
+        if fft_length is None:
             fft_length = 1
             while fft_length < frame_length:
                 fft_length *= 2
@@ -576,7 +576,7 @@ def stft(
 
         stft_result = []
 
-        if window_fn == None:
+        if window_fn is None:
             window = 1
         else:
             window = window_fn(frame_length)

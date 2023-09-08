@@ -1145,8 +1145,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
             An integer scalar Tensor. The size of the FFT to apply.
             If not provided, uses the smallest power of 2 enclosing frame_length.
         window_fn
-            A callable that takes a window length and a dtype keyword argument and returns
-            a [window_length] Tensor of samples in the provided datatype. If set to None, no windowing is used.
+            A callable that takes a window length and a dtype keyword
+            argument and returns a [window_length] Tensor of samples in the
+            provided datatype. If set to None, no windowing is used.
         pad_end
             Whether to pad the end of signals with zeros when the provided frame length
             and step produces a frame that lies partially past its end.
@@ -1158,8 +1159,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
         Returns
         -------
         ret
-            A [..., frames, fft_unique_bins] Tensor of complex64/complex128 STFT values where
-            fft_unique_bins is fft_length // 2 + 1 (the unique components of the FFT).
+            A [..., frames, fft_unique_bins] Tensor of
+            complex64/complex128 STFT values where fft_unique_bins is
+            fft_length // 2 + 1 (the unique components of the FFT).
         """
         return ivy.stft(self._data, frame_length, frame_step, fft_length=fft_length,
                         window_fn=window_fn, pad_end=pad_end, name=name, out=out)
