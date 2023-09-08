@@ -93,15 +93,6 @@ def randn(shape, dtype=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def rnormal(mean=0.0, std=1.0, shape=None, name=None):
-    return ivy.random_normal(mean=mean, std=std, shape=shape)
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
 def standard_normal(shape, dtype=None, name=None):
     return ivy.random_normal(mean=0, std=1, shape=shape, dtype=dtype)
 
