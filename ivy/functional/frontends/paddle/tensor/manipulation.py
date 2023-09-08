@@ -6,6 +6,10 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 
+# NOTE:
+# Only inplace functions are to be added in this file.
+# Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
+
 
 @with_unsupported_dtypes(
     {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
