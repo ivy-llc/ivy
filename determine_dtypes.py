@@ -76,13 +76,11 @@ TODO list (prioritised):
 ########## MUST HAVE ############
 #. skip tests that don't use one of the functions I've mocked (many roll their own)
 #. don't change the support for dtypes that I had to skip or devices I didn't test
-    (requires refactoring the decorator generating/writing logic)
 #. remove false positives from the backend is_dtype_err functions
 
 ########## SHOULD HAVE #######
 #. get it working for frontends
 #. get it working for methods
-#. keep the device decorator if I didn't test that device
 
 ########## NICE TO HAVE ########
 #. remove false negatives from the backend is_dtype_err functions
@@ -293,6 +291,7 @@ class BackendFileTester:
 
         self.test_path = _path_to_test_path(self.file_path)
         self.result = {}
+        self.decorators = {}
         self.devices = devices or DEVICES
         self.dtypes = ()
         self.fn_names = fn_names
@@ -352,11 +351,8 @@ class BackendFileTester:
                 print("  " + ", ".join(self.fn_names))
             print()
             print()
-
         if self.verbosity == 1:
-            print("Results: ", end="")
-
-        self.decorators = {}
+            print("Results: ", end="", flush=True)
 
         self.is_set_up = True
 
@@ -365,14 +361,14 @@ class BackendFileTester:
             self.current_dtype = dtype
             if self.verbosity == 2:
                 print()
-                print(f"DType {dtype}: ", end="")
+                print(f"DType {dtype}: ", end="", flush=True)
             yield dtype
 
     def iterate_fn_names(self):
         for fn_name in self.fn_names:
             if fn_name is None:
                 if self.verbosity >= 1 and self.verbosity < 3:
-                    print("X", end="")
+                    print("-", end="", flush=True)
                 continue
             self.current_fn_name = fn_name
             yield fn_name
@@ -386,18 +382,19 @@ class BackendFileTester:
                     f"{self.file_path}::{self.current_fn_name}"
                     f"[DType={self.current_dtype},Device={self.current_device}]: ",
                     end="",
+                    flush=True,
                 )
             yield device
 
-    def remove_fn(self, fn_name, reason):
+    def remove_fn(self, fn_name, reason, in_process=True):
         if fn_name in self.fn_names:
             i = self.fn_names.index(fn_name)
             self.fn_names[i] = None
-            if self.verbosity == 3:
+            if in_process and self.verbosity == 3:
                 print()
                 print(f"{self.file_path}::{fn_name}: skipped")
-            elif self.verbosity >= 1:
-                print("X", end="")
+            elif in_process and self.verbosity >= 1:
+                print("-", end="", flush=True)
             self.skip_fns.add((fn_name, reason))
 
     def set_result(self, result, err=None):
@@ -414,73 +411,105 @@ class BackendFileTester:
                 else (
                     "U"
                     if result == "unsupported"
-                    else "X" if result == "skipped" else "?"
+                    else "-" if result == "skipped" else "?"
                 )
             )
-            print(char, end="")
+            print(char, end="", flush=True)
 
-    def resolve_unsure(self):
-        self.fn_names = [func for func in self.fn_names if func is not None]
-
-        first_skip = True
+    def complete_test(self):
+        # Skip functions for which all dtypes are skipped
         for f in self.fn_names:
-            if all(
+            if f is not None and all(
                 len(self.result[f][d]["skipped"]) == len(self.dtypes)
                 for d in self.devices
             ):
                 reasons = {
                     r for d in self.devices for _, r in self.result[f][d]["skipped"]
                 }
-                self.fn_names[self.fn_names.index(f)] = None
-                self.skip_fns.add(
-                    (f, "all functions skipped with reasons: " + "; ".join(reasons))
+                self.remove_fn(
+                    f,
+                    "all dtypes skipped with reasons: " + "; ".join(reasons),
+                    in_process=False,
                 )
-                for d in self.devices:
-                    del self.result[f][d]["skipped"]
-                continue
 
+        # Drop the skipped functions from the list
+        self.fn_names = [f for f in self.fn_names if f is not None]
+        if self.verbosity >= 1:
+            for f, reason in self.skip_fns:
+                print()
+                print(f"Skipped function {f}: {reason}")
+            print()
+
+        # Read in the code file
+        with open(self.file_path, "r") as f:
+            code_text = f.readlines()
+
+        for f in self.fn_names:
+            # Find function position in the code
+            for i, v in enumerate(code_text):
+                if f"def {f}(" in v:
+                    def_index = i
+                    break
+            if self.verbosity >= 3:
+                print(f"{f} found at line no. {def_index+1}")
+
+            # Find and read existing dtype decorator(s)
+            decorator_start_idx = def_index
+            decorator_lines = []
+            while (
+                decorator_start_idx >= 1
+                and code_text[decorator_start_idx - 1].strip() != ""
+            ):
+                decorator_lines.insert(0, code_text[decorator_start_idx - 1])
+                decorator_start_idx -= 1
+
+            indices_of_dtype_decs = []
+            start_of_decorator = None
+            dec_string = ""
+            for i in range(len(decorator_lines)):
+                line = decorator_lines[i]
+
+                if start_of_decorator is None:
+                    if REGEX_DICT["dtype_decorators"].search(line):
+                        start_of_decorator = decorator_start_idx + i
+
+                if start_of_decorator is not None:
+                    dec_string += line
+                    if dec_string.count("(") == dec_string.count(")"):
+                        indices_of_dtype_decs.append(
+                            (start_of_decorator, decorator_start_idx + i + 1)
+                        )
+                        # TODO: actually read the decorator text and add it to result
+                        start_of_decorator = None
+                        dec_string = ""
+
+            # Remove existing decorator if one was found
+            for i, j in indices_of_dtype_decs:
+                if self.verbosity >= 2:
+                    print(f"Removing existing decorator from {f}")
+                del code_text[i:j]
+                def_index -= j - i
+
+            device_and_dtypes = {}
             for d in self.devices:
+                # Handle skipped dtypes
                 if len(self.result[f][d]["skipped"]) > 0 and self.verbosity >= 1:
-                    if first_skip:
-                        print()
-                        print()
-                        print("Unable to test:")
-                        print()
-                        first_skip = False
+                    print("Unable to test:")
                     for dtype, reason in self.result[f][d]["skipped"]:
                         print(
                             f"{self.file_path}::{f}[DType={dtype},Device={d}] with"
                             f" error:\n {reason}"
                         )
                         print()
-                self.result[f][d]["supported"].update(
+                self.result[f][d]["supported"].update(  # TODO: change logic here
                     {t for t, _ in self.result[f][d]["skipped"]}
                 )
-                del self.result[f][d]["skipped"]
 
-        self.fn_names = [func for func in self.fn_names if func is not None]
-
-        if self.verbosity >= 1:
-            for func, reason in self.skip_fns:
-                print()
-                print()
-                print(f"Skipped function {func}: {reason}")
-
-        first_unsure = True
-        for f in self.fn_names:
-            for d in self.devices:
-                if len(self.result[f][d]["unsure"]) == 0:
-                    del self.result[f][d]["unsure"]
-
-                elif self.handle_unsure in ["supported", "unsupported"]:
-                    if self.verbosity >= 1:
+                # Handle unsure dtypes
+                if self.handle_unsure in ["supported", "unsupported"]:
+                    if len(self.result[f][d]["unsure"]) > 0 and self.verbosity >= 1:
+                        print(f"Marking as {self.handle_unsure}:")
                         for dtype, reason in self.result[f][d]["unsure"]:
-                            if first_unsure:
-                                print()
-                                print()
-                                print(f"Marking as {self.handle_unsure}:")
-                                print()
-                                first_unsure = False
                             print(
                                 f"{self.file_path}::{f}[DType={dtype},Device={d}] with"
                                 f" error:\n  {reason}"
@@ -489,8 +518,6 @@ class BackendFileTester:
                     self.result[f][d][self.handle_unsure].update(
                         {t for t, _ in self.result[f][d]["unsure"]}
                     )
-                    del self.result[f][d]["unsure"]
-
                 elif self.handle_unsure == "interactive":
                     for dtype, reason in self.result[f][d]["unsure"]:
                         print(
@@ -510,31 +537,12 @@ class BackendFileTester:
                                 raise SystemExit()
                         mark_as = "supported" if mark_as == "S" else "unsupported"
                         self.result[f][d][mark_as].add(dtype)
-                    del self.result[f][d]["unsure"]
+                del self.result[f][d]["skipped"]
+                del self.result[f][d]["unsure"]
 
-    def print_result(self):
-        if self.verbosity < 2:
-            return
-        print()
-        print(f"Printing results for {self.file_path}:\n")
-        for f in self.fn_names:
-            for d in self.devices:
-                print(f, d)
-                print("Supported:", self.result[f][d]["supported"])
-                print("Unsupported:", self.result[f][d]["unsupported"])
-                print("\n")
-
-    def create_decorators(self):
-        if self.verbosity >= 2:
-            print()
-            print("Generating decorators:")
-        for f in self.fn_names:
-            device_and_dtypes = {}
-            for d in self.devices:
+                # Reduce (un)supported dtype lists to type classes where possible
                 supported = self.result[f][d]["supported"]
                 unsupported = self.result[f][d]["unsupported"]
-
-                # reduce to classes where possible
                 for cls, types in DTYPE_CLASSES.items():
                     if types.issubset(supported):
                         supported = supported - types
@@ -542,8 +550,9 @@ class BackendFileTester:
                     elif types.issubset(unsupported):
                         unsupported = unsupported - types
                         unsupported.add(cls)
-
                 device_and_dtypes[d] = (supported, unsupported)
+
+            # Generate updated decorator
             total_supported = sum(len(device_and_dtypes[d][0]) for d in self.devices)
             total_unsupported = sum(len(device_and_dtypes[d][1]) for d in self.devices)
             use_supported = total_supported <= total_unsupported
@@ -559,77 +568,17 @@ class BackendFileTester:
                 )
             if self.verbosity >= 2:
                 print(f"  {f}: {self.decorators[f]}")
-        if self.verbosity >= 2:
-            print()
 
-    def write_decorators(self):
-        # read in the code file
-        with open(self.file_path, "r") as f:
-            code_text = f.readlines()
-
-        # find each function in it
-        for func in self.fn_names:
-            for i, v in enumerate(code_text):
-                if f"def {func}(" in v:
-                    def_index = i
-                    break
-            if self.verbosity >= 3:
-                print(f"{func} found at line no. {def_index+1}")
-
-            # read all the lines that could be decorators (i.e. they're immediately
-            # above the `def` line)
-            decorator_start_idx = def_index
-            decorator_lines = []
-            while (
-                decorator_start_idx >= 1
-                and code_text[decorator_start_idx - 1].strip() != ""
-            ):
-                decorator_lines.insert(0, code_text[decorator_start_idx - 1])
-                decorator_start_idx -= 1
-
-            # find any dtype decorators in those lines
-            indices_to_remove = []
-            start_of_decorator = None
-            dec_string = ""
-            for i in range(len(decorator_lines)):
-                line = decorator_lines[i]
-
-                # check for the start of a dtype decorator
-                if start_of_decorator is None:
-                    if REGEX_DICT["dtype_decorators"].search(line):
-                        start_of_decorator = decorator_start_idx + i
-
-                # if we're in a decorator, check if we've seen the end of it yet, and
-                # if we have mark the whole segment for deletion
-                if start_of_decorator is not None:
-                    dec_string += line
-                    if dec_string.count("(") == dec_string.count(")"):
-                        indices_to_remove.append(
-                            (start_of_decorator, decorator_start_idx + i + 1)
-                        )
-                        start_of_decorator = None
-                        dec_string = ""
-
-            # remove dtype decorators that already exist
-            for i, j in indices_to_remove:
+            # Write new decorator into the file text
+            if self.decorators[f] is not None:
                 if self.verbosity >= 2:
-                    print(f"Removing existing decorator from {func}")
-                del code_text[i:j]
-                def_index -= j - i
+                    print(f"Adding decorator to {f}")
+                code_text.insert(def_index, self.decorators[f] + "\n")
 
-            # add the new decorator
-            if self.decorators[func] is not None:
-                if self.verbosity >= 2:
-                    print(f"Adding decorator to {func}")
-                code_text.insert(def_index, self.decorators[func] + "\n")
-
-        # combine the lines into a single string
         code_text = "".join(code_text)
 
-        # get all the decorators that are used in it
+        # Change imports for the updated decorators
         all_decorators = set(REGEX_DICT["dtype_decorators"].findall(code_text))
-
-        # get all the decorators that are imported
         matches = [
             g1 + "," + g2
             for g1, g2 in REGEX_DICT["imported_wrappers"].findall(code_text)
@@ -638,11 +587,8 @@ class BackendFileTester:
             item.strip() for match in matches for item in match.split(",")
         }
         imported_decorators.discard("")
-
-        # just in case any other functions are imported
         desired_decorators = (imported_decorators - DTYPE_DECORATORS) | all_decorators
 
-        # write the import statement to the file
         if self.verbosity >= 2:
             print()
             print(f"Previously imported wrappers: {list(imported_decorators)}")
@@ -671,6 +617,7 @@ class BackendFileTester:
                         code_text,
                     )
 
+        # Write the updated text to disk
         if self.safety_mode:
             print("File write suppressed due to safety mode.")
         else:
@@ -865,11 +812,7 @@ def run_dtype_setter(
                         test_handler.set_result(
                             "skipped", "In test function: " + str(e)
                         )
-
-        test_handler.resolve_unsure()
-        test_handler.print_result()
-        test_handler.create_decorators()
-        test_handler.write_decorators()
+        test_handler.complete_test()
     test_globals._unset_backend()
 
 
