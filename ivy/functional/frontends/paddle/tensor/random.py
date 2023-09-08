@@ -6,6 +6,10 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 
+# NOTE:
+# Only inplace functions are to be added in this file.
+# Please add non-inplace counterparts to `/frontends/paddle/random.py`.
+
 
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64")},
