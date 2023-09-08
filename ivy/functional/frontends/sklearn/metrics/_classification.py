@@ -1,6 +1,7 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 from sklearn.utils.multiclass import type_of_target
+from ivy.utils.exceptions import IvyValueError
 
 
 @to_ivy_arrays_and_back
@@ -40,5 +41,5 @@ def precision_score(y_true, y_pred, *, average="binary", sample_weight=None):
     elif average == "macro":
         precision = ivy.mean(true_positives / all_positives)
     else:
-        raise ValueError("Invalid value for 'average'.")
+        raise IvyValueError("Invalid value for 'average'.")
     return precision
