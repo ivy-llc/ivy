@@ -23,7 +23,7 @@ When calling `this function`_ for setting the backend, the following steps are p
 #. loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and (a) add the primary function from the backend if it exists, (b) else add the compositional function from :code:`ivy_original_dict`.
 #. `wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`.
    Wrapping is used in order to avoid excessive code duplication in every backend function implementation.
-   This is explained in more detail in the next section: :ref:`Function Wrapping`.
+   This is explained in more detail in the next section: `Function Wrapping <function_wrapping.rst>`_.
 
 It's helpful to look at an example:
 
@@ -74,7 +74,7 @@ Essentially, when the user calls :code:`ivy.set_backend(<backend>, dynamic=True)
 #. Next, the global :code:`ivy.__dict__` is updated to the new backend as mentioned in the Backend Setting section above.
 #. Finally, the objects are `converted from numpy`_ to the target backend using the newly set backend.
 
-By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`). 
+By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`).
 Here's an example to illustrate how this works in practice:
 
 .. code-block:: python
