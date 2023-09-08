@@ -2318,7 +2318,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         window_fn, optional
             A callable that takes a window length
             and a dtype keyword argument and returns a [window_length]
-            Tensor of samples in the provided datatype. If set to None, no windowing is used.
+            Tensor of samples in the provided datatype.
+            If set to None, no windowing is used.
         pad_end, optional
             Whether to pad the end of signals with zeros when the provided frame length
             and step produces a frame that lies partially past its end.
