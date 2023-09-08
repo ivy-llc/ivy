@@ -700,6 +700,12 @@ class Tensor:
     def min(self, axis=None, keepdim=False, name=None):
         return ivy.min(self._ivy_array, axis=axis, keepdims=keepdim)
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+    )
+    def pow(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.pow(self._ivy_array, _to_ivy_array(y)))
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def atan(self, name=None):
         return ivy.atan(self._ivy_array)
