@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 import paddle
 import paddle.nn.functional as F
 
@@ -17,7 +17,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
-    complex_mode: Optional[str] = "jax",
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out=None,
 ):
     if x.dtype in [paddle.float32, paddle.float64]:
