@@ -139,8 +139,7 @@ def max_pool3d(
 
   # Create a 3D max pooling operation.
 
-  if ceil_mode:
-    return ivy.pool(
+  return ivy.pool(
         input,
         mode="max",
         data_format=data_format,
@@ -148,7 +147,7 @@ def max_pool3d(
         stride=stride,
         padding=padding,
         dilation=dilation,
-        method="ceil" if ceil_mode else "floor"
+        method="ceil" if ceil_mode else "floor",
     )
 
 @to_ivy_arrays_and_back
