@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy import array
+from ._config import get_config, set_config, config_context
 
 _int8 = ivy.IntDtype("int8")
 _int16 = ivy.IntDtype("int16")
