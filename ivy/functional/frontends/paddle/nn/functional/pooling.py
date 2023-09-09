@@ -100,15 +100,42 @@ def avg_pool2d(
     )
 
 
-# Define the max_pool3d function
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def max_pool3d(x, kernel_size, stride=None, padding=0, dilation=1):
+def max_pool3d(
+    x,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    exclusive=True,
+    divisor_override=None,
+    data_format="NCHW",
+    name=None,
+):
     if stride is None:
         stride = kernel_size
+    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
+    # Figure out padding string
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
 
-    # Perform the max_pool3d operation
-    return ivy.max_pool3d(x, kernel_size, stride, padding, dilation)
+    count_include_pad = not exclusive
+    return ivy.max_pool3d(
+        x,
+        kernel_size,
+        stride,
+        padding,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
+    )
 
 
 @to_ivy_arrays_and_back
