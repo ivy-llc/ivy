@@ -113,12 +113,14 @@ def test_paddle_adaptive_avg_pool3d(
     test_flags,
     frontend,
     on_device,
+    backend_fw,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
@@ -286,12 +288,10 @@ def test_paddle_avg_pool2d(
         max_side=4,
     ),
     ceil_mode=st.booleans(),
-    return_indices=st.booleans(),
 )
 def test_paddle_max_pool3d(
     dtype_x_k_s,
     ceil_mode,
-    return_indices,
     *,
     test_flags,
     backend_fw,
@@ -323,7 +323,6 @@ def test_paddle_max_pool3d(
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
-        return_indices=return_indices,
         data_format="NCDHW",  # You can adjust the data format as needed
     )
 
