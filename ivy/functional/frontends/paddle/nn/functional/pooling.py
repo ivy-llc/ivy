@@ -20,10 +20,10 @@ def adaptive_avg_pool2d(x, output_size, data_format="NCHW", name=None):
     return ivy.adaptive_avg_pool2d(x, output_size)
 
 
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
-def adaptive_avg_pool3d(x, output_size, data_format="NCHW", name=None):
-    return ivy.adaptive_avg_pool3d(x, output_size)
+# @to_ivy_arrays_and_back
+# @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+# def adaptive_avg_pool3d(x, output_size, data_format="NCHW", name=None):
+#     return ivy.adaptive_avg_pool3d(x, output_size)
 
 
 @to_ivy_arrays_and_back
@@ -152,4 +152,4 @@ def max_unpool1d(
     output_size=None,
     name=None,
 ):
-    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
+    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding)
