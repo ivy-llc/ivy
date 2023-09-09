@@ -2,3 +2,6 @@
 [submodule "ivy_tests/array_api_testing/test_array_api"]
 	path = ivy_tests/array_api_testing/test_array_api
 	url = https://github.com/data-apis/array-api-tests.git
+[submodule "docs/demos"]
+	path = docs/demos
+	url = https://github.com/unifyai/demos.git
