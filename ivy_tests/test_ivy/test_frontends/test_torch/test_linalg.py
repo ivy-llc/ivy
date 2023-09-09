@@ -438,7 +438,10 @@ def test_torch_det(
 # diagonal
 @handle_frontend_test(
     fn_tree="torch.linalg.diagonal",
-    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
 )
 def test_torch_diagonal(
     *,
