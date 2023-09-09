@@ -100,12 +100,15 @@ def avg_pool2d(
     )
 
 
+# Define the max_pool3d function
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def max_pool3d(x, kernel_size, stride=None, padding=0):
+def max_pool3d(x, kernel_size, stride=None, padding=0, dilation=1):
     if stride is None:
         stride = kernel_size
-    return ivy.max_pool3d(x, kernel_size, stride, padding)
+
+    # Perform the max_pool3d operation
+    return ivy.max_pool3d(x, kernel_size, stride, padding, dilation)
 
 
 @to_ivy_arrays_and_back
