@@ -122,6 +122,18 @@ def bias_add(value, bias, data_format=None, name=None):
 
 
 @to_ivy_arrays_and_back
+def compute_average_loss(per_example_loss, sample_weight=None, global_batch_size=None):
+    if sample_weight is None:
+        sample_weight = ivy.ones(ivy.shape(per_example_loss))
+
+    loss = ivy.sum(per_example_loss * sample_weight)
+    if global_batch_size is not None:
+        loss /= global_batch_size
+
+    return loss
+
+
+@to_ivy_arrays_and_back
 def conv1d(
     input, filters, stride, padding, data_format="NWC", dilations=None, name=None
 ):
