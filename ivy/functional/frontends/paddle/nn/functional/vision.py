@@ -170,3 +170,45 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
     )
+
+
+@to_ivy_arrays_and_back
+def pixel_unshuffle(x, downscale_factor, data_format="NCHW"):
+    if len(ivy.shape(x)) != 4:
+        raise ValueError(
+            "Input x should be 4D tensor, but received x with the shape of {}".format(
+                ivy.shape(x)
+            )
+        )
+
+    if not isinstance(downscale_factor, int):
+        raise ValueError("Downscale factor must be int type")
+
+    if downscale_factor <= 0:
+        raise ValueError("Downscale factor must be positive")
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "Attr(data_format) should be 'NCHW' or 'NHWC'."
+            "But recevie Attr(data_format): {} ".format(data_format)
+        )
+
+    if data_format == "NCHW":
+        b, c, h, w = ivy.shape(x)
+        oc = c * downscale_factor**2
+        oh = h // downscale_factor
+        ow = w // downscale_factor
+
+        x = ivy.reshape(x, (b, c, oh, downscale_factor, ow, downscale_factor))
+        x = ivy.permute_dims(x, (0, 1, 3, 5, 2, 4))
+        x = ivy.reshape(x, (b, oc, oh, ow))
+    else:
+        b, h, w, c = ivy.shape(x)
+        oc = c * downscale_factor**2
+        oh = h // downscale_factor
+        ow = w // downscale_factor
+
+        x = ivy.reshape(x, (b, downscale_factor, oh, downscale_factor, ow, c))
+        x = ivy.permute_dims(x, (0, 1, 3, 5, 2, 4))
+        x = ivy.reshape(x, (b, oh, ow, oc))
+    return x
