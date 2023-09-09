@@ -103,9 +103,9 @@ def avg_pool2d(
 def max_pool3d(
     input,
     kernel_size,
-    stride,
+    stride=None,
     padding: int = 0,
-    dilation=None,
+    dilation=1,
     ceil_mode=False,
     data_format="NCHW",
     name=None,
@@ -153,6 +153,7 @@ def max_pool3d(
         stride,
         padding,
         dilation,
+        data_format,
         method="ceil" if ceil_mode else "floor",
     )
 

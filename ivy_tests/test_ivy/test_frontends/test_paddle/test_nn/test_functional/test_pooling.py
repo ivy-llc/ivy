@@ -112,7 +112,6 @@ def test_paddle_adaptive_avg_pool3d(
     output_size,
     test_flags,
     frontend,
-    backend_fw,
     on_device,
     fn_tree,
 ):
@@ -120,7 +119,6 @@ def test_paddle_adaptive_avg_pool3d(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
@@ -288,11 +286,10 @@ def test_paddle_avg_pool2d(
         max_side=4,
     ),
     ceil_mode=st.booleans(),
-    data_format="NCDHW",
+    data_format="NCHW",
 )
 def test_paddle_max_pool3d(
     dtype_x_k_s_p,
-    exclusive,
     ceil_mode,
     data_format,
     *,
@@ -302,7 +299,7 @@ def test_paddle_max_pool3d(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kernel, stride, padding = dtype_x_k_s_p
+    input_dtype, x, kernel_size, stride, padding = dtype_x_k_s_p
     padding = tuple(
         [pad if pad == "SAME" else 0 for pad in padding]
     )  # paddle only supports "VALID" and "SAME" paddings for 3d pooling
@@ -314,10 +311,11 @@ def test_paddle_max_pool3d(
         on_device=on_device,
         fn_tree=fn_tree,
         x=x[0],
-        kernel_size=kernel,
+        kernel_size=kernel_size,
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
+        data_format=data_format,
     )
 
 
