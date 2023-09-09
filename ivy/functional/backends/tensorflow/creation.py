@@ -94,10 +94,8 @@ def asarray(
         ret = tf.convert_to_tensor(obj, dtype)
     except (TypeError, ValueError):
         obj = (
-                obj
-                if isinstance(obj, tf.Tensor)
-                else tf.convert_to_tensor(obj, tf.float64)
-            )
+            obj if isinstance(obj, tf.Tensor) else tf.convert_to_tensor(obj, tf.float64)
+        )
         ret = tf.cast(obj, dtype)
     return tf.identity(ret) if copy else ret
 
