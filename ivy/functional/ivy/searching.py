@@ -315,9 +315,8 @@ def nonzero(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
@@ -363,8 +362,7 @@ def nonzero(
     }]
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])

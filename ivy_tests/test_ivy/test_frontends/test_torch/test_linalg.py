@@ -60,6 +60,39 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
 
 
+@st.composite
+def _get_axis_and_p(draw):
+    p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
+    if p == "fro" or p == "nuc":
+        max_axes_size = 2
+        min_axes_size = 2
+    else:
+        min_axes_size = 1
+        max_axes_size = 5
+    x_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            valid_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
+            min_axes_size=min_axes_size,
+            max_axes_size=max_axes_size,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+        )
+    )
+    axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
+    # ToDo: fix the castable dtype helper. Right now using `dtype` causes errors
+    #  dtype should be real for real inputs, but got ComplexDouble
+    x_dtype, values, dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("valid")), x_dtype[0], values[0]
+        )
+    )
+    return p, x_dtype, values, axis, x_dtype
+
+
 # helpers
 @st.composite
 def _get_dtype_and_matrix(
@@ -865,6 +898,40 @@ def test_torch_multi_dot(
         fn_tree=fn_tree,
         test_values=True,
         tensors=x,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.norm",
+    args=_get_axis_and_p(),
+    keepdim=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_torch_norm(
+    *,
+    args,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    p, x_dtype, x, axis, dtype = args
+    helpers.test_frontend_function(
+        input_dtypes=[x_dtype],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-08,
+        input=x,
+        ord=p,
+        dim=axis,
+        keepdim=keepdim,
+        dtype=dtype,
     )
 
 
