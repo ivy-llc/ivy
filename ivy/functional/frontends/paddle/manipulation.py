@@ -78,6 +78,11 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def gather_nd(x, index, name=None):
+    return ivy.gather_nd(x, index)
+
+
+@to_ivy_arrays_and_back
 def reshape(x, shape):
     return ivy.reshape(x, shape)
 
