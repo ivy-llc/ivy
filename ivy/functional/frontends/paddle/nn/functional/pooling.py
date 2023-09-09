@@ -147,21 +147,11 @@ def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode
 
     if ceil_mode:
         pool = ivy.max_pool3d(
-            input,
-            kernel_size,
-            stride,
-            padding,
-            dilation,
-            method="ceil",
+            input, kernel_size, stride, padding, dilation, method="ceil"
         )
     else:
         pool = ivy.max_pool3d(
-            input,
-            kernel_size,
-            stride,
-            padding,
-            dilation,
-            method="floor",
+            input, kernel_size, stride, padding, dilation, method="floor"
         )
 
     # Return the output tensor.
