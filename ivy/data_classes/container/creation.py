@@ -1303,7 +1303,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
-        
+
         Examples
         --------
         With :class:`ivy.Container` inputs:
@@ -1314,11 +1314,11 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
+            b: ivy.array([[0., 0., 0., 1., 0.],
                         [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
+            c: ivy.array([[0., 0., 1., 0., 0.],
                         [0., 0., 0., 1., 0.]])
         }
 
@@ -1328,7 +1328,7 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
             b: ivy.array([], shape=(0, 5)),
             c: ivy.array([[0., 0., 0., 0., 1.]])
@@ -1417,11 +1417,11 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
+            b: ivy.array([[0., 0., 0., 1., 0.],
                         [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
+            c: ivy.array([[0., 0., 1., 0., 0.],
                         [0., 0., 0., 1., 0.]])
         }
 
@@ -1431,7 +1431,7 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
             b: ivy.array([], shape=(0, 5)),
             c: ivy.array([[0., 0., 0., 0., 1.]])
@@ -1583,7 +1583,7 @@ class _ContainerWithCreation(ContainerBase):
         ...     a = b'\x00\x00\x00\x00\x00\x00\xf0?',
         ...     b = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
         ... )
-        >>> y = ivy.Container.static_frombuffer(x)
+        >>> y = x.frombuffer(dtype=ivy.float64)
         >>> print(y)
         {
             a: ivy.array([1.]),
@@ -1594,7 +1594,7 @@ class _ContainerWithCreation(ContainerBase):
         ...     a = b'\x01\x02\x03\x04',
         ...     b = b'\x05\x04\x03\x03\x02'
         ... )
-        >>> y = ivy.frombuffer(x, dtype=ivy.int8, count=3, offset=1)
+        >>> y = x.frombuffer(dtype=ivy.int8, count=3, offset=1)
         >>> print(y)
         {
             a: ivy.array([2, 3, 4]),
