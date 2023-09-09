@@ -479,3 +479,45 @@ def test_torch_max_pool2d(
         dilation=dilation,
         ceil_mode=ceil_mode,
     )
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.max_pool3d",
+    dtype_x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=2,
+        max_side=4,
+        only_explicit_padding=True,
+        return_dilation=True,
+        data_format="channel_first",
+    ),
+    test_with_out=st.just(False),
+    ceil_mode=st.just(True),
+)
+def test_torch_max_pool3d(
+    dtype_x_k_s_p,
+    ceil_mode,
+    *,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel, stride, pad, dilation = dtype_x_k_s_p
+    pad = (pad[0][0], pad[1][0], pad[2][0])
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        kernel_size=kernel,
+        stride=stride,
+        padding=pad,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
