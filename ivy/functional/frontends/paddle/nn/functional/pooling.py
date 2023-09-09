@@ -100,11 +100,13 @@ def avg_pool2d(
     )
 
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_pool3d(
     x,
     kernel_size,
     stride=None,
-    padding="VALID",
+    padding=0,
     dilation=1,
     ceil_mode=False,
     data_format="NCHW",
@@ -118,18 +120,24 @@ def max_pool3d(
     padding = (
         "SAME"
         if all(pad == (k - 1) // 2 for k, pad in zip(kernel_size, padding))
-        else padding
+        else "VALID"
     )
-    dilation = "SAME" if all(d == 1 for d in dilation) else dilation
+    dilation = "SAME" if all(d == 1 for d in dilation) else "VALID"
+
     # Determine method based on ceil_mode
+    if ceil_mode:
+        ceil_mode_str = "ceil"
+    else:
+        ceil_mode_str = "floor"
+
     return ivy.max_pool3d(
         x,
         kernel_size,
         stride,
         padding,
-        dilation,
-        ceil_mode,
-        data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode_str,
+        data_format=data_format,
     )
 
 

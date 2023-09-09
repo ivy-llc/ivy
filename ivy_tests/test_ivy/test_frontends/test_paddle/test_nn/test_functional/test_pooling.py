@@ -285,7 +285,6 @@ def test_paddle_avg_pool2d(
         max_side=4,
     ),
     ceil_mode=st.booleans(),
-    ceil_mode=st.booleans(),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_max_pool3d(
@@ -301,10 +300,14 @@ def test_paddle_max_pool3d(
 ):
     input_dtype, x, kernel_size, stride, padding, dilation = dtype_x_k_s_p_d_c
 
+    # Reshape the input data to match the desired data_format
     if data_format == "NCHW":
-        # Reshape the input data to match the NCHW format
         x[0] = x[0].reshape(
             (x[0].shape[0], x[0].shape[4], x[0].shape[1], x[0].shape[2], x[0].shape[3])
+        )
+    else:
+        x[0] = x[0].reshape(
+            (x[0].shape[0], x[0].shape[1], x[0].shape[2], x[0].shape[3], x[0].shape[4])
         )
 
     # Ensure stride is in the correct format
@@ -319,21 +322,31 @@ def test_paddle_max_pool3d(
     else:
         padding = (0, 0, 0)
 
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        kernel_size=kernel_size,
-        stride=stride,
-        padding=padding,
-        dilation=dilation,
-        ceil_mode=ceil_mode,
-        data_format=data_format,
-    )
+    # Handle use cases for ceil_mode
+    for kernel_dim in range(3, 6):
+        for padding_mode in ["SAME", "VALID"]:
+            for ceil in [True, False]:
+                kernel_size_usecase = tuple([kernel_dim] * 3)
+                padding_usecase = padding_mode
+                stride_usecase = (1, 1, 1)
+                dilation_usecase = (1, 1, 1)
+                ceil_mode_usecase = ceil
+
+                helpers.test_frontend_function(
+                    input_dtypes=input_dtype,
+                    test_flags=test_flags,
+                    backend_to_test=backend_fw,
+                    frontend=frontend,
+                    fn_tree=fn_tree,
+                    on_device=on_device,
+                    x=x[0],
+                    kernel_size=kernel_size_usecase,
+                    stride=stride_usecase,
+                    padding=padding_usecase,
+                    dilation=dilation_usecase,
+                    ceil_mode=ceil_mode_usecase,
+                    data_format=data_format,
+                )
 
 
 # max_unpool1d
