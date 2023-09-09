@@ -114,10 +114,32 @@ def max_pool3d(
 ):
     if stride is None:
         stride = kernel_size
-    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
-    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
-    dilation = _broadcast_pooling_helper(dilation, "3d", name="dilation")
+
+    # Check the shapes of the input and kernel tensors.
+
+    if len(x.shape) < 3:
+        raise ValueError("The input tensor must have at least three dimensions.")
+    if x.shape[2:] != kernel_size:
+        raise ValueError(
+            "The shape of the input tensor must be the same as the shape of the kernel tensor."
+        )
+
+    # Check the padding argument.
+
+    if not isinstance(padding, (tuple, list)):
+        padding = (padding,) * 3
+    if len(padding) != 3:
+        raise ValueError("The padding argument must be a single number or a tuple of three numbers.")
+
+    # Check the dilation argument.
+
+    if not isinstance(dilation, (tuple, list)):
+        dilation = (dilation,) * 3
+    if len(dilation) != 3:
+        raise ValueError("The dilation argument must be a single number or a tuple of three numbers.")
+
     # Figure out padding string
+
     if all(
         [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
     ):
