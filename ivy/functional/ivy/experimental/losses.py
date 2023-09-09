@@ -66,7 +66,7 @@ def log_poisson_loss(
     --------
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-    >>> print(ivy.log_poisson_loss(x, z))
+    >>> print(ivy.log_poisson_loss(x, y))
     ivy.array([1.28402555, 1.28402555, 1.03402555, 1.28402555])
 
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
