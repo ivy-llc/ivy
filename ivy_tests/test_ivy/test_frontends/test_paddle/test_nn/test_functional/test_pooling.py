@@ -300,9 +300,7 @@ def test_paddle_max_pool3d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s_p
-    padding = tuple(
-        [pad if pad == "SAME" else 0 for pad in padding]
-    )  # paddle only supports "VALID" and "SAME" paddings for 3d pooling
+    padding = tuple([pad if pad == "SAME" else 0 for pad in padding])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
