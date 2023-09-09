@@ -182,14 +182,13 @@ def test_tensorflow_vorbis_window(
 @handle_frontend_test(
     fn_tree="tensorflow.signal.hann_window",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int32", "int64"],
+        available_dtypes=helpers.get_dtypes("valid"),
         max_num_dims=0,
         min_value=0,
         max_value=100,
     ),
     periodic=st.booleans(),
-    # dtype=helpers.get_dtypes("float", full=False),
-    test_with_out=st.just(False),
+      test_with_out=st.just(False),
 )
 def test_tensorflow_hann_window(
     *,
@@ -199,7 +198,7 @@ def test_tensorflow_hann_window(
     fn_tree,
     on_device,
     frontend,
-    periodic,  # ,dtype
+    periodic,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -212,5 +211,5 @@ def test_tensorflow_hann_window(
         atol=1e-02,
         window_length=int(x[0]),
         periodic=periodic,
-        # dtype=dtype[0],
+
     )
