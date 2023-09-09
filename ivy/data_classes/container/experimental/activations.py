@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, List, Dict
+from typing import Union, Optional, List, Dict, Literal
 
 # local
 import ivy
@@ -13,6 +13,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         /,
         *,
         eps: Optional[Union[float, ivy.Container]] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -28,6 +29,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
             When eps is None the function outpus NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             Optional output Contaner.
 
@@ -62,6 +66,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             "logit",
             x,
             eps=eps,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -70,6 +75,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         /,
         *,
         eps: Optional[Union[float, ivy.Container]] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -85,6 +91,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
             When eps is None the function outpus NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             Optional output Contaner.
 
@@ -115,7 +124,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             b: ivy.array([-1.38629436, 1.38629448, -1.38629436])
         }
         """
-        return self.static_logit(self, eps=eps, out=out)
+        return self.static_logit(self, eps=eps, complex_mode=complex_mode, out=out)
 
     @staticmethod
     def static_thresholded_relu(

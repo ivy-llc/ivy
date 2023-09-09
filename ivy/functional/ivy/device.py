@@ -122,6 +122,7 @@ class DefaultDevice:
         Examples
         --------
         A "gpu" as device:
+
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -830,7 +831,7 @@ def default_device(
             return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
-        ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
+        ret = "cpu"
     else:
         ret = default_device_stack[-1]
     if as_native:

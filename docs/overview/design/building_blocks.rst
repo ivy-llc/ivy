@@ -1,8 +1,6 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://unify.ai/docs/ivy/overview/deep_dive/inplace_updates.html#out-argument
- 
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
 
@@ -73,7 +71,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch, and NumPy, and 
 
     stack.support_native_out = True
 
-There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the `out argument`_ natively.
+There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the :ref:`overview/deep_dive/inplace_updates:out argument` natively.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
 For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
@@ -491,7 +489,7 @@ The example above further emphasizes that the graph compiler creates a computati
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
 However, when compiling native framework code, we are only able to compile a graph for that same framework.
 For example, we cannot take torch code and compile this into tensorflow code.
-However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
+However, we can transpile torch code into tensorflow code (see `Ivy as a Transpiler <ivy_as_a_transpiler.rst>`_ for more details).
 
 The graph compiler does not compile to C++, CUDA, or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.

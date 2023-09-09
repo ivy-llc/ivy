@@ -293,6 +293,20 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
             )
 
 
+def _get_preferred_device(args, kwargs):
+    # When new arrays are created, they should be created on the same device as
+    # existing array inputs. If a device is specified as a kwarg, create them there.
+    # If not, scan for any other inputs which are already arrays and use the device
+    # of the first one found (unless we're in soft device mode).
+    device = None
+    if "device" in kwargs and kwargs["device"] is not None:
+        return device
+    if not ivy.soft_device_mode:
+        arr_arg = _get_first_array(*args, **kwargs)
+        return ivy.default_device(item=arr_arg, as_native=True)
+    return ivy.default_device(as_native=True)
+
+
 # Array Handling #
 # ---------------#
 
@@ -374,6 +388,8 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
         parameters = list(type_hints.keys())
         annotations = [param.annotation for param in type_hints.values()]
 
+        device = _get_preferred_device(args, kwargs)
+
         for i, (annotation, parameter, arg) in enumerate(
             zip(annotations, parameters, args)
         ):
@@ -393,11 +409,11 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                     if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
                         continue
                     if not ivy.is_array(arg):
-                        args[i] = ivy.array(arg)
+                        args[i] = ivy.array(arg, device=device)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
                     if not ivy.is_array(kwarg):
-                        kwargs[parameter] = ivy.array(kwarg)
+                        kwargs[parameter] = ivy.array(kwarg, device=device)
 
         return fn(*args, **kwargs)
 
@@ -478,7 +494,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args, ivy_kwargs = ivy.args_to_ivy(
-            *args, **kwargs, include_derived={tuple: True}
+            *args, **kwargs, include_derived={"tuple": True}
         )
         if has_out:
             ivy_kwargs["out"] = out
@@ -548,7 +564,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         ret = fn(*args, **kwargs)
         # convert all arrays in the return to `ivy.Array` instances
         return (
-            ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+            ivy.to_ivy(ret, nested=True, include_derived={"tuple": True})
             if ivy.array_mode
             else ret
         )
@@ -578,7 +594,7 @@ def output_to_native_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _output_to_native_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        return ivy.to_native(ret, nested=True, include_derived={tuple: True})
+        return ivy.to_native(ret, nested=True, include_derived={"tuple": True})
 
     _output_to_native_arrays.outputs_to_native_arrays = True
     return _output_to_native_arrays
@@ -1452,6 +1468,7 @@ def handle_complex_input(fn: Callable) -> Callable:
         Examples
         --------
         Using the default `jax_like` behaviour
+
         >>> @handle_complex_input
         >>> def my_func(inp):
         >>>     return ivy.ones_like(inp)
@@ -1468,6 +1485,7 @@ def handle_complex_input(fn: Callable) -> Callable:
                    0.38461535+0.92307694j])
 
         Using non-default `jax_like` behaviour
+
         >>> @handle_complex_input
         >>> def my_func(inp):
         >>>     return ivy.ones_like(inp)
@@ -1476,6 +1494,7 @@ def handle_complex_input(fn: Callable) -> Callable:
         ivy.array([1.+1.j, 1.+1.j, 1.+1.j])
 
         Using callable `jax_like` behaviour
+
         >>> def _my_func_jax_like(inp, fn_original=None):
         >>>     return fn_original(inp) * 3j
         >>> @handle_complex_input
