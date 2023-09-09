@@ -121,25 +121,23 @@ def max_pool3d(
     if x.shape[2:] != kernel_size:
         raise ValueError(
             "The shape of the input tensor must be the same as the shape of the kernel tensor.")
-
     # Check the padding argument.
     if not isinstance(padding, (tuple, list)):
         padding = (padding,) * 3
     if len(padding) != 3:
-        raise ValueError("The padding argument must be a single number or a tuple of three numbers.")
-
+        raise ValueError(
+            "The padding argument must be a single number or a tuple of three numbers.")
     # Check the dilation argument.
     if not isinstance(dilation, (tuple, list)):
         dilation = (dilation,) * 3
     if len(dilation) != 3:
-        raise ValueError("The dilation argument must be a single number or a tuple of three numbers.")
-
+        raise ValueError(
+            "The dilation argument must be a single number or a tuple of three numbers.")
     # Figure out padding string
     if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]):
         padding = "SAME"
     else:
         padding = "VALID"
-        
     return ivy.max_pool3d(
         x,
         kernel_size,
