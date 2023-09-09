@@ -139,6 +139,7 @@ def max_pool3d(
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_unpool1d(
+    x,
     indices,
     kernel_size,
     stride=None,
