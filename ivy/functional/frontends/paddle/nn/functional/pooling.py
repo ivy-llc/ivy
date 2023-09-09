@@ -131,7 +131,6 @@ def max_pool3d(
         dilations=dilation,
         ceil_mode=ceil_mode,
         data_format=data_format,
-        name=name,
     )
 
 
