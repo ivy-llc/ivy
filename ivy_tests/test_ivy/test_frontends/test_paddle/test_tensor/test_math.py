@@ -1,10 +1,40 @@
 # global
 from hypothesis import strategies as st
-import hypothesis.extra.numpy as nph
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+
+# broadcast_shape
+@handle_frontend_test(
+    fn_tree="paddle.broadcast_shape",
+    shapes=helpers.mutually_broadcastable_shapes(
+        num_shapes=2, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_broadcast_shape(
+    *,
+    shapes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        x_shape=shapes[0],
+        y_shape=shapes[1],
+    )
+    assert ret == frontend_ret
 
 
 # ceil_
@@ -182,37 +212,6 @@ def test_paddle_rsqrt_(
         on_device=on_device,
         x=x[0],
     )
-
-
-# broadcast_shape
-@handle_frontend_test(
-    fn_tree="paddle.broadcast_shape",
-    shapes=nph.mutually_broadcastable_shapes(
-        num_shapes=2, min_dims=1, max_dims=5, min_side=1, max_side=5
-    ),
-    test_with_out=st.just(False),
-)
-def test_paddle_broadcast_shape(
-    *,
-    shapes,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=["int64"],
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        x_shape=shapes.input_shapes[0],
-        y_shape=shapes.input_shapes[1],
-    )
-    assert ret == frontend_ret
 
 
 # sqrt_
