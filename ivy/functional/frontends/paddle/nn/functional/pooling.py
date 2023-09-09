@@ -102,19 +102,6 @@ def avg_pool2d(
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def max_unpool1d(
-    x,
-    indices,
-    kernel_size,
-    stride=None,
-    padding=0,
-    data_format="NCL",
-    output_size=None,
-    name=None,
-):
-    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_pool3d(
     x,
     kernel_size,
@@ -122,7 +109,7 @@ def max_pool3d(
     padding=0,
     ceil_mode=False,
     return_indices=False,
-    data_formati='NCDHW',
+    data_format="NCDHW",
     name=None,
 ):
     if stride is None:
@@ -144,5 +131,20 @@ def max_pool3d(
         padding,
         ceil_mode=ceil_mode,
         return_indices=return_indices,
-        data_format=data_format
+        data_format=data_format,
     )
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def max_unpool1d(
+    x,
+    indices,
+    kernel_size,
+    stride=None,
+    padding=0,
+    data_format="NCL",
+    output_size=None,
+    name=None,
+):
+    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
