@@ -468,53 +468,25 @@ def trace(x, name=None):
     {
         "2.13.0 and below": (
             "float16",
-            "float32",
-            "float64",
+            "bfloat16",
+            "int8",
+            "int16",
             "int32",
-            "complex64",
-            "complex128",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
         )
     },
     "tensorflow",
 )
-
-
-def tridiagonal_matmul(main_diag, upper_diag, lower_diag, matrix):
-    """
-    Multiply a tridiagonal matrix by a given matrix.
-    
-    Parameters:
-        main_diag  The main diagonal of the tridiagonal matrix.
-        upper_diag  The diagonal above the main diagonal.
-        lower_diag The diagonal below the main diagonal.
-        matrix  The matrix to be multiplied.
-
-    Returns:
-       The result of the matrix multiplication.
-    """
-    
-    n = ivy.shape(main_diag)[0]
-    result = ivy.zeros_like(matrix)
-
-    # Multiply the main diagonal
-    result = ivy.add(result, ivy.matmul(ivy.diag(main_diag), matrix))
-
-    # Multiply the upper diagonal and shift the result one column to the right
-    result = ivy.add(
-        result,
-        ivy.matmul(
-            ivy.diag(ivy.concat([ivy.zeros([n - 1, 1]), upper_diag], axis=1), k=1),
-            matrix[:, :-1],
-        ),
-    )
-
-    # Multiply the lower diagonal and shift the result one column to the left
-    result = ivy.add(
-        result,
-        ivy.matmul(
-            ivy.diag(ivy.concat([lower_diag, ivy.zeros([n - 1, 1])], axis=1), k=-1),
-            matrix[:, 1:],
-        ),
-    )
-
+def tridiagonal_matmul(matrices):
+    main_diag = matrices[0]
+    upper_diag = matrices[1]
+    lower_diag = matrices[2] 
+    matrix = matrices[3]
+    result = main_diag * matrix
+    result += ivy.concat([ivy.zeros_like(matrix[:, :1]), upper_diag], axis=1) * ivy.concat([ivy.zeros_like(matrix[:, :1]), matrix[:, :-1]], axis=1)
+    result += ivy.concat([lower_diag, ivy.zeros_like(matrix[:, :-1])], axis=1) * ivy.concat([matrix[:, 1:], ivy.zeros_like(matrix[:, :1])], axis=1)
     return result
