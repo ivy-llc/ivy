@@ -20,10 +20,10 @@ def adaptive_avg_pool2d(x, output_size, data_format="NCHW", name=None):
     return ivy.adaptive_avg_pool2d(x, output_size)
 
 
-# @to_ivy_arrays_and_back
-# @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
-# def adaptive_avg_pool3d(x, output_size, data_format="NCHW", name=None):
-#     return ivy.adaptive_avg_pool3d(x, output_size)
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def adaptive_avg_pool3d(x, output_size, data_format="NCHW", name=None):
+    return ivy.adaptive_avg_pool3d(x, output_size)
 
 
 @to_ivy_arrays_and_back
@@ -102,43 +102,10 @@ def avg_pool2d(
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def max_pool3d(
-    x,
-    kernel_size,
-    stride=None,
-    padding=0,
-    dilation=1,
-    ceil_mode=False,
-    data_format="NCHW",
-    name=None,
-):
+def max_pool3d(x, kernel_size, stride=None, padding=0):
     if stride is None:
         stride = kernel_size
-    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
-    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
-    # Convert padding and dilation to strings based on kernel size
-    padding = (
-        "SAME"
-        if all(pad == (k - 1) // 2 for k, pad in zip(kernel_size, padding))
-        else "VALID"
-    )
-    dilation = "SAME" if all(d == 1 for d in dilation) else "VALID"
-
-    # Determine method based on ceil_mode
-    if ceil_mode:
-        ceil_mode_str = "ceil"
-    else:
-        ceil_mode_str = "floor"
-
-    return ivy.max_pool3d(
-        x,
-        kernel_size,
-        stride,
-        padding,
-        dilation=dilation,
-        ceil_mode=ceil_mode_str,
-        data_format=data_format,
-    )
+    return ivy.max_pool3d(x, kernel_size, stride, padding)
 
 
 @to_ivy_arrays_and_back
@@ -153,6 +120,4 @@ def max_unpool1d(
     output_size=None,
     name=None,
 ):
-    return ivy.max_unpool1d(
-        x, indices, kernel_size, stride, padding, data_format=data_format
-    )
+    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)

@@ -113,7 +113,6 @@ def test_paddle_adaptive_avg_pool3d(
     test_flags,
     frontend,
     on_device,
-    backend_fw,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
@@ -121,7 +120,6 @@ def test_paddle_adaptive_avg_pool3d(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         on_device=on_device,
         fn_tree=fn_tree,
         x=x[0],
@@ -286,13 +284,9 @@ def test_paddle_avg_pool2d(
         min_side=2,
         max_side=4,
     ),
-    ceil_mode=st.booleans(),
-    data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_max_pool3d(
     dtype_x_k_s_p_d_c,
-    ceil_mode,
-    data_format,
     *,
     test_flags,
     backend_fw,
@@ -300,25 +294,7 @@ def test_paddle_max_pool3d(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kernel_size, stride, padding, dilation = dtype_x_k_s_p_d_c
-
-    if data_format == "NCHW":
-        # Reshape the input data to match the NCHW format
-        x[0] = x[0].reshape(
-            (x[0].shape[0], x[0].shape[4], x[0].shape[1], x[0].shape[2], x[0].shape[3])
-        )
-
-    # Ensure stride is in the correct format
-    if len(stride) == 1:
-        stride = (stride[0], stride[0], stride[0])
-
-    # Convert 'padding' to match the expected format for 'max_pool3d'
-    if padding == "SAME":
-        padding = test_pooling_functions.calculate_same_padding(
-            kernel_size, stride, x[0].shape[2:5]
-        )
-    else:
-        padding = (0, 0, 0)
+    input_dtype, x, kernel_size, stride, padding = dtype_x_k_s_p_d_c
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -331,9 +307,6 @@ def test_paddle_max_pool3d(
         kernel_size=kernel_size,
         stride=stride,
         padding=padding,
-        dilation=dilation,
-        ceil_mode=ceil_mode,
-        data_format=data_format,
     )
 
 
