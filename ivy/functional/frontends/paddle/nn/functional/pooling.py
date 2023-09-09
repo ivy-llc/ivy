@@ -107,20 +107,13 @@ def max_pool3d(
     kernel_size,
     stride=None,
     padding=0,
-    dilation=1,
+    dilation=(1, 1, 1),
     ceil_mode=False,
     data_format="NCHW",
     name=None,
 ):
     if stride is None:
         stride = kernel_size
-    if len(x.shape) < 3:
-        raise ValueError("The input tensor must have at least three dimensions.")
-    if x.shape[2:] != kernel_size:
-        raise ValueError(
-            "The shape of the input tensor must be the same as the shape of the kernel"
-            " tensor."
-        )
     if not isinstance(padding, (tuple, list)):
         padding = (padding,) * 3
     if len(padding) != 3:
@@ -143,7 +136,6 @@ def max_pool3d(
         padding = "SAME"
     else:
         padding = "VALID"
-
     return ivy.max_pool3d(
         x,
         kernel_size,
