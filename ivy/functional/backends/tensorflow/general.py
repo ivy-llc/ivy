@@ -41,8 +41,7 @@ def array_equal(
 
 
 def all_equal(
-    *xs: Iterable[Any],
-    equality_matrix: bool = False
+    *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, tf.Tensor]:
     def equality_fn(a, b):
         if isinstance(a, tf.Tensor) and isinstance(b, tf.Tensor):
