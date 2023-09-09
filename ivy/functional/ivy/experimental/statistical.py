@@ -11,8 +11,6 @@ from ivy.func_wrapper import (
     with_unsupported_dtypes,
     infer_device,
     infer_dtype,
-    outputs_to_ivy_arrays,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -905,8 +903,6 @@ def cummin(
 @infer_device
 @infer_dtype
 @handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_ivy_arrays
 def nanmax(a, axis=None, keepdims=False):
     """
     Compute the maximum value of an array while ignoring NaN values.
