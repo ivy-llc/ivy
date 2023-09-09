@@ -767,8 +767,9 @@ def test_frontend_function(
 
         # test if frontend array was returned
         if test_flags.generate_frontend_arrays:
+            ret_copy = copy.deepcopy(ret)
             assert ivy_backend.nested_map(
-                ret,
+                ret_copy,
                 lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
             ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
@@ -971,6 +972,13 @@ def test_frontend_function(
     frontend_fw = importlib.import_module(gt_frontend_submods)
     frontend_ret = frontend_fw.__dict__[gt_fn_name](*args_frontend, **kwargs_frontend)
 
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return (
+            ret,
+            frontend_ret,
+        )
+
     if frontend_config.isscalar(frontend_ret):
         frontend_ret_np_flat = [frontend_config.to_numpy(frontend_ret)]
     else:
@@ -982,12 +990,6 @@ def test_frontend_function(
         )
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
         frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
-    # assuming value test will be handled manually in the test function
-    if not test_values:
-        return (
-            ret,
-            frontend_ret,
-        )
 
     if isinstance(rtol, dict):
         rtol = _get_framework_rtol(rtol, t_globals.CURRENT_BACKEND)
