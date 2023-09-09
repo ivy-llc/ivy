@@ -30,10 +30,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         alpha
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
@@ -97,10 +97,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         self
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``

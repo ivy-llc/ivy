@@ -9,24 +9,63 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
-@handle_numpy_out
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def var(x, /, *, axis=None, ddof=0.0, keepdims=False, out=None, dtype=None, where=True):
+def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    dtype = (
-        dtype
-        if dtype is not None
-        else ivy.float64 if ivy.is_int_dtype(x.dtype) else x.dtype
+    global avg
+    avg = 0
+
+    if keepdims is None:
+        keepdims_kw = {}
+    else:
+        keepdims_kw = {"keepdims": keepdims}
+
+    dtype = a.dtype
+    if weights is None:
+        avg = a.mean(axis, **keepdims_kw)
+        weights_sum = avg.dtype.type(a.count(axis))
+    else:
+        if a.shape != weights.shape:
+            if axis is None:
+                return 0
+            weights = ivy.broadcast_to(weights, (a.ndim - 1) * (1,) + weights.shape)
+            weights = weights.swapaxes(-1, axis)
+        weights_sum = weights.sum(axis=axis, **keepdims_kw)
+        mul = ivy.multiply(a, weights)
+        avg = ivy.sum(mul, axis=axis, **keepdims_kw) / weights_sum
+
+    if returned:
+        if weights_sum.shape != avg.shape:
+            weights_sum = ivy.broadcast_to(weights_sum, avg.shape).copy()
+        return avg.astype(dtype), weights_sum
+    else:
+        return avg.astype(dtype)
+
+
+@to_ivy_arrays_and_back
+def cov(
+    m,
+    y=None,
+    /,
+    *,
+    rowvar=True,
+    bias=False,
+    ddof=None,
+    fweights=None,
+    aweights=None,
+    dtype=None,
+):
+    return ivy.cov(
+        m,
+        y,
+        rowVar=rowvar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+        dtype=dtype,
     )
-    ret = ivy.var(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-    ret = (
-        ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-        if ivy.is_array(where)
-        else ret
-    )
-    return ret.astype(dtype, copy=False)
 
 
 @handle_numpy_out
@@ -92,65 +131,23 @@ def nanmean(
     return ret
 
 
+# nanmedian
 @handle_numpy_out
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def std(
-    x,
+def nanmedian(
+    a,
     /,
     *,
     axis=None,
-    ddof=0.0,
     keepdims=False,
     out=None,
-    dtype=None,
-    where=True,
+    overwrite_input=False,
 ):
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype is None:
-        if ivy.is_int_dtype(x.dtype):
-            dtype = ivy.float64
-        else:
-            dtype = x.dtype
-    ret = ivy.std(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype, copy=False)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    global avg
-    avg = 0
-
-    if keepdims is None:
-        keepdims_kw = {}
-    else:
-        keepdims_kw = {"keepdims": keepdims}
-
-    dtype = a.dtype
-    if weights is None:
-        avg = a.mean(axis, **keepdims_kw)
-        weights_sum = avg.dtype.type(a.count(axis))
-    else:
-        if a.shape != weights.shape:
-            if axis is None:
-                return 0
-            weights = ivy.broadcast_to(weights, (a.ndim - 1) * (1,) + weights.shape)
-            weights = weights.swapaxes(-1, axis)
-        weights_sum = weights.sum(axis=axis, **keepdims_kw)
-        mul = ivy.multiply(a, weights)
-        avg = ivy.sum(mul, axis=axis, **keepdims_kw) / weights_sum
-
-    if returned:
-        if weights_sum.shape != avg.shape:
-            weights_sum = ivy.broadcast_to(weights_sum, avg.shape).copy()
-        return avg.astype(dtype), weights_sum
-    else:
-        return avg.astype(dtype)
+    ret = ivy.nanmedian(
+        a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+    )
+    return ret
 
 
 @handle_numpy_out
@@ -170,31 +167,6 @@ def nanstd(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
     return ret
-
-
-@to_ivy_arrays_and_back
-def cov(
-    m,
-    y=None,
-    /,
-    *,
-    rowvar=True,
-    bias=False,
-    ddof=None,
-    fweights=None,
-    aweights=None,
-    dtype=None,
-):
-    return ivy.cov(
-        m,
-        y,
-        rowVar=rowvar,
-        bias=bias,
-        ddof=ddof,
-        fweights=fweights,
-        aweights=aweights,
-        dtype=dtype,
-    )
 
 
 @handle_numpy_out
@@ -224,20 +196,48 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     return ret
 
 
-# nanmedian
 @handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def nanmedian(
-    a,
+def std(
+    x,
     /,
     *,
     axis=None,
+    ddof=0.0,
     keepdims=False,
     out=None,
-    overwrite_input=False,
+    dtype=None,
+    where=True,
 ):
-    ret = ivy.nanmedian(
-        a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is None:
+        if ivy.is_int_dtype(x.dtype):
+            dtype = ivy.float64
+        else:
+            dtype = x.dtype
+    ret = ivy.std(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret.astype(dtype, copy=False)
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def var(x, /, *, axis=None, ddof=0.0, keepdims=False, out=None, dtype=None, where=True):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    dtype = (
+        dtype
+        if dtype is not None
+        else ivy.float64 if ivy.is_int_dtype(x.dtype) else x.dtype
     )
-    return ret
+    ret = ivy.var(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    ret = (
+        ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        if ivy.is_array(where)
+        else ret
+    )
+    return ret.astype(dtype, copy=False)
