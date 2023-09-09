@@ -1151,6 +1151,51 @@ def test_tensorflow_linspace(
     )
 
 
+# meshgrid
+@handle_frontend_test(
+    fn_tree="tensorflow.meshgrid",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=2,
+        min_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_meshgrid(
+    *,
+    dtype_and_values,
+    indexing,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, arrays = dtype_and_values
+    arrays = arrays[0]
+    kwargs = {}
+
+    for i, array in enumerate(arrays):
+        kwargs[f"a{i}"] = array
+
+    kwargs["indexing"] = indexing
+
+    test_flags.num_positional_args = len(arrays)
+    test_flags.generate_frontend_arrays = False
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
+    )
+
+
 # no_op
 @handle_frontend_test(
     fn_tree="tensorflow.no_op",
@@ -1916,6 +1961,28 @@ def test_tensorflow_stack(
         on_device=on_device,
         values=values,
         axis=axis,
+    )
+
+
+# stop_gradient
+@handle_frontend_test(
+    fn_tree="tensorflow.stop_gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_tensorflow_stop_gradient(
+    *, dtype_and_x, test_flags, backend_fw, fn_tree, frontend, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
