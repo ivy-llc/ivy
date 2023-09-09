@@ -23,9 +23,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         Parameters
         ----------
         self
-            input array.
+            input array containing true labels.
         target
-            input array containing the targeted values.
+            input array containing targeted labels.
         reduction
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed.
@@ -49,9 +49,69 @@ class _ArrayWithLossesExperimental(abc.ABC):
         """
         return ivy.l1_loss(self._data, target, reduction=reduction, out=out)
 
+    def log_poisson_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        compute_full_loss: bool = False,
+        axis: int = -1,
+        reduction: str = "none",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.log_poisson_loss. This method simply 
+        wraps the function, and so the docstring for ivy.l1_loss also applies to this 
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing true labels.
+        target
+            input array containing targeted labels.
+        compute_full_loss
+            whether to compute the full loss. If false, a constant term is dropped
+            in favor of more efficient optimization. Default: ``False``.
+        axis
+            the axis along which to compute the log-likelihood loss. If axis is ``-1``,
+            the log-likelihood loss will be computed along the last dimension.
+            Default: ``-1``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary log-likelihood loss between the given distributions.
+
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 0, 1, 0])
+        >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
+        >>> loss = x.log_poisson_loss(y)
+        >>> print(loss)
+        ivy.array([1.28402555, 1.28402555, 1.03402555, 1.28402555])
+
+        >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
+        >>> loss = x.x.log_poisson_loss(z, reduction='mean')
+        >>> print(loss)
+        ivy.array(1.1573164)
+        """
+        return ivy.log_poisson_loss(
+            self._data, target, compute_full_loss=compute_full_loss, axis=axis, 
+            reduction=reduction, out=out
+        )
+
     def huber_loss(
         self: ivy.Array,
-        pred: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         reduction: Optional[str] = "mean",
@@ -66,9 +126,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         Parameters
         ----------
         self
-            The true (ground truth) values.
-        pred
-            The predicted values by the model.
+            input array containing true labels.
+        target
+            input array containing targeted labels.
         reduction : str, optional
             The type of reduction to apply to the loss.
             Possible values are "mean" (default)
@@ -94,7 +154,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array([0.125, 0.125, 0.5  , 0.125])
         """
         return ivy.huber_loss(
-            self._data, pred, reduction=reduction, delta=delta, out=out
+            self._data, target, reduction=reduction, delta=delta, out=out
         )
 
     def smooth_l1_loss(
