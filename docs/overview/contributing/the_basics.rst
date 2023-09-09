@@ -63,7 +63,7 @@ c. Comment on the ToDo list issue with a reference to this issue like so:
    :code:`- [ ] #Issue_number`
 
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-   No need to wait for this to happen before progressing to the next stage. Don't comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
+   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
 
 d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
@@ -113,6 +113,17 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 |
 
 For questions, please reach out on `discord`_ in the `todo list issues channel`_!
+
+Ivy Experimental API
+--------------------
+
+We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
+
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
+
+In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
+
+We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
 
 Managing Your Fork
 ------------------
@@ -328,7 +339,7 @@ If you want to try out your local version of ivy, with all of the local changes 
 * The :code:`develop` command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy.
 * Therefore, ivy can be imported into an interactive python shell from any directory inside the container, and it will still use the latest updates made to the source code.
 
-Clearly, running a container in interactive mode can be a helpful tool in a developer's arsenal.
+Clearly, running a container in interactive mode can be a helpful tool in a developer’s arsenal.
 
 Running Tests Locally
 ---------------------
