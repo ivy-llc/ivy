@@ -128,7 +128,6 @@ def cauchy(key, shape=(), dtype="float64"):
     return ivy.tan(ivy.pi * (u - 0.5))
 
 
-@handle_jax_dtype
 @to_ivy_arrays_and_back
 def choice(key, a, *, shape=(), replace=True, p=None, axis=0):
     seed = _get_seed(key)

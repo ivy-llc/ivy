@@ -442,9 +442,13 @@ def test_jax_cauchy(
     ),
     replace=st.booleans(),
     p=st.one_of(
-        helpers.array_values(shape=st.shared(helpers.get_shape(), key="a_shape")),
+        helpers.array_values(
+            shape=st.shared(helpers.get_shape(), key="a_shape"),
+            dtype=helpers.get_dtypes("float", full=False),
+        ),
         st.none(),
     ),
+    test_with_out=st.just(False),
 )
 def test_jax_choice(
     *,
@@ -472,7 +476,7 @@ def test_jax_choice(
             on_device=on_device,
             test_values=True,
             key=key[0],
-            sample_shape=sample_shape,
+            shape=sample_shape,
             a=a,
             axis=axis,
             replace=replace,
