@@ -47,6 +47,25 @@ def chisquare(df, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def choice(a, size=None, replace=True, p=None):
+    sc_size = 1
+    if isinstance(size, int):
+        sc_size = size
+    elif size is not None:
+        #  If the given shape is, e.g., (m, n, k)
+        #  then m * n * k samples are drawn. As per numpy docs
+        sc_size = 1
+        for s in size:
+            if s is not None:
+                sc_size *= s
+    if isinstance(a, int):
+        a = ivy.arange(a)
+    index = ivy.multinomial(len(a), sc_size, replace=replace, probs=p)
+    return a[index]
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def dirichlet(alpha, size=None):
     return ivy.dirichlet(alpha, size=size)
 
@@ -228,6 +247,14 @@ def standard_normal(size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def standard_t(df, size=None):
+    numerator = ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
+    denominator = ivy.gamma(df / 2, 1.0, shape=size, dtype="float64")
+    return ivy.sqrt(df / 2) * ivy.divide(numerator, ivy.sqrt(denominator))
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def triangular(left, mode, right, size=None):
     if left > mode or mode > right or left == right:
         raise ivy.utils.exceptions.IvyValueError(
@@ -274,3 +301,12 @@ def weibull(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.pow(-ivy.log(1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def zipf(a, size=None):
+    if a <= 1:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.floor(ivy.pow(1 / (1 - u), 1 / a))

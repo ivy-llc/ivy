@@ -113,6 +113,7 @@ def main():
     for collection_name in db.list_collection_names():
         collection = db[collection_name]
         for document in collection.find({}):
+            print(document)
             undesired_keys = keys_to_delete_from_db(
                 all_tests, module_map[collection_name], document
             )
