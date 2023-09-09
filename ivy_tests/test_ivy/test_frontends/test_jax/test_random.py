@@ -410,6 +410,89 @@ def test_jax_cauchy(
 
 @pytest.mark.xfail
 @handle_frontend_test(
+    fn_tree="jax.random.choice",
+    # rng key
+    key_dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    # Sample shape
+    sample_shape=helpers.get_shape(
+        min_num_dims=0, max_num_dims=6, max_dim_size=6, min_dim_size=1, allow_none=False
+    ),
+    # Data to draw from
+    a=st.one_of(
+        st.integers(min_value=1, max_value=100),
+        helpers.array_values(
+            dtype=helpers.get_dtypes(),
+            shape=st.shared(
+                helpers.get_shape(),
+                key="a_shape",
+            ),
+        ),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="a_shape"),
+        allow_none=True,
+    ),
+    replace=st.booleans(),
+    p=st.one_of(
+        helpers.array_values(shape=st.shared(helpers.get_shape(), key="a_shape")),
+        st.none(),
+    ),
+)
+def test_jax_choice(
+    *,
+    key_dtype_key,
+    sample_shape,
+    a,
+    axis,
+    replace,
+    p,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, key = key_dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=True,
+            key=key[0],
+            sample_shape=sample_shape,
+            a=a,
+            axis=axis,
+            replace=replace,
+            p=p,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
     fn_tree="jax.random.dirichlet",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
