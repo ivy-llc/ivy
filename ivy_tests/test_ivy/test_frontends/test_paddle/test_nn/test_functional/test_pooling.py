@@ -276,13 +276,51 @@ def test_paddle_avg_pool2d(
     )
 
 
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_pool3d",
+    input=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=4, max_side=8),
+    kernel_size=st.tuples(st.integers(1, 4), st.integers(1, 4), st.integers(1, 4)),
+    stride=st.tuples(st.integers(1, 4), st.integers(1, 4), st.integers(1, 4)),
+    padding=st.tuples(st.integers(0, 2), st.integers(0, 2), st.integers(0, 2)),
+    dilation=st.tuples(st.integers(1, 2), st.integers(1, 2), st.integers(1, 2)),
+    ceil_mode=st.booleans(),
+)
+def test_paddle_max_pool3d(
+    *,
+    input,
+    test_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    fn_tree,
+):
+    # Define the input parameters for testing max_pool3d
+    (input_dtype, x, kernel_size, stride, padding, dilation, ceil_mode) = input
+
+    # Test the max_pool3d function using the provided parameters
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],  # You may need to adjust this based on your input format
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
 # max_unpool1d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_unpool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
     indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
 )
-def test_paddle_max_unpool1d(
+def test_paddle_max_poold(
     *,
     x_k_s_p,
     indices,
