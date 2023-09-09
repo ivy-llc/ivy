@@ -36,15 +36,3 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
 @to_ivy_arrays_and_back
 def vorbis_window(window_length, dtype=ivy.float32, name=None):
     return ivy.vorbis_window(window_length, dtype=dtype, out=None)
-
-@handle_tf_dtype
-@to_ivy_arrays_and_back
-def hann_window(window_length, periodic=True, dtype=ivy.float32, name=None):
-    if window_length % 2 == 1 and periodic and window_length != 1:
-        ret = ivy.hann_window(window_length - 1, periodic=True, dtype=dtype, out=name)
-        append = ivy.array([0.0])
-        return ivy.concat([ret, append])
-    return ivy.hann_window(window_length, periodic=periodic, dtype=dtype, out=name)
-
-
-hann_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
