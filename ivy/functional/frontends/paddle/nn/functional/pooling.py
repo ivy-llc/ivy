@@ -112,18 +112,10 @@ def max_pool3d(
     data_format="NCHW",
     name=None,
 ):
-    # Validate input parameters
-    if not isinstance(kernel_size, (tuple, list)) or len(kernel_size) != 3:
-        raise ValueError("kernel_size must be a tuple or list of three numbers.")
     if stride is None:
         stride = kernel_size
-    if not isinstance(stride, (tuple, list)) or len(stride) != 3:
-        raise ValueError("stride must be a tuple or list of three numbers.")
-    if not isinstance(padding, (tuple, list)) or len(padding) != 3:
-        raise ValueError("padding must be a tuple or list of three numbers.")
-    if not isinstance(dilation, (tuple, list)) or len(dilation) != 3:
-        raise ValueError("dilation must be a tuple or list of three numbers.")
-
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
     # Convert padding and dilation to strings based on kernel size
     padding = (
         "SAME"
@@ -134,9 +126,9 @@ def max_pool3d(
     # Determine method based on ceil_mode
     return ivy.max_pool3d(
         x,
-        kernel_size=kernel_size,
-        stride=stride,
-        padding=padding,
+        kernel_size,
+        stride,
+        padding,
         dilation=dilation,
         ceil_mode="ceil" if ceil_mode else "floor",
         data_format=data_format,

@@ -9,6 +9,75 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional import
 )
 
 
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_pool3d",
+    dtype_x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=2,
+        max_side=4,
+    ),
+    ceil_mode=st.booleans(),
+    data_format="NCHW",
+)
+def test_max_pool3d(
+    dtype_x_k_s_p_d_c,
+    ceil_mode,
+    data_format,
+    *,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel_size, stride, padding, dilation, ceil_mode = (
+        dtype_x_k_s_p_d_c
+    )
+
+    # Validate input parameters
+    if not isinstance(kernel_size, (tuple, list)) or len(kernel_size) != 3:
+        raise ValueError("kernel_size must be a tuple or list of three numbers.")
+    if stride is None:
+        stride = kernel_size
+    if not isinstance(stride, (tuple, list)) or len(stride) != 3:
+        raise ValueError("stride must be a tuple or list of three numbers.")
+    if not isinstance(padding, (tuple, list)) or len(padding) != 3:
+        raise ValueError("padding must be a tuple or list of three numbers.")
+    if not isinstance(dilation, (tuple, list)) or len(dilation) != 3:
+        raise ValueError("dilation must be a tuple or list of three numbers.")
+
+    # Convert padding and dilation to strings based on kernel size
+    padding_str = (
+        "SAME"
+        if all(pad == (k - 1) // 2 for k, pad in zip(kernel_size, padding))
+        else "VALID"
+    )
+    dilation_str = "SAME" if all(d == 1 for d in dilation) else "VALID"
+
+    # Check the value of ceil_mode
+    if not isinstance(ceil_mode, bool):
+        raise ValueError("ceil_mode must be a boolean value (True or False).")
+
+    # Call the max_pool3d function with ceil_mode
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        x=x[0],
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding_str,
+        dilation=dilation_str,
+        ceil_mode=ceil_mode,
+        data_format=data_format,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
 # adaptive_avg_pool1d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.adaptive_avg_pool1d",
@@ -274,22 +343,6 @@ def test_paddle_avg_pool2d(
         divisor_override=None,
         data_format=data_format,
     )
-
-
-# max_pool3d
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.max_pool3d",
-    dtype_x_k_s_p=helpers.arrays_for_pooling(
-        min_dims=5,
-        max_dims=5,
-        min_side=2,
-        max_side=4,
-    ),
-    ceil_mode=st.booleans(),
-    data_format="NCHW",
-)
-def test_paddle_max_pool3d():
-    pass
 
 
 # max_unpool1d
