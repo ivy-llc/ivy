@@ -6,7 +6,7 @@ and signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple, Iterable, Any
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -38,6 +38,34 @@ def array_equal(
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
+
+def all_equal(
+    *xs: Iterable[Any],
+    equality_matrix: bool = False
+) -> Union[bool, tf.Tensor]:
+   
+    def equality_fn(a, b):
+        if isinstance(a, tf.Tensor) and isinstance(b, tf.Tensor):
+            return tf.reduce_all(tf.equal(a, b))
+        else:
+            return a == b
+
+    if equality_matrix:
+        num_arrays = len(xs)
+        mat = np.empty((num_arrays, num_arrays), dtype=bool)
+        for i, xa in enumerate(xs):
+            for j_, xb in enumerate(xs[i:]):
+                j = j_ + i
+                res = equality_fn(xa, xb)
+                mat[i][j] = res
+                mat[j][i] = res
+        return mat
+
+    x0 = xs[0]
+    for x in xs[1:]:
+        if not equality_fn(x0, x):
+            return False
+    return True
 
 
 def container_types():

@@ -1,7 +1,7 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from numbers import Number
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Optional, Union, Sequence, Callable, List, Tuple, Iterable, Any
 import paddle
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -24,6 +24,33 @@ def is_native_array(x, /, *, exclusive=False):
 def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
     return bool(paddle_backend.all(paddle_backend.equal(x0, x1)))
 
+def all_equal(
+    *xs: Iterable[Any],
+    equality_matrix: bool = False
+) -> Union[bool, paddle.Tensor]:
+    
+    def equality_fn(a, b):
+        if isinstance(a, paddle.Tensor) and isinstance(b, paddle.Tensor):
+            return paddle.all(paddle.equal(a, b))
+        else:
+            return a == b
+
+    if equality_matrix:
+        num_arrays = len(xs)
+        mat = np.empty((num_arrays, num_arrays), dtype=bool)
+        for i, xa in enumerate(xs):
+            for j_, xb in enumerate(xs[i:]):
+                j = j_ + i
+                res = equality_fn(xa, xb)
+                mat[i][j] = res
+                mat[j][i] = res
+        return mat
+
+    x0 = xs[0]
+    for x in xs[1:]:
+        if not equality_fn(x0, x):
+            return False
+    return True
 
 def container_types():
     return []

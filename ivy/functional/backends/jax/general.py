@@ -7,7 +7,7 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce as _reduce
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple, Iterable, Any
 import multiprocessing as _multiprocessing
 import importlib
 
@@ -100,6 +100,33 @@ def set_item(
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
+def all_equal(
+    *xs: Iterable[Any],
+    equality_matrix: bool = False
+) -> Union[bool, jnp.ndarray]:
+
+    def equality_fn(a, b):
+        if isinstance(a, jnp.ndarray) and isinstance(b, jnp.ndarray):
+            return jnp.all(a == b)
+        else:
+            return a == b
+
+    if equality_matrix:
+        num_arrays = len(xs)
+        mat = jnp.empty((num_arrays, num_arrays), dtype=bool)
+        for i, xa in enumerate(xs):
+            for j_, xb in enumerate(xs[i:]):
+                j = j_ + i
+                res = equality_fn(xa, xb)
+                mat = jax.ops.index_update(mat, (i, j), res)
+                mat = jax.ops.index_update(mat, (j, i), res)
+        return mat
+
+    x0 = xs[0]
+    for x in xs[1:]:
+        if not equality_fn(x0, x):
+            return False
+    return True
 
 @with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
