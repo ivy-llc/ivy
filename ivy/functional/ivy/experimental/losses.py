@@ -467,8 +467,8 @@ def kl_div(
     ivy.array([0.0378], [0.1453])
     """
     size = ivy.shape(input)
-    if len(size) < 1:
-        size = [1]
+    # if len(size) < 1:
+    #     size = [1]
 
     loss = ivy.sum(input * ivy.log(input / target), axis=-1)
 

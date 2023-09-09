@@ -72,11 +72,11 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> tf.Tensor:
-    loss = tf.math.reduce_sum(input * tf.math.log(input / target), axis=-1)
+    loss = tf.reduce_sum(input * tf.math.log(input / target), axis=-1)
 
     size = tf.shape(input)
-    if len(size) < 1:
-        size = [1]
+    # if len(size) < 1:
+    #     size = [1]
 
     if reduction == "mean":
         loss = tf.math.reduce_mean(loss)

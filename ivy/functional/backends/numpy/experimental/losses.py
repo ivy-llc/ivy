@@ -82,8 +82,8 @@ def kl_div(
     reduction: Optional[str] = "mean",
 ) -> np.ndarray:
     size = np.shape(input)
-    if len(size) < 1:
-        size = [1]
+    # if len(size) < 1:
+    #     size = [1]
 
     loss = np.sum(input * np.log(input / target), axis=-1)
 
