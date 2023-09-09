@@ -133,8 +133,8 @@ def max_pool3d(
     return ivy.max_pool3d(
         x,
         kernel_size,
-        stride,
-        padding,
+        stride=stride,
+        padding=padding,
         dilation=dilation,
         ceil_mode=ceil_mode_str,
         data_format=data_format,
