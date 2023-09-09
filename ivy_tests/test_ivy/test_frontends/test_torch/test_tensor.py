@@ -8522,6 +8522,7 @@ def test_torch_tensor_logical_or(
         on_device=on_device,
     )
 
+
 # logical_xor
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8558,6 +8559,7 @@ def test_torch_tensor_logical_xor(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # long
 @handle_frontend_method(
