@@ -2,7 +2,6 @@ from typing import Optional
 import torch
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-import ivy
 
 # Assuming ivy and backend_version are imported and defined properly
 
@@ -121,10 +120,9 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> torch.Tensor:
-    input, target = ivy.promote_types_of_inputs(input, target)
     loss = torch.nn.functional.kl_div(
         input,
         target,
         reduction=reduction,
     )
-    return loss.type(input[0].dtype)
+    return loss

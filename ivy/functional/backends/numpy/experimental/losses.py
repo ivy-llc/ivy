@@ -3,7 +3,6 @@ from typing import Optional
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-import ivy
 
 
 @with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
@@ -86,7 +85,6 @@ def kl_div(
     if len(size) < 1:
         size = [1]
 
-    input, target = ivy.promote_types_of_inputs(input, target)
     loss = np.sum(input * np.log(input / target), axis=-1)
 
     if reduction == "mean":
@@ -98,4 +96,4 @@ def kl_div(
     else:
         pass
 
-    return np.ndarray(loss).astype(input[0].dtype)
+    return loss

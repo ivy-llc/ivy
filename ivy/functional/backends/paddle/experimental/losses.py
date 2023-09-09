@@ -142,11 +142,7 @@ def soft_margin_loss(
     backend_version,
 )
 def kl_div(
-    input: paddle.Tensor,
-    target: paddle.Tensor,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
+    input: paddle.Tensor, target: paddle.Tensor, /, *, reduction: Optional[str] = "mean"
 ) -> paddle.Tensor:
-    loss = paddle.nn.functional.kl_div(input, target, reduction=reduction)
+    loss = F.kl_div(input, target, reduction=reduction)
     return loss

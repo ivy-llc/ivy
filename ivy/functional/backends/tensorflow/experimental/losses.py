@@ -2,7 +2,6 @@ import tensorflow as tf
 from typing import Optional
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-import ivy
 
 
 @with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
@@ -73,7 +72,6 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> tf.Tensor:
-    input, target = ivy.promote_types_of_inputs(input, target)
     loss = tf.math.reduce_sum(input * tf.math.log(input / target), axis=-1)
 
     size = tf.shape(input)
@@ -85,8 +83,8 @@ def kl_div(
     elif reduction == "sum":
         loss = tf.math.reduce_sum(loss)
     elif reduction == "batchmean":
-        loss = tf.math.reduce_sum(loss) / tf.cast(size[0], tf.float)
+        loss = tf.math.reduce_sum(loss) / size[0]
     else:
         pass
 
-    return tf.cast(loss, tf.as_dtype(input[0].dtype))
+    return loss

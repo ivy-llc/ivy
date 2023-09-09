@@ -1,7 +1,6 @@
 import jax.numpy as jnp
 from typing import Optional
 from ivy.functional.backends.jax import JaxArray
-import ivy
 
 
 def huber_loss(
@@ -70,7 +69,6 @@ def kl_div(
     if len(size) < 1:
         size = [1]
 
-    input, target = ivy.promote_types_of_inputs(input, target)
     loss = jnp.sum(input * jnp.log(input / target), axis=-1)
 
     if reduction == "mean":
@@ -82,4 +80,4 @@ def kl_div(
     else:
         pass
 
-    return loss.astype(jnp.dtype(input[0]))
+    return loss
