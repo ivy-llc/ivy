@@ -46,7 +46,7 @@ if __name__ == "__main__":
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
-                    file_name = directory + "/" + file_name
+                    file_name = f"{directory}/{file_name}"
                     if file_name not in tests:
                         tests[file_name] = []
                         with open(file_name) as f:

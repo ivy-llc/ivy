@@ -52,7 +52,7 @@ numpy_req = [
     "numpy/1.24.2",
 ]
 jax_req = [
-    jax_ver + "/" + jaxlib_ver for jax_ver in jax_only_req for jaxlib_ver in jaxlib_req
+    f"{jax_ver}/{jaxlib_ver}" for jax_ver in jax_only_req for jaxlib_ver in jaxlib_req
 ]
 
 framework_versions = {
@@ -93,9 +93,7 @@ for test_name in test_names_without_backend:
             else:
                 test_names.append(test_backend)
 
-test_names = list(set(test_names))
-test_names.sort()
-
+test_names = sorted(set(test_names))
 # Run 150 tests in each iteration of the cron job
 num_tests = len(test_names)
 print(num_tests)
