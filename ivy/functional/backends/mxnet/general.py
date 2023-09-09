@@ -20,9 +20,10 @@ def is_native_array(
     else:
         return isinstance(x, mx.ndarray.NDArray) or isinstance(x, np.ndarray)
 
+
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
-) -> Union[bool, mx.nd.NDArray]:  
+) -> Union[bool, mx.nd.NDArray]:
     def equality_fn(a, b):
         if isinstance(a, mx.nd.NDArray) and isinstance(b, mx.nd.NDArray):
             return mx.nd.all(a == b)
@@ -47,6 +48,8 @@ def all_equal(
         if not equality_fn(x0, x):
             return False
     return True
+
+
 def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         if x.shape == ():

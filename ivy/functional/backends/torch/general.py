@@ -57,8 +57,10 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
 
+
 def all_equal(
-    *xs: Iterable[Any], equality_matrix: bool = False
+    *xs: Iterable[Any],
+    equality_matrix: bool = False
 ) -> Union[bool, torch.Tensor]:
     def equality_fn(a, b):
         if isinstance(a, torch.Tensor) and isinstance(b, torch.Tensor):
@@ -82,6 +84,8 @@ def all_equal(
         if not equality_fn(x0, x):
             return False
     return True
+
+
 def container_types():
     return []
 

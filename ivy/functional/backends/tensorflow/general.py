@@ -39,9 +39,11 @@ def array_equal(
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
+
 def all_equal(
-    *xs: Iterable[Any], equality_matrix: bool = False
-) -> Union[bool, tf.Tensor]: 
+    *xs: Iterable[Any],
+    equality_matrix: bool = False
+) -> Union[bool, tf.Tensor]:
     def equality_fn(a, b):
         if isinstance(a, tf.Tensor) and isinstance(b, tf.Tensor):
             return tf.reduce_all(tf.equal(a, b))

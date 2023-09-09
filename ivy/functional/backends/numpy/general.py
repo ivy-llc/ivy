@@ -20,6 +20,7 @@ from ...ivy.general import _broadcast_to
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
     return np.array_equal(x0, x1)
 
+
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, np.ndarray]:

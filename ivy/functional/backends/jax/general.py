@@ -100,6 +100,7 @@ def set_item(
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
+
 def all_equal(
     *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, jnp.ndarray]:
@@ -125,6 +126,7 @@ def all_equal(
         if not equality_fn(x0, x):
             return False
     return True
+
 
 @with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
