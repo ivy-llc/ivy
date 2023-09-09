@@ -731,6 +731,14 @@ class Tensor:
         return paddle_frontend.stanh(self, scale_a=scale_a, scale_b=scale_b)
 
     @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+    )
+    def trace(self, offset=0, axis1=0, axis2=1, name=None):
+        return paddle_frontend.Tensor(
+            ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2)
+        )
+
+    @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
         "paddle",
     )
