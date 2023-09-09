@@ -329,6 +329,14 @@ class InplaceUpdateException(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
+non_ivy_exceptions_dict = {
+    IndexError: IvyIndexError,
+    AttributeError: IvyAttributeError,
+    ValueError: IvyValueError,
+    Exception: IvyBackendException,
+}
+
+
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
@@ -349,58 +357,18 @@ def handle_exceptions(fn: Callable) -> Callable:
         """
         try:
             return fn(*args, **kwargs)
-        # Not to rethrow as IvyBackendException
-        except IvyNotImplementedException as e:
+        except (IvyNotImplementedException, InvalidBackendException) as e:
             _configure_stack_trace(e.__traceback__)
             raise e
-        except IvyError as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyError(
-                fn.__name__, str(e), include_backend=True
-            )
-        except IvyBroadcastShapeError as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyBroadcastShapeError(
-                fn.__name__, str(e), include_backend=True
-            )
-        except IvyDtypePromotionError as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyDtypePromotionError(
-                fn.__name__, str(e), include_backend=True
-            )
-        except (IndexError, IvyIndexError) as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyIndexError(
-                fn.__name__, str(e), include_backend=True
-            )
-        except (AttributeError, IvyAttributeError) as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyAttributeError(
-                fn.__name__, str(e), include_backend=True
-            )
-        except (ValueError, IvyValueError) as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyValueError(
-                fn.__name__, str(e), include_backend=True
-            )
-        except IvyDeviceError as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyDeviceError(
-                fn.__name__, str(e), include_backend=True
-            )
-        except InvalidBackendException as e:
-            _configure_stack_trace(e.__traceback__)
-            raise e
-        except InplaceUpdateException as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.InplaceUpdateException(
-                fn.__name__, str(e), include_backend=True
-            )
-        except (Exception, IvyBackendException) as e:
-            _configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyBackendException(
-                fn.__name__, str(e), include_backend=True
-            )
+        except IvyException as e:
+            _handle_exceptions_helper(e, type(e))
+        except Exception as e:
+            ivy_exception = non_ivy_exceptions_dict.get(type(e), IvyBackendException)
+            _handle_exceptions_helper(e, ivy_exception)
+
+    def _handle_exceptions_helper(e, cls):
+        _configure_stack_trace(e.__traceback__)
+        raise cls(fn.__name__, str(e), include_backend=True)
 
     _handle_exceptions.handle_exceptions = True
     return _handle_exceptions
