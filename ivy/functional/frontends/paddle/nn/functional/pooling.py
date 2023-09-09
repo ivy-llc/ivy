@@ -107,16 +107,35 @@ def max_pool3d(
     kernel_size,
     stride=None,
     padding=0,
+    dilation=1,
     ceil_mode=False,
-    exclusive=True,
-    divisor_override=None,
     data_format="NCHW",
     name=None,
 ):
     if stride is None:
         stride = kernel_size
-    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
-    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
+    if len(x.shape) < 3:
+        raise ValueError("The input tensor must have at least three dimensions.")
+    if x.shape[2:] != kernel_size:
+        raise ValueError(
+            "The shape of the input tensor must be the same as the shape of the kernel"
+            " tensor."
+        )
+    if not isinstance(padding, (tuple, list)):
+        padding = (padding,) * 3
+    if len(padding) != 3:
+        raise ValueError(
+            "The padding argument must be a single number or a tuple of three numbers."
+        )
+    if not isinstance(dilation, (tuple, list)):
+        dilation = (dilation,) * 3
+    if len(dilation) != 3:
+        raise ValueError(
+            "The dilation argument must be a single number or a tuple of three numbers."
+        )
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    dilation = _broadcast_pooling_helper(dilation, "3d", name="dilation")
     # Figure out padding string
     if all(
         [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
@@ -125,16 +144,14 @@ def max_pool3d(
     else:
         padding = "VALID"
 
-    count_include_pad = not exclusive
     return ivy.max_pool3d(
         x,
         kernel_size,
         stride,
         padding,
-        data_format=data_format,
-        count_include_pad=count_include_pad,
+        dilation=dilation,
         ceil_mode=ceil_mode,
-        divisor_override=divisor_override,
+        data_format=data_format,
     )
 
 
