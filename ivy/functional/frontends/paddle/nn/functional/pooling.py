@@ -122,6 +122,7 @@ def max_pool3d(
     padding=0,
     ceil_mode=False,
     return_indices=False,
+    data_formati='NCDHW',
     name=None,
 ):
     if stride is None:
@@ -143,4 +144,5 @@ def max_pool3d(
         padding,
         ceil_mode=ceil_mode,
         return_indices=return_indices,
+        data_format=data_format
     )
