@@ -138,10 +138,7 @@ def max_pool3d(
         input,
         kernel_size,
         stride,
-        padding,g
-        dilation,
-        data_format,
-        method="ceil" if ceil_mode else "floor",
+        padding,
     )
 
 @to_ivy_arrays_and_back
