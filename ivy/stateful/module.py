@@ -834,12 +834,22 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         # moves the weights and buffers
         # to the specified device
 
-        # moving weights
-        for key, obj in self.v:
-            if isinstance(obj, ivy.Module):
+        # moving weights and buffers to new device
+        for key, obj in self.v.items():
+            if (
+                isinstance(obj, ivy.Module)
+                or ivy.is_ivy_array(obj)
+                or isinstance(obj, ivy.Container)
+            ):
                 obj.to_device(device)
             else:
                 ivy.to_device(obj, device=device)
+        if getattr(self, "buffers", None):
+            for key, obj in self.buffers.items():
+                if ivy.is_ivy_array(obj) or isinstance(obj, ivy.Container):
+                    obj.to_device(device)
+                else:
+                    ivy.to_device(obj, device=device)
 
     def __repr__(self):
         return object.__repr__(self)
