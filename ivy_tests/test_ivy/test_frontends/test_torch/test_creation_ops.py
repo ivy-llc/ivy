@@ -323,6 +323,39 @@ def test_torch_empty_like(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.empty_strided",
+    dtype_x_and_other=_as_strided_helper(),
+)
+def test_torch_empty_strided(
+    *,
+    dtype_x_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    x_dtype, x, size, stride, offset = dtype_x_and_other
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            size=size,
+            stride=stride,
+            test_values=False,
+        )
+    except Exception as e:
+        if hasattr(e, "message") and "out of bounds for storage of size" in e.message:
+            assume(False)
+        else:
+            raise e
+
+
 # from_dlpack
 @handle_frontend_test(
     fn_tree="torch.from_dlpack",
