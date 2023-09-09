@@ -460,18 +460,3 @@ def tensorsolve(a, b, axes):
 @to_ivy_arrays_and_back
 def trace(x, name=None):
     return ivy.trace(x, axis1=-2, axis2=-1)
-
-@to_ivy_arrays_and_back
-def tridiagonal_matmul(matrices):
-    main_diag = matrices[0]
-    upper_diag = matrices[1]
-    lower_diag = matrices[2] 
-    matrix = matrices[3]
-    result = main_diag * matrix
-    result += ivy.concat(
-        [ivy.zeros_like(matrix[:, :1]), upper_diag], axis=1
-    ) * ivy.concat([ivy.zeros_like(matrix[:, :1]), matrix[:, :-1]], axis=1)
-    result += ivy.concat(
-        [lower_diag, ivy.zeros_like(matrix[:, :-1])], axis=1
-    ) * ivy.concat([matrix[:, 1:], ivy.zeros_like(matrix[:, :1])], axis=1)
-    return result

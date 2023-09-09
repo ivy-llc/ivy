@@ -1907,3 +1907,36 @@ def test_tensorflow_weighted_moments(
         frequency_weights=fw[0],
         keepdims=keepdims,
     )
+    
+# erosion2d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.erosion2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=0,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_erosion2d(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        image=x[0],
+        structuring_element=x[1],
+    )
