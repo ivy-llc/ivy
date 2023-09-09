@@ -48,6 +48,7 @@ def all_equal(
             return False
     return True
 
+
 def container_types():
     return []
 
