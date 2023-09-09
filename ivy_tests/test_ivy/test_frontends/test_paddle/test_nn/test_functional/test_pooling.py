@@ -275,6 +275,48 @@ def test_paddle_avg_pool2d(
         data_format=data_format,
     )
 
+#max_pool3d 
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_pool3d",
+    dtype_x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=2,
+        max_side=4,
+    ),
+    ceil_mode=st.booleans(),
+    data_format="NCDHW",
+)
+def test_paddle_max_pool3d(
+    dtype_x_k_s_p,
+    exclusive,
+    ceil_mode,
+    data_format,
+    *,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel, stride, padding = dtype_x_k_s_p
+    padding = tuple(
+        [pad if pad == "SAME" else 0 for pad in padding]
+    )  # paddle only supports "VALID" and "SAME" paddings for 3d pooling
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        kernel_size=kernel,
+        stride=stride,
+        padding=padding,
+        ceil_mode=ceil_mode,
+    )
+
 
 # max_unpool1d
 @handle_frontend_test(
