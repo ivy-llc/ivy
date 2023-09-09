@@ -1948,8 +1948,6 @@ def solve(
     >>> print(x.shape)
     (2,1,3)
 
-    (A and B are both multi-dimensional matrices. A(1,:,:)x(1,:,:) = B(1,:,:), and A(2,:,:)x(1,:,:) = B(2,:,:).)
-
   - For shape(A) = (3,3) and shape(B) = (3,2):
     
     >>> A = ivy.array([[1.1, 1.2, 1.3],
@@ -1968,9 +1966,6 @@ def solve(
                 [0]]])
     >>> print(x.shape)
     (2,1,3)
-    
-
-    (A is square but B is not a column vector. As defined in x2, Ax(1,:,:) = B(1,:,:), and Ax(2,:,:) = B(2,:,:).)
 
   With class:`ivy.Container` input:
 
