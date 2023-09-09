@@ -16,7 +16,7 @@ One liners
         framework.
 
     .. grid-item-card:: ``ivy.unify()``
-        :link: one_liners/transpile.rst
+        :link: one_liners/unify.rst
 
         Transpiles an object into Ivy code. It's an alias to
         ``ivy.transpile(..., to="ivy", ...)``
@@ -27,3 +27,4 @@ One liners
 
     one_liners/compile.rst
     one_liners/transpile.rst
+    one_liners/unify.rst
