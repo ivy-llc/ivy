@@ -322,7 +322,7 @@ def test_paddle_max_pool3d(
 ):
     input_dtype, x, kernel_size, padding, data_format = x_k_s_p_df
     if padding == "SAME":
-        padding = test_pooling_functions.calculate_same_padding_3d(
+        padding = test_pooling_functions.calculate_same_padding(
             kernel_size, stride, x[0].shape[2:]
         )
     else:
@@ -340,6 +340,7 @@ def test_paddle_max_pool3d(
         padding=padding,
         dilation=dilation,
         ceil_mode=ceil_mode,
+        data_format=data_format,
         return_indices=return_indices,
     )
 
