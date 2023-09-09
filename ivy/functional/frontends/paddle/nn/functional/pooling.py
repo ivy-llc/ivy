@@ -50,7 +50,6 @@ def avg_pool1d(
         padding = "SAME"
     else:
         padding = "VALID"
-
     return ivy.avg_pool1d(
         x,
         kernel_size,
@@ -86,7 +85,6 @@ def avg_pool2d(
         padding = "SAME"
     else:
         padding = "VALID"
-
     count_include_pad = not exclusive
     return ivy.avg_pool2d(
         x,
@@ -97,6 +95,46 @@ def avg_pool2d(
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
         divisor_override=divisor_override,
+    )
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False):
+    # Check the shapes of the input and kernel tensors.
+
+    if input.shape[2:] != kernel_size:
+        raise ValueError(
+            "The shape of the input tensor must be the same as the shape of the kernel"
+            " tensor."
+        )
+
+    if stride is None:
+        stride = kernel_size
+    # Check the padding argument.
+
+    if not isinstance(padding, (tuple, list)):
+        padding = (padding,) * 3
+    if len(padding) != 3:
+        raise ValueError(
+            "The padding argument must be a single number or a tuple of three numbers."
+        )
+    # Check the dilation argument.
+    if dilation is not None:
+        if not isinstance(dilation, (tuple, list)):
+            dilation = (dilation,) * 3
+    if len(dilation) != 3:
+        raise ValueError(
+            "The dilation argument must be a single number or a tuple of three numbers."
+        )
+    # Create a 3D max pooling operation return the output tensor.
+    return ivy.max_pool3d(
+        input,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
