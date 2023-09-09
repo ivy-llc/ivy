@@ -275,7 +275,8 @@ def test_paddle_avg_pool2d(
         data_format=data_format,
     )
 
-#max_pool3d 
+
+# max_pool3d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
     dtype_x_k_s_p=helpers.arrays_for_pooling(
