@@ -397,7 +397,7 @@ def test_tensorflow_uniform(
         allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=10
     ),
     probs=st.floats(
-        allow_infinity=False, allow_nan=False, width=32, min_value=0.1, max_value=0.9
+        allow_infinity=False, allow_nan=False, width=32, min_value=0, max_value=1
     ),
     seed=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
