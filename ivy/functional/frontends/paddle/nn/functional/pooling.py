@@ -102,61 +102,34 @@ def avg_pool2d(
 
 def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False):
     # Check the shapes of the input and kernel tensors.
-
     if len(input.shape) < 3:
         raise ValueError("The input tensor must have at least three dimensions.")
-
     if input.shape[2:] != kernel_size:
-        raise ValueError(
-            "The shape of the input tensor must be the same as the shape of the kernel"
-            " tensor."
-        )
+        raise ValueError("The shape of the input tensor must match the kernel tensor.")
 
     # Check the stride argument.
-
     if stride is not None:
         if not isinstance(stride, (tuple, list)):
             stride = (stride,) * 3
         if len(stride) != 3:
-            raise ValueError(
-                "The stride argument must be a single number or a tuple of three"
-                " numbers."
-            )
+            raise ValueError("The stride argument tuple missing three numbers.")
 
     # Check the padding argument.
-
     if not isinstance(padding, (tuple, list)):
         padding = (padding,) * 3
     if len(padding) != 3:
-        raise ValueError(
-            "The padding argument must be a single number or a tuple of three numbers."
-        )
+        raise ValueError("The padding argument tuple missing three numbers.")
 
     # Check the dilation argument.
-
     if dilation is not None:
         if not isinstance(dilation, (tuple, list)):
             dilation = (dilation,) * 3
         if len(dilation) != 3:
-            raise ValueError(
-                "The dilation argument must be a single number or a tuple of three"
-                " numbers."
-            )
+            raise ValueError("The dilation argument tuple missing three numbers.")
 
     # Create a 3D max pooling operation.
-
-    if ceil_mode:
-        pool = ivy.max_pool3d(
-            input, kernel_size, stride, padding, dilation, method="ceil"
-        )
-    else:
-        pool = ivy.max_pool3d(
-            input, kernel_size, stride, padding, dilation, method="floor"
-        )
-
-    # Return the output tensor.
-
-    return pool
+    method = "ceil" if ceil_mode else "floor"
+    return ivy.max_pool3d(input, kernel_size, stride, padding, dilation, method)
 
 
 @to_ivy_arrays_and_back
