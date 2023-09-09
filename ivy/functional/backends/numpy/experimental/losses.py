@@ -3,6 +3,7 @@ from typing import Optional
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy
 
 
 @with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
@@ -72,7 +73,7 @@ def soft_margin_loss(
         return loss
 
 
-@with_unsupported_dtypes({"1.25.2 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": ("bool", "bfloat16")}, backend_version)
 @_scalar_output_to_0d_array
 def kl_div(
     input: np.ndarray,
@@ -81,14 +82,12 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> np.ndarray:
-    input = np.clip(input, 1e-7, 1)
-    target = np.clip(target, 1e-7, 1)
-
     size = np.shape(input)
     if len(size) < 1:
         size = [1]
 
-    loss = np.sum(input * np.log(input / target))
+    input, target = ivy.promote_types_of_inputs(input, target)
+    loss = np.sum(input * np.log(input / target), axis=-1)
 
     if reduction == "mean":
         loss = np.mean(loss)
@@ -99,4 +98,4 @@ def kl_div(
     else:
         pass
 
-    return loss
+    return np.ndarray(loss).astype(input[0].dtype)

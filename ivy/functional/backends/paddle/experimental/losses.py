@@ -126,6 +126,7 @@ def soft_margin_loss(
     {
         "2.5.1 and below": {
             "cpu": (
+                "bfloat16",
                 "float16",
                 "int8",
                 "int16",
@@ -147,6 +148,5 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
-    input = paddle.clip(input, 1e-7, 1)
-    target = paddle.clip(target, 1e-7, 1)
-    return paddle.nn.functional.kl_div(input, target, reduction=reduction)
+    loss = paddle.nn.functional.kl_div(input, target, reduction=reduction)
+    return loss

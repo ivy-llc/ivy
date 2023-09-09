@@ -235,6 +235,11 @@ def test_function_backend_computation(
                 if hasattr(ivy_backend.__dict__[fn_name], "out_index")
                 else ret_from_target
             )
+            print("Current Sample:")
+            print(test_ret)
+            print(out)
+            print(ivy_backend)
+            print("----")
             assert not ivy_backend.nested_any(
                 ivy_backend.nested_multi_map(
                     lambda x, _: x[0] is x[1], [test_ret, out]

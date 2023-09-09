@@ -2,6 +2,7 @@ from typing import Optional
 import torch
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy
 
 # Assuming ivy and backend_version are imported and defined properly
 
@@ -102,6 +103,7 @@ def soft_margin_loss(
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
+            "float16",
             "uint8",
             "int8",
             "int16",
@@ -119,10 +121,10 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> torch.Tensor:
-    input = torch.clip(input, 1e-7, 1)
-    target = torch.clip(target, 1e-7, 1)
-    return torch.nn.functional.kl_div(
+    input, target = ivy.promote_types_of_inputs(input, target)
+    loss = torch.nn.functional.kl_div(
         input,
         target,
         reduction=reduction,
     )
+    return loss.type(input[0].dtype)

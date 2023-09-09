@@ -2,6 +2,7 @@ import tensorflow as tf
 from typing import Optional
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy
 
 
 @with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
@@ -64,7 +65,7 @@ def soft_margin_loss(
         return loss
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bool", "bfloat16")}, backend_version)
 def kl_div(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -72,6 +73,20 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
 ) -> tf.Tensor:
-    input = tf.clip_by_value(input, 1e-7, 1)
-    target = tf.clip_by_value(target, 1e-7, 1)
-    return tf.keras.losses.KLDivergence(input, target, reduction=reduction)
+    input, target = ivy.promote_types_of_inputs(input, target)
+    loss = tf.math.reduce_sum(input * tf.math.log(input / target), axis=-1)
+
+    size = tf.shape(input)
+    if len(size) < 1:
+        size = [1]
+
+    if reduction == "mean":
+        loss = tf.math.reduce_mean(loss)
+    elif reduction == "sum":
+        loss = tf.math.reduce_sum(loss)
+    elif reduction == "batchmean":
+        loss = tf.math.reduce_sum(loss) / tf.cast(size[0], tf.float)
+    else:
+        pass
+
+    return tf.cast(loss, tf.as_dtype(input[0].dtype))

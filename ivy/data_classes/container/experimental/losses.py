@@ -660,7 +660,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             The Kullback-Leibler divergence loss between the given distributions.
         """
         return ContainerBase.cont_multi_map_in_function(
-            "soft_margin_loss",
+            "kl_div",
             input,
             target,
             reduction=reduction,

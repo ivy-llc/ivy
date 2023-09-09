@@ -412,7 +412,6 @@ def soft_margin_loss(
 
 @handle_exceptions
 @handle_nestable
-@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
 def kl_div(
@@ -466,14 +465,12 @@ def kl_div(
     >>> ivy.kl_div(input, target, reduction='none')
     ivy.array([0.0378], [0.1453])
     """
-    input = ivy.clip(input, 1e-7, 1)
-    target = ivy.clip(target, 1e-7, 1)
-
     size = ivy.shape(input)
     if len(size) < 1:
         size = [1]
 
-    loss = ivy.sum(input * ivy.log(input / target))
+    input, target = ivy.promote_types_of_inputs(input, target)
+    loss = ivy.sum(input * ivy.log(input / target), axis=-1)
 
     if reduction == "sum":
         loss = ivy.sum(loss, out=out)
@@ -484,4 +481,4 @@ def kl_div(
     else:
         loss = ivy.inplace_update(out, loss) if out is not None else loss
 
-    return loss
+    return ivy.astype(loss, ivy.dtype(input[0]))
