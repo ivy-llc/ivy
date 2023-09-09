@@ -225,7 +225,7 @@ def silu(features, beta: float = 1.0):
 
 @with_unsupported_dtypes(
     {
-        "2.13.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -248,7 +248,7 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.13.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",

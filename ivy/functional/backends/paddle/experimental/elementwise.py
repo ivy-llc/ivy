@@ -609,3 +609,10 @@ def count_nonzero(
 )
 def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.conj(x)
+
+
+def modf(
+    x: paddle.Tensor, /, *, out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    with ivy.ArrayMode(False):
+        return paddle.modf(x, out=out)

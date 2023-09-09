@@ -260,6 +260,17 @@ def as_strided(input, size, stride, storage_offset=None):
         ind = ind + ivy.reshape(ivy.arange(size_i), r_size) * stride_i
     if storage_offset:
         ind = ind + storage_offset
+    base = (
+        input._base
+        if input._base is not None
+        else (
+            input.data._base
+            if hasattr(input.data, "_base")
+            else input.data.base if hasattr(input.data, "base") else None
+        )
+    )
+    if base is not None:
+        return ivy.gather(ivy.flatten(base), ind)
     return ivy.gather(ivy.flatten(input), ind)
 
 

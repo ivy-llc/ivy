@@ -201,6 +201,25 @@ def bitwise_xor(x, y, /, *, name=None, out=None):
 @with_supported_dtypes(
     {
         "2.5.0 and below": (
+            "bool",
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+@handle_out_argument
+def bitwise_not(x, out=None, name=None):
+    return ivy.bitwise_invert(x, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
             "float32",
             "float64",
             "bool",

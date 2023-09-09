@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.25.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -267,7 +267,10 @@ def conj(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.conj(x, out=out)
+    ret = np.conj(x, out=out)
+    if x.dtype == np.bool:
+        return ret.astype("bool")
+    return ret
 
 
 def ldexp(
@@ -287,3 +290,12 @@ def frexp(
         return np.frexp(x, out=(None, None))
     else:
         return np.frexp(x, out=out)
+
+
+def modf(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.modf(x, out=out)

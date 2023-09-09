@@ -7,6 +7,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_nestable,
     infer_dtype,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -20,6 +21,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -150,6 +152,7 @@ def histogram(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def median(
     input: ivy.Array,
     /,
@@ -195,6 +198,7 @@ def median(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def nanmean(
     a: ivy.Array,
     /,
@@ -248,6 +252,7 @@ def nanmean(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -331,6 +336,7 @@ def quantile(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def corrcoef(
     x: ivy.Array,
     /,
@@ -346,6 +352,7 @@ def corrcoef(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def nanmedian(
     input: ivy.Array,
     /,
@@ -417,6 +424,7 @@ def nanmedian(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def bincount(
     x: ivy.Array,
     /,
@@ -459,6 +467,7 @@ def bincount(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,

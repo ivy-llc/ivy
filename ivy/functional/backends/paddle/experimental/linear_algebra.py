@@ -62,7 +62,8 @@ def matrix_exp(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # TODO: this is elementwise exp, should be changed to matrix exp ASAP
-    return paddle.exp(x)
+    # return paddle.exp(x)
+    raise IvyNotImplementedException()
 
 
 def eig(
@@ -90,6 +91,16 @@ def cond(
     /,
     *,
     p: Optional[Union[None, int, str]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> Any:
+    raise IvyNotImplementedException()
+
+
+def lu_factor(
+    x: paddle.Tensor,
+    /,
+    *,
+    pivot: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> Any:
     raise IvyNotImplementedException()

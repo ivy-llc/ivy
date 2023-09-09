@@ -1,6 +1,7 @@
 # global
 import os
 import redis
+from colorama import Fore
 from hypothesis import settings, HealthCheck, Phase
 from hypothesis.database import (
     MultiplexedDatabase,
@@ -41,6 +42,14 @@ def is_db_available(master=False, credentials=None):
         print("Fallback to DirectoryBasedExamples")
         return False
     return True
+
+
+def pytest_terminal_summary(terminalreporter):
+    session = terminalreporter._session
+    passed_ratio = 1 - (session.testsfailed / session.testscollected)
+    text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
+    text = text.center(terminalreporter._screen_width, "=")
+    terminalreporter.write(content=Fore.GREEN + text)
 
 
 def pytest_addoption(parser):

@@ -2,7 +2,7 @@ Docstrings
 ==========
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api
+.. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/blob/main
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
@@ -82,7 +82,7 @@ Next, we add a section in the docstring which explains that it has been modified
 
     +This function conforms to the `Array API Standard
     +<https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    +`docstring <https://data-apis.org/array-api/latest/API_specification/generated/array_api.tan.html>`_
     +in the standard.
 
 Finally, **if** the function is *nestable*, then we add a simple explanation for this as follows:
@@ -128,7 +128,7 @@ Following these changes, the new docstring is as follows:
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/array_api.tan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

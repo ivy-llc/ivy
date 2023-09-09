@@ -49,3 +49,5 @@ skippable_method_attributes = [{"__qualname__": "_wrap_function.<locals>.new_fun
 from docs.conf import html_theme_options
 
 html_theme_options["switcher"]["json_url"] = "https://unify.ai/docs/versions/ivy.json"
+
+repo_name = "ivy"

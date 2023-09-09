@@ -8,7 +8,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _dropout_helper
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
@@ -859,24 +858,48 @@ def test_tensorflow_batch_normalization(
     )
 
 
+@st.composite
+def _dropout_helper(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+    noise_shape = list(shape)
+    if draw(st.booleans()):
+        noise_shape = None
+    else:
+        for i, _ in enumerate(noise_shape):
+            if draw(st.booleans()):
+                noise_shape[i] = 1
+            elif draw(st.booleans()):
+                noise_shape[i] = None
+    seed = draw(helpers.ints(min_value=0, max_value=100))
+    rate = draw(helpers.floats(min_value=0, max_value=0.9))
+
+    return (
+        dtype_and_x,
+        noise_shape,
+        seed,
+        rate,
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.dropout",
     dtype_x_noiseshape=_dropout_helper(),
-    rate=helpers.floats(min_value=0, max_value=0.9),
-    seed=helpers.ints(min_value=0, max_value=100),
-    test_with_out=st.just(False),
 )
 def test_tensorflow_dropout(
     *,
     dtype_x_noiseshape,
-    rate,
-    seed,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    (x_dtype, x), noise_shape = dtype_x_noiseshape
+    (x_dtype, x), noise_shape, seed, rate = dtype_x_noiseshape
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,

@@ -144,10 +144,13 @@ def inv(
     adjoint: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
-        return x
     if adjoint:
-        x = jnp.transpose(x)
+        if x.ndim < 2:
+            raise ValueError("Input must be at least 2D")
+        permutation = list(range(x.ndim))
+        permutation[-2], permutation[-1] = permutation[-1], permutation[-2]
+        x_adj = jnp.transpose(x, permutation).conj()
+        return jnp.linalg.inv(x_adj)
     return jnp.linalg.inv(x)
 
 

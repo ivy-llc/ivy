@@ -342,3 +342,28 @@ def unique_consecutive(
         tf.cast(inverse_indices, tf.int64),
         tf.cast(counts, tf.int64),
     )
+
+
+def fill_diagonal(
+    a: tf.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+):
+    shape = tf.shape(a)
+    max_end = tf.math.reduce_prod(shape)
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + tf.reduce_sum(tf.math.cumprod(shape[:-1]))
+    a = tf.reshape(a, (-1,))
+    end = min(end, max_end)
+    indices = [[i] for i in range(0, end, step)]
+    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
+    a = tf.tensor_scatter_nd_update(a, indices, ups)
+    a = tf.reshape(a, shape)
+    return a

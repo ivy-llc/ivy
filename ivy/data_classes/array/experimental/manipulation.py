@@ -1065,3 +1065,18 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         changes.
         """
         return ivy.unique_consecutive(self._data, axis=axis)
+
+    def fill_diagonal(
+        self: ivy.Array,
+        v: Union[int, float],
+        /,
+        *,
+        wrap: bool = False,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.fill_diag.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fill_diag also applies to this method with minimal changes.
+        """
+        return ivy.fill_diagonal(self._data, v, wrap=wrap)

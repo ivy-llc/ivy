@@ -2,7 +2,7 @@ Backend Setting
 ===============
 
 .. _`this function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154
-.. _`implicit_backend`: https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16
+.. _`implicit_backend`: https://github.com/unifyai/ivy/blob/3358b5bbadbe4cbc0509cad4ea8f05f178dfd8b8/ivy/utils/backend/handler.py
 .. _`import the backend module`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L184
 .. _`writing the function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212
 .. _`wrap the functions`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204

@@ -89,7 +89,7 @@ class EagerTensor:
         return array(ivy.asarray(self.ivy_array, dtype=to_ivy_dtype(dtype)))
 
     def __bool__(self, name="bool"):
-        temp = ivy.squeeze(self.ivy_array, None)
+        temp = ivy.squeeze(self.ivy_array, axis=None)
         if temp.shape != ():
             raise ValueError(
                 "The truth value of an array with more than one element is ambiguous. "
