@@ -599,7 +599,7 @@ def _import_method(method_tree: str):
 
 
 def handle_method(
-    *,
+    *,.
     init_tree: str = "",
     method_tree: str = None,
     ground_truth_backend: str = "tensorflow",
