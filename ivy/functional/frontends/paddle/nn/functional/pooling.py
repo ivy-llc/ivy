@@ -107,7 +107,7 @@ def max_pool3d(
     kernel_size,
     stride=None,
     padding=0,
-    dilation=1,
+    dilation=(1, 1, 1),
     ceil_mode=False,
     data_format="NCHW",
     name=None,
