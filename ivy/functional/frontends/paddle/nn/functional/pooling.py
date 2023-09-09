@@ -112,10 +112,8 @@ def max_pool3d(
     data_format="NCHW",
     name=None,
 ):
-    if len(padding) != 3:
-        padding = (padding,) * 3
-    if len(dilation) != 3:
-        dilation = (dilation,) * 3
+    if stride is None:
+        stride = kernel_size
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
     dilation = _broadcast_pooling_helper(dilation, "3d", name="dilation")
