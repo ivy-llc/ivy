@@ -117,15 +117,18 @@ def max_pool3d(
     if len(x.shape) < 3:
         raise ValueError("The input tensor must have at least three dimensions.")
     if x.shape[2:] != kernel_size:
-        raise ValueError("The shape of the input tensor must be the same as the shape of the kernel tensor.")
+        raise ValueError(
+            "The shape of the input tensor must be the same as the shape of the kernel tensor.")
     if not isinstance(padding, (tuple, list)):
         padding = (padding,) * 3
     if len(padding) != 3:
-        raise ValueError("The padding argument must be a single number or a tuple of three numbers.")
+        raise ValueError(
+            "The padding argument must be a single number or a tuple of three numbers.")
     if not isinstance(dilation, (tuple, list)):
         dilation = (dilation,) * 3
     if len(dilation) != 3:
-        raise ValueError("The dilation argument must be a single number or a tuple of three numbers.")
+        raise ValueError(
+            "The dilation argument must be a single number or a tuple of three numbers.")
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
     dilation = _broadcast_pooling_helper(dilation, "3d", name="dilation")
