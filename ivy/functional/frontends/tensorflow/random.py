@@ -46,12 +46,18 @@ def shuffle(value, seed=None, name=None):
 )
 @to_ivy_arrays_and_back
 def stateless_binomial(counts, probs, seed, output_dtype=ivy.int32, shape=None, name=None):
-    if any(p < 0 or p > 1 for p in probs):
-        raise ValueError("p must be in the interval (0, 1)")
-    if any(c < 0 for c in counts):
-        raise ValueError("n must be strictly positive")
-    if shape is None:
-        raise ValueError("missing shape argument")
+    if hasattr(probs, '__iter__'):
+        if any(p < 0 or p > 1 for p in probs):
+            raise ValueError("probs elements must be in the interval (0, 1)")
+    else:
+        if probs < 0 or probs > 1:
+            raise ValueError("probs must be in the interval (0, 1)")
+    if hasattr(counts, '__iter__'):
+        if any(c < 0 for c in counts):
+            raise ValueError("counts elemenst must be strictly positive")
+    else:
+        if counts < 0:
+            raise ValueError("counts must be strictly positive")
     if isinstance(shape, int):
         shape = (shape,)
     lambda_ = ivy.multiply(counts, probs)
