@@ -680,7 +680,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self,
         *args,
         from_call=False,
-        device=None,
         dtype=None,
         dynamic_backend=None,
         buffers=None,
@@ -705,7 +704,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         ret
             True for successfully built a module.
         """
-        self._dev = ivy.default(device, self._dev)
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == "on_call":
             return self.v
@@ -831,6 +829,17 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             module = getattr(self, module, None)
             if isinstance(module, ivy.Module):
                 module.train(mode=mode)
+
+    def to_device(self, device):
+        # moves the weights and buffers
+        # to the specified device
+
+        # moving weights
+        for key, obj in self.v:
+            if isinstance(obj, ivy.Module):
+                obj.to_device(device)
+            else:
+                ivy.to_device(obj, device=device)
 
     def __repr__(self):
         return object.__repr__(self)
