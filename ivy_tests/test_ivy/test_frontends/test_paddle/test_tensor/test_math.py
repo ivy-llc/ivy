@@ -8,7 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # broadcast_shape
 @handle_frontend_test(
-    fn_tree="paddle.broadcast_shape",
+    fn_tree="paddle.tensor.broadcast_shape",
     shapes=helpers.mutually_broadcastable_shapes(
         num_shapes=2, min_dims=1, max_dims=5, min_side=1, max_side=5
     ),
