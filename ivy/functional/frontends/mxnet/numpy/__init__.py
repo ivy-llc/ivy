@@ -32,7 +32,6 @@ mxnet_promotion_table = {
     (_bool, _float16): _float16,
     (_bool, _float32): _float32,
     (_bool, _float64): _float64,
-    (_bool, _bool): _bool,
     (_int8, _bool): _int8,
     (_int8, _int8): _int8,
     (_int8, _int32): _int32,
