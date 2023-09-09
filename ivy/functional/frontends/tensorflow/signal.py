@@ -37,6 +37,7 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
 
 
 # hann_window
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def hann_window(window_length, periodic=True, dtype=ivy.float32, name=None):
     if window_length % 2 == 1 and periodic and window_length != 1:
