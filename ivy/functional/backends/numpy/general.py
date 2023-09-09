@@ -21,10 +21,8 @@ def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
     return np.array_equal(x0, x1)
 
 def all_equal(
-    *xs: Iterable[Any],
-    equality_matrix: bool = False
+    *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, np.ndarray]:
-
     def equality_fn(a, b):
         if isinstance(a, np.ndarray) and isinstance(b, np.ndarray):
             return np.array_equal(a, b)

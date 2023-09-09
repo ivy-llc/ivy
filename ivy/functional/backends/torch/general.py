@@ -58,10 +58,8 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     return torch.equal(x0, x1)
 
 def all_equal(
-    *xs: Iterable[Any],
-    equality_matrix: bool = False
+    *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, torch.Tensor]:
-   
     def equality_fn(a, b):
         if isinstance(a, torch.Tensor) and isinstance(b, torch.Tensor):
             return torch.all(torch.eq(a, b))

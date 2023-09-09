@@ -21,10 +21,8 @@ def is_native_array(
         return isinstance(x, mx.ndarray.NDArray) or isinstance(x, np.ndarray)
 
 def all_equal(
-    *xs: Iterable[Any],
-    equality_matrix: bool = False
-) -> Union[bool, mx.nd.NDArray]:
-    
+    *xs: Iterable[Any], equality_matrix: bool = False
+) -> Union[bool, mx.nd.NDArray]:  
     def equality_fn(a, b):
         if isinstance(a, mx.nd.NDArray) and isinstance(b, mx.nd.NDArray):
             return mx.nd.all(a == b)

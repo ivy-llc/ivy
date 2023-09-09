@@ -101,10 +101,8 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 def all_equal(
-    *xs: Iterable[Any],
-    equality_matrix: bool = False
+    *xs: Iterable[Any], equality_matrix: bool = False
 ) -> Union[bool, jnp.ndarray]:
-
     def equality_fn(a, b):
         if isinstance(a, jnp.ndarray) and isinstance(b, jnp.ndarray):
             return jnp.all(a == b)

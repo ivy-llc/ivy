@@ -25,10 +25,8 @@ def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
     return bool(paddle_backend.all(paddle_backend.equal(x0, x1)))
 
 def all_equal(
-    *xs: Iterable[Any],
-    equality_matrix: bool = False
-) -> Union[bool, paddle.Tensor]:
-    
+    *xs: Iterable[Any], equality_matrix: bool = False
+) -> Union[bool, paddle.Tensor]:   
     def equality_fn(a, b):
         if isinstance(a, paddle.Tensor) and isinstance(b, paddle.Tensor):
             return paddle.all(paddle.equal(a, b))
