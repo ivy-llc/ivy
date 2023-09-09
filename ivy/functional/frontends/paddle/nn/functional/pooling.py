@@ -1,6 +1,7 @@
 # local
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
+import numpy as np
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch.nn.functional.pooling_functions import (
     _broadcast_pooling_helper,
@@ -102,30 +103,37 @@ def avg_pool2d(
 
 def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode=False):
     # Check the shapes of the input and kernel tensors.
-    if len(input.shape) < 3:
-        raise ValueError("The input tensor must have at least three dimensions.")
-    if input.shape[2:] != kernel_size:
-        raise ValueError("The shape of the input tensor must match the kernel tensor.")
+    # Ensure input is a NumPy array.
+    if not isinstance(input, np.ndarray):
+        raise ValueError("Input must be a NumPy array.")
 
-    # Check the stride argument.
-    if stride is not None:
-        if not isinstance(stride, (tuple, list)):
-            stride = (stride,) * 3
-        if len(stride) != 3:
-            raise ValueError("The stride argument tuple missing three numbers.")
+    # Check the shape of the input tensor.
+    if input.shape != (
+        input.shape[0],
+        input.shape[1],
+        input.shape[2],
+        input.shape[3],
+        input.shape[4],
+    ):
+        raise ValueError(
+            "Input tensor must have shape (batch, channel, depth, height, width)."
+        )
 
-    # Check the padding argument.
-    if not isinstance(padding, (tuple, list)):
-        padding = (padding,) * 3
-    if len(padding) != 3:
-        raise ValueError("The padding argument tuple missing three numbers.")
+    # Validate and normalize parameter shapes.
+    def validate_param(param_name, param_value):
+        if isinstance(param_value, int):
+            return (param_value, param_value, param_value)
+        elif isinstance(param_value, (tuple, list)) and len(param_value) == 3:
+            return tuple(int(val) for val in param_value)
+        else:
+            raise ValueError(
+                f"{param_name} must be an int or a tuple/list of three integers."
+            )
 
-    # Check the dilation argument.
-    if dilation is not None:
-        if not isinstance(dilation, (tuple, list)):
-            dilation = (dilation,) * 3
-        if len(dilation) != 3:
-            raise ValueError("The dilation argument tuple missing three numbers.")
+    kernel_size = validate_param("kernel_size", kernel_size)
+    stride = validate_param("stride", stride) if stride is not None else kernel_size
+    padding = validate_param("padding", padding)
+    dilation = validate_param("dilation", dilation)
 
     # Create a 3D max pooling operation.
     method = "ceil" if ceil_mode else "floor"
