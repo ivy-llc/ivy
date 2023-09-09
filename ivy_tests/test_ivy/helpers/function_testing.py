@@ -769,10 +769,10 @@ def test_frontend_function(
 
         # test if frontend array was returned
         if test_flags.generate_frontend_arrays:
-            ret_copy = copy.deepcopy(ret)
             assert ivy_backend.nested_map(
-                ret_copy,
+                ret,
                 lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
+                shallow=False,
             ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
         if test_flags.with_out:
