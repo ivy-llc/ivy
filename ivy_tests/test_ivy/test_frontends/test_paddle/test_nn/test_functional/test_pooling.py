@@ -294,7 +294,7 @@ def test_paddle_max_pool3d(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kernel_size, stride, padding = dtype_x_k_s_p_d_c
+    (input_dtype, x, kernel_size, stride, padding) = dtype_x_k_s_p_d_c
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
