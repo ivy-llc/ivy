@@ -478,4 +478,4 @@ def test_torch_max_pool2d(
         padding=pad,
         dilation=dilation,
         ceil_mode=ceil_mode,
-    )
+        )
