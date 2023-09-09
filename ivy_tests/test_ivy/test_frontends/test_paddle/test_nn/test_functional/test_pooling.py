@@ -286,22 +286,21 @@ def test_paddle_avg_pool2d(
         max_side=4,
     ),
     ceil_mode=st.booleans(),
-    data_format="NCHW",
+    ceil_mode=st.booleans(),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_max_pool3d(
-    *,
     dtype_x_k_s_p_d_c,
     ceil_mode,
     data_format,
+    *,
     test_flags,
     backend_fw,
     frontend,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kernel_size, stride, padding, dilation, ceil_mode = (
-        dtype_x_k_s_p_d_c
-    )
+    input_dtype, x, kernel_size, stride, padding, dilation = dtype_x_k_s_p_d_c
 
     if data_format == "NCHW":
         # Reshape the input data to match the NCHW format
