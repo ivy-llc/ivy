@@ -1228,7 +1228,6 @@ def test_tensorflow_trace(
         fn_tree=fn_tree,
         x=x[0],
     )
-   
     
 # tridiagonal matmul
 @handle_frontend_test(
@@ -1243,7 +1242,7 @@ def test_tensorflow_trace(
     ),
     test_with_out=st.just(False),
 )
-def test_tridiagonal_matmul(
+def test_tensorflow_tridiagonal_matmul(
     *,
     dtype_x,
     frontend,
@@ -1262,5 +1261,3 @@ def test_tridiagonal_matmul(
         on_device=on_device,
         matrices=data,
     )
-
-
