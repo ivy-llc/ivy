@@ -83,7 +83,7 @@ def kl_div(
     elif reduction == "sum":
         loss = tf.math.reduce_sum(loss)
     elif reduction == "batchmean":
-        loss = tf.math.reduce_sum(loss) / size[0]
+        loss = tf.math.reduce_sum(loss) / tf.cast(size[0], dtype=tf.float)
     else:
         pass
 
