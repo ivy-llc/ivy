@@ -109,7 +109,12 @@ def max_pool3d(input, kernel_size, stride=None, padding=0, dilation=1, ceil_mode
         stride = kernel_size
     # Create a 3D max pooling operation and return the output tensor.
     return ivy.max_pool3d(
-        input, kernel_size, stride, padding, dilation, ceil_mode=ceil_mode
+        input,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
