@@ -248,4 +248,6 @@ def polyval(
     y = paddle.zeros_like(x)
     for coeff in coeffs:
         y = y * x + coeff
-    return paddle.cast(y, ivy.dtype(coeffs)).detach().numpy()
+    if ivy.dtype(coeffs) == "float32" and ivy.dtype(x) == "float32":
+        y = y.numpy().astype("float32")
+    return y

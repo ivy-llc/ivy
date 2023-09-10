@@ -166,5 +166,6 @@ def polyval(coeffs: tf.Tensor, x: tf.Tensor):
         coeffs,
         x,
     )
-    result = tf.cast(result, tf.as_dtype(coeffs.dtype))
+    if coeffs.dtype == tf.float32 and x.dtype == tf.float32:
+        result = tf.cast(result, tf.float32)
     return result

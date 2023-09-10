@@ -255,4 +255,4 @@ def polyval(
         y = y * x + coeff
     if y.shape == (1,):
         y = torch.unsqueeze(y, 0)
-    return y.type(coeffs.dtype).detach().numpy()
+    return y

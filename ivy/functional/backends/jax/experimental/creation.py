@@ -169,4 +169,4 @@ def polyval(
     y = jnp.zeros_like(x)
     for pv in coeffs:
         y = y * x + pv
-    return jnp.array(y, jnp.dtype(coeffs))
+    return y
