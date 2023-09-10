@@ -125,12 +125,21 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("int32",
-            "int64","float16","float32","float64","complex64", "complex128")},
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back
-def irfft2(x, s=None, axes=(-2, -1), norm='backward'):
+def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
     # Handle values if None
     if s is None:
         s = x.shape
@@ -143,10 +152,10 @@ def irfft2(x, s=None, axes=(-2, -1), norm='backward'):
     result = ivy.ifftn(x, dim=axes[0], norm=norm)
 
     # Normalize the result based on the 'norm' parameter
-    if norm == 'backward':
+    if norm == "backward":
         result /= n
-    elif norm == 'forward':
+    elif norm == "forward":
         result *= n
-    elif norm == 'ortho':
+    elif norm == "ortho":
         result /= ivy.sqrt(n)
     return result
