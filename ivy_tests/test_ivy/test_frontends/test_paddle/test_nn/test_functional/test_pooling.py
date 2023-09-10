@@ -281,7 +281,7 @@ def test_paddle_avg_pool2d(
 # Test the PaddlePaddle max_pool3d operation
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
-    dtype_x_k_s=helpers.arrays_for_pooling(
+    x_k_s_p=helpers.arrays_for_pooling(
         min_dims=5, max_dims=5, min_side=2, max_side=4, data_format="channel_first"
     ),
     ceil_mode=st.booleans(),
