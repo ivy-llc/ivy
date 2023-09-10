@@ -1,4 +1,4 @@
-from hypothesis import strategies as st, reproduce_failure
+from hypothesis import strategies as st
 import numpy as np
 
 # local
@@ -364,7 +364,6 @@ def test_ndindex(dtype_x_shape):
 
 
 # polyval
-@reproduce_failure("6.84.2", b"AXicY2JkAAEIiU4zAgAApQAI")
 @handle_test(
     fn_tree="functional.ivy.experimental.polyval",
     dtype_and_coeffs=helpers.dtype_and_values(
