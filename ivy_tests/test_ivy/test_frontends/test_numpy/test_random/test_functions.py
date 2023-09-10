@@ -641,6 +641,13 @@ def test_numpy_negative_binomial(
 @handle_frontend_test(
     fn_tree="numpy.random.noncentral_chisquare",
     input_dtypes=helpers.get_dtypes("float"),
+    df=st.floats(
+        min_value=0,
+        max_value=1000,
+        exclude_min=True,
+        allow_subnormal=False,
+        width=32,
+    ),
     nonc=st.floats(
         allow_nan=False,
         allow_infinity=False,
