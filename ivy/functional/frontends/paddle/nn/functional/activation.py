@@ -17,9 +17,7 @@ def celu(
     alpha=1.0,
     name=None,
 ):
-    prod = alpha * (ivy.exp(x / alpha) - 1)
-    ret = ivy.maximum(0, x) + ivy.minimum(0, prod)
-    return ret
+    return ivy.celu(x, alpha=alpha)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")

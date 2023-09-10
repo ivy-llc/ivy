@@ -120,9 +120,7 @@ def _type_conversion_64(x):
 
 @to_ivy_arrays_and_back
 def celu(x, alpha=1.0):
-    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
-    dtype = _batch_promotion(x, alpha, default_dtype="float64")
-    return ivy.asarray(ret, dtype=dtype)
+    return ivy.celu(x, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
