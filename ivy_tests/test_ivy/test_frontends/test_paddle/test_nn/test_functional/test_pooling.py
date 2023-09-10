@@ -282,9 +282,18 @@ def test_paddle_avg_pool2d(
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(
-        min_dims=5, max_dims=5, min_side=2, max_side=4, data_format="channel_first"
+        min_dims=5,
+        max_dims=5,
+        min_side=1,
+        max_side=4,
+        explicit_or_str_padding=True,
+        return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
     ),
-    ceil_mode=st.booleans(),
+    ceil_mode=st.sampled_from([True, False]),
+    test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_paddle_max_pool3d(
     *,
@@ -295,12 +304,12 @@ def test_paddle_max_pool3d(
     fn_tree,
     on_device,
 ):
-    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
+    dtype, x, kernel, stride, padding, dilation, data_format = x_k_s_p
 
     if len(stride) == 1:
         stride = (stride[0], stride[0], stride[0])
-    if pad == "SAME":
-        pad = test_pooling_functions.calculate_same_padding(
+    if padding == "SAME":
+        padding = test_pooling_functions.calculate_same_padding(
             kernel, stride, x[0].shape[2:]
         )
     else:
@@ -318,7 +327,7 @@ def test_paddle_max_pool3d(
         x=x[0],
         kernel=kernel,
         strides=stride,
-        padding=pad,
+        padding=padding,
         data_format=data_format,
         dilation=dilation,
         ceil_mode=ceil_mode,
