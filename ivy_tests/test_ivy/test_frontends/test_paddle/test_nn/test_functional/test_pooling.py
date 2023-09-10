@@ -112,6 +112,7 @@ def test_paddle_adaptive_avg_pool3d(
     output_size,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
@@ -119,6 +120,7 @@ def test_paddle_adaptive_avg_pool3d(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
@@ -276,28 +278,39 @@ def test_paddle_avg_pool2d(
     )
 
 
+# Test the PaddlePaddle max_pool3d operation
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
     dtype_x_k_s=helpers.arrays_for_pooling(
         min_dims=5, max_dims=5, min_side=2, max_side=4
     ),
-    ceil_mode=st.booleans(),
+    ceil_mode=st.just(False),
+    test_with_out=st.just(False),
+    exclusive=st.booleans(),
+    data_format=st.sampled_from(["NCHW", "NHWC", "NCDHW"]),
 )
 def test_paddle_max_pool3d(
-    dtype_x_k_s, ceil_mode, *, test_flags, backend_fw, frontend, fn_tree, on_device
+    dtype_x_k_s,
+    exclusive,
+    data_format,
+    ceil_mode,
+    *,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, kernel, stride, padding = dtype_x_k_s
 
-    # Ensure stride has 3 elements
-    stride = (stride[0], stride[0], stride[0]) if len(stride) == 1 else stride
-
-    # Calculate padding if it's 'SAME', else set to (0, 0, 0)
+    if len(stride) == 1:
+        stride = (stride[0], stride[0], stride[0])  # Adjust for 3D
     if padding == "SAME":
         padding = test_pooling_functions.calculate_same_padding(
-            kernel, stride, x[0].shape[2:]
+            kernel, stride, x[0].shape[2:], data_format="NCDHW"  # Adjust data format
         )
     else:
-        padding = (0, 0, 0)
+        padding = (0, 0, 0)  # Adjust for 3D
 
     # Test the frontend function
     helpers.test_frontend_function(
@@ -312,7 +325,9 @@ def test_paddle_max_pool3d(
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
-        data_format="NCDHW",  # You can adjust the data format as needed
+        exclusive=exclusive,
+        divisor_override=None,
+        data_format=data_format,
     )
 
 
