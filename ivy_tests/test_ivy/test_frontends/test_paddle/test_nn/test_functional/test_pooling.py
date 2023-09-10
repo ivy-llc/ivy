@@ -291,7 +291,6 @@ def test_paddle_avg_pool2d(
         return_data_format=True,
     ),
     ceil_mode=st.booleans(),
-    ground_truth_backend="torch",
 )
 def test_paddle_max_pool3d(
     *, x_k_s_p, test_flags, backend_fw, on_device, frontend, fn_tree, ceil_mode
