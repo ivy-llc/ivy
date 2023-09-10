@@ -174,9 +174,11 @@ def negative_binomial(n, p, size=None):
     return ivy.poisson(lam=lambda_, shape=size)
 
 
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def noncentral_chisquare(df, nonc, size=None):
     if ivy.any(df <= 0):
-        raise ValueError("degree of freedom must be greater than 0")
+        raise ValueError("Degree of freedom must be greater than 0")
     if nonc == 0:
         return chisquare(df)
     if 1 < df:
