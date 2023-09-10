@@ -180,7 +180,7 @@ def unify(
 ) -> Callable:
     """
     Unify and Transpile Callable objects passed as arguments.
-    If args and kwargs are specified.
+    If args and kwargs specified.
 
     one or more native Callable objects and transpiles them 
     from the specified source framework to the target framework.
