@@ -304,7 +304,7 @@ def test_paddle_max_pool3d(
             kernel, stride, x[0].shape[2:]
         )
     else:
-        pass
+        pad = (0, 0, 0)
 
     # Test the frontend function
     helpers.test_frontend_function(
