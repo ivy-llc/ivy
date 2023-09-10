@@ -103,16 +103,16 @@ def avg_pool2d(
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_pool3d(
-    input,
+    x,
     kernel_size,
-    strides=None,
+    stride=None,
     padding=0,
     dilation=1,
     data_format="NCDHW",
     ceil_mode=False,
 ):
     # Set stride to kernel_size if not provided
-    strides = kernel_size if strides is None else strides
+    stride = kernel_size if stride is None else stride
     # Ensure kernel_size and padding are broadcasted to 3D
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
@@ -128,12 +128,12 @@ def max_pool3d(
     # count_include_pad = not exclusive
     # Perform 3D max pooling
     return ivy.max_pool3d(
-        input,
+        x,
         kernel_size,
-        strides,
+        stride,
         padding,
         data_format=data_format,
-        dialation=dilation,
+        dilation=dilation,
         ceil_mode=ceil_mode,
     )
 
