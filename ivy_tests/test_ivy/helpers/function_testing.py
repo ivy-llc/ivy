@@ -1635,28 +1635,12 @@ def test_frontend_method(
             f"ivy.functional.frontends.{frontend}"
         )._frontend_array
 
-        if method_flags.generate_frontend_arrays:
-            args_constructor_ivy, kwargs_constructor_ivy = args_to_frontend(
-                backend_to_test,
-                *args_constructor,
-                frontend_array_fn=create_frontend_array,
-                **kwargs_constructor,
-            )
-
-            args_method_ivy, kwargs_method_ivy = args_to_frontend(
-                backend_to_test,
-                *args_method,
-                frontend_array_fn=create_frontend_array,
-                **kwargs_method,
-            )
-
-        else:
-            args_constructor_ivy, kwargs_constructor_ivy = ivy_backend.args_to_ivy(
-                *args_constructor, **kwargs_constructor
-            )
-            args_method_ivy, kwargs_method_ivy = ivy_backend.args_to_ivy(
-                *args_method, **kwargs_method
-            )
+        args_constructor_ivy, kwargs_constructor_ivy = ivy_backend.args_to_ivy(
+            *args_constructor, **kwargs_constructor
+        )
+        args_method_ivy, kwargs_method_ivy = ivy_backend.args_to_ivy(
+            *args_method, **kwargs_method
+        )
 
         args_constructor_np = ivy_backend.nested_map(
             args_constructor_ivy,
@@ -1694,39 +1678,34 @@ def test_frontend_method(
             frontend_fw_module, frontend_method_data.init_name
         )
 
-        # TODO FInd a way to generate the frontend ret that works with method instances
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
-        # ins = create_frontend_array(*args_constructor, **kwargs_constructor)
-        ret = get_ret_and_flattened_np_arrays(
+        ret = get_frontend_ret(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
-            precision_mode=method_flags.precision_mode,
             *args_method_ivy,
+            frontend_array_function=(
+                create_frontend_array if method_flags.test_compile else None
+            ),
             as_ivy_arrays=(not method_flags.generate_frontend_arrays),
             test_compile=method_flags.test_compile,
+            precision_mode=method_flags.precision_mode,
             **kwargs_method_ivy,
         )
+
         if method_flags.generate_frontend_arrays:
             assert ivy_backend.nested_map(
                 ret,
                 lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True,
             ), "Frontend method returned non-frontend arrays: {}".format(ret)
 
-        if (
-            method_flags.generate_frontend_arrays
-        ):  # , backend: str, ret, frontend_array_fn=None
+        if method_flags.generate_frontend_arrays:
             ret_np_flat = flatten_frontend_to_np(
                 ret=ret,
                 frontend_array_fn=create_frontend_array,
                 backend=backend_to_test,
             )
-
         else:
             ret_np_flat = flatten_and_to_np(ret=ret, backend=backend_to_test)
-
-        # ToDo: uncomment once test_frontend_method has been updated to test for
-        #  frontend array arguments like test_frontend_function where
-        #  test_flags.generate_frontend_arrays is being used
 
     # Compute the return with the native frontend framework
     frontend_config = get_frontend_config(frontend)
@@ -2085,30 +2064,6 @@ def get_frontend_ret(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
             )
     return ret
-
-
-def get_ret_and_flattened_np_arrays(
-    backend_to_test: str,
-    fn,
-    *args,
-    as_ivy_arrays=True,
-    test_compile=False,
-    precision_mode=False,
-    **kwargs,
-):
-    fn = compiled_if_required(
-        backend_to_test, fn, test_compile=test_compile, args=args, kwargs=kwargs
-    )
-    with BackendHandler.update_backend(backend_to_test) as ivy_backend:
-        with ivy_backend.PreciseMode(precision_mode):
-            ret = fn(*args, **kwargs)
-
-        if as_ivy_arrays:
-            ret = ivy_backend.nested_map(
-                ret, _frontend_array_to_ivy, include_derived={tuple: True}
-            )
-
-        return ret
 
 
 def args_to_container(array_args):
