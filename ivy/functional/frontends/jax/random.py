@@ -141,8 +141,6 @@ def choice(key, a, *, shape=(), replace=True, p=None, axis=0):
         num_samples = ivy.prod(shape)
     else:
         num_samples = 1
-    if ivy.isnan(p).any():
-        print("wtf")
     indices = ivy.multinomial(
         len(a), num_samples, replace=replace, probs=p_arr, seed=seed
     )
