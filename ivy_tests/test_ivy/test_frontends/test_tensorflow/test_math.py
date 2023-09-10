@@ -1201,13 +1201,12 @@ def test_tensorflow_in_top_k(
     )
 
 
-# invert_permutation
+# invert_permutation 
 @handle_frontend_test(
     fn_tree="tensorflow.math.invert_permutation",  
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),  
-        num_arrays=2,
-        shared_dtype=True,  
+    dtype_and_x=st.tuples(
+        helpers.get_dtypes(["numeric", "complex"]),  # Include numeric and complex data types
+        st.lists(st.integers(0, 10), min_size=1, max_size=10)  # Vary the size of the permutation array
     ),
     test_with_out=st.just(False),
 )
