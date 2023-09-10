@@ -122,3 +122,31 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     if ivy.isreal(x):
         time_domain = ivy.real(time_domain)
     return time_domain
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32",
+            "int64","float16","float32","float64","complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def irfft2(x, s=None, axes=(-2, -1), norm='backward'):
+    # Handle values if None
+    if s is None:
+        s = x.shape
+    if axes is None:
+        axes = (-2, -1)
+    
+    # Calculate the normalization factor 'n' based on the shape 's'
+    n = ivy.prod(ivy.array(s))
+
+    result = ivy.ifftn(x, dim=axes[0], norm=norm)
+
+    # Normalize the result based on the 'norm' parameter
+    if norm == 'backward':
+        result /= n
+    elif norm == 'forward':
+        result *= n
+    elif norm == 'ortho':
+        result /= ivy.sqrt(n)
+    return result
