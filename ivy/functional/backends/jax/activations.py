@@ -99,14 +99,3 @@ def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
 
 def hardswish(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.hard_swish(x)
-
-
-def celu(
-    x: JaxArray,
-    /,
-    *,
-    alpha: float = 1.0,
-    complex_mode="jax",
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jax.nn.celu(x, alpha=alpha)

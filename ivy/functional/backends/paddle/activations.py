@@ -200,17 +200,3 @@ def hardswish(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return F.hardswish(x)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
-)
-def celu(
-    x: paddle.Tensor,
-    /,
-    *,
-    alpha: float = 1.0,
-    complex_mode="jax",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return F.celu(x, alpha=alpha)

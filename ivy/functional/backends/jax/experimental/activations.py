@@ -73,3 +73,14 @@ def elu(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+def celu(
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jax.nn.celu(x, alpha=alpha)
