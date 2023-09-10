@@ -1,7 +1,7 @@
-# global
+# global imports
 from typing import Union, Tuple, Optional
 
-# local
+# local imports
 import ivy
 from ivy.func_wrapper import (
     handle_array_function,
@@ -19,6 +19,12 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
+# Type Aliases
+ArrayOrNative = Union[ivy.Array, ivy.NativeArray]
+ArrayTuple = Tuple[ArrayOrNative, ArrayOrNative]
+ArrayTupleExtended = Tuple[ArrayOrNative, ArrayOrNative, ArrayOrNative, ArrayOrNative]
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -27,17 +33,12 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_function
 @handle_device_shifting
 def unique_all(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: ArrayOrNative,
     /,
     *,
     axis: Optional[int] = None,
-    by_value: bool = True,
-) -> Tuple[
-    Union[ivy.Array, ivy.NativeArray],
-    Union[ivy.Array, ivy.NativeArray],
-    Union[ivy.Array, ivy.NativeArray],
-    Union[ivy.Array, ivy.NativeArray],
-]:
+    by_value: bool = True
+) -> ArrayTupleExtended:
     """
     Return the unique elements of an input array ``x``, the first occurring indices for
     each unique element in ``x``, the indices from the set of unique elements that
@@ -156,9 +157,9 @@ def unique_all(
 @handle_array_function
 @handle_device_shifting
 def unique_inverse(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    x: ArrayOrNative,
+    /
+) -> ArrayTuple:
     """
     Return the unique elements of an input array ``x``, and the indices from the set of
     unique elements that reconstruct ``x``.
@@ -265,10 +266,10 @@ def unique_inverse(
 @handle_array_function
 @handle_device_shifting
 def unique_values(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: ArrayOrNative,
     /,
     *,
-    out: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
     Return the unique elements of an input array ``x``.
@@ -358,9 +359,9 @@ def unique_values(
 @handle_array_function
 @handle_device_shifting
 def unique_counts(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    x: ArrayOrNative,
+    /
+) -> ArrayTuple:
     """
     Return the unique elements of an input array ``x`` and the corresponding counts for
     each unique element in ``x``.
