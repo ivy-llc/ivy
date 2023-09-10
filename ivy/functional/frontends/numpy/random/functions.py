@@ -174,6 +174,18 @@ def negative_binomial(n, p, size=None):
     return ivy.poisson(lam=lambda_, shape=size)
 
 
+def noncentral_chisquare(df, nonc, size=None):
+    if ivy.any(df <= 0):
+        raise ValueError("degree of freedom must be greater than 0")
+    if nonc == 0:
+        return chisquare(df)
+    if 1 < df:
+        n = standard_normal() + ivy.sqrt()
+        return chisquare(df - 1) + n * n
+    else:
+        return chisquare(df + 2 * poisson(nonc / 2))
+
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def normal(loc=0.0, scale=1.0, size=None):
