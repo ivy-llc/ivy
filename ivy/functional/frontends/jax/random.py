@@ -131,18 +131,25 @@ def cauchy(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 def choice(key, a, *, shape=(), replace=True, p=None, axis=0):
     seed = _get_seed(key)
+    if isinstance(a, int):
+        a = ivy.arange(a)
     if p is not None:
-        p = ivy.asarray(p)
+        p_arr = ivy.asarray(p)
     else:
-        p = ivy.ones(a.shape[0], dtype="float64") / a.shape[0]
+        p_arr = ivy.divide(ivy.ones(a.shape[axis], dtype="float64"), a.shape[axis])
     if len(shape):
         num_samples = ivy.prod(shape)
     else:
         num_samples = 1
-    if isinstance(a, int):
-        a = ivy.arange(a)
-    index = ivy.multinomial(len(a), num_samples, replace=replace, probs=p, seed=seed)
-    return a[index]
+    if ivy.isnan(p).any():
+        print("wtf")
+    indices = ivy.multinomial(
+        len(a), num_samples, replace=replace, probs=p_arr, seed=seed
+    )
+    samples = ivy.take_along_axis(a, indices, axis)
+    if len(shape):
+        return ivy.reshape(samples, shape)
+    return samples
 
 
 @handle_jax_dtype

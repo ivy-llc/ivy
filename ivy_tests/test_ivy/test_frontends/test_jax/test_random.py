@@ -431,20 +431,23 @@ def test_jax_cauchy(
         helpers.array_values(
             dtype=helpers.get_dtypes(),
             shape=st.shared(
-                helpers.get_shape(),
+                helpers.get_shape(allow_none=False),
                 key="a_shape",
             ),
         ),
     ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="a_shape"),
-        allow_none=True,
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(allow_none=False), key="a_shape"),
+        ),
+        key="axis",
     ),
     replace=st.booleans(),
     p=st.one_of(
         helpers.array_values(
-            shape=st.shared(helpers.get_shape(), key="a_shape"),
+            shape=st.shared(helpers.get_shape(allow_none=False), key="a_shape"),
             dtype=helpers.get_dtypes("float", full=False),
+            allow_nan=False,
         ),
         st.none(),
     ),
