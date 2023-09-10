@@ -2,6 +2,7 @@ import os
 from types import ModuleType, FunctionType
 import logging
 import importlib
+from typing import Union, Callable
 
 import ivy
 from ivy.func_wrapper import _wrap_function
@@ -11,6 +12,7 @@ from ivy.utils.exceptions import IvyException
 _backends_subpackage_path = "ivy.functional.backends"
 _sub_backend_dict = dict()
 _backend_to_sub_backends_dict = dict()
+_available_sub_backends_implementations_dict = dict()
 
 # dynamic sub_backend detection
 for backend in os.listdir(
@@ -87,7 +89,7 @@ def set_sub_backend(sub_backend_str: str):
     ivy.current_backend().sub_backends._current_sub_backends.append(sub_backend_str)
 
 
-# this is very similiar to _set_backend_as_ivy in handler.py, with a minor change
+# this is very similar to _set_backend_as_ivy in handler.py, with a minor change
 def _set_sub_backend_as_ivy(
     original: dict, target: ModuleType, sub_backend: ModuleType
 ):
@@ -200,3 +202,68 @@ def find_available_sub_backends(sub_backends_loc):
             available_sub_backends.append(sub_backend)
 
     return available_sub_backends
+
+
+def _populate_available_sub_backend_implementations_dict(sub_backends):
+    result = dict()
+    for sub in sub_backends:
+        sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
+        for k, v in sub_backend.__dict__.items():
+            if isinstance(v, Callable) and not k.startswith("__"):
+                result[k] = result.get(k, []).append(sub)
+
+    _available_sub_backends_implementations_dict[ivy.current_backend_str()] = result
+
+
+def available_sub_backend_implementations(obj: Union[Callable, str]) -> list:
+    """
+    Return whether a sub-backend implementation is available for `obj`.
+
+    Parameters
+    ----------
+    obj : callable or str
+        the object for which to check if a sub-backend implementation is available.
+
+    Returns
+    -------
+    ret : list
+        a list of sub-backend implementations available for `obj`.
+
+    Examples
+    --------
+    >>> import ivy
+    >>> ivy.set_backend('torch')
+    >>> ivy.available_sub_backend_implementations(ivy.scaled_dot_product_attention)
+    ['xformers']
+    >>> ivy.set_backend('numpy')
+    >>> ivy.available_sub_backend_implementations(ivy.scaled_dot_product_attention)
+    []
+    """
+    _check_callable(obj)
+    sub_backends = ivy.current_backend().available_sub_backends()
+    result = []
+    if not sub_backends:
+        return result
+    if (
+        ivy.current_backend_str()
+        not in _available_sub_backends_implementations_dict.keys()
+    ):
+        _populate_available_sub_backend_implementations_dict(sub_backends)
+    return _available_sub_backends_implementations_dict[ivy.current_backend_str()].get(
+        obj.__name__, []
+    )
+
+
+def _verify_available_implementation(obj, sub, result):
+    sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
+    if obj in sub_backend.__dict__.keys():
+        result.append(sub)
+
+
+def _check_callable(obj):
+    if isinstance(obj, str):
+        obj = getattr(ivy, obj)
+    if not callable(obj):
+        raise TypeError(
+            "The argument `obj` must be a callable or a string representing a callable"
+        )
