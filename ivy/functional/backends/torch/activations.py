@@ -148,3 +148,24 @@ def hardswish(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.nn.functional.hardswish(x)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def celu(
+    x: torch.Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.celu(x, alpha=alpha)

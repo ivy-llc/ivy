@@ -129,3 +129,15 @@ def mish(
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return x * tf.nn.relu6(x + 3) / 6
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def celu(
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return tf.math.maximum(0, x) + alpha * tf.math.expm1(tf.math.minimum(0, x) / alpha)
