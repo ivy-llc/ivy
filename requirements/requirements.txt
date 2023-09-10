@@ -11,4 +11,3 @@ requests
 pyvis
 dill
 astunparse
-patchelf
