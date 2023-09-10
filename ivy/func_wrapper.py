@@ -17,7 +17,7 @@ from ivy.utils.exceptions import IvyValueError
 FN_DECORATORS = [
     "handle_complex_input",
     "infer_device",
-    "handle_device_shifting",
+    "handle_device",
     "infer_dtype",
     "handle_array_function",
     "outputs_to_ivy_arrays",
@@ -779,9 +779,9 @@ def infer_dtype(fn: Callable) -> Callable:
 # ----------------#
 
 
-def handle_device_shifting(fn: Callable) -> Callable:
+def handle_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _handle_device_shifting(*args, **kwargs):
+    def _handle_device(*args, **kwargs):
         """
         Move all array inputs of the function to `ivy.default_device()`.
 
@@ -824,8 +824,8 @@ def handle_device_shifting(fn: Callable) -> Callable:
             )
         return fn(*args, **kwargs)
 
-    _handle_device_shifting.handle_device_shifting = True
-    return _handle_device_shifting
+    _handle_device.handle_device = True
+    return _handle_device
 
 
 # Inplace Update Handling #
