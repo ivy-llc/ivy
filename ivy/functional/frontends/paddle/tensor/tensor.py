@@ -220,6 +220,11 @@ class Tensor:
         return self
 
     @with_supported_dtypes(
+        {"2.5.1 and below": ("bool", "float16", "float32", "float64", "int32", "int64", "uint8")}, "paddle")
+    def cast(self, dtype=None, name=None):
+        return paddle_frontend.cast(self._ivy_array, dtype=dtype)
+
+    @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
     def clip(self, min=None, max=None, name=None):
