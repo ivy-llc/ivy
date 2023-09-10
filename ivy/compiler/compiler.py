@@ -179,16 +179,17 @@ def unify(
     **transpile_kwargs,
 ) -> Callable:
     """
-    Unify and transpile one or more Callable objects from the source framework to the target framework.
+    Unify and Transpile Callable objects passed as arguments. If args and kwargs are specified.
 
-    This function takes one or more native Callable objects and transpiles them from the specified source framework
-    to the target framework.
+    one or more native Callable objects and transpiles them 
+    from the specified source framework to the target framework.
         
     Parameters:
     objs (Callable):
         One or more native Callable objects to be unified and transpiled.
     source (Optional[str]):
-        The framework that the `objs` are originally from. If not provided, the function will attempt to infer it.
+        The framework that the `objs` are originally from. 
+        If not provided, the function will attempt to infer it.
     args (Optional[Tuple]):
         If specified, arguments that will be used during transpilation.
     kwargs (Optional[dict]):
