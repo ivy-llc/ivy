@@ -145,10 +145,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             )
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
+            args, _to_ivy_array, include_derived={"tuple": True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
+            kwargs, _to_ivy_array, include_derived={"tuple": True}, shallow=False
         )
         return fn(*new_args, **new_kwargs)
 
@@ -202,7 +202,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         ret = _from_ivy_array_to_torch_frontend_tensor(
             ret,
             nested=True,
-            include_derived={tuple: True},
+            include_derived={"tuple": True},
             requires_grad=kwargs.get(
                 "requires_grad",
                 any(
