@@ -735,9 +735,9 @@ def test_jax_soft_sign(
 @handle_frontend_test(
     fn_tree="jax.nn.softmax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
-        max_axes_size=1,
+        max_axes_size=2,
         force_int_axis=True,
         valid_axis=True,
     ),

@@ -288,7 +288,7 @@ def test_log_softmax(
 @handle_method(
     method_tree="stateful.activations.Logit.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -671,10 +671,10 @@ def test_silu(
 @handle_method(
     method_tree="stateful.activations.Softmax.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
         safety_factor_scale="log",
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
