@@ -109,7 +109,6 @@ def max_pool3d(
     padding=0,
     ceil_mode=False,
     data_format="NCDHW",
-    divisor_override=None,
     name=None,
 ):
     # Set stride to kernel_size if not provided
@@ -135,7 +134,6 @@ def max_pool3d(
         padding,
         ceil_mode=ceil_mode,
         data_format=data_format,
-        divisor_override=divisor_override,
     )
 
 

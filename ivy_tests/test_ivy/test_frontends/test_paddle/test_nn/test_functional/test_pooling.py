@@ -323,7 +323,6 @@ def test_paddle_max_pool3d(
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
-        divisor_override=None,
         data_format=data_format,
     )
 
