@@ -45,12 +45,6 @@ def arcsinh(x, /):
 
 
 @to_ivy_arrays_and_back
-def gradient(f, *varargs, axis=None, edge_order=None):
-    edge_order = edge_order if edge_order is not None else 1
-    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
-
-
-@to_ivy_arrays_and_back
 def arctan(x, /):
     return ivy.atan(x)
 
@@ -293,6 +287,12 @@ def frexp(x, /):
 def gcd(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.gcd(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def gradient(f, *varargs, axis=None, edge_order=None):
+    edge_order = edge_order if edge_order is not None else 1
+    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
 
 
 @to_ivy_arrays_and_back

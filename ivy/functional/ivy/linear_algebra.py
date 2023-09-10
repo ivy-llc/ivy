@@ -313,8 +313,8 @@ def det(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2.,4.],[6.,7.]])
@@ -405,9 +405,8 @@ def diagonal(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1., 2.],
@@ -806,6 +805,7 @@ def inner(
     Examples
     --------
     Matrices of identical shapes
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.array([[5., 6.], [7., 8.]])
     >>> d = ivy.inner(x, y)
@@ -813,6 +813,7 @@ def inner(
     ivy.array([[17., 23.], [39., 53.]])
 
     # Matrices of different shapes
+
     >>> x = ivy.array([[1., 2.], [3., 4.], [5., 6.]])
     >>> y = ivy.array([[5., 6.], [7., 8.]])
     >>> d = ivy.inner(x, y)
@@ -820,6 +821,7 @@ def inner(
     ivy.array([[17., 23.], [39., 53.], [61., 83.]])
 
     # 3D matrices
+
     >>> x = ivy.array([[[1., 2.], [3., 4.]],
     ...                [[5., 6.], [7., 8.]]])
     >>> y = ivy.array([[[9., 10.], [11., 12.]],
@@ -1395,11 +1397,11 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
-    
+
     hermitian
         indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x``
         is assumed to be Hermitian, enabling a more efficient method for finding
-        eigenvalues, but x is not checked inside the function. 
+        eigenvalues, but x is not checked inside the function.
         Instead, We just use the lower triangular of the matrix to compute.
         Default: ``False``.
     out
@@ -1864,9 +1866,8 @@ def slogdet(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2.0, 1.0],
@@ -2132,9 +2133,8 @@ def svdvals(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
@@ -2195,8 +2195,8 @@ def svdvals(
         b: ivy.array([15.7786541, 5.55970621, 4.16857576, 0.86412698])
     }
 
-    # Instance Method Examples
-    ------------------------
+    Instance Method Examples
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Using :class:`ivy.Array` instance method:
 
@@ -2279,8 +2279,8 @@ def tensordot(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1., 2.], [2., 3.]])
@@ -2712,9 +2712,8 @@ def diag(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[0, 1, 2],
