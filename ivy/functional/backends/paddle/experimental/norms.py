@@ -107,6 +107,8 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 def l1_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
+    if not isinstance(x, paddle.Tensor):
+        x = paddle.to_tensor(x)
     if axis is None:
         axis = list(range(x.ndim))
     elif isinstance(axis, int):
