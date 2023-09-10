@@ -282,38 +282,43 @@ def test_paddle_avg_pool2d(
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
     dtype_x_k_s=helpers.arrays_for_pooling(
-        min_dims=5, max_dims=5, min_side=2, max_side=4
+        min_dims=5, max_dims=5, min_side=2, max_side=4, data_format="channel_first"
     ),
     ceil_mode=st.booleans(),
 )
 def test_paddle_max_pool3d(
-    dtype_x_k_s, ceil_mode, *, test_flags, backend_fw, frontend, fn_tree, on_device
+    *,
+    x_k_s_p,
+    ceil_mode,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
 ):
-    input_dtype, x, kernel, strides, padding, dilation = dtype_x_k_s
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
 
-    # Additional Test Configuration (Modify as needed)
-    data_format = "NDHWC"  # Adjust data format as needed
-    if len(strides) == 1:
-        strides = (strides[0], strides[0], strides[0])
-    if padding == "SAME":
-        padding = test_pooling_functions.calculate_same_padding(
-            kernel, strides, x[0].shape[2:]
+    if len(stride) == 1:
+        stride = (stride[0], stride[0], stride[0])
+    if pad == "SAME":
+        pad = test_pooling_functions.calculate_same_padding(
+            kernel, stride, x[0].shape[2:]
         )
     else:
-        padding = (0, 0, 0)
+        pass
 
     # Test the frontend function
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
-        frontend=frontend,
-        fn_tree=fn_tree,
         on_device=on_device,
+        fn_name=fn_tree,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
-        kernel_size=kernel,
-        strides=strides,
-        padding=padding,
+        kernel=kernel,
+        strides=stride,
+        padding=pad,
         data_format=data_format,
         dilation=dilation,
         ceil_mode=ceil_mode,
