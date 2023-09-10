@@ -174,10 +174,6 @@ def _get_safe_casting_dtype(draw, *, dtypes):
 def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
     # TODO: this is a hack to get around, but not sure if it is efficient way to do it.
     where = kwargs["where"]
-    if kwargs["frontend"] == "numpy":
-        kwargs["where"] = True
-    else:
-        kwargs["where"] = None
     kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
@@ -196,27 +192,19 @@ def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
             frontend_ret, frontend_config.is_native_array
         )
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+        frontend_ret_np_flat = [
+            frontend_config.to_numpy(x).flatten() for x in frontend_ret_flat
+        ]
 
     # get flattened arrays from returned value
-    ret_np_flat = _flatten_frontend_return(ret=ret, backend=kwargs["backend_to_test"])
-
+    ret_np_flat = map(
+        lambda x: x.flatten(),
+        _flatten_frontend_return(ret=ret, backend=kwargs["backend_to_test"]),
+    )
     # handling where size
     where = np.asarray(where)
-    if where.ndim == 0:
-        where = np.array([where])
-    elif where.ndim > 1:
-        where = where.flatten()
+    where = where.flatten()
     # handling ret size
-
-    first_el = ret_np_flat[0]
-    # change where to match the shape of the first element of ret_np_flat
-    if first_el.size == 1:
-        where = where[:1]
-    else:
-        where = np.repeat(where, first_el.size)
-        where = where[: first_el.size]
-        where = where.reshape(first_el.shape)
 
     ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
     frontend_ret_flat = [
