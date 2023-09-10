@@ -149,4 +149,4 @@ def max_unpool1d(
     output_size=None,
     name=None,
 ):
-    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
+    return ivy.max_unpool1d(x, indices, kernel_size, stride, padding)
