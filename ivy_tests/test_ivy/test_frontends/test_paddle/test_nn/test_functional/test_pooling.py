@@ -286,7 +286,7 @@ def test_paddle_avg_pool2d(
     ),
     ceil_mode=st.just(False),
     test_with_out=st.just(False),
-    data_format=st.sampled_from(["NCHW", "NHWC", "NCDHW"]),
+    data_format=st.sampled_from(["NCDHW"]),
 )
 def test_paddle_max_pool3d(
     dtype_x_k_s,
@@ -305,7 +305,7 @@ def test_paddle_max_pool3d(
         stride = (stride[0], stride[0], stride[0])  # Adjust for 3D
     if padding == "SAME":
         padding = test_pooling_functions.calculate_same_padding(
-            kernel, stride, x[0].shape[2:], data_format="NCDHW"  # Adjust data format
+            kernel, stride, x[0].shape[2:]
         )
     else:
         padding = (0, 0, 0)  # Adjust for 3D
