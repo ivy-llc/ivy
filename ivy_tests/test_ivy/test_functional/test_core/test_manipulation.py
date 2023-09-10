@@ -1,7 +1,6 @@
 """Collection of tests for manipulation functions."""
 
 # global
-
 import numpy as np
 from hypothesis import strategies as st, assume
 
@@ -65,6 +64,61 @@ def _basic_min_x_max(draw):
         helpers.array_values(dtype=dtype[0], shape=()).filter(lambda x: x > min_val)
     )
     return [dtype], (value[0], min_val, max_val)
+
+
+@st.composite
+def _broadcastable_arrays(draw):
+    shapes = draw(helpers.mutually_broadcastable_shapes(num_shapes=3))
+    dtypes, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), shape=shapes[0]
+        )
+    )
+    min_val = draw(
+        st.one_of(
+            st.floats(-5, 5),
+            st.just(None),
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"), shape=shapes[1]
+            ),
+        )
+    )
+    max_val = draw(
+        st.one_of(
+            st.floats(-5, 5),
+            st.just(None),
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"), shape=shapes[2]
+            ),
+        )
+    )
+    if min_val is None and max_val is None:
+        generate_max = draw(st.booleans())
+        if generate_max:
+            max_val = draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"), shape=shapes[2]
+                )
+            )
+        else:
+            min_val = draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"), shape=shapes[1]
+                )
+            )
+    if min_val is not None:
+        if not isinstance(min_val, float):
+            dtypes.append(min_val[0][0])
+            min_val = min_val[1][0]
+        else:
+            dtypes.append(ivy.float32)
+    if max_val is not None:
+        if not isinstance(max_val, float):
+            dtypes.append(max_val[0][0])
+            max_val = max_val[1][0]
+        else:
+            dtypes.append(ivy.float32)
+    return dtypes, values[0], min_val, max_val
 
 
 @st.composite
@@ -224,12 +278,12 @@ def _stack_helper(draw):
 # clip
 @handle_test(
     fn_tree="functional.ivy.clip",
-    dtype_x_min_max=_basic_min_x_max(),
+    dtype_x_min_max=_broadcastable_arrays(),
 )
 def test_clip(*, dtype_x_min_max, test_flags, backend_fw, fn_name, on_device):
-    dtypes, (x_list, min_val, max_val) = dtype_x_min_max
+    dtypes, x_list, min_val, max_val = dtype_x_min_max
     helpers.test_function(
-        input_dtypes=dtypes[0],
+        input_dtypes=dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
@@ -578,6 +632,28 @@ def test_squeeze(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_devic
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
+        axis=axis,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.stack",
+    dtypes_arrays=_stack_helper(),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"),
+        force_int=True,
+    ),
+)
+def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_device):
+    dtypes, arrays = dtypes_arrays
+
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        arrays=arrays,
         axis=axis,
     )
 
