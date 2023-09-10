@@ -170,3 +170,60 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
     )
+
+
+def grid_sample(input, grid, mode='bilinear', padding_mode='zeros'):
+    """
+    Samples elements from the input tensor using bilinear or nearest-neighbor sampling.
+
+    :param input: The input tensor of shape (batch_size, height, width, channels).
+    :param grid: The sampling grid of shape (batch_size, height, width, 2).
+    :param mode: The sampling mode - 'bilinear' or 'nearest'. Default is 'bilinear'.
+    :param padding_mode: The padding mode when grid values are out-of-bounds. Supports 'zeros' and 'border'.
+    :return: The sampled output tensor.
+    """
+
+    # Nearest-neighbor sampling
+    if mode == 'nearest':
+        # Round the grid values to get the closest integer indices
+        x_rounded = ivy.round(grid[..., 0]).astype(int)
+        y_rounded = ivy.round(grid[..., 1]).astype(int)
+
+        if padding_mode == 'zeros':
+            # Create masks for out-of-bound x and y positions
+            mask_x = ivy.logical_or(x_rounded < 0, x_rounded >= input.shape[-1])
+            mask_y = ivy.logical_or(y_rounded < 0, y_rounded >= input.shape[-2])
+
+            # Combine the masks
+            mask = ivy.logical_or(mask_x, mask_y)
+
+            # Using the indices, gather the values from the input tensor
+            sampled_output = input[..., y_rounded, x_rounded]
+
+            # Use the mask to set out-of-bound positions in the output to zero
+            sampled_output = ivy.where(mask, 0, sampled_output)
+
+        elif padding_mode == 'border':
+            # Clamp the indices to lie within the borders
+            x_clamped = ivy.clip(x_rounded, 0, input.shape[-1] - 1)
+            y_clamped = ivy.clip(y_rounded, 0, input.shape[-2] - 1)
+
+            # Using the clamped indices, gather the values from the input tensor
+            sampled_output = input[..., y_clamped, x_clamped]
+
+        else:
+            raise ValueError("Unsupported padding_mode. Expected 'zeros' or 'border'.")
+
+    # Bilinear sampling
+    elif mode == 'bilinear':
+        raise NotImplementedError("The bilinear mode has not been implemented yet.")
+
+    # Check for unsupported sampling mode
+    else:
+        raise ValueError("Unsupported mode. Expected 'bilinear' or 'nearest'.")
+
+    return sampled_output
+
+
+
+
