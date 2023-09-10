@@ -1203,10 +1203,11 @@ def test_tensorflow_in_top_k(
 
 # invert_permutation
 @handle_frontend_test(
-    fn_tree="tensorflow.math.invert_permutation",  # Specify the function you want to test
+    fn_tree="tensorflow.math.invert_permutation",  
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("int"),  # Set the data types for testing
-        num_arrays=1,  # Specify the number of arrays to test
+        available_dtypes=helpers.get_dtypes("numeric"),  
+        num_arrays=2,
+        shared_dtype=True,  
     ),
     test_with_out=st.just(False),
 )
