@@ -284,31 +284,23 @@ def test_paddle_avg_pool2d(
     dtype_x_k_s=helpers.arrays_for_pooling(
         min_dims=5, max_dims=5, min_side=2, max_side=4
     ),
-    ceil_mode=st.just(False),
-    test_with_out=st.just(False),
-    data_format=st.sampled_from(["NCDHW"]),
+    ceil_mode=st.booleans(),
 )
 def test_paddle_max_pool3d(
-    dtype_x_k_s,
-    data_format,
-    ceil_mode,
-    *,
-    test_flags,
-    backend_fw,
-    frontend,
-    fn_tree,
-    on_device,
+    dtype_x_k_s, ceil_mode, *, test_flags, backend_fw, frontend, fn_tree, on_device
 ):
-    input_dtype, x, kernel, stride, padding = dtype_x_k_s
+    input_dtype, x, kernel, strides, padding, dilation = dtype_x_k_s
 
-    if len(stride) == 1:
-        stride = (stride[0], stride[0], stride[0])  # Adjust for 3D
+    # Additional Test Configuration (Modify as needed)
+    data_format = "NDHWC"  # Adjust data format as needed
+    if len(strides) == 1:
+        strides = (strides[0], strides[0], strides[0])
     if padding == "SAME":
         padding = test_pooling_functions.calculate_same_padding(
-            kernel, stride, x[0].shape[2:]
+            kernel, strides, x[0].shape[2:]
         )
     else:
-        padding = (0, 0, 0)  # Adjust for 3D
+        padding = (0, 0, 0)
 
     # Test the frontend function
     helpers.test_frontend_function(
@@ -320,10 +312,11 @@ def test_paddle_max_pool3d(
         on_device=on_device,
         x=x[0],
         kernel_size=kernel,
-        stride=stride,
+        strides=strides,
         padding=padding,
-        ceil_mode=ceil_mode,
         data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
