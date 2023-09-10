@@ -166,6 +166,7 @@ class _ArrayWithActivations(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -179,6 +180,9 @@ class _ArrayWithActivations(abc.ABC):
             input array.
         axis
             the axis or axes along which the softmax should be computed
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -195,7 +199,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.422, 0.155, 0.422])
         """
-        return ivy.softmax(self._data, axis=axis, out=out)
+        return ivy.softmax(self._data, axis=axis, complex_mode=complex_mode, out=out)
 
     def softplus(
         self: ivy.Array,

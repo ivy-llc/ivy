@@ -60,6 +60,39 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
 
 
+@st.composite
+def _get_axis_and_p(draw):
+    p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
+    if p == "fro" or p == "nuc":
+        max_axes_size = 2
+        min_axes_size = 2
+    else:
+        min_axes_size = 1
+        max_axes_size = 5
+    x_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            valid_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
+            min_axes_size=min_axes_size,
+            max_axes_size=max_axes_size,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+        )
+    )
+    axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
+    # ToDo: fix the castable dtype helper. Right now using `dtype` causes errors
+    #  dtype should be real for real inputs, but got ComplexDouble
+    x_dtype, values, dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("valid")), x_dtype[0], values[0]
+        )
+    )
+    return p, x_dtype, values, axis, x_dtype
+
+
 # helpers
 @st.composite
 def _get_dtype_and_matrix(
@@ -868,6 +901,40 @@ def test_torch_multi_dot(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.linalg.norm",
+    args=_get_axis_and_p(),
+    keepdim=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_torch_norm(
+    *,
+    args,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    p, x_dtype, x, axis, dtype = args
+    helpers.test_frontend_function(
+        input_dtypes=[x_dtype],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-08,
+        input=x,
+        ord=p,
+        dim=axis,
+        keepdim=keepdim,
+        dtype=dtype,
+    )
+
+
 # pinv
 # TODO: add testing for hermitian
 @handle_frontend_test(
@@ -1297,3 +1364,48 @@ def test_torch_vector_norm(
         keepdim=kd,
         dtype=dtype[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigh",
+    dtype_and_x=_get_dtype_and_matrix(dtype="valid", square=True, invertible=True),
+    UPLO=st.sampled_from(("L", "U")),
+)
+def test_torch_eigh(
+    *,
+    dtype_and_x,
+    UPLO,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    x = np.array(x[0], dtype=dtype[0])
+    # make symmetric positive-definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=x,
+        UPLO=UPLO,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    L, Q = ret
+    frontend_L, frontend_Q = frontend_ret
+
+    assert_all_close(
+        ret_np=Q @ np.diag(L) @ Q.T,
+        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+        atol=1e-02,
+        
+    ) 
