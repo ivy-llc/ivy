@@ -170,7 +170,6 @@ def transpile(
 
 
 # TODO: include docstring
-# fixed docstring, check for PR
 def unify(
     *objs: Callable,
     source: Optional[str] = None,
@@ -183,9 +182,8 @@ def unify(
     Unify and transpile one or more Callable objects from the source framework to the target framework.
 
     This function takes one or more native Callable objects and transpiles them from the specified source framework
-    to the target framework. It provides a unified interface for working with different backend frameworks and allows
-    for seamless code execution across them.
-
+    to the target framework.
+        
     Parameters:
     objs (Callable):
         One or more native Callable objects to be unified and transpiled.
@@ -223,13 +221,6 @@ def unify(
     >>> transpiled_fn = ivy.unify(fn, source="torch", args=(x,), with_numpy=True)
 
     The `transpiled_fn` can now be executed in the specified target framework.
-
-    Note:
-    - This function is designed for interoperability between different backend frameworks, allowing you to work with
-      functions and models from various frameworks in a unified manner.
-    - The `with_numpy` parameter ensures that the transpiled code is compatible with NumPy, which can be useful when
-      working with functions that rely on NumPy features.
-
     """
     if python_version[1] == "8":
         from ._compiler_38 import unify as _unify
