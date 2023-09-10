@@ -244,15 +244,19 @@ def mel_weight_matrix(
     return torch.nn.functional.pad(mel_weights, (0, 0, 1, 0))
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": "float16"}, backend_version)
 def polyval(
     coeffs: torch.Tensor,
     x: torch.Tensor,
 ) -> torch.Tensor:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
     coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
     y = torch.zeros_like(x)
     for coeff in coeffs:
         y = y * x + coeff
     if y.shape == (1,):
         y = torch.unsqueeze(y, 0)
+    promoted_type = getattr(torch, promoted_type)
+    y = torch.tensor(y).to(dtype=promoted_type)
     return y

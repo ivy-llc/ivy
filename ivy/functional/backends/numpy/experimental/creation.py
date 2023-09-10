@@ -204,8 +204,8 @@ def mel_weight_matrix(
 
 
 def polyval(coeffs: np.ndarray, x: np.ndarray) -> np.ndarray:
-    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
     result = np.polyval(coeffs, x)
-    if ivy.dtype(coeffs) == "float32" and ivy.dtype(x) == "float32":
-        result = np.asarray(result, np.float32)
+    result = np.asarray(result, np.dtype(promoted_type))
     return result

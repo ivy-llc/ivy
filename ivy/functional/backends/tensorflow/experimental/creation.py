@@ -4,7 +4,6 @@ from typing import Union, Optional, Tuple
 import tensorflow as tf
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .. import backend_version
 
@@ -161,11 +160,8 @@ def mel_weight_matrix(
     {"2.13.0 and below": ("bool", "bfloat16", "float16", "complex")}, backend_version
 )
 def polyval(coeffs: tf.Tensor, x: tf.Tensor):
-    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
     result = tf.experimental.numpy.polyval(
         coeffs,
         x,
     )
-    if coeffs.dtype == tf.float32 and x.dtype == tf.float32:
-        result = tf.cast(result, tf.float32)
     return result

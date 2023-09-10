@@ -389,7 +389,6 @@ def test_polyval(
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
-        atol_=1e-02,
         fn_name=fn_name,
         coeffs=coeffs,
         x=x,

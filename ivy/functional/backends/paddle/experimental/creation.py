@@ -244,10 +244,12 @@ def polyval(
     coeffs: paddle.Tensor,
     x: paddle.Tensor,
 ) -> paddle.Tensor:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
     coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
     y = paddle.zeros_like(x)
     for coeff in coeffs:
         y = y * x + coeff
-    if ivy.dtype(coeffs) == "float32" and ivy.dtype(x) == "float32":
-        y = y.numpy().astype("float32")
+    y = paddle.to_tensor(y)
+    y = y.astype(promoted_type)
     return y
