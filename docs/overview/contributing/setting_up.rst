@@ -107,7 +107,7 @@ Using miniconda
 #. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
 
    .. code-block:: none
-      
+
       conda create --name ivy_dev python=3.10.0
 
 #. Activate the environment by:
@@ -129,27 +129,27 @@ Using miniconda
       a. Going to settings -> project -> Python Interpreter
 
       b. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
-      
+
       c. Choosing "conda environment" from the left panel. Choose the existing environment and select the drop down and you should find the path python in the environment.
 
    #. VSCode
 
       a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type "Python: Select Interpreter" and select the environment you created.
-      
+
    If you don't find a path to your created python environment, you can run :code:`where python` in the conda command line while the environment is activate and it should give the path which can be added manually.
 
 #. Installing the development dependencies.
 
    a. On Linux, Windows, or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional.txt
-   
+
    b. On M1 Mac, you will need to use the optional_apple_silicon_1 and optional_apple_silicon_2 requirements files. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional_apple_silicon_1.txt
          pip install -r requirements/optional_apple_silicon_2.txt
 
@@ -208,26 +208,26 @@ This is a builtin package and doesn't require explicit installation.
       a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type `Python: Select Interpreter` and select the environment you created.
 
 #. Installing the development dependencies.
-   
+
    a. On Linux, Windows, or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional.txt
 
-      Note: In case you are using Ubuntu 22.04, PaddlePaddle won't install properly. You have to download it from the source. 
-   
+      Note: In case you are using Ubuntu 22.04, PaddlePaddle won't install properly. You have to download it from the source.
+
       .. code-block:: none
-        
+
          wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
          sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-        
+
       PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
 
    b. On M1 Mac, you will need to use the optional_apple_silicon_1 and optional_apple_silicon_2 requirements files. To install dependencies.
-   
+
       .. code-block:: none
-   
+
          pip install -r requirements/optional_apple_silicon_1.txt
          pip install -r requirements/optional_apple_silicon_2.txt
 
@@ -423,14 +423,14 @@ Ubuntu
 **Docker Connection not Successfull**
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
-    
+
 .. code-block:: none
-        
+
    sudo chmod a+rwx /var/run/docker.sock
-        
+
 .. code-block:: none
-    
-   sudo chmod a+rwx /var/run/docker.pid  
+
+   sudo chmod a+rwx /var/run/docker.pid
 
 
 For questions, please reach out on `discord`_ in the `docker channel`_!
@@ -601,14 +601,14 @@ For windows users, the file path should be entered with "/" (forward-slashes), f
 
 WSL
 ***
- 
+
 It is understandable that working with computationally heavy tools like Docker and PyCharm is not always comfortable for developers.
-By utilizing WSL, you can run a Linux distribution on your Windows machine, and in addition, venv is leveraged to create 
-isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm, 
+By utilizing WSL, you can run a Linux distribution on your Windows machine, and in addition, venv is leveraged to create
+isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm,
 the steps explained below will help you in setting up a less resource-intensive Ivy environment.
 
 #. Install `WSL <https://learn.microsoft.com/en-us/windows/wsl/install>`_.
-#. Install `Visual Studio Code <https://code.visualstudio.com/>`_. 
+#. Install `Visual Studio Code <https://code.visualstudio.com/>`_.
    You can follow `this guide <https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode>`_ to integrate WSL into VSCode.
 #. Open the WSL terminal by typing in the name of your Linux distribution in the windows start menu (e.g. :code:`Ubuntu`).
 #. Create a virtual environment by following the steps below:
@@ -638,7 +638,7 @@ the steps explained below will help you in setting up a less resource-intensive 
 
       pip install git+https://github.com/unifyai/ivy.git
 
-#. If you want to set up a local repository, you can do so by following `this guide <https://unify.ai/docs/ivy/overview/contributing/setting_up.html#forking-and-cloning-the-repo>`_ 
+#. If you want to set up a local repository, you can do so by following :ref:`this guide <overview/contributing/setting_up:Forking and cloning the repo>`
    as explained above and install the required development dependencies by running:
 
    .. code-block:: none
@@ -650,12 +650,12 @@ the steps explained below will help you in setting up a less resource-intensive 
       pip install -r requirements/requirements.txt
 
 #. Once done, you can now open VSCode right from your terminal and get started with your development by just running:
-   
+
    .. code-block:: none
 
       code .
 
-#. To set up the Python Interpreter in VSCode, go to the command palette (Ctrl+Shift+P) and type **Python: Select Interpreter** and select the environment you created. 
+#. To set up the Python Interpreter in VSCode, go to the command palette (Ctrl+Shift+P) and type **Python: Select Interpreter** and select the environment you created.
    For a more detailed explanation, you can follow `this guide <https://code.visualstudio.com/docs/python/environments#_working-with-python-interpreters>`_.
 #. Now that your development environment is set up, you can now run tests locally by running :code:`pytest test_fle_path::test_fn_name` in the terminal or
    if you want to set up testing in VSCode, you may follow the guide **Setting Up Testing** for VSCode as explained below, next to this subsection.
@@ -700,14 +700,14 @@ Just follow the steps outlined below:
    :width: 420
 
 3. Then you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
-   
+
       - :code:`Default project configuration` - This is the default option, it will set up with the default codespaces environment.
       - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
       - :code:`Ivy GPU Development Environment (build)` - This will set up the development environment of ivy for GPU and build image from :code:`ivy/docker/DockerfileGPU`.
       - :code:`Ivv Development Environment for Multiver...` - This will set up the development environment of multiversion support with ivy and build image from :code:`ivy/docker/DockerfileMultiversion`.
       - :code:`Ivy Development Environment (image)` - This will set up the development environment of ivy for CPU and build image from the latest image from dockerhub.
       - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from the latest image from dockerhub.
-   
+
    For now, we will select :code:`Ivy Development Environment (image)`.
    Select your region and preferred machine type, then click on "Create Codespace".
 
@@ -745,7 +745,7 @@ The configuration files install all the required packages, and extensions for yo
 
 If you want to setup a GPU instance on codespaces and also have access to it, kindly follow the guidelines below:
 
-1. Points 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)". 
+1. Points 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)".
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
    :width: 420
