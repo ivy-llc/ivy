@@ -327,10 +327,12 @@ def in_top_k(target, pred, k, name=None):
 @to_ivy_arrays_and_back
 def invert_permutation(x, name=None):
     x = ivy.array(x)
-    size = ivy.size(x)
+    size = ivy.shape(x)[0]
     identity = ivy.arange(size)
     inverted = ivy.zeros_like(x)
-    inverted = ivy.scatter_update(inverted, x, identity)
+    scatter_indices = ivy.reshape(x, [-1, 1])
+    scattered_values = ivy.reshape(identity, [-1, 1])
+    inverted = ivy.scatter_nd(scatter_indices, scattered_values, ivy.shape(inverted))
     return ivy.invert_permutation(inverted)
 
 

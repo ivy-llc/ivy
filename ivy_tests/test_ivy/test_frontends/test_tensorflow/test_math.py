@@ -1203,14 +1203,14 @@ def test_tensorflow_in_top_k(
 
 # invert_permutation
 @handle_frontend_test(
-    fn_tree="tensorflow.math.invert_permutation",  
+    fn_tree="tensorflow.math.invert_permutation",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),  
-        num_arrays=1,
-        shared_dtype=True,  
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
     test_with_out=st.just(False),
 )
+
 def test_invert_permutation(
     *,
     dtype_and_x,
@@ -1219,7 +1219,10 @@ def test_invert_permutation(
     fn_tree,
     backend_fw,
     on_device,
-):
+    inverted,
+    expected,
+    actual,
+    ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1229,8 +1232,10 @@ def test_invert_permutation(
         fn_tree=fn_tree,
         on_device=on_device,
         inputs=x,
+        expected=expected,
+        actual=actual,
     )
-
+   
 
 # is_finite
 
