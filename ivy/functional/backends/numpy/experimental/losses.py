@@ -92,7 +92,7 @@ def kl_div(
     elif reduction == "sum":
         loss = np.sum(loss)
     elif reduction == "batchmean":
-        loss = np.sum(loss) / size[0]
+        loss = np.divide(np.sum(loss), size[0])
     else:
         pass
 

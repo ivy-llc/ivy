@@ -70,13 +70,12 @@ def kl_div(
     #     size = [1]
 
     loss = jnp.sum(input * jnp.log(input / target), axis=-1)
-
     if reduction == "mean":
         loss = jnp.mean(loss)
     elif reduction == "sum":
         loss = jnp.sum(loss)
     elif reduction == "batchmean":
-        loss = jnp.sum(loss) / size[0]
+        loss = jnp.divide(jnp.sum(loss), size[0])
     else:
         pass
 
