@@ -107,7 +107,6 @@ def categorical(key, logits, axis, shape=None):
                 +f"Shape {shape} is not compatible with reference shape {batch_shape}"
             )
 
-    shape_prefix = shape[: len(shape) - len(batch_shape)]
     logits_shape = list(shape[len(shape) - len(batch_shape) :])
     logits_shape.insert(axis % len(logits_arr.shape), logits_arr.shape[axis])
 
@@ -246,6 +245,18 @@ def gumbel(key, shape=(), dtype="float64"):
 def loggamma(key, a, shape=None, dtype="float64"):
     seed = _get_seed(key)
     return ivy.log(ivy.gamma(a, 1.0, shape=shape, dtype=dtype, seed=seed))
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("float16", "bfloat16")},
+    "jax",
+)
+def logistic(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    uniform_x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    return ivy.log(ivy.divide(uniform_x, ivy.subtract(1.0, uniform_x)))
 
 
 @handle_jax_dtype

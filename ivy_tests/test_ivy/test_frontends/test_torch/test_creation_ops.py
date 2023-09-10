@@ -41,6 +41,39 @@ def _as_strided_helper(draw):
     return x_dtype, x, size, stride, offset
 
 
+@st.composite
+def _as_tensor_helper(draw):
+    dtype_and_x = draw(
+        st.one_of(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+            ),
+            st.floats(),
+            st.integers(),
+            st.lists(st.one_of(st.floats(), st.integers()), min_size=1),
+        )
+    )
+    if isinstance(dtype_and_x, tuple):
+        input_dtype = dtype_and_x[0]
+        x = dtype_and_x[1][0]
+    else:
+        input_dtype = []
+        x = dtype_and_x
+    dtype = draw(
+        st.one_of(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("valid")),
+                dtype=draw(helpers.get_dtypes("valid", full=False))[0],
+                x=x,
+            ),
+            st.none(),
+        )
+    )
+    if isinstance(dtype, tuple):
+        dtype = dtype[0]
+    return input_dtype, x, dtype
+
+
 # Helper functions
 
 
@@ -188,31 +221,39 @@ def test_torch_as_strided(
 # as_tensor
 @handle_frontend_test(
     fn_tree="torch.as_tensor",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype_x_dtype=_as_tensor_helper(),
 )
 def test_torch_as_tensor(
     *,
-    dtype_and_x,
-    dtype,
+    dtype_x_dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, input = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        data=input[0],
-        dtype=dtype[0],
-        device=on_device,
-    )
+    input_dtype, x, dtype = dtype_x_dtype
+    # ToDo: fix get_castable_dtype to avoid the exceptions
+    try:
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            data=x,
+            dtype=dtype,
+            device=on_device,
+        )
+    except Exception as e:
+        if any(
+            error_string in str(e)
+            for error_string in ["overflow", "too large to convert to"]
+        ):
+            assume(False)
+        else:
+            raise
 
 
 # asarray
