@@ -58,18 +58,21 @@ def _selu_with_inplace(input):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    "torch",
+)
 def celu(input, alpha=1.0, inplace=False):
-    prod = ivy.multiply(
-        alpha,
-        ivy.subtract(
-            ivy.exp(ivy.divide(input, alpha)),
-            1,
-        ),
-    )
-    return ivy.add(
-        ivy.maximum(0, input),
-        ivy.minimum(0, prod),
-    )
+    return ivy.celu(input, alpha=alpha)
+
+
+def celu_(input, alpha=1.0):
+    return celu(input, alpha=alpha, inplace=True)
 
 
 @to_ivy_arrays_and_back
