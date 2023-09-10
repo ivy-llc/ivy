@@ -127,8 +127,6 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "int32",
-            "int64",
             "float16",
             "float32",
             "float64",
@@ -145,7 +143,7 @@ def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
         s = x.shape
     if axes is None:
         axes = (-2, -1)
-        
+
     # Calculate the normalization factor 'n' based on the shape 's'
     n = ivy.prod(ivy.array(s))
 
