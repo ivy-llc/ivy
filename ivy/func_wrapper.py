@@ -1040,9 +1040,9 @@ def _wrap_function(
     """
     Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
-    `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to us
-    whether a certain function has been wrapped or not. Also handles wrapping of the
-    `linalg` namespace.
+    `handle_nestable` etc are set during wrapping, hence indicate to us whether a
+    certain function has been wrapped or not. Also handles wrapping of the `linalg`
+    namespace.
 
     Parameters
     ----------
