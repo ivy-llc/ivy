@@ -3,6 +3,8 @@ import ivy
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from builtins import slice as py_slice
+
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_dtypes,
@@ -118,6 +120,41 @@ def roll(x, shifts, axis=None, name=None):
 @to_ivy_arrays_and_back
 def rot90(x, k=1, axes=(0, 1), name=None):
     return ivy.rot90(x, k=k, axes=axes)
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int16", "complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def slice(input, axes, starts, ends):
+    input_shape = list(input.shape)
+    input_rank = len(input_shape)
+
+    # Prepare 'begin' and 'end' lists based on axes
+    begin = [None] * input_rank
+    end = [None] * input_rank
+    for i, axis in enumerate(axes):
+        begin[axis] = starts[i]
+        end[axis] = ends[i]
+
+    full_slice = ()
+    for i in range(input_rank):
+        b = begin[i]
+        e = end[i]
+
+        # Handle negative indices
+        if b is not None and b < 0:
+            b = input_shape[i] + b
+        if e is not None and e < 0:
+            e = input_shape[i] + e
+
+        # Add slice for this axis
+        full_slice += (py_slice(b, e, None),)
+
+    # Perform slicing
+    ret = input[full_slice]
+    return ret
 
 
 @with_unsupported_dtypes(
