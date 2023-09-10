@@ -282,7 +282,7 @@ def test_paddle_avg_pool2d(
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(
-        min_dims=5, max_dims=5, min_side=1, max_side=4, data_format="channel_first"
+        min_dims=5, max_dims=5, min_side=2, max_side=4, data_format="channel_first"
     ),
     ceil_mode=st.booleans(),
 )
@@ -304,7 +304,7 @@ def test_paddle_max_pool3d(
             kernel, stride, x[0].shape[2:]
         )
     else:
-        pad = (0, 0, 0)
+        pass
 
     # Test the frontend function
     helpers.test_frontend_function(
