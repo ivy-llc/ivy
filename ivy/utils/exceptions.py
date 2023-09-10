@@ -329,7 +329,7 @@ class InplaceUpdateException(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
-non_ivy_exceptions_dict = {
+_non_ivy_exceptions_mapping = {
     IndexError: IvyIndexError,
     AttributeError: IvyAttributeError,
     ValueError: IvyValueError,
@@ -363,7 +363,9 @@ def handle_exceptions(fn: Callable) -> Callable:
         except IvyException as e:
             _handle_exceptions_helper(e, type(e))
         except Exception as e:
-            ivy_exception = non_ivy_exceptions_dict.get(type(e), IvyBackendException)
+            ivy_exception = _non_ivy_exceptions_mapping.get(
+                type(e), IvyBackendException
+            )
             _handle_exceptions_helper(e, ivy_exception)
 
     def _handle_exceptions_helper(e, cls):

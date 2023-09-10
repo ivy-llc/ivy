@@ -16,7 +16,7 @@ from ivy.utils.exceptions import (
     IvyDeviceError,
     InvalidBackendException,
     IvyDtypePromotionError,
-    non_ivy_exceptions_dict,
+    _non_ivy_exceptions_mapping,
 )
 
 
@@ -56,7 +56,7 @@ def test_no_exception():
 
 @pytest.mark.parametrize(
     "e, to_be_raised",
-    non_ivy_exceptions_dict.items(),
+    _non_ivy_exceptions_mapping.items(),
 )
 def test_non_ivy_errors_mapping(e, to_be_raised):
     with pytest.raises(
