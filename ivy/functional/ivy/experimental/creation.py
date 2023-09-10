@@ -861,6 +861,64 @@ def random_cp(
         return ivy.CPTensor((weights, factors))
 
 
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_parafac2(
+    shapes: Sequence[int],
+    rank: int,
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    seed: Optional[int] = None,
+    normalise_factors: Optional[bool] = True,
+) -> Union[ivy.Parafac2Tensor, ivy.Array]:
+    """
+    Generate a random PARAFAC2 tensor.
+
+    Parameters
+    ----------
+    shapes
+        A shape of the tensor to generate
+    rank
+        rank of the Parafac2 decomposition
+    full
+        if True, a full tensor is returned otherwise,
+        the decomposed tensor is returned
+    seed
+        seed for generating random numbers
+
+    Returns
+    -------
+        ivy.Parafac2Tensor
+    """
+    if not all(shape[1] == shapes[0][1] for shape in shapes):
+        raise ValueError("All matrices must have equal number of columns.")
+
+    projection_matrices = [
+        ivy.qr(ivy.random_uniform(shape=(shape[0], rank), dtype=dtype, seed=seed))[0]
+        for shape in shapes
+    ]
+    weights, factors = random_cp(
+        [len(shapes), rank, shapes[0][1]],
+        rank,
+        normalise_factors=False,
+        seed=seed,
+        dtype=dtype,
+    )
+
+    parafac2_tensor = ivy.Parafac2Tensor((weights, factors, projection_matrices))
+
+    if normalise_factors:
+        parafac2_tensor = ivy.Parafac2Tensor.parafac2_normalise(parafac2_tensor)
+
+    if full:
+        return ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor)
+    else:
+        return parafac2_tensor
+
+
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

@@ -2,6 +2,9 @@
 from .base import FactorizedTensor
 import ivy
 
+# global
+from copy import deepcopy
+
 
 class Parafac2Tensor(FactorizedTensor):
     def __init__(self, parafac2_tensor):
@@ -18,6 +21,71 @@ class Parafac2Tensor(FactorizedTensor):
         self.factors = factors
         self.weights = weights
         self.projections = projections
+
+    # Built-ins #
+    # ----------#
+    def __getitem__(self, index):
+        if index == 0:
+            return self.weights
+        elif index == 1:
+            return self.factors
+        elif index == 2:
+            return self.projections
+        else:
+            raise IndexError(
+                f"You tried to access index {index} of a PARAFAC2 tensor.\n"
+                "You can only access index 0, 1 and 2 of a PARAFAC2 tensor"
+                "(corresponding respectively to the weights, factors and projections)"
+            )
+
+    def __setitem__(self, index, value):
+        if index == 0:
+            self.weights = value
+        elif index == 1:
+            self.factors = value
+        elif index == 2:
+            self.projections = value
+        else:
+            raise IndexError(
+                f"You tried to set index {index} of a PARAFAC2 tensor.\n"
+                "You can only set index 0, 1 and 2 of a PARAFAC2 tensor"
+                "(corresponding respectively to the weights, factors and projections)"
+            )
+
+    def __iter__(self):
+        yield self.weights
+        yield self.factors
+        yield self.projections
+
+    def __len__(self):
+        return 3
+
+    def __repr__(self):
+        message = (
+            f"(weights, factors, projections) : rank-{self.rank} Parafac2Tensor of"
+            f" shape {self.shape} "
+        )
+        return message
+
+    # Public Methods #
+    # ---------------#
+    def to_tensor(self):
+        return ivy.Parafac2Tensor.parafac2_to_tensor(self)
+
+    def to_vec(self):
+        return ivy.Parafac2Tensor.parafac2_to_vec(self)
+
+    def to_unfolded(self, mode):
+        return ivy.Parafac2Tensor.parafac2_to_unfolded(self, mode)
+
+    # Properties #
+    # ---------------#
+    # remainings
+    # @property
+    # def n_param(self):
+    #     weights, factors, projections = self.weights, self.factors, self.projections
+    #     total_params = sum(int(ivy.prod(tensor.shape)) for tensor in [core] + factors)
+    #     return total_params
 
     @classmethod
     def from_CPTensor(self, cp_tensor, parafac2_tensor_ok=False):
@@ -50,44 +118,6 @@ class Parafac2Tensor(FactorizedTensor):
         projections = [Q for _ in range(ivy.shape(A)[0])]
         B = R
         return Parafac2Tensor((weights, (A, B, C), projections))
-
-    def __getitem__(self, index):
-        if index == 0:
-            return self.weights
-        elif index == 1:
-            return self.factors
-        elif index == 2:
-            return self.projections
-        else:
-            raise IndexError(
-                f"You tried to access index {index} of a PARAFAC2 tensor.\n"
-                "You can only access index 0, 1 and 2 of a PARAFAC2 tensor"
-                "(corresponding respectively to the weights, factors and projections)"
-            )
-
-    def __iter__(self):
-        yield self.weights
-        yield self.factors
-        yield self.projections
-
-    def __len__(self):
-        return 3
-
-    def __repr__(self):
-        message = (
-            f"(weights, factors, projections) : rank-{self.rank} Parafac2Tensor of"
-            f" shape {self.shape} "
-        )
-        return message
-
-    def to_tensor(self):
-        return ivy.Parafac2Tensor.parafac2_to_tensor(self)
-
-    def to_vec(self):
-        return ivy.Parafac2Tensor.parafac2_to_vec(self)
-
-    def to_unfolded(self, mode):
-        return ivy.Parafac2Tensor.parafac2_to_unfolded(self, mode)
 
     # Class Methods #
     # ---------------#
@@ -217,8 +247,8 @@ class Parafac2Tensor(FactorizedTensor):
         # however, TensorFlow does not support inplace edits
         # so this is always set to True
         if True:
-            factors = [ivy.copy(f) for f in factors]
-            projections = [ivy.copy(p) for p in projections]
+            factors = [deepcopy(f) for f in factors]
+            projections = [deepcopy(p) for p in projections]
             if weights is not None:
                 factors[0] = factors[0] * weights
             weights = ivy.ones(rank, dtype=factors[0].dtype)
@@ -456,9 +486,7 @@ class Parafac2Tensor(FactorizedTensor):
             (A.shape[0], max(lengths), C.shape[0]), dtype=slices[0].dtype
         )
         for i, (slice_, length) in enumerate(zip(slices, lengths)):
-            tensor = ivy.set_nest_at_index(
-                tensor, ivy.indices((i, range(length))), slice_
-            )
+            tensor[i, :length] = slice_
         return tensor
 
 
