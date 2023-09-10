@@ -1,5 +1,5 @@
 # global
-from hypothesis import given,strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -222,7 +222,6 @@ def test_paddle_irfft(
         n=n,
         axis=axis,
         norm=norm,
-        
     )
 
 
@@ -273,6 +272,7 @@ def test_paddle_irfft2(
             axes=axes,
             norm=norm,
         )
+
 
 # Use the custom strategy for s and axes
 axes_strategy = sequence_of_two_integers()
