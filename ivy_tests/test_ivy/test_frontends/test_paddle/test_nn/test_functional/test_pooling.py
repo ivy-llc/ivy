@@ -112,6 +112,7 @@ def test_paddle_adaptive_avg_pool3d(
     output_size,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
@@ -119,6 +120,7 @@ def test_paddle_adaptive_avg_pool3d(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
