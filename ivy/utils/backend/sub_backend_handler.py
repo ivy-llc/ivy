@@ -210,7 +210,7 @@ def _populate_available_sub_backend_implementations_dict(sub_backends):
         sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
         for k, v in sub_backend.__dict__.items():
             if isinstance(v, Callable) and not k.startswith("__"):
-                result[k] = result.get(k, []).append(sub)
+                result[k] = result.get(k, []) + [sub]
 
     _available_sub_backends_implementations_dict[ivy.current_backend_str()] = result
 
@@ -239,7 +239,7 @@ def available_sub_backend_implementations(obj: Union[Callable, str]) -> list:
     >>> ivy.available_sub_backend_implementations(ivy.scaled_dot_product_attention)
     []
     """
-    _check_callable(obj)
+    obj = _check_callable(obj)
     sub_backends = ivy.current_backend().available_sub_backends()
     result = []
     if not sub_backends:
@@ -267,3 +267,4 @@ def _check_callable(obj):
         raise TypeError(
             "The argument `obj` must be a callable or a string representing a callable"
         )
+    return obj

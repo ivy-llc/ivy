@@ -15,6 +15,14 @@ def test_no_warning_when_no_sub_backend_implementation_available():
     assert len(record) == 0
 
 
+def test_sub_backend_implementation_available():
+    ivy.set_backend("torch")
+    sub_backends = ivy.available_sub_backend_implementations(
+        ivy.scaled_dot_product_attention
+    )
+    assert sub_backends == ["xformers"]
+
+
 def test_sub_backend_implementation_available_raise_error_when_param_not_callable():
     ivy.set_backend("torch")
     with pytest.raises(TypeError):
@@ -23,15 +31,10 @@ def test_sub_backend_implementation_available_raise_error_when_param_not_callabl
 
 def test_sub_backend_implementation_not_available():
     ivy.set_backend("numpy")
-    assert (
-        ivy.available_sub_backend_implementations(ivy.scaled_dot_product_attention)
-        == []
+    sub_backends = ivy.available_sub_backend_implementations(
+        ivy.scaled_dot_product_attention
     )
-
-
-# def test_sub_backend_implementation_available():
-#     ivy.set_backend("torch")
-#     assert ivy.available_sub_backend_implementations(ivy.scaled_dot_product_attention)
+    assert not sub_backends
 
 
 def test_throw_warning_when_sub_backend_implementation_available_but_not_used():
