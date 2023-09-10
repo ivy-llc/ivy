@@ -286,12 +286,10 @@ def test_paddle_avg_pool2d(
     ),
     ceil_mode=st.just(False),
     test_with_out=st.just(False),
-    exclusive=st.booleans(),
     data_format=st.sampled_from(["NCHW", "NHWC", "NCDHW"]),
 )
 def test_paddle_max_pool3d(
     dtype_x_k_s,
-    exclusive,
     data_format,
     ceil_mode,
     *,
@@ -325,7 +323,6 @@ def test_paddle_max_pool3d(
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
-        exclusive=exclusive,
         divisor_override=None,
         data_format=data_format,
     )

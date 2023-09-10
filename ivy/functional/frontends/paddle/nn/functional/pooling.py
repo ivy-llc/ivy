@@ -109,13 +109,11 @@ def max_pool3d(
     padding=0,
     ceil_mode=False,
     data_format="NCDHW",
-    exclusive=True,  # Add this argument
     divisor_override=None,
     name=None,
 ):
     # Set stride to kernel_size if not provided
     stride = kernel_size if stride is None else stride
-    exclusive = not exclusive
     # Ensure kernel_size and padding are broadcasted to 3D
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
@@ -137,7 +135,6 @@ def max_pool3d(
         padding,
         ceil_mode=ceil_mode,
         data_format=data_format,
-        exclusive=exclusive,  # Pass exclusive argument
         divisor_override=divisor_override,
     )
 
