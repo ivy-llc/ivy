@@ -322,7 +322,7 @@ def test_paddle_max_pool3d(
         frontend=frontend,
         fn_tree=fn_tree,
         x=x[0],
-        kernel=kernel,
+        kernel_size=kernel,
         strides=stride,
         padding=padding,
         data_format=data_format,
