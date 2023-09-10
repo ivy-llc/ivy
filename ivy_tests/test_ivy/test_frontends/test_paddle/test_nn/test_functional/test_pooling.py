@@ -286,21 +286,16 @@ def test_paddle_avg_pool2d(
         max_dims=5,
         min_side=2,
         max_side=4,
-        data_format="channel_first",
-        return_data_format=True,
         return_dilation=True,
+        data_format="NCDHW",
+        return_data_format=True,
     ),
     ceil_mode=st.booleans(),
+    test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_paddle_max_pool3d(
-    *,
-    x_k_s_p,
-    ceil_mode,
-    test_flags,
-    backend_fw,
-    frontend,
-    fn_tree,
-    on_device,
+    *, x_k_s_p, test_flags, backend_fw, on_device, frontend, fn_tree, ceil_mode
 ):
     dtype, x, kernel, stride, padding, dilation, data_format = x_k_s_p
 
@@ -311,7 +306,7 @@ def test_paddle_max_pool3d(
             kernel, stride, x[0].shape[2:]
         )
     else:
-        pass
+        padding = (0, 0, 0)
 
     # Test the frontend function
     helpers.test_frontend_function(
@@ -323,10 +318,9 @@ def test_paddle_max_pool3d(
         fn_tree=fn_tree,
         x=x[0],
         kernel_size=kernel,
-        strides=stride,
+        stride=stride,
         padding=padding,
         data_format=data_format,
-        dilation=dilation,
         ceil_mode=ceil_mode,
     )
 

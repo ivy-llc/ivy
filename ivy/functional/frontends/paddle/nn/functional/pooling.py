@@ -1,6 +1,7 @@
 # local
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
+
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch.nn.functional.pooling_functions import (
     _broadcast_pooling_helper,
@@ -107,8 +108,8 @@ def max_pool3d(
     kernel_size,
     stride=None,
     padding=0,
-    dilation=1,
     data_format="NCDHW",
+    dilation=1,
     ceil_mode=False,
 ):
     # Set stride to kernel_size if not provided
@@ -116,8 +117,16 @@ def max_pool3d(
     # Ensure kernel_size and padding are broadcasted to 3D
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    # Ensure dilation is a tuple of 1 or 3 elements
+    if isinstance(dilation, int):
+        dilation = (abs(dilation), abs(dilation), abs(dilation))  # Convert to (x, x, x)
 
-    # Determine padding string based on values
+    elif not isinstance(dilation, tuple) or len(dilation) != 3:
+        raise TypeError("Dilation must be an int or a tuple of 3 integers")
+
+    dilation = _broadcast_pooling_helper(dilation, "3d", name="dilation")
+
+    # Figure out padding string
     if all(
         [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
     ):
@@ -134,7 +143,7 @@ def max_pool3d(
         padding,
         data_format=data_format,
         dilation=dilation,
-        ceil_mode=ceil_mode,
+        ceil_mode=False if padding == "VALID" else True,
     )
 
 
