@@ -113,23 +113,23 @@ def _update_native_config_value(key):
                 try:
                     obj = __builtins__.__dict__[parsed[-1]]
                 except KeyError:
-                    print(Fore.RED + f"{parsed[-1]} is not a primitive object.")
+                    print(f"{Fore.RED}{parsed[-1]} is not a primitive object.")
                     return False
             else:
                 try:
                     mod = import_module(parsed[0])
                 except ModuleNotFoundError:
-                    print(Fore.RED + f"failed to import {parsed[0]}")
+                    print(f"{Fore.RED}failed to import {parsed[0]}")
                     return False
                 try:
                     obj = getattr(mod, parsed[-1])
                 except AttributeError:
-                    print(Fore.RED + f"{parsed[-1]} is not found in module.")
+                    print(f"{Fore.RED}{parsed[-1]} is not found in module.")
                     return False
             if not inspect.isclass(obj):
-                print(Fore.RED + f"{obj} is not a class.")
+                print(f"{Fore.RED}{obj} is not a class.")
                 return False
-            print(Fore.GREEN + f"Found class: {obj}")
+            print(f"{Fore.GREEN}Found class: {obj}")
             # Use alias if exists
             if backend["alias"] is not None:
                 modified_namespace = parsed[0].replace(
