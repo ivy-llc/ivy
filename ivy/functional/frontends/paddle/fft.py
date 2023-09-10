@@ -145,7 +145,7 @@ def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
         s = x.shape
     if axes is None:
         axes = (-2, -1)
-    
+        
     # Calculate the normalization factor 'n' based on the shape 's'
     n = ivy.prod(ivy.array(s))
 

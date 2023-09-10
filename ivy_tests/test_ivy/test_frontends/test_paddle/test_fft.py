@@ -227,7 +227,6 @@ def test_paddle_irfft(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="paddle.fft.irfft2",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -273,6 +272,8 @@ def test_paddle_irfft2(
             axes=axes,
             norm=norm,
         )
+
+
 axes_strategy = sequence_of_two_integers()
 # Use the custom strategy for s and axes
 s_strategy = sequence_of_two_integers()
