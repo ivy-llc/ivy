@@ -7,7 +7,6 @@ from ivy.func_wrapper import (
     inputs_to_native_shapes,
     handle_nestable,
     infer_dtype,
-    infer_device,
     handle_device_shifting,
     handle_backend_invalid,
 )
@@ -196,7 +195,6 @@ def gamma(
 @to_native_arrays_and_back
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -268,7 +266,6 @@ def poisson(
 @to_native_arrays_and_back
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
     *,

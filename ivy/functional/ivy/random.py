@@ -8,7 +8,6 @@ import ivy
 from ivy.func_wrapper import (
     handle_array_function,
     infer_dtype,
-    infer_device,
     handle_out_argument,
     to_native_arrays_and_back,
     inputs_to_native_shapes,
@@ -97,7 +96,6 @@ def _check_shapes_broadcastable(out, inp):
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -214,7 +212,6 @@ def random_uniform(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -325,7 +322,6 @@ def random_normal(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
-@infer_device
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -437,7 +433,6 @@ def multinomial(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
-@infer_device
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],

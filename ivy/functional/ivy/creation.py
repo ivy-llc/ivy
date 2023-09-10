@@ -22,7 +22,6 @@ from ivy.utils.exceptions import handle_exceptions
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
-    infer_device,
     infer_dtype,
     handle_out_argument,
     outputs_to_ivy_arrays,
@@ -284,7 +283,6 @@ class NestedSequence(Protocol[_T_co]):
 @outputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
-@infer_device
 def arange(
     start: Number,
     /,
@@ -485,7 +483,6 @@ def asarray(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -551,7 +548,6 @@ def zeros(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -649,7 +645,6 @@ def ones(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -759,7 +754,6 @@ def full_like(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -880,7 +874,6 @@ def ones_like(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1109,7 +1102,6 @@ def triu(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -1160,7 +1152,6 @@ def empty(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1212,7 +1203,6 @@ def empty_like(
 @outputs_to_ivy_arrays
 @handle_array_function
 @infer_dtype
-@infer_device
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -1355,7 +1345,6 @@ def eye(
 @handle_array_function
 @infer_dtype
 @handle_device_shifting
-@infer_device
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1587,7 +1576,6 @@ def meshgrid(
 @outputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
-@infer_device
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -1916,7 +1904,6 @@ def native_array(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
-@infer_device
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -2031,7 +2018,6 @@ def one_hot(
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
-@infer_device
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -2207,7 +2193,6 @@ def frombuffer(
 @handle_exceptions
 @handle_nestable
 @outputs_to_ivy_arrays
-@infer_device
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,

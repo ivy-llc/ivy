@@ -7,7 +7,6 @@ import ivy
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
-    infer_device,
     outputs_to_ivy_arrays,
     handle_nestable,
     to_native_arrays_and_back,
@@ -285,7 +284,6 @@ hamming_window.mixed_backend_wrappers = {
 @handle_exceptions
 @handle_nestable
 @outputs_to_ivy_arrays
-@infer_device
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -382,7 +380,6 @@ def tril_indices(
 @handle_out_argument
 @inputs_to_ivy_arrays
 @infer_dtype
-@infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
