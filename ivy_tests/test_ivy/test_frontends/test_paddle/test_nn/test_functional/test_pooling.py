@@ -302,7 +302,7 @@ def test_paddle_max_pool3d(
     fn_tree,
     on_device,
 ):
-    (dtype, x, kernel, stride, padding, dilation, data_format) = x_k_s_p
+    dtype, x, kernel, stride, padding, dilation, data_format = x_k_s_p
 
     if len(stride) == 1:
         stride = (stride[0], stride[0], stride[0])
@@ -321,8 +321,6 @@ def test_paddle_max_pool3d(
         on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
-        rtol_=1e-2,
-        atol_=1e-2,
         x=x[0],
         kernel=kernel,
         strides=stride,
