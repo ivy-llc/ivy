@@ -66,7 +66,6 @@ def kl_div(
     reduction: Optional[str] = "mean",
 ) -> JaxArray:
     size = jnp.shape(input)
-
     loss = jnp.sum(input * jnp.log(input / target), axis=-1)
 
     if reduction == "mean":
