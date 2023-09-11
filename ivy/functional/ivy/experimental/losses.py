@@ -477,7 +477,5 @@ def kl_div(
         loss = ivy.mean(loss, out=out)
     elif reduction == "batchmean":
         loss = ivy.sum(loss, out=out) / size[0]
-    else:
-        loss = ivy.inplace_update(out, loss) if out is not None else loss
 
-    return loss
+    return ivy.inplace_update(out, loss) if out is not None else loss
