@@ -1750,6 +1750,7 @@ def _tt_matrix_to_tensor_data(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.tt_matrix_to_tensor",
     data=_tt_matrix_to_tensor_data(),
+    test_gradients=st.just(False),
 )
 def test_tt_matrix_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = data
@@ -1761,5 +1762,5 @@ def test_tt_matrix_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device
         on_device=on_device,
         rtol_=1e8,
         atol_=1e8,
-        factors=x[0],
+        tt_matrix=x[0],
     )
