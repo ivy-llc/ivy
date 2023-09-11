@@ -141,6 +141,14 @@ def cosh(x, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def count_nonzero(x, axix=None, keepedims=False, dtype=None, out=None):
+    return ivy.count_nonzero(a=x, axis=axix, keepdims=keepedims, dtype=dtype, out=out)
+
+
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "int32",
