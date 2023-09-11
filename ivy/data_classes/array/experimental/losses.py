@@ -60,8 +60,8 @@ class _ArrayWithLossesExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.log_poisson_loss. This method simply 
-        wraps the function, and so the docstring for ivy.l1_loss also applies to this 
+        ivy.Array instance method variant of ivy.log_poisson_loss. This method simply
+        wraps the function, and so the docstring for ivy.l1_loss also applies to this
         method with minimal changes.
 
         Parameters
@@ -105,8 +105,12 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array(1.1573164)
         """
         return ivy.log_poisson_loss(
-            self._data, target, compute_full_loss=compute_full_loss, axis=axis, 
-            reduction=reduction, out=out
+            self._data,
+            target,
+            compute_full_loss=compute_full_loss,
+            axis=axis,
+            reduction=reduction,
+            out=out,
         )
 
     def huber_loss(
