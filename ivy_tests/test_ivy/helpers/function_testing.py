@@ -2052,9 +2052,23 @@ def test_frontend_method(
         ivy_frontend_creation_fn = getattr(
             frontend_fw_module, frontend_method_data.init_name
         )
-
         # Run testing
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+        # If we have inplace operations, we need to create the frontend arrays
+        # before running the method, so that after running the method
+        # We can check whether the return is still an instance of the frontend array
+        if method_flags.inplace:
+            # make copies of the args and kwargs
+            copy_args_method = copy.deepcopy(args_method)
+            copy_kwargs_method = copy.deepcopy(kwargs_method)
+            copy_ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+            frontend_ret_ins = copy_ins.__getattribute__(
+                frontend_method_data.method_name
+            )(*copy_args_method, **copy_kwargs_method)
+            assert frontend_ret_ins is copy_ins, (
+                "Inplace method did not return the same instance of the frontend array,"
+                " expected {}, got {}".format(copy_ins, frontend_ret_ins)
+            )
         ret, ret_np_flat = get_ret_and_flattened_np_array(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),

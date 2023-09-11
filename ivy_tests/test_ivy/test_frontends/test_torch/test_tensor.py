@@ -12709,6 +12709,7 @@ def test_torch_tensor_where(
         max_value=100,
         shared_dtype=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_xlogy_(
     dtype_and_x,
