@@ -521,34 +521,31 @@ def stft(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(frame_length, int):
-        raise IvyValueError(
-            f"Expecting <class 'int'> instead of {type(frame_length)}"
-        )
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(frame_length)}")
 
     if frame_length < 1:
         raise IvyValueError(
-            f"Invalid data points {frame_length}, expecting frame_length larger than or equal to 1"
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
         )
 
     if not isinstance(frame_step, int):
-        raise IvyValueError(
-            f"Expecting <class 'int'> instead of {type(frame_step)}"
-        )
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(frame_step)}")
 
     if frame_step < 1:
         raise IvyValueError(
-            f"Invalid data points {frame_step}, expecting frame_step larger than or equal to 1"
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
         )
 
     if fft_length is not None:
         if not isinstance(fft_length, int):
-            raise IvyValueError(
-                f"Expecting <class 'int'> instead of {type(fft_length)}"
-            )
+            raise IvyValueError(f"Expecting <class 'int'> instead of {type(fft_length)}")
 
         if fft_length < 1:
             raise IvyValueError(
-                f"Invalid data points {fft_length}, expecting fft_length larger than or equal to 1"
+                f"Invalid data points {frame_length}, expecting frame_length larger than or"
+                " equal to 1"
             )
 
     input_dtype = signals.dtype
@@ -568,7 +565,9 @@ def stft(
         if pad_end:
             num_samples = signals.shape[-1]
             num_frames = -(-num_samples // frame_step)
-            pad_length = max(0, frame_length + frame_step * (num_frames - 1) - num_samples)
+            pad_length = max(
+                0, frame_length + frame_step * (num_frames - 1) - num_samples
+            )
 
             signals = paddle.nn.functional.pad(signals, (0, pad_length))
         else:
@@ -600,8 +599,10 @@ def stft(
     def stft_helper(nested_list, frame_length, frame_step, fft_length):
         nested_list = nested_list
         if len(nested_list.shape) > 1:
-            return [stft_helper(sublist, frame_length, frame_step, fft_length)
-                    for sublist in nested_list]
+            return [
+                stft_helper(sublist, frame_length, frame_step, fft_length)
+                for sublist in nested_list
+            ]
         else:
             return stft_1D(nested_list, frame_length, frame_step, fft_length, pad_end)
 

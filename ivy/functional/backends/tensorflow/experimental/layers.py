@@ -1418,7 +1418,8 @@ def stft(
 
     if frame_length < 1:
         raise ivy.utils.exceptions.IvyError(
-            f"Invalid data points {frame_length}, expecting frame_length larger than or equal to 1"
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
         )
 
 
@@ -1429,7 +1430,8 @@ def stft(
 
     if frame_step < 1:
         raise ivy.utils.exceptions.IvyError(
-            f"Invalid data points {frame_step}, expecting frame_step larger than or equal to 1"
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
         )
 
     if fft_length is not None:
@@ -1440,11 +1442,19 @@ def stft(
 
         if fft_length < 1:
             raise ivy.utils.exceptions.IvyError(
-                f"Invalid data points {fft_length}, expecting fft_length larger than or equal to 1"
+                f"Invalid data points {frame_length}, expecting frame_length larger than or"
+                " equal to 1"
             )
 
-    result = tf.signal.stft(signals, frame_length, frame_step,
-                            fft_length=fft_length, window_fn=window_fn, pad_end=pad_end, name=name)
+    result = tf.signal.stft(
+        signals,
+        frame_length,
+        frame_step,
+        fft_length=fft_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        name=name,
+    )
 
     if out is not None:
         return out

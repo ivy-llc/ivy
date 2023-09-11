@@ -1288,18 +1288,19 @@ def valid_stft(draw):
 
     return dtype, x, frame_length, frame_step
 
+
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
     dtype_x_and_args=valid_stft(),
     test_gradients=st.just(False),
 )
 def test_stft(
-        *,
-        dtype_x_and_args,
-        test_flags,
-        backend_fw,
-        fn_name,
-        on_device,
+    *,
+    dtype_x_and_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, frame_length, frame_step = dtype_x_and_args
     helpers.test_function(

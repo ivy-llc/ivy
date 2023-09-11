@@ -1119,19 +1119,19 @@ class _ArrayWithLayersExperimental(abc.ABC):
         return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
 
     def stft(
-            self: ivy.Array,
-            frame_length: int,
-            frame_step: int,
-            /,
-            *,
-            fft_length: Optional[int] = None,
-            window_fn: Optional[Callable] = None,
-            pad_end: Optional[bool] = False,
-            name: Optional[str] = None,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        frame_length: int,
+        frame_step: int,
+        /,
+        *,
+        fft_length: Optional[int] = None,
+        window_fn: Optional[Callable] = None,
+        pad_end: Optional[bool] = False,
+        name: Optional[str] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Compute the Short-time Fourier Transform of signals
+        Compute the Short-time Fourier Transform of signals.
 
         Parameters
         ----------
@@ -1163,5 +1163,13 @@ class _ArrayWithLayersExperimental(abc.ABC):
             complex64/complex128 STFT values where fft_unique_bins is
             fft_length // 2 + 1 (the unique components of the FFT).
         """
-        return ivy.stft(self._data, frame_length, frame_step, fft_length=fft_length,
-                        window_fn=window_fn, pad_end=pad_end, name=name, out=out)
+        return ivy.stft(
+            self._data,
+            frame_length,
+            frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name,
+            out=out,
+        )

@@ -2283,20 +2283,20 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     @staticmethod
     def static_stft(
-            signals: ivy.Container,
-            frame_length: Union[int, ivy.Container],
-            frame_step: Union[int, ivy.Container],
-            /,
-            *,
-            fft_length: Optional[Union[int, ivy.Container]] = None,
-            window_fn: Optional[Union[Callable, ivy.Container]] = None,
-            pad_end: Optional[Union[bool, ivy.Container]] = False,
-            name: Optional[Union[str, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-            to_apply: Union[bool, ivy.Container] = True,
-            prune_unapplied: Union[bool, ivy.Container] = False,
-            map_sequences: Union[bool, ivy.Container] = False,
-            out: Optional[ivy.Container] = None,
+        signals: ivy.Container,
+        frame_length: Union[int, ivy.Container],
+        frame_step: Union[int, ivy.Container],
+        /,
+        *,
+        fft_length: Optional[Union[int, ivy.Container]] = None,
+        window_fn: Optional[Union[Callable, ivy.Container]] = None,
+        pad_end: Optional[Union[bool, ivy.Container]] = False,
+        name: Optional[Union[str, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stft.
@@ -2352,19 +2352,19 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     def stft(
-            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            frame_length: Union[int, ivy.Container],
-            frame_step: Union[int, ivy.Container],
-            /,
-            *,
-            fft_length: Optional[Union[int, ivy.Container]] = None,
-            window_fn: Optional[Union[Callable, ivy.Container]] = None,
-            pad_end: Optional[Union[bool, ivy.Container]] = False,
-            name: Optional[Union[str, ivy.Container]] = None,
-            out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        frame_length: Union[int, ivy.Container],
+        frame_step: Union[int, ivy.Container],
+        /,
+        *,
+        fft_length: Optional[Union[int, ivy.Container]] = None,
+        window_fn: Optional[Union[Callable, ivy.Container]] = None,
+        pad_end: Optional[Union[bool, ivy.Container]] = False,
+        name: Optional[Union[str, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
-        Compute the Short-time Fourier Transform of signals
+        Compute the Short-time Fourier Transform of signals.
 
         Parameters
         ----------
