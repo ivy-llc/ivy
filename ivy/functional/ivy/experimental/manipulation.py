@@ -2145,6 +2145,7 @@ def fill_diagonal(
         The value to write on the diagonal.
     wrap
         The diagonal ‘wrapped’ after N columns for tall matrices.
+
     Returns
     -------
     ret

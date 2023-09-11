@@ -26,12 +26,14 @@ def test_tensorflow_kaiser_window(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     window_length_dtype, window_length = dtype_and_window_length
     beta_dtype, beta = dtype_and_beta
     helpers.test_frontend_function(
         input_dtypes=[window_length_dtype[0], beta_dtype[0]],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -75,11 +77,13 @@ def test_tensorflow_idct(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

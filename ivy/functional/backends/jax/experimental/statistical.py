@@ -10,7 +10,7 @@ from ..statistical import _infer_dtype
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("bfloat16",)},
+    {"0.4.14 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -121,7 +121,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("complex64", "complex128")}, backend_version
+    {"0.4.14 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,
@@ -371,7 +371,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"0.4.13 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, backend_version)
 def cummin(
     x: JaxArray,
     /,

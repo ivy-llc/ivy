@@ -12,7 +12,7 @@ from . import backend_version
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -34,7 +34,7 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # keepdims is set to True because in versions up to 2.5.0
+    # keepdims is set to True because in versions up to 2.5.1
     # there was a problem when the axis was defined and it was the
     # only axis in the tensor so it needs to be handled manually
 
@@ -218,7 +218,7 @@ def _compute_quantile(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -305,7 +305,7 @@ def nanmedian(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -337,7 +337,7 @@ def unravel_index(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -388,7 +388,7 @@ def igamma(
         result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
         results.append(result)
 
-    return paddle.to_tensor(results, dtype="float32").reshape(a.shape)
+    return paddle.to_tensor(results, dtype=a.dtype).reshape(a.shape)
 
 
 def cov(
@@ -455,7 +455,7 @@ def cov(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cummax(
     x: paddle.Tensor,
@@ -586,7 +586,7 @@ def __get_index(lst, indices=None, prefix=None):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16")}},
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16")}},
     backend_version,
 )
 def cummin(

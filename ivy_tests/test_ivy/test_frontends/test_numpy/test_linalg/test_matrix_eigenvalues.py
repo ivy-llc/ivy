@@ -4,10 +4,12 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
-from ivy import to_numpy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
-import ivy
+from ivy_tests.test_ivy.helpers import (
+    handle_frontend_test,
+    assert_all_close,
+    update_backend,
+)
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
@@ -25,11 +27,13 @@ def test_numpy_eigvalsh(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -63,6 +67,7 @@ def test_numpy_eig(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -72,6 +77,7 @@ def test_numpy_eig(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -80,17 +86,20 @@ def test_numpy_eig(
         a=x,
     )
 
-    ret = [to_numpy(x).astype(np.float64) for x in ret]
-    frontend_ret = [x.astype(np.float64) for x in frontend_ret]
+    with update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x).astype(np.float64) for x in ret]
+        frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
-    L, Q = ret
-    frontend_L, frontend_Q = frontend_ret
+        L, Q = ret
+        frontend_L, frontend_Q = frontend_ret
 
-    assert_all_close(
-        ret_np=Q @ np.diag(L) @ Q.T,
-        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
-        atol=1e-02,
-    )
+        assert_all_close(
+            ret_np=Q @ np.diag(L) @ Q.T,
+            ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+            atol=1e-02,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
 
 
 # eigh
@@ -118,6 +127,7 @@ def test_numpy_eigh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -126,6 +136,7 @@ def test_numpy_eigh(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -134,13 +145,16 @@ def test_numpy_eigh(
         a=x,
         UPLO=UPLO,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-    L, Q = ret
-    frontend_L, frontend_Q = frontend_ret
+    with update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
+        L, Q = ret
+        frontend_L, frontend_Q = frontend_ret
 
-    assert_all_close(
-        ret_np=Q @ np.diag(L) @ Q.T,
-        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
-        atol=1e-02,
-    )
+        assert_all_close(
+            ret_np=Q @ np.diag(L) @ Q.T,
+            ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+            atol=1e-02,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )

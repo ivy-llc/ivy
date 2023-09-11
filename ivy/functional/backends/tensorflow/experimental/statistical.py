@@ -169,43 +169,45 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
     flattened data, we don't need to work on different axis.there are two cases here
 
     Case 1: which is if our input data does contain all the Nans or not,
-    if our input have just Nans (means no numbers) then we'll not use temp[~tf.math.is_nan(temp)]
-    function with our input because it will remove all Nans and we get empty tensor and this
-    raise an error when it sent to percentile function, in this case we need to keep this input
-    but just we flatten the input and percentile function returns nan if it find nan
-    in median and here all the input is nan then we get our result.
+    if our input have just Nans (means no numbers) then we'll not use
+    temp[~tf.math.is_nan(temp)] function with our input because it will remove all Nans
+    and we get empty tensor and this raise an error when it sent to percentile function,
+    in this case we need to keep this input but just we flatten the input and percentile
+    function returns nan if it find nan in median and here all the input is nan then we
+    get our result.
 
-    Case 2: if we have a number (0.4, 0.3, 0. ,1., 2., .....) with nans then we use this function
-    temp[~tf.math.is_nan(temp)], it will return a tensor by extracting the nans and just keeping the
-    values, but remember the returned tensor will be flattened and axis=None work on flattene inputs, so
-    in this case we are also on same page :)
+    Case 2: if we have a number (0.4, 0.3, 0. ,1., 2., .....) with nans then we use this
+    function temp[~tf.math.is_nan(temp)], it will return a tensor by extracting the nans
+    and just keeping the values, but remember the returned tensor will be flattened and
+    axis=None work on flattene inputs, so in this case we are also on same page :)
 
-    for example: [[12.0 ,4.0 ,ivy.nan], [ivy.nan, ivy.nan,2.2]] => returned: [12.0 ,4.0, 2.2]
-    now this will be our new input in percentile function.
+    for example: [[12.0 ,4.0 ,ivy.nan], [ivy.nan, ivy.nan,2.2]] => returned:
+    [12.0 ,4.0, 2.2] now this will be our new input in percentile function.
 
-    PART 2: In this case you have to do more work because we now don't allow to work directly on
-    flattened data, Here are two cases also.
+    PART 2: In this case you have to do more work because we now don't allow to work
+    directly on flattened data, Here are two cases also.
 
-    CASE 1: we need to consider axis parameter here, but percentile axis does work differently and
-    we don't have median function in tensorflow yet, so we need to make our input data compatible to
-    the axis, then we compute nanmedian along that specific axis. we transpose the input data according
-    to our axis, axis can be (0,), (1,), (0,1), (0,1,2) and input can be multi-dimensional, so we need
-    to take care of edge cases before making it compatible.
+    CASE 1: we need to consider axis parameter here, but percentile axis does work
+    differently and we don't have median function in tensorflow yet, so we need to make
+    our input data compatible to the axis, then we compute nanmedian along that specific
+    axis. we transpose the input data according to our axis, axis can be (0,), (1,),
+    (0,1), (0,1,2) and input can be multi-dimensional, so we need to take care of edge
+    cases before making it compatible.
 
-    CASE 2: Here the main Nan handling part comes, you can only use 1D inputs here so we have
-    to flatten the input then we have jump parameter which is use to say how many iterations
-    we want to make because we have to calculate the row-wise median along axis=None now, so
-    we slice out some data from the flattened input and then we use that 1D Input to remove
-    the nans and use it in our percentile.
+    CASE 2: Here the main Nan handling part comes, you can only use 1D inputs here so we
+    have to flatten the input then we have jump parameter which is use to say how many
+    iterations we want to make because we have to calculate the row-wise median along
+    axis=None now, so we slice out some data from the flattened input and then we use
+    that 1D Input to remove the nans and use it in our percentile.
 
     For example: input = [[ivy.nan, 3, ivy.nan, 7],[4, ivy.nan,6, 9]], axis=1
 
     flatten data -> [[nan  3. nan  7.  4. nan  6.  9.]]
     num_jumps -> 2 because we have to slice out this in (1, 4) and (1,4),
     then it works same as PART 1 CASE 1 AND CASE 2.
-    now for first slice we get -> 5.0 and for second we get -> 6.0, these calculated along axis=1
-    now we append the data into result, so to make the shape of result compatible with the numpy
-    output, we reshaped it.
+    now for first slice we get -> 5.0 and for second we get -> 6.0, these calculated
+    along axis=1 now we append the data into result, so to make the shape of result
+    compatible with the numpy output, we reshaped it.
 
     the result which we get from our _nanmedian_helper = [5., 6.]
     """
@@ -371,6 +373,15 @@ def bincount(
     )
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def igamma(
     a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:

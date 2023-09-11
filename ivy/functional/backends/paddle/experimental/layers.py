@@ -52,7 +52,7 @@ def max_pool1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -280,7 +280,7 @@ def fft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -302,7 +302,7 @@ def dropout1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -324,7 +324,7 @@ def dropout2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -393,7 +393,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"2.5.0 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
+    {"2.5.1 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
     backend_version,
 )
 def rfftn(

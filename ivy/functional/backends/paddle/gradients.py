@@ -27,7 +27,7 @@ def variable(x, /):
         ret = x.detach()
         ret.stop_gradient = False
         return ret
-    ret = x.clone()
+    ret = paddle_backend.copy_array(x)
     ret.stop_gradient = False
     return ret
 
@@ -104,7 +104,7 @@ def _grad_func(y, xs, retain_grads):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=[[0]], ret_grad_idxs=[[0]]

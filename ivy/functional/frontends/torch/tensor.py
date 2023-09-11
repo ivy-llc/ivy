@@ -31,11 +31,11 @@ class Tensor:
         self._grads = None
         self._requires_grad = requires_grad
         self.grad_fn = None
-        self._grads = None
         if not _init_overload:
             self._is_leaf = True
         else:
             self._is_leaf = False
+        self._requires_grad = requires_grad
 
     def __len__(self):
         return len(self._ivy_array)
@@ -726,6 +726,10 @@ class Tensor:
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
 
+    @property
+    def is_meta(self):
+        return "meta" in ivy.dev(self.ivy_array)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
@@ -901,6 +905,12 @@ class Tensor:
     def clamp_(self, min=None, max=None):
         self.ivy_array = self.clamp(min=min, max=max).ivy_array
         return self
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("bool", "bfloat16", "float16", "complex")}, "torch"
+    )
+    def clamp_min(self, min=None):
+        return torch_frontend.clamp(self, min=min)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
@@ -1308,6 +1318,11 @@ class Tensor:
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def log10_(self):
+        self.ivy_array = self.log10().ivy_array
+        return self
+
     def short(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
         return self
@@ -1510,6 +1525,10 @@ class Tensor:
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def diagonal(self, offset=0, dim1=0, dim2=1):
+        return torch_frontend.diagonal(self, offset=offset, dim1=dim1, dim2=dim2)
+
     def gather(self, dim, index):
         return torch_frontend.gather(self, dim=dim, index=index)
 
@@ -1545,6 +1564,10 @@ class Tensor:
         self.ivy_array = callable(self.ivy_array)
         return self
 
+    def requires_grad_(self, requires_grad=True):
+        self._requires_grad = requires_grad
+        return self
+
     def backward(self, gradient=None, retain_graph=None, create_graph=False):
         if gradient is None and int(torch_frontend.numel(self)) > 1:
             raise RuntimeError("grad can be implicitly created only for scalar outputs")
@@ -1560,6 +1583,35 @@ class Tensor:
                 next_function.__self__.backward(_grad_list[idx])
             else:
                 next_function(_grad_list[idx])
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def logaddexp(self, other):
+        return torch_frontend.logaddexp(self, other)
+
+    def angle(self):
+        return torch_frontend.angle(self)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "int64",
+                "float64",
+                "complex128",
+                "float32",
+                "complex64",
+                "int32",
+            )
+        },
+        "paddle",
+    )
+    def adjoint(self):
+        return torch_frontend.adjoint(self)
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("int16", "float16", "bfloat16")}, "torch"
+    )
+    def conj(self):
+        return torch_frontend.conj(self)
 
 
 class Size(tuple):

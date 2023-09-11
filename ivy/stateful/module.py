@@ -5,7 +5,7 @@ import functools
 import os
 import abc
 import copy
-import pickle
+import dill
 from typing import Optional, Tuple, Dict
 
 # local
@@ -111,7 +111,7 @@ class Module(ModuleConverters, ModuleHelpers):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        backend = ivy.with_backend("numpy")
+        backend = ivy.with_backend("numpy", cached=True)
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._sub_mods = set()
@@ -143,7 +143,6 @@ class Module(ModuleConverters, ModuleHelpers):
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
         """
-
         _fn_with_var_arg_wrapper = functools.partial(
             self._fn_with_var_arg_wrapper,
             fn=fn,
@@ -499,7 +498,7 @@ class Module(ModuleConverters, ModuleHelpers):
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
-        backend = ivy.with_backend("numpy")
+        backend = ivy.with_backend("numpy", cached=True)
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._set_submod_flags(
@@ -740,7 +739,7 @@ class Module(ModuleConverters, ModuleHelpers):
         if ivy.current_backend_str() == "paddle":
             self._convert_tensors_to_numpy()
         with open(filename, "wb") as f:
-            pickle.dump(self, f)
+            dill.dump(self, f)
         if ivy.current_backend_str() == "paddle":
             self._convert_numpy_to_tensors()
 
@@ -760,7 +759,7 @@ class Module(ModuleConverters, ModuleHelpers):
             The loaded module object.
         """
         with open(filename, "rb") as f:
-            loaded = pickle.load(f)
+            loaded = dill.load(f)
         if ivy.current_backend_str() == "paddle":
             loaded._convert_numpy_to_tensors()
         return loaded

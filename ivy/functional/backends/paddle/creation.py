@@ -134,7 +134,7 @@ def empty_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "uint8",
                 "int8",
@@ -337,7 +337,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def linspace(
     start: Union[paddle.Tensor, float],
@@ -395,7 +395,7 @@ def linspace(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -464,7 +464,7 @@ def ones_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -483,7 +483,7 @@ def tril(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -534,9 +534,13 @@ def copy_array(
     to_ivy_array: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if 0 in x.shape:
+        new_arr = paddle.empty(x.shape, dtype=x.dtype)
+    else:
+        new_arr = x.clone()
     if to_ivy_array:
-        return ivy.to_ivy(x.clone())
-    return x.clone()
+        return ivy.to_ivy(new_arr)
+    return new_arr
 
 
 def one_hot(
@@ -592,7 +596,7 @@ def one_hot(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def frombuffer(

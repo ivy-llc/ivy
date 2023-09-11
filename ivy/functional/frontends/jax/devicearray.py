@@ -64,7 +64,7 @@ class DeviceArray:
     def astype(self, dtype):
         try:
             return jax_frontend.numpy.asarray(self, dtype=dtype)
-        except:
+        except:  # noqa: E722
             raise ivy.utils.exceptions.IvyException(
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
@@ -272,3 +272,29 @@ class DeviceArray:
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def min(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+        where=None,
+    ):
+        return jax_frontend.numpy.min(
+            self, axis=axis, out=out, keepdims=keepdims, where=where
+        )
+
+    def var(
+        self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
+    ):
+        return jax_frontend.numpy.var(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=int(ddof),
+            keepdims=keepdims,
+            where=where,
+        )

@@ -285,7 +285,7 @@ def print_all_ivy_arrays_on_dev(
         [print(arr) for arr in arrs]
 
 
-ivy.soft_device_mode = False
+ivy.soft_device_mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
 
 
 @handle_exceptions

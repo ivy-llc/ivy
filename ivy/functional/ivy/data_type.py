@@ -21,7 +21,6 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_shapes,
     handle_device_shifting,
-    inputs_to_native_shapes,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -204,15 +203,32 @@ def _get_dtypes(fn, complement=True):
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
+
+    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
-            v = getattr(fn, key)
+            dtypes = getattr(fn, key)
             # only einops allowed to be a dictionary
-            if isinstance(v, dict):
-                v = v.get(ivy.current_backend_str(), base)
-
-            ivy.utils.assertions.check_isinstance(v, tuple)
-            supported = merge_fn(supported, set(v))
+            if isinstance(dtypes, dict):
+                dtypes = dtypes.get(ivy.current_backend_str(), base)
+            ivy.utils.assertions.check_isinstance(dtypes, tuple)
+            dtypes = list(dtypes)
+            typeset_list = []
+            for i, dtype in reversed(list(enumerate(dtypes))):
+                if dtype in typesets:
+                    typeset_list.extend(typesets[dtype])
+                    dtypes.pop(i)
+            dtypes = dtypes + typeset_list
+            supported = merge_fn(supported, set(dtypes))
 
     if complement:
         supported = set(ivy.all_dtypes).difference(supported)
@@ -560,8 +576,8 @@ def can_cast(
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
     try:
-        ivy.promote_types(from_, to)
-        return True
+        dtype = ivy.promote_types(from_, to)
+        return dtype == to
     except KeyError:
         return False
 
@@ -791,7 +807,7 @@ def result_type(
         a: float64
     }
     """
-    return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+    return current_backend(arrays_and_dtypes[0]).result_type(*arrays_and_dtypes)
 
 
 # Extra #
@@ -1333,6 +1349,8 @@ def default_int_dtype(
     if ivy.exists(input):
         if ivy.is_array(input):
             ret = ivy.dtype(input)
+        elif isinstance(input, ivy.Shape):
+            ret = ivy.default_int_dtype()
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
@@ -1892,6 +1910,8 @@ def is_int_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "int" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -1967,6 +1987,8 @@ def is_float_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "float" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -2017,6 +2039,8 @@ def is_uint_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "uint" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -2063,6 +2087,8 @@ def is_complex_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "complex" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):

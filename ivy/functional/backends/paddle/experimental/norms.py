@@ -11,7 +11,7 @@ from . import backend_version
 # use numpy implementation with ivy functions
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -134,19 +134,24 @@ def l2_normalize(
 
 def instance_norm(
     x: paddle.Tensor,
+    mean: paddle.Tensor,
+    variance: paddle.Tensor,
     /,
     *,
-    scale: Optional[paddle.Tensor],
-    bias: Optional[paddle.Tensor],
-    eps: float = 1e-05,
-    momentum: Optional[float] = 0.1,
-    data_format: str = "NCHW",
-    running_mean: Optional[paddle.Tensor] = None,
-    running_stddev: Optional[paddle.Tensor] = None,
-    affine: Optional[bool] = True,
-    track_running_stats: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-):
+    scale: Optional[paddle.Tensor] = None,
+    offset: Optional[paddle.Tensor] = None,
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
+    out: Optional[
+        Tuple[
+            paddle.Tensor,
+            paddle.Tensor,
+            paddle.Tensor,
+        ]
+    ] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
     raise IvyNotImplementedException()
 
 

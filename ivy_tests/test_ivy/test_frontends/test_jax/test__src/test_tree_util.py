@@ -6,14 +6,6 @@ from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
 import hypothesis.strategies as st
 
 
-# Define a function to square each leaf node
-def square(x):
-    if isinstance(x, ivy.Array):
-        return ivy.square(x)
-    else:
-        return x**2
-
-
 def leaf_strategy():
     return st.lists(st.integers(1, 10)).map(ivy.array)
 
@@ -56,7 +48,9 @@ def test_jax_tree_leaves(
     fn_tree,
     frontend,
     on_device,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     # Apply the tree_leaves function to obtain the leaves of the tree
     result = tree_leaves(tree)
 
@@ -65,6 +59,7 @@ def test_jax_tree_leaves(
 
     # value test
     assert result == expected
+    ivy.previous_backend()
 
 
 # tree_map
@@ -79,7 +74,17 @@ def test_jax_tree_map(
     fn_tree,
     frontend,
     on_device,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
+
+    # Define a function to square each leaf node
+    def square(x):
+        if isinstance(x, ivy.Array):
+            return ivy.square(x)
+        else:
+            return x**2
+
     # Apply the square function to the tree using tree_map
     result = tree_map(square, tree)
 
@@ -87,3 +92,4 @@ def test_jax_tree_map(
     expected = ivy.square(ivy.Container(tree))
 
     assert ivy.equal(ivy.Container(result), expected)
+    ivy.previous_backend()

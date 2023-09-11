@@ -22,7 +22,7 @@ def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -45,7 +45,7 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -71,7 +71,7 @@ def test_gelu(*, dtype_and_x, approximate, test_flags, backend_fw, fn_name, on_d
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -96,7 +96,7 @@ def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -125,7 +125,7 @@ def test_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_devic
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -157,7 +157,7 @@ def test_softplus(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -185,7 +185,7 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -210,7 +210,7 @@ def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -241,7 +241,7 @@ def test_hardswish(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

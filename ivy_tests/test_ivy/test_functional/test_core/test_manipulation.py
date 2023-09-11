@@ -58,7 +58,7 @@ def test_concat(
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         xs=xs,
@@ -83,7 +83,7 @@ def test_expand_dims(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_d
         helpers.test_function(
             input_dtypes=dtype,
             test_flags=test_flags,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
             x=value[0],
@@ -116,7 +116,7 @@ def test_flip(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -149,7 +149,7 @@ def test_permute_dims(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -185,7 +185,7 @@ def test_reshape(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -246,7 +246,7 @@ def test_roll(*, dtype_value, shift, axis, test_flags, backend_fw, fn_name, on_d
     helpers.test_function(
         input_dtypes=value_dtype + shift_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -282,7 +282,7 @@ def test_squeeze(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_devic
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -321,7 +321,7 @@ def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_devic
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         arrays=arrays,
@@ -357,7 +357,7 @@ def test_clip(*, dtype_x_min_max, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtypes[0],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x_list,
@@ -401,7 +401,7 @@ def test_constant_pad(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -473,7 +473,7 @@ def test_repeat(
     helpers.test_function(
         input_dtypes=value_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -588,7 +588,7 @@ def test_split(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -620,7 +620,7 @@ def test_swapaxes(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -650,7 +650,7 @@ def test_tile(*, dtype_value, repeat, test_flags, backend_fw, fn_name, on_device
     helpers.test_function(
         input_dtypes=dtype + repeat_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -671,7 +671,7 @@ def test_zero_pad(*, dtype_value_pad_width, test_flags, backend_fw, fn_name, on_
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
@@ -701,7 +701,7 @@ def test_unstack(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],

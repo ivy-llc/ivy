@@ -23,6 +23,7 @@ def test_paddle_mean(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -30,6 +31,7 @@ def test_paddle_mean(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -52,12 +54,14 @@ def test_paddle_numel(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -81,11 +85,13 @@ def test_paddle_nanquantile(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -111,11 +117,14 @@ def test_paddle_nanquantile(
     ),
     keepdim=st.booleans(),
 )
-def test_paddle_median(dtype_x_and_axis, keepdim, frontend, test_flags, fn_tree):
+def test_paddle_median(
+    dtype_x_and_axis, keepdim, backend_fw, frontend, test_flags, fn_tree
+):
     input_dtypes, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],

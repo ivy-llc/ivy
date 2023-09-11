@@ -32,11 +32,13 @@ def test_constant(
     class_name,
     method_name,
     ground_truth_backend,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -80,12 +82,14 @@ def test_zeros(
     method_with_v,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -129,12 +133,14 @@ def test_ones(
     method_with_v,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -190,12 +196,14 @@ def test_uniform(
     method_with_v,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -259,12 +267,14 @@ def test_glorot_uniform(
     method_with_v,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -317,12 +327,14 @@ def test_first_layer_siren(
     method_with_v,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -372,12 +384,14 @@ def test_siren(
     method_with_v,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -444,12 +458,14 @@ def test_kaiming_normal(
     method_with_v,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -519,8 +535,10 @@ def test_random_normal(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,

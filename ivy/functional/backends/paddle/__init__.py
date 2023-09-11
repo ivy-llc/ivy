@@ -18,16 +18,19 @@ use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = paddle.Tensor
 NativeVariable = paddle.Tensor  # paddle.fluid.framework.Variable
-NativeDevice = paddle.fluid.libpaddle.Place
+NativeDevice = paddle.device.core.Place
 NativeDtype = paddle.dtype
 NativeShape = list
 
 NativeSparseArray = paddle.Tensor
 
 # devices
-valid_devices = ("cpu",)
+valid_devices = (
+    "cpu",
+    "gpu",
+)
 
-invalid_devices = ("gpu", "tpu")
+invalid_devices = "tpu"
 
 
 # native data types
@@ -36,6 +39,7 @@ native_int16 = paddle.int16
 native_int32 = paddle.int32
 native_int64 = paddle.int64
 native_uint8 = paddle.uint8
+native_bfloat16 = paddle.bfloat16
 native_float16 = paddle.float16
 native_float32 = paddle.float32
 native_float64 = paddle.float64
@@ -49,7 +53,7 @@ native_bool = paddle.bool
 
 # update these to add new dtypes
 valid_dtypes = {
-    "2.5.0 and below": (
+    "2.4.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -61,10 +65,24 @@ valid_dtypes = {
         ivy.complex64,
         ivy.complex128,
         ivy.bool,
-    )
+    ),
+    "2.5.1 and above": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+        ivy.bfloat16,
+        ivy.float16,
+        ivy.float32,
+        ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
+        ivy.bool,
+    ),
 }
 valid_numeric_dtypes = {
-    "2.5.0 and below": (
+    "2.4.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -75,10 +93,25 @@ valid_numeric_dtypes = {
         ivy.float64,
         ivy.complex64,
         ivy.complex128,
-    )
+        ivy.bool,
+    ),
+    "2.5.1 and above": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+        ivy.bfloat16,
+        ivy.float16,
+        ivy.float32,
+        ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
+        ivy.bool,
+    ),
 }
 valid_int_dtypes = {
-    "2.5.0 and below": (
+    "2.5.1 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -86,9 +119,12 @@ valid_int_dtypes = {
         ivy.uint8,
     )
 }
-valid_float_dtypes = {"2.5.0 and below": (ivy.float16, ivy.float32, ivy.float64)}
-valid_uint_dtypes = {"2.5.0 and below": (ivy.uint8,)}
-valid_complex_dtypes = {"2.5.0 and below": (ivy.complex64, ivy.complex128)}
+valid_float_dtypes = {
+    "2.4.2 and below": (ivy.float16, ivy.float32, ivy.float64),
+    "2.5.1 and above": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
+}
+valid_uint_dtypes = {"2.5.1 and below": (ivy.uint8,)}
+valid_complex_dtypes = {"2.5.1 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
@@ -101,27 +137,37 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 
 # update these to add new dtypes
 invalid_dtypes = {
-    "2.5.0 and below": (
+    "2.4.2 and below": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
         ivy.bfloat16,
-    )
+    ),
+    "2.5.1 and above": (
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+    ),
 }
 
 invalid_numeric_dtypes = {
-    "2.5.0 and below": (
+    "2.4.2 and below": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
         ivy.bfloat16,
-    )
+    ),
+    "2.5.1 and above": (
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+    ),
 }
 
-invalid_int_dtypes = {"2.5.0 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_float_dtypes = {"2.5.0 and below": (ivy.bfloat16,)}
-invalid_uint_dtypes = {"2.5.0 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_complex_dtypes = {"2.5.0 and below": ()}
+invalid_int_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_float_dtypes = {"2.4.2 and below": (ivy.bfloat16,), "2.5.1 and above": ()}
+invalid_uint_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"2.5.1 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)

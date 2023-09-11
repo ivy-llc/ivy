@@ -36,10 +36,12 @@ def test_numpy_squeeze(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -70,10 +72,12 @@ def test_numpy_expand_dims(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -99,6 +103,7 @@ def test_numpy_atleast_2d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
@@ -107,6 +112,7 @@ def test_numpy_atleast_2d(
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -131,6 +137,7 @@ def test_numpy_atleast_3d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
@@ -139,6 +146,7 @@ def test_numpy_atleast_3d(
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -163,6 +171,7 @@ def test_numpy_atleast_1d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
@@ -171,6 +180,7 @@ def test_numpy_atleast_1d(
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -206,6 +216,7 @@ def test_numpy_broadcast_arrays(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     args = {}
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
@@ -213,6 +224,7 @@ def test_numpy_broadcast_arrays(
     test_flags.num_positional_args = len(args)
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
