@@ -5,6 +5,7 @@
             {
                 "utils": [
                     "III.so",
+                    "IIII.so",
                     "IIV.so",
                     "IIX.so",
                     "IVI.so",

@@ -31,10 +31,8 @@ def compile(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    if python_version[1] == "8":
-        from ._compiler_38 import compile as _compile
-    else:
-        from ._compiler import compile as _compile
+    from ._compiler import compile as _compile
+
     """
     Take `fn` and compiles it into a more efficient composition of backend operations.
 
@@ -128,10 +126,8 @@ def transpile(
     params_v=None,
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
-    if python_version[1] == "8":
-        from ._compiler_38 import transpile as _transpile
-    else:
-        from ._compiler import transpile as _transpile
+    from ._compiler import transpile as _transpile
+
     """
     Transpile Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
@@ -178,10 +174,8 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
-    if python_version[1] == "8":
-        from ._compiler_38 import unify as _unify
-    else:
-        from ._compiler import unify as _unify
+    from ._compiler import unify as _unify
+
     return _unify(
         *objs,
         source=source,

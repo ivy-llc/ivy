@@ -18,10 +18,10 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
-from packaging import tags
+from pip._vendor.packaging import tags
 import os
 import json
-import requests
+from urllib import request
 import itertools
 import re
 
@@ -64,16 +64,16 @@ for tag in all_tags:
         folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
         file_name = f"{file_path[:-3]}_{tag}.so"
         search_path = f"compiler/{file_name}"
-        r = requests.get(
-            f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
-            timeout=40,
-        )
-        if r.status_code == 200:
+        try:
+            response = request.urlopen(
+                f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
+                timeout=40,
+            )
             os.makedirs(os.path.dirname(path), exist_ok=True)
             with open(path, "wb") as f:
-                f.write(r.content)
+                f.write(response.read())
             terminate = path == paths[-1]
-        else:
+        except request.HTTPError:
             break
 
 for path in paths:
