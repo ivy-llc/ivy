@@ -111,16 +111,14 @@ def log_softmax(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if axis is None:
-        axis = -1
     x_max = np.max(x, axis=axis, keepdims=True)
     sub_tmp = np.subtract(x, x_max)
-    s = np.sum(np.exp(sub_tmp), axis=axis, keepdims=True)
-    ret = np.log(s)
+    ret = np.sum(np.exp(sub_tmp), axis=axis, keepdims=True)
+    ret = np.log(ret)
     ret = np.subtract(sub_tmp, ret)
     return ret
 

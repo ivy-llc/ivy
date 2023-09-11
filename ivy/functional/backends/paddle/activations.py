@@ -167,12 +167,10 @@ def log_softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[paddle.Tensor] = None,
 ):
-    if axis is None:
-        axis = -1
     x_max = paddle_backend.max(x, axis=axis, keepdims=True)
     sub_tmp = paddle_backend.subtract(x, x_max)
     ret = paddle_backend.sum(paddle_backend.exp(sub_tmp), axis=axis, keepdims=True)

@@ -3,7 +3,7 @@
 # local
 import ivy
 from ivy.stateful.module import Module
-from typing import Literal
+from typing import Literal, Optional
 
 
 class GELU(Module):
@@ -149,7 +149,7 @@ class LeakyReLU(Module):
 class LogSoftmax(Module):
     def __init__(
         self,
-        axis: int = -1,
+        axis: Optional[int] = -1,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ):
         """

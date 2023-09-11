@@ -263,7 +263,7 @@ class _ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Optional[int] = None,
+        axis: Optional[int] = -1,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

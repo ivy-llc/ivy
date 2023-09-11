@@ -122,7 +122,7 @@ def log_softmax(
     x: Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[Tensor] = None,
 ):

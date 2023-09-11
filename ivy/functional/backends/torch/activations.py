@@ -114,12 +114,10 @@ def log_softmax(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[torch.Tensor] = None,
 ):
-    if axis is None:
-        axis = -1
     if torch.is_complex(x):
         x_max = torch_backend.max(x, axis=axis, keepdims=True)
         sub_temp = torch.sub(x, x_max)
