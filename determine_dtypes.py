@@ -2,6 +2,7 @@
 
 import argparse
 import importlib
+from importlib.metadata import version
 import os
 import sys
 from pathlib import Path
@@ -56,13 +57,14 @@ DTYPE_CLASSES = {
 }
 
 
-CURRENT_VERSIONS = {
-    "jax": "0.4.14",
-    "numpy": "1.25.2",
-    "paddle": "2.5.1",
-    "tensorflow": "2.13.0",
-    "torch": "2.0.1",
+PYPI_NAMES = {
+    "jax": "jax",
+    "numpy": "numpy",
+    "paddle": "paddlepaddle",
+    "tensorflow": "tensorflow",
+    "torch": "torch",
 }
+
 
 DTYPE_DECORATORS = {
     "with_supported_dtypes",
@@ -81,7 +83,6 @@ TODO list (prioritised):
 #. get it working for methods
 
 ########## NICE TO HAVE ########
-#. remove hard-coded version numbers
 #. iterate over versions of a framework
 #. prettify the output to make it easier to read
 #. decide intelligently which functions to run on (e.g. based on git diffs)
@@ -632,7 +633,7 @@ class BackendFileTester:
                         0 if use_supported else 1
                     ]
                 self.decorators[f] = _get_decorator_string(
-                    device_and_dtypes, use_supported, CURRENT_VERSIONS[self.backend]
+                    device_and_dtypes, use_supported, version(PYPI_NAMES[self.backend])
                 )
             if self.verbosity >= 2:
                 print(f"  {f}: {self.decorators[f]}")
