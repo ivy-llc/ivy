@@ -604,8 +604,8 @@ positive.support_native_out = True
 
 @_scalar_output_to_0d_array
 def pow(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
+    x1: np.ndarray,
+    x2: Union[int, float, np.ndarray],
     /,
     *,
     out: Optional[np.ndarray] = None,

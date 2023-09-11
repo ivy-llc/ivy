@@ -583,8 +583,8 @@ square.support_native_out = True
 
 @handle_numpy_arrays_in_specific_backend
 def pow(
-    x1: Union[float, torch.Tensor],
-    x2: Union[float, torch.Tensor],
+    x1: torch.Tensor,
+    x2: Union[int, float, torch.Tensor],
     /,
     *,
     out: Optional[torch.Tensor] = None,

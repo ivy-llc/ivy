@@ -5189,8 +5189,8 @@ def positive(
 @handle_array_function
 @handle_device_shifting
 def pow(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[int, float, ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -5319,6 +5319,13 @@ def pow(
 
 
 pow.unsupported_gradients = {"torch": ["float16"]}
+
+
+def _complex_to_inf(exponent):
+    if exponent < 0:
+        return float('inf') + ivy.nan * 1j
+    else:
+        return -0 * 1j
 
 
 @handle_exceptions
