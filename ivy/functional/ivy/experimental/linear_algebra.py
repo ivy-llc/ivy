@@ -1705,7 +1705,7 @@ def vonneumann_entropy(
     (the eigenvalues of the density matrix).
     """
 
-    square_dim = int(ivy.sqrt(ivy.prod(tensor.shape)))
+    square_dim = int(ivy.sqrt(float(ivy.prod(tensor.shape))))
     tensor = ivy.reshape(tensor, (square_dim, square_dim))
     try:
         eig_vals = ivy.eigh(tensor)[0]
