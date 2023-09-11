@@ -69,16 +69,12 @@ def nancumsum(a, /, axis=None, dtype=None, out=None):
 def nanprod(
     a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
 ):
-    fill_values = ivy.ones_like(a)
-    a = ivy.where(ivy.isnan(a), fill_values, a)
-    if ivy.is_array(where):
-        a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
-    if initial is not None:
-        a[axis] = 1
-        s = ivy.shape(a, as_array=False)
-        header = ivy.full(s, initial)
-        a = ivy.concat([header, a], axis=axis)
-    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    a = ivy.where(ivy.isnan(a), 1, a)
+    a = ivy.where(where, a, 1) if where is not None else a
+    initial = (
+        np_frontend.array(initial, dtype=dtype).ivy_array if initial is not None else 1
+    )
+    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out) * initial
 
 
 @handle_numpy_out
