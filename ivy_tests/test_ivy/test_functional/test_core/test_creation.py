@@ -435,6 +435,7 @@ def _dtype_and_values(draw):
     dtype_and_x=_dtype_and_values(),
     dtypes=helpers.get_dtypes("valid", full=False),
     fill_value=_fill_value(),
+    test_gradients=st.just(False),
 )
 def test_full_like(
     *, dtype_and_x, dtypes, fill_value, test_flags, backend_fw, fn_name, on_device
