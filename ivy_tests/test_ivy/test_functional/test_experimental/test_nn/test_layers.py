@@ -150,6 +150,39 @@ def test_max_pool2d(
         data_format=data_format,
     )
 
+#test max_unppol2d
+@handle_test(
+    fn_tree="functional.ivy.experimental.layers.max_unpool2d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
+    ground_truth_backend="jax",
+    test_gradients=st.just(False),
+)
+def test_max_unpool2d(
+    *,
+    x_k_s_p,
+    indices,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad,
+        indices=indices,
+    )
+
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool3d",
