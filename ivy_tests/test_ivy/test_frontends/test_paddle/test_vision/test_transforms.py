@@ -6,6 +6,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _chw_image_shape_helper(draw):
     c = draw(st.sampled_from([1, 3]), label="channel")
@@ -14,6 +18,10 @@ def _chw_image_shape_helper(draw):
 
     shape = (c, h, w)
     return shape
+
+
+# --- Main --- #
+# ------------ #
 
 
 # adjust_brightness
@@ -142,8 +150,7 @@ def test_paddle_to_tensor(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        img=x[0],
-        backend_to_test=backend_fw,
+        pic=input[0],
     )
 
 
