@@ -98,7 +98,7 @@ def mish(
     /,
     *,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return x * jnp.tanh(jax.nn.softplus(x))
 

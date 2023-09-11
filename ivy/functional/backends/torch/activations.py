@@ -136,7 +136,7 @@ def mish(
     /,
     *,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if torch.is_complex(x):
         x_norm = torch.log1p(x.exp())

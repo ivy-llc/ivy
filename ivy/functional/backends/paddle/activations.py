@@ -194,7 +194,7 @@ def mish(
     /,
     *,
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[paddle.Tensor] = None
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
