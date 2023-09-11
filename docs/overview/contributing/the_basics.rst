@@ -328,7 +328,7 @@ If you want to try out your local version of ivy, with all of the local changes 
 * The :code:`develop` command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy.
 * Therefore, ivy can be imported into an interactive python shell from any directory inside the container, and it will still use the latest updates made to the source code.
 
-Clearly, running a container in interactive mode can be a helpful tool in a developer's arsenal.
+Clearly, running a container in interactive mode can be a helpful tool in a developer’s arsenal.
 
 Running Tests Locally
 ---------------------
