@@ -10,13 +10,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="torch.hann_window",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int32", "int64"],
+        available_dtypes=helpers.get_dtypes("valid"),
         max_num_dims=0,
         min_value=5,
         max_value=10,
     ),
     periodic=st.booleans(),
-    # dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
 def test_torch_hann_window(
@@ -27,7 +26,7 @@ def test_torch_hann_window(
     fn_tree,
     on_device,
     frontend,
-    periodic  # ,dtype
+    periodic  
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -40,5 +39,4 @@ def test_torch_hann_window(
         atol=1e-02,
         window_length=int(x[0]),
         periodic=periodic,
-        # dtype=dtype[0],
     )
