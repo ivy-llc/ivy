@@ -9,6 +9,7 @@ Background
 |
 | (c) :ref:`Standardization`
 | We’re collaborating with The `Consortium for Python Data API Standards <https://data-apis.org>`_
+
 .. toctree::
    :hidden:
    :maxdepth: -1
