@@ -180,6 +180,22 @@ def min(*input, dim=None, keepdim=False, out=None):
         )
 
 
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
+def mode(*input, dim=None, keepdim=False, out=None):
+    if dim is None:
+        input = ivy.reshape(input, [-1])
+        dim = 0
+    unique_values, counts = ivy.unique(input, return_counts=True, axis=dim)
+    max_count_index = ivy.argmax(counts, axis=dim, keepdims=keepdim)
+    mode_value = ivy.gather(unique_values, max_count_index, axis=dim)
+    if out is not None:
+        ivy.copy(mode_value, out)
+        return out
+
+    return mode_value
+
+
 @to_ivy_arrays_and_back
 def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
