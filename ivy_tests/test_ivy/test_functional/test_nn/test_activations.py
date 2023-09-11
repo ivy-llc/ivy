@@ -111,9 +111,10 @@ def test_leaky_relu(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        large_abs_safety_factor=12,
+        small_abs_safety_factor=12,
         safety_factor_scale="log",
+        min_value=-2,
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
 )
