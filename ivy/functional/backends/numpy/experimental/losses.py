@@ -82,8 +82,6 @@ def kl_div(
     reduction: Optional[str] = "mean",
 ) -> np.ndarray:
     size = np.shape(input)
-    # if len(size) < 1:
-    #     size = [1]
 
     loss = np.sum(input * np.log(input / target), axis=-1)
 
@@ -93,6 +91,5 @@ def kl_div(
         loss = np.sum(loss)
     elif reduction == "batchmean":
         loss = np.divide(np.sum(loss), size[0])
-    else:
-        pass
+
     return loss
