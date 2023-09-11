@@ -15,7 +15,6 @@ from .elementwise import _elementwise_helper
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            
             "float",
             "int16",
             "int32",
@@ -56,7 +55,6 @@ def argmax(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            
             "float16",
             "float32",
             "float64",
@@ -102,7 +100,6 @@ def argmin(
             "int16",
             "int32",
             "int64",
-            
             "float16",
             "float32",
             "float64",
@@ -152,7 +149,6 @@ def nonzero(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            
             "float16",
             "float32",
             "float64",
@@ -200,7 +196,6 @@ def where(
             "int16",
             "int32",
             "int64",
-            
             "float16",
             "float32",
             "float64",

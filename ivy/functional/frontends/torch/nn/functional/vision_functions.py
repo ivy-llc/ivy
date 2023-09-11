@@ -309,7 +309,7 @@ def grid_sample(
             )
 
         elif mode == "bicubic":
-            raise ivy.exceptions.IvyError(f"Bicubic is not support in 3D grid sampling")
+            raise ivy.exceptions.IvyError("Bicubic is not support in 3D grid sampling")
 
     else:
         raise ivy.exceptions.IvyError(f"Not supported input shape {input_clone.shape}")

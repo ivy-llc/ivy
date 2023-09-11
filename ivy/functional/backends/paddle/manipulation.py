@@ -93,7 +93,6 @@ def flip(
             "float",
             "int32",
             "int64",
-            
             "complex",
         )
     },
@@ -168,7 +167,6 @@ def reshape(
     {
         "2.5.1 and below": (
             "float",
-            
             "int32",
             "int64",
             "complex",
@@ -190,7 +188,6 @@ def roll(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            
             "float",
             "bool",
             "int8",
@@ -231,7 +228,6 @@ def squeeze(
             "float",
             "int32",
             "int64",
-            
             "complex",
         )
     },
@@ -283,7 +279,6 @@ def stack(
         "2.5.1 and below": (
             "bool",
             "bfloat16",
-            
             "float",
             "int32",
             "int64",
@@ -384,7 +379,6 @@ def repeat(
     {
         "2.5.1 and below": (
             "bool",
-            
             "float",
             "int32",
             "int64",
@@ -437,7 +431,6 @@ def tile(
             "int32",
             "int64",
             "complex",
-            
         ),
     },
     backend_version,
@@ -519,7 +512,6 @@ def clip(
     {
         "2.5.1 and below": (
             "bool",
-            
             "float",
             "int32",
             "int64",

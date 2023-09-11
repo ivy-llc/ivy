@@ -112,7 +112,6 @@ def to_list(x: paddle.Tensor, /) -> list:
             "int32",
             "int64",
             "uint8",
-            
         ]
     },
     backend_version,
@@ -175,7 +174,6 @@ def gather(
         "2.5.1 and below": (
             "bool",
             "float16",
-            
             "float32",
             "float64",
             "int16",
