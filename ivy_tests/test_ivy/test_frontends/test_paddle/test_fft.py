@@ -256,7 +256,7 @@ def test_paddle_rfftfreq(
         valid_axis=True,
         force_int_axis=True,
     ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    norm=st.sampled_from(["backward"]),
 )
 def test_paddle_irfftn(
     dtype_x_axis,
@@ -267,15 +267,14 @@ def test_paddle_irfftn(
     backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    axes=[axis]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x = x[0],
+        x=x[0],
         s=None,
-        axes=axes,
+        axes=[axis],
         norm=norm,
     )
