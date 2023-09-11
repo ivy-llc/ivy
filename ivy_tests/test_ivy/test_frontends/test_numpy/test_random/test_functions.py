@@ -672,9 +672,6 @@ def test_numpy_noncentral_chisquare(
     )
 
 
-# add_frontend_checklist
-
-
 # normal
 @handle_frontend_test(
     fn_tree="numpy.random.normal",
