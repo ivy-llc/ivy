@@ -540,12 +540,14 @@ def stft(
 
     if fft_length is not None:
         if not isinstance(fft_length, int):
-            raise IvyValueError(f"Expecting <class 'int'> instead of {type(fft_length)}")
+            raise IvyValueError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
 
         if fft_length < 1:
             raise IvyValueError(
-                f"Invalid data points {frame_length}, expecting frame_length larger than or"
-                " equal to 1"
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
             )
 
     input_dtype = signals.dtype

@@ -1442,8 +1442,8 @@ def stft(
 
         if fft_length < 1:
             raise ivy.utils.exceptions.IvyError(
-                f"Invalid data points {frame_length}, expecting frame_length larger than or"
-                " equal to 1"
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
             )
 
     result = tf.signal.stft(
