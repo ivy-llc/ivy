@@ -24,7 +24,6 @@ import json
 import requests
 import itertools
 import re
-from tqdm import tqdm
 
 
 def _get_paths(binaries, root_dir=""):
@@ -49,17 +48,16 @@ all_tags = list(tags.sys_tags())
 binaries = json.load(open("binaries.json"))
 paths = _get_paths(binaries)
 terminate = False
-pbar = None
 spinner = itertools.cycle(["-", "\\", "|", "/"])
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
-print(f"Locating binaries {next(spinner)} ", end="")
+print_str = "Locating and downloading binaries"
+print(f"{print_str} {next(spinner)} ", end="")
 
 for tag in all_tags:
-    print(f"\rLocating binaries {next(spinner)} ", end="")
     if terminate:
-        pbar.close()
         break
     for i, path in enumerate(paths):
+        print(f"\r{print_str} {next(spinner)} ", end="")
         if os.path.exists(path):
             continue
         folders = path.split(os.sep)
@@ -71,17 +69,19 @@ for tag in all_tags:
             timeout=40,
         )
         if r.status_code == 200:
-            if pbar is None:
-                print()
-                print("Downloading binaries ...")
-                pbar = tqdm(total=len(paths))
             os.makedirs(os.path.dirname(path), exist_ok=True)
             with open(path, "wb") as f:
                 f.write(r.content)
             terminate = path == paths[-1]
-            pbar.update(1)
         else:
             break
+
+for path in paths:
+    if not os.path.exists(path):
+        print(
+            f"Could not download {path}. Check out the unifyai/binaries README for"
+            " the supported configurations!"
+        )
 
 
 this_directory = Path(__file__).parent
