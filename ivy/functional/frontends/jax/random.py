@@ -282,6 +282,28 @@ def maxwell(key, shape, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.14 and below": (
+            "uint32"
+        )
+    },
+    "jax",
+)
+def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
+    params_shapes = ivy.broadcast_shapes(ivy.shape(loc), ivy.shape(scale))
+    if not shape:
+        shape = params_shapes
+
+    shape = shape + params_shapes
+    maxwell_rvs = maxwell(key, shape=shape, dtype=dtype)
+    random_sign = rademacher(key, shape=shape, dtype=dtype)
+
+    return random_sign * maxwell_rvs * scale+loc
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -387,10 +409,10 @@ def poisson(key, lam, shape=None, dtype=None):
 )
 def rademacher(key, shape, dtype="int64"):
     seed = _get_seed(key)
-    b = ivy.bernoulli(ivy.array([0.5]), shape=shape, dtype="float32", seed=seed)
+    prob = ivy.full(shape, 0.5, dtype="float32")
+    b = ivy.bernoulli(prob, shape=shape, dtype="float32", seed=seed)
     b = ivy.astype(b, dtype)
     return 2 * b - 1
-
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
