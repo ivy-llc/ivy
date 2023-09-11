@@ -859,8 +859,8 @@ def stft(
     if axis is None:
         axis = -1
 
-    if window is None:
-        window = "hann"
+    if window == "hann" or window is None:
+        window = jnp.array(jnp.hanning(n_fft), dtype=signal.dtype)
 
     if hop_length is None:
         hop_length = n_fft // 4
@@ -874,20 +874,39 @@ def stft(
     if win_length is None:
         win_length = n_fft
 
-    return jax.scipy.signal.stft(
-        signal,
-        fs,
-        window,
-        win_length,
-        noverlap,
-        n_fft,
-        detrend,
-        onesided,
-        boundary,
-        pad_mode,
-        axis,
+    num_frames = (signal.shape[-1] - n_fft) // hop_length + 1
+    stft_result = jnp.empty(
+        signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=jnp.complex128
     )
 
+    for i in range(num_frames):
+        start = i * hop_length
+        end = start + n_fft
+        frame = signal[..., start:end]
+
+        if win_length is not None:
+            win_len = min(win_length, frame.shape[-1])
+            win_len = jnp.array(win_len, dtype=jnp.int32)
+            frame = frame * jnp.take(window, jnp.arange(win_len))
+        else:
+            frame = frame * window if window is not None else frame
+
+        stft_frame = jnp.fft.fft(frame, n=n_fft, axis=-1)
+        if onesided:
+            stft_frame = stft_frame[..., :n_fft // 2 + 1]
+
+        if detrend:
+            detrend_func = jnp.poly1d if isinstance(detrend, bool) else detrend
+            detrended = detrend_func(
+                jnp.arange(len(frame),
+                dtype=frame.dtype))(frame)
+            stft_frame = jnp.fft.fft(detrended, n=n_fft, axis=-1)
+            if onesided:
+                stft_frame = stft_frame[..., :n_fft // 2 + 1]
+
+        stft_result = stft_result.at[..., i, :n_fft // 2 + 1].set(stft_frame)
+
+    return stft_result
 
 @with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
 @with_unsupported_dtypes({"0.4.14 and below": ("float16", "complex")}, backend_version)
