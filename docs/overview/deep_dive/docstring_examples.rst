@@ -4,12 +4,13 @@ Docstring Examples
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
+.. _`docstring examples forum`: https://discord.com/channels/799879767196958751/1028297703089774705
 
 After writing the general docstrings, the final step is to add helpful examples to the docstrings.
 
 There are eight types of examples, which each need to be added:
 
-**Functional** examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to the docstring of the function in the Ivy API :func:`ivy.func_name`.
+**Functional** examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to docstring of the function in the Ivy API :func:`ivy.func_name`.
 
 **Array instance method** examples show the method being called like so :code:`x.func_name(...)` on an :class:`ivy.Array` instance, and these should be added to the docstring of the :class:`ivy.Array` instance method :meth:`ivy.Array.func_name`.
 
@@ -34,7 +35,7 @@ These special methods in turn call the functions in the Ivy API mentioned above.
 
 **Functional Examples**
 
-To recap, *functional* examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to the docstring of the function in the Ivy API :func:`ivy.func_name`.
+To recap, *functional* examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to docstring of the function in the Ivy API :func:`ivy.func_name`.
 
 Firstly, we should include *functional* examples with :class:`ivy.Array` instances in the input.
 
@@ -138,9 +139,9 @@ If some backends do not support some :code:`dtype` for a function, then we shoul
 **All Possible Variants**
 
 Point 1 mentions that the examples should cover *all possible variations*.
-Let's look at an example to make it more clear what is meant by *all possible variants* of each argument independently.
+Let’s look at an example to make it more clear what is meant by *all possible variants* of each argument independently.
 
-Let's take an imaginary function with the following argument spec:
+Let’s take an imaginary function with the following argument spec:
 
 .. code-block:: python
 
@@ -170,8 +171,8 @@ For example, we could have three examples using the following arguments:
     my_func(x1, prod, False, True, [0, 1, 2])
     my_func(x2, var, True, False, 1)
 
-It doesn't matter how the variations are combined for the examples, as long as every variation for every argument is included in the examples.
-These three examples procedurally go through the variations from left to right for each argument, but this doesn't need to be the case if you think other combinations make more sense for the examples.
+It doesn’t matter how the variations are combined for the examples, as long as every variation for every argument is included in the examples.
+These three examples procedurally go through the variations from left to right for each argument, but this doesn’t need to be the case if you think other combinations make more sense for the examples.
 
 You can also add more examples if you think some important use cases are missed, this is just a lower limit on the examples that should be included in the docstring!
 
@@ -291,7 +292,7 @@ Point 12 is not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 13, 14, and 15 are not relevant as :func:`ivy.tan` is not an *operator* function.
+Points 13, 14 and 15 are not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
@@ -440,7 +441,7 @@ Point 12 is not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 13, 14, and 15 are not relevant as :func:`ivy.roll` is not an *operator* function.
+Points 13, 14 and 15 are not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
@@ -721,7 +722,7 @@ It basically checks if the output upon execution of the examples that are docume
 Therefore each time you make a commit, you must ensure that the :code:`test-docstrings / run-docstring-tests` are working correctly at least for the function you are making changes to.
 To check whether the docstring tests are passing you need to check the logs for :code:`test-docstrings / run-docstring-tests`:
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true
            :width: 420
 
 You will need to go through the logs and see if the list of functions for which the docstring tests are failing also has the function you are working with.
@@ -731,10 +732,10 @@ If the docstring tests are failing the  logs show a list of functions having iss
 :code:`output in docs: ........`
 as shown below:
 
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
            :width: 420
 
-It can be quite tedious to go through the output diffs and spot the exact error, so you can take the help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.
+It can be quite tedious to go through the output diffs and spot the exact error, so you can take help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.
 
 Once you make the necessary changes and the function you are working on doesn't cause the docstring tests to fail, you should be good to go.
 However, one of the reviewers might ask you to make additional changes involving examples.
@@ -747,7 +748,7 @@ Passing docstring tests is a necessary but not sufficient condition for the comp
 
 These three examples should give you a good understanding of what is required when adding docstring examples.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_ or in the `docstring examples forum`_!
 
 
 **Video**

@@ -7,7 +7,7 @@ Every Ivy method returns :class:`ivy.Array` instances for all returned arrays.
 The Array Class
 ---------------
 
-Let's dive straight in and check out what the :class:`ivy.Array` constructor looks like.
+Let’s dive straight in and check out what the :class:`ivy.Array` constructor looks like.
 
 .. code-block:: python
 
@@ -185,7 +185,7 @@ Similarly, for demonstration purposes, this code can be rewritten as:
     z = x.__add__(y).__mul__(3).__pow__(0.5)
     print(z)
 
-Even if this works fine for all backend frameworks now, what if Ivy is updated to support new backends in the future, and one of them behaves a little bit differently?
+Even if this works fine for all backend frameworks now, what if Ivy is updated to support new backends in future, and one of them behaves a little bit differently?
 For example, maybe one framework makes the strange decision to return rounded integer data types when integer arrays are raised to floating point powers.
 
 Without enforcing the use of the :class:`ivy.Array` class for arrays returned from Ivy methods, we would have no way to control this behaviour and unify the output :code:`z` for all backends.
@@ -197,7 +197,7 @@ API Monkey Patching
 
 All ivy functions with array inputs/outputs have been wrapped to return :class:`ivy.Array` instances while accepting both :class:`ivy.Array` and :class:`ivy.NativeArray` instances.
 This allows for the control required to provide a unified array interface.
-For more details on wrapping, see the `Function Wrapping <../../deep_dive/function_wrapping.rst>`_ page in deep dive.
+For more details on wrapping, see the `Function Wrapping <https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html>`_ page in deep dive.
 
 
 Instance Methods
@@ -238,7 +238,7 @@ For example:
     y = x.reshape((6, 20)).matrix_transpose().flip(axis=0).reshape((2, 10, 6))
 
 In the example above, not only is the :class:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments.
-It's hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
+It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 
 In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :class:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API.
 Some examples are given below.
