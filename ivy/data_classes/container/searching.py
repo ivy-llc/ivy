@@ -242,12 +242,12 @@ class _ContainerWithSearching(ContainerBase):
         >>> y = x.argmin()
         >>> print(y)
         {
-            a:ivy.array(1),
-            b:ivy.array(0)
+            a: ivy.array(1),
+            b: ivy.array(0)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
-        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]]))
         >>> y = x.argmin(axis=1, keepdims=True)
         >>> print(y)
         {
@@ -432,8 +432,8 @@ class _ContainerWithSearching(ContainerBase):
         >>> res = x1.where((x1.a > x2.a), x2)
         >>> print(res)
         {
-            a: ivy.array([3, 7, 5]),
-            b: ivy.array([2, 8, 6])
+            a: ivy.array([1, 0, 1]),
+            b: ivy.array([1, 0, 1])
         }
         """
         return self._static_where(self, x1, x2, out=out)

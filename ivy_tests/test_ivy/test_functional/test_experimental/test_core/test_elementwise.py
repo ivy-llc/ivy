@@ -32,7 +32,6 @@ def test_lgamma(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -785,7 +784,7 @@ def test_modf(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -817,7 +816,7 @@ def test_digamma(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

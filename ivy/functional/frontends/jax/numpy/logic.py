@@ -7,7 +7,7 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def _packbits_nested_list_padding(arr, pad_length):
@@ -140,14 +140,13 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 alltrue = all
 
 sometrue = any
-from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
 # known issue in jnp's documentation of arguments
 # https://github.com/google/jax/issues/9119
 def logical_and(x1, x2, /):
-    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    x1, x2 = promote_jax_arrays(x1, x2)
     if x1.dtype == "complex128" or x2.dtype == "complex128":
         x1 = ivy.astype(x1, ivy.complex128)
         x2 = ivy.astype(x2, ivy.complex128)
@@ -236,10 +235,7 @@ def iscomplexobj(x):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("int32", "int64", "float64", "float32")}, "torch"
-)
-@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16", "bool")}, "jax")
 def setxor1d(ar1, ar2, assume_unique=False):
     common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
     ar1 = ivy.asarray(ar1, dtype=common_dtype)
