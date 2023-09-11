@@ -19,9 +19,9 @@ import setuptools
 from setuptools import setup
 from pathlib import Path
 from pip._vendor.packaging import tags
+from urllib import request
 import os
 import json
-from urllib import request
 import itertools
 import re
 
