@@ -154,7 +154,7 @@ We will define a decorator function :code:`implements` that can be used to add f
             return func
         return decorator		
 
-Lastly, we need to apply that decorator to the override function. Let's consider for example a function that overrides :code:`ivy.abs`:
+Lastly, we need to apply that decorator to the override function. Let’s consider for example a function that overrides :code:`ivy.abs`:
 
 .. code-block:: python
 
