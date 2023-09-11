@@ -284,6 +284,7 @@ hamming_window.mixed_backend_wrappers = {
 @handle_exceptions
 @handle_nestable
 @outputs_to_ivy_arrays
+@handle_device
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -380,6 +381,7 @@ def tril_indices(
 @handle_out_argument
 @inputs_to_ivy_arrays
 @infer_dtype
+@handle_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,

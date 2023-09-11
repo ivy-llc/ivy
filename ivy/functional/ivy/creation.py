@@ -1203,6 +1203,7 @@ def empty_like(
 @outputs_to_ivy_arrays
 @handle_array_function
 @infer_dtype
+@handle_device
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -2018,6 +2019,7 @@ def one_hot(
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -2193,6 +2195,7 @@ def frombuffer(
 @handle_exceptions
 @handle_nestable
 @outputs_to_ivy_arrays
+@handle_device
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
