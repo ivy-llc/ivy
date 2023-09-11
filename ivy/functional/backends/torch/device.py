@@ -74,7 +74,7 @@ def as_native_dev(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    if device == "mps":
+    if torch.backends.mps.is_available():
         return torch.device(ivy.Device(device).replace("gpu", "mps"))
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
