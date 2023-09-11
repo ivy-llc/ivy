@@ -286,14 +286,21 @@ def test_paddle_avg_pool2d(
         max_dims=5,
         min_side=2,
         max_side=4,
-        return_dilation=True,
         data_format="NCDHW",
+        return_dilation=True,
         return_data_format=True,
     ),
     ceil_mode=st.booleans(),
 )
 def test_paddle_max_pool3d(
-    *, x_k_s_p, test_flags, backend_fw, on_device, frontend, fn_tree, ceil_mode
+    *,
+    x_k_s_p,
+    ceil_mode,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x, kernel, stride, padding, dilation, data_format = x_k_s_p
 
@@ -309,8 +316,7 @@ def test_paddle_max_pool3d(
     # Ensure dilation is a tuple of 1 or 3 elements
     if isinstance(dilation, int):
         dilation = (abs(dilation), abs(dilation), abs(dilation))  # Convert to (x, x, x)
-    elif not isinstance(dilation, tuple) or len(dilation) != 3:
-        raise TypeError("Dilation must be an integer or a tuple of 3 integers")
+
     else:
         dilation = tuple(
             abs(d) for d in dilation
@@ -321,15 +327,15 @@ def test_paddle_max_pool3d(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
-        on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         kernel_size=kernel,
         stride=stride,
         padding=padding,
-        data_format=data_format,
         ceil_mode=ceil_mode,
+        data_format=data_format,
     )
 
 
