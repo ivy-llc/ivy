@@ -831,6 +831,10 @@ def test_digamma(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
+    test_gradients=st.just(
+        False
+    ),  # paddle: (Fatal) There is no grad op for inputs:[0] or it'stop_gradient`=True. # noqa
+    test_instance_method=st.just(True),
 )
 def test_erfc(
     *,

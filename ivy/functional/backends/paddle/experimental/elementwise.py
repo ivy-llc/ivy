@@ -3,7 +3,6 @@ import operator
 from typing import Optional, Union, Tuple, List
 from numbers import Number
 import paddle
-from paddle.fluid.framework import Variable
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_supported_dtypes,
@@ -13,7 +12,6 @@ import ivy.functional.backends.paddle as paddle_backend
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.paddle.elementwise import _elementwise_helper
-import warnings
 
 # local
 from .. import backend_version
@@ -709,23 +707,17 @@ def _EvaluatePolynomial(x, coefficients):
     return poly
 
 
-def _is_scalar_tensor(ele):
-    if isinstance(ele, Variable):
-        # NOTE(zoooo0820): For compatibility, if FLAGS_set_to_1d is set to True,
-        # 1-D tensor is still treated as a scalar, which means basic indexing.
-        # This will be removed in future.
-        if paddle.get_flags("FLAGS_set_to_1d")["FLAGS_set_to_1d"]:
-            if len(ele.shape) == 1 and ele.shape[0] == 1:
-                warnings.warn(
-                    "1-D Tensor will be treat as advanced indexing in future version."
-                    " Currently, 1-D Tensor means a scalar, not vector, and please"
-                    " modify it to 0-D Tensor. If advanced indexing is needed, please"
-                    " use `export FLAGS_set_to_1d=False` to set the flag."
-                )
-                return True
-        if len(ele.shape) == 0:
-            return True
-    return False
+def _is_scalar(x):
+    """
+    Determines if the given tensor is a scalar.
+
+    Args:
+    - x (paddle.Tensor): Input tensor.
+
+    Returns:
+    - bool: True if the tensor is a scalar, False otherwise.
+    """
+    return x.size == 1 and x.dim() == 0 and tuple(x.shape) == ()
 
 
 # TODO: Repalce once native function becomes available.
@@ -735,8 +727,9 @@ def _is_scalar_tensor(ele):
     backend_version,
 )
 def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if str(x.dtype) not in ["paddle.float16", "paddle.float32", "paddle.float64"]:
-        raise ValueError("Input must be of type float16, float32, or float64.")
+    any_input_is_scalar = _is_scalar(x)
+    if str(x.dtype) not in ["paddle.float32", "paddle.float64"]:
+        raise ValueError("Input must be of type float32 or float64.")
 
     abs_x = paddle.abs(x)
     z = paddle.exp(-x * x)
@@ -763,7 +756,7 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     )
 
     result = paddle.where(underflow, result_underflow, result_no_underflow)
-    if _is_scalar_tensor(result):
-        return result.squeeze()
-    else:
-        return result
+    if any_input_is_scalar:
+        result = paddle.squeeze(result, axis=-1)
+
+    return result
