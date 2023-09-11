@@ -6,6 +6,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.utils.assertions import check_equal
+from ivy import random
 
 
 @to_ivy_arrays_and_back
@@ -214,3 +215,27 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
     )
+
+
+@to_ivy_arrays_and_back
+# Define a function to test the grid_sample function
+def test_grid_sample():
+    # Create example input data (4D tensor)
+    input_shape = (2, 3, 4, 4)  # (batch_size, channels, height, width)
+    input_data = random.uniform(0, 1, input_shape)
+
+    # Create an example grid (4D tensor)
+    grid_shape = (2, 4, 4, 2)  # (batch_size, grid_height, grid_width, 2)
+    grid_data = random.uniform(0, 1, grid_shape)
+
+    # Call the grid_sample function
+    output = grid_sample(input_data, grid_data, data_format="NCHW")
+
+    # Verify the shape of the output (should be the same as grid_shape)
+    assert ivy.shape(output) == grid_shape
+
+    print("Grid Sample Test Passed")
+
+
+# Run the test function
+test_grid_sample()
