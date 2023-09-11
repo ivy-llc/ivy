@@ -46,7 +46,7 @@ def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> T
     return tf.nn.relu(x)
 
 
-def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def sigmoid(x: Tensor, /, *, omplex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     if not ivy.is_array(x):
         x = float(x)
     return tf.nn.sigmoid(x)
