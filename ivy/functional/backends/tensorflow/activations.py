@@ -5,7 +5,7 @@ Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
 """
 
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import tensorflow as tf
@@ -129,6 +129,7 @@ def mish(
     x: Tensor,
     /,
     *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[Tensor] = None,
 ) -> Tensor:
     if "complex" in str(x.dtype):
