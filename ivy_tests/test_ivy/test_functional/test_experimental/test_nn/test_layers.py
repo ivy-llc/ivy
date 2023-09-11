@@ -1300,6 +1300,7 @@ def test_rfftn(
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
     dtype_x_and_args=_valid_stft(),
+    ground_truth_backend="tensorflow",
     test_gradients=st.just(False),
 )
 def test_stft(
@@ -1310,9 +1311,9 @@ def test_stft(
     fn_name,
     on_device,
 ):
-    input_dtype, x, frame_length, frame_step = dtype_x_and_args
+    dtype, x, frame_length, frame_step = dtype_x_and_args
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         on_device=on_device,
