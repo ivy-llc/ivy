@@ -4031,13 +4031,24 @@ class _ContainerWithGeneral(ContainerBase):
         >>> b = ivy.array([[-2., 1.], [1. ,2.]])
         >>> c = ivy.array([[0., 1.], [1. ,0.]])
         >>> d = ivy.array([[2., 1.], [1. ,2.]])
-        >>> a0 = ivy.Container(a = a, b = b)
-        >>> a1 = ivy.Container(a = c, b = d)
-        >>> y = a0.array_equal(a1)
+        >>> a1 = ivy.Container(a = a, b = b)
+        >>> a2 = ivy.Container(a = c, b = d)
+        >>> y = a1.array_equal(a2)
         >>> print(y)
         {
             a: True,
             b: False
+        }
+
+        >>> x1 = ivy.Container(a=ivy.native_array([1, 0, 0]),
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.native_array([1, 0, 1]),
+                               b=ivy.array([1, 2, 3]))
+        >>> y = x1.array_equal(x2)
+        >>> print(y)
+        {
+            a: False,
+            b: True
         }
         """
         return _ContainerWithGeneral._static_array_equal(
