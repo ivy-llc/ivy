@@ -125,8 +125,7 @@ def log_softmax(
         sub_temp = torch.sub(x, x_max)
         ret = torch.sum(sub_temp.exp(), dim=axis, keepdim=True)
         ret = torch.log(ret)
-        ret = torch.sub(sub_temp, ret)
-        return ret
+        return torch.sub(sub_temp, ret)
     return torch.nn.functional.log_softmax(x, axis)
 
 
