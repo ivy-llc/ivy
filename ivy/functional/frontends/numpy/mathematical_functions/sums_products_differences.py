@@ -67,7 +67,7 @@ def nancumsum(a, /, axis=None, dtype=None, out=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanprod(
-    a, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
+    a, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None
 ):
     a = ivy.where(ivy.isnan(a), 1, a)
     a = ivy.where(where, a, 1) if where is not None else a
