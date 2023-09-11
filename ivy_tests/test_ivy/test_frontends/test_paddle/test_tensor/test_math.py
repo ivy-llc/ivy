@@ -618,7 +618,7 @@ def test_paddle_cosh(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.count_nonzero",
     dtype_n_x_n_axis=helpers.dtype_values_axis(
-        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
