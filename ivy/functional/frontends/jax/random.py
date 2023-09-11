@@ -270,13 +270,11 @@ def logistic(key, shape=(), dtype="float64"):
     },
     "jax",
 )
-def maxwell(key, shape=None, dtype="float64"):
+def maxwell(key, shape, dtype="float64"):
     seed = _get_seed(key)
-    # generate uniform random numbers between 0 and 1
-    z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
-    # applying inverse transform sampling
-    x = (z**2) * ivy.exp(-(z**2) / 2)
-    return x
+    shape = shape + (3,)
+    random_normal = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
+    return ivy.vector_norm(random_normal, axis=-1)
 
 
 @handle_jax_dtype
