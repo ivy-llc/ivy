@@ -15,10 +15,13 @@ import torch.nn
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import ivy.functional.backends.torch as torch_backend
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def relu(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.relu(x)
 
 
@@ -28,6 +31,7 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
+    complex_mode="jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
@@ -39,6 +43,7 @@ def gelu(
     /,
     *,
     approximate: bool = False,
+    complex_mode="jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if approximate:
@@ -58,7 +63,7 @@ def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 sigmoid.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def softmax(
     x: torch.Tensor,
     /,
@@ -68,6 +73,10 @@ def softmax(
 ) -> torch.Tensor:
     if axis is None:
         axis = -1
+    if torch.is_complex(x):
+        amax = torch_backend.max(x, axis=axis, keepdims=True)
+        exp_x = torch.exp(torch.subtract(x, amax))
+        return torch.divide(exp_x, torch.sum(exp_x, dim=axis, keepdim=True))
     return torch.nn.functional.softmax(x, axis)
 
 
@@ -78,13 +87,23 @@ def softplus(
     *,
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
-    out: Optional[torch.Tensor] = None,
     complex_mode="jax",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     kwargs = {
         k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
     }
     return torch.nn.functional.softplus(x, **kwargs)
+
+
+# Softsign
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def softsign(x: torch.Tensor, /, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    # return x / (1 + torch.abs(x))
+    return torch.nn.functional.softsign(x)
+
+
+softsign.support_native_out = True
 
 
 @with_unsupported_dtypes(
