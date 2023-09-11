@@ -1,7 +1,6 @@
 import jax.numpy as jnp
 from typing import Optional
 from ivy.functional.backends.jax import JaxArray
-from . import backend_version
 
 
 def l1_normalize(

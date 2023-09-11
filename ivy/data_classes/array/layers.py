@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Tuple, Union, List, Sequence, Dict
+from typing import Optional, Tuple, Union, List, Sequence
 
 # local
 import ivy
@@ -394,10 +394,10 @@ class _ArrayWithLayers(abc.ABC):
 
     def multi_head_attention(
         self: ivy.Array,
-        /,
-        *,
         key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        /,
+        *,
         num_heads: int = 8,
         scale: Optional[float] = None,
         attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
