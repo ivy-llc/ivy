@@ -129,7 +129,7 @@ def cauchy(key, shape=(), dtype="float64"):
 
 
 @to_ivy_arrays_and_back
-def choice(key, a, *, shape=(), replace=True, p=None, axis=0):
+def choice(key, a, shape=(), replace=True, p=None, axis=0):
     seed = _get_seed(key)
     if isinstance(a, int):
         a = ivy.arange(a)
@@ -147,7 +147,7 @@ def choice(key, a, *, shape=(), replace=True, p=None, axis=0):
     samples = ivy.take_along_axis(a, indices, axis)
     if len(shape):
         return ivy.reshape(samples, shape)
-    return samples
+    return samples[0]
 
 
 @handle_jax_dtype

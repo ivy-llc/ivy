@@ -477,13 +477,13 @@ def test_jax_choice(
             backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
-            test_values=True,
             key=key[0],
-            shape=sample_shape,
             a=a,
-            axis=axis,
+            shape=sample_shape,
             replace=replace,
             p=p,
+            axis=axis,
+            test_values=False,
         )
 
     ret = call()
@@ -492,8 +492,8 @@ def test_jax_choice(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
 
