@@ -894,7 +894,6 @@ def random_tt(
     -------
         ivy.TTTensor
     """
-    len(shape)
     rank = ivy.TTTensor.validate_tt_rank(shape, rank)
 
     rank = list(rank)
