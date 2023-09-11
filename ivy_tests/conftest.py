@@ -11,7 +11,7 @@ from hypothesis.database import (
 from hypothesis.extra.redis import RedisExampleDatabase
 
 
-hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
+hypothesis_cache = f"{os.getcwd()}/.hypothesis/examples/"
 redis_connect_dev = None
 redis_connect_master = None
 try:
