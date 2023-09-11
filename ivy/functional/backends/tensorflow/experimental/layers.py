@@ -1443,7 +1443,6 @@ def stft(
     name: Optional[str] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     if not isinstance(frame_length, int):
         raise ivy.utils.exceptions.IvyError(
             f"Expecting <class 'int'> instead of {type(frame_length)}"
@@ -1454,7 +1453,6 @@ def stft(
             f"Invalid data points {frame_length}, expecting frame_length larger than or"
             " equal to 1"
         )
-
 
     if not isinstance(frame_step, int):
         raise ivy.utils.exceptions.IvyError(
