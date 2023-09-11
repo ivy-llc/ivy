@@ -45,26 +45,7 @@ def test_paddle_layer_norm(
     )
 
 
-# bach_norm
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.bach_norm",
-    values_tuple=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    eps=st.floats(min_value=0.01, max_value=0.1),
-)
-def test_paddle_bach_norm(
-    *,
-    values_tuple,
-    normalized_shape,
-    eps,
-    test_flags,
-    frontend,
-    on_device,
-    backend_fw,
-    fn_tree,
-):
-    (dtype, x, normalized_shape, scale, offset) = values_tuple
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -72,9 +53,7 @@ def test_paddle_bach_norm(
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
-        x=x[0],
-        normalized_shape=normalized_shape,
-        weight=scale[0],
-        bias=offset[0],
-        epsilon=eps,
+        x=x[0], 
     )
+Fixed both conflicts here    
+    

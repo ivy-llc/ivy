@@ -14,6 +14,7 @@ from ivy import promote_types_of_inputs
 from ivy.functional.backends.jax import JaxArray
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ...ivy.elementwise import _complex_to_inf
 
 
 def abs(
@@ -22,7 +23,7 @@ def abs(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if "bool" in str(x.dtype):
+    if (hasattr(x, "dtype") and "bool" in str(x.dtype)) or isinstance(x, bool):
         return x
     # jnp.where is used for consistent gradients
     return jnp.where(x != 0, jnp.absolute(x), 0)
@@ -401,13 +402,20 @@ def positive(
 
 
 def pow(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
+    x1: JaxArray,
+    x2: Union[int, float, JaxArray],
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
+        inf_indices = jnp.nonzero(jnp.isinf(x2))
+        ret = jnp.power(x1, x2)
+        ret[inf_indices] = _complex_to_inf(ret[inf_indices])
+        return ret
+    if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
+        return jnp.float_power(x1, x2).astype(x1.dtype)
     return jnp.power(x1, x2)
 
 
@@ -502,7 +510,9 @@ def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 
 
-def tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def tanh(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.tanh(x)
 
 
