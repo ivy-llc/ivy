@@ -191,10 +191,9 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
-@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float", "complex")},
+    {"2.0.1 and below": ("float", "int")},
     "torch",
 )
 def nansum(input, dim=None, keepdim=False, *, dtype=None):
