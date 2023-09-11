@@ -75,12 +75,13 @@ for tag in all_tags:
                 print()
                 print("Downloading binaries ...")
                 pbar = tqdm(total=len(paths))
+            os.makedirs(os.path.dirname(path), exist_ok=True)
             with open(path, "wb") as f:
                 f.write(r.content)
             terminate = path == paths[-1]
             pbar.update(1)
         else:
-            break
+            raise ConnectionError(f"{r.status_code}: Couldn't download {search_path}")
 
 
 this_directory = Path(__file__).parent
