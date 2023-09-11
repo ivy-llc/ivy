@@ -32,7 +32,7 @@ def _random_tt_data(draw):
     shape = draw(
         st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
     )
-    rank = len(shape)
+    rank = draw(helpers.ints(min_value=1, max_value=len(shape)))
     dtype = draw(
         helpers.get_dtypes("float", full=False).filter(
             lambda x: x not in ["bfloat16", "float16"]
