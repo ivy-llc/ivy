@@ -376,6 +376,12 @@ def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def nanmean(x, axis=None, keepdims=False):
+    return ivy.nanmean(x, axis=axis, keepdims=keepdims)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
