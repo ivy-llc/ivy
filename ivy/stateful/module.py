@@ -110,7 +110,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
         ivy.utils.assertions.check_elem_in_list(build_mode, valid_build_modes)
-        self._dev = ivy.default(
+        self._device = ivy.default(
             device,
             ivy.default(
                 lambda: devices[0],
@@ -118,7 +118,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 catch_exceptions=True,
             ),
         )
-        self._devs = ivy.default(devices, [self._dev])
+        self._devices = ivy.default(devices, [self._device])
         self._build_mode = build_mode
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
@@ -680,6 +680,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self,
         *args,
         from_call=False,
+        device=None,
         dtype=None,
         dynamic_backend=None,
         buffers=None,
@@ -704,6 +705,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         ret
             True for successfully built a module.
         """
+        self._device = ivy.default(device, self._device)
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == "on_call":
             return self.v
@@ -724,7 +726,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
         # this creates weights for this Module only
         created = Container(
-            self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=False
+            self._create_variables(device=self._device, dtype=dtype),
+            dynamic_backend=False,
         )
 
         # build variables based on locally built layers, if v not passed in constructor
@@ -772,7 +775,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             # update child modules to share the same device
             for k, v in self.__dict__.items():
                 if isinstance(v, ivy.Module):
-                    v._dev = self._dev
+                    v._device = self._device
 
             # build during forward pass
             self._forward(*args, **kwargs)
@@ -783,7 +786,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 created_n_found = Container(
                     dict(
                         **self._find_variables(obj=self),
-                        **self._create_variables(device=self._dev, dtype=dtype),
+                        **self._create_variables(device=self._device, dtype=dtype),
                     )
                 )
                 self.v = created_n_found
@@ -835,7 +838,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         # to the specified device
 
         # moving weights and buffers to new device
-        for key, obj in self.v.items():
+        for key, obj in self.state_dict().items():
             if (
                 isinstance(obj, ivy.Module)
                 or ivy.is_ivy_array(obj)
@@ -844,12 +847,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 obj.to_device(device)
             else:
                 ivy.to_device(obj, device=device)
-        if getattr(self, "buffers", None):
-            for key, obj in self.buffers.items():
-                if ivy.is_ivy_array(obj) or isinstance(obj, ivy.Container):
-                    obj.to_device(device)
-                else:
-                    ivy.to_device(obj, device=device)
 
     def __repr__(self):
         return object.__repr__(self)
@@ -917,6 +914,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 del self.buffers[name]
         else:
             super().__delattr__(name)
+
+    def state_dict(self):
+        return {**self.v, **getattr(self, "buffers", {})}
 
     def compile(
         self,
@@ -1024,9 +1024,9 @@ class _HaikuIvyModule(Module):
         param_iterator = self._hk_params.cont_to_iterator()
         _, param0 = next(param_iterator, ["_", 0])
         if hasattr(param0, "device"):
-            self._dev = ivy.as_ivy_dev(param0.device())
+            self._device = ivy.as_ivy_dev(param0.device())
         else:
-            self._dev = ivy.as_ivy_dev("cpu")
+            self._device = ivy.as_ivy_dev("cpu")
 
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
@@ -1088,7 +1088,7 @@ class _FlaxIvyModule(Module):
         self._fx_params = ivy.Container(params_dict, dynamic_backend=False)
         param_iterator = self._fx_params.cont_to_iterator()
         _, param0 = next(param_iterator, ["_", 0])
-        self._dev = ivy.as_ivy_dev(ivy.dev(param0))
+        self._device = ivy.as_ivy_dev(ivy.dev(param0))
 
     def _forward(self, *a, **kw):
         import flax
