@@ -131,3 +131,33 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def irfftn(x, s=None, axes=None, norm="backward", name=None):
+    x = ivy.array(x)
+    if ivy.is_complex_dtype(x.dtype):
+        output_dtype = "float32" if x.dtype == "complex64" else "float64"
+    else:
+        output_dtype = "float32"  # default
+
+    time_domain = None  # Initialize with a default value
+
+    if axes is None:
+        axes = list(range(len(x.shape)))
+    if s is None:
+        s = [2 * x.shape[axis] - 2 for axis in axes]
+
+    if len(axes) == 1:
+        pos_freq_terms = x[..., : s[0] // 2 + 1]
+        neg_freq_terms = ivy.conj(pos_freq_terms[..., 1:-1][..., ::-1])
+        combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axes[0])
+        complex_result = ivy.ifft(combined_freq_terms, dim=axes[0], norm=norm, n=s[0])
+        real_result = ivy.real(complex_result)
+        result_t = ivy.astype(real_result, output_dtype)
+
+    return result_t
