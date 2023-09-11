@@ -183,9 +183,9 @@ def noncentral_chisquare(df, nonc, size=None):
         return chisquare(df)
     if 1 < df:
         n = standard_normal() + ivy.sqrt()
-        return chisquare(df - 1) + n * n
+        return chisquare(df - 1, size=size) + n * n
     else:
-        return chisquare(df + 2 * poisson(nonc / 2))
+        return chisquare(df + 2 * poisson(nonc / 2, size=size), size=size)
 
 
 @to_ivy_arrays_and_back

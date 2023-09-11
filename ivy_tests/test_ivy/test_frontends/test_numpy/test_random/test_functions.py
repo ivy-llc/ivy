@@ -640,28 +640,16 @@ def test_numpy_negative_binomial(
 # noncentral_chisquare
 @handle_frontend_test(
     fn_tree="numpy.random.noncentral_chisquare",
-    input_dtypes=helpers.get_dtypes("float"),
-    df=st.floats(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
         min_value=0,
-        max_value=1000,
-        exclude_min=True,
-        allow_subnormal=False,
-        width=32,
-    ),
-    nonc=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        min_value=0,
-        max_value=1000,
-        exclude_min=True,
     ),
     size=helpers.get_shape(allow_none=True),
     test_with_out=st.just(False),
 )
 def test_numpy_noncentral_chisquare(
-    input_dtypes,
-    df,
-    nonc,
+    dtype_and_x,
     size,
     frontend,
     test_flags,
@@ -669,18 +657,22 @@ def test_numpy_noncentral_chisquare(
     backend_fw,
     on_device,
 ):
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        df=df,
-        nonc=nonc,
+        df=x[0],
+        nonc=x[1],
         size=size,
     )
+
+
+# add_frontend_checklist
 
 
 # normal
