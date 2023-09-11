@@ -655,7 +655,6 @@ def test_numpy_negative_binomial(
         max_value=1000,
         exclude_min=True,
     ),
-    size=helpers.get_shape(allow_none=True),
     test_with_out=st.just(False),
 )
 def test_numpy_noncentral_chisquare(
