@@ -11,9 +11,10 @@ result_config = {
 
 
 def make_clickable(url, name):
-    return '<a href="{}" rel="noopener noreferrer" '.format(
-        url
-    ) + 'target="_blank"><img src={}></a>'.format(name)
+    return (
+        f'<a href="{url}" rel="noopener noreferrer" '
+        + f'target="_blank"><img src={name}></a>'
+    )
 
 
 def get_submodule(test_path):
@@ -34,14 +35,14 @@ def update_individual_test_results(
     backend_version=None,
     frontend_version=None,
 ):
-    key = submod + "." + backend
+    key = f"{submod}.{backend}"
     if backend_version is not None:
         backend_version = backend_version.replace(".", "_")
-        key += "." + backend_version
+        key += f".{backend_version}"
     if frontend_version is not None:
         frontend_version = frontend_version.replace(".", "_")
-        key += "." + frontend_version
-    key += "." + test
+        key += f".{frontend_version}"
+    key += f".{test}"
     collection.update_one(
         {"_id": id},
         {"$set": {key: result}},
@@ -60,7 +61,7 @@ def main():
     if len(sys.argv) > 5:
         run_id = sys.argv[5]
     else:
-        run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
+        run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
     failed = False
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
