@@ -1162,9 +1162,13 @@ def _wrap_function(
     return to_wrap
 
 
-def casting_modes_ops(fn):
+def casting_modes_ops(fn, dtype_determinator=None):
     @functools.wraps(fn)
     def method(*args, **kwargs):
+        # Get the function signature
+        signature = inspect.signature(fn)
+        # Extract argument names
+        arg_names = [param.name for param in signature.parameters.values()]
         # we first check if it has unsupported/supported dtypes uniquely added to it
         intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
             set(ivy.invalid_dtypes)
@@ -1181,10 +1185,19 @@ def casting_modes_ops(fn):
                 # no unsupported dtype specified
                 return fn(*args, **kwargs)
 
+        # specifies which dtype to cast the output to
+        to_cast = None
         if "dtype" in kwargs and kwargs["dtype"] is not None:
+            to_cast = kwargs["dtype"]
             dtype = caster(kwargs["dtype"], intersect)
             if dtype:
                 kwargs["dtype"] = ivy.as_native_dtype(dtype)
+
+        if not to_cast and dtype_determinator:
+            for arg in dtype_determinator:
+                to_cast = ivy.promote_types(
+                    to_cast, ivy.dtype(args[arg_names.index(arg)])
+                )
 
         def mini_helper(x):
             if not hasattr(x, "dtype"):
@@ -1196,7 +1209,11 @@ def casting_modes_ops(fn):
 
         args = ivy.nested_map(args, mini_helper, include_derived=True)
         kwargs = ivy.nested_map(kwargs, mini_helper)
-        return fn(*args, **kwargs)
+        return (
+            ivy.astype(fn(*args, **kwargs), ivy.to_native(to_cast))
+            if to_cast
+            else fn(*args, **kwargs)
+        )
 
     return method
 
@@ -1286,7 +1303,7 @@ def _dtype_device_wrapper_creator(attrib, t):
     A wrapper function for the attribute.
     """
 
-    def _wrapper_outer(version_dict, version, exclusive=True):
+    def _wrapper_outer(version_dict, version, exclusive=True, dtype_determinator=None):
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
@@ -1337,7 +1354,8 @@ def _dtype_device_wrapper_creator(attrib, t):
             if "frontends" in func.__module__:
                 # it's a frontend func, no casting modes for this
                 return func
-            return casting_modes_ops(func)
+
+            return casting_modes_ops(func, dtype_determinator)
 
         return _wrapped
 
