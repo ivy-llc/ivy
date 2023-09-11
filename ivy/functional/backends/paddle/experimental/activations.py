@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 import paddle
 import paddle.nn.functional as F
 
@@ -13,7 +13,14 @@ from . import backend_version
     {"2.5.1 and below": ("float16", "uint16", "float32", "float64")},
     backend_version,
 )
-def logit(x: paddle.Tensor, /, *, eps: Optional[float] = None, out=None):
+def logit(
+    x: paddle.Tensor,
+    /,
+    *,
+    eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out=None,
+):
     return paddle.logit(x, eps)
 
 
@@ -46,11 +53,13 @@ def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     backend_version,
 )
 def logsigmoid(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
         return paddle_backend.log(
-            paddle_backend.divide(1.0, (paddle_backend.add(1.0, paddle_backend.exp(x))))
+            paddle_backend.divide(
+                1.0, (paddle_backend.add(1.0, paddle_backend.exp(-x)))
+            )
         )
     return F.log_sigmoid(x)
 

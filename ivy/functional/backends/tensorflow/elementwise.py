@@ -423,16 +423,6 @@ def less_equal(
     return tf.math.less_equal(x1, x2)
 
 
-@with_supported_dtypes(
-    {
-        "2.13.0 and below": (
-            "bfloat16",
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def log(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -442,16 +432,6 @@ def log(
     return tf.math.log(x)
 
 
-@with_supported_dtypes(
-    {
-        "2.13.0 and below": (
-            "bfloat16",
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def log10(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -461,16 +441,6 @@ def log10(
     return tf.math.log(x) / tf.math.log(tf.constant(10.0, x.dtype))
 
 
-@with_supported_dtypes(
-    {
-        "2.13.0 and below": (
-            "bfloat16",
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def log1p(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -480,16 +450,6 @@ def log1p(
     return tf.math.log1p(x)
 
 
-@with_supported_dtypes(
-    {
-        "2.13.0 and below": (
-            "bfloat16",
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def log2(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -524,8 +484,14 @@ def real(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-            "unsigned",
-            "int",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
         )
     },
     backend_version,
@@ -550,7 +516,6 @@ def logaddexp2(
     )
 
 
-@with_supported_dtypes({"2.13.0 and below": "bool"}, backend_version)
 def logical_and(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -561,7 +526,6 @@ def logical_and(
     return tf.logical_and(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-@with_supported_dtypes({"2.13.0 and below": "bool"}, backend_version)
 def logical_not(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -571,7 +535,6 @@ def logical_not(
     return tf.logical_not(tf.cast(x, tf.bool))
 
 
-@with_supported_dtypes({"2.13.0 and below": "bool"}, backend_version)
 def logical_or(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -582,7 +545,6 @@ def logical_or(
     return tf.logical_or(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-@with_supported_dtypes({"2.13.0 and below": "bool"}, backend_version)
 def logical_xor(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -593,9 +555,6 @@ def logical_xor(
     return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
-@with_supported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float", "uint8", "int", "uint16", "complex")}
-)
 def multiply(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -646,14 +605,21 @@ def positive(
     backend_version,
 )
 def pow(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[int, float, tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.power(x1, x2)
+    orig_x1_dtype = None
+    if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
+        orig_x1_dtype = x1.dtype
+        x1 = tf.cast(x1, tf.float32)
+    ret = tf.experimental.numpy.power(x1, x2)
+    if orig_x1_dtype is not None:
+        return tf.cast(ret, orig_x1_dtype)
+    return ret
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)

@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
 
 # local
 from . import backend_version
+from ...ivy.elementwise import _complex_to_inf
 
 
 def _elementwise_helper(x1, x2):
@@ -625,13 +626,18 @@ def square(
     backend_version,
 )
 def pow(
-    x1: Union[float, paddle.Tensor],
-    x2: Union[float, paddle.Tensor],
+    x1: paddle.Tensor,
+    x2: Union[int, float, paddle.Tensor],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
+        inf_indices = paddle.nonzero(paddle.isinf(x2))
+        ret = paddle.pow(x1, x2)
+        ret[inf_indices] = _complex_to_inf(ret[inf_indices])
+        return ret
     if paddle.is_complex(x1):
         # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
         r = paddle.abs(x1)

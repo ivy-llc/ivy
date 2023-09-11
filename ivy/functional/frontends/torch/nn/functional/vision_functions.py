@@ -451,7 +451,7 @@ def interpolate(
 
     if (
         bool(antialias)
-        and not (mode in ["bilinear", "bicubic"])
+        and (mode not in ["bilinear", "bicubic"])
         and ivy.get_num_dims(input) == 4
     ):
         raise ivy.utils.exceptions.IvyException(
