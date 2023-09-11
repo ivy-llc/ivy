@@ -113,26 +113,19 @@ def max_pool3d(
     ceil_mode=False,
 ):
     # Set stride to kernel_size if not provided
-    stride = kernel_size if stride is None else stride
-    # Ensure kernel_size and padding are broadcasted to 3D
-    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
-    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    if not stride:
+        stride = kernel_size
+
+    data_format = "NCDHW"
     # Ensure dilation is a tuple of 1 or 3 elements
     if isinstance(dilation, int):
         dilation = (abs(dilation), abs(dilation), abs(dilation))  # Convert to (x, x, x)
-
     elif not isinstance(dilation, tuple) or len(dilation) != 3:
-        raise TypeError("Dilation must be an int or a tuple of 3 integers")
-
-    dilation = _broadcast_pooling_helper(dilation, "3d", name="dilation")
-
-    # Figure out padding string
-    if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
-    ):
-        padding = "SAME"
+        raise TypeError("Dilation must be an integer or a tuple of 3 integers")
     else:
-        padding = "VALID"
+        dilation = tuple(
+            abs(d) for d in dilation
+        )  # Convert each element to absolute value
 
     # count_include_pad = not exclusive
     # Perform 3D max pooling
@@ -143,7 +136,7 @@ def max_pool3d(
         padding,
         data_format=data_format,
         dilation=dilation,
-        ceil_mode=False if padding == "VALID" else True,
+        ceil_mode=ceil_mode,
     )
 
 

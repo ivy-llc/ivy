@@ -306,6 +306,16 @@ def test_paddle_max_pool3d(
     else:
         padding = (0, 0, 0)
 
+    # Ensure dilation is a tuple of 1 or 3 elements
+    if isinstance(dilation, int):
+        dilation = (abs(dilation), abs(dilation), abs(dilation))  # Convert to (x, x, x)
+    elif not isinstance(dilation, tuple) or len(dilation) != 3:
+        raise TypeError("Dilation must be an integer or a tuple of 3 integers")
+    else:
+        dilation = tuple(
+            abs(d) for d in dilation
+        )  # Convert each element to absolute value
+
     # Test the frontend function
     helpers.test_frontend_function(
         input_dtypes=dtype,
