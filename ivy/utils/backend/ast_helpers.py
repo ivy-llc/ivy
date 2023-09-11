@@ -19,7 +19,7 @@ _local_import_template = Template(
     "$name = "
     "ivy.utils.backend.handler._compiled_backends_ids[$ivy_id].utils._importlib.$name"
 )
-_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition("/")[0]
+_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition(os.path.sep)[0]
 _compiled_modules_cache = {}
 
 
@@ -265,7 +265,9 @@ class IvyLoader(Loader):
         if self.filename in _compiled_modules_cache:
             compiled_obj = _compiled_modules_cache[self.filename]
         else:
-            with open(self.filename) as f:
+            # enforce UTF-8 for compiling when installed as a package
+            # according to PEP 686
+            with open(self.filename, encoding="utf-8") as f:
                 data = f.read()
 
             ast_tree = parse(data)

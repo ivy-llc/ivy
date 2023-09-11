@@ -474,8 +474,7 @@ from . import creation_routines
 from .creation_routines import *
 from . import data_type_routines
 from .data_type_routines import *
-from . import indexing_routines
-from .indexing_routines import *
+
 from . import logic
 from .logic import *
 from . import manipulation_routines
@@ -490,6 +489,10 @@ from . import matrix
 from .matrix import *
 from . import random
 from .random import *
+from . import indexing_routines
+from .indexing_routines import *
+from . import broadcast
+from .broadcast import *
 
 from . import ma
 from . import fft
@@ -542,6 +545,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _mod,
     _modf,
     _multiply,
+    _remainder,
     _negative,
     _positive,
     _power,
@@ -622,6 +626,7 @@ from ivy.functional.frontends.numpy.logic.logical_operations import (
 from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
     _matmul,
     dot,
+    einsum,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
@@ -657,6 +662,7 @@ fmod = ufunc("_fmod")
 mod = ufunc("_mod")
 modf = ufunc("_modf")
 multiply = ufunc("_multiply")
+remainder = ufunc("_remainder")
 negative = ufunc("_negative")
 positive = ufunc("_positive")
 power = ufunc("_power")
@@ -724,4 +730,9 @@ remainder = ufunc("_remainder")
 # setting to specific version #
 # --------------------------- #
 
-set_frontend_to_specific_version(sys.modules[__name__])
+if ivy.is_local():
+    module = ivy.utils._importlib.import_cache[__name__]
+else:
+    module = sys.modules[__name__]
+
+set_frontend_to_specific_version(module)

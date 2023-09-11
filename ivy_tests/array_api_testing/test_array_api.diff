@@ -1,0 +1,7 @@
+diff --git a/ivy_tests/array_api_testing/test_array_api b/ivy_tests/array_api_testing/test_array_api
+deleted file mode 160000
+index 852a1ddfe..000000000
+--- a/ivy_tests/array_api_testing/test_array_api
++++ /dev/null
+@@ -1 +0,0 @@
+-Subproject commit 852a1ddfedb14742ec94a9dfc6b3f3d4e89d0189
