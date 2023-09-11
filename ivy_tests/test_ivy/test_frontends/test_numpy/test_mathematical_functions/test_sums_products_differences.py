@@ -282,21 +282,20 @@ def test_numpy_nanprod(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
-    if "bfloat16" not in input_dtypes + [dtype]:
-        helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            backend_to_test=backend_fw,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            a=x[0],
-            axis=axis,
-            dtype=dtype,
-            initial=initial,
-            where=where,
-            keepdims=keepdims,
-        )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype,
+        initial=initial,
+        where=where,
+        keepdims=keepdims,
+    )
 
 
 # nansum
