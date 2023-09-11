@@ -1,5 +1,4 @@
 # global
-from typing import Union, Optional, Literal
 from typing import Union, Optional, Callable, Literal
 
 # local
