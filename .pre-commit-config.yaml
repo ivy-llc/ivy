@@ -1,4 +1,10 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+      - id: trailing-whitespace
+      - id: check-toml
   - repo: https://github.com/psf/black
     rev: 23.7.0
     hooks:
@@ -7,7 +13,7 @@ repos:
         args:
           - "--preview"
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.0
+    rev: v2.2.1
     hooks:
       - id: autoflake
   - repo: https://github.com/pycqa/flake8
