@@ -24,7 +24,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16")},
+    {"2.5.1 and below": ("float", )},
     backend_version,
 )
 def random_uniform(
@@ -81,7 +81,7 @@ def random_normal(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16")},
+    {"2.5.1 and below": ("float", )},
     backend_version,
 )
 def multinomial(

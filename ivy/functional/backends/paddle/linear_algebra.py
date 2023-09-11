@@ -33,7 +33,7 @@ def cholesky(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("float16",  "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def cross(
@@ -74,7 +74,7 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
             "int32",
             "int64",
             "float16",
-            "uint16",
+            
             "float32",
             "float64",
         )
@@ -157,7 +157,7 @@ def inv(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "uint16",
+            
             "float",
             "complex",
         )
@@ -330,7 +330,7 @@ def matrix_rank(
             "float",
             "int32",
             "int64",
-            "uint16",
+            
             "complex",
         )
     },
@@ -572,7 +572,7 @@ def vector_norm(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "uint16",
+            
             "float",
             "int32",
             "int64",

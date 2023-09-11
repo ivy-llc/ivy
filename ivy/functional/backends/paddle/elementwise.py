@@ -123,8 +123,8 @@ def equal(
     )
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64", "complex")},
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "int16", "bfloat16", "unsigned", "float16")},
     backend_version,
 )
 def less_equal(
@@ -156,7 +156,7 @@ def bitwise_and(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")},
+    {"2.5.1 and below": ( "float", "complex")},
     backend_version,
 )
 def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -166,7 +166,7 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")},
+    {"2.5.1 and below": ( "float", "complex")},
     backend_version,
 )
 def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -175,12 +175,12 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.floor(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ( "float")}, backend_version)
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.asin(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ( "float")}, backend_version)
 def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.asinh(x)
 
@@ -200,7 +200,7 @@ def sign(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")},
+    {"2.5.1 and below": ( "float", "complex")},
     backend_version,
 )
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -214,13 +214,13 @@ def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.sqrt(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ( "float")}, backend_version)
 def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.cosh(x)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")},
+    {"2.5.1 and below": ( "float", "complex")},
     backend_version,
 )
 def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -233,7 +233,7 @@ def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")},
+    {"2.5.1 and below": ( "float", "complex")},
     backend_version,
 )
 def log2(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -246,7 +246,7 @@ def log2(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")},
+    {"2.5.1 and below": ( "float", "complex")},
     backend_version,
 )
 def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -261,7 +261,7 @@ def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
             "float",
             "int32",
             "int64",
-            "uint16",
+            
             "complex",
         )
     },
@@ -368,7 +368,7 @@ def fmin(
             "float",
             "int32",
             "int64",
-            "uint16",
+            
             "complex",
         )
     },
@@ -397,7 +397,7 @@ def greater(
             "float",
             "int32",
             "int64",
-            "uint16",
+            
             "complex",
         )
     },
@@ -420,7 +420,7 @@ def greater_equal(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+    {"2.5.1 and below": ( "float", "complex")}, backend_version
 )
 def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -491,7 +491,7 @@ def logical_or(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+    {"2.5.1 and below": ( "float", "complex")}, backend_version
 )
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -506,7 +506,7 @@ def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+    {"2.5.1 and below": ( "float", "complex")}, backend_version
 )
 def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -539,7 +539,7 @@ def not_equal(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "bfloat16", "float", "complex")},
+    {"2.5.1 and below": ( "bfloat16", "float", "complex")},
     backend_version,
 )
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -592,7 +592,7 @@ def bitwise_or(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+    {"2.5.1 and below": ( "float", "complex")}, backend_version
 )
 def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -656,7 +656,7 @@ def pow(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16", "complex")},
+    {"2.5.1 and below": ("float",  "complex")},
     backend_version,
 )
 def round(
@@ -695,7 +695,7 @@ def round(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16", "complex")},
+    {"2.5.1 and below": ("float",  "complex")},
     backend_version,
 )
 def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -815,7 +815,7 @@ def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+    {"2.5.1 and below": ( "float", "complex")}, backend_version
 )
 def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -825,7 +825,7 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+    {"2.5.1 and below": ( "float", "complex")}, backend_version
 )
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [paddle.complex64, paddle.complex128]:
@@ -846,7 +846,7 @@ def atan2(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")},
+    {"2.5.1 and below": ( "float", "complex")},
     backend_version,
 )
 def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -860,10 +860,10 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         "2.5.1 and below": (
             "int32",
             "int64",
-            "uint16",
+            
             "float",
             "complex",
-            "uint16",
+            
         )
     },
     backend_version,
@@ -927,7 +927,7 @@ def remainder(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float", "complex")}, backend_version
+    {"2.5.1 and below": ( "float", "complex")}, backend_version
 )
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -1019,7 +1019,7 @@ def maximum(
     return paddle.maximum(x1, x2).astype(ret_dtype)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("uint16", "float")}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ( "float")}, backend_version)
 def reciprocal(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -1091,7 +1091,7 @@ def lcm(
         "2.5.1 and below": (
             "float",
             "complex",
-            "uint16",
+            
         ),
     },
     backend_version,

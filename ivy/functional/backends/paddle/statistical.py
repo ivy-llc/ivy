@@ -78,7 +78,7 @@ def max(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("uint16", "float16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ( "float16", "float32", "float64", "complex")},
     backend_version,
 )
 def mean(
@@ -102,7 +102,7 @@ def mean(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "float16", "uint16")},
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "float16", )},
     backend_version,
 )
 def prod(
@@ -165,7 +165,7 @@ def std(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "uint16",
+            
             "float16",
             "float32",
             "float64",
@@ -219,7 +219,7 @@ def var(
         "2.5.1 and below": (
             "complex",
             "float16",
-            "uint16",
+            
             "float32",
             "float64",
             "int32",
@@ -275,7 +275,7 @@ def cumprod(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("float16",  "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def cumsum(

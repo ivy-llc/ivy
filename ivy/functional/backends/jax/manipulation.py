@@ -201,7 +201,6 @@ def tile(
     return jnp.tile(x, repeats)
 
 
-@with_unsupported_dtypes({"0.4.14 and below": "complex"})
 def clip(
     x: JaxArray,
     x_min: Optional[Union[Number, JaxArray]] = None,
