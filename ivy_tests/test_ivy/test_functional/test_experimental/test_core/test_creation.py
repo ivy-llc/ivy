@@ -38,7 +38,6 @@ def _random_tt_data(draw):
             lambda x: x not in ["bfloat16", "float16"]
         )
     )
-    dtype = draw(helpers.get_dtypes("float", full=False))
     full = draw(st.booleans())
     seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
     return shape, rank, dtype[0], full, seed
