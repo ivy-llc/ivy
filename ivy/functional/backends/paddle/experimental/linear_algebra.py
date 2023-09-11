@@ -13,7 +13,7 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16", "int32", "int64")},
+    {"2.5.1 and below": ("float", "int32", "int64")},
     backend_version,
 )
 def diagflat(

@@ -48,7 +48,7 @@ def median(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16")},
+    {"2.5.1 and below": ("float",)},
     backend_version,
 )
 def nanmean(
@@ -365,7 +365,7 @@ def nanmedian(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16")},
+    {"2.5.1 and below": ("float",)},
     backend_version,
 )
 def unravel_index(
@@ -403,7 +403,7 @@ def bincount(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
 def igamma(
     a: paddle.Tensor,
     /,

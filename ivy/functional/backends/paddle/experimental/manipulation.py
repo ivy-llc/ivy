@@ -343,7 +343,7 @@ def i0(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int", "uint8", "uint16", "complex")},
+    {"2.5.1 and below": ("float", "int", "uint8", "complex")},
     backend_version,
 )
 def flatten(
@@ -484,7 +484,6 @@ def atleast_3d(
             "int32",
             "int64",
             "uint8",
-            "uint16",
         )
     },
     backend_version,
@@ -671,7 +670,15 @@ def unique_consecutive(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "float16", "uint16")},
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "float16",
+        )
+    },
     backend_version,
 )
 def fill_diagonal(

@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")},
+    {"2.5.1 and below": ("float16", "float32", "float64")},
     backend_version,
 )
 def logit(
@@ -25,7 +25,7 @@ def logit(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64")},
+    {"2.5.1 and below": ("float16", "float32", "float64")},
     backend_version,
 )
 def thresholded_relu(
@@ -39,7 +39,7 @@ def thresholded_relu(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "uint16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
     backend_version,
 )
 def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -85,7 +85,7 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16", "complex")},
+    {"2.5.1 and below": ("float", "complex")},
     backend_version,
 )
 def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -95,7 +95,7 @@ def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "uint16", "complex")},
+    {"2.5.1 and below": ("float", "complex")},
     backend_version,
 )
 def elu(

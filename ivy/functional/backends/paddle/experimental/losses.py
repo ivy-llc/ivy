@@ -21,7 +21,7 @@ def l1_loss(
     return F.l1_loss(input, target, reduction=reduction)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
 def smooth_l1_loss(
     input: paddle.Tensor,
     target: paddle.Tensor,

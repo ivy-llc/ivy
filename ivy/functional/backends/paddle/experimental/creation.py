@@ -101,7 +101,7 @@ def tril_indices(
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float16", "uint16", "float32", "float64", "int32", "int64")},
+    {"2.4.2 and below": ("float16", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def unsorted_segment_min(
@@ -157,7 +157,6 @@ def blackman_window(
     {
         "2.5.1 and below": (
             "bool",
-            "uint16",
             "float",
             "int",
             "complex",

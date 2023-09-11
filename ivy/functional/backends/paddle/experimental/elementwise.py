@@ -17,7 +17,7 @@ from ivy.functional.backends.paddle.elementwise import _elementwise_helper
 from .. import backend_version
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float", "uint16")}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
 def lgamma(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -573,7 +573,6 @@ def count_nonzero(
     {
         "2.5.1 and below": (
             "complex",
-            "uint16",
             "float",
             "int32",
             "int64",
@@ -593,12 +592,7 @@ def modf(
 
 
 @with_supported_dtypes(
-    {
-        "2.5.0 and below": (
-            "float",
-            "uint16",
-        )
-    },
+    {"2.5.0 and below": ("float",)},
     backend_version,
 )
 def digamma(
