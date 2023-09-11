@@ -96,3 +96,37 @@ def topk(x, k, axis=None, largest=True, sorted=True, name=None):
 @to_ivy_arrays_and_back
 def where(condition, x, y, name=None):
     return ivy.where(condition, x, y)
+
+#mode 
+# Tokenize and preprocess the documents
+def preprocess_documents(documents):
+    tokenized_documents = []
+    for doc in documents:
+        tokens = doc.lower().split()  # Basic tokenization
+        tokenized_documents.append(tokens)
+    return tokenized_documents
+
+# Perform keyword search
+def keyword_search(query, documents):
+    query = query.lower()
+    matching_documents = []
+
+    for i, doc in enumerate(documents):
+        if query in doc:
+            matching_documents.append(i)
+
+    return matching_documents
+
+# Preprocess the documents
+tokenized_documents = preprocess_documents(documents)
+
+# Search for a keyword
+search_query = "paddlepaddle"
+matching_document_indices = keyword_search(search_query, tokenized_documents)
+
+if matching_document_indices:
+    print(f"Matching documents for '{search_query}':")
+    for idx in matching_document_indices:
+        print(documents[idx])
+else:
+    print(f"No matching documents found for '{search_query}'.")
