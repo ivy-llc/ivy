@@ -192,7 +192,7 @@ another try, or manually resolve the formatting errors by commiting the changes 
 This should have hopefully given you a good feel for what is our coding style and how to format your code to contribute
 to Ivy.
 
-If you have any questions, please feel free to reach out on `discord <https://discord.gg/Y3prZYHS>`_ in the `formatting channel <https://discord.com/channels/799879767196958751/1028266706436624456>`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `formatting channel`_!
 
 **Video**
 
