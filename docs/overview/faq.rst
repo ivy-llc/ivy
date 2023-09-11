@@ -4,7 +4,6 @@ FAQ
 .. _`dex`: https://github.com/dexidp/dex
 .. _`API for distributed training`: https://github.com/unifyai/ivy/blob/a2f37b1bae232b7ba5257e59f8b46a0374cca9f1/ivy/functional/ivy/device.py#L660
 .. _`fully support these`: https://pytorch.org/tutorials/prototype/vmap_recipe.html
-.. _`Ivy Builder`: https://github.com/unifyai/builder
 .. _`README`: https://github.com/unifyai/ivy
 
 These are some of the most common technical questions that continue to arise when we're discussing Ivy with developers in the community.
@@ -53,7 +52,7 @@ For some backends, shape-checking will be performed during the compilation phase
 
 GPU handling
 ------------
-**Q:** How does Ivy handle GPU usage? 
+**Q:** How does Ivy handle GPU usage?
 
 **A:** Ivy handles GPU usage by simply wrapping the backend frameworks, so Ivy will use GPUs in the same manner as the backend framework does.
 E.g. When using a torch backend, torch will be a dependency of Ivy, and its handling of GPU functionalities will be inherited and extended upon by Ivy.
@@ -156,7 +155,6 @@ The Pipeline
 
 **A:** We are not advocating to replace all code with Ivy.
 We would encourage users to continue using whatever data loaders they want to, and perhaps just use an Ivy model, or use Ivy to convert a model, or even just a single function from a library.
-If users want to use Ivy more deeply, then they can use `Ivy Builder`_, which includes framework-agnostic abstract data loaders, trainers, and other higher level classes for composing full training pipelines.
 
 State
 -----
