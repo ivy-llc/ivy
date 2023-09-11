@@ -1,5 +1,5 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     numpy_to_torch_style_args,
@@ -32,7 +32,6 @@ def amin(input, dim=None, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def aminmax(input, *, dim=None, keepdim=False, out=None):
     minmax_tuple = namedtuple("minmax", ["min", "max"])
     return minmax_tuple(
@@ -191,9 +190,54 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float", "complex")},
+def nanmedian(input, dim=None, keepdim=False, out=None):
+    if dim is None:
+        input = input[~ivy.isnan(input)]
+        input = ivy.reshape(input, (-1,))
+        sorted_input = ivy.sort(input)
+        return ivy.median(sorted_input)
+
+    median_tuple = namedtuple("median", ["values", "indices"])
+
+    if input.ndim == 0 or input.shape == (1,):
+        result = median_tuple(input, ivy.array(0))
+        return result
+    else:
+        if ivy.isnan(input).any():
+            input = input[~ivy.isnan(input)]
+        sorted_indices = ivy.argsort(input, axis=dim)
+        median_indices = ivy.gather(
+            sorted_indices, (sorted_indices.shape[dim] - 1) // 2, axis=dim
+        )
+        median_values = ivy.take_along_axis(
+            input, ivy.expand_dims(median_indices, axis=dim), dim
+        ).squeeze(axis=dim)
+        if keepdim:
+            median_values = ivy.expand_dims(median_values, axis=dim)
+            median_indices = ivy.expand_dims(median_indices, axis=dim)
+
+        result = median_tuple(median_values, median_indices)
+    if out is not None:
+        ivy.inplace_update(out[0], result.values)
+        ivy.inplace_update(out[1], result.indices)
+        return out
+    return result
+
+
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
+    return ivy.nanquantile(
+        input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+    )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bfloat16",)},
     "torch",
 )
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
@@ -235,7 +279,6 @@ def prod(input, dim=None, keepdim=False, *, dtype=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
     return ivy.quantile(
         input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
