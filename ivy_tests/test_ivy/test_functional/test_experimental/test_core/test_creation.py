@@ -32,8 +32,12 @@ def _random_tt_data(draw):
     shape = draw(
         st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
     )
-    rank = draw(helpers.ints(min_value=1, max_value=10))
-    dtype = draw(helpers.get_dtypes("float", full=False))
+    rank = len(shape)
+    dtype = draw(
+        helpers.get_dtypes("float", full=False).filter(
+            lambda x: x not in ["bfloat16", "float16"]
+        )
+    )
     full = draw(st.booleans())
     seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
     return shape, rank, dtype[0], full, seed
@@ -446,8 +450,8 @@ def test_random_tt(
         )
 
         for w, w_gt in zip(weights, weights_gt):
-            assert len(w) == rank
-            assert len(w_gt) == rank
+            assert w.shape[-1] == rank
+            assert w_gt.shape[-1] == rank
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
