@@ -125,5 +125,4 @@ def kl_div(
         target,
         reduction=reduction,
     )
-
     return loss

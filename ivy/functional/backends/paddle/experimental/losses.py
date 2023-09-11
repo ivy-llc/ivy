@@ -145,5 +145,4 @@ def kl_div(
     input: paddle.Tensor, target: paddle.Tensor, /, *, reduction: Optional[str] = "mean"
 ) -> paddle.Tensor:
     loss = F.kl_div(input, target, reduction=reduction)
-    loss = paddle.to_tensor(loss)
     return loss
