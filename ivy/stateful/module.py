@@ -833,7 +833,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if isinstance(module, ivy.Module):
                 module.train(mode=mode)
 
-    def to_device(self, device):
+    def to_device(self, device, out=None):
         # moves the weights and buffers
         # to the specified device
 
@@ -844,9 +844,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 or ivy.is_ivy_array(obj)
                 or isinstance(obj, ivy.Container)
             ):
-                obj.to_device(device)
+                obj.to_device(device, out=obj)
             else:
-                ivy.to_device(obj, device=device)
+                ivy.to_device(obj, device=device, obj=obj)
 
     def __repr__(self):
         return object.__repr__(self)
