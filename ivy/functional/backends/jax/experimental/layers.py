@@ -869,7 +869,7 @@ def rfftn(
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
 
 
-#stft
+# stft
 def stft(
     signals: JaxArray,
     frame_length: int,

@@ -401,7 +401,7 @@ def _x_and_rfftn(draw):
 
 
 @st.composite
-def valid_stft(draw):
+def _valid_stft(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=["float32", "float64"],
@@ -409,7 +409,7 @@ def valid_stft(draw):
             min_value=-65280,
             min_num_dims=1,
             min_dim_size=2,
-            shared_dtype=True
+            shared_dtype=True,
         )
     )
     frame_length = draw(helpers.ints(min_value=16, max_value=100))
@@ -1296,10 +1296,10 @@ def test_rfftn(
     )
 
 
-#test_stft
+# test_stft
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
-    dtype_x_and_args=valid_stft(),
+    dtype_x_and_args=_valid_stft(),
     test_gradients=st.just(False),
 )
 def test_stft(

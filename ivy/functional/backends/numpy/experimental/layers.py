@@ -1046,7 +1046,7 @@ def rfftn(
     return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
 
 
-#stft
+# stft
 def stft(
     signals: np.ndarray,
     frame_length: int,
