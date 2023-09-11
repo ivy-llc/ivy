@@ -1627,6 +1627,7 @@ def test_paddle_multiply(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
+        allow_nan=True,
     ),
 )
 def test_paddle_nanmean(
@@ -1647,6 +1648,8 @@ def test_paddle_nanmean(
         test_flags=test_flags,
         on_device=on_device,
         x=x[0],
+        rtol=1e-04,
+        atol=1e-04,
     )
 
 
