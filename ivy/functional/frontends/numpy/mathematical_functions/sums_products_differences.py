@@ -133,29 +133,11 @@ def prod(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def sum(
-    x,
-    /,
-    *,
-    axis=None,
-    dtype=None,
-    keepdims=False,
-    out=None,
-    initial=None,
-    where=True,
-):
-    if ivy.is_array(where):
-        x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
-    if initial is not None:
-        s = ivy.to_list(ivy.shape(x, as_array=True))
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
-        if ivy.is_array(where):
-            x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
-        x = ivy.concat([header, x], axis=axis)
-    else:
-        x = ivy.where(ivy.isnan(x), ivy.zeros_like(x), x)
-    return ivy.sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+def sum(a, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None):
+    a = ivy.where(where, a, 0) if where is not None else a
+    ret = ivy.sum(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    initial = np_frontend.array(initial, dtype=dtype).ivy_array if initial else 0
+    return ret + initial
 
 
 @to_ivy_arrays_and_back
