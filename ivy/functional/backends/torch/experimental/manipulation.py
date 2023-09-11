@@ -462,3 +462,9 @@ def fill_diagonal(
     a = torch.where(w, v, a)
     a = torch.reshape(a, shape)
     return a
+
+
+def column_stack(
+    arrays: Sequence[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.column_stack(arrays)
