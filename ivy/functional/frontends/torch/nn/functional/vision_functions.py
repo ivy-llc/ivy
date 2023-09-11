@@ -309,7 +309,7 @@ def grid_sample(
             )
 
         elif mode == "bicubic":
-            raise ivy.exceptions.IvyError(f"Bicubic is not support in 3D grid sampling")
+            raise ivy.exceptions.IvyError("Bicubic is not support in 3D grid sampling")
 
     else:
         raise ivy.exceptions.IvyError(f"Not supported input shape {input_clone.shape}")
@@ -451,7 +451,7 @@ def interpolate(
 
     if (
         bool(antialias)
-        and not (mode in ["bilinear", "bicubic"])
+        and (mode not in ["bilinear", "bicubic"])
         and ivy.get_num_dims(input) == 4
     ):
         raise ivy.utils.exceptions.IvyException(
