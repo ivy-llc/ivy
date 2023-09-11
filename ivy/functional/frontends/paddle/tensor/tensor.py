@@ -142,6 +142,10 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.sinh(self._ivy_array))
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def lerp(self, y, weight, name=None):
+        return paddle_frontend.lerp(self, y, weight)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def lerp_(self, y, weight, name=None):
         self.ivy_array = paddle_frontend.lerp(self, y, weight).ivy_array
         return self
