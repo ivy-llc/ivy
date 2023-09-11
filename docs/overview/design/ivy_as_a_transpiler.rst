@@ -74,7 +74,7 @@ The frontend is implemented by wrapping a single Ivy method :func:`ivy.one_hot` 
    def one_hot(tensor, num_classes=-1):
        return ivy.one_hot(tensor, num_classes)
 
-Let's look at the NumPy backend code for this Ivy method:
+Let’s look at the NumPy backend code for this Ivy method:
 
 .. code-block:: python
 

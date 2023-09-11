@@ -15,7 +15,7 @@ Backend Functional APIs ✅
 
 The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend.
 Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
-Let's take the function :func:`ivy.stack` as an example.
+Let’s take the function :func:`ivy.stack` as an example.
 
 There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
 

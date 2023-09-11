@@ -83,10 +83,7 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           ./run_tests_CLI/test_ivy_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
         continue-on-error: true
-<<<<<<< HEAD
-=======
 
->>>>>>> d6f446814c123bd2f0428a40ed0fd526e00ea91e
       - name: Zip Hypothesis Examples
         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') &&  github.event_name == 'pull_request'
         run: |
