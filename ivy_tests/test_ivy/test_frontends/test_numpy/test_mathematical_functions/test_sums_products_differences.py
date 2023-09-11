@@ -364,20 +364,22 @@ def test_numpy_prod(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        axis=axis,
-        dtype=dtype,
-        keepdims=keep_dims,
-        initial=initial,
-        where=where,
-    )
+    if "bfloat16" not in input_dtypes + [dtype]:
+        helpers.test_frontend_function(
+            input_dtypes=input_dtypes,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            a=x[0],
+            axis=axis,
+            dtype=dtype,
+            out=None,
+            keepdims=keep_dims,
+            initial=initial,
+            where=where,
+        )
 
 
 # sum

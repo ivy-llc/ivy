@@ -427,6 +427,37 @@ def handle_numpy_out(fn: Callable) -> Callable:
     return _handle_numpy_out
 
 
+def handle_numpy_where(fn: Callable, replace_value) -> Callable:
+    @functools.wraps(fn)
+    def _handle_numpy_where(*args, **kwargs):
+        if "where" not in kwargs:
+            keys = list(inspect.signature(fn).parameters.keys())
+            where_pos = keys.index("where")
+            kwargs = {
+                **dict(
+                    zip(
+                        keys[keys.index("where") :],
+                        args[where_pos:],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:where_pos]
+        if args:
+            a = args[0]
+            args = args[1:]
+        else:
+            a = kwargs.pop("a")
+        if "where" in kwargs:
+            where = kwargs["where"]
+            if ivy.exists(where):
+                a = ivy.where(where, a, replace_value) if where is not None else a
+        return fn(a, *args, **kwargs)
+
+    _handle_numpy_where.handle_numpy_where = True
+    return _handle_numpy_where
+
+
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_np(*args, **kwargs):
@@ -531,3 +562,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return arrays are all converted to `ndarray` instances.
     """
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
+
+
+handle_numpy_where_one = functools.partial(handle_numpy_where, replace_value=1)
+handle_numpy_where_zero = functools.partial(handle_numpy_where, replace_value=0)

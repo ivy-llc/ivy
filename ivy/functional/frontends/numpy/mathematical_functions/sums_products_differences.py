@@ -7,6 +7,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
+    handle_numpy_where_one,
+    handle_numpy_where_zero,
 )
 import ivy.functional.frontends.numpy as np_frontend
 
@@ -103,11 +105,10 @@ def nansum(
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_where_one
 @from_zero_dim_arrays_to_scalar
 def prod(
-    x,
-    /,
-    *,
+    a,
     axis=None,
     dtype=None,
     out=None,
@@ -115,26 +116,20 @@ def prod(
     initial=None,
     where=True,
 ):
-    if where is not True:
-        x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
     if initial is not None:
         initial = np_frontend.array(initial, dtype=dtype).tolist()
-        if axis is not None:
-            s = ivy.to_list(ivy.shape(x, as_array=True))
-            s[axis] = 1
-            header = ivy.full(ivy.Shape(tuple(s)), initial)
-            x = ivy.concat([header, x], axis=axis)
-        else:
-            x[0] *= initial
-    return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    else:
+        initial = 1
+    print(a)
+    return initial * ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_where_zero
 @from_zero_dim_arrays_to_scalar
 def sum(a, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None):
-    a = ivy.where(where, a, 0) if where is not None else a
     ret = ivy.sum(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
     initial = np_frontend.array(initial, dtype=dtype).ivy_array if initial else 0
     return ret + initial
