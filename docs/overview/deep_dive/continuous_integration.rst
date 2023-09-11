@@ -52,7 +52,7 @@ The commit changes the :code:`_reduce_loss` function and the :code:`binary_cross
 :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_binary_cross_entropy`
 :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_cross_entropy`
 
-Ivy's Functional API functions :code:`binary_cross_entropy_with_logits`, :code:`test_cross_entropy`, :code:`test_binary_cross_entropy`, :code:`test_sparse_cross_entropy`, are precisely the ones impacted by the changes in the commit, and since the torch Frontend Functions torch_binary_cross_entropy, and torch_cross_entropy are wrapping these, the corresponding frontend tests are also impacted. No other Frontend function calls these underneath and hence should not be triggered.
+Ivy’s Functional API functions :code:`binary_cross_entropy_with_logits`, :code:`test_cross_entropy`, :code:`test_binary_cross_entropy`, :code:`test_sparse_cross_entropy`, are precisely the ones impacted by the changes in the commit, and since the torch Frontend Functions torch_binary_cross_entropy, and torch_cross_entropy are wrapping these, the corresponding frontend tests are also impacted. No other Frontend function calls these underneath and hence should not be triggered.
 
 How do we (or at least try to) achieve this?
 
@@ -87,7 +87,7 @@ Given this Mapping for a commit, We can just follow the below procedure:
 1. Find the files which are changed in the commit, and check for lines that are added/deleted/updated in the file.
 2. Determine the Tests that impact the lines, and trigger just those tests, and no others.
 
-But, there's a fundamental issue here, Computing the Mapping requires determining the coverage for all tests, which involves running all the tests. Doesn't this sound cyclical? After all, We are doing all this to avoid running all the tests.
+But, there’s a fundamental issue here, Computing the Mapping requires determining the coverage for all tests, which involves running all the tests. Doesn’t this sound cyclical? After all, We are doing all this to avoid running all the tests.
 
 Now assume that we had some way to update the Mapping for a commit from the previous Mapping without having to run all the tests. Then, Given the Mapping for a single commit, we could follow this to determine and run the relevant tests for each commit as follows:
 
@@ -163,7 +163,7 @@ We use the unifyai/Mapping GitHub Repository for this purpose. We use a GitHub R
 
 #. Unlike Specialized Databases (like Google Cloud), we need not store any specialized secrets to access the Database (separately for reading and writing), and no separate API Keys are required for updating the DB, saving us from exposing our secret key Files (from GitHub Actions). In fact, We just except for a single SSH Deploy Key (secrets.SSH_DEPLOY_KEY) required for pushing the DB.
 #. The Repository is a Public Repository, and thus can be read by anyone, while the push can be restricted. This makes it helpful to expose the Mapping to run tests on the PRs, while allowing only the Push Commits to update the Mapping.
-#. We don't need to make any specialized API Calls to Read/Write/Update the Mapping (Cloning and Pushing to the Repo suffices).
+#. We don’t need to make any specialized API Calls to Read/Write/Update the Mapping (Cloning and Pushing to the Repo suffices).
 #. Finally, It saves us from a Massive Race Condition Issue (which we highlight below).
 
 A GitHub Repository is not the best DB, obviously, with its own set of constraints (ex. 100 MB Space Limit), but works well enough for our requirements.
@@ -207,7 +207,7 @@ Now, that the SSH key of the Runner has permissions to push and clone the Mappin
 
     git clone --single-branch --depth 1 --branch "$TARGET_BRANCH" git@github.com:unifyai/Mapping.git
 
-In case of, Pull Requests, we do not have access to :code:`SSH_DEPLOY_KEY` secret (and we don't even want to give PRs that access), and thus we don't use the SSH Clone Methodology and instead use the HTTP Clone Method, as follows:
+In case of, Pull Requests, we do not have access to :code:`SSH_DEPLOY_KEY` secret (and we don’t even want to give PRs that access), and thus we don’t use the SSH Clone Methodology and instead use the HTTP Clone Method, as follows:
 
 .. code-block::
 
@@ -250,7 +250,7 @@ Since each of our Update Mapping routine is not precisely correct, the Mapping w
      schedule:
        - cron: "30 20 * * 6"
 
-Notice that the workflow triggers every Saturday Night at 8.30 PM (Fun Fact: It's just my gut feeling that there are relatively lesser commits on the Repository on a Saturday Night, and we get access to the Resources quickly, LoL!).
+Notice that the workflow triggers every Saturday Night at 8.30 PM (Fun Fact: It’s just my gut feeling that there are relatively lesser commits on the Repository on a Saturday Night, and we get access to the Resources quickly, LoL!).
 
 The workflow runs all the Ivy tests, determines their coverage, computes the Mapping, and pushes it to the unifyai/Mapping Repository.
 
