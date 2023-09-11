@@ -120,7 +120,6 @@ def prod(
         initial = np_frontend.array(initial, dtype=dtype).tolist()
     else:
         initial = 1
-    print(a)
     return initial * ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
