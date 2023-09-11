@@ -5,7 +5,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     to_native_arrays_and_back,
     to_ivy_arrays_and_back,
-    handle_device_shifting,
+    handle_device,
 )
 
 
@@ -60,7 +60,7 @@ def if_else(
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
-    @handle_device_shifting
+    @handle_device
     def _if_else(cond, body_fn, orelse_fn, vars):
         return current_backend().if_else(cond, body_fn, orelse_fn, vars)
 
@@ -116,7 +116,7 @@ def while_loop(
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
-    @handle_device_shifting
+    @handle_device
     def _while_loop(test_fn, body_fn, vars):
         return current_backend().while_loop(test_fn, body_fn, vars)
 
