@@ -74,15 +74,13 @@ DTYPE_DECORATORS = {
 TODO list (prioritised):
 
 ########## MUST HAVE ############
-#. skip tests that don't use one of the functions I've mocked (many roll their own)
-#. remove false positives from the backend is_dtype_err functions
+#. Configure all backend is_dtype_err functions
 
 ########## SHOULD HAVE #######
 #. get it working for frontends
 #. get it working for methods
 
 ########## NICE TO HAVE ########
-#. remove false negatives from the backend is_dtype_err functions
 #. remove hard-coded version numbers
 #. iterate over versions of a framework
 #. prettify the output to make it easier to read
@@ -96,6 +94,10 @@ TODO list (prioritised):
 
 
 class NoTestException(Exception):
+    pass
+
+
+class NoTestFunctionException(Exception):
     pass
 
 
@@ -703,6 +705,10 @@ def _get_nested_np_arrays(nest):
     return ret, indices, len(ret)
 
 
+# global variable. I don't like using these but I don't see another option
+_test_function_called = False
+
+
 def mock_test_function(
     *,
     input_dtypes,
@@ -719,6 +725,8 @@ def mock_test_function(
     return_flat_np_arrays=False,
     **all_as_kwargs_np,
 ):
+    global _test_function_called
+    _test_function_called = True
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = _kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -797,6 +805,7 @@ def run_dtype_setter(
     fn_names=[],
     options={"verbosity": 0, "handle_unsure": "supported", "safety_mode": False},
 ):
+    global _test_function_called
     helpers.test_function = mock.Mock(wraps=mock_test_function)
     sys.modules["ivy_tests.test_ivy.helpers"] = helpers
 
@@ -859,12 +868,15 @@ def run_dtype_setter(
 
                 for device in test_handler.iterate_devices():
                     try:
+                        _test_function_called = False
                         with SuppressPrint():
                             test_file.__dict__[test_fn].original(
                                 **min_example,
                                 backend_fw=test_handler.backend,
                                 on_device=device,
                             )
+                        if not _test_function_called:
+                            raise NoTestFunctionException()
                         test_handler.set_result("supported")
                     except FromFunctionException as ffe:
                         e = ffe.wrapped_error
@@ -872,6 +884,10 @@ def run_dtype_setter(
                             test_handler.set_result("unsupported")
                         else:
                             test_handler.set_result("unsure", str(e))
+                    except NoTestFunctionException:
+                        test_handler.set_result(
+                            "skipped", "Test does not use test_function"
+                        )
                     except hyp_errors.UnsatisfiedAssumption:
                         test_handler.set_result("skipped", "Unsatisfied assumption")
                     except Exception as e:
