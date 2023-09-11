@@ -24,17 +24,16 @@ def keys_to_delete_from_db(all_tests, module, data, current_key=""):
     keys_for_deletion = []
 
     for key, value in data.items():
-        new_key = current_key + "." + key if current_key else key
+        new_key = f"{current_key}.{key}" if current_key else key
 
         # If this is a dictionary, recurse deeper
         if isinstance(value, dict):
             keys_for_deletion.extend(keys_to_delete_from_db(all_tests, value, new_key))
-        # If the new_key is not in keys_to_keep, mark it for deletion
         elif key != "_id":
             components = new_key.split(".")
             submodule = components[0]
             function = components[-2]
-            test = module + "/" + submodule + "::" + function
+            test = f"{module}/{submodule}::{function}"
             if test not in all_tests:
                 keys_for_deletion.append(".".join(components[:-1]))
 
@@ -85,9 +84,9 @@ def get_submodule(test_path):
         if name in test_path:
             if name == "test_functional":
                 if test_path[3] == "test_experimental":
-                    coll = db_dict["test_experimental/" + test_path[4]]
+                    coll = db_dict[f"test_experimental/{test_path[4]}"]
                 else:
-                    coll = db_dict["test_functional/" + test_path[-2]]
+                    coll = db_dict[f"test_functional/{test_path[-2]}"]
             else:
                 coll = db_dict[name]
             break
@@ -99,12 +98,12 @@ def get_submodule(test_path):
 
 def process_test(test):
     coll, submod, test_fn = get_submodule(test)
-    return coll[0] + "/" + submod + "::" + test_fn
+    return f"{coll[0]}/{submod}::{test_fn}"
 
 
 def main():
     all_tests = get_all_tests()
-    all_tests = set([process_test(test.split(",")[0].strip()) for test in all_tests])
+    all_tests = {process_test(test.split(",")[0].strip()) for test in all_tests}
     mongo_key = sys.argv[1]
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa

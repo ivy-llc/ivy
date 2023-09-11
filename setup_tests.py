@@ -6,11 +6,10 @@ def main():
     if len(sys.argv) < 2:
         return
     test = sys.argv[1]
-    if "," in test:
-        with open("tests_to_run", "w") as f:
+    with open("tests_to_run", "w") as f:
+        if "," in test:
             f.write(test + "\n")
-    else:
-        with open("tests_to_run", "w") as f:
+        else:
             for backend in BACKENDS:
                 f.write(f"{test},{backend}\n")
 

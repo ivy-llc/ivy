@@ -17,8 +17,7 @@ run_iter = int(sys.argv[1]) - 1
 test_names = get_all_tests()
 
 # Create a Dictionary of Test Names to Index
-tests["index_mapping"] = test_names
-tests["tests_mapping"] = {}
+tests = {"index_mapping": test_names, "tests_mapping": {}}
 for i in range(len(test_names)):
     tests["tests_mapping"][test_names[i]] = i
 
@@ -47,7 +46,7 @@ if __name__ == "__main__":
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
-                    file_name = directory + "/" + file_name
+                    file_name = f"{directory}/{file_name}"
                     if file_name not in tests:
                         tests[file_name] = []
                         with open(file_name) as f:
