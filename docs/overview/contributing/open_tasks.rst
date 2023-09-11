@@ -245,7 +245,7 @@ A few points to keep in mind while doing this:
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
 
-If you are stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function
 
 Extending the Ivy API
 ~~~~~~~~~~~~~~~~~~~~~~~
