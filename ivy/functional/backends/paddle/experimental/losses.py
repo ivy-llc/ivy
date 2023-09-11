@@ -4,7 +4,6 @@ import paddle
 import paddle.nn.functional as F
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
@@ -145,9 +144,6 @@ def soft_margin_loss(
 def kl_div(
     input: paddle.Tensor, target: paddle.Tensor, /, *, reduction: Optional[str] = "mean"
 ) -> paddle.Tensor:
-    with ivy.PreciseMode(True):
-        promoted_type = ivy.promote_types(ivy.dtype(input[0]), ivy.dtype(target[0]))
     loss = F.kl_div(input, target, reduction=reduction)
     loss = paddle.to_tensor(loss)
-    loss = loss.astype(promoted_type)
     return loss
