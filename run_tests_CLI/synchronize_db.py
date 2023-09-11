@@ -31,7 +31,9 @@ def keys_to_delete_from_db(all_tests, module, data, current_key=""):
 
         # If this is a dictionary, recurse deeper
         if isinstance(value, dict):
-            keys_for_deletion.extend(keys_to_delete_from_db(all_tests, module, value, new_key))
+            keys_for_deletion.extend(
+                keys_to_delete_from_db(all_tests, module, value, new_key)
+            )
         # If the new_key is not in keys_to_keep, mark it for deletion
         elif key != "_id":
             components = new_key.split(".")
@@ -59,7 +61,7 @@ submodules = (
     "test_mindspore",
     "test_onnx",
     "test_sklearn",
-    "test_xgboost"
+    "test_xgboost",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -78,8 +80,10 @@ db_dict = {
     "test_mindspore": ["mindspore", 23],
     "test_onnx": ["onnx", 24],
     "test_sklearn": ["sklearn", 25],
-    "test_xgboost": ["xgboost", 26]
+    "test_xgboost": ["xgboost", 26],
 }
+
+
 def get_submodule(test_path):
     test_path = test_path.split("/")
     for name in submodules:
@@ -103,7 +107,7 @@ def process_test(test):
     return coll[0] + "/" + submod + "::" + test_fn
 
 
-def remove_empty_objects(document, key_prefix=''):
+def remove_empty_objects(document, key_prefix=""):
     # Base case: if the document is not a dictionary, return an empty list
     if not isinstance(document, dict):
         return []
@@ -113,7 +117,7 @@ def remove_empty_objects(document, key_prefix=''):
 
     for key, value in document.items():
         # Generate the full key path
-        full_key = key_prefix + '.' + key if key_prefix else key
+        full_key = key_prefix + "." + key if key_prefix else key
 
         # If the value is a dictionary, recursively check for empty objects
         if isinstance(value, dict):
@@ -129,14 +133,17 @@ def remove_empty_objects(document, key_prefix=''):
 def main():
     all_tests = get_all_tests()
     all_tests = set([process_test(test.split(",")[0].strip()) for test in all_tests])
+    mongo_key = sys.argv[1]
     cluster = MongoClient(
-        f"mongodb+srv://rashul:rashulivy@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
+        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
     db = cluster["Ivy_tests_multi_gpu"]
     for collection_name in db.list_collection_names():
         collection = db[collection_name]
         for document in collection.find({}):
-            undesired_keys = keys_to_delete_from_db(all_tests, collection_name, document)
+            undesired_keys = keys_to_delete_from_db(
+                all_tests, collection_name, document
+            )
             for key in undesired_keys:
                 collection.update_one({"_id": document["_id"]}, {"$unset": {key: 1}})
 
@@ -147,16 +154,14 @@ def main():
             for document in collection.find({}):
                 keys_to_remove = remove_empty_objects(document)
                 if keys_to_remove:
-                    update_operation = {'$unset': {key: 1 for key in keys_to_remove}}
-                    collection.update_one({'_id': document['_id']}, update_operation)
+                    update_operation = {"$unset": {key: 1 for key in keys_to_remove}}
+                    collection.update_one({"_id": document["_id"]}, update_operation)
                 else:
                     break_flag = True
                     break
             if break_flag:
                 break_flag = False
                 break
-
-
 
 
 if __name__ == "__main__":
