@@ -5201,13 +5201,6 @@ def pow(
     (the exponent), where ``x2_i`` is the corresponding element of the input array
     ``x2``.
 
-    .. note::
-       If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when
-       ``x2_i`` is negative (i.e., less than zero) is unspecified and thus
-       implementation-dependent. If ``x1`` has an integer data type and ``x2`` has a
-       floating-point data type, behavior is implementation-dependent (type promotion
-       between data type "kinds" (integer versus floating-point) is unspecified).
-
     **Special cases**
 
     For floating-point operands,

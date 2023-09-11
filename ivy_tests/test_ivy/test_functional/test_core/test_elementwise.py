@@ -136,10 +136,6 @@ def pow_helper(draw, available_dtypes=None):
         )
     )
     dtype2 = dtype2[0]
-    if "int" in dtype2:
-        x2 = ivy.nested_map(
-            x2[0], lambda x: abs(x), include_derived={"list": True}, shallow=False
-        )
     return [dtype1, dtype2], [x1, x2]
 
 
@@ -1593,19 +1589,8 @@ def test_positive(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 )
 def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
-
     # bfloat16 is not supported by numpy
-    assume("bfloat16" not in input_dtype)
-
-    # Make sure x2 isn't a float when x1 is integer
-    assume(
-        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
-    )
-
-    # Make sure x2 is non-negative when both is integer
-    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
-        x[1] = np.abs(x[1])
-
+    assume(not ("bfloat16" in input_dtype))
     x[0] = not_too_close_to_zero(x[0])
     x[1] = not_too_close_to_zero(x[1])
     helpers.test_function(

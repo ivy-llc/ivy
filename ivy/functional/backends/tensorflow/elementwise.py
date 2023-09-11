@@ -620,7 +620,14 @@ def pow(
             if x2.dtype.is_unsigned:
                 x2 = tf.cast(x2, tf.float64)
             return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
-    return tf.experimental.numpy.power(x1, x2)
+    orig_x1_dtype = None
+    if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
+        orig_x1_dtype = x1.dtype
+        x1 = tf.cast(x1, tf.float32)
+    ret = tf.experimental.numpy.power(x1, x2)
+    if orig_x1_dtype is not None:
+        return tf.cast(ret, orig_x1_dtype)
+    return ret
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
