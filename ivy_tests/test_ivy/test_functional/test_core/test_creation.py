@@ -397,7 +397,7 @@ def test_frombuffer(
         offset=offset,
     )
 
-    
+
 # full
 @handle_test(
     fn_tree="functional.ivy.full",
@@ -626,7 +626,6 @@ def test_native_array(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
-        fill_value=fill_value,
         dtype=dtype[0],
         device=on_device,
     )
