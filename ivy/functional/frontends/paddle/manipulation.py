@@ -173,3 +173,24 @@ def unstack(x, axis=0, name=None):
 
 
 absolute = abs
+
+#crrop
+# Load an image (you'll need to have an image file)
+image_path = "input_image.jpg"  # Replace with your image file path
+image = ivy.image.read(image_path)
+
+# Define the crop coordinates
+left = 100
+upper = 50
+right = 300
+lower = 250
+
+# Crop the image
+cropped_image = ivy_vision.crop(image, left, upper, right, lower)
+
+# Save the cropped image
+cropped_image_path = "cropped_image.jpg"  # Replace with your desired output file path
+ivy.image.write(cropped_image, cropped_image_path)
+
+# Display the cropped image (optional)
+ivy.image.show(cropped_image)
