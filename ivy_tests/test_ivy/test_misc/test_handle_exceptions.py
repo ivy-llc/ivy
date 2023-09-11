@@ -14,7 +14,7 @@ from ivy.utils.exceptions import (
     IvyAttributeError,
     IvyBackendException,
     IvyDeviceError,
-    InvalidBackendException,
+    IvyInvalidBackendException,
     IvyDtypePromotionError,
     _non_ivy_exceptions_mapping,
 )
@@ -41,7 +41,7 @@ def func(e):
         IvyAttributeError,
         IvyBackendException,
         IvyDeviceError,
-        InvalidBackendException,
+        IvyInvalidBackendException,
         IvyDtypePromotionError,
     ),
 )
