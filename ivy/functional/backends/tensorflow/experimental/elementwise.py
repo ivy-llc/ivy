@@ -255,7 +255,7 @@ def gradient(
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     # https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/function_base.py#L969-L1312
-    device = x.device
+    x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
     if axis is None:
@@ -414,8 +414,7 @@ def gradient(
                 a * x[tuple(slice2)] + b * x[tuple(slice3)] + c * x[tuple(slice4)]
             )
 
-        with tf.device(device):
-            outvals.append(tf.convert_to_tensor(out))
+        outvals.append(tf.convert_to_tensor(out))
 
         # reset the slice object in this dimension to ":"
         slice1[axis] = slice(None)

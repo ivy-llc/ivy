@@ -153,15 +153,15 @@ def diff(
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = x if type(x) == torch.Tensor else torch.tensor(x)
+    x = x if isinstance(x, torch.Tensor) else torch.tensor(x)
     prepend = (
         prepend
-        if type(prepend) == torch.Tensor or prepend is None
+        if isinstance(prepend, torch.Tensor) or prepend is None
         else torch.tensor(prepend)
     )
     append = (
         append
-        if type(append) == torch.Tensor or append is None
+        if isinstance(append, torch.Tensor) or append is None
         else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
@@ -259,9 +259,9 @@ def gradient(
 ) -> Union[torch.Tensor, List[torch.Tensor]]:
     if axis is None:
         axis = tuple(range(len(x.shape)))
-    if type(axis) == int:
+    if isinstance(axis, int):
         axis = (axis,)
-    if type(spacing) == int:
+    if isinstance(spacing, int):
         spacing = [spacing] * len(axis)
 
     grad = torch.gradient(x, spacing=spacing, dim=axis, edge_order=edge_order)

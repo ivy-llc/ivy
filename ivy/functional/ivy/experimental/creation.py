@@ -98,8 +98,8 @@ def hann_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
@@ -193,8 +193,8 @@ def kaiser_bessel_derived_window(
     ret
         The array containing the window.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
@@ -293,16 +293,17 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Return the indices of the lower triangular part of a row by col matrix in a
-    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
-    row coordinates of all indices and the second row contains column coordinates.
-    Indices are ordered based on rows and then columns.  The lower triangular part
-    of the matrix is defined as the elements on and below the diagonal.  The argument
-    k controls which diagonal to consider. If k = 0, all elements on and below the main
-    diagonal are retained. A positive value excludes just as many diagonals below the
-    main diagonal, and similarly a negative value includes just as many diagonals
-    above the main diagonal. The main diagonal are the set of indices
-    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
+    """
+    Return the indices of the lower triangular part of a row by col matrix in a 2-by-N
+    shape (tuple of two N dimensional arrays), where the first row contains row
+    coordinates of all indices and the second row contains column coordinates. Indices
+    are ordered based on rows and then columns.  The lower triangular part of the matrix
+    is defined as the elements on and below the diagonal.  The argument k controls which
+    diagonal to consider. If k = 0, all elements on and below the main diagonal are
+    retained. A positive value excludes just as many diagonals below the main diagonal,
+    and similarly a negative value includes just as many diagonals above the main
+    diagonal. The main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
+    n_cols}−1].
 
     Notes
     -----
@@ -371,7 +372,6 @@ def tril_indices(
     >>> x = ivy.tril_indices(2,4,-100)
     >>> print(x)
     (ivy.array([]), ivy.array([]))
-
     """
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
@@ -391,10 +391,10 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
-    the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
+    """
+    Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having the
+    same ``shape`` as the first and last dim of input array ``x``. input array ``x``
     should to be 2D.
-
 
     Parameters
     ----------
@@ -423,9 +423,8 @@ def eye_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances as a replacement to any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([[0, 1],[2, 3]])
@@ -452,7 +451,6 @@ def eye_like(
         b: ivy.array([[1., 0.],
                       [0., 1.]])
     }
-
     """
     shape = ivy.shape(x, as_array=True)
     dim = len(shape)
@@ -722,8 +720,9 @@ def blackman_window(
     -------
     ret
         The array containing the window.
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     >>> ivy.blackman_window(4, periodic = True)
     ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
     >>> ivy.blackman_window(7, periodic = False)
@@ -883,6 +882,7 @@ def trilu(
         on and above the specified diagonal ``k``. The lower triangular part
         of the matrix is defined as the elements on and below the specified
         diagonal ``k``.
+
     Parameters
     ----------
     x
@@ -897,6 +897,7 @@ def trilu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
@@ -909,3 +910,55 @@ def trilu(
     instances in place of any of the arguments.
     """
     return current_backend(x).trilu(x, k=k, upper=upper, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    """
+    Generate a MelWeightMatrix that can be used to re-weight a Tensor containing a
+    linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins frequency
+    information based on the [lower_edge_hertz, upper_edge_hertz]
+
+    range on the mel scale. This function defines the mel scale in terms of a frequency
+    in hertz according to the following formula: mel(f) = 2595 * log10(1 + f/700)
+
+    Parameters
+    ----------
+    num_mel_bins
+        The number of bands in the mel spectrum.
+    dft_length
+        The size of the original DFT obtained from (n_fft / 2 + 1).
+    sample_rate
+        Samples per second of the input signal.
+    lower_edge_hertz
+        Lower bound on the frequencies to be included in the mel spectrum.
+    upper_edge_hertz
+        The desired top edge of the highest frequency band.
+
+    Returns
+    -------
+    ret
+        MelWeightMatrix of shape:  [frames, num_mel_bins].
+
+    Examples
+    --------
+    >>> ivy.mel_weight_matrix(3,3,8000)
+    ivy.array([[0.        ,0.        , 0.],
+              [0.        ,0. , 0.75694758],
+              [0.        ,0. , 0.       ]])
+    """
+    return ivy.current_backend().mel_weight_matrix(
+        num_mel_bins,
+        dft_length,
+        sample_rate,
+        lower_edge_hertz,
+        upper_edge_hertz,
+    )
