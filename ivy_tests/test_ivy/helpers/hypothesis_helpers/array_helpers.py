@@ -2162,3 +2162,78 @@ def einsum_helper(draw):
     eq = "".join(eq_1) + "," + "".join(eq_2) + "->" + output_eq
 
     return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]
+
+
+@st.composite
+def create_concatenable_arrays_dtypes(
+    draw,
+    min_num_dims,
+    max_num_dims,
+    min_num_arrays,
+    max_num_arrays,
+    concat_dim,
+    dtypes,
+    common_shape=None,
+):
+    """
+    Draws a random number of arrays with concatenable or stackable dimensions. Arrays
+    have same number of dimensions, but their shape can differ along a specified
+    dimension (concat_dim). If concat_dim is None, arrays have the same shape. Dtypes of
+    arrays can differ.
+
+    Parameters
+    ----------
+    min_num_dims
+        minimum number of dimensions
+    max_num_dims
+        maximum number of dimensions
+    min_num_arrays
+        minimum number of arrays
+    max_num_arrays
+        maximum number of arrays
+    concat_dim
+        dimension along which the shape of arrays can differ,
+        if None all the arrays will have the same shape
+    dtypes
+        list of dtypes from which array dtypes will be draws,
+        each array can have different dtype
+    given_common_shape
+        if not None, specifies the shape of the arrays
+        (dimension concat_dim can still be modified)
+    """
+    num_arrays = draw(helpers.ints(min_value=min_num_arrays, max_value=max_num_arrays))
+    if common_shape is None:
+        num_dims = draw(helpers.ints(min_value=min_num_dims, max_value=max_num_dims))
+        common_shape = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=num_dims,
+            )
+        )
+    else:
+        num_dims = len(common_shape)
+    input_dtypes = draw(
+        helpers.array_dtypes(num_arrays=num_arrays, available_dtypes=dtypes)
+    )
+    array_shapes = [common_shape.copy() for i in range(num_arrays)]
+    if num_dims > 0 and concat_dim is not None:
+        unique_dims = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=num_arrays,
+            )
+        )
+        for i in range(num_arrays):
+            array_shapes[i][concat_dim] = unique_dims[i]
+
+    xs = list()
+
+    for sh, dt in zip(array_shapes, input_dtypes):
+        x = draw(
+            helpers.array_values(
+                shape=sh,
+                dtype=dt,
+            )
+        )
+        xs.append(x)
+    return xs, input_dtypes
