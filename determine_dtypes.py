@@ -76,17 +76,14 @@ DTYPE_DECORATORS = {
 TODO list (prioritised):
 
 ########## MUST HAVE ############
-#. Configure all backend is_dtype_err functions
-
-########## SHOULD HAVE #######
+#. keep information from previous versions
+#. configure all backend is_dtype_err functions
 #. get it working for frontends
-#. get it working for methods
+#. get it working for methods if needed
 
 ########## NICE TO HAVE ########
-#. iterate over versions of a framework
+#. break control flow from the test at the end of test_function
 #. prettify the output to make it easier to read
-#. decide intelligently which functions to run on (e.g. based on git diffs)
-#. hook into something to run automatically
 
 ########## FOR MAINTENANCE ########
 #. remove hard-coded dtype classes
@@ -167,9 +164,9 @@ def _is_dtype_err_jax(e, dtype):
         f" must have an integer type; got {dtype}",
     ]
     substrings_to_check = (
-        dtype_err_substrings
-        + (only_if_complex if dtype in DTYPE_CLASSES["complex"] else [])
+        (only_if_complex if dtype in DTYPE_CLASSES["complex"] else [])
         + (only_non_int if dtype not in DTYPE_CLASSES["integer"] else [])
+        + dtype_err_substrings
     )
     return any(s in str(e) for s in substrings_to_check)
 
@@ -186,8 +183,103 @@ def _is_dtype_err_tf(e, dtype):
     return ("Value for attr 'T' of" in str(e)) or ("`features.dtype` must be" in str(e))
 
 
+TORCH_DTYPES_MAP = {
+    "bool": "Bool",
+    "int8": "Char",
+    "int16": "Short",
+    "int32": "Int",
+    "int64": "Long",
+    "uint8": "Byte",
+    "bfloat16": "BFloat16",
+    "float16": "Half",
+    "float32": "Float",
+    "float64": "Double",
+    "complex64": "ComplexFloat",
+    "complex128": "ComplexDouble",
+}
+TORCH_SECONDARY_DTPYES_MAP = {
+    "bool": "bool",
+    "int8": "signed char",
+    "int16": "short int",
+    "int32": "int",
+    "int64": "long int",
+    "uint8": "unsigned char",
+}
+
+
 def _is_dtype_err_torch(e, dtype):
-    return ("not implemented for" in str(e)) or ("inputs not supported for" in str(e))
+    torch_dtype = TORCH_DTYPES_MAP[dtype]
+    secondary_dtype = (
+        TORCH_SECONDARY_DTPYES_MAP[dtype]
+        if dtype in TORCH_SECONDARY_DTPYES_MAP
+        else dtype
+    )
+    dtype_err_substrings = [
+        f"\" not implemented for '{torch_dtype}'",
+        f"{torch_dtype} type is not supported by",
+        f"{torch_dtype} inputs not supported for",
+        f"not supported for {torch_dtype}",
+        f"Expected a floating point or complex tensor as input. Got {torch_dtype}",
+        f"expected scalar type Long but found {torch_dtype}",
+        f"Low precision dtypes not supported. Got {torch_dtype}",
+        (
+            "expected a tensor with 2 or more dimensions of float, double, cfloat or"
+            " cdouble types"
+        ),
+        (
+            "torch.finfo() requires a floating point input type. Use torch.iinfo to"
+            " handle 'torch.finfo'"
+        ),
+        (
+            "torch.iinfo() requires an integer input type. Use torch.finfo to handle"
+            " 'torch.iinfo'"
+        ),
+        f"torch.{dtype} is not supported by",
+        "only Tensors of floating point dtype can require gradients",
+        "Unsupported input type encountered",
+        "only support floating point and complex dtypes",
+        f"Got unsupported ScalarType {torch_dtype}",
+        f"received a {dtype} input for `y`, but {dtype} is not supported",
+        "cannot take arguments of type float",
+        "cannot take arguments of type uint",
+        f"expects floating point dtypes, got: TensorOptions(dtype={secondary_dtype},",
+        f"Unsupported dtype {torch_dtype}",
+        (
+            "Input dtype must be either a floating point or complex dtype. Got:"
+            f" {torch_dtype}"
+        ),
+        "input tensor must be either float or double dtype",
+        f"expected input to have floating point dtype but got {torch_dtype}",
+        "only supports double, float and half tensors",
+        f"expected probabilities tensor to have floating type, got {torch_dtype}",
+        f"expected scalar type Double but found {torch_dtype}",
+    ]
+    only_if_bool = [
+        "currently does not support bool dtype on CUDA.",
+        "operator, on a bool tensor is not supported.",
+        "operator, with two bool tensors is not supported.",
+        "tensor([[False, False]]) must be lesser than tensor([[False, False]])",
+        (
+            "tensor([[False, False]], device='cuda:0') must be lesser than"
+            " tensor([[False, False]], device='cuda:0')"
+        ),
+        "Boolean inputs not supported for",
+        "Expected parameter concentration (Tensor of shape (",
+    ]
+    only_if_complex = [
+        "currently does not support complex dtypes on CUDA.",
+        "is not supported for complex",
+        "not implemented for complex tensors",
+        f"expects a real-valued input tensor, but got {torch_dtype}",
+        "is not yet implemented for complex tensors.",
+        "does not support complex inputs",
+    ]
+    substrings_to_check = (
+        (only_if_bool if dtype == "bool" else [])
+        + (only_if_complex if dtype in DTYPE_CLASSES["complex"] else [])
+        + dtype_err_substrings
+    )
+    return any(s in str(e) for s in substrings_to_check)
 
 
 is_dtype_err = {

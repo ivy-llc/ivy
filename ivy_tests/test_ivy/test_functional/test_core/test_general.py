@@ -25,7 +25,6 @@ except ImportError:
     tf = SimpleNamespace()
     tf.__version__ = None
 
-
 try:
     import jax.numpy as jnp
 except ImportError:
@@ -35,21 +34,6 @@ try:
     import torch.multiprocessing as multiprocessing
 except ImportError:
     multiprocessing = SimpleNamespace()
-
-try:
-    import ivy.functional.backends.jax
-except ImportError:
-    ivy.functional.backends.jax = SimpleNamespace()
-
-try:
-    import ivy.functional.backends.tensorflow
-except ImportError:
-    ivy.functional.backends.tensorflow = SimpleNamespace()
-
-try:
-    import ivy.functional.backends.torch
-except ImportError:
-    ivy.functional.backends.torch = SimpleNamespace()
 
 
 # --- Helpers --- #
@@ -1912,6 +1896,26 @@ def test_unset_inplace_mode(mode):
 
 
 def test_use_within_use_framework():
+    try:
+        import ivy.functional.backends.numpy
+    except ImportError:
+        ivy.functional.backends.numpy = SimpleNamespace()
+
+    try:
+        import ivy.functional.backends.jax
+    except ImportError:
+        ivy.functional.backends.jax = SimpleNamespace()
+
+    try:
+        import ivy.functional.backends.tensorflow
+    except ImportError:
+        ivy.functional.backends.tensorflow = SimpleNamespace()
+
+    try:
+        import ivy.functional.backends.torch
+    except ImportError:
+        ivy.functional.backends.torch = SimpleNamespace()
+
     with ivy.functional.backends.numpy.use:
         pass
     with ivy.functional.backends.jax.use:
