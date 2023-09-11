@@ -14,7 +14,7 @@ import ivy.functional.frontends.torch as torch
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
-    fn_tree="onnx.abs",
+    fn_tree="onnx.Abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=False),
         large_abs_safety_factor=2.5,
@@ -23,119 +23,6 @@ import ivy.functional.frontends.torch as torch
     ),
 )
 def test_onnx_abs(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-    )
-
-
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="onnx.acos",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_onnx_acos(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-    )
-
-
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="onnx.acosh",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_onnx_acosh(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-    )
-
-
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="onnx.add",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
-    ),
-    alpha=st.integers(min_value=1, max_value=5),
-)
-def test_onnx_add(
-    *,
-    dtype_and_x,
-    alpha,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-03,
-        input=x[0],
-        other=x[1],
-        alpha=alpha,
-    )
-
-
-@pytest.mark.skip("Testing pipeline not yet implemented")
-@handle_frontend_test(
-    fn_tree="onnx.asin",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_onnx_asin(
     *,
     dtype_and_x,
     on_device,
@@ -182,6 +69,32 @@ def test_onnx_abs_v2(dtype_x):
 
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
+@handle_frontend_test(
+    fn_tree="onnx.Acos",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_onnx_acos(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", prune_function=False),
@@ -206,6 +119,32 @@ def test_onnx_acos_v2(dtype_x):
 
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
+@handle_frontend_test(
+    fn_tree="onnx.Acosh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_onnx_acosh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+@pytest.mark.skip("Testing pipeline not yet implemented")
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", prune_function=False),
@@ -226,6 +165,41 @@ def test_onnx_acosh_v2(dtype_x):
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="tensorflow",
+    )
+
+
+@pytest.mark.skip("Testing pipeline not yet implemented")
+@handle_frontend_test(
+    fn_tree="onnx.Add",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    alpha=st.integers(min_value=1, max_value=5),
+)
+def test_onnx_add(
+    *,
+    dtype_and_x,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=x[0],
+        other=x[1],
+        alpha=alpha,
     )
 
 
@@ -256,6 +230,32 @@ def test_onnx_add_v2(dtype_x):
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="tensorflow",
+    )
+
+
+@pytest.mark.skip("Testing pipeline not yet implemented")
+@handle_frontend_test(
+    fn_tree="onnx.Asin",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_onnx_asin(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 

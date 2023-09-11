@@ -11,7 +11,14 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Union
 
 
-def gelu(x: None, /, *, approximate: bool = False, out: Optional[None] = None) -> None:
+def gelu(
+    x: None,
+    /,
+    *,
+    approximate: bool = False,
+    complex_mode="jax",
+    out: Optional[None] = None,
+) -> None:
     if approximate:
         return (
             0.5 * x * (1 + mx.nd.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
@@ -19,11 +26,13 @@ def gelu(x: None, /, *, approximate: bool = False, out: Optional[None] = None) -
     return mx.nd.LeakyReLU(x, act_type="gelu")
 
 
-def leaky_relu(x: None, /, *, alpha: float = 0.2, out: Optional[None] = None) -> None:
+def leaky_relu(
+    x: None, /, *, alpha: float = 0.2, complex_mode="jax", out: Optional[None] = None
+) -> None:
     return mx.nd.LeakyReLU(x, slope=alpha)
 
 
-def relu(x: None, /, *, out: Optional[None] = None) -> None:
+def relu(x: None, /, *, complex_mode="jax", out: Optional[None] = None) -> None:
     return mx.nd.relu(x)
 
 
@@ -43,8 +52,8 @@ def softplus(
     *,
     beta: Optional[Union[(int, float)]] = None,
     threshold: Optional[Union[(int, float)]] = None,
-    out: Optional[None] = None,
     complex_mode="jax",
+    out: Optional[None] = None,
 ) -> None:
     if beta is not None and beta != 1:
         x_beta = x * beta
@@ -62,6 +71,11 @@ def softplus(
     if threshold is not None:
         return mx.nd.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)
+
+
+# Softsign
+def softsign(x: None, /, *, out: Optional[None] = None) -> None:
+    return mx.nd.softsign(x)
 
 
 def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None):

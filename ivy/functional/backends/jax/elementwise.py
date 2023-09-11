@@ -22,7 +22,7 @@ def abs(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if (hasattr(x, "dtype") and "bool" in str(x.dtype)) or type(x) == bool:
+    if (hasattr(x, "dtype") and "bool" in str(x.dtype)) or isinstance(x, bool):
         return x
     # jnp.where is used for consistent gradients
     return jnp.where(x != 0, jnp.absolute(x), 0)
@@ -502,7 +502,9 @@ def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tan(x)
 
 
-def tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def tanh(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.tanh(x)
 
 

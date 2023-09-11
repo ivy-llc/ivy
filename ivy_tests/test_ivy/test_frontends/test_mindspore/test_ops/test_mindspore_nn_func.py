@@ -1,6 +1,3 @@
-# ToDo: Uncomment this after we sort out a way of installing mindspore
-# using pip and after added it to the development requirements.
-
 # global
 import pytest
 
