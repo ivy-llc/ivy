@@ -4,7 +4,7 @@ Ivy-Lint: Ivy's Custom Code Formatters
 Overview
 --------
 
-`ivy-lint` is a specialized suite of formatters crafted for the Ivy codebase. It addresses unique formatting requirements not catered to by standard Python formatters. While the suite currently highlights the `FunctionOrderingFormatter`, we're continually expanding to include more formatters tailored to Ivy's needs.
+``ivy-lint`` is a specialized suite of formatters crafted for the Ivy codebase. It addresses unique formatting requirements not catered to by standard Python formatters. While the suite currently highlights the ``FunctionOrderingFormatter``, we're continually expanding to include more formatters tailored to Ivy's needs.
 
 Existing Formatters
 -------------------
@@ -16,7 +16,7 @@ This formatter ensures a standardized order of declarations within Python files,
 
 **Purpose**: To bring a sense of uniformity and structure to the code files by sorting various Python declarations.
 
-**Target Files**: It is crafted to work on particular files that align with predefined patterns.
+**Target Files**: Specifically designed for frontends and tests.
 
 How the Formatter Works:
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,18 +41,18 @@ How the Formatter Works:
 Integration and Usage
 ---------------------
 
-To get the best out of `ivy-lint`, integrate it within a pre-commit hook. This ensures that whenever code changes are about to be committed, the suite checks and, if needed, formats the files to align with Ivy's standards.
+To get the best out of ``ivy-lint``, integrate it within a pre-commit hook. This ensures that whenever code changes are about to be committed, the suite checks and, if needed, formats the files to align with Ivy's standards.
 
-For comprehensive details on weaving `ivy-lint` into your development practices, kindly refer to our `formatting guide <formatting.rst>`_.
+For comprehensive details on weaving ``ivy-lint`` into your development practices, kindly refer to our `formatting guide <formatting.rst>`_.
 
 Contribution
 ------------
 
-We’re always thrilled to welcome contributions to `ivy-lint`. If you're brimming with ideas for a new formatter or can enhance our existing ones, please connect with us either on our GitHub repository or our `discord`_ channel.
+We’re always thrilled to welcome contributions to ``ivy-lint``. If you're brimming with ideas for a new formatter or can enhance our existing ones, please connect with us either on our GitHub repository or our `discord`_ channel.
 
 Round Up
 --------
 
-`ivy-lint` stands as a testament to Ivy's commitment to code clarity and uniformity. As the landscape of our needs shifts, we foresee further refining and expanding our suite of formatters.
+``ivy-lint`` stands as a testament to Ivy's commitment to code clarity and uniformity. As the landscape of our needs shifts, we foresee further refining and expanding our suite of formatters.
 
-For all discussions or inquiries, you're always welcome on `discord`_ in the `formatting channel`_.
+For all discussions or inquiries, you're always welcome on `discord <https://discord.gg/Y3prZYHS>`_ in the `formatting channel <https://discord.com/channels/799879767196958751/1028266706436624456>`_.
