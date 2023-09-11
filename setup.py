@@ -81,7 +81,7 @@ for tag in all_tags:
             terminate = path == paths[-1]
             pbar.update(1)
         else:
-            raise ConnectionError(f"{r.status_code}: Couldn't download {search_path}")
+            break
 
 
 this_directory = Path(__file__).parent
