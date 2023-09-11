@@ -48,7 +48,7 @@ For comprehensive details on weaving ``ivy-lint`` into your development practice
 Contribution
 ------------
 
-We’re always thrilled to welcome contributions to ``ivy-lint``. If you're brimming with ideas for a new formatter or can enhance our existing ones, please connect with us either on our GitHub repository or our `discord`_ channel.
+We’re always thrilled to welcome contributions to ``ivy-lint``. If you're brimming with ideas for a new formatter or can enhance our existing ones, please connect with us either on our GitHub repository or our `discord <https://discord.gg/Y3prZYHS>`_ channel.
 
 Round Up
 --------
