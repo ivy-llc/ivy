@@ -109,6 +109,22 @@ def cosine_embedding_loss(
 
     return out
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def margin_cross_entropy(input, target, margin=0.0, reduction='mean'):
+    assert input.shape == target.shape, "Input and target must be the same shape"
+
+    ce_loss = -target * ivy.log(input) - (1 - target) * ivy.log(1 - input)
+
+    ce_loss = ivy.maximum(ce_loss - margin, 0)
+
+    if reduction == 'mean':
+        return ivy.mean(ce_loss)
+    elif reduction == 'sum':
+        return ivy.sum(ce_loss)
+    else:
+        return ce_loss
+
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
