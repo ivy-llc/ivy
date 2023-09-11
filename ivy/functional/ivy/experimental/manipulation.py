@@ -2223,14 +2223,11 @@ def fill_diagonal(
     a = ivy.reshape(a, (-1,))
     steps = ivy.arange(0, end, step)
     if isinstance(v, ivy.Array) or isinstance(v, ivy.NativeArray):
-        v = ivy.reshape(v, (-1,))
+        v = ivy.reshape(v, (-1,)).astype(a.dtype)
         v = ivy.tile(v, int(ivy.ceil(len(steps) / v.shape[0])))[: len(steps)]
     else:
         v = ivy.repeat(v, len(steps))
-    print("steps: ", steps, steps.shape)
-    print("v: ", v, v.shape)
-    print("a: ", a, a.shape)
-    ivy.scatter_flat(steps, v, out=a, reduction="replace")
+    ivy.scatter_flat(steps, v, size=a.shape[0], reduction="replace", out=a)
     a = ivy.reshape(a, shape)
     return a
 
