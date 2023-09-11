@@ -653,7 +653,6 @@ def test_numpy_negative_binomial(
         allow_infinity=False,
         min_value=0,
         max_value=1000,
-        exclude_min=True,
     ),
     test_with_out=st.just(False),
 )
