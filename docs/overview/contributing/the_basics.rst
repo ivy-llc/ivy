@@ -63,7 +63,7 @@ c. Comment on the ToDo list issue with a reference to this issue like so:
    :code:`- [ ] #Issue_number`
 
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-   No need to wait for this to happen before progressing to the next stage. Don't comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
+   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above.
 
 d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
