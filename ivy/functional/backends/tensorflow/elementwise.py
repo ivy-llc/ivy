@@ -605,8 +605,8 @@ def positive(
     backend_version,
 )
 def pow(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[int, float, tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
