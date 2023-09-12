@@ -348,7 +348,7 @@ def test_jax_leaky_relu(
 @handle_frontend_test(
     fn_tree="jax.nn.log_sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-100,
         max_value=100,
         large_abs_safety_factor=8,
@@ -735,9 +735,9 @@ def test_jax_soft_sign(
 @handle_frontend_test(
     fn_tree="jax.nn.softmax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
-        max_axes_size=1,
+        max_axes_size=2,
         force_int_axis=True,
         valid_axis=True,
     ),
