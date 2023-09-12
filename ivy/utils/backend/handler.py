@@ -257,7 +257,7 @@ def _modify_module_symbols(
                 del target.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        v = _verify_efficient_implementations(v)
+        v = _verify_efficient_implementations(v) if v else v
         target.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )

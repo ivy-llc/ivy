@@ -1600,7 +1600,7 @@ def _warn_efficient_implementation_available(fn: Callable) -> Callable:
         -------
             The return of the function.
         """
-        logging.warning(
+        ivy.warn(
             f"An efficient implementation of {fn.__name__} is available "
             "in these sub backends: "
             f"{ivy.available_sub_backend_implementations(fn.__name__)}.\n"
