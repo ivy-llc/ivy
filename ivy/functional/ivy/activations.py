@@ -215,6 +215,7 @@ def log_softmax(
     /,
     *,
     axis: Optional[int] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -226,6 +227,9 @@ def log_softmax(
         Input array.
     axis
         The dimension log_softmax would be performed on. The default is ``None``.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

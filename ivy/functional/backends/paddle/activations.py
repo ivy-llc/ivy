@@ -161,28 +161,21 @@ softsign.support_native_out = True
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def log_softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[paddle.Tensor] = None,
 ):
-    if axis is None:
-        axis = -1
     x_max = paddle_backend.max(x, axis=axis, keepdims=True)
-    x_max = paddle_backend.where(
-        paddle_backend.isfinite(x_max),
-        x_max,
-        paddle.zeros(shape=x_max.shape).astype(x_max.dtype),
-    )
-    exp_tmp = paddle_backend.exp(paddle_backend.subtract(x, x_max))
-
-    s = paddle_backend.sum(exp_tmp, axis=axis, keepdims=True)
-    ret = paddle_backend.log(s)
-    ret = paddle_backend.subtract(paddle_backend.subtract(x, x_max), ret)
+    sub_tmp = paddle_backend.subtract(x, x_max)
+    ret = paddle_backend.sum(paddle_backend.exp(sub_tmp), axis=axis, keepdims=True)
+    ret = paddle_backend.log(ret)
+    ret = paddle_backend.subtract(sub_tmp, ret)
     return ret
 
 
