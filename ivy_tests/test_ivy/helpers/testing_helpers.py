@@ -183,8 +183,12 @@ def _import_fn(fn_tree: str):
         callable_fn = mod.__dict__[fn_name]
     except KeyError:
         raise ImportError(
-            f"Unable to locate the function '{fn_name}' within '{module_to_import}'.\n"
-            "Ensure the function exists and is correctly spelled."
+            f"Error: The function '{fn_name}' could not be found within the module"
+            f" '{module_to_import}'.\nPlease double-check the function name and its"
+            " associated path for accuracy.\nIf this function is a new feature you'd"
+            " like to see added, we'd love to hear from you! You can contribute to our"
+            " project. For more details, please"
+            " visit:\nhttps://lets-unify.ai/ivy/contributing/open_tasks.html\n"
         )
     return callable_fn, fn_name, module_to_import
 
