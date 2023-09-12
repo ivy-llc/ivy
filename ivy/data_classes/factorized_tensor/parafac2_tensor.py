@@ -80,12 +80,13 @@ class Parafac2Tensor(FactorizedTensor):
 
     # Properties #
     # ---------------#
-    # remainings
-    # @property
-    # def n_param(self):
-    #     weights, factors, projections = self.weights, self.factors, self.projections
-    #     total_params = sum(int(ivy.prod(tensor.shape)) for tensor in [core] + factors)
-    #     return total_params
+    @property
+    def n_param(self):
+        factors_params = self.rank * ivy.sum(self.shape)
+        if self.weights:
+            return factors_params + self.rank
+        else:
+            return factors_params
 
     @classmethod
     def from_CPTensor(self, cp_tensor, parafac2_tensor_ok=False):
@@ -178,10 +179,11 @@ class Parafac2Tensor(FactorizedTensor):
                 raise ValueError(
                     "All the projection matrices must be orthonormal, that is, P.T@P"
                     " = I. "
-                    f"However, T.norm(projection[{i}].T@projection[{i}] -"
+                    f"However, projection[{i}].T@projection[{i}] -"
                     " T.eye(rank)) = "
-                    f"""{ivy.norm(inner_product -
-                                  ivy.eye(rank,dtype=inner_product[0].dtype))}"""
+                    f"""{ivy.sqrt(ivy.sum(ivy.square(inner_product -
+                                  ivy.eye(rank,dtype=inner_product[0].dtype)),
+                                    axis=0))}"""
                 )
 
             # Tuple unpacking to possibly support higher
@@ -231,7 +233,7 @@ class Parafac2Tensor(FactorizedTensor):
         Returns
         -------
         Parafac2Tensor
-          (normalisation_weights, normalised_factors, normalised_projections)
+          normalisation_weights, normalised_factors, normalised_projections
         """
         # allocate variables for weights, and normalized factors
         _, rank = ivy.Parafac2Tensor.validate_parafac2_tensor(parafac2_tensor)
@@ -489,111 +491,108 @@ class Parafac2Tensor(FactorizedTensor):
             tensor[i, :length] = slice_
         return tensor
 
+    def parafac2_to_unfolded(parafac2_tensor, mode):
+        """
+        Construct an unfolded tensor from a PARAFAC2 decomposition. Uneven slices are
+        padded by zeros.
 
-def parafac2_to_unfolded(parafac2_tensor, mode):
-    """
-    Construct an unfolded tensor from a PARAFAC2 decomposition. Uneven slices are padded
-    by zeros.
+        The decomposition is on the form :math:`(A [B_i] C)` such that the
+        i-th frontal slice, :math:`X_i`, of :math:`X` is given by
 
-    The decomposition is on the form :math:`(A [B_i] C)` such that the
-    i-th frontal slice, :math:`X_i`, of :math:`X` is given by
+        .. math::
 
-    .. math::
+            X_i = B_i diag(a_i) C^T,
 
-        X_i = B_i diag(a_i) C^T,
+        where :math:`diag(a_i)` is the diagonal matrix whose nonzero entries
+        are equal to the :math:`i`-th row of the :math:`I times R` factor
+        matrix :math:`A`, :math:`B_i` is a :math:`J_i times R` factor
+        matrix such that the cross product matrix :math:`B_{i_1}^T B_{i_1}`
+        is constant for all :math:`i`, and :math:`C` is a :math:`K times R`
+        factor matrix. To compute this decomposition, we reformulate the
+        expression for :math:`B_i` such that
 
-    where :math:`diag(a_i)` is the diagonal matrix whose nonzero entries are equal to
-    the :math:`i`-th row of the :math:`I times R` factor matrix :math:`A`, :math:`B_i`
-    is a :math:`J_i times R` factor matrix such that the cross product matrix
-    :math:`B_{i_1}^T B_{i_1}` is constant for all :math:`i`, and :math:`C` is a
-    :math:`K times R` factor matrix. To compute this decomposition,
-    we reformulate the expression for :math:`B_i` such that
+        .. math::
 
-    .. math::
+            B_i = P_i B,
 
-        B_i = P_i B,
+        where :math:`P_i` is a :math:`J_i times R` orthogonal matrix and :math:`B` is a
+        :math:`R times R` matrix.
 
-    where :math:`P_i` is a :math:`J_i times R` orthogonal matrix and :math:`B` is a
-    :math:`R times R` matrix.
+        An alternative formulation of the PARAFAC2 decomposition is that the
+        tensor element :math:`X_{ijk}` is given by
 
-    An alternative formulation of the PARAFAC2 decomposition is that the tensor element
-    :math:`X_{ijk}` is given by
+        .. math::
 
-    .. math::
+            X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
 
-        X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
+        with the same constraints hold for :math:`B_i` as above.
 
-    with the same constraints hold for :math:`B_i` as above.
-
-    Parameters
-    ----------
-    parafac2_tensor : Parafac2Tensor - (weight, factors, projection_matrices)
-        weights
-            weights of the factors
-        factors
-            Contains the matrices :math:`A`, :math:`B` and :math:`C` described above
-        projection_matrices
+        Parameters
+        ----------
+        parafac2_tensor : Parafac2Tensor - (weight, factors, projection_matrices)
+            weights
+                weights of the factors
             factors
+                Contains the matrices :math:`A`, :math:`B` and :math:`C` described above
+            projection_matrices
+                factors
 
-    Returns
-    -------
-        Full constructed tensor. Uneven slices are padded with zeros.
-    """
-    return ivy.Parafac2Tensor.unfold(
-        ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor), mode
-    )
+        Returns
+        -------
+            Full constructed tensor. Uneven slices are padded with zeros.
+        """
+        return ivy.unfold(ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor), mode)
 
+    def parafac2_to_vec(parafac2_tensor):
+        """
+        Construct a vectorized tensor from a PARAFAC2 decomposition. Uneven slices are
+        padded by zeros.
 
-def parafac2_to_vec(parafac2_tensor):
-    """
-    Construct a vectorized tensor from a PARAFAC2 decomposition. Uneven slices are
-    padded by zeros.
+        The decomposition is on the form :math:`(A [B_i] C)` such that
+        the i-th frontal slice, :math:`X_i`, of :math:`X` is given by
 
-    The decomposition is on the form :math:`(A [B_i] C)` such that
-    the i-th frontal slice, :math:`X_i`, of :math:`X` is given by
+        .. math::
 
-    .. math::
+            X_i = B_i diag(a_i) C^T,
 
-        X_i = B_i diag(a_i) C^T,
+        where :math:`diag(a_i)` is the diagonal matrix whose nonzero
+        entries are  equal to the :math:`i`-th row of the :math:`I
+        times R` factor matrix :math:`A`, :math:`B_i` is a :math:`J_i
+        times R` factor matrix such that the cross product matrix :math:
+        `B_{i_1}^T B_{i_1}`is constant for all :math:`i`, and :math:`C`
+        is a :math:`K times R` factor matrix. To compute this
+        decomposition, we reformulate the expression for :math:`B_i`
+        such that
 
-    where :math:`diag(a_i)` is the diagonal matrix whose nonzero entries are equal to
-    the :math:`i`-th row of the :math:`I times R` factor matrix :math:`A`, :math:`B_i`
-    is a :math:`J_i times R` factor matrix such that the cross product
-    matrix :math:`B_{i_1}^T B_{i_1}`is constant for all :math:`i`, and
-    :math:`C` is a :math:`K times R` factor matrix.To compute this decomposition,
-    we reformulate the expression for :math:`B_i` such that
+        .. math::
 
-    .. math::
+            B_i = P_i B,
 
-        B_i = P_i B,
+        where :math:`P_i` is a :math:`J_i times R` orthogonal matrix and :math:`B` is a
+        :math:`R times R` matrix.
 
-    where :math:`P_i` is a :math:`J_i times R` orthogonal matrix and :math:`B` is a
-    :math:`R times R` matrix.
+        An alternative formulation of the PARAFAC2 decomposition is that
+        the tensor element :math:`X_{ijk}` is given by
 
-    An alternative formulation of the PARAFAC2 decomposition is that the tensor element
-    :math:`X_{ijk}` is given by
+        .. math::
 
-    .. math::
+            X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
 
-        X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
+        with the same constraints hold for :math:`B_i` as above.
 
-    with the same constraints hold for :math:`B_i` as above.
+        Parameters
+        ----------
+        parafac2_tensor : Parafac2Tensor - (weight, factors, projection_matrices)
+            * weights
+            1D array of shape (rank, ) weights of the factors
+            * factors
+            List of factors of the PARAFAC2 decomposition Contains the matrices
+            :math:`A, :math:`B` and :math:`C` described above
+            * projection_matrices
+                List of projection matrices used to create evolving factors.
 
-    Parameters
-    ----------
-    parafac2_tensor : Parafac2Tensor - (weight, factors, projection_matrices)
-        * weights
-          1D array of shape (rank, ) weights of the factors
-        * factors
-          List of factors of the PARAFAC2 decomposition Contains the matrices :math:`A`,
-          :math:`B` and :math:`C` described above
-        * projection_matrices
-            List of projection matrices used to create evolving factors.
-
-    Returns
-    -------
-        Full constructed tensor. Uneven slices are padded with zeros.6
-    """
-    return ivy.Parafac2Tensor.tensor_to_vec(
-        ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor)
-    )
+        Returns
+        -------
+            Full constructed tensor. Uneven slices are padded with zeros.6
+        """
+        return ivy.reshape(ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor), (-1))

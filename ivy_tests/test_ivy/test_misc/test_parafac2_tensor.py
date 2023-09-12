@@ -16,11 +16,10 @@ import pytest
     ],
 )
 def test_apply_parafac2_projections(weights, factors, projections, true_res):
-    weights = ivy.Array(weights)
-    factors = [ivy.Array(f) for f in factors]
-    projections = [ivy.Array(p) for p in projections]
-    true_res = ivy.Array(true_res)
-    ivy.Parafac2Tensor.parafac2_to_slice((weights, factors, projections))
+    weights = ivy.array(weights)
+    factors = [ivy.array(f) for f in factors]
+    projections = [ivy.array(p) for p in projections]
+    true_res = [ivy.array(t) for t in true_res]
     new_weights, projected_factors = ivy.Parafac2Tensor.apply_parafac2_projections(
         (weights, factors, projections)
     )
@@ -66,11 +65,10 @@ def test_parafac2_normalise(shape, rank):
     ],
 )
 def test_parafac2_to_slices(weights, factors, projections, true_res):
-    weights = ivy.Array(weights)
-    factors = [ivy.Array(f) for f in factors]
-    projections = [ivy.Array(p) for p in projections]
-    true_res = ivy.Array(true_res)
-    ivy.Parafac2Tensor.parafac2_to_slice((weights, factors, projections))
+    weights = ivy.array(weights)
+    factors = [ivy.array(f) for f in factors]
+    projections = [ivy.array(p) for p in projections]
+    true_res = [ivy.array(t) for t in true_res]
     for i, true_slice in enumerate(true_res):
         assert np.allclose(
             ivy.Parafac2Tensor.parafac2_to_slice((weights, factors, projections), i),
@@ -95,10 +93,10 @@ def test_parafac2_to_slices(weights, factors, projections, true_res):
     ],
 )
 def test_parafac2_to_tensor(weights, factors, projections, true_res):
-    weights = ivy.Array(weights)
-    factors = [ivy.Array(f) for f in factors]
-    projections = [ivy.Array(p) for p in projections]
-    true_res = ivy.Array(true_res)
+    weights = ivy.array(weights)
+    factors = [ivy.array(f) for f in factors]
+    projections = [ivy.array(p) for p in projections]
+    true_res = ivy.array(true_res)
     res = ivy.Parafac2Tensor.parafac2_to_tensor((weights, factors, projections))
     (true_res, res)
     assert np.allclose(res, true_res)
@@ -116,7 +114,7 @@ def test_parafac2_to_tensor(weights, factors, projections, true_res):
 def test_parafac2_to_unfolded(shape, rank):
     pf2_tensor = ivy.random_parafac2(shape, rank)
     full_tensor = ivy.Parafac2Tensor.parafac2_to_tensor(pf2_tensor)
-    for mode in range(ivy.dims(full_tensor)):
+    for mode in range(ivy.get_num_dims(full_tensor)):
         assert np.allclose(
             ivy.Parafac2Tensor.parafac2_to_unfolded(pf2_tensor, mode),
             ivy.unfold(full_tensor, mode),
@@ -137,7 +135,7 @@ def test_parafac2_to_vec(shape, rank):
     full_tensor = ivy.Parafac2Tensor.parafac2_to_tensor(pf2_tensor)
     np.allclose(
         ivy.Parafac2Tensor.parafac2_to_vec(pf2_tensor),
-        ivy.Parafac2Tensor.tensor_to_vec(full_tensor),
+        ivy.reshape(full_tensor, (-1)),
     )
 
 
@@ -151,7 +149,7 @@ def test_parafac2_to_vec(shape, rank):
     ],
 )
 def test_validate_parafac2_tensor(true_shape, true_rank):
-    weights, factors, projections = ivy.random_parafac2(true_shape, rank=true_rank)
+    weights, factors, projections = ivy.random_parafac2(true_shape, true_rank)
 
     # Check shape and rank returned
     shape, rank = ivy.Parafac2Tensor.validate_parafac2_tensor(
@@ -171,7 +169,7 @@ def test_validate_parafac2_tensor(true_shape, true_rank):
     # One of the factors has the wrong rank
     for mode in range(3):
         false_shape = (ivy.shape(factors[mode])[0], true_rank + 1)
-        factors[mode], copy = ivy.random_uniform(false_shape, seed=12345), factors[mode]
+        factors[mode], copy = ivy.random_uniform(shape=false_shape), factors[mode]
         with np.testing.assert_raises(ValueError):
             ivy.Parafac2Tensor.validate_parafac2_tensor((weights, factors, projections))
 
@@ -190,9 +188,7 @@ def test_validate_parafac2_tensor(true_shape, true_rank):
         ivy.Parafac2Tensor.validate_parafac2_tensor((weights[1:], factors, projections))
 
     # The projections aren't orthogonal
-    false_projections = [
-        ivy.random_uniform(ivy.shape(P), seed=12345) for P in projections
-    ]
+    false_projections = [ivy.random_uniform(shape=ivy.shape(P)) for P in projections]
     with np.testing.assert_raises(ValueError):
         ivy.Parafac2Tensor.validate_parafac2_tensor(
             (weights, factors, false_projections)
