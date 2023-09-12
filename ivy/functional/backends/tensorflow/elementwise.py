@@ -663,7 +663,8 @@ def round(
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float", "int32", "int64", "complex")}
+    {"2.13.0 and below": ("bfloat16", "float", "int32", "int64", "complex")},
+    backend_version,
 )
 def sign(
     x: Union[tf.Tensor, tf.Variable],

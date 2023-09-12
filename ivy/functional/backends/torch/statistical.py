@@ -66,7 +66,7 @@ def max(
 max.support_native_out = True
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float", "complex")})
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, backend_version)
 def mean(
     x: torch.Tensor,
     /,

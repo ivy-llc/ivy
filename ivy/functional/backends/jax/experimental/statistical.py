@@ -290,7 +290,8 @@ def cov(
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bool", "float16", "int8", "int16", "complex", "uint8")}
+    {"0.4.14 and below": ("bool", "float16", "int8", "int16", "complex", "uint8")},
+    backend_version,
 )
 def cummax(
     x: JaxArray,
