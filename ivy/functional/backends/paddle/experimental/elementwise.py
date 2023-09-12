@@ -626,3 +626,21 @@ def modf(
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     with ivy.ArrayMode(False):
         return paddle.modf(x, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
+def digamma(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.digamma(x)

@@ -7,7 +7,10 @@ from typing import Union, Optional, Sequence
 import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
@@ -74,9 +77,17 @@ def max(
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            real_part = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
-            imag_part = paddle.amax(x.imag(), axis=axis, keepdim=keepdims)
-            ret = paddle.complex(real_part, imag_part)
+            const = paddle.to_tensor(1j, dtype=x.dtype)
+            real_max = paddle.max(x.real(), axis=axis, keepdim=keepdims)
+            imag = paddle.where(
+                x.real() == real_max, x.imag(), paddle.full_like(x.imag(), -1e10)
+            )
+            # we consider the number with the biggest real and imag part
+            img_max = paddle.max(imag, axis=axis, keepdim=keepdims)
+            img_max = paddle.cast(img_max, x.dtype)
+            return paddle.add(
+                paddle.cast(real_max, x.dtype), paddle.multiply(img_max, const)
+            )
         else:
             ret = paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims)
     else:
@@ -134,9 +145,17 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-    # TODO:prod causes segmentation fault
-    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    x_dtype = x.dtype
+    supported_dtypes = ["int32", "int64", "float32", "float64"]
+    if str(x_dtype) not in supported_dtypes:
+        x = x.cast("float32")
+    dtype_ = dtype
+    if str(dtype) not in supported_dtypes:
+        dtype = None
+    ret = paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    if ret.dtype != dtype_:
+        ret = ret.cast(dtype_)
+    return ret
 
 
 def _std(x, axis, correction, keepdim):
@@ -210,8 +229,12 @@ def var(
 
 # Extra #
 # ----- #
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int16")}},
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("int32", "int64", "float64", "complex128", "float32", "complex64")
+        }
+    },
     backend_version,
 )
 def cumprod(

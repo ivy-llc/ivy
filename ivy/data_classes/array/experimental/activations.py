@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 import ivy
@@ -8,7 +8,12 @@ import ivy
 
 class _ArrayWithActivationsExperimental(abc.ABC):
     def logit(
-        self, /, *, eps: Optional[float] = None, out: Optional[ivy.Array] = None
+        self,
+        /,
+        *,
+        eps: Optional[float] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.logit. This method simply wraps the
@@ -23,6 +28,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
             When eps is None the function outpus NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             Optional output array.
 
@@ -43,7 +51,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(z)
         ivy.array([ 1.38629448,  1.38629448, -1.38629436])
         """
-        return ivy.logit(self, eps=eps, out=out)
+        return ivy.logit(self, eps=eps, complex_mode=complex_mode, out=out)
 
     def thresholded_relu(
         self: ivy.Array,
@@ -147,24 +155,12 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> ivy.relu6(x, out = y)
         >>> print(y)
         ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
-
-        With :class:`ivy.Container` input:
-
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
-        >>> x = ivy.relu6(x, out=x)
-        >>> print(x)
-        {
-        a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-        b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
-        }
         """
         return ivy.relu6(self._data, out=out)
 
     def logsigmoid(
         self: ivy.Array,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.logsigmoid. This method simply wraps
@@ -175,6 +171,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             Input array.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -188,11 +187,11 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([ -1.31326175,  -0.126928  ,  -0.01814993, -10.00004578])
 
         >>> x = ivy.array([-2.5, 1., 0, 4.5])
-        >>> z = x.logsigmoid())
+        >>> z = x.logsigmoid()
         >>> print(z)
         ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
         """
-        return ivy.logsigmoid(self._data)
+        return ivy.logsigmoid(self._data, complex_mode=complex_mode)
 
     def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
