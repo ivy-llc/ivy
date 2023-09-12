@@ -1,6 +1,5 @@
 youtube_map = {
-    # TODO: Add video tutorials
-    # "quickstart": "tmhFTFSEa6k",
+    "quickstart": "9myf5tekBWU",
 }
 
 nbsphinx_execute = 'never'
