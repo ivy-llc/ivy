@@ -135,7 +135,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
-    _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays = True
+    _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays_tf = True
     return _inputs_to_ivy_arrays_tf
 
 
@@ -220,7 +220,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             ret, _ivy_array_to_tensorflow, include_derived={"tuple": True}
         )
 
-    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True
+    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays_tf = True
     return _outputs_to_frontend_arrays_tf
 
 
