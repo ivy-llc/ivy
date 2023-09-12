@@ -751,6 +751,13 @@ class Tensor:
             self._ivy_array, axis=axis, keepdim=keepdim, dtype=dtype
         )
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def topk(self, k, axis=None, largest=True, sorted=True, name=None):
+        return ivy.top_k(self._ivy_array, k, axis=axis, largest=largest, sorted=sorted)
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):
         return ivy.remainder(self._ivy_array, y)
