@@ -610,6 +610,9 @@ def pow(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
+        ret = np.power(x1, x2)
+        return np.where(np.isinf(x2), np.nan + np.nan * 1j if x2 < 0 else -0 * 1j, ret)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
         return np.float_power(x1, x2, casting="unsafe").astype(x1.dtype)

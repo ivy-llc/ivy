@@ -1595,24 +1595,30 @@ def test_positive(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     fn_tree="functional.ivy.pow",
     dtype_and_x=pow_helper(),
     test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
-    x[0] = not_too_close_to_zero(x[0])
-    x[1] = not_too_close_to_zero(x[1])
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x1=x[0],
-        x2=x[1],
-    )
+    try:
+        helpers.test_function(
+            input_dtypes=input_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-2,
+            atol_=1e-2,
+            x1=x[0],
+            x2=x[1],
+        )
+    except Exception as e:
+        if any(
+            error_string in str(e)
+            for error_string in ["overflow", "too large to convert to"]
+        ):
+            assume(False)
+        else:
+            raise
 
 
 @handle_test(

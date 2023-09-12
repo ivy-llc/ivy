@@ -353,7 +353,6 @@ def isfinite(
         return tf.math.is_finite(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def isinf(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -362,16 +361,17 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
-    else:
-        if detect_negative and detect_positive:
-            return tf.math.is_inf(x)
-        elif detect_negative:
-            return tf.experimental.numpy.isneginf(x)
-        elif detect_positive:
-            return tf.experimental.numpy.isposinf(x)
-        return tf.zeros_like(x, tf.bool)
+    if not ivy.is_complex_dtype(x):
+        if ivy.is_int_dtype(x):
+            return tf.zeros_like(x, tf.bool)
+        else:
+            if detect_negative and detect_positive:
+                return tf.math.is_inf(x)
+            elif detect_negative:
+                return tf.experimental.numpy.isneginf(x)
+            elif detect_positive:
+                return tf.experimental.numpy.isposinf(x)
+    return tf.zeros_like(x, tf.bool)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
@@ -611,6 +611,12 @@ def pow(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
+        ret = tf.experimental.numpy.power(x1, x2)
+        return tf.where(ivy.isinf(x2), ivy.nan + ivy.nan * 1j if x2 < 0 else -0 * 1j, ret)
+    if ivy.is_complex_dtype(x2) and ivy.any(x1 == 0):
+        ret = tf.experimental.numpy.power(x1, x2)
+        return tf.where(x1 == 0, ivy.nan + ivy.nan * 1j, ret)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if isinstance(x1, tf.Tensor) and isinstance(x2, tf.Tensor):
         if x1.dtype.is_unsigned or x2.dtype.is_unsigned:
@@ -620,14 +626,12 @@ def pow(
             if x2.dtype.is_unsigned:
                 x2 = tf.cast(x2, tf.float64)
             return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
-    orig_x1_dtype = None
     if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
-        orig_x1_dtype = x1.dtype
-        x1 = tf.cast(x1, tf.float32)
-    ret = tf.experimental.numpy.power(x1, x2)
-    if orig_x1_dtype is not None:
-        return tf.cast(ret, orig_x1_dtype)
-    return ret
+        return tf.cast(
+            tf.experimental.numpy.power(tf.cast(x1, tf.float32), x2),
+            x1.dtype,
+        )
+    return tf.experimental.numpy.power(x1, x2)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
