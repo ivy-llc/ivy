@@ -199,8 +199,12 @@ def test_function_backend_computation(
         else:
             target_fn = ivy_backend.__dict__[fn_name]
 
+        # Make copy of arguments for functions that might use inplace update by default
+        copy_kwargs = copy.deepcopy(kwargs)
+        copy_args = copy.deepcopy(args)
+
         ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-            fw, target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+            fw, target_fn, *copy_args, test_compile=test_flags.test_compile, **copy_kwargs
         )
 
         assert ivy_backend.nested_map(
