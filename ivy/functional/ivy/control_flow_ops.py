@@ -4,7 +4,6 @@ from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     to_native_arrays_and_back,
-    to_ivy_arrays_and_back,
 )
 
 
