@@ -1041,6 +1041,8 @@ def _handle_reduction_op(reduction, arr, indices, values):
     elif reduction == "mean":
         idx, _, _, element_count = ivy.unique_all(indices)
         element_count += 1
+        if hasattr(arr, "numpy"):
+            arr = arr.numpy()
         for i, index in enumerate(indices):
             arr[index] += values[i]
         for i in idx:
