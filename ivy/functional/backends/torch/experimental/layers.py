@@ -976,6 +976,7 @@ def ifftn(
     return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16")}, backend_version)
 def stft(
     signal: Union[torch.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
@@ -996,11 +997,15 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if window is not None and isinstance(window, str):
-        if window == 'hann':
-            window = torch.hann_window(n_fft, dtype=torch.float32)
-        else:
-            raise ValueError(f"Unsupported window type: {window}")
+    if window is None or window == 'hann':
+        if win_length is None:
+            win_length = n_fft
+        window = torch.hann_window(win_length, dtype=torch.float32)
+    else:
+        window = torch.hann_window(n_fft, dtype=torch.float32)
+
+    if  hop_length <= 0:
+        hop_length = 1
 
     return torch.stft(
         signal,
@@ -1014,6 +1019,8 @@ def stft(
         onesided,
         return_complex,
     )
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def rfftn(
     x: torch.Tensor,
