@@ -40,7 +40,7 @@ def _valid_stft(draw):
             min_value=-65280,
             min_num_dims=1,
             min_dim_size=2,
-            shared_dtype=True
+            shared_dtype=True,
         )
     )
     frame_length = draw(helpers.ints(min_value=16, max_value=100))
@@ -175,35 +175,6 @@ def test_tensorflow_kaiser_window(
     )
 
 
-# vorbis_window
-@handle_frontend_test(
-    fn_tree="tensorflow.signal.vorbis_window",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        max_num_dims=0,
-        min_value=1,
-        max_value=10,
-    ),
-    # dtype=helpers.get_dtypes("float", full=False),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_vorbis_window(
-    *, dtype_and_x, test_flags, backend_fw, fn_tree, on_device, frontend  # ,dtype
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        atol=1e-02,
-        window_length=int(x[0]),
-        # dtype=dtype[0],
-    )
-
-
 # test stft
 @handle_frontend_test(
     fn_tree="tensorflow.signal.stft",
@@ -235,4 +206,33 @@ def test_tensorflow_stft(
         pad_end=True,
         atol=1e-02,
         rtol=1e-02,
+    )
+
+
+# vorbis_window
+@handle_frontend_test(
+    fn_tree="tensorflow.signal.vorbis_window",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=0,
+        min_value=1,
+        max_value=10,
+    ),
+    # dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_vorbis_window(
+    *, dtype_and_x, test_flags, backend_fw, fn_tree, on_device, frontend  # ,dtype
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-02,
+        window_length=int(x[0]),
+        # dtype=dtype[0],
     )
