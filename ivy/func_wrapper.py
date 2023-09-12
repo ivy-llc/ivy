@@ -1319,7 +1319,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                             # we use this decorator's dict information
                             # and previous decorator's dict information
                             # to update this
-                            old_version_dict = getattr(func, "dictionary_info")
+                            old_version_dict = getattr(func, "dictionary_info")[0]
                             old_version_dict.update(version_dict)
                             val = _versioned_attribute_factory(
                                 lambda: _dtype_from_version(
