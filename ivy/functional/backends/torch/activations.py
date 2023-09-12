@@ -4,7 +4,7 @@ PyTorch activation functions.
 Collection of PyTorch activation functions, wrapped to fit Ivy syntax
 and signature.
 """
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import numpy as np
@@ -128,15 +128,19 @@ def log_softmax(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "complex",
-            "float16",
-        )
-    },
+    {"2.0.1 and below": ("float16",)},
     backend_version,
 )
-def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def mish(
+    x: torch.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if torch.is_complex(x):
+        x_norm = torch.log1p(x.exp())
+        return torch.multiply(x, x_norm.tanh())
     return torch.nn.functional.mish(x)
 
 

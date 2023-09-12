@@ -720,9 +720,15 @@ def tanh(
     ]:
         return paddle.tanh(x.astype("float32")).astype(x.dtype)
     if paddle.is_complex(x):
-        tanh_a = paddle.tanh(paddle.real(x))
-        tan_b = paddle.tan(paddle.imag(x))
-        return (tanh_a + 1j * tan_b) / (1 + 1j * (tanh_a * tan_b))
+        tanh_a = paddle.tanh(x.real())
+        tan_b = paddle.tan(x.imag())
+        return paddle.divide(
+            paddle.complex(tanh_a, tan_b),
+            paddle.complex(
+                paddle.ones_like(tanh_a),
+                paddle.multiply(tanh_a, tan_b),
+            ),
+        )
     return paddle.tanh(x)
 
 

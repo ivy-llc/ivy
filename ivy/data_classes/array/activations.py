@@ -299,7 +299,13 @@ class _ArrayWithActivations(abc.ABC):
         """
         return ivy.log_softmax(self._data, axis=axis, out=out)
 
-    def mish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def mish(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.mish. This method simply wraps the
         function, and so the docstring for ivy.mish also applies to this method with
@@ -309,6 +315,9 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         self
             input array.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -320,7 +329,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([-0.30340147,  0.        ,  0.86509842])
         """
-        return ivy.mish(self._data, out=out)
+        return ivy.mish(self._data, complex_mode=complex_mode, out=out)
 
     def hardswish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

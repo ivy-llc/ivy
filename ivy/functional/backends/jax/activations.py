@@ -6,7 +6,7 @@
 
 import jax
 import jax.numpy as jnp
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -93,7 +93,13 @@ def log_softmax(
     return jax.nn.log_softmax(x, axis)
 
 
-def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
+def mish(
+    x: JaxArray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     return x * jnp.tanh(jax.nn.softplus(x))
 
 

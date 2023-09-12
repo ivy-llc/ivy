@@ -4,7 +4,7 @@ Paddle activation functions.
 Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.
 """
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import paddle
@@ -186,7 +186,16 @@ def log_softmax(
     return ret
 
 
-def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
+def mish(
+    x: paddle.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
         if paddle.is_complex(x):
             return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
