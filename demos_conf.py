@@ -1,5 +1,5 @@
 youtube_map = {
-    "quickstart": "9myf5tekBWU",
+    "demos/quickstart": "9myf5tekBWU",
 }
 
 nbsphinx_execute = 'never'
