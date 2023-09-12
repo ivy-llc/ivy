@@ -28,7 +28,7 @@ def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "complex")},
+    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
     backend_version,
 )
 def leaky_relu(
@@ -48,7 +48,7 @@ def leaky_relu(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "complex")},
+    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
     backend_version,
 )
 def gelu(
@@ -182,7 +182,7 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.mish(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ("float16", "float32", "float64",)}, backend_version)
 def hardswish(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
