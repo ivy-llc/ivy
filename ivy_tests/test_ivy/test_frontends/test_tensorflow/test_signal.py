@@ -31,6 +31,24 @@ def _valid_idct(draw):
     return dtype, x, type, n, axis, norm
 
 
+@st.composite
+def _valid_stft(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            max_value=65280,
+            min_value=-65280,
+            min_num_dims=1,
+            min_dim_size=2,
+            shared_dtype=True
+        )
+    )
+    frame_length = draw(helpers.ints(min_value=16, max_value=100))
+    frame_step = draw(helpers.ints(min_value=1, max_value=50))
+
+    return dtype, x, frame_length, frame_step
+
+
 # --- Main --- #
 # ------------ #
 
@@ -186,26 +204,10 @@ def test_tensorflow_vorbis_window(
     )
 
 
-@st.composite
-def valid_stft(draw):
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            max_value=65280,
-            min_value=-65280,
-            min_num_dims=1,
-            min_dim_size=2,
-            shared_dtype=True
-        )
-    )
-    frame_length = draw(helpers.ints(min_value=16, max_value=100))
-    frame_step = draw(helpers.ints(min_value=1, max_value=50))
-
-    return dtype, x, frame_length, frame_step
-
+# test stft
 @handle_frontend_test(
     fn_tree="tensorflow.signal.stft",
-    dtype_x_and_args=valid_stft(),
+    dtype_x_and_args=_valid_stft(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_stft(
@@ -231,6 +233,6 @@ def test_tensorflow_stft(
         fft_length=None,
         window_fn=None,
         pad_end=True,
-        atol=1e-01,
-        rtol=1e-01,
+        atol=1e-02,
+        rtol=1e-02,
     )
