@@ -1293,23 +1293,28 @@ def test_torch_cholesky_ex(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.lu_solve",
-    dtype_and_data=helpers.dtype_and_values(
+    dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
-        safety_factor_scale="log",
-        small_abs_safety_factor=6,
-    ).filter(
-        lambda x: np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(x[1][0][:, :-1]) != 0
-        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    dtype_y=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=(3, 1),
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
     ),
     left=st.booleans(),
     adjoint=st.booleans(),
 )
 def test_torch_lu_solve(
-    dtype_and_data,
+    dtype_x,
+    dtype_y,
     left,
     adjoint,
     on_device,
@@ -1318,9 +1323,8 @@ def test_torch_lu_solve(
     test_flags,
     backend_fw,
 ):
-    input_dtype, data = dtype_and_data
-    input = data[0][:, :-1]
-    other = data[0][:, -1].reshape(-1, 1)
+    input_dtype, x = dtype_x
+    input_dtype, y = dtype_y
     test_flags.num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
@@ -1329,9 +1333,9 @@ def test_torch_lu_solve(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=input,
-        pivots=input,
-        B=other,
+        A=x[0],
+        pivots=x[1],
+        B=y[0],
         left=left,
         adjoint=adjoint,
     )
