@@ -927,7 +927,11 @@ def adaptive_avg_pool1d(input, output_size):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
-def adaptive_avg_pool2d(input, output_size):
+def adaptive_avg_pool2d(
+    input,
+    output_size,
+    data_format: str = "NCHW",
+):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
 
 

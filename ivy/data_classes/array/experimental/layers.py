@@ -837,6 +837,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
     def adaptive_avg_pool2d(
         self: ivy.Array,
         output_size: Union[Sequence[int], int],
+        data_format: str = "NCHW",
     ) -> ivy.Array:
         """
         Apply a 2D adaptive average pooling over an input signal composed of several
@@ -850,6 +851,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the 2 spatial dimensions.
         output_size
             Spatial output size.
+        data_format
+            NHWC" or "NCHW". Defaults to "NCHW".
 
         Returns
         -------
@@ -859,6 +862,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         return ivy.adaptive_avg_pool2d(
             self._data,
             output_size,
+            data_format,
         )
 
     def adaptive_max_pool2d(

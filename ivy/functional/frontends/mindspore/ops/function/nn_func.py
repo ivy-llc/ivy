@@ -120,8 +120,8 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
     {"2.0.0 and below": ("float16", "float32", "float64")}, "mindspore"
 )
 @to_ivy_arrays_and_back
-def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
+def adaptive_avg_pool2d(input, output_size, data_format):
+    return ivy.adaptive_avg_pool2d(input, output_size, data_format)
 
 
 @to_ivy_arrays_and_back

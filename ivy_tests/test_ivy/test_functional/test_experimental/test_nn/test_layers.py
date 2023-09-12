@@ -465,8 +465,8 @@ def test_adaptive_avg_pool2d(
         on_device=on_device,
         fn_name=fn_name,
         input=x[0],
-        data_format=data_format,
         output_size=output_size,
+        data_format=data_format,
     )
 
 

@@ -1891,6 +1891,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool2d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: Union[Sequence[int], int, ivy.Container],
+        data_format: str = "NCHW",
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -1910,6 +1911,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the 2 spatial dimensions.
         output_size
             Spatial output size.
+        data_format
+            NHWC" or "NCHW". Defaults to "NCHW".
 
         Returns
         -------
@@ -1920,6 +1923,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             "adaptive_avg_pool2d",
             input,
             output_size,
+            data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1929,6 +1933,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def adaptive_avg_pool2d(
         self: ivy.Container,
         output_size: Union[int, ivy.Container],
+        data_format: str = "NCHW",
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
@@ -1945,6 +1950,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             Input container.
         output_size
             Spatial output size.
+        data_format
+            NHWC" or "NCHW". Defaults to "NCHW".
 
         Returns
         -------
@@ -1953,6 +1960,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         return self.static_adaptive_avg_pool2d(
             self,
             output_size,
+            data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

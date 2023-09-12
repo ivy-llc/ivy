@@ -58,8 +58,8 @@ def adaptive_avg_pool1d(input, output_size):
     "torch",
 )
 @to_ivy_arrays_and_back
-def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
+def adaptive_avg_pool2d(input, output_size, data_format):
+    return ivy.adaptive_avg_pool2d(input, output_size, data_format)
 
 
 @to_ivy_arrays_and_back
