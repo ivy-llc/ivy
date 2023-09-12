@@ -1580,7 +1580,7 @@ def handle_backend_invalid(fn: Callable) -> Callable:
     return _handle_backend_invalid
 
 
-def efficient_implementation_available(fn: Callable) -> Callable:
+def _warn_efficient_implementation_available(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _wrapper(*args, **kwargs):
         """

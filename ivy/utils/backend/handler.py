@@ -10,7 +10,7 @@ import gc
 from ivy.utils import _importlib, verbosity
 
 # local
-from ivy.func_wrapper import _wrap_function
+from ivy.func_wrapper import _wrap_function, _warn_efficient_implementation_available
 from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
 from ivy.utils.exceptions import _handle_inplace_mode
 
@@ -257,6 +257,7 @@ def _modify_module_symbols(
                 del target.__dict__[k]
                 continue
             backend.__dict__[k] = v
+        v = _verify_efficient_implementations(v)
         target.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
@@ -272,6 +273,13 @@ def _modify_module_symbols(
                 invalid_dtypes=invalid_dtypes,
                 backend_str=backend_str,
             )
+
+
+def _verify_efficient_implementations(v):
+    if callable(v):
+        if ivy.available_sub_backend_implementations(v):
+            return _warn_efficient_implementation_available(v)
+    return v
 
 
 def _handle_backend_specific_vars(target, backend):

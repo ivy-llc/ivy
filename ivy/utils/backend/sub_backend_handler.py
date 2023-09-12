@@ -212,7 +212,7 @@ def find_available_sub_backends(sub_backends_loc):
     return available_sub_backends
 
 
-def _find_available_sub_backend_implementations_dict(sub_backends):
+def _find_available_sub_backend_implementations(sub_backends):
     result = dict()
     for sub in sub_backends:
         sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
@@ -220,7 +220,7 @@ def _find_available_sub_backend_implementations_dict(sub_backends):
             if isinstance(v, Callable) and not k.startswith("__"):
                 result[k] = result.get(k, []) + [sub]
 
-    _available_sub_backends_implementations_dict[ivy.current_backend_str()] = result
+    return result
 
 
 def available_sub_backend_implementations(obj: Union[Callable, str]) -> list:
@@ -256,16 +256,12 @@ def available_sub_backend_implementations(obj: Union[Callable, str]) -> list:
         ivy.current_backend_str()
         not in _available_sub_backends_implementations_dict.keys()
     ):
-        _find_available_sub_backend_implementations_dict(sub_backends)
+        _available_sub_backends_implementations_dict[ivy.current_backend_str()] = (
+            _find_available_sub_backend_implementations(sub_backends)
+        )
     return _available_sub_backends_implementations_dict[ivy.current_backend_str()].get(
         obj.__name__, []
     )
-
-
-def _verify_available_implementation(obj, sub, result):
-    sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
-    if obj in sub_backend.__dict__.keys():
-        result.append(sub)
 
 
 def _check_callable(obj):
