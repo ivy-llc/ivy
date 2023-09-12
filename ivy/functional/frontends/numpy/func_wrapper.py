@@ -194,7 +194,7 @@ def _set_order(args, order):
     )
     if order in ["K", "A", None]:
         check_order = ivy.nested_map(
-            args, _check_C_order, include_derived={tuple: True}, shallow=False
+            args, _check_C_order, include_derived={"tuple": True}, shallow=False
         )
         if all(v is None for v in check_order) or any(
             ivy.multi_index_nest(check_order, ivy.all_nested_indices(check_order))
@@ -447,9 +447,9 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             The return of the function, with ivy arrays passed in the arguments.
         """
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived={tuple: True})
+        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived={"tuple": True})
         ivy_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={tuple: True}
+            kwargs, _to_ivy_array, include_derived={"tuple": True}
         )
         return fn(*ivy_args, **ivy_kwargs)
 
@@ -509,10 +509,10 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         # convert all returned arrays to `ndarray` instances
         if order == "F":
             return ivy.nested_map(
-                ret, _ivy_to_numpy_order_F, include_derived={tuple: True}
+                ret, _ivy_to_numpy_order_F, include_derived={"tuple": True}
             )
         else:
-            return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
+            return ivy.nested_map(ret, _ivy_to_numpy, include_derived={"tuple": True})
 
     if "order" in list(inspect.signature(fn).parameters.keys()):
         contains_order = True

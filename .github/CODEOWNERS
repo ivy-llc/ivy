@@ -5,7 +5,7 @@ ivy/utils/backend @VedPatwardhan @CatB1t
 ivy/utils/backend/ast_helpers.py @CatB1t
 
 # Ivy Testing
-ivy_tests/test_ivy/helpers/ @CatB1t
+ivy_tests/test_ivy/helpers/ @sherry30 @CatB1t
 ivy_tests/array_api_testing/ @aarsh2001 @hirwa-nshuti
 
 # Docs builder
