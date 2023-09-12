@@ -105,14 +105,14 @@ class Tensor:
         if self.device == "cpu":
             return -1
         else:
-            return int(self.devices.split(':')[-1])
+            return int(self.device.split(':')[-1])
 
     # Setters #
     # --------#
 
     @device.setter
-    def cuda(self):
-        self.device = "gpu:0"
+    def cuda(self, device=None):
+        return self.device = device
 
     @ivy_array.setter
     def ivy_array(self, array):
