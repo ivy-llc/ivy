@@ -172,3 +172,33 @@ def unique(
     # indexing each element whose condition is True except for the values
     uniques = [uniques[0]] + [uni for idx, uni in enumerate(uniques[1:]) if bools[idx]]
     return uniques
+
+
+@to_ivy_arrays_and_back
+def union1d(ar1, ar2, *, size=None, fill_value=None):
+    x = ivy.array(ar1)
+    y = ivy.array(ar2)
+    # elements only from ar1
+    mask_1 = ivy.isin(ar1,ar2, invert=True)
+    # elements only from ar2
+    mask_2f = ivy.isin(ar2, ar1 ,invert=False)
+    # elements common in both ar1 and ar2
+    mask_2t = ivy.isin(ar2, ar1 ,invert=True)
+    # concatenating arrays
+    result_concat = ivy.concat((x[mask_1], y[mask_2f], y[mask_2t]))
+    result_arranged = ivy.sort(result_concat)
+    n = len(result_concat)
+    if size is None:
+        result = result_arranged
+    else:
+        if size <= n:
+            result = result_arranged[0:size]
+        else:
+            if fill_value is None:
+                fill_value = result_arranged[0]
+                width = size - n
+                result = ivy.constant_pad(result_arranged, pad_width = (0,width), value = fill_value)
+            else:
+                result = ivy.constant_pad(result_arranged, pad_width=size, value=fill_value)
+
+    return result
