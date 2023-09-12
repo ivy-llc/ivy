@@ -39,11 +39,11 @@ from ivy.func_wrapper import (
 # --------#
 
 
-def asarray_handle_nestable(fn: Callable) -> Callable:
+def _asarray_handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
     @functools.wraps(fn)
-    def _asarray_handle_nestable(*args, **kwargs):
+    def _asarray_handle_nestable_wrapper(*args, **kwargs):
         """
         Call `fn` with the *nestable* property of the function correctly handled. This
         means mapping the function to the container leaves if any containers are passed
@@ -71,8 +71,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
         # the passed arguments, returning an ivy or a native array.
         return fn(*args, **kwargs)
 
-    _asarray_handle_nestable.handle_nestable = True
-    return _asarray_handle_nestable
+    _asarray_handle_nestable_wrapper.handle_nestable = True
+    return _asarray_handle_nestable_wrapper
 
 
 def _ivy_to_native(x):
@@ -126,9 +126,9 @@ def _remove_np_bfloat16(obj):
     return obj
 
 
-def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
+def _asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
+    def _asarray_to_native_arrays_and_back_wrapper(*args, dtype=None, **kwargs):
         """
         Wrap `fn` so that input arrays are all converted to `ivy.NativeArray` instances
         and return arrays are all converted to `ivy.Array` instances.
@@ -147,12 +147,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
-    return _asarray_to_native_arrays_and_back
+    return _asarray_to_native_arrays_and_back_wrapper
 
 
-def asarray_infer_dtype(fn: Callable) -> Callable:
+def _asarray_infer_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _asarray_infer_dtype(*args, dtype=None, **kwargs):
+    def _asarray_infer_dtype_wrapper(*args, dtype=None, **kwargs):
         """
         Determine the correct `dtype`, and then calls the function with the `dtype`
         passed explicitly. This wrapper is specifically for the backend implementations
@@ -204,13 +204,13 @@ def asarray_infer_dtype(fn: Callable) -> Callable:
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
-    _asarray_infer_dtype.infer_dtype = True
-    return _asarray_infer_dtype
+    _asarray_infer_dtype_wrapper.infer_dtype = True
+    return _asarray_infer_dtype_wrapper
 
 
-def asarray_infer_device(fn: Callable) -> Callable:
+def _asarray_infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _asarray_infer_device(*args, device=None, **kwargs):
+    def _asarray_infer_device_wrapper(*args, device=None, **kwargs):
         """
         Determine the correct `device`, and then calls the function with the `device`
         passed explicitly. This wrapper is specifically for the backend implementations
@@ -243,11 +243,11 @@ def asarray_infer_device(fn: Callable) -> Callable:
         # call the function with device provided explicitly
         return fn(*args, device=device, **kwargs)
 
-    _asarray_infer_device.infer_device = True
-    return _asarray_infer_device
+    _asarray_infer_device_wrapper.infer_device = True
+    return _asarray_infer_device_wrapper
 
 
-def asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
+def _asarray_inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_native_shapes(*args, **kwargs):
         new_arg = _shape_to_native(args[0])
@@ -266,11 +266,9 @@ _T_co = TypeVar("_T_co", covariant=True)
 
 
 class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
-        ...
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]: ...
 
-    def __len__(self, /) -> int:
-        ...
+    def __len__(self, /) -> int: ...
 
 
 # Array API Standard #
@@ -430,25 +428,29 @@ def asarray(
     ret
         An array interpretation of x.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With list of lists as input:
+
     >>> ivy.asarray([[1,2],[3,4]])
     ivy.array([[1, 2],
                [3, 4]])
 
     With tuple of lists as input:
+
     >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
     ivy.array([[1.39999998, 5.5999999 , 5.5       ],
                [3.0999999 , 9.10000038, 7.5       ]])
 
     With ndarray as input:
+
     >>> x = ivy.np.ndarray(shape=(2,2), order='C')
     >>> ivy.asarray(x)
     ivy.array([[6.90786433e-310, 6.90786433e-310],
                [6.90786433e-310, 6.90786433e-310]])
 
     With :class:`ivy.Container` as input:
+
     >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
     >>> ivy.asarray(x)
     {
@@ -692,8 +694,8 @@ def full_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :code:`int` datatype:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -804,9 +806,8 @@ def ones_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -920,9 +921,8 @@ def zeros_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
@@ -1263,9 +1263,8 @@ def eye(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances as a replacement to any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :'n_rows' input:
 
     >>> x = ivy.eye(3)
@@ -1409,9 +1408,8 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With float input:
 
     >>> x = ivy.linspace(1, 2, 3)
@@ -1523,9 +1521,8 @@ def meshgrid(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2])
@@ -1636,9 +1633,8 @@ def full(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Shape` input:
 
     >>> shape = ivy.Shape((2,2))
@@ -1963,7 +1959,7 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
-    
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -1995,11 +1991,11 @@ def one_hot(
     >>> z = x.one_hot(y)
     >>> print(z)
     {
-        a: ivy.array([[0., 1., 0., 0., 0.], 
+        a: ivy.array([[0., 1., 0., 0., 0.],
                     [0., 0., 1., 0., 0.]]),
-        b: ivy.array([[0., 0., 0., 1., 0.], 
+        b: ivy.array([[0., 0., 0., 1., 0.],
                     [0., 1., 0., 0., 0.]]),
-        c: ivy.array([[0., 0., 1., 0., 0.], 
+        c: ivy.array([[0., 0., 1., 0., 0.],
                     [0., 0., 0., 1., 0.]])
     }
 
@@ -2089,8 +2085,8 @@ def logspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With float input:
 
     >>> print(ivy.logspace(1, 2, 4))
