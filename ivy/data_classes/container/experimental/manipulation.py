@@ -554,7 +554,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         -------
         ret
             Container with a rotated view of m.
-            
+
         Examples
         --------
         >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
@@ -2057,7 +2057,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
-            
+
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -3678,3 +3678,110 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             thresholded tensor on which the operator has been applied
         """
         return self.static_soft_thresholding(self, threshold, out=out)
+
+    @staticmethod
+    def static_column_stack(
+        xs: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.column_stack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.column_stack also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        xs
+            Container with leaves to stack.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            An output container with the results.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "column_stack",
+            xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def column_stack(
+        self: ivy.Container,
+        /,
+        xs: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.column_stack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.column_stack also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            Container with leaves to stack with leaves of other arrays/containers.
+        xs
+            Container with other leaves to join.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            An output container with the results.
+        """
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else list(xs).copy()
+        new_xs.insert(0, self.cont_copy())
+        return self.static_column_stack(
+            new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
