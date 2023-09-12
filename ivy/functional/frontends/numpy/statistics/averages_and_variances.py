@@ -72,25 +72,18 @@ def cov(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def mean(
-    a,
-    /,
-    *,
-    axis=None,
-    keepdims=False,
-    out=None,
-    dtype=None,
-    where=True,
-):
+def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype:
-        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+    dtype = dtype or a.dtype
+    if where is not True:
+        a = ivy.where(where, a, 0.0)
+        sum = ivy.sum(a, axis=axis, keepdims=keepdims, dtype=dtype)
+        cnt = ivy.sum(where, axis=axis, keepdims=keepdims, dtype=int)
+        ret = ivy.divide(sum, cnt, out=out)
+    else:
+        ret = ivy.mean(a.astype(dtype), axis=axis, keepdims=keepdims, out=out)
 
-    ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
-    return ret
+    return ret.astype(dtype)
 
 
 @handle_numpy_out
