@@ -17,7 +17,7 @@ import ivy
 # --------#
 
 
-def _to_native(x, inplace: bool = False, to_ignore: tuple = None):
+def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = None):
     to_ignore = ivy.default(to_ignore, ())
     if isinstance(x, to_ignore):
         return x
@@ -25,32 +25,16 @@ def _to_native(x, inplace: bool = False, to_ignore: tuple = None):
         return x.data
     elif isinstance(x, ivy.Shape):
         return x.shape
-    elif is_frontend_array(x):
+    elif hasattr(x, "ivy_array"):
         return x.ivy_array.data
-    elif is_frontend_shape(x):
+    elif hasattr(x, "ivy_shape"):
         return x.ivy_shape.shape
     elif isinstance(x, ivy.Container):
         return x.cont_map(
-            lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
+            lambda x_, _: _to_native(x_, inplace=inplace, to_ignore=to_ignore),
+            inplace=inplace,
         )
     return x
-
-
-def is_frontend_array(x) -> bool:
-    x_cls = str(x.__class__)
-    array_names = ["Array", "ndarray", "Tensor"]
-
-    return "frontends" in x_cls and any(
-        array_like in x_cls for array_like in array_names
-    )
-
-
-def is_frontend_shape(x) -> bool:
-    x_cls = str(x.__class__)
-    shape_names = ["Size"]
-    return "frontends" in x_cls and any(
-        shape_like in x_cls for shape_like in shape_names
-    )
 
 
 def _to_ivy(x: Any) -> Any:
