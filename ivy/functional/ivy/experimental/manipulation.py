@@ -13,7 +13,6 @@ from typing import (
 from numbers import Number
 from functools import partial
 import math
-from collections import Counter
 
 # local
 import ivy
@@ -1040,13 +1039,12 @@ def _handle_reduction_op(reduction, arr, indices, values):
         else:
             arr[indices] *= values
     elif reduction == "mean":
-        element_count = Counter(indices.tolist())
-        element_count = {k: v + 1 for k, v in element_count.items()}
-        idx = ivy.unique_all(indices)[0]
+        idx, _, _, element_count = ivy.unique_all(indices)
+        element_count += 1
         for i, index in enumerate(indices):
             arr[index] += values[i]
         for i in idx:
-            arr[i] = arr[indices][i].item() / element_count[i.item()]
+            arr[i] = arr[indices][i] / element_count[i]
     elif reduction == "assign":
         arr[indices] = values
     elif reduction == "amax":
