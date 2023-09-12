@@ -470,52 +470,6 @@ def test_torch_eig(
     )
 
 
-# eigh
-# TODO: Test for all valid dtypes
-@handle_frontend_test(
-    fn_tree="torch.linalg.eigh",
-    dtype_and_x=_get_dtype_and_matrix(dtype="float", square=True, invertible=True),
-    UPLO=st.sampled_from(("L", "U")),
-)
-def test_torch_eigh(
-    *,
-    dtype_and_x,
-    UPLO,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, x = dtype_and_x
-    x = np.array(x[0], dtype=dtype[0])
-    # make symmetric positive-definite beforehand
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        a=x,
-        UPLO=UPLO,
-    )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-    L, Q = ret
-    frontend_L, frontend_Q = frontend_ret
-
-    assert_all_close(
-        ret_np=Q @ np.diag(L) @ Q.T,
-        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
-        atol=1e-02,
-    )
-
-
 @handle_frontend_test(
     fn_tree="torch.linalg.eigh",
     dtype_and_x=_get_dtype_and_matrix(dtype="valid", square=True, invertible=True),
