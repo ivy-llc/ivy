@@ -11,7 +11,7 @@ from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
-from ...conftest import mod_backend
+from ..globals import mod_backend
 
 
 _dtype_kind_keys = {
