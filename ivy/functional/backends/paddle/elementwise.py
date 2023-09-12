@@ -10,7 +10,6 @@ from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_
 
 # local
 from . import backend_version
-from ...ivy.elementwise import _complex_to_inf
 
 
 def _elementwise_helper(x1, x2):
@@ -94,15 +93,13 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if detect_negative and detect_positive:
-        return paddle.isinf(x)
-
-    if detect_negative:
-        return paddle_backend.equal(x, float("-inf"))
-
-    if detect_positive:
-        return paddle_backend.equal(x, float("inf"))
-
+    if not ivy.is_complex_dtype(x):
+        if detect_negative and detect_positive:
+            return paddle.isinf(x)
+        if detect_negative:
+            return paddle_backend.equal(x, float("-inf"))
+        if detect_positive:
+            return paddle_backend.equal(x, float("inf"))
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
@@ -814,11 +811,6 @@ def pow(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
-        inf_indices = paddle.nonzero(paddle.isinf(x2))
-        ret = paddle.pow(x1, x2)
-        ret[inf_indices] = _complex_to_inf(ret[inf_indices])
-        return ret
     if x1.dtype in [
         paddle.int8,
         paddle.int16,
