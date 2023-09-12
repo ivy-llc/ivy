@@ -1,4 +1,5 @@
 # local
+
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -637,6 +638,38 @@ def reciprocal(x, /):
 def remainder(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def roots(p):
+    # here we are using the Companion Matrix Eigenvalue method for better efficiency
+    f = ivy.atleast_1d(p)
+    x = ivy.array(f)
+    f_1 = x.flatten()
+    if f_1.ndim != 1:
+        raise ValueError("Input must be a rank-1 array.")
+    if len(f_1) == 1:
+        roots = ivy.array([])
+
+    elif len(f_1) == 2:
+        roots = ivy.multiply(-1, ivy.divide(x[1], x[0]))
+
+    else:
+        # Polynomial conversion
+        p_conv = f_1 / f_1[0]
+
+        # constructing a companion matrix
+        N = len(p_conv) - 2
+        reverse_p_conv = ivy.flip(p_conv)
+        reverse_p_conv = ivy.multiply(reverse_p_conv[:-1], -1)
+        y = ivy.eye(N)
+        y_1 = ivy.zero_pad(y, pad_width=[[0, 0], [1, 0]])
+        comp_matrix = ivy.vstack((y_1, reverse_p_conv))
+
+        # finding the eigenvalue of comp_matrix which is also the roots
+        roots = ivy.eigvals(comp_matrix)
+
+    return roots
 
 
 @to_ivy_arrays_and_back
