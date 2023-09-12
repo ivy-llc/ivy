@@ -160,7 +160,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         return _from_ivy_array_to_jax_frontend_array(
             ret, nested=True, include_derived={"tuple": True}
         )
-    
+
     _outputs_to_frontend_arrays_jax.outputs_to_frontend_arrays_jax = True
     return _outputs_to_frontend_arrays_jax
 
