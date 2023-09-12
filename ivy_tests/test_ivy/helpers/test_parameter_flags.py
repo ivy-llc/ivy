@@ -3,6 +3,14 @@ from hypothesis import strategies as st
 from . import globals as test_globals
 from .pipeline_helper import BackendHandler
 
+from dataclasses import dataclass
+from hypothesis.strategies import SearchStrategy
+
+
+@dataclass
+class DynamicFlag:
+    strategy: SearchStrategy
+
 
 @st.composite
 def _gradient_strategy(draw):
@@ -27,17 +35,17 @@ def _as_varaible_strategy(draw):
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
 
-BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltAsVariableStrategy = _as_varaible_strategy()
-BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltInstanceStrategy = st.booleans()
-BuiltInplaceStrategy = st.just(False)
-BuiltGradientStrategy = _gradient_strategy()
-BuiltWithOutStrategy = st.booleans()
-BuiltCompileStrategy = st.just(False)
-BuiltFrontendArrayStrategy = st.booleans()
-BuiltTranspileStrategy = st.just(False)
-BuiltPrecisionModeStrategy = st.booleans()
+BuiltNativeArrayStrategy = DynamicFlag(st.lists(st.booleans(), min_size=1, max_size=1))
+BuiltAsVariableStrategy = DynamicFlag(_as_varaible_strategy())
+BuiltContainerStrategy = DynamicFlag(st.lists(st.booleans(), min_size=1, max_size=1))
+BuiltInstanceStrategy = DynamicFlag(st.booleans())
+BuiltInplaceStrategy = DynamicFlag(st.just(False))
+BuiltGradientStrategy = DynamicFlag(_gradient_strategy())
+BuiltWithOutStrategy = DynamicFlag(st.booleans())
+BuiltCompileStrategy = DynamicFlag(st.booleans())
+BuiltFrontendArrayStrategy = DynamicFlag(st.booleans())
+BuiltTranspileStrategy = DynamicFlag(st.just(False))
+BuiltPrecisionModeStrategy = DynamicFlag(st.booleans())
 
 
 flags_mapping = {
@@ -61,7 +69,7 @@ def build_flag(key: str, value: bool):
     assert (
         flags_mapping[key] in globals().keys()
     ), f"{flags_mapping[key]} is not a valid flag variable."
-    globals()[flags_mapping[key]] = value
+    globals()[flags_mapping[key]].strategy = value
 
 
 # Strategy Helpers #
