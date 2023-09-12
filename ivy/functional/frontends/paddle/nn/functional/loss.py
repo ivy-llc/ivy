@@ -490,3 +490,43 @@ def triplet_margin_loss(
 
     loss = reduction(loss).astype(input.dtype)
     return loss
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def hsigmoid_loss(input, label, num_classes, weight, bias=None, path_table=None, path_code=None, is_sparse=False, name=None):
+    if num_classes < 2:
+        raise ValueError(f'Expected num_classes >= 2 (got {num_classes})')
+
+    if is_sparse:
+        raise NotImplementedError("Sparse updating is not supported in Ivy.")
+
+    if path_table is not None or path_code is not None:
+        raise NotImplementedError("Custom tree is not supported in Ivy.")
+
+    # Calculate hsigmoid loss
+    num_samples, num_features = input.shape
+    num_internal_nodes = num_classes - 1
+
+    # Calculate logits and probabilities
+    logits = ivy.dot(input, ivy.transpose(weight))
+    prob = ivy.sigmoid(logits)
+
+    # Calculate the path probabilities
+    path_probs = []
+    for i in range(num_samples):
+        path_prob = 1.0
+        node_id = label[i][0]
+        for j in range(num_internal_nodes):
+            weight_val = weight[node_id][j]
+            path_prob *= ivy.sigmoid(weight_val)
+            if path_code[i][j] == 1:
+                node_id = 2 * node_id + 2
+            else:
+                node_id = 2 * node_id + 1
+        path_probs.append(path_prob)
+
+    path_probs = ivy.array(path_probs).reshape((num_samples, 1))
+
+    # Calculate the loss
+    loss = -ivy.log(path_probs)
+    return loss
