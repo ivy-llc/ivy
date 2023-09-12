@@ -32,13 +32,13 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
 # stft
 @to_ivy_arrays_and_back
 def stft(
-        signals,
-        frame_length,
-        frame_step,
-        fft_length=None,
-        window_fn=None,
-        pad_end=False,
-        name=None,
+    signals,
+    frame_length,
+    frame_step,
+    fft_length=None,
+    window_fn=None,
+    pad_end=False,
+    name=None,
 ):
     signals = ivy.asarray(signals)
     return ivy.stft(

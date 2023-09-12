@@ -182,13 +182,13 @@ def test_tensorflow_kaiser_window(
     test_with_out=st.just(False),
 )
 def test_tensorflow_stft(
-        *,
-        dtype_x_and_args,
-        frontend,
-        test_flags,
-        fn_tree,
-        backend_fw,
-        on_device,
+    *,
+    dtype_x_and_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
 ):
     input_dtype, x, frame_length, frame_step = dtype_x_and_args
     helpers.test_frontend_function(
