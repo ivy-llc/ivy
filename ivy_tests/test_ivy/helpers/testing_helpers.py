@@ -179,7 +179,17 @@ def _import_fn(fn_tree: str):
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
     mod = importlib.import_module(module_to_import)
-    callable_fn = mod.__dict__[fn_name]
+    try:
+        callable_fn = mod.__dict__[fn_name]
+    except KeyError:
+        raise ImportError(
+            f"Error: The function '{fn_name}' could not be found within the module"
+            f" '{module_to_import}'.\nPlease double-check the function name and its"
+            " associated path.\nIf this function is a new feature you'd like to see,"
+            " we'd love to hear from you! You can contribute to our project. For more"
+            " details, please"
+            " visit:\nhttps://lets-unify.ai/ivy/contributing/open_tasks.html\n"
+        )
     return callable_fn, fn_name, module_to_import
 
 
