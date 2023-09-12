@@ -112,35 +112,6 @@ def cosine_embedding_loss(
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def margin_cross_entropy(
-    input: ivy.Array, target: ivy.Array, margin: float = 0.0, reduction: str = "mean"
-) -> ivy.Array:
-    """Computes the margin cross entropy loss.
-
-    Args:
-        input: A tensor of shape [N, *] where * is any number of additional dimensions.
-        target: A tensor of shape [N, *] where * is any number of additional dimensions.
-        margin: A scalar value that indicates the margin for the loss function.
-        reduction: A string that indicates the reduction method for the loss function.
-
-    Returns:
-        A tensor of shape [1] or [N, *] depending on the reduction method.
-    """
-    assert input.shape == target.shape, "Input and target must be the same shape"
-
-    ce_loss = -target * ivy.log(input) - (1 - target) * ivy.log(1 - input)
-
-    ce_loss = ivy.maximum(ce_loss - margin, 0)
-
-    if reduction == "mean":
-        return ivy.mean(ce_loss)
-    if reduction == "sum":
-        return ivy.sum(ce_loss)
-    return ce_loss
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
 def dice_loss(input, label, epsilon=0.00001, name=None):
     ivy.assertions.check_true(
         len(input.shape) >= 2,
@@ -259,6 +230,36 @@ def log_loss(input, label, epsilon=0.0001, name=None):
         (1 - label) * ivy.log(1 - input + epsilon)
     )
     return out
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def margin_cross_entropy(
+    input: ivy.Array, target: ivy.Array, margin: float = 0.0, reduction: str = "mean"
+) -> ivy.Array:
+    """
+    Computes the margin cross entropy loss.
+
+    Args:
+        input: A tensor of shape [N, *] where * is any number of additional dimensions.
+        target: A tensor of shape [N, *] where * is any number of additional dimensions.
+        margin: A scalar value that indicates the margin for the loss function.
+        reduction: A string that indicates the reduction method for the loss function.
+
+    Returns:
+        A tensor of shape [1] or [N, *] depending on the reduction method.
+    """
+    assert input.shape == target.shape, "Input and target must be the same shape"
+
+    ce_loss = -target * ivy.log(input) - (1 - target) * ivy.log(1 - input)
+
+    ce_loss = ivy.maximum(ce_loss - margin, 0)
+
+    if reduction == "mean":
+        return ivy.mean(ce_loss)
+    if reduction == "sum":
+        return ivy.sum(ce_loss)
+    return ce_loss
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
