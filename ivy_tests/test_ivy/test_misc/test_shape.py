@@ -545,7 +545,7 @@ def test_shape__pow__(
     input_dtype, x = dtype_and_x
 
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
 
     # Make sure x2 isn't a float when x1 is integer
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
