@@ -374,10 +374,25 @@ class Hardswish(Module):
 
 
 class Logit(Module):
-    def __init__(self, eps=None):
-        """Apply the LOGIT activation function."""
+    def __init__(
+        self,
+        eps=None,
+        complex_mode="jax",
+    ):
+        """
+        Apply the LOGIT activation function.
+
+        Parameters
+        ----------
+        eps
+             The epsilon value for the logit formation. Default: ``None``.
+        complex_mode
+             optional specifier for how to handle complex data types. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         Module.__init__(self)
         self._eps = eps
+        self._complex_mode = complex_mode
 
     def _forward(self, x):
         """
@@ -386,15 +401,17 @@ class Logit(Module):
         ----------
         x
             Inputs to process *[batch_shape, d]*.
-        eps
-            The epsilon value for the logit formation. Default: ``None``.
 
         Returns
         -------
         ret
             The outputs following the LOGIT activation *[batch_shape, d]*
         """
-        return ivy.logit(x, eps=self._eps)
+        return ivy.logit(
+            x,
+            eps=self._eps,
+            complex_mode=self._complex_mode,
+        )
 
 
 class PReLU(Module):
@@ -465,8 +482,17 @@ class ELU(Module):
 
 
 class LogSigmoid(Module):
-    def __init__(self):
-        """Apply the LogSigmoid activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the LogSigmoid activation function.
+
+        Parameter
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -482,4 +508,4 @@ class LogSigmoid(Module):
         ret
             The outputs following the LogSigmoid activation *[batch_shape, d]*
         """
-        return ivy.logsigmoid(x)
+        return ivy.logsigmoid(x, complex_mode=self._complex_mode)
