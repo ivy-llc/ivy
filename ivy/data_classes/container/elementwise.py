@@ -6243,7 +6243,7 @@ class _ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
-        
+
         Examples
         --------
         With :code:`ivy.Container` inputs:
@@ -6755,7 +6755,7 @@ class _ContainerWithElementwise(ContainerBase):
     @staticmethod
     def _static_pow(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[int, float, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -6823,7 +6823,7 @@ class _ContainerWithElementwise(ContainerBase):
 
     def pow(
         self: ivy.Container,
-        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
