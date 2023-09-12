@@ -295,7 +295,6 @@ def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     )
     return ivy.divide(array_sum1, count_zero_handel)
     
-@handle_jax_dtype
 @with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def digitize(x, bins, right=False, out=None):
