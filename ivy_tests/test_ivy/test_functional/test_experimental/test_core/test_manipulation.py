@@ -447,8 +447,8 @@ def _st_tuples_or_int(n_pairs, min_val=0):
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            # available_dtypes=helpers.get_dtypes("valid"),
-            available_dtypes=["int32", "int64", "float32", "float64"],
+            # does not work for bool yet because scatter_nd doesn't
+            available_dtypes=helpers.get_dtypes('numeric'),
             min_num_dims=2,
             max_num_dims=3,
             min_dim_size=2,
@@ -458,32 +458,31 @@ def put_along_axis_helper(draw):
             valid_axis=True,
             force_int_axis=True,
             ret_shape=True,
-            min_axis=0,
         )
     )
-
-    x = x[0] if isinstance(x, list) else x
-    input_dtype = input_dtype[0] if isinstance(input_dtype, list) else input_dtype
-
-    # TODO: helpers.dtype_and_values draws
-    #  unwantend axis values
-    if axis < 0:
-        axis = 0
 
     idx_shape = list(shape)
     idx_shape[axis] = 1
 
-    idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
+    ind_dtype, indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=['int32', 'int64'],
+            shape=idx_shape,
+            min_value=0,
+            max_value=len(idx_shape) - 2,
+        )
     )
-    indices = draw(idx_strategy)
 
-    values_strategy = nph.arrays(
-        dtype=input_dtype, shape=idx_shape, elements=st.integers(1, 1e2)
+    _, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=input_dtype,
+            shape=idx_shape,
+            min_value=0,
+            max_value=100,
+        )
     )
-    values = draw(values_strategy)
 
-    return input_dtype, x, indices, values, axis
+    return input_dtype+ind_dtype+input_dtype, x[0], indices[0], values[0], axis
 
 
 # --- Main --- #
@@ -1243,9 +1242,10 @@ def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_devi
 @handle_test(
     fn_tree="functional.ivy.experimental.put_along_axis",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["assign", "add", "mul", "mean", "amax", "amin"]),
+    mode=st.sampled_from(['sum', 'min', 'max', 'replace']),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_put_along_axis(
     *,
@@ -1256,15 +1256,13 @@ def test_put_along_axis(
     fn_name,
     on_device,
 ):
-    dtype, x, indices, values, axis = args
-    test_flags.ground_truth_backend = "torch"
+    dtypes, x, indices, values, axis = args
     helpers.test_function(
-        input_dtypes=[dtype, "int64", dtype],
+        input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        rtol_=1e-3,
         arr=x,
         indices=indices,
         values=values,

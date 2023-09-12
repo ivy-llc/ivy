@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable
+from typing import Union, Optional, Tuple, List, Sequence, Iterable, Literal
 
 import torch
 
@@ -372,30 +372,18 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: str = None,
+    mode: Literal['sum', 'min', 'max', 'replace'] = 'replace',
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if mode:
-        if mode == "add":
-            ret = torch.scatter_add(arr, axis, indices, values, out=out)
-        elif mode == "mul":
-            ret = torch.scatter_reduce(
-                arr, axis, indices, values, reduce="prod", out=out
-            )
-        elif mode == "assign":
-            ret = torch.scatter(arr, axis, indices, values, out=out)
-        else:
-            ret = torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
-    elif mode is None:
-        ret = torch.scatter(arr, axis, indices, values, out=out)
-    return ret
-
-
-put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
-    "assign",
-    "add",
-    "mul",
-    "mean",
-    "amax",
-    "amin",
-]
+    mode_mappings = {
+        "sum": "sum",
+        "min": "amin",
+        "max": "amax",
+        "replace": "replace"
+    }
+    mode = mode_mappings.get(mode, mode)
+    indices = indices.to(torch.int64)
+    if mode == "replace":
+        return torch.scatter(arr, axis, indices, values, out=out)
+    else:
+        return torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)

@@ -29,6 +29,7 @@ from ivy.func_wrapper import (
     handle_device_shifting,
     handle_backend_invalid,
 )
+from ivy.functional.ivy.general import _numel
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1795,6 +1796,7 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
+# ToDo: add 'mean' and 'mul' modes to scatter_nd and then to put_along_axis
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_partial_mixed_function
@@ -1807,7 +1809,7 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: Literal["assign", "add", "mul", "mean", "amax", "amin"] = "assign",
+    mode: Literal['sum', 'min', 'max', 'replace'] = 'replace',
     out: Optional[ivy.Array] = None,
 ) -> None:
     """
@@ -1824,11 +1826,15 @@ def put_along_axis(
         The values to put into `arr`.
     axis : int
         The axis over which to put the `values`.
-    mode : {'assign', 'add', 'mul', 'mean', 'amax', 'amin'}, optional
-        The reduction operation to apply for non-unique indices.
+    mode : {'sum', 'min', 'max', 'replace'}
+        The reduction operation to apply.
     out : ndarray, optional
         Output array in which to place the result.
         If not specified, a new array is created.
+
+    Note
+    ----
+    In case `indices` contains duplicates, the updates get accumulated in each place.
 
     Returns
     -------
@@ -1853,28 +1859,21 @@ def put_along_axis(
     ivy.array([[ 10, 130, 20],
                [ 160, 40, 50]])
     """
-    if len(arr.shape) != len(indices.shape):
-        raise ivy.utils.exceptions.IvyValueError(
-            "indices and arr must have the same number of dimensions"
-        )
-    broadcast_shape = ivy.broadcast_shapes(*[arr.shape, indices.shape, values.shape])
-    values = ivy.asarray(values) if not isinstance(values, ivy.Array) else values
+    arr_shape = arr.shape
 
-    indices = ivy.broadcast_to(indices, broadcast_shape)
-    values = ivy.broadcast_to(values, broadcast_shape)
+    # array containing all flat indices
+    arr_ = ivy.arange(0, _numel(arr_shape)).reshape(arr_shape)
 
-    Ni, Nk = arr.shape[:axis], arr.shape[axis + 1 :]
-    ret = ivy.zeros_like(arr)
+    # use take_along_axis to get the queried indices
+    arr_idxs = ivy.take_along_axis(arr_, indices, axis)
 
-    for ii in ivy.ndindex(Ni):
-        for kk in ivy.ndindex(Nk):
-            arr_1d = arr[ii + (slice(None),) + kk]
-            indices_1d = indices[ii + (slice(None),) + kk]
-            values_1d = values[ii + (slice(None),) + kk]
-            ret[ii + (slice(None),) + kk] = _handle_reduction_op(
-                mode, arr_1d, indices_1d, values_1d
-            )
+    # convert the flat indices to multi-D indices
+    arr_idxs = ivy.unravel_index(arr_idxs, arr_shape)
 
+    # stack the multi-D indices to bring them to scatter_nd format
+    arr_idxs = ivy.stack(arr_idxs, axis=-1).astype(ivy.int64)
+
+    ret = ivy.scatter_nd(arr_idxs, values, reduction=mode, out=ivy.copy_array(arr))
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
 
