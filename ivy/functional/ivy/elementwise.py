@@ -5323,7 +5323,7 @@ pow.unsupported_gradients = {"torch": ["float16"]}
 
 def _complex_to_inf(exponent):
     if exponent < 0:
-        return float('inf') + ivy.nan * 1j
+        return float("inf") + ivy.nan * 1j
     else:
         return -0 * 1j
 
