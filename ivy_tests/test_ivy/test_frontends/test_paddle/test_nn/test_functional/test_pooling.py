@@ -276,6 +276,42 @@ def test_paddle_avg_pool2d(
     )
 
 
+# max_pool2d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.max_pool2d",
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    stride=st.tuples(st.integers(1, 2), st.integers(1, 2)),
+    test_with_out=st.just(False),
+)
+def test_paddle_max_pool2d(
+    *,
+    x_k_s_p,
+    stride,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, kernel_size, _, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
 # max_unpool1d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_unpool1d",
