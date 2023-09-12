@@ -41,7 +41,7 @@ def _array_idxes_n_dtype(draw, **kwargs):
 
 
 @st.composite
-def _arrays_dim_idx_n_dtypes(draw, support_dtypes="numberic", unsupport_dtypes=()):
+def _arrays_dim_idx_n_dtypes(draw, support_dtypes="numeric", unsupport_dtypes=()):
     num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
     num_arrays = 2
     common_shape = draw(
