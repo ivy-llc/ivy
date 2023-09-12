@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import tensorflow as tf
@@ -15,6 +15,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[Tensor] = None,
 ) -> Tensor:
     x_dtype = x.dtype
@@ -43,7 +44,11 @@ def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 
 
 @with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
-def logsigmoid(input: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def logsigmoid(
+    input: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
+) -> Tensor:
+    if input.dtype in [tf.complex64, tf.complex128]:
+        return tf.math.log(tf.nn.sigmoid(input))
     return tf.math.log_sigmoid(input)
 
 
