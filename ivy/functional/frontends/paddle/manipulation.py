@@ -78,6 +78,11 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def repeat_interleave(x, repeats, axis=None, name=None):
+    return ivy.repeat(x, repeats, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def reshape(x, shape):
     return ivy.reshape(x, shape)
 
@@ -102,7 +107,7 @@ def roll(x, shifts, axis=None, name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and above": {
+        "2.5.1": {
             "cpu": (
                 "bool",
                 "int32",
