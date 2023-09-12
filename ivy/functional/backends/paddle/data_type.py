@@ -5,7 +5,7 @@ import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import numpy as np
 import ivy
-from ivy import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from . import backend_version
 
