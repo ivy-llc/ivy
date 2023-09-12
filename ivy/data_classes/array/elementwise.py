@@ -2055,7 +2055,7 @@ class _ArrayWithElementwise(abc.ABC):
 
     def pow(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[int, float, ivy.Array, ivy.NativeArray],
         /,
         *,
         out: Optional[ivy.Array] = None,

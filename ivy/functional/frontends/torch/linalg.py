@@ -68,12 +68,12 @@ def eig(input, *, out=None):
     return ivy.eig(input, out=out)
 
 
-@to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64", "complex128")},
+    "torch",
 )
-def eigh(a, /, UPLO="L", out=None):
-    return ivy.eigh(a, UPLO=UPLO, out=out)
+def eigh(A, UPLO="L", *, out=None):
+    return ivy.eigh(A, UPLO=UPLO, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -190,7 +190,7 @@ def multi_dot(tensors, *, out=None):
     {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
 def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
-    if dim is None and not (ord is None):
+    if dim is None and (ord is not None):
         if input.ndim == 1:
             ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
         else:
@@ -390,9 +390,3 @@ def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
         input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype
     )
-
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64", "complex128")}, "torch", 
-)
-def eigh(A, UPLO="L", *, out=None):
-    return ivy.eigh(A, UPLO=UPLO, out=out)
