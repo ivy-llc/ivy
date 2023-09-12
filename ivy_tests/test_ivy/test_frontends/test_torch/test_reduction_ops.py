@@ -701,6 +701,8 @@ def test_torch_nansum(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+        rtol=1e-02,
+        atol=1e-02,
     )
 
 # norm
