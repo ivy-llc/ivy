@@ -612,7 +612,7 @@ def pow(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
-        return np.float_power(x1, x2, casting='unsafe').astype(x1.dtype)
+        return np.float_power(x1, x2, casting="unsafe").astype(x1.dtype)
     return np.power(x1, x2)
 
 
