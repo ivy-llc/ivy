@@ -807,6 +807,12 @@ class _ArrayWithGeneral(abc.ABC):
         >>> c = a.array_equal(b)
         >>> print(c)
         True
+
+        >>> i = ivy.array([1, 2])
+        >>> j = ivy.array([1, 2, 3])
+        >>> k = i.array_equal(j)
+        >>> print(k)
+        False
         """
         return ivy.array_equal(self, x)
 
