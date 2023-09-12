@@ -445,15 +445,27 @@ def test_tensorflow_stateless_binomial(
     seed=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
-    alpha=st.floats(
-        allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=3
+    alpha=st.one_of(
+        helpers.floats(allow_inf=False, allow_nan=False, min_value=1, max_value=5),
+        helpers.lists(
+            x=helpers.floats(
+                allow_nan=False, allow_inf=False, min_value=1, max_value=5
+            ),
+            min_size=1,
+            max_size=5,
+        ),
     ),
-    beta=st.floats(
-        allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=3
+    beta=st.one_of(
+        helpers.floats(allow_inf=False, allow_nan=False, min_value=1, max_value=5),
+        helpers.lists(
+            x=helpers.floats(
+                allow_nan=False, allow_inf=False, min_value=1, max_value=5
+            ),
+            min_size=1,
+            max_size=5,
+        ),
     ),
-    dtype=helpers.array_dtypes(
-        available_dtypes=("float32", "float64"),
-    ),
+    dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_stateless_gamma(
