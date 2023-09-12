@@ -483,6 +483,12 @@ def fill_diagonal(
     return a
 
 
+def column_stack(
+    arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.column_stack(arrays)
+
+
 @with_supported_dtypes(
     {"1.25.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
