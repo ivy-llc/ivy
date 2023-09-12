@@ -5189,8 +5189,8 @@ def positive(
 @handle_array_function
 @handle_device_shifting
 def pow(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[int, float, ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -5200,13 +5200,6 @@ def pow(
     each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i``
     (the exponent), where ``x2_i`` is the corresponding element of the input array
     ``x2``.
-
-    .. note::
-       If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when
-       ``x2_i`` is negative (i.e., less than zero) is unspecified and thus
-       implementation-dependent. If ``x1`` has an integer data type and ``x2`` has a
-       floating-point data type, behavior is implementation-dependent (type promotion
-       between data type "kinds" (integer versus floating-point) is unspecified).
 
     **Special cases**
 
@@ -5326,6 +5319,13 @@ def pow(
 
 
 pow.unsupported_gradients = {"torch": ["float16"]}
+
+
+def _complex_to_inf(exponent):
+    if exponent < 0:
+        return float("inf") + ivy.nan * 1j
+    else:
+        return -0 * 1j
 
 
 @handle_exceptions
