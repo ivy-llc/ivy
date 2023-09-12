@@ -1225,6 +1225,8 @@ def _dtype_from_version(dic, version):
     # 1. x.y.z and above
     # 2. x.y.z and below
     # 3. x.y.z to x.y.z
+    latest_prior_v = (0, 0, 0)
+    latest_prior_key = None
     for key in dic.keys():
         kl = key.split(" ")
         k1 = tuple(map(int, kl[0].split(".")))
@@ -1234,9 +1236,12 @@ def _dtype_from_version(dic, version):
             return dic[key]
         if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split("."))):
             return dic[key]
+        if k1 <= version_tuple and k1 >= latest_prior_v:
+            latest_prior_v = k1
+            latest_prior_key = key
 
-    # if no version is found, we return empty tuple
-    return ()
+    # if no version is found, we return most recent
+    return dic[latest_prior_key]
 
 
 def _versioned_attribute_factory(attribute_function, base):
