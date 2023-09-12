@@ -310,11 +310,8 @@ def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 @with_unsupported_dtypes(
     {
         "2.5.1 and below": (
-            "int16",
             "int8",
             "uint8",
-            "uint32",
-            "uint64",
         )
     },
     backend_version,
@@ -335,6 +332,17 @@ def less(
     return paddle.less_than(x1, x2)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def multiply(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -360,7 +368,7 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("uint",)},
+    {"2.5.1 and below": ("uint", "float16")},
     backend_version,
 )
 def logical_not(
@@ -403,11 +411,20 @@ def fmin(
     return paddle.fmin(x1, x2)
 
 
+def _apply_for_real_and_imag(fn, x1, x2):
+    return fn(
+        fn(x1.real(), x2.real()),
+        fn(x1.imag(), x2.imag()),
+    )
+
+
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
             "bool",
-            "float",
+            "float32",
+            "float64",
+            "int16",
             "int32",
             "int64",
             "complex",
@@ -435,7 +452,9 @@ def greater(
     {
         "2.5.1 and below": (
             "bool",
-            "float",
+            "float32",
+            "float64",
+            "int16",
             "int32",
             "int64",
             "complex",
@@ -475,49 +494,33 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "int8",
-            "int16",
-            "in32",
-            "in64",
-            "float32",
-            "float64",
-        )
-    },
+    {"2.5.1 and below": ("bool", "float32", "int32", "float64", "int64", "complex")},
     backend_version,
 )
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        return _apply_for_real_and_imag(paddle.logical_xor, x1, x2)
     return paddle.logical_xor(x1, x2)
 
 
 @with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "int8",
-            "int16",
-            "in32",
-            "in64",
-            "float32",
-            "float64",
-        )
-    },
+    {"2.5.1 and below": ("bool", "float32", "int32", "float64", "int64", "complex")},
     backend_version,
 )
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if paddle.is_complex(x1):
+        return _apply_for_real_and_imag(paddle.logical_and, x1, x2)
     return paddle.logical_and(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("uint",)},
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "float32", "int32", "float64", "int64", "complex")},
     backend_version,
 )
 def logical_or(
@@ -525,10 +528,7 @@ def logical_or(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        return paddle.logical_or(
-            paddle.logical_or(x1.real(), x2.real()),
-            paddle.logical_or(x1.imag(), x2.imag()),
-        )
+        return _apply_for_real_and_imag(paddle.logical_or, x1, x2)
     return paddle.logical_or(x1, x2)
 
 
