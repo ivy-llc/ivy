@@ -914,7 +914,6 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
             "int64",
             "float32",
             "float64",
-            "complex",
         )
     },
     backend_version,
