@@ -113,6 +113,11 @@ def eye(N, M=None, k=0, dtype=None):
 
 
 @to_ivy_arrays_and_back
+def from_dlpack(x):
+    return ivy.from_dlpack(x)
+
+
+@to_ivy_arrays_and_back
 def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
 
