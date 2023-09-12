@@ -17,7 +17,7 @@ import ivy
 # --------#
 
 
-def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = None):
+def _to_native(x: Any, inplace: bool = False, to_ignore: tuple = None) -> Any:
     to_ignore = ivy.default(to_ignore, ())
     if isinstance(x, to_ignore):
         return x
