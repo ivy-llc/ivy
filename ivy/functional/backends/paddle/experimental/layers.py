@@ -450,6 +450,25 @@ def adaptive_max_pool2d(
     return paddle.squeeze(ret, axis=0) if squeeze else ret
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below":{
+            "cpu": (
+                "int16", 
+                "float64", 
+                "complex128", 
+                "float32", 
+                "complex64", 
+                "bool", 
+                "int32", 
+                "uint8", 
+                "bfloat16", 
+                "int64",
+                "int8")
+        }
+    },
+    backend_version,
+)            
 def stft(
     signal: Union[paddle.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
@@ -457,7 +476,7 @@ def stft(
     /,
     *,
     axis: Optional[int] = None,
-    onesided:Optional[bool] = True,
+    onesided: Optional[bool] = True,
     fs: Optional[float] = 1.0,
     window: Optional[Union[paddle.Tensor, list, str, Tuple[int]]] = None,
     win_length: Optional[int] = None,
@@ -467,22 +486,27 @@ def stft(
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
-    boundary: Optional[str] = 'zeros',
+    boundary: Optional[str] = "zeros",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if window is None:
-        window = 'hann'
-        
+    if  hop_length <= 0:
+        hop_length = 1
+    
+    if window is None or window == 'hann':
+        if win_length is None:
+            win_length = n_fft
+        window = paddle.ones([win_length], dtype=signal.dtype)
+
     return paddle.signal.stft(
-         signal,
-         n_fft,
-         hop_length,
-         win_length,
-         window,
-         center,
-         pad_mode,
-         normalized,
-         onesided,
+        signal,
+        n_fft,
+        hop_length,
+        win_length,
+        window,
+        center,
+        pad_mode,
+        normalized,
+        onesided,
     )
 
 
