@@ -59,4 +59,3 @@ def stft(
 @to_ivy_arrays_and_back
 def vorbis_window(window_length, dtype=ivy.float32, name=None):
     return ivy.vorbis_window(window_length, dtype=dtype, out=None)
-
