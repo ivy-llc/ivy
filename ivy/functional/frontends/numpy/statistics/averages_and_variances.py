@@ -93,7 +93,9 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
 @from_zero_dim_arrays_to_scalar
 def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     where = ~ivy.isnan(a) & where
-    ret = mean(a, axis, dtype, out, keepdims, where=where).ivy_array
+    ret = mean(a, axis, dtype, keepdims=keepdims, where=where).ivy_array
+    if out is not None:
+        out.data = ret.data
     return ret
 
 
