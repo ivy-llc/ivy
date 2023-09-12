@@ -833,18 +833,17 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if isinstance(module, ivy.Module):
                 module.train(mode=mode)
 
-    def to_device(self, device, out=None):
+    def to_device(self, device):
         # moves the weights and buffers
         # to the specified device
-
+        self._device = ivy.default(device, self._device)
         # moving weights and buffers to new device
         for key, obj in self.state_dict().items():
-            if (
-                isinstance(obj, ivy.Module)
-                or ivy.is_ivy_array(obj)
-                or isinstance(obj, ivy.Container)
-            ):
+            if isinstance(obj, ivy.Module):
+                obj.to_device(device)
+            elif ivy.is_ivy_array(obj) or isinstance(obj, ivy.Container):
                 obj.to_device(device, out=obj)
+
             else:
                 ivy.to_device(obj, device=device, obj=obj)
 
@@ -861,6 +860,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     @property
     def built_(self):
         return self._built
+
+    @property
+    def device_(self):
+        return self._device
 
     def show_graph(
         self,
