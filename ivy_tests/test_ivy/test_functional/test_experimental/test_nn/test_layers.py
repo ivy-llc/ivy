@@ -1295,30 +1295,18 @@ def stft_arguments(draw):
     axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
     fs = 1.0
-    window = draw(st.one_of([
-        st.sampled_from(['hann']),
-        st.floats(min_value=0.0, max_value=1.0),
-        st.tuples(st.sampled_from([(1,)])),
-    ]))
-    
+    window = draw(helpers.get_dtypes("float", full=False)))
     win_length = (
         draw(st.integers(min_value=1, max_value=n_fft))
         if isinstance(n_fft, int)
         else draw(st.integers(min_value=1, max_value=n_fft[1]))
     )
-    
-    noverlap = draw(st.integers(min_value=0, max_value=win_length - 1))
     center = draw(st.booleans())
     pad_mode = draw(st.sampled_from(["reflect", "constant"]))
     normalized = draw(st.booleans())
     detrend = draw(st.one_of([st.booleans(), st.sampled_from(["linear", "constant"])]))
     return_complex = draw(st.booleans())
     boundary = draw(st.sampled_from(['even', 'odd', 'constant', 'zeros', None]))
-    max_signal_size = 256  
-    if isinstance(n_fft, int) and n_fft > max_signal_size:
-        n_fft = max_signal_size
-    if isinstance(win_length, int) and win_length > max_signal_size:
-        win_length = max_signal_size
 
     return (
         dtype,
@@ -1329,7 +1317,6 @@ def stft_arguments(draw):
         fs,
         window,
         win_length,
-        noverlap,
         center,
         pad_mode,
         normalized,
@@ -1367,7 +1354,6 @@ def test_stft(
         fs,
         window,
         win_length,
-        noverlap,
         center,
         pad_mode,
         normalized,
@@ -1375,12 +1361,6 @@ def test_stft(
         return_complex,
         boundary,
     ) = stft_args
-    
-    if backend_fw == "jax":
-        window = "hann" if window == "hann" else "hann"
-    elif backend_fw in ["tensorflow", "torch", "paddle"]:
-        window = "hann" if window == "hann" else 1.0
-
     helpers.test_function(
         input_dtypes=dtype,
         on_device=on_device,
@@ -1395,7 +1375,6 @@ def test_stft(
         fs=fs,
         window=window,
         win_length=win_length,
-        noverlap=noverlap,
         center=center,
         pad_mode=pad_mode,
         normalized=normalized,
