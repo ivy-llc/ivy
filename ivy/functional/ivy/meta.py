@@ -24,7 +24,7 @@ def _compute_cost_and_update_grads(
     all_grads,
     unique_outer,
     batched,
-    num_tasks
+    num_tasks,
 ):
     """
     Compute cost and update gradients.
@@ -67,11 +67,12 @@ def _compute_cost_and_update_grads(
     >>> pass
     """
     if order == 1:
+
         def cost_fn_with_variable(v):
             return cost_fn(
                 batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v
             )
-        
+
         cost, inner_grads = ivy.execute_with_gradients(
             cost_fn_with_variable,
             (
@@ -81,28 +82,28 @@ def _compute_cost_and_update_grads(
             ),
             retain_grads=False,
         )
-        
+
         var = (
             variables.cont_at_key_chains(outer_v, ignore_none=True)
             if keep_outer_v
             else variables.cont_prune_key_chains(outer_v, ignore_none=True)
         )
-        
+
         inner_grads = ivy.Container(
             {
                 k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
                 for k, v in var.cont_to_iterator()
             }
         )
-        
+
         if batched:
             inner_grads = ivy.multiply(inner_grads, num_tasks)
-        
+
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
         cost = cost_fn(batch, v=variables)
-    
+
     return cost
 
 
