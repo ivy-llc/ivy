@@ -52,7 +52,7 @@ numpy_req = [
     "numpy/1.24.2",
 ]
 jax_req = [
-    jax_ver + "/" + jaxlib_ver for jax_ver in jax_only_req for jaxlib_ver in jaxlib_req
+    f"{jax_ver}/{jaxlib_ver}" for jax_ver in jax_only_req for jaxlib_ver in jaxlib_req
 ]
 
 framework_versions = {
@@ -81,21 +81,19 @@ with open("test_names") as f:
         test_names_without_backend.append(test_name)
 
 for test_name in test_names_without_backend:
-    for backend, backend_versions in framework_versions.items():
+    for backend_versions in framework_versions.values():
         for backend_version in backend_versions:
-            test_backend = test_name + "," + backend_version
+            test_backend = f"{test_name},{backend_version}"
             if "test_frontends" in test_name:
                 frontend = test_name[39:]
                 frontend = frontend[: frontend.find("/")]
                 frontend_versions = framework_versions.get(frontend, [])
                 for frontend_version in frontend_versions:
-                    test_names.append(test_backend + ";" + frontend_version)
+                    test_names.append(f"{test_backend};{frontend_version}")
             else:
                 test_names.append(test_backend)
 
-test_names = list(set(test_names))
-test_names.sort()
-
+test_names = sorted(set(test_names))
 # Run 150 tests in each iteration of the cron job
 num_tests = len(test_names)
 print(num_tests)
