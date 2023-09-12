@@ -13,7 +13,6 @@ from ivy.func_wrapper import (
 
 # local
 from . import backend_version
-from ...ivy.elementwise import _complex_to_inf
 
 
 def _elementwise_helper(x1, x2):
@@ -101,15 +100,13 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if detect_negative and detect_positive:
-        return paddle.isinf(x)
-
-    if detect_negative:
-        return paddle_backend.equal(x, float("-inf"))
-
-    if detect_positive:
-        return paddle_backend.equal(x, float("inf"))
-
+    if not ivy.is_complex_dtype(x):
+        if detect_negative and detect_positive:
+            return paddle.isinf(x)
+        if detect_negative:
+            return paddle_backend.equal(x, float("-inf"))
+        if detect_positive:
+            return paddle_backend.equal(x, float("inf"))
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
@@ -586,9 +583,15 @@ def not_equal(
 )
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
-        tanh_a = paddle.tanh(paddle.real(x))
-        tan_b = paddle.tan(paddle.imag(x))
-        return (tanh_a + 1j * tan_b) / (1 + 1j * (tanh_a * tan_b))
+        tanh_a = paddle.tanh(x.real())
+        tan_b = paddle.tan(x.imag())
+        return paddle.divide(
+            paddle.complex(tanh_a, tan_b),
+            paddle.complex(
+                paddle.ones_like(tanh_a),
+                paddle.multiply(tanh_a, tan_b),
+            ),
+        )
     return paddle.tanh(x)
 
 
@@ -686,20 +689,14 @@ def pow(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
-        inf_indices = paddle.nonzero(paddle.isinf(x2))
-        ret = paddle.pow(x1, x2)
-        ret[inf_indices] = _complex_to_inf(ret[inf_indices])
-        return ret
     if paddle.is_complex(x1):
         # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
         r = paddle.abs(x1)
         theta = paddle.angle(x1)
-        power = x2 * paddle.complex(paddle.log(r), theta)
-        result = paddle.exp(power.real()) * paddle.complex(
-            paddle.cos(power.imag()), paddle.sin(power.imag())
-        )
-        return result
+        res_mag = paddle.pow(r, x2.real()) / paddle.exp(x2.imag() * theta)
+        res_ang = paddle.log(r) * x2.imag() + theta * x2.real()
+        result = res_mag * paddle.complex(paddle.cos(res_ang), paddle.sin(res_ang))
+        return result.astype(ret_dtype)
     return paddle.pow(x1, x2)
 
 

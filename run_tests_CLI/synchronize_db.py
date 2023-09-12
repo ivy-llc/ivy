@@ -1,4 +1,3 @@
-import json
 import sys
 from pymongo import MongoClient
 from get_all_tests import get_all_tests
@@ -21,9 +20,7 @@ module_map = {
 
 
 def keys_to_delete_from_db(all_tests, module, data, current_key=""):
-    """
-    Recursively navigate and identify keys not in the list.
-    """
+    """Recursively navigate and identify keys not in the list."""
     keys_for_deletion = []
 
     for key, value in data.items():
