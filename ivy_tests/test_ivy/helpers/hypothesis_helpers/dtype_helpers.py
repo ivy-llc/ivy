@@ -96,7 +96,7 @@ def _get_type_dict_helper(framework, kind, is_frontend_test):
             )
         )
 
-    raise RuntimeError("{} is an unknown kind!".format(kind))
+    raise RuntimeError(f"{kind} is an unknown kind!")
 
 
 @st.composite
