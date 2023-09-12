@@ -1580,7 +1580,7 @@ def handle_backend_invalid(fn: Callable) -> Callable:
                 and ivy.backend != ""
                 and ivy.current_backend_str() != target_backend.backend
             ):
-                raise ivy.utils.exceptions.InvalidBackendException(
+                raise ivy.utils.exceptions.IvyInvalidBackendException(
                     "Operation not allowed. Array was instantiated with backend"
                     f" {target_backend.backend}. But current backend is"
                     f" {ivy.backend}. Please set dynamic=True"
