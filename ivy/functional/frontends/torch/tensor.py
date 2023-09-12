@@ -1989,19 +1989,6 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
-                "float16",
-                "bfloat16",
-            )
-        },
-        "torch",
-    )
-    def xlogy(self, *, other, out=None):
-        return torch_frontend.xlogy(self, other, out=out)
-
-
-    @with_unsupported_dtypes(
-        {
-            "2.0.1 and below": (
                 "bfloat16",
                 "int8",
                 "uint8",
@@ -2048,6 +2035,18 @@ class Tensor:
     )
     def unique(self, sorted=True, return_inverse=False, return_counts=False, dim=None):
         return torch_frontend.unique(self, sorted, return_inverse, return_counts, dim)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def xlogy(self, *, other, out=None):
+        return torch_frontend.xlogy(self, other, out=out)
 
 
 class Size(tuple):

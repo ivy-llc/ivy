@@ -12741,11 +12741,11 @@ def test_torch_tensor_where(
     )
 
 
-# xlogy_
+# xlogy
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
-    method_name="xlogy_",
+    method_name="xlogy",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -12755,7 +12755,7 @@ def test_torch_tensor_where(
         shared_dtype=True,
     ),
 )
-def test_torch_tensor_xlogy_(
+def test_torch_tensor_xlogy(
     dtype_and_x,
     frontend,
     backend_fw,
@@ -12783,11 +12783,11 @@ def test_torch_tensor_xlogy_(
     )
 
 
-# xlogy
+# xlogy_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
-    method_name="xlogy",
+    method_name="xlogy_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -12797,7 +12797,7 @@ def test_torch_tensor_xlogy_(
         shared_dtype=True,
     ),
 )
-def test_torch_tensor_xlogy(
+def test_torch_tensor_xlogy_(
     dtype_and_x,
     frontend,
     backend_fw,
@@ -13032,44 +13032,5 @@ def test_torch_unique_consecutive(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# xlogy
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="xlogy",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shared_dtype=True,
-        num_arrays=2,
-    ),
-)
-def test_torch_tensor_xlogy(
-    dtype_and_x,
-    frontend,
-    backend_fw,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "other": x[1],
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
