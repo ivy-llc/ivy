@@ -179,7 +179,13 @@ def _import_fn(fn_tree: str):
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
     mod = importlib.import_module(module_to_import)
-    callable_fn = mod.__dict__[fn_name]
+    try:
+        callable_fn = mod.__dict__[fn_name]
+    except KeyError:
+        raise ImportError(
+            f"Unable to locate the function '{fn_name}' within '{module_to_import}'.\n"
+            "Ensure the function exists and is correctly spelled."
+        )
     return callable_fn, fn_name, module_to_import
 
 
