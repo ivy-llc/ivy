@@ -1914,8 +1914,7 @@ def test_tensorflow_weighted_moments(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_num_dims=3,
-        min_dim_size=3,
+        shape=(3,3)
         min_value=0,
     ),
     test_with_out=st.just(False),
