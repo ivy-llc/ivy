@@ -324,40 +324,112 @@ def _import_module_from_path(module_path: Path, module_name="test_file"):
     return module
 
 
+def _tuple_to_dict(dtypes: tuple, is_unsupported: bool, all_dtypes: set):
+    t = {dtype for dtype in dtypes if dtype not in DTYPE_CLASSES}.union(
+        *[DTYPE_CLASSES[dtype] for dtype in dtypes if dtype in DTYPE_CLASSES]
+    )
+    t_complement = all_dtypes - t
+    return {
+        "supported": t_complement if is_unsupported else t,
+        "unsupported": t if is_unsupported else t_complement,
+    }
+
+
+def _version_str_to_ints(v):
+    parts = v.split(" ")
+    upper = None
+    if len(parts) == 1:
+        upper = v
+    elif "to" in parts:
+        upper = parts[2]
+    elif "below" in parts:
+        upper = parts[0]
+    # 'above' is not supported yet
+    upper = tuple(int(x) for x in upper.split("."))
+    return upper
+
+
+def _parse_decorator(dec_string, device_list, dtype_set):
+    left, _, right = dec_string.partition("{")
+    inner_string = right.rpartition("}")[0]
+    original_decorator_dict = eval("{" + inner_string + "}")
+    mark_unsupp = "unsupp" in left
+    has_device = "device" in left
+    prev_result = {}
+    latest = None
+    latest_str = None
+    for v in original_decorator_dict.keys():
+        prev_result[v] = {}
+        if has_device:
+            for d, t in original_decorator_dict[v].items():
+                if d in ["gpu", "tpu"]:
+                    d = d + ":0"
+                prev_result[v][d] = _tuple_to_dict(t, mark_unsupp, dtype_set)
+            for d in device_list:
+                if d not in prev_result[v]:
+                    prev_result[v][d] = {
+                        "supported": dtype_set,
+                        "unsupported": set(),
+                    }
+        else:
+            types_dict = _tuple_to_dict(
+                original_decorator_dict[v], mark_unsupp, dtype_set
+            )
+            for d in device_list:
+                prev_result[v][d] = {**types_dict}
+        if latest is None:
+            latest = _version_str_to_ints(v)
+            latest_str = v
+        else:
+            this_version = _version_str_to_ints(v)
+            if this_version > latest:
+                latest = this_version
+                latest_str = v
+    return prev_result, latest_str, not mark_unsupp
+
+
 def _type_list_to_tuple_string(dtype_list):
     return (
         "("
-        + ",".join([f'"{t}"' for t in dtype_list])
+        + ", ".join([f'"{t}"' for t in dtype_list])
         + ("," if len(dtype_list) == 1 else "")
         + ")"
     )
 
 
-def _get_decorator_string(
-    dtype_lists, is_supported, version_no, version_string="backend_version"
-):
-    out = "@with_"
+def _get_decorator_string(dtype_lists, is_supported, version_string="backend_version"):
+    d0 = "cpu"
+    is_multi_device = any(
+        d != d0 and dtype_lists[v][d] != dtype_lists[v][d0]
+        for v in dtype_lists.keys()
+        for d in dtype_lists[v].keys()
+    )
+    ret = "@with_"
     if not is_supported:
-        out += "un"
-    out += "supported_"
-    if len(dtype_lists.keys()) > 1:
-        out += "device_and_"
-    out += 'dtypes({"' + version_no + ' and below": '
-    if len(dtype_lists.keys()) > 1:
-        out += "{"
-        out += ", ".join(
-            [
-                f'"{k.split(":")[0]}": {_type_list_to_tuple_string(v)}'
-                for k, v in dtype_lists.items()
-            ]
-        )
-        out += "}"
-    else:
-        out += _type_list_to_tuple_string(list(dtype_lists.values())[0])
-    out += "}, "
-    out += version_string
-    out += ")"
-    return out
+        ret += "un"
+    ret += "supported_"
+    if is_multi_device:
+        ret += "device_and_"
+    ret += "dtypes({"
+
+    for v in dtype_lists.keys():
+        mid = '"' + v + '": '
+        if is_multi_device:
+            mid += "{"
+            for d, t in dtype_lists[v].items():
+                if len(t) == 0:
+                    continue
+                mid += '"' + d.partition(":")[0] + '": '
+                mid += _type_list_to_tuple_string(t)
+                mid += ", "
+            mid += "}"
+        else:
+            mid += _type_list_to_tuple_string(dtype_lists[v][d0])
+        mid += ", "
+        ret += mid
+
+    ret += "}, " + version_string + ")"
+    return ret
 
 
 class BackendFileTester:
@@ -429,8 +501,6 @@ class BackendFileTester:
                     "unsupported": set(),
                     "unsure": set(),
                     "skipped": set(),
-                    "original_supported": None,
-                    "original_unsupported": None,
                 }
                 for device in self.devices
             }
@@ -541,6 +611,10 @@ class BackendFileTester:
             code_text = f.readlines()
 
         for f in self.fn_names:
+            existing_decorator_data = None
+            latest_known_version = None
+            existing_is_supported = None
+
             # Find function position in the code
             for i, v in enumerate(code_text):
                 if f"def {f}(" in v:
@@ -575,55 +649,11 @@ class BackendFileTester:
                         indices_of_dtype_decs.append(
                             (start_of_decorator, decorator_start_idx + i + 1)
                         )
-                        left, _, right = dec_string.partition("{")
-                        inner_string = right.rpartition("}")[0]
-                        original_decorator_dict = eval("{" + inner_string + "}")
-                        sup_or_unsup = (
-                            "original_unsupported"
-                            if "unsupported" in left
-                            else "original_supported"
-                        )
-                        has_device = "device" in left
-                        for v in original_decorator_dict.keys():
-                            if has_device:
-                                for d, t in original_decorator_dict[v].items():
-                                    if d in ["gpu", "tpu"]:
-                                        d = d + ":0"
-                                    t = {
-                                        dtype
-                                        for dtype in t
-                                        if dtype not in DTYPE_CLASSES
-                                    }.union(
-                                        *[
-                                            DTYPE_CLASSES[dtype]
-                                            for dtype in t
-                                            if dtype in DTYPE_CLASSES
-                                        ]
-                                    )
-                                    if d in self.result[f]:
-                                        self.result[f][d][sup_or_unsup] = set(t)
-                                    else:
-                                        mark_unsupp = "unsupported" in left
-                                        this = set(t)
-                                        that = set(self.dtypes) - this
-                                        self.result[f][d] = {
-                                            "supported": that if mark_unsupp else this,
-                                            "unsupported": (
-                                                this if mark_unsupp else that
-                                            ),
-                                            "unsure": set(),
-                                            "skipped": set(),
-                                            "original_supported": None,
-                                            "original_unsupported": None,
-                                        }
-                            else:
-                                for d in self.devices:
-                                    self.result[f][d][sup_or_unsup] = set(
-                                        original_decorator_dict[v]
-                                    )
-                            # assume there is exactly one version of each framework
-                            # that's not true, but we'll deal with that later # TODO
-                            break
+                        (
+                            existing_decorator_data,
+                            latest_known_version,
+                            existing_is_supported,
+                        ) = _parse_decorator(dec_string, self.devices, set(self.dtypes))
                         start_of_decorator = None
                         dec_string = ""
 
@@ -634,7 +664,6 @@ class BackendFileTester:
                 del code_text[i:j]
                 def_index -= j - i
 
-            device_and_dtypes = {}
             for d in self.devices:
                 # Report skipped dtypes (handling is later)
                 if len(self.result[f][d]["skipped"]) > 0 and self.verbosity >= 1:
@@ -684,48 +713,126 @@ class BackendFileTester:
                         self.result[f][d][mark_as].add(dtype)
 
                 # Handle skipped dtypes (and unsure if using as_original)
+                existing_and_is_supported = (
+                    existing_decorator_data is not None and existing_is_supported
+                )
+                existing_and_is_unsupported = (
+                    existing_decorator_data is not None and not existing_is_supported
+                )
                 for t, _ in self.result[f][d]["skipped"]:
                     if (
-                        self.result[f][d]["original_supported"] is not None
-                        and t not in self.result[f][d]["original_supported"]
+                        existing_and_is_supported
+                        and t
+                        not in existing_decorator_data[latest_known_version][
+                            "supported"
+                        ]
                     ) or (
-                        self.result[f][d]["original_unsupported"] is not None
-                        and t in self.result[f][d]["original_unsupported"]
+                        existing_and_is_unsupported
+                        and t
+                        in existing_decorator_data[latest_known_version]["unsupported"]
                     ):
                         self.result[f][d]["unsupported"].add(t)
                     else:
                         self.result[f][d]["supported"].add(t)
 
-                del self.result[f][d]["skipped"]
-                del self.result[f][d]["unsure"]
+            if existing_decorator_data is not None:
+                versions_and_dtypes = existing_decorator_data
+                current_version_str = version(PYPI_NAMES[self.backend])
+                current_version = _version_str_to_ints(current_version_str)
+                latest_version_tuple = _version_str_to_ints(latest_known_version)
+                if current_version == latest_version_tuple:
+                    for d in self.devices:
+                        versions_and_dtypes[latest_known_version][d] = {
+                            "supported": self.result[f][d]["supported"],
+                            "unsupported": self.result[f][d]["unsupported"],
+                        }
+                elif current_version > latest_version_tuple:
+                    if all(
+                        self.result[f][d]["supported"]
+                        == versions_and_dtypes[latest_known_version][d]["supported"]
+                        for d in self.devices
+                    ) and all(
+                        self.result[f][d]["unsupported"]
+                        == versions_and_dtypes[latest_known_version][d]["unsupported"]
+                        for d in self.devices
+                    ):
+                        new_version_string = ""
+                        parts = latest_known_version.split(" ")
+                        if len(parts) == 1:
+                            new_version_string = (
+                                latest_known_version + " to " + current_version_str
+                            )
+                        elif "to" in latest_known_version:
+                            new_version_string = parts[0] + " to " + current_version_str
+                        elif "below" in latest_known_version:
+                            new_version_string = current_version_str + " and below"
+                        versions_and_dtypes[new_version_string] = {}
+                        for d in versions_and_dtypes[latest_known_version].keys():
+                            versions_and_dtypes[new_version_string][d] = (
+                                {
+                                    "supported": self.result[f][d]["supported"],
+                                    "unsupported": self.result[f][d]["unsupported"],
+                                }
+                                if d in self.devices
+                                else versions_and_dtypes[latest_known_version][d]
+                            )
+                        del versions_and_dtypes[latest_known_version]
+                    else:
+                        versions_and_dtypes[current_version_str] = {}
+                        for d in self.devices:
+                            versions_and_dtypes[current_version_str][d] = {
+                                "supported": self.result[f][d]["supported"],
+                                "unsupported": self.result[f][d]["unsupported"],
+                            }
+            else:
+                versions_and_dtypes = {
+                    version(PYPI_NAMES[self.backend]): {
+                        d: {
+                            "supported": self.result[f][d]["supported"],
+                            "unsupported": self.result[f][d]["unsupported"],
+                        }
+                        for d in self.devices
+                    }
+                }
 
-            device_and_dtypes = {}
-            for d in self.result[f].keys():
-                # Reduce (un)supported dtype lists to type classes where possible
-                supported = self.result[f][d]["supported"]
-                unsupported = self.result[f][d]["unsupported"]
-                for cls, types in DTYPE_CLASSES.items():
-                    if types.issubset(supported):
-                        supported = supported - types
-                        supported.add(cls)
-                    elif types.issubset(unsupported):
-                        unsupported = unsupported - types
-                        unsupported.add(cls)
-                device_and_dtypes[d] = (supported, unsupported)
+            reduced_versions_and_dtypes = {}
+            for v in versions_and_dtypes.keys():
+                reduced_versions_and_dtypes[v] = {}
+                for d in versions_and_dtypes[v].keys():
+                    # Reduce (un)supported dtype lists to type classes where possible
+                    supported = versions_and_dtypes[v][d]["supported"]
+                    unsupported = versions_and_dtypes[v][d]["unsupported"]
+                    for cls, types in DTYPE_CLASSES.items():
+                        if types.issubset(supported):
+                            supported = supported - types
+                            supported.add(cls)
+                        elif types.issubset(unsupported):
+                            unsupported = unsupported - types
+                            unsupported.add(cls)
+                    reduced_versions_and_dtypes[v][d] = (supported, unsupported)
 
             # Generate updated decorator
-            total_supported = sum(len(s) for s, _ in device_and_dtypes.values())
-            total_unsupported = sum(len(u) for _, u in device_and_dtypes.values())
+            total_supported = sum(
+                len(s)
+                for d in reduced_versions_and_dtypes.values()
+                for s, _ in d.values()
+            )
+            total_unsupported = sum(
+                len(u)
+                for d in reduced_versions_and_dtypes.values()
+                for _, u in d.values()
+            )
             use_supported = total_supported <= total_unsupported
             if total_unsupported == 0:
                 self.decorators[f] = None
             else:
-                for d in device_and_dtypes.keys():
-                    device_and_dtypes[d] = device_and_dtypes[d][
-                        0 if use_supported else 1
-                    ]
+                for v in reduced_versions_and_dtypes.keys():
+                    for d in reduced_versions_and_dtypes[v].keys():
+                        reduced_versions_and_dtypes[v][d] = reduced_versions_and_dtypes[
+                            v
+                        ][d][0 if use_supported else 1]
                 self.decorators[f] = _get_decorator_string(
-                    device_and_dtypes, use_supported, version(PYPI_NAMES[self.backend])
+                    reduced_versions_and_dtypes, use_supported
                 )
             if self.verbosity >= 2:
                 print(f"  {f}: {self.decorators[f]}")
@@ -1028,9 +1135,12 @@ def main():
         "-d",
         "--devices",
         nargs="+",
-        choices=["cpu", "gpu", "tpu"],
-        default=[],
-        help="specify devices to check. Others will be skipped.",
+        choices=["gpu", "tpu"],
+        default=["gpu", "tpu"],
+        help=(
+            "specify devices to check. Others will be skipped. CPU will always be"
+            " checked."
+        ),
     )
     parser.add_argument(
         "-u",
@@ -1094,14 +1204,11 @@ def main():
         if args.verbosity >= 3:
             print("  " + "\n  ".join([str(file) for file in files_list]))
 
-    if args.devices is not None:
-        devices = [d + ":0" if d in ["gpu", "tpu"] else d for d in args.devices]
-    else:
-        devices = DEVICES
+    devices = [d + ":0" if d in ["gpu", "tpu"] else d for d in args.devices]
 
     run_dtype_setter(
         files_list,
-        devices,
+        ["cpu"] + devices,
         args.functions,
         {
             "verbosity": args.verbosity,
