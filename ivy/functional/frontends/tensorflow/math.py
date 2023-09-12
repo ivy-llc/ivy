@@ -400,6 +400,8 @@ def log_sigmoid(x, name=None):
 
 @to_ivy_arrays_and_back
 def log_softmax(logits, axis=None):
+    if axis is None:
+        axis = -1
     return ivy.log_softmax(logits, axis=axis)
 
 

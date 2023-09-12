@@ -78,7 +78,7 @@ def softsign(x: None, /, *, out: Optional[None] = None) -> None:
     return mx.nd.softsign(x)
 
 
-def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None):
+def log_softmax(x: None, /, *, axis: Optional[int] = -1, out: Optional[None] = None):
     raise IvyNotImplementedException()
 
 

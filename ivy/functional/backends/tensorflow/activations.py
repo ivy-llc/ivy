@@ -118,10 +118,20 @@ def softsign(x: tf.Tensor, /, out: Optional[tf.Tensor] = None) -> tf.Tensor:
     return tf.nn.softsign(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def log_softmax(
-    x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
+    x: Tensor,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[Tensor] = None,
 ):
+    if "complex" in str(x.dtype):
+        x_max = tf_backend.max(x, axis=axis, keepdims=True)
+        sub_temp = tf.subtract(x, x_max)
+        ret = tf.reduce_sum(tf.exp(sub_temp), axis=axis, keepdims=True)
+        ret = tf.math.log(ret)
+        return tf.subtract(sub_temp, ret)
     return tf.nn.log_softmax(x, axis)
 
 

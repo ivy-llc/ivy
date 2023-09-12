@@ -383,12 +383,13 @@ def test_jax_log_sigmoid(
 @handle_frontend_test(
     fn_tree="jax.nn.log_softmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         min_value=-2,
         min_num_dims=1,
+        min_dim_size=2,
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
