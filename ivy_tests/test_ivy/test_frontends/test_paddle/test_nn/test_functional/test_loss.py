@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import pytest
 import ivy
 
 # local
@@ -39,6 +40,50 @@ def _cos_embd_loss_helper(draw):
 # --- Main --- #
 # ------------ #
 
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.margin_cross_entropy",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        exclude_min=True,
+        exclude_max=True,
+        shared_dtype=True,
+        min_num_dims=1,
+    ),
+    dtype_and_margin=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=0,
+    ),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+)
+def test_paddle_margin_cross_entropy(
+    dtype_and_input,
+    dtype_and_margin,
+    reduction,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, input = dtype_and_input
+    margin_dtype, margin = dtype_and_margin
+    helpers.test_frontend_function(
+        input_dtypes=[
+            input_dtype[0],
+            input_dtype[1],
+            margin_dtype[0],
+        ],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        target=input[1],
+        margin=margin[0],
+        reduction=reduction,
+    )
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.binary_cross_entropy_with_logits",

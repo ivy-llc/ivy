@@ -111,6 +111,7 @@ def cosine_embedding_loss(
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+
 def margin_cross_entropy(input, target, margin=0.0, reduction='mean'):
     assert input.shape == target.shape, "Input and target must be the same shape"
 
