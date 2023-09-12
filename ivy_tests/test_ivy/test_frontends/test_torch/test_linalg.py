@@ -1330,7 +1330,7 @@ def test_torch_lu_solve(
         fn_tree=fn_tree,
         on_device=on_device,
         A=input,
-        pivots=other,
+        pivots=input,
         B=other,
         left=left,
         adjoint=adjoint,

@@ -136,6 +136,9 @@ def lu_factor(A, *, pivot=True, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def lu_solve(LU, pivots, B, left=True, adjoint=False, out=None):
     # TODO: Implement left
     # TODO: Implement adjoint
