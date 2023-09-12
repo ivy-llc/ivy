@@ -18,6 +18,7 @@ scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
 flax
 pydriller
+tqdm
 coverage
 scikit-learn # mod_name=sklearn
 pandas
