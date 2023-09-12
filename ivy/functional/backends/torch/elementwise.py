@@ -592,14 +592,20 @@ def pow(
     if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
         ret = torch.pow(x1, x2)
         x2 = torch.as_tensor(x2).to(torch.float64)
-        return torch.where(ivy.isinf(x2), torch.nan + torch.nan * 1j if x2 < 0 else -0 * 1j, ret)
+        return torch.where(
+            ivy.isinf(x2), torch.nan + torch.nan * 1j if x2 < 0 else -0 * 1j, ret
+        )
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ivy.any(x1 == 0):
         if ivy.is_complex_dtype(x2):
             x2 = torch.broadcast_to(x2, x1.shape)
             ret = torch.pow(x1, x2)
-            return torch.where(x1 == 0, torch.nan+torch.nan*1j, ret)
-        elif ivy.any(x2 < 0) and ivy.is_int_dtype(x2) and all(dtype not in str(x1.dtype) for dtype in ['int16', 'int8']):
+            return torch.where(x1 == 0, torch.nan + torch.nan * 1j, ret)
+        elif (
+            ivy.any(x2 < 0)
+            and ivy.is_int_dtype(x2)
+            and all(dtype not in str(x1.dtype) for dtype in ["int16", "int8"])
+        ):
             if ivy.is_int_dtype(x1):
                 fill_value = torch.iinfo(x1.dtype).min
             else:
