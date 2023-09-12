@@ -1162,7 +1162,7 @@ def _wrap_function(
     return to_wrap
 
 
-def casting_modes_ops(fn, dtype_determinator=None):
+def casting_modes_ops(fn, ret_dtype_target=None):
     @functools.wraps(fn)
     def method(*args, **kwargs):
         # Get the function signature
@@ -1193,10 +1193,13 @@ def casting_modes_ops(fn, dtype_determinator=None):
             if dtype:
                 kwargs["dtype"] = ivy.as_native_dtype(dtype)
 
-        if not to_cast and dtype_determinator:
-            for arg in dtype_determinator:
+        if not to_cast and ret_dtype_target:
+            for arg in ret_dtype_target:
                 to_cast = ivy.promote_types(
-                    to_cast, ivy.dtype(args[arg_names.index(arg)])
+                    to_cast,
+                    ivy.dtype(
+                        args[arg_names.index(arg)] if arg not in kwargs else kwargs[arg]
+                    ),
                 )
 
         def mini_helper(x):
@@ -1303,7 +1306,7 @@ def _dtype_device_wrapper_creator(attrib, t):
     A wrapper function for the attribute.
     """
 
-    def _wrapper_outer(version_dict, version, exclusive=True, dtype_determinator=None):
+    def _wrapper_outer(version_dict, version, exclusive=True, ret_dtype_target=None):
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
@@ -1355,7 +1358,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                 # it's a frontend func, no casting modes for this
                 return func
 
-            return casting_modes_ops(func, dtype_determinator)
+            return casting_modes_ops(func, ret_dtype_target)
 
         return _wrapped
 
