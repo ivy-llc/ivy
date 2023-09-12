@@ -2803,9 +2803,8 @@ def stft(
     axis: Optional[int] = None,
     onesided:Optional[bool] = True,
     fs: Optional[float] = 1.0,
-    window: Optional[Union[ivy.Array, list, str, Tuple[int]]] = None,
+    window: Optional[Union[ivy.Array, list, Tuple[int]]] = None,
     win_length: Optional[int] = None,
-    noverlap: Optional[int] = None,
     center: Optional[bool] = False,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
@@ -2855,9 +2854,6 @@ def stft(
         nperseg. Defaults to a Hann window.      
     win_length
         The size of window frame and STFT filter. Defaults to None.    
-    noverlap
-        Number of points to overlap between segments. If None, 
-        noverlap = nperseg // 2. Defaults to None.
     center  
         Whether to pad x to make that the t * hop_length at the 
         center of t-th frame. Default: True.          
@@ -2907,7 +2903,6 @@ def stft(
         fs=fs,
         window=window,
         win_length=win_length,
-        noverlap=noverlap,
         center=center,
         pad_mode=pad_mode,
         normalized=normalized,
