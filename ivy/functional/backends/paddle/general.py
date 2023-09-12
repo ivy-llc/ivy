@@ -10,6 +10,7 @@ import multiprocessing as _multiprocessing
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.functional.ivy.general import _broadcast_to
+from ivy.utils.exceptions import _check_inplace_update_support
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -330,6 +331,7 @@ def inplace_update(
     ensure_in_backend: bool = False,
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
+    _check_inplace_update_support(x, ensure_in_backend)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
@@ -405,17 +407,36 @@ def scatter_nd(
         if ivy.exists(out)
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
-    updates = _broadcast_to(updates, expected_shape)._data
+    updates = _broadcast_to(updates, expected_shape).data
 
-    if indices.ndim > 1:
-        indices, unique_idxs = ivy.unique_all(indices, axis=0)[:2]
-        indices, unique_idxs = indices.data, unique_idxs.data
-        updates = ivy.gather(updates, unique_idxs, axis=0).data
+    # remove duplicate indices
+    # necessary because we will be using scatter_nd_add
+    if indices.ndim > 1 and reduction != "sum":
+        indices_shape = indices.shape
+        indices = paddle.reshape(indices, (-1, indices.shape[-1]))
+        num_indices = indices.shape[0]
+        # use flip to keep the last occurrence of each value
+        indices, unique_idxs = ivy.unique_all(
+            ivy.flip(indices, axis=[0]), axis=0, by_value=True
+        )[:2]
+        indices = indices.data
+        if len(unique_idxs) < num_indices:
+            updates = paddle.reshape(
+                updates, (-1, *updates.shape[len(indices_shape) - 1 :])
+            )
+            updates = ivy.gather(ivy.flip(updates, axis=[0]), unique_idxs, axis=0).data
+            expected_shape = (
+                list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
+                if ivy.exists(out)
+                else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
+            )
+        else:
+            indices = paddle.reshape(indices, indices_shape)
 
     # implementation
     target_given = ivy.exists(out)
     if target_given:
-        target = out._data
+        target = out.data
     else:
         shape = list(shape) if ivy.exists(shape) else out.shape
         target = paddle.zeros(shape=shape).astype(updates.dtype)
@@ -429,26 +450,30 @@ def scatter_nd(
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if reduction == "min":
-        updates = ivy.minimum(ivy.gather_nd(target, indices), updates)._data
-        reduction = "replace"
+        updates = ivy.minimum(ivy.gather_nd(target, indices), updates).data
     elif reduction == "max":
-        updates = ivy.maximum(ivy.gather_nd(target, indices), updates)._data
-        reduction = "replace"
+        updates = ivy.maximum(ivy.gather_nd(target, indices), updates).data
+    elif reduction == "sum":
+        updates = ivy.add(ivy.gather_nd(target, indices), updates).data
     if indices.ndim <= 1:
-        indices = ivy.expand_dims(indices, axis=0)._data
-        updates = ivy.expand_dims(updates, axis=0)._data
+        indices = ivy.expand_dims(indices, axis=0).data
+        updates = ivy.expand_dims(updates, axis=0).data
+    updates_ = _broadcast_to(ivy.gather_nd(target, indices), expected_shape).data
     target_dtype = target.dtype
     if target_dtype in [
         paddle.complex64,
         paddle.complex128,
     ]:
-        if reduction == "replace":
-            updates = paddle_backend.subtract(
-                updates,
-                paddle_backend.gather_nd(target, indices),
-            )
-        result_real = paddle.scatter_nd_add(target.real(), indices, updates.real())
-        result_imag = paddle.scatter_nd_add(target.imag(), indices, updates.imag())
+        result_real = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target.real(), indices, -updates_.real()),
+            indices,
+            updates.real(),
+        )
+        result_imag = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target.imag(), indices, -updates_.imag()),
+            indices,
+            updates.imag(),
+        )
         ret = paddle.complex(result_real, result_imag)
     elif target_dtype in [
         paddle.int8,
@@ -457,26 +482,22 @@ def scatter_nd(
         paddle.float16,
         paddle.bool,
     ]:
-        if reduction == "replace":
-            updates = paddle.subtract(
-                updates.cast("float32"),
-                paddle.gather_nd(target.cast("float32"), indices),
-            )
-        ret = paddle.scatter_nd_add(target.cast("float32"), indices, updates).cast(
-            target_dtype
+        target, updates, updates_ = (
+            target.cast("float32"),
+            updates.cast("float32"),
+            updates_.cast("float32"),
         )
+        ret = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target, indices, -updates_),
+            indices,
+            updates,
+        ).cast(target_dtype)
     else:
-        if reduction == "replace":
-            gathered_vals = paddle.gather_nd(target, indices)
-            # values greater than 2^24 - 1 can only be accurately represented as float64
-            if (np.abs(gathered_vals.numpy()).max() >= 2**24) or (
-                np.abs(updates.numpy()).max() >= 2**24
-            ):
-                gathered_vals = gathered_vals.cast("float64")
-                target = target.cast("float64")
-                updates = updates.cast("float64")
-            updates = paddle.subtract(updates, gathered_vals)
-        ret = paddle.scatter_nd_add(target, indices, updates).cast(target_dtype)
+        ret = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target, indices, -updates_),
+            indices,
+            updates,
+        )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
