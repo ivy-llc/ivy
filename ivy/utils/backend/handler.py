@@ -256,8 +256,8 @@ def _modify_module_symbols(
             if k in invalid_dtypes and k in target.__dict__:
                 del target.__dict__[k]
                 continue
+            v = _verify_efficient_implementations(v) if v else v
             backend.__dict__[k] = v
-        v = _verify_efficient_implementations(v) if v else v
         target.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
