@@ -141,14 +141,22 @@ class NestedArrayBase(abc.ABC):
         args = list()
         for ragged in ragged_arrays:
             args.append(ivy.copy_nest(ragged.data))
-        arg0 = ragged_arrays[0]
+        ragged_arrays[0]
         ret = ivy.nested_multi_map(lambda x, _: fn(x), args)
         # infer dtype, shape, and device from the first array in the ret data
+        broadcasted_shape = ivy.NestedArray.broadcast_shapes(
+            [arg.shape for arg in ragged_arrays]
+        )
+        # infer ragged_rank from broadcasted shape
+        for i, dim in enumerate(broadcasted_shape[::-1]):
+            if dim is None:
+                nested_rank = len(broadcasted_shape) - i - 1
+                break
+        inner_shape = broadcasted_shape[nested_rank:]
         arr0_id = ivy.nested_argwhere(ret, ivy.is_ivy_array, stop_after_n_found=1)[0]
         arr0 = ivy.index_nest(ret, arr0_id)
-        inner_shape = arr0.shape.as_list()[1:]
         ragged_ret = ivy.NestedArray.nested_array(
-            ret, arg0.nested_rank, inner_shape, arr0.dtype, arr0.device
+            ret, nested_rank, inner_shape, arr0.dtype, arr0.device
         )
         return ragged_ret
 
@@ -162,6 +170,51 @@ class NestedArrayBase(abc.ABC):
         return ivy.NestedArray.nested_array(
             ret, ragged_array.nested_rank, inner_shape, dtype, dev
         )
+
+    @staticmethod
+    def broadcast_shapes(shapes):
+        z = []
+        max_length = max([len(x) for x in shapes])
+        shape_list = list(shapes)
+        # making every shape the same length
+        for i, shape in enumerate(shapes):
+            if len(shape) != max_length:
+                shape_list[i] = [1] * (max_length - len(shape)) + shape
+        # broadcasting
+        for x in zip(*shape_list):
+            if None in x:
+                for dims in x:
+                    if dims is not None and dims != 1:
+                        raise ValueError(
+                            "Shapes {} and {} are not broadcastable".format(
+                                shapes[0], shapes[1]
+                            )
+                        )
+                z.append(None)
+            elif 1 in x:
+                dim_exist = False
+                for dims in x:
+                    if dims != 1:
+                        z.append(dims)
+                        if dim_exist:
+                            raise ValueError(
+                                "Shapes {} and {} are not broadcastable".format(
+                                    shapes[0], shapes[1]
+                                )
+                            )
+                        dim_exist = True
+                if not dim_exist:
+                    z.append(1)
+            else:
+                if len(set(x)) == 1:
+                    z.append(x[0])
+                else:
+                    raise ValueError(
+                        "Shapes {} and {} are not broadcastable".format(
+                            shapes[0], shapes[1]
+                        )
+                    )
+        return z
 
     def ragged_map(self, fn):
         arg = ivy.copy_nest(self._data)

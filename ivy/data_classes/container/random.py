@@ -1142,7 +1142,8 @@ class _ContainerWithRandom(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([5, 2, 9]),
         ...                   b=ivy.array([7, 1, 6]))
-        >>> ivy.Container.shuffle(x)
+        >>> y = ivy.Container.shuffle(x)
+        >>> print(y)
         {
             a: ivy.array([9, 5, 2]),
             b: ivy.array([6, 7, 1])

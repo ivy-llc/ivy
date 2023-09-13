@@ -2,6 +2,8 @@ import platform
 from typing import Callable, Optional, List, Union, Iterable, Tuple
 
 python_version = platform.python_version_tuple()
+
+
 # TODO: create meaningful types for Graph and LazyGraph,
 # will probably need a seperate file for that
 class Graph:
@@ -69,6 +71,7 @@ def compile(
 
     Examples
     --------
+
     >>> import ivy, time
     >>> ivy.set_backend("torch")
     >>> x = ivy.array([1.])
@@ -83,8 +86,10 @@ def compile(
     ...     k = ivy.ceil(c)
     ...     return i, j, k
     >>> graph = ivy.compile(fn, args=(x,))
+
     Notice how the time taken to execute the compiled function is lower than
     the original function. A typical run:
+
     >>> start = time.time()
     >>> fn(x)
     >>> print(time.time() - start)

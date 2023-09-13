@@ -144,6 +144,10 @@ class Array(
             self._data = data
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
+        elif ivy.is_ivy_sparse_array(data):
+            self._data = data._data
+        elif ivy.is_native_sparse_array(data):
+            self._data = data._data
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
@@ -403,7 +407,7 @@ class Array(
         else:
             # Requirerd in the case that backend is different
             # from the currently set backend
-            backend = ivy.with_backend(self.backend, cached=True)
+            backend = ivy.with_backend(self.backend)
         arr_np = backend.to_numpy(self._data)
         rep = (
             np.array(ivy.vec_sig_fig(arr_np, sig_fig))
@@ -759,16 +763,31 @@ class Array(
         return ivy.abs(self._data)
 
     def __float__(self):
-        res = self._data.__float__()
+        if hasattr(self._data, "__float__"):
+            if "complex" in self.dtype:
+                res = float(self.real)
+            else:
+                res = self._data.__float__()
+        else:
+            res = float(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
 
     def __int__(self):
         if hasattr(self._data, "__int__"):
-            res = self._data.__int__()
+            if "complex" in self.dtype:
+                res = int(self.real)
+            else:
+                res = self._data.__int__()
         else:
             res = int(ivy.to_scalar(self._data))
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    def __complex__(self):
+        res = complex(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
