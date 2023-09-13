@@ -50,7 +50,7 @@ def sqrt_(x, name=None):
     return ivy.inplace_update(x, sqrt(x))
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
 def subtract_(x, y, name=None):
     return ivy.inplace_update(x, subtract(x, y))
