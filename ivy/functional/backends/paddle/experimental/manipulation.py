@@ -215,6 +215,10 @@ def vstack(
             return ivy.stack(arrays, axis=0)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int16", "bfloat16")}},
+    backend_version,
+)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
