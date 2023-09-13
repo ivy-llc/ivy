@@ -166,7 +166,7 @@ def _validate_poisson_nll_params(
     label,
     epsilon,
     reduction,
-    allowed_dtypes=["float16", "float32", "float64"],
+    allowed_dtypes=[paddle.float32, paddle.float64],
 ):
     # Validate dtypes
     for parameter, name in zip([input, label], ["input", "label"]):
