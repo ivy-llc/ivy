@@ -165,9 +165,9 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
-    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
-            self,
+            self.ivy_array,
             axis=axis,
             dtype=dtype,
             out=out,
