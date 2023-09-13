@@ -46,6 +46,9 @@ def multi_head_attention(
 ) -> torch.Tensor:
     if key is None and value is None:
         key = value = query
+    emb_dim = _get_embed_dim(
+        in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query,
+    )[1]
     query, key, value = [
         ivy.expand_dims(x, axis=0) if len(x.shape) == 2 else ivy.swapaxes(x, 0, 1)
         for x in [query, key, value]
@@ -54,7 +57,7 @@ def multi_head_attention(
         query,
         key,
         value,
-        query.shape[-1],
+        emb_dim,
         num_heads,
         in_proj_weights,
         in_proj_bias,
@@ -79,7 +82,32 @@ def multi_head_attention(
     )
 
 
-multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: not ivy.exists(kwargs['scale'])
+multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: \
+    not ivy.exists(kwargs['scale']) and \
+    _get_embed_dim(
+        kwargs['in_proj_weights'],
+        kwargs['q_proj_weights'],
+        kwargs['k_proj_weights'],
+        kwargs['v_proj_weights'],
+        args[0],
+        check=True,
+    )
+
+
+def _get_embed_dim(
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query, check=False,
+):
+    pre_embed_dim = query.shape[-1]
+    if ivy.exists(in_proj_weights):
+        embed_dim = in_proj_weights.shape[0]
+    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+        embed_dim = q_proj_weights.shape[0]
+    else:
+        embed_dim = query.shape[-1]
+    if check:
+        return pre_embed_dim == embed_dim
+    else:
+        return pre_embed_dim, embed_dim
 
 
 @with_unsupported_dtypes(

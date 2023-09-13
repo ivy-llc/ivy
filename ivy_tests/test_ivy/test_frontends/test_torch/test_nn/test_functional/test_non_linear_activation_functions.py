@@ -689,7 +689,7 @@ def test_torch_mish(
 # multi_head_attention_forward
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
-    dtype_mha_args=_mha_helper(),
+    dtype_mha_args=_mha_helper(same_pre_embed_dim=True),
     test_with_out=st.just(False),
 )
 def test_torch_multi_head_attention_forward(

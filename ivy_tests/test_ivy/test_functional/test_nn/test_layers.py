@@ -68,7 +68,7 @@ def _dropout_helper(draw):
 
 
 @st.composite
-def _mha_helper(draw):
+def _mha_helper(draw, same_pre_embed_dim=False):
     _qkv_same_dim = draw(st.booleans())
     _self_attention = draw(st.booleans())
     num_heads = draw(helpers.ints(min_value=1, max_value=3))
@@ -84,10 +84,13 @@ def _mha_helper(draw):
     v_proj_weights = None
 
     if _qkv_same_dim:
-        _qkv_dim = draw(helpers.ints(min_value=4, max_value=16))
+        if not _self_attention and not same_pre_embed_dim:
+            _pre_embed_dim = draw(helpers.ints(min_value=4, max_value=16))
+        else:
+            _pre_embed_dim = _embed_dim
         q = draw(
             helpers.array_values(
-                shape=(*_batch_dim, _num_queries, _qkv_dim),
+                shape=(*_batch_dim, _num_queries, _pre_embed_dim),
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
@@ -96,7 +99,7 @@ def _mha_helper(draw):
         )
         k = draw(
             helpers.array_values(
-                shape=(*_batch_dim, _num_keys, _qkv_dim),
+                shape=(*_batch_dim, _num_keys, _pre_embed_dim),
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
@@ -107,7 +110,7 @@ def _mha_helper(draw):
         )
         v = draw(
             helpers.array_values(
-                shape=(*_batch_dim, _num_keys, _qkv_dim),
+                shape=(*_batch_dim, _num_keys, _pre_embed_dim),
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
@@ -120,7 +123,7 @@ def _mha_helper(draw):
             st.one_of(
                 helpers.array_values(
                     dtype=dtype[0],
-                    shape=(3 * _embed_dim, _qkv_dim),
+                    shape=(3 * _embed_dim, _pre_embed_dim),
                     min_value=0,
                     max_value=10,
                 ),
