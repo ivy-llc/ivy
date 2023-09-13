@@ -96,8 +96,13 @@ def cartesian_prod(*tensors):
 def clone(input):
     return ivy.copy_array(input)
 
+
+def combinations(tensor, n, repeat):
+    return ivy.tensor(combinations_helper(tensor, n, repeat))
+
+
 @to_ivy_arrays_and_back
-def combinations_helper(tensor, n = 2, repeat = False):
+def combinations_helper(tensor, n=2, repeat=False):
     if repeat:
         if n == 0:
             return [[]]
@@ -109,25 +114,21 @@ def combinations_helper(tensor, n = 2, repeat = False):
             remainlst_combo = combinations_helper(remaining, n - 1, repeat)
             for item in remainlst_combo:
                 result.append([current] + item)
-        
         return result
-    else:
-         
+    else:   
         if n == 0:
             return [[]]
-        
-        result =[]
+ 
+        result = []
         for i in range(0, len(tensor)):
             current = tensor[i]
-            remaining = tensor[i + 1:]
-            
-            remainlst_combo = combinations_helper(remaining, n-1,repeat)
+            remaining = tensor[i + 1 :]
+            remainlst_combo = combinations_helper(remaining, n - 1,repeat)
             for item in remainlst_combo:
                 result.append([current, *item])  
         return result
 
-def combinations(tensor, n, repeat):
-    return ivy.tensor(combinations_helper(tensor, n, repeat))
+
 
 @to_ivy_arrays_and_back
 def corrcoef(input):
