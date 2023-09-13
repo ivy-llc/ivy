@@ -126,10 +126,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived=True, shallow=False
+            _to_ivy_array, args, include_derived=True, shallow=False
         )
         ivy_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived=True, shallow=False
+            _to_ivy_array, kwargs, include_derived=True, shallow=False
         )
         if has_out:
             ivy_kwargs["out"] = out
@@ -217,7 +217,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
         return ivy.nested_map(
-            ret, _ivy_array_to_tensorflow, include_derived={"tuple": True}
+            _ivy_array_to_tensorflow, ret, include_derived={"tuple": True}
         )
 
     _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True
