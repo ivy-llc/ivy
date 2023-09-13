@@ -8,7 +8,7 @@ from ivy.functional.frontends import set_frontend_to_specific_version
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
-__version__ = ivy.__version__
+__version__ = ivy.backend_version.get("version", "version not available!")
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available

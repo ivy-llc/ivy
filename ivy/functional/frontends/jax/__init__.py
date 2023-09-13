@@ -15,7 +15,7 @@ from . import random
 from . import _src
 from ._src import tree_util
 
-__version__ = ivy.__version__
+__version__ = ivy.backend_version.get("version", "version not available!")
 
 _frontend_array = numpy.array
 

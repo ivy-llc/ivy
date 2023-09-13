@@ -13,7 +13,7 @@ from .ndarray import *
 from . import scalars
 from .scalars import *
 
-__version__ = ivy.__version__
+__version__ = ivy.backend_version.get("version", "version not available!")
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
