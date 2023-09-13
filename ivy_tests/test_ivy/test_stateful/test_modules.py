@@ -246,12 +246,12 @@ def test_module_check_submod_rets(
             k: {"val": v, "atol": [1e-8] * len(v), "rtol": [1e-5] * len(v)}
             for k, v in sm_rets_orig.items()
         },
-        **sm_rets_orig._config
+        **sm_rets_orig._config,
     )
     module(x, expected_submod_rets=sm_rets)
     sm_rets = ivy.Container(
         {k: {"val": v, "atol": 1e-8, "rtol": 1e-5} for k, v in sm_rets_orig.items()},
-        **sm_rets_orig._config
+        **sm_rets_orig._config,
     )
     module(x, expected_submod_rets=sm_rets)
     try:
@@ -371,6 +371,36 @@ def test_module_save_and_load_as_pickled(
     assert ivy.Container.all(loaded_module.v == module.v).cont_all_true()
 
     os.remove(save_filepath)
+
+
+@given(dummy=st.booleans())
+def test_module_to_device(dummy, on_device):
+    model = TrainableModule(5, 5)
+    model.to_device(on_device)
+
+    def assertion(x, on_device):
+        if x != on_device:
+            print(f"{x} is not equal to {on_device}")
+            raise AssertionError
+
+    def model_assert(mod, on_device):
+        for key, obj in mod.v.items():
+            if isinstance(obj, ivy.Module):
+                return model_assert(obj, on_device)
+            if isinstance(obj, ivy.Container) or isinstance(obj, dict):
+                for item1, item2 in obj.items():
+                    assertion(item2.device, on_device)
+
+            else:
+                assertion(obj.device, on_device)
+        if getattr(mod, "buffers", None):
+            for key, obj in mod.buffers.items():
+                if isinstance(obj, ivy.Container) or isinstance(obj, dict):
+                    ivy.nested_map(obj, lambda x: assertion(x.device, on_device))
+                else:
+                    assertion(obj.device, on_device)
+
+    model_assert(model, on_device)
 
 
 # track submod call order
