@@ -65,6 +65,14 @@ def std(x, axis=None, unbiased=True, keepdim=False, name=None):
     )
     return ivy.std(x, axis=axis, correction=int(unbiased), keepdims=keepdim)
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def quantile(x, q, axis=None, keepdim=False):
+    return ivy.quantile(x, q, axis=axis, keepdims=keepdim)
+
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
@@ -74,8 +82,3 @@ def var(x, axis=None, unbiased=True, keepdim=False, name=None):
     else:
         correction = 0
     return ivy.var(x, axis=axis, correction=correction, keepdims=keepdim)
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "int32", "int64")},"paddle",)
-@to_ivy_arrays_and_back
-def quantile(x, q, axis=None, keepdim=False):
-    return ivy.quantile(x, q, axis=axis, keepdims=keepdim)
