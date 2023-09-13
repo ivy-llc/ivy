@@ -474,6 +474,23 @@ However, torch does not support ``uint32``, and so we cannot fully adhere to the
 Rather than breaking this rule and returning arrays of type ``uint8`` only with a torch backend, we instead opt to remove official support entirely for this combination of data type, function, and backend framework.
 This will avoid all of the potential confusion that could arise if we were to have inconsistent and unexpected outputs when using officially supported data types in Ivy.
 
+Additionally, we also have the :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes. These attributes operate in a manner similar to the attr:`@with_unsupported_dtypes` and attr:`@with_supported_dtypes` decorators.
+However, the major difference between the attributes and the decorators is that the attributes are assigned and used within the ivy functional API :mod:`ivy/functional/ivy/<ivy_functional_API>`, while the decorators are used within the
+frontend :mod:`ivy/functional/frontends/<some_frontend>` and backend :mod:`ivy/functional/backends/<some_backend>`, depending on the use case.
+
+The attributes take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding backend framework. Based on that, the specific unsupported dtypes are set for the given function everytime the function is called.
+For example, we use the :attr:`unsupported_dtypes` attribute for the :attr:`einops_reduce` function `ivy.einops_reduce <https://github.com/unifyai/ivy/blob/8516d3f12a8dfc4ec5f819789937d196c7e28566/ivy/functional/ivy/general.py#L1964>`_ within the ivy functional API as shown below:
+
+.. code-block:: python
+
+    einops_reduce.unsupported_dtypes = {
+        "torch": ("float16",),
+        "tensorflow": ("complex",),
+        "paddle": ("complex", "uint8", "int8", "int16", "float16"),
+    }
+
+With the above aproach, we ensure that anytime the backend is set to torch, float16 is not supported, likewise, complex dtypes are not supported with a tensorflow backend and
+complex, uint8, int8, int16, float16 are not supported with a paddle backend.
 
 Backend Data Type Bugs
 ----------------------
