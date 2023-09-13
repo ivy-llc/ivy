@@ -266,11 +266,9 @@ _T_co = TypeVar("_T_co", covariant=True)
 
 
 class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
-        ...
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]: ...
 
-    def __len__(self, /) -> int:
-        ...
+    def __len__(self, /) -> int: ...
 
 
 # Array API Standard #
