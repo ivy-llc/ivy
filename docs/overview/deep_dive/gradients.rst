@@ -181,5 +181,4 @@ If you have any questions, please feel free to reach out on `discord`_ in the `g
 
     <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/riNddnTgDdk" class="video">
-
     </iframe>
