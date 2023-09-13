@@ -138,3 +138,35 @@ def test_numpy_frombuffer(
         buffer=a,
         dtype=dtype[0],
     )
+
+
+# diag
+@handle_frontend_test(
+    fn_tree="numpy.diag",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=2,
+        
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_frombuffer(
+    dtype_and_a,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        v=a,
+    )

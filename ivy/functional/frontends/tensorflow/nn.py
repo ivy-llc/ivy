@@ -627,22 +627,3 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
         weighted_mean = ivy.squeeze(weighted_mean, axis=axes)
         weighted_variance = ivy.squeeze(weighted_variance, axis=axes)
     return weighted_mean, weighted_variance
-
-
-# erosion2d
-@to_ivy_arrays_and_back
-def erosion2d(image, structuring_element):
-    i_h, i_w = ivy.shape(image)
-    s_h, s_w = ivy.shape(structuring_element)
-    pad_h = s_h // 2
-    pad_w = s_w // 2
-    output = ivy.zeros_like(image)
-    for y in range(pad_h, i_h - pad_h):
-        for x in range(pad_w, i_w - pad_w):
-            neighborhood = image[y - pad_h:y + pad_h + 1, x - pad_w:x + pad_w + 1]
-            result=ivy.reduce(
-                ivy.logical_and, 
-                [neighborhood, structuring_element]
-            )
-            output[y, x] = result
-    return output
