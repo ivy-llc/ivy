@@ -1,11 +1,9 @@
 # global
 from hypothesis import given, strategies as st
-import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy
 
 
 @handle_frontend_test(
@@ -107,6 +105,45 @@ def test_paddle_hfft(
         x=x[0],
         axes=axes,
     )
+
+
+@given(
+    s=st.one_of(st.none(), st.tuples(st.integers(min_value=1), st.integers(min_value=1))),
+    axis=st.one_of(st.none(), st.tuples(st.integers(min_value=-2, max_value=-1))),
+    shape=st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=2).map(tuple)
+)
+@handle_frontend_test(
+    fn_tree="paddle.fft.hfft2",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("complex64"),
+    )
+)
+def test_paddle_hfft2(
+    dtype_x_axis,
+    s,
+    axis,
+    norm,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    shape,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    x = x.reshape(shape)  # reshape x to the generated shape
+
+    for norm in ['backward', 'forward', 'ortho']:
+        helpers.test_frontend_function(
+            input_dtypes=input_dtypes,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            x=x,
+            s=s,
+            axis=axis,
+            norm=norm,
+        )
 
 
 @handle_frontend_test(
@@ -244,60 +281,4 @@ def test_paddle_rfftfreq(
         n=n,
         d=d,
     )
-
-
-@given(
-    s=st.one_of(st.none(), st.tuples(st.integers(min_value=1), st.integers(min_value=1))),
-    axis=st.one_of(st.none(), st.tuples(st.integers(min_value=-2, max_value=-1))),
-    shape=st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=2).map(tuple)
-)
-@handle_frontend_test(
-    fn_tree="paddle.fft.hfft2",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("complex64"),
-    )
-)
-def test_paddle_hfft2(
-    dtype_x_axis,
-    s,
-    axis,
-    norm,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-    shape,
-):
-    input_dtypes, x, axis = dtype_x_axis
-    x = x.reshape(shape)  # reshape x to the generated shape
-
-    # Test the behavior of the function when x is not a Hermitian complex
-    if not ivy.allclose(ivy.conj(ivy.matrix_transpose(x)), x):
-        with pytest.raises(ValueError):
-            helpers.test_frontend_function(
-                input_dtypes=input_dtypes,
-                frontend=frontend,
-                backend_to_test=backend_fw,
-                test_flags=test_flags,
-                fn_tree=fn_tree,
-                x=x,
-                s=s,
-                axis=axis,
-                norm=norm,
-            )
-        return
-
-    for norm in ['backward', 'forward', 'ortho']:
-        # Compare the output with the expected output
-        helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            frontend=frontend,
-            backend_to_test=backend_fw,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            x=x,
-            s=s,
-            axis=axis,
-            norm=norm,
-        )
         
