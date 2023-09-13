@@ -130,6 +130,15 @@ def relu(x, name=None):
     return ivy.relu(x)
 
 
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def sigmoid(x, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.sigmoid(x)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def sigmoid(x, dtype=None, name=None):
