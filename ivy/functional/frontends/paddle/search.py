@@ -93,6 +93,7 @@ def topk(x, k, axis=None, largest=True, sorted=True, name=None):
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
+
 @to_ivy_arrays_and_back
 def bucketize(x, boundaries, right=True, dtype="int64", name=None):
     return ivy.bucketize(x, boundaries, right=right, dtype=dtype, name=name)
