@@ -131,7 +131,13 @@ class _ArrayWithActivations(abc.ABC):
             self._data, approximate=approximate, complex_mode=complex_mode, out=out
         )
 
-    def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def sigmoid(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sigmoid.
 
@@ -142,6 +148,9 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         self
             Input array
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array for writing the result to. It must have the same shape
             the input broadcast to default: None
@@ -159,7 +168,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.269, 0.731, 0.881])
         """
-        return ivy.sigmoid(self._data, out=out)
+        return ivy.sigmoid(self._data, complex_mode=complex_mode, out=out)
 
     def softmax(
         self: ivy.Array,
