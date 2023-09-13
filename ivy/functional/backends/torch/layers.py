@@ -91,6 +91,14 @@ multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: \
         kwargs['v_proj_weights'],
         args[0],
         check=True,
+    ) and \
+    (
+        all([ivy.exists(x) for x in [
+            kwargs['q_proj_weights'],
+            kwargs['k_proj_weights'],
+            kwargs['v_proj_weights'],
+        ]]) or
+        ivy.exists(kwargs['in_proj_weights'])
     )
 
 
