@@ -7,7 +7,7 @@ import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.frontends.paddle import Tensor
+from ivy.functional.frontends.paddle import Tensor, to_tensor
 from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
@@ -150,6 +150,27 @@ def _get_dtype_and_values_for_lerp(draw):
         )
         weight = draw(st.floats())
         return input_dtype, x[0], x[1], weight
+
+
+# stack
+@st.composite
+def _get_stack_inputs(draw):
+    num_dims = draw(st.shared(helpers.ints(min_value=2, max_value=5), key="num_dims"))
+    common_shape = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=0, max_value=2),
+            size=num_dims - 1,
+        )
+    )
+    axis = draw(st.sampled_from(list(range(num_dims))))
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes("numeric")),
+            shape=common_shape,
+        )
+    )
+    x = to_tensor(x)
+    return x, dtypes, axis
 
 
 @st.composite
@@ -3796,6 +3817,41 @@ def test_paddle_tensor_squeeze_(
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# stack
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="stack",
+    input_values=_get_stack_inputs(),
+)
+def test_paddle_tensor_stack(
+    input_values,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    data, input_dtype, axis = input_values
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": data,
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={

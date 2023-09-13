@@ -798,3 +798,6 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    def stack(self, axis=0, name=None):
+        return paddle_frontend.stack(self._ivy_array, axis=axis)
