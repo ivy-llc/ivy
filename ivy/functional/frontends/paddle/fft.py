@@ -140,31 +140,39 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def irfftn(x, s=None, axes=None, norm="backward", name=None):
     x = ivy.array(x)
-
+    
     # Determine the output data type based on the input data type
     if ivy.is_complex_dtype(x.dtype):
         output_dtype = "float32" if x.dtype == "complex64" else "float64"
     else:
         output_dtype = "float32"
-
+        
     target_axes = axes
-
+    
     if s is None:
-         s = [x.shape[axis] if axis != axes[-1] else 2 * (x.shape[axis] - 1) for axis in axes]
-
+        s = [x.shape[axis] if axis != axes[-1] else 2 * (x.shape[axis] - 1) for axis in axes]
+    
     freq_domain = x
 
     for axis, size in zip(target_axes, s):
-        slices = [slice(None)] * ivy.get_num_dims(freq_domain)
-        slices[axis] = slice(0, size // 2 + 1)
-        pos_freq_terms = freq_domain[tuple(slices)]
-        slices[axis] = slice(1, -1)
+        # Move the target axis to the end
+        freq_domain_moved = ivy.moveaxis(freq_domain, axis, -1)
+        
+        # Perform operations as if the axis is -1
+        slices = [slice(None)] * ivy.get_num_dims(freq_domain_moved)
+        slices[-1] = slice(0, size // 2 + 1)
+        pos_freq_terms = freq_domain_moved[tuple(slices)]
+        slices[-1] = slice(1, -1)
         neg_freq_terms = ivy.conj(pos_freq_terms[tuple(slices)][..., ::-1])
-        combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axis)
-
-        complex_result = ivy.ifftn(combined_freq_terms, s=[size], axes=[axis], norm=norm)
-        freq_domain = complex_result
+        combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=-1)
+        
+        # Perform inverse FFT
+        complex_result = ivy.ifftn(combined_freq_terms, s=[size], axes=[-1], norm=norm)
+        
+        # Move the last axis back to its original position
+        freq_domain = ivy.moveaxis(complex_result, -1, axis)
+        
     real_result = ivy.real(freq_domain)
     result_t = ivy.astype(real_result, output_dtype)
-
+    
     return result_t
