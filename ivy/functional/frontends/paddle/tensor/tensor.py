@@ -749,6 +749,9 @@ class Tensor:
         return paddle_frontend.is_floating_point(self._ivy_array)
 
     @with_supported_dtypes(
-        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle")
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
     def backward(self, x, grad_tensor=None, retain_graph=False):
-        return paddle_frontend.Tensor.backward(x, grad_tensor=grad_tensor, retain_graph=retain_graph)
+        return paddle_frontend.Tensor.backward(
+            x, grad_tensor=grad_tensor, retain_graph=retain_graph
+        )
