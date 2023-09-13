@@ -1,4 +1,5 @@
 import numpy as np
+import inspect
 from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
     TestCaseSubRunner,
@@ -120,6 +121,16 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         args_result, kwargs_result, total_num_arrays = self._search_args(test_arguments)
         self._preprocess_flags(total_num_arrays)
         args, kwargs = self._preprocess_args(args_result, kwargs_result)
+
+        # If function doesn't have an out argument but an out argument is given
+        # or a test with out flag is True
+        if (
+            "out" in kwargs or self.test_flags.with_out
+        ) and "out" not in inspect.signature(
+            getattr(self._ivy, self.fn_name)
+        ).parameters:
+            raise Exception(f"Function {self.fn_name} does not have an out parameter")
+
         return self._call_function(args, kwargs)
 
 
