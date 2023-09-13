@@ -51,6 +51,14 @@ def numel(x, name=None):
         length = 1  # if 0 dimensional tensor with 1 element
     return ivy.array(prod if prod > 0 else ivy.array(length, dtype=ivy.int64))
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def quantile(x, q, axis=None, keepdim=False):
+    return ivy.quantile(x, q, axis=axis, keepdims=keepdim)
+
 
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "uint16")},
@@ -64,14 +72,6 @@ def std(x, axis=None, unbiased=True, keepdim=False, name=None):
         else ivy.astype(x, ivy.float32)
     )
     return ivy.std(x, axis=axis, correction=int(unbiased), keepdims=keepdim)
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def quantile(x, q, axis=None, keepdim=False):
-    return ivy.quantile(x, q, axis=axis, keepdims=keepdim)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
