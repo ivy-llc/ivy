@@ -76,9 +76,9 @@ DTYPE_DECORATORS = {
 TODO list (prioritised):
 
 ########## MUST HAVE ############
-#. keep information from previous versions
-#. configure all backend is_dtype_err functions
+#. configure is_dtype_err for np, paddle
 #. get it working for frontends
+#. configure other is_dtype_err functions
 #. get it working for methods if needed
 
 ########## NICE TO HAVE ########
@@ -172,15 +172,64 @@ def _is_dtype_err_jax(e, dtype):
 
 
 def _is_dtype_err_np(e, dtype):
-    return "not supported for the input types" in str(e)
+    return False
 
 
 def _is_dtype_err_paddle(e, dtype):
-    return "Selected wrong DataType" in str(e)
+    return False
+
+
+# These aren't equivalences, per se, they're just other dtypes tf might complain about
+# when the actual dtype is the one on the left. complex64: complex128 is because it
+# sometimes upcasts first because of a multiplication with a float64
+TF_DTYPES_MAP = {
+    "float16": "half",
+    "float32": "float",
+    "float64": "double",
+    "complex64": "complex128",
+}
 
 
 def _is_dtype_err_tf(e, dtype):
-    return ("Value for attr 'T' of" in str(e)) or ("`features.dtype` must be" in str(e))
+    dtype_err_substrings = [
+        (
+            "`features.dtype` must be a floating point"
+            f" tensor.Received:features.dtype=<dtype: '{dtype}'>"
+        ),
+        "Could not find device for node: ",
+        f" to EagerTensor of dtype {dtype}",
+        f"Input `a` must have `float`-like `dtype` (saw {dtype}).",
+        f"data type <class 'numpy.{dtype}'> not inexact",
+        "data type <class 'numpy.bool_'> not inexact",
+        "data type <class 'ml_dtypes.bfloat16'> not inexact",
+        "Input must be either real or complex. Received ",
+        f"Argument `dtype` got invalid value <dtype: '{dtype}'>. Accepted dtypes are",
+        f"dtype must be a floating point type. Found <dtype: '{dtype}'>",
+        "Arguments to gcd must be integers.",
+        "randint cannot take arguments of type ",
+        "Invalid integer data type ",
+        f"does not support matrices of type <dtype: '{dtype}'>",
+        "RFFT requires tf.float32 or tf.float64 inputs, got:",
+        f"`x` must be of a real dtype. Received: <dtype: '{dtype}'>",
+        f"`x` must be of a complex dtype. Received: <dtype: '{dtype}'>",
+        f" midpoint interpolation not allowed with dtype <dtype: '{dtype}'>",
+        f"Expected numeric or variant tensor, got dtype tf.{dtype}.",
+        f"The input data type is not supported, DataType : {dtype}",
+        "Argument `concentration` must be float type.",
+        "Argument `probs` must having floating type.",
+    ]
+    value_for_attr = [
+        f"Value for attr '{attr}' of {t} is not in the list of allowed values:"
+        for attr in ["T", "Tidx", "TI", "out_type", "Tmultiples", "dtype", "Tcomplex"]
+        for t in [dtype] + ([TF_DTYPES_MAP[dtype]] if dtype in TF_DTYPES_MAP else [])
+    ]
+    value_to_param = [
+        f"Value passed to parameter '{param}' has DataType {dtype} not in list of"
+        " allowed values:"
+        for param in ["alpha", "x"]
+    ]
+    substrings_to_check = value_for_attr + value_to_param + dtype_err_substrings
+    return any(s in str(e) for s in substrings_to_check)
 
 
 TORCH_DTYPES_MAP = {
@@ -198,7 +247,6 @@ TORCH_DTYPES_MAP = {
     "complex128": "ComplexDouble",
 }
 TORCH_SECONDARY_DTPYES_MAP = {
-    "bool": "bool",
     "int8": "signed char",
     "int16": "short int",
     "int32": "int",
@@ -723,13 +771,15 @@ class BackendFileTester:
                     if (
                         existing_and_is_supported
                         and t
-                        not in existing_decorator_data[latest_known_version][
+                        not in existing_decorator_data[latest_known_version][d][
                             "supported"
                         ]
                     ) or (
                         existing_and_is_unsupported
                         and t
-                        in existing_decorator_data[latest_known_version]["unsupported"]
+                        in existing_decorator_data[latest_known_version][d][
+                            "unsupported"
+                        ]
                     ):
                         self.result[f][d]["unsupported"].add(t)
                     else:
