@@ -1,5 +1,6 @@
 import numpy as np
 import inspect
+import copy
 from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
     TestCaseSubRunner,
@@ -115,7 +116,125 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         return ret[0], ret[1]
 
     def _call_function(self, args, kwargs):
-        pass
+        instance = None
+        if self.test_flags.instance_method:
+            array_or_container_mask = [
+                (not native_flag) or container_flag
+                for native_flag, container_flag in zip(
+                    self.test_flags.native_arrays, self.test_flags.container
+                )
+            ]
+
+            # Boolean mask for args and kwargs True if an entry's
+            # test Array flag is True or test Container flag is true
+            args_instance_mask = array_or_container_mask[
+                : self.test_flags.num_positional_args
+            ]
+            kwargs_instance_mask = array_or_container_mask[
+                self.test_flags.num_positional_args :
+            ]
+
+            if any(args_instance_mask):
+                instance, args = _find_instance_in_args(
+                    self.backend, args, arrays_args_indices, args_instance_mask
+                )
+            else:
+                instance, kwargs = _find_instance_in_args(
+                    self.backend, kwargs, arrays_kwargs_indices, kwargs_instance_mask
+                )
+
+            if self.test_flags.test_compile:
+                target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
+                    self.fn_name
+                )(*args, **kwargs)
+                args = [instance, *args]
+            else:
+                target_fn = instance.__getattribute__(self.fn_name)
+        else:
+            target_fn = self._ivy.__dict__[self.fn_name]
+
+        # Make copy of arguments for functions that might use inplace update by default
+        copy_kwargs = copy.deepcopy(kwargs)
+        copy_args = copy.deepcopy(args)
+
+        ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
+            self.backend,
+            target_fn,
+            *copy_args,
+            test_compile=self.test_flags.test_compile,
+            **copy_kwargs,
+        )
+
+        # TODO move from here to assertions
+        assert self._ivy.nested_map(
+            ret_from_target,
+            lambda x: self._ivy.is_ivy_array(x) if self._ivy.is_array(x) else True,
+        ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
+
+        # TODO should be moved outside of get_results
+        # Assert indices of return if the indices of the out array provided
+        if self.test_flags.with_out and not self.test_flags.test_compile:
+            test_ret = (
+                ret_from_target[getattr(self._ivy.__dict__[self.fn_name], "out_index")]
+                if hasattr(self._ivy.__dict__[self.fn_name], "out_index")
+                else ret_from_target
+            )
+            out = self._ivy.nested_map(
+                test_ret, self._ivy.zeros_like, to_mutable=True, include_derived=True
+            )
+            if self.test_flags.instance_method:
+                ret_from_target, ret_np_flat_from_target = (
+                    get_ret_and_flattened_np_array(
+                        self.backend,
+                        instance.__getattribute__(self.fn_name),
+                        *args,
+                        **kwargs,
+                        out=out,
+                    )
+                )
+            else:
+                ret_from_target, ret_np_flat_from_target = (
+                    get_ret_and_flattened_np_array(
+                        self.backend,
+                        self._ivy.__dict__[self.fn_name],
+                        *args,
+                        **kwargs,
+                        out=out,
+                    )
+                )
+            test_ret = (
+                ret_from_target[getattr(self.ivy.__dict__[self.fn_name], "out_index")]
+                if hasattr(self._ivy.__dict__[self.fn_name], "out_index")
+                else ret_from_target
+            )
+            assert not self._ivy.nested_any(
+                self._ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
+                lambda x: not x,
+            ), "the array in out argument does not contain same value as the returned"
+            if not max(self.test_flags.container) and self._ivy.native_inplace_support:
+                # these backends do not always support native inplace updates
+                assert not self._ivy.nested_any(
+                    self._ivy.nested_multi_map(
+                        lambda x, _: x[0].data is x[1].data, [test_ret, out]
+                    ),
+                    lambda x: not x,
+                ), (
+                    "the array in out argument does not contain same value as the"
+                    " returned"
+                )
+        return (
+            ret_from_target,
+            ret_np_flat_from_target,
+            ret_device,
+            args_np,
+            arg_np_arrays,
+            arrays_args_indices,
+            kwargs_np,
+            arrays_kwargs_indices,
+            kwarg_np_arrays,
+            test_flags,
+            input_dtypes,
+        )
 
     def get_results(self, test_arguments):
         args_result, kwargs_result, total_num_arrays = self._search_args(test_arguments)
