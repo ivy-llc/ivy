@@ -64,7 +64,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
 
         total_num_arrays = n_args_arrays + n_kwargs_arrays
-        self._preprocess_flags(self.test_flags, total_num_arrays)
+        self._preprocess_flags(total_num_arrays)
 
         args, kwargs, idx_args, idx_kwargs = self._search_args(test_arguments)
         args, kwargs = self._preprocess_args(args, kwargs, idx_args, idx_kwargs)
