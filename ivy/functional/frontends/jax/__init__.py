@@ -15,6 +15,7 @@ from . import random
 from . import _src
 from ._src import tree_util
 
+__version__ = ivy.__version__
 
 _frontend_array = numpy.array
 
