@@ -150,7 +150,7 @@ if __name__ == "__main__":
             print(f"{'*' * 100}\n")
             sys.stdout.flush()
             if version_flag == "true":
-                backends = [backend]
+                backends = [backend.strip()]
                 other_backends = [fw for fw in BACKENDS if fw != backend.split("/")[0]]
                 for backend in other_backends:
                     backends.append(backend + "/" + get_latest_package_version(backend))
@@ -159,7 +159,7 @@ if __name__ == "__main__":
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    f" python docker/multiversion_framework_directory.py {backends};"
+                    f" python docker/multiversion_framework_directory.py {' '.join(backends)};"
                     f"python -m pytest --tb=short {test} --backend={backend}"
                 )
             else:
