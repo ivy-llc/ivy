@@ -12,6 +12,10 @@ from hypothesis import find, strategies as st, errors as hyp_errors
 import numpy as np  # used by the (mock) test function
 import re
 
+# used to implement a timeout on hypothesis.find
+import threading
+import _thread
+
 # IVY
 
 import ivy
@@ -76,7 +80,7 @@ DTYPE_DECORATORS = {
 TODO list (prioritised):
 
 ########## MUST HAVE ############
-#. configure is_dtype_err for np, paddle
+#. configure is_dtype_err for paddle
 #. get it working for frontends
 #. configure other is_dtype_err functions
 #. get it working for methods if needed
@@ -171,8 +175,72 @@ def _is_dtype_err_jax(e, dtype):
     return any(s in str(e) for s in substrings_to_check)
 
 
+MAP_HIGHER = {
+    "float16": "float64",
+    "float32": "float64",
+    "complex64": "complex128",
+}
+
+
 def _is_dtype_err_np(e, dtype):
-    return False
+    dtype_err_substrings = [
+        f"to dtype('{dtype}') with casting rule 'same_kind'",
+        f"Cannot cast array data from dtype('{dtype}') to dtype",
+        f"array type {dtype} is unsupported in linalg",
+        f"data type <class 'numpy.{dtype}'> not inexact",
+        "Invalid integer data type",
+        "arrays used as indices must be of integer (or boolean) type",
+        f"'numpy.{dtype}' object cannot be interpreted as an integer",
+        (
+            "not supported for the input types, and the inputs could not be safely"
+            " coerced to any supported types according to the casting rule ''safe''"
+        ),
+        (
+            "did not contain a loop with signature matching types <class"
+            f" 'numpy.dtypes.{dtype.capitalize()}DType'> ->"
+        ),
+        (
+            "did not contain a loop with signature matching types (<class"
+            f" 'numpy.dtypes.{dtype.capitalize()}DType'>,"
+        ),
+        f"Unsupported dtype dtype('{dtype}')",
+        (
+            "cannot take arguments of type"
+            f" {''.join(c for c in dtype if not c.isnumeric())}"
+        ),
+        f"to dtype('{dtype}') according to the rule 'safe'",
+        f"Cannot cast scalar from dtype('{dtype}') to dtype",
+        "a must be an array of real numbers",
+        "must be real number, not complex",
+        "i0 not supported for complex values",
+    ] + (
+        [
+            f"Cannot cast array data from dtype('{MAP_HIGHER[dtype]}') to dtype",
+            f"'numpy.{MAP_HIGHER[dtype]}' object cannot be interpreted as an integer",
+            f"Cannot cast scalar from dtype('{MAP_HIGHER[dtype]}') to dtype",
+        ]
+        if dtype in MAP_HIGHER
+        else []
+    )
+    only_if_bool = [
+        (
+            "The numpy boolean negative, the `-` operator, is not supported, use the"
+            " `~` operator or the logical_not function instead."
+        ),
+        (
+            "numpy boolean subtract, the `-` operator, is not supported, use the"
+            " bitwise_xor, the `^` operator, or the logical_xor function instead."
+        ),
+        "data type <class 'numpy.bool_'> not inexact",
+        "[[False False]] must be lesser than [[False False]]",
+        "math domain error",
+        "dirichlet: alpha <= 0",
+        "beta: a <= 0",
+    ]
+    substrings_to_check = (
+        only_if_bool if dtype == "bool" else []
+    ) + dtype_err_substrings
+    return any(s in str(e) for s in substrings_to_check)
 
 
 def _is_dtype_err_paddle(e, dtype):
@@ -1110,7 +1178,24 @@ def run_dtype_setter(
                 try:
                     with SuppressPrint():
                         for k, v in kwargs.items():
-                            min_example[k] = find(specifier=v, condition=lambda _: True)
+                            timer = threading.Timer(10, _thread.interrupt_main)
+                            timer.start()
+                            try:
+                                min_example[k] = find(
+                                    specifier=v, condition=lambda _: True
+                                )
+                            except KeyboardInterrupt as e:
+                                for device in test_handler.iterate_devices():
+                                    test_handler.set_result(
+                                        "skipped", "Timeout generating example."
+                                    )
+                                raise e
+                            finally:
+                                timer.cancel()
+                except KeyboardInterrupt:
+                    # Why interrupt_main() uses a KeyboardInterrupt is beyond me,
+                    # but I suppose this is what we have to do
+                    continue
                 except Exception as e:
                     for device in test_handler.iterate_devices():
                         test_handler.set_result("skipped", "In hypothesis: " + str(e))
