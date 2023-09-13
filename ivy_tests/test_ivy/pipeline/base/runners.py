@@ -43,7 +43,7 @@ class TestCaseRunner(ABC):
 
 
 class TestCaseSubRunner(ABC):
-    def split_args_to_args_and_kwargs(num_positional_args, test_arguments):
+    def split_args_to_args_and_kwargs(self, num_positional_args, test_arguments):
         """
         Split the kwargs into args and kwargs.
 
