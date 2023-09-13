@@ -428,8 +428,10 @@ def positive(input, *, out=None):
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
     if not ivy.is_array(exponent):
-        if (any(dtype in str(input.dtype) for dtype in ['int8', 'int16']) and isinstance(exponent, int)) or \
-                ('float16' in str(input.dtype) and isinstance(exponent, float)):
+        if (
+            any(dtype in str(input.dtype) for dtype in ["int8", "int16"])
+            and isinstance(exponent, int)
+        ) or ("float16" in str(input.dtype) and isinstance(exponent, float)):
             exponent = ivy.array(exponent, dtype=input.dtype)
         else:
             exponent = torch_frontend.as_tensor(exponent).ivy_array
