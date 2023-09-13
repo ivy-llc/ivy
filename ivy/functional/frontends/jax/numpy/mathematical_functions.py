@@ -669,7 +669,7 @@ def roots(p):
         # finding the eigenvalue of comp_matrix which is also the roots
         roots = ivy.eigvals(comp_matrix)
 
-    return roots
+    return ivy.flip(roots)
 
 
 @to_ivy_arrays_and_back

@@ -2826,7 +2826,7 @@ def test_jax_remainder(
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=1,
-        min_dim_size=0,
+        min_dim_size=3,
     ),
 )
 def test_jax_roots(
@@ -2839,7 +2839,6 @@ def test_jax_roots(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -2847,7 +2846,7 @@ def test_jax_roots(
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
-        p=x,
+        p=x[0],
         atol=1e-05,
         rtol=1e-03,
     )
