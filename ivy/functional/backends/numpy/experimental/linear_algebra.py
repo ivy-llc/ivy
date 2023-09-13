@@ -184,3 +184,16 @@ def lu_factor(
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray]:
     raise IvyNotImplementedException()
+
+
+def dot(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dot(a, b, out=out)
+
+
+dot.support_native_out = True

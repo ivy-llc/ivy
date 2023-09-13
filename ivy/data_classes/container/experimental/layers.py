@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence
+from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -287,13 +287,17 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d((2, 2), (1, 1), "SAME"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> y = x.max_pool2d(3, 1, "VALID")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([], shape=(1, 0, 1, 4)),
+            b: ivy.array([[[[16., 17.]],
+                           [[22., 23.]]],
+                         [[[40., 41.]],
+                           [[46., 47.]]]])
         }
         """
         return self.static_max_pool2d(
@@ -440,16 +444,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool3d(2, 1, "VALID"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> print(x.max_pool3d(3, 1, "VALID"))
         {
-            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            a: ivy.array([], shape=(1, 0, 1, 2, 1)),
+            b: ivy.array([], shape=(2, 2, 1, 0, 1))
         }
         """
         return self.static_max_pool3d(
@@ -676,10 +677,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME"))
+        >>> y = ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME")
+        >>> print(y)
         {
-            a: ivy.array([], shape=(2, 0, 2, 2)),
-            b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -755,10 +757,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.avg_pool2d((2, 2), (1, 1), "SAME"))
+        >>> y = x.avg_pool2d(2, 1, "SAME")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return self.static_avg_pool2d(
@@ -911,16 +914,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool3d(2, 1, "VALID"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> print(x.avg_pool3d(2, 1, "VALID"))
         {
-            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            a: ivy.array([[[[[8.5],
+                             [9.5],
+                             [10.5]],
+                            [[12.5],
+                             [13.5],
+                             [14.5]]]]]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 3, 2, 1, 1])
         }
         """
         return self.static_avg_pool3d(
@@ -2133,6 +2138,31 @@ class _ContainerWithLayersExperimental(ContainerBase):
         -------
         ret
             Container containing the transformed inputs
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...         a=ivy.array([[0.247306+0.908323j, 0.494955+0.90395j,
+        ...                       0.98193269+0.49560517j],
+        ...                      [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+        ...                       0.2343787 +0.83528011j],
+        ...                      [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+        ...                       0.44719226+0.72654048j]]),
+        ...         b=ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+        ...                       0.98193269+0.49560517j],
+        ...                      [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+        ...                       0.2343787 +0.83528011j],
+        ...                      [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+        ...                       0.44719226+0.72654048j]]),
+        ...     )
+        >>> y = x.ifftn(s=[2, 1], axes=[0, 1], norm='ortho')
+        >>> print(y)
+        {
+            a: ivy.array([[0.8344667+0.98222595j],
+                          [-0.48472244+0.30233797j]]),
+            b: ivy.array([[0.8344667+0.98222595j],
+                          [-0.48472244+0.30233797j]])
+        }
         """
         return self.static_ifftn(
             self,
@@ -2248,5 +2278,131 @@ class _ContainerWithLayersExperimental(ContainerBase):
             s=s,
             axes=axes,
             norm=norm,
+            out=out,
+        )
+
+    @staticmethod
+    def static_stft(
+        signals: ivy.Container,
+        frame_length: Union[int, ivy.Container],
+        frame_step: Union[int, ivy.Container],
+        /,
+        *,
+        fft_length: Optional[Union[int, ivy.Container]] = None,
+        window_fn: Optional[Union[Callable, ivy.Container]] = None,
+        pad_end: Optional[Union[bool, ivy.Container]] = False,
+        name: Optional[Union[str, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stft.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.stft also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        signals
+            Input Arrays.
+        frame_length
+           An integer scalar Tensor. The window length in samples.
+        frame_step
+            An integer scalar Tensor. The number of samples to step.
+        fft_length, optional
+            An integer scalar Tensor. The size of the FFT to apply.
+            If not provided, uses the smallest power of 2 enclosing frame_length.
+        window_fn, optional
+            A callable that takes a window length
+            and a dtype keyword argument and returns a [window_length]
+            Tensor of samples in the provided datatype.
+            If set to None, no windowing is used.
+        pad_end, optional
+            Whether to pad the end of signals with zeros when the provided frame length
+            and step produces a frame that lies partially past its end.
+        name, optional
+            An optional name for the operation.
+        out, optional
+            Optional output array for writing the result.
+
+        Returns
+        -------
+        ret
+            A [..., frames, fft_unique_bins] Tensor of
+            complex64/complex128 STFT values where fft_unique_bins is
+            fft_length // 2 + 1 (the unique components of the FFT).
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "stft",
+            signals,
+            frame_length,
+            frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def stft(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        frame_length: Union[int, ivy.Container],
+        frame_step: Union[int, ivy.Container],
+        /,
+        *,
+        fft_length: Optional[Union[int, ivy.Container]] = None,
+        window_fn: Optional[Union[Callable, ivy.Container]] = None,
+        pad_end: Optional[Union[bool, ivy.Container]] = False,
+        name: Optional[Union[str, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Container:
+        """
+        Compute the Short-time Fourier Transform of signals.
+
+        Parameters
+        ----------
+        self
+            Input Arrays.
+        frame_length
+           An integer scalar Tensor. The window length in samples.
+        frame_step
+            An integer scalar Tensor. The number of samples to step.
+        fft_length
+            An integer scalar Tensor. The size of the FFT to apply.
+            If not provided, uses the smallest power of 2 enclosing frame_length.
+        window_fn
+            A callable that takes a window length and
+            a dtype keyword argument and returns a [window_length] Tensor of
+            samples in the provided datatype. If set to None, no windowing is used.
+        pad_end
+            Whether to pad the end of signals with zeros when the provided frame length
+            and step produces a frame that lies partially past its end.
+        name
+            An optional name for the operation.
+        out
+            Optional output array for writing the result.
+
+        Returns
+        -------
+        ret
+            A [..., frames, fft_unique_bins] Tensor of
+            complex64/complex128 STFT values where fft_unique_bins is
+            fft_length // 2 + 1 (the unique components of the FFT).
+        """
+        return self.static_stft(
+            self,
+            frame_length,
+            frame_step,
+            fft_length=fft_length,
+            window_fn=window_fn,
+            pad_end=pad_end,
+            name=name,
             out=out,
         )
