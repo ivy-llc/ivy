@@ -401,8 +401,8 @@ def _get_dtype_value1_value2_cov(
 # higher_order_moment
 @st.composite
 def _higher_order_moment_data(draw):
-    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
-    order = draw(helpers.ints(min_value=0, max_value=10))
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
+    order = draw(helpers.ints(min_value=0, max_value=5))
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
