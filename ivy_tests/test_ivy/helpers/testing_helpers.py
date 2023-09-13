@@ -811,7 +811,9 @@ def handle_frontend_method(
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
                 test_compile=_get_runtime_flag_value(test_compile),
                 precision_mode=_get_runtime_flag_value(precision_mode),
-                generate_frontend_arrays=generate_frontend_arrays,
+                generate_frontend_arrays=_get_runtime_flag_value(
+                    generate_frontend_arrays
+                ),
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
