@@ -645,6 +645,48 @@ def eigh(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1., 2.],[2., 5.]])
+    >>> eigenvalues, eigenvectors = ivy.eigh(x)
+    >>> print(eigenvalues)
+    ivy.array([0.17157288, 5.82842731])
+    >>> print(eigenvectors)
+    ivy.array([[-0.9238795 ,  0.38268343],
+        [ 0.38268343,  0.9238795 ]])
+
+    >>> x = ivy.array([[1., 2.], [2., 5.]])
+    >>> eigenvalues, eigenvectors = ivy.zeros(len(x)), ivy.zeros(x.shape)
+    >>> ivy.eigh(x, out=(eigenvalues, eigenvectors))
+    >>> print(eigenvalues)
+    ivy.array([0.17157288, 5.82842731])
+    >>> print(eigenvectors)
+    ivy.array([[-0.9238795 ,  0.38268343],
+           [ 0.38268343,  0.9238795 ]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(
+    ...             a = ivy.native_array([[1., 2., 0.], [3., 4., 5.], [1., 5., 9]]),
+    ...             b = ivy.array([[2., 4., 6.], [3., 5., 7.], [0., 0.8, 2.9]]))
+    >>> eigenvalues, eigenvectors = ivy.eigh(x, UPLO = 'U')
+    >>> print(eigenvalues)
+    {
+        a: ivy.array([-0.78930789, 2.59803128, 12.19127655]),
+        b: ivy.array([-4.31213903, -0.63418275, 14.84632206])
+    }
+    >>> print(eigenvectors)
+    {
+        a: ivy.array([[0.70548367, -0.70223427, 0.09570674],
+                    [-0.63116378, -0.56109613, 0.53554028],
+                    [0.32237405, 0.43822157, 0.83906901]]),
+        b: ivy.array([[0.50766778, 0.71475857, 0.48103389],
+                    [0.3676433, -0.68466955, 0.62933773],
+                    [-0.77917379, 0.14264561, 0.61036086]])
+    }
     """
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
@@ -1791,6 +1833,53 @@ def qr(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1.,2.,3.],[4.,5.,6.],[7.,8.,9.]])
+    >>> q, r = ivy.qr(x)
+    >>> print(q)
+    ivy.array([[-0.12309149,  0.90453403,  0.40824829],
+        [-0.49236596,  0.30151134, -0.81649658],
+        [-0.86164044, -0.30151134,  0.40824829]])
+    >>> print(r)
+    ivy.array([[-8.12403841e+00,-9.60113630e+00, -1.10782342e+01],
+        [ 0.00000000e+00,  9.04534034e-01,  1.80906807e+00],
+        [ 0.00000000e+00,  0.00000000e+00, -8.88178420e-16]])
+
+    # Note: if `int` values are used in `x` the output for q, r varry
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> q = ivy.zeros_like(x)
+    >>> r = ivy.zeros_like(x)
+    >>> ivy.qr(x, out=(q,r))
+    >>> print(q)
+    ivy.array([[-0.31622776, -0.94868332],
+           [-0.94868332,  0.31622776]])
+    >>> print(r)
+    ivy.array([[-3.1622777 , -4.42718887],
+           [ 0.        , -0.63245553]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.native_array([[1., 2.], [3., 4.]]),
+    ...                   b = ivy.array([[2., 3.], [4. ,5.]]))
+    >>> q,r = ivy.qr(x, mode='complete')
+    >>> print(q)
+    {
+        a: ivy.array([[-0.31622777, -0.9486833],
+                    [-0.9486833, 0.31622777]]),
+        b: ivy.array([[-0.4472136, -0.89442719],
+                    [-0.89442719, 0.4472136]])
+    }
+    >>> print(r)
+    {
+        a: ivy.array([[-3.16227766, -4.42718872],
+                    [0., -0.63245553]]),
+        b: ivy.array([[-4.47213595, -5.81377674],
+                    [0., -0.4472136]])
+    }
     """
     return current_backend(x).qr(x, mode=mode, out=out)
 
@@ -1955,6 +2044,22 @@ def solve(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    with :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([[1., 2.],[3., 4.]])
+    >>> x2 = ivy.array([5., 6.])
+    >>> out = ivy.solve(x1, x2)
+    >>> print(out)
+    ivy.array([-4. ,  4.5])
+
+    >>> x1 = ivy.native_array([[1., 2.],[3., 4.]])
+    >>> x2 = ivy.array([5., 6.])
+    >>> z = ivy.zeros_like(x2)
+    >>> ivy.solve(x1, x2, out=z)
+    ivy.array([-4. ,  4.5])
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
@@ -2289,6 +2394,15 @@ def tensordot(
     >>> print(res)
     ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])
 
+    With :class:'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([[1., 2.], [2., 3.]])
+    >>> y = ivy.native_array([[3., 4.], [4., 5.]])
+    >>> res = ivy.tensordot(x, y, axes = (1,1))
+    >>> print(res)
+    ivy.array([[11., 14.],
+            [18., 23.]])
+
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
@@ -2508,6 +2622,33 @@ def vecdot(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1., 2., 3.])
+    >>> x2 = ivy.array([4., 5., 6.])
+    >>> dot_product = ivy.vecdot(x1, x2)
+    >>> print(dot_product)
+    ivy.array(32.)
+
+    >>> x1 = ivy.array([1., 2., 3.])
+    >>> x2 = ivy.array([1., .8, 4.])
+    >>> y = ivy.zeros(1)
+    >>> ivy.vecdot(x1, x2, out=y)
+    ivy.array(14.60000038)
+
+    With :class:`ivy.Container` input:
+
+    >>> x1 = ivy.array([1., 2., 3.])
+    >>> x2 = ivy.Container(a=ivy.array([7., 8., 9.]), b=ivy.array([10., 11., 12.]))
+    >>> dot_product = ivy.vecdot(x1, x2, axis=0)
+    >>> print(dot_product)
+    {
+        a: ivy.array(50.),
+        b: ivy.array(68.)
+    }
     """
     return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
 
