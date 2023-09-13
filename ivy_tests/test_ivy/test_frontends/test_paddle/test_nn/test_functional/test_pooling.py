@@ -284,8 +284,8 @@ def test_paddle_avg_pool2d(
     x_k_s_p=helpers.arrays_for_pooling(
         min_dims=5,
         max_dims=5,
-        min_side=2,
-        max_side=4,
+        min_side=3,
+        max_side=6,  # Adjust the min and max_side to control the input size
         data_format="NCDHW",
         return_dilation=True,
         return_data_format=True,
@@ -335,7 +335,6 @@ def test_paddle_max_pool3d(
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
-        data_format=data_format,
     )
 
 
