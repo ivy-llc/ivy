@@ -71,14 +71,14 @@ def gelu(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "complex")},
+    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
     backend_version,
 )
 def sigmoid(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
-        return 1 / (1 + paddle_backend.exp(-x))
+        return 1.0 / (1.0 + paddle_backend.exp(-x))
     return F.sigmoid(x)
 
 
