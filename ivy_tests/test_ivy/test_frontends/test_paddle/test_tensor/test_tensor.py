@@ -389,6 +389,7 @@ def test_paddle_is_floating_point(
 
 # quantile
 @handle_frontend_method(
+    class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     dtype_and_x=_statistical_dtype_values(function="quantile"),
     q=st.floats(0.0, 1.0),
