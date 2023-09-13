@@ -486,6 +486,27 @@ def rfftn(
     },
     backend_version,
 )
+def hfftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    result = paddle.fft.hfftn(x, s, axes, norm)
+    return result
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
 def fft2(
     x: paddle.Tensor,
     *,

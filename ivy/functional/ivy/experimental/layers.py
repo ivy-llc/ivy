@@ -1200,6 +1200,51 @@ def ifft(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+def hfftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    /,
+    *,
+    s: Optional[Union[int, Tuple[int, ...]]] = None,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the FFT of a signal that has Hermitian symmetry, a real spectrum.
+
+    Parameters
+    ----------
+        x
+            The input data. It's a Tensor type. It's a complex.
+        n
+            The length of the output transform axis. 
+        axis
+            Axis used to calculate FFT. If not specified, the last axis
+            is used by default.
+        norm
+            Indicates which direction to scale the `forward` or `backward` transform
+            pair and what normalization factor to use. The parameter value must be one
+            of "forward" or "backward" or "ortho". Default is "backward".
+        name
+            The default value is None.  Normally there is no need for user to set
+            this property. For more information, please refer to :ref:`api_guide_Name` .
+
+    Returns
+    -------
+    ret
+        The result of HFFTN operation.
+    """
+    return ivy.current_backend(x).hfftn(x, s, dim, norm=norm, n=n, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],

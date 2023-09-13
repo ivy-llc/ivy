@@ -131,3 +131,18 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def hfftn(x, n=None, axis=None, norm="backward", name=None):
+    result = ivy.hfftn(x, axis, n=n, norm=norm)
+    return ivy.real(result)
