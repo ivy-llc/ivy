@@ -94,7 +94,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                safety_factor_scale="log",
             )
         )
         k = draw(
@@ -103,7 +103,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                safety_factor_scale="log",
             )
             if not _self_attention
             else st.none()
@@ -114,7 +114,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                safety_factor_scale="log",
             )
             if not _self_attention
             else st.none()
@@ -140,7 +140,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                safety_factor_scale="log",
             )
         )
         k = draw(
@@ -149,7 +149,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                safety_factor_scale="log",
             )
         )
         v = draw(
@@ -158,7 +158,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
                 dtype=dtype[0],
                 large_abs_safety_factor=7,
                 small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                safety_factor_scale="log",
             )
         )
         q_proj_weights = draw(
