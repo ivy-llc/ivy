@@ -212,6 +212,6 @@ def test_views(array_to_update, backend_fw):
 
 
 def test_warn_efficient_implementations():
-    to_test = ivy.func_wrapper._warn_efficient_implementation_available(ivy.array)
+    to_test = ivy.func_wrapper._handle_efficient_implementation_available(ivy.array)
     with pytest.warns(UserWarning):
         to_test(1)

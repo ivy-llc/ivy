@@ -3,12 +3,6 @@ import pytest
 import ivy
 
 
-def test_available_sub_backend_implementations_raise_error_when_param_not_callable():
-    ivy.set_backend("torch")
-    with pytest.raises(TypeError):
-        ivy.available_sub_backend_implementations("__name__")
-
-
 def test_no_warning_when_no_sub_backend_implementation_available():
     ivy.set_backend("numpy")
     q = ivy.array([[[0.2, 1.0], [2.2, 3.0], [4.4, 5.6]]])
@@ -24,7 +18,7 @@ def test_no_warning_when_no_sub_backend_implementation_available():
 def test_sub_backend_implementation_available():
     ivy.set_backend("torch")
     sub_backends = ivy.available_sub_backend_implementations(
-        ivy.scaled_dot_product_attention
+        "scaled_dot_product_attention"
     )
     assert sub_backends == ["xformers"]
 
@@ -32,7 +26,7 @@ def test_sub_backend_implementation_available():
 def test_sub_backend_implementation_not_available():
     ivy.set_backend("numpy")
     sub_backends = ivy.available_sub_backend_implementations(
-        ivy.scaled_dot_product_attention
+        "scaled_dot_product_attention"
     )
     assert not sub_backends
 

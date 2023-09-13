@@ -2,7 +2,7 @@ import os
 from types import ModuleType, FunctionType
 import logging
 import importlib
-from typing import Union, Callable
+from typing import Callable
 
 import ivy
 from ivy.func_wrapper import _wrap_function
@@ -223,13 +223,13 @@ def _find_available_sub_backend_implementations(sub_backends):
     return result
 
 
-def available_sub_backend_implementations(obj: Union[Callable, str]) -> list:
+def available_sub_backend_implementations(obj: str) -> list:
     """
     Return whether a sub-backend implementation is available for `obj`.
 
     Parameters
     ----------
-    obj : callable or str
+    obj : str
         the object for which to check if a sub-backend implementation is available.
 
     Returns
@@ -241,34 +241,35 @@ def available_sub_backend_implementations(obj: Union[Callable, str]) -> list:
     --------
     >>> import ivy
     >>> ivy.set_backend('torch')
-    >>> ivy.available_sub_backend_implementations(ivy.scaled_dot_product_attention)
+    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
     ['xformers']
     >>> ivy.set_backend('numpy')
-    >>> ivy.available_sub_backend_implementations(ivy.scaled_dot_product_attention)
+    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
     []
     """
-    obj = _check_callable(obj)
+    obj = getattr(ivy, obj)
     sub_backends = ivy.current_backend().available_sub_backends()
     result = []
     if not sub_backends:
         return result
-    if (
-        ivy.current_backend_str()
-        not in _available_sub_backends_implementations_dict.keys()
-    ):
-        _available_sub_backends_implementations_dict[ivy.current_backend_str()] = (
-            _find_available_sub_backend_implementations(sub_backends)
-        )
-    return _available_sub_backends_implementations_dict[ivy.current_backend_str()].get(
-        obj.__name__, []
+    if not sub_backends_implementations_already_verified():
+        _verify_sub_backends_implementations(sub_backends)
+    return _available_implementations_for(obj)
+
+
+def sub_backends_implementations_already_verified():
+    return (
+        ivy.current_backend_str() in _available_sub_backends_implementations_dict.keys()
     )
 
 
-def _check_callable(obj):
-    if isinstance(obj, str):
-        obj = getattr(ivy, obj)
-    if not callable(obj):
-        raise TypeError(
-            "The argument `obj` must be a callable or a string representing a callable"
-        )
-    return obj
+def _verify_sub_backends_implementations(sub_backends):
+    _available_sub_backends_implementations_dict[ivy.current_backend_str()] = (
+        _find_available_sub_backend_implementations(sub_backends)
+    )
+
+
+def _available_implementations_for(obj):
+    return _available_sub_backends_implementations_dict[ivy.current_backend_str()].get(
+        obj.__name__, []
+    )
