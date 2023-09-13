@@ -140,20 +140,20 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def irfftn(x, s=None, axes=None, norm="backward", name=None):
     x = ivy.array(x)
-    
+
     # Determine the output data type based on the input data type
     if ivy.is_complex_dtype(x.dtype):
         output_dtype = "float32" if x.dtype == "complex64" else "float64"
     else:
         output_dtype = "float32"
-    
+
     target_axes = axes
-    
+
     if s is None:
-        s = [2 * x.shape[axis] - 2 for axis in target_axes]
-    
+         s = [x.shape[axis] if axis != axes[-1] else 2 * (x.shape[axis] - 1) for axis in axes]
+
     freq_domain = x
-    
+
     for axis, size in zip(target_axes, s):
         slices = [slice(None)] * ivy.get_num_dims(freq_domain)
         slices[axis] = slice(0, size // 2 + 1)
@@ -161,12 +161,10 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
         slices[axis] = slice(1, -1)
         neg_freq_terms = ivy.conj(pos_freq_terms[tuple(slices)][..., ::-1])
         combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axis)
-        
+
         complex_result = ivy.ifftn(combined_freq_terms, s=[size], axes=[axis], norm=norm)
-        
         freq_domain = complex_result
-        
     real_result = ivy.real(freq_domain)
     result_t = ivy.astype(real_result, output_dtype)
-    
+
     return result_t
