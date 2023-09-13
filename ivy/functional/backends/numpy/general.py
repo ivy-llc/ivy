@@ -322,10 +322,15 @@ def scatter_nd(
         np.minimum.at(target, indices_tuple, updates)
     elif reduction == "max":
         np.maximum.at(target, indices_tuple, updates)
+    elif reduction == "mul":
+        np.multiply.at(target, indices_tuple, updates)
+    elif reduction == "mean":
+        np.add.at(target, indices_tuple, updates)
+        target = target / (len(updates) + 1)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            '"sum", "min", "max", "mean", "mul" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, _to_device(target))
