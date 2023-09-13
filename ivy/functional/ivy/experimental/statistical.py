@@ -157,6 +157,68 @@ def histogram(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+def histogramdd(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    density: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute a multi-dimensional histogram of the values in a array.
+
+    Parameters
+    ----------
+    input :
+        ``input`` must be a array with at least 2 dimensions. If input has shape (M, N), each of its M rows defines a point in N-dimensional space.
+    bins :
+        If ``bins`` is a sequence of N 1D tensors, it explicitly specifies the N sequences of bin edges.
+        If ``bins`` is a sequence of N ints, it specifies the number of equal-width bins in each dimension.
+        If ``bins`` is an int, it specifies the number of equal-width bins for all dimensions.
+    range :
+        the lower and upper range of the bins. The first element of the range must be
+        less than or equal to the second.
+    weights :
+        each value in ``sample`` only contributes its associated weight towards the bin count
+        (instead of 1). Must be of the same shape as ``sample``.
+    dtype
+        the output type.
+    out:
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to
+
+    Returns
+    -------
+    H :
+        N-dimensional array containing the values of the histogram.
+    bin_edges:
+        List of N 1D Tensors containing the bin edges.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    return ivy.current_backend(input).histogramdd(
+        input,
+        bins=bins,
+        dtype=dtype,
+        range=range,
+        weights=weights,
+        density=density,
+        out=out,
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def median(
     input: ivy.Array,
     /,

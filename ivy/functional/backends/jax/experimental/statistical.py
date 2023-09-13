@@ -120,6 +120,27 @@ def histogram(
     return ret
 
 
+def histogramdd(
+    input: jnp.ndarray,
+    /,
+    *,
+    bins: Optional[Union[int, jnp.ndarray]] = 10,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[jnp.ndarray] = None,
+    density: Optional[bool] = False,
+    out: Optional[jnp.ndarray] = None,
+) -> Tuple[jnp.ndarray]:
+    if isinstance(range, list):
+        range = tuple(range)
+    ret = jnp.histogramdd(
+        input, bins=bins, range=range, weights=weights, density=density
+    )
+    if dtype:
+        ret = ret.astype(dtype)
+    return ret
+
+
 @with_unsupported_dtypes(
     {"0.4.14 and below": ("complex64", "complex128")}, backend_version
 )

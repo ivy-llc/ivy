@@ -221,6 +221,160 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+    
+    @staticmethod
+    def static_histogramdd(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        bins: Optional[
+            Union[int, ivy.Array, ivy.NativeArray, ivy.Container, str]
+        ] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        range: Optional[Tuple[Union[bool, ivy.Container]]] = None,
+        weights: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        density: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.histogramdd. This method simply wraps
+        the function, and so the docstring for ivy.histogramdd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        input :
+            ``input`` must be a array with at least 2 dimensions. If input has shape (M, N), each of its M rows defines a point in N-dimensional space.
+        bins :
+            If ``bins`` is a sequence of N 1D tensors, it explicitly specifies the N sequences of bin edges.
+            If ``bins`` is a sequence of N ints, it specifies the number of equal-width bins in each dimension.
+            If ``bins`` is an int, it specifies the number of equal-width bins for all dimensions.
+        range :
+            the lower and upper range of the bins. The first element of the range must be
+            less than or equal to the second.
+        weights :
+            each value in ``sample`` only contributes its associated weight towards the bin count
+            (instead of 1). Must be of the same shape as ``sample``.
+        out:
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        H :
+            N-dimensional array containing the values of the histogram.
+        bin_edges:
+            List of N 1D Tensors containing the bin edges.
+
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+        instances in place of any of the arguments.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "histogramdd",
+            input,
+            bins=bins,
+            dtype=dtype,
+            range=range,
+            weights=weights,
+            density=density,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def histogramdd(
+        self: ivy.Container,
+        /,
+        *,
+        bins: Optional[
+            Union[int, ivy.Array, ivy.NativeArray, ivy.Container, str]
+        ] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        range: Optional[Tuple[Union[bool, ivy.Container]]] = None,
+        weights: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        density: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.histogramdd. This method simply wraps
+        the function, and so the docstring for ivy.histogramdd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        input :
+            ``input`` must be a array with at least 2 dimensions. If input has shape (M, N), each of its M rows defines a point in N-dimensional space.
+        bins :
+            If ``bins`` is a sequence of N 1D tensors, it explicitly specifies the N sequences of bin edges.
+            If ``bins`` is a sequence of N ints, it specifies the number of equal-width bins in each dimension.
+            If ``bins`` is an int, it specifies the number of equal-width bins for all dimensions.
+        range :
+            the lower and upper range of the bins. The first element of the range must be
+            less than or equal to the second.
+        weights :
+            each value in ``sample`` only contributes its associated weight towards the bin count
+            (instead of 1). Must be of the same shape as ``sample``.
+        out:
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        H :
+            N-dimensional array containing the values of the histogram.
+        bin_edges:
+            List of N 1D Tensors containing the bin edges.
+
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+        instances in place of any of the arguments.
+        """
+        return self.static_histogramdd(
+            self,
+            bins=bins,
+            dtype=dtype,
+            range=range,
+            weights=weights,
+            density=density,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     @staticmethod
     def static_median(

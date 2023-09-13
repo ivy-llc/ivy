@@ -139,6 +139,34 @@ def histogram(
 histogram.support_native_out = True
 
 
+def histogramdd(
+    input: torch.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, torch.Tensor]] = None,
+    dtype: Optional[torch.dtype] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[torch.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor]:
+    if isinstance(range, list):
+        range = tuple(range)
+    ret = torch.histogramdd(
+        input,
+        bins=bins,
+        range=range,
+        weights=weights,
+        density=density,
+    )
+    if dtype:
+        ret = ret.astype(dtype)
+    return ret
+
+
+histogramdd.support_native_out = True
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,

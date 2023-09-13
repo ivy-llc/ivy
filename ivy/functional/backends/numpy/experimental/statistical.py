@@ -123,6 +123,31 @@ def histogram(
     return ret
 
 
+def histogramdd(
+    input: np.ndarray,
+    /,
+    *,
+    bins: Union[int, Tuple[int]] = 10,
+    range: Optional[Tuple[Tuple[float]]] = None,
+    weights: Optional[np.ndarray] = None,
+    density: Optional[bool] = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+):
+    if isinstance(range, list):
+        range = tuple(range)
+    ret = np.histogramdd(
+        input,
+        bins=bins,
+        range=range,
+        weights=weights,
+        density=density,
+    )
+    if dtype:
+        ret = ret.astype(dtype)
+    return ret
+
+
 def median(
     input: np.ndarray,
     /,
