@@ -167,6 +167,7 @@ def numpy_to_torch_style_args(func):  # noqa
         }
         return func(*args, **new_kwargs)
 
+    wrapper.numpy_to_torch_style_args = True
     return wrapper
 
 

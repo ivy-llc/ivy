@@ -190,6 +190,7 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         _wraped_fn.__signature__ = new_signature
         return _wraped_fn
 
+    _wrap_raw_ops_alias.wrap_raw_ops_alias = True
     return _wrap_raw_ops_alias(alias, kwargs_to_update)
 
 
