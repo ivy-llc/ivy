@@ -179,7 +179,7 @@ def negative_binomial(n, p, size=None):
 def noncentral_chisquare(df, nonc, size=None):
     if ivy.any(df <= 0):
         raise ValueError("Degree of freedom must be greater than 0")
-    if nonc == 0:
+    if ivy.any(nonc == 0):
         return chisquare(df)
     if 1 < df:
         n = standard_normal() + ivy.sqrt()
