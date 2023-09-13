@@ -1,4 +1,5 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
+import inspect
 
 # global
 import os
@@ -10,7 +11,10 @@ from torch.profiler import profile
 
 # local
 import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _shift_native_arrays_on_default_device,
+    Profiler as BaseProfiler,
+)
 
 torch_scatter = None
 
@@ -70,7 +74,7 @@ def as_native_dev(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    if device == "mps":
+    if torch.backends.mps.is_available():
         return torch.device(ivy.Device(device).replace("gpu", "mps"))
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
@@ -92,9 +96,7 @@ def num_gpus() -> int:
 
 
 def gpu_is_available() -> bool:
-    if hasattr(torch.backends, "mps"):
-        return torch.backends.mps.is_available()
-    return torch.cuda.is_available()
+    return torch.backends.mps.is_available() or torch.cuda.is_available()
 
 
 # noinspection PyUnresolvedReferences
@@ -102,6 +104,17 @@ def tpu_is_available() -> bool:
     if importlib.util.find_spec("torch_xla") is not None:
         return True
     return False
+
+
+def handle_soft_device_variable(*args, fn, **kwargs):
+    args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
+        *args, **kwargs
+    )
+    # checking if this function accepts `device` argument
+    # must be handled in the backend
+    if "device" in inspect.getfullargspec(fn).args:
+        kwargs["device"] = device_shifting_dev
+    return fn(*args, **kwargs)
 
 
 class Profiler(BaseProfiler):
