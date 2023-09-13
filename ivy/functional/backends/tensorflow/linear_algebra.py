@@ -525,10 +525,6 @@ def solve(
     else:
         x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
         x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
-        if tf.math.reduce_any(tf.linalg.det(x1) == 0) or (
-            x2.shape[-1] == x2.shape[-2] and tf.math.reduce_any(tf.linalg.det(x2) == 0)
-        ):
-            return x1
         ret = tf.linalg.solve(x1, x2)
 
     if expanded_last:

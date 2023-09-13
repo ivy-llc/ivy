@@ -321,7 +321,7 @@ def solve(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if adjoint:
-        x1 = jnp.transpose(jnp.conjugate(x1))
+        x1 = jnp.swapaxes(jnp.conjugate(x1), -1, -2)
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if len(x2.shape) <= 1:
