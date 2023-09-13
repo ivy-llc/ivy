@@ -416,7 +416,7 @@ def handle_numpy_out(fn: Callable) -> Callable:
         if "out" in kwargs:
             out = kwargs["out"]
             if ivy.exists(out) and not ivy.nested_any(
-                out, lambda x: isinstance(x, np_frontend.ndarray)
+                out, lambda x: str(x.__class__) == str(np_frontend.ndarray)
             ):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
@@ -425,6 +425,27 @@ def handle_numpy_out(fn: Callable) -> Callable:
 
     _handle_numpy_out.handle_numpy_out = True
     return _handle_numpy_out
+
+
+def handle_numpy_out_where(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_numpy_out_where(*args, **kwargs):
+        if (
+            ("where" not in kwargs)
+            or ("where" in kwargs and ivy.all(kwargs["where"]))
+            or ("out" not in kwargs)
+        ):
+            return fn(*args, **kwargs)
+
+        out = kwargs.pop("out")
+        ret = fn(*args, **kwargs)
+        ret = ret.ivy_array if hasattr(ret, "ivy_array") else ret
+        ret = ivy.where(kwargs["where"], ret, out, out=out)
+
+        return ret
+
+    _handle_numpy_out_where.handle_numpy_out_where = True
+    return _handle_numpy_out_where
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
