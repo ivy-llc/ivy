@@ -3694,6 +3694,7 @@ def test_paddle_tensor_zero_(
         on_device=on_device,
     )
 
+
 # backward
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3736,4 +3737,3 @@ def test_paddle_backward(
         frontend=frontend,
         on_device=on_device,
     )
-
