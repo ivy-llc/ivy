@@ -278,7 +278,7 @@ def _modify_module_symbols(
 
 def _verify_efficient_implementations(v):
     if callable(v):
-        if ivy.available_sub_backend_implementations(v.__name__):
+        if ivy.available_sub_backend_implementations(v):
             return _handle_efficient_implementation_available(v)
     return v
 

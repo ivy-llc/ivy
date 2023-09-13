@@ -247,17 +247,27 @@ def available_sub_backend_implementations(obj: str) -> list:
     >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
     []
     """
-    obj = getattr(ivy, obj)
+    obj = _check_callable(obj)
     sub_backends = ivy.current_backend().available_sub_backends()
     result = []
     if not sub_backends:
         return result
-    if not sub_backends_implementations_already_verified():
+    if not _sub_backends_implementations_already_verified():
         _verify_sub_backends_implementations(sub_backends)
     return _available_implementations_for(obj)
 
 
-def sub_backends_implementations_already_verified():
+def _check_callable(obj):
+    if isinstance(obj, str):
+        obj = getattr(ivy, obj)
+    if not callable(obj):
+        raise TypeError(
+            "The argument `obj` must be a callable or a string representing a callable"
+        )
+    return obj
+
+
+def _sub_backends_implementations_already_verified():
     return (
         ivy.current_backend_str() in _available_sub_backends_implementations_dict.keys()
     )
