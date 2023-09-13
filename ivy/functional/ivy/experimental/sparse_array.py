@@ -316,7 +316,7 @@ def _is_valid_format(
 ):
     valid_formats = ["coo", "csr", "csc", "csc", "bsc", "bsr"]
 
-    if not isinstance(format, str) or not format.lower() in valid_formats:
+    if not isinstance(format, str) or format.lower() not in valid_formats:
         return False
 
     if format.endswith("o"):

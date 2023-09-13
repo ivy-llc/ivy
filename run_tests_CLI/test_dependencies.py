@@ -34,7 +34,7 @@ def test_imports(fname, assert_version, update_versions):
     global WARN
     global WARN_MSG
     global PRINT_MSG
-    versions_to_update = dict()
+    versions_to_update = {}
     msg = f"\nasserting imports work for: {fname}\n\n"
     PRINT_MSG += msg
     ERROR_MSG += msg
@@ -68,8 +68,8 @@ def test_imports(fname, assert_version, update_versions):
                 msg = f"{mod_name} detected correct version: {detected_version}\n"
             else:
                 msg = (
-                    "expected version {} for module {}, but detected version "
-                    "{}\n".format(expected_version, mod_name, detected_version)
+                    f"expected version {expected_version} for module {mod_name}, but"
+                    f" detected version {detected_version}\n"
                 )
                 versions_to_update[line_num] = {
                     "expected": expected_version,
@@ -85,17 +85,18 @@ def test_imports(fname, assert_version, update_versions):
         else:
             if detected_version:
                 msg = (
-                    "{} detected version: {}, but no expected version "
-                    "provided\n".format(mod_name, detected_version)
+                    f"{mod_name} detected version: {detected_version}, but no expected"
+                    " version provided\n"
                 )
             elif expected_version:
-                msg = "{} expected version: {}, but unable to detect version\n".format(
-                    mod_name, expected_version
+                msg = (
+                    f"{mod_name} expected version: {expected_version}, but unable to"
+                    " detect version\n"
                 )
             else:
                 msg = (
-                    "no expected version provided, and unable to detect "
-                    "version for {}\n".format(mod_name)
+                    "no expected version provided, and unable to detect version for"
+                    f" {mod_name}\n"
                 )
             WARN = True
             PRINT_MSG += msg

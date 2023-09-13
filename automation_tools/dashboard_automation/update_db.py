@@ -46,7 +46,7 @@ def update_test_results():
     res = make_clickable(action_url + run_id, result_config[result])
     collection.update_one(
         {"_id": test_configs[workflow][1]},
-        {"$set": {backend + "." + submodule: res}},
+        {"$set": {f"{backend}.{submodule}": res}},
         upsert=True,
     )
     return

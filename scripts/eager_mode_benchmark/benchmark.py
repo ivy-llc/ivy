@@ -84,7 +84,7 @@ def _read_or_create_csv(output_path="./report.csv"):
 
 
 def _write_to_csv(df, row_list, output_path="./report.csv"):
-    row = {k: v for k, v in zip(COLUMNS, row_list)}
+    row = dict(zip(COLUMNS, row_list))
     df = df.append(row, ignore_index=True)
     df.to_csv(output_path, index=False)
 
@@ -325,7 +325,7 @@ def visualize_speed_up(
     fig.set_figwidth(30)
     fig.set_figheight(12)
     fig.tight_layout(pad=10.0)
-    axes = np.asarray([axes]) if not isinstance(axes, np.ndarray) else axes
+    axes = axes if isinstance(axes, np.ndarray) else np.asarray([axes])
     while len(axes.shape) < 2:
         if len(devices) > len(backends):
             axes = np.expand_dims(axes, len(axes.shape))
