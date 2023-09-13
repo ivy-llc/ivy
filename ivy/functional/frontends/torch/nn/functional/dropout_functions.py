@@ -7,7 +7,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 # ToDo: this function will be simplified once ivy.alpha_dropout is implemented
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("uint16", "uint32", "uint64")}, "torch")
 def alpha_dropout(input, p=0.5, training=False, inplace=False):
     if p == 0.0 or not training or input.shape == () or input.shape == (0,):
         return input
@@ -68,7 +68,7 @@ def dropout3d(input, p=0.5, training=True, inplace=False):
 
 # ToDo: this function will be simplified once ivy.feature_alpha_dropout is implemented
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("uint16", "uint32", "uint64")}, "torch")
 def feature_alpha_dropout(input, p=0.5, training=False, inplace=False):
     if p == 0.0 or not training or len(input.shape) < 4:
         return input
