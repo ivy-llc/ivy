@@ -111,64 +111,6 @@ def update_individual_test_results(
         {"$set": {key: result}},
         upsert=True,
     )
-    return
-
-
-def remove_from_db(collection, id, submod, backend, test):
-    collection.update_one({"_id": id}, {"$unset": {f"{submod}.{backend}.": test}})
-    return
-
-
-def run_multiversion_testing():
-    failed = False
-    cluster = MongoClient(
-        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
-    )
-    db = cluster["Ivy_tests_multi"]
-    with open("tests_to_run", "r") as f:
-        for line in f:
-            test, backend = line.split(",")
-            backend = backend.strip("\n")
-            coll, submod, test_fn = get_submodule(test)
-            frontend_version = None
-            if ";" in backend:
-                # This is a frontend test
-                backend, frontend = backend.split(";")
-                frontend_version = "/".join(frontend.split("/")[1:])
-                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /bin/bash -c "/opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend} {frontend} numpy/1.23.1; /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}" '  # noqa
-                ret = os.system(command)
-            else:
-                ret = os.system(
-                    f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base'
-                    " /opt/miniconda/envs/multienv/bin/python"
-                    " docker/multiversion_framework_directory.py backend"
-                    f" {backend};/opt/miniconda/envs/multienv/bin/python pytest"
-                    f" --tb=short {test} --backend={backend.split('/')[0]}"
-                    # noqa
-                )
-            if ret != 0:
-                res = make_clickable(run_id, result_config["failure"])
-                failed = True
-            else:
-                res = make_clickable(run_id, result_config["success"])
-            backend_list = backend.split("/")
-            backend_name = backend_list[0] + "\n"
-            backend_version = "/".join(backend_list[1:])
-            update_individual_test_results(
-                db[coll[0]],
-                coll[1],
-                submod,
-                backend_name,
-                test_fn,
-                res,
-                backend_version,
-                frontend_version,
-            )
-    if failed:
-        exit(1)
-    exit(0)
 
 
 if __name__ == "__main__":
