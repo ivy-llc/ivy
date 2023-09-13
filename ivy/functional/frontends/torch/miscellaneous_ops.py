@@ -98,6 +98,34 @@ def clone(input):
 
 
 @to_ivy_arrays_and_back
+def combinations(input, r=2):
+    if len(input) < r:
+        return ivy.array([])
+
+    n = input.shape[0]
+    indices = ivy.arange(r)
+    combinations = [input[indices]]
+
+    while True:
+        # Find the first index that can be incremented
+        for i in range(r-1, -1, -1):
+            if indices[i] != i + n - r:
+                break
+        else:
+            break
+
+        indices[i] += 1
+        
+        # Update the following indices to form the next combination
+        for j in range(i+1, r):
+            indices[j] = indices[j-1] + 1
+
+        combinations.append(input[indices])
+
+    return ivy.array(combinations)
+
+
+@to_ivy_arrays_and_back
 def corrcoef(input):
     if len(ivy.shape(input)) > 2:
         raise ivy.exceptions.IvyError(
