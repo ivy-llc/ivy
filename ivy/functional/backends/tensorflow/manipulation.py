@@ -106,6 +106,7 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,
