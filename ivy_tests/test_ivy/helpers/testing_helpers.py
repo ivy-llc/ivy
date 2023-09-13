@@ -801,8 +801,6 @@ def handle_frontend_method(
                 num_positional_args=init_num_positional_args,
                 as_variable=_get_runtime_flag_value(init_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(init_native_arrays),
-                test_compile=_get_runtime_flag_value(test_compile),
-                precision_mode=_get_runtime_flag_value(precision_mode),
             )
 
             method_flags = pf.frontend_method_flags(

@@ -378,14 +378,10 @@ class FrontendInitTestFlags(TestFlags):
         num_positional_args,
         as_variable,
         native_arrays,
-        precision_mode,
-        test_compile,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
-        self.precision_mode = precision_mode
-        self.test_compile = test_compile
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
@@ -404,8 +400,6 @@ class FrontendInitTestFlags(TestFlags):
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
-            f"precision_mode={self.precision_mode}. "
-            f"test_compile={self.test_compile}."
         )
 
     def __repr__(self):
@@ -419,8 +413,6 @@ def frontend_init_flags(
     num_positional_args,
     as_variable,
     native_arrays,
-    precision_mode,
-    test_compile,
 ):
     return draw(
         st.builds(
@@ -428,8 +420,6 @@ def frontend_init_flags(
             num_positional_args=num_positional_args,
             as_variable=as_variable,
             native_arrays=native_arrays,
-            precision_mode=precision_mode,
-            test_compile=test_compile,
         )
     )
 
