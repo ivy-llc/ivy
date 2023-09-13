@@ -2729,12 +2729,13 @@ def test_paddle_tensor_pow(
     init_tree="paddle.to_tensor",
     method_name="prod",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_value=-5,
         max_value=5,
         valid_axis=True,
         force_int_axis=True,
+        allow_inf=False,
     ),
     keep_dims=st.booleans(),
 )
