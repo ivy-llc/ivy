@@ -75,14 +75,6 @@ class Array:
     pass
 
 
-class TuckerTensor:
-    pass
-
-
-class CPTensor:
-    pass
-
-
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -189,10 +181,6 @@ class Dtype(str):
     @property
     def as_native_dtype(self):
         return as_native_dtype(self)
-
-    @property
-    def name(self) -> str:
-        return str(self)
 
     @property
     def info(self):
@@ -758,7 +746,6 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -787,12 +774,6 @@ from ivy.utils.inspection import fn_array_spec, add_array_specs
 add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
-
-try:
-    from .engines import XLA as xla
-    from .engines import ivy2xla
-except:
-    pass
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
@@ -941,9 +922,6 @@ globals_vars = GlobalsDict(
         "warning_level_stack": warning_level_stack,
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
-        "inplace_mode_stack": general.inplace_mode_stack,
-        "soft_device_mode_stack": device.soft_device_mode_stack,
-        "shape_array_mode_stack": general.shape_array_mode_stack,
         "show_func_wrapper_trace_mode_stack": (
             general.show_func_wrapper_trace_mode_stack
         ),
@@ -1422,7 +1400,6 @@ GLOBAL_PROPS = [
     "nan_policy",
     "array_mode",
     "nestable_mode",
-    "inplace_mode",
     "exception_trace_mode",
     "show_func_wrapper_trace_mode",
     "min_denominator",
@@ -1433,12 +1410,6 @@ GLOBAL_PROPS = [
     "dynamic_backend",
     "precise_mode",
     "soft_device_mode",
-    "logging_mode",
-    "default_dtype",
-    "default_float_dtype",
-    "default_int_dtype",
-    "default_complex_dtype",
-    "default_uint_dtype",
 ]
 
 
@@ -1502,6 +1473,8 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
                 " its value!".format(name, name)
             )
         self.__dict__[name] = value
+
+
 
 
 if (
