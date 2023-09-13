@@ -613,7 +613,9 @@ def pow(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
         ret = tf.experimental.numpy.power(x1, x2)
-        return tf.where(ivy.isinf(x2), ivy.nan + ivy.nan * 1j if x2 < 0 else -0 * 1j, ret)
+        return tf.where(
+            ivy.isinf(x2), ivy.nan + ivy.nan * 1j if x2 < 0 else -0 * 1j, ret
+        )
     if ivy.is_complex_dtype(x2) and ivy.any(x1 == 0):
         ret = tf.experimental.numpy.power(x1, x2)
         return tf.where(x1 == 0, ivy.nan + ivy.nan * 1j, ret)
