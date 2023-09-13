@@ -222,6 +222,11 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                     "the array in out argument does not contain same value as the"
                     " returned"
                 )
+        ret_device = (
+            self._ivy.dev(ret_from_target)
+            if self._ivy.is_array(ret_from_target)
+            else None
+        )
         return (
             ret_from_target,
             ret_np_flat_from_target,
