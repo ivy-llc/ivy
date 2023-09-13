@@ -408,3 +408,72 @@ def soft_margin_loss(
         return ivy.mean(loss, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
+def kl_div(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the Kullback-Leibler divergence loss between two input tensors
+    (conventionally, probability distributions).
+
+    Parameters
+    ----------
+    input : array_like
+        Input probability distribution (first tensor).
+    target : array_like
+        Target probability distribution (second tensor).
+    reduction : {'mean', 'sum', 'batchmean', 'none'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The Kullback-Leibler divergence loss between the two input tensors.
+
+    Examples
+    --------
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target)
+    ivy.array(0.0916)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='sum')
+    ivy.array(0.1832)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='batchmean')
+    ivy.array(0.0916)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='none')
+    ivy.array([0.0378], [0.1453])
+    """
+    size = ivy.shape(input)
+
+    loss = ivy.sum(input * ivy.log(input / target), axis=-1)
+
+    if reduction == "sum":
+        loss = ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        loss = ivy.mean(loss, out=out)
+    elif reduction == "batchmean":
+        loss = ivy.sum(loss, out=out) / size[0]
+
+    return ivy.inplace_update(out, loss) if out is not None else loss
