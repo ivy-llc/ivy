@@ -148,10 +148,12 @@ if __name__ == "__main__":
             print(f"\n{'*' * 100}")
             print(f"{line[:-1]}")
             print(f"{'*' * 100}\n")
+            backend_version = "latest-stable"
             sys.stdout.flush()
             if version_flag == "true":
                 backends = [backend.strip()]
-                other_backends = [fw for fw in BACKENDS if fw != backend.split("/")[0]]
+                [backend_name, backend_version] = backend.split("/")
+                other_backends = [fw for fw in BACKENDS if fw != backend_name]
                 for backend in other_backends:
                     backends.append(backend + "/" + get_latest_package_version(backend))
                 print("Backends:", backends)
@@ -160,7 +162,7 @@ if __name__ == "__main__":
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
                     f" python docker/multiversion_framework_directory.py {' '.join(backends)};"
-                    f"python -m pytest --tb=short {test} --backend={backend}"
+                    f"pytest --tb=short {test} --backend={backend}"
                 )
             else:
                 if with_gpu:
@@ -202,9 +204,6 @@ if __name__ == "__main__":
                     "gpu" if with_gpu else "cpu",
                 )
             else:
-                backend_version = (
-                    backend.split("/")[1] if version_flag == "true" else "latest-stable"
-                )
                 print(backend_version)
                 update_individual_test_results(
                     db[coll[0]],
