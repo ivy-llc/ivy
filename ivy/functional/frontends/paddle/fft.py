@@ -129,3 +129,12 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
 def rfft(x, n=None, axis=-1, norm="backward", name=None):
     ret = ivy.dft(x, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
     return ivy.astype(ret, ret.dtype)
+
+  
+@to_ivy_arrays_and_back
+def rfftfreq(n, d=1.0, dtype=None, name=None):
+    dtype = ivy.default_dtype()
+    val = 1.0 / (n * d)
+    pos_max = n // 2 + 1
+    indices = ivy.arange(0, pos_max, dtype=dtype)
+    return indices * val
