@@ -1,6 +1,5 @@
 # global
 from hypothesis import strategies as st
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -279,62 +278,64 @@ def test_paddle_avg_pool2d(
     )
 
 
-# Define the test function for max_pool3d
+# Test the PaddlePaddle max_pool3d operation
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.max_pool3d",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=5,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_value=100,
-        min_value=-100,
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=2,
+        max_side=4,
+        data_format="NCDHW",
+        return_dilation=True,
+        return_data_format=True,
     ),
-    kernel_size=helpers.ints(min_value=1, max_value=5),
-    stride=helpers.ints(min_value=1, max_value=5),
-    padding=helpers.ints(min_value=0, max_value=5),
-    data_format=helpers.sampled_from(["NCDHW", "NDHWC"]),
-    dilation=helpers.ints(min_value=1, max_value=5),
-    ceil_mode=helpers.booleans(),
+    ceil_mode=st.booleans(),
 )
 def test_paddle_max_pool3d(
     *,
-    dtype_and_x,
-    kernel_size,
-    stride,
-    padding,
-    data_format,
-    dilation,
+    x_k_s_p,
     ceil_mode,
     test_flags,
-    frontend,
-    on_device,
     backend_fw,
+    frontend,
     fn_tree,
+    on_device,
 ):
-    input_dtype, x = dtype_and_x
+    dtype, x, kernel, stride, padding, dilation, data_format = x_k_s_p
 
-    # Perform the max_pool3d operation using your function
-    y = ivy.max_pool3d(
-        x[0], kernel_size, stride, padding, data_format, dilation, ceil_mode
-    )
+    if len(stride) == 1:
+        stride = (stride[0], stride[0], stride[0])
+    if padding == "SAME":
+        padding = test_pooling_functions.calculate_same_padding(
+            kernel, stride, x[0].shape[2:]
+        )
+    else:
+        padding = (0, 0, 0)
+
+    # Ensure dilation is a tuple of 1 or 3 elements
+    if isinstance(dilation, int):
+        dilation = (abs(dilation), abs(dilation), abs(dilation))  # Convert to (x, x, x)
+
+    else:
+        dilation = tuple(
+            abs(d) for d in dilation
+        )  # Convert each element to absolute value
 
     # Test the frontend function
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
+        test_flags=test_flags,
         backend_to_test=backend_fw,
         frontend=frontend,
-        test_flags=test_flags,
-        on_device=on_device,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
-        kernel_size=kernel_size,
+        kernel_size=kernel,
         stride=stride,
         padding=padding,
-        data_format=data_format,
-        dilation=dilation,
         ceil_mode=ceil_mode,
-        y=y,
+        data_format=data_format,
     )
 
 
