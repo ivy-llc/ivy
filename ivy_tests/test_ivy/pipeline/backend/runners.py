@@ -79,8 +79,36 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
         return self.test_flags
 
-    def _preprocess_args(self):
-        pass
+    def _preprocess_args(
+        self,
+        args_result: TestArgumentsSearchResult,
+        kwargs_result: TestArgumentsSearchResult,
+    ):
+        """
+        Create arguments and keyword-arguments for the function to test.
+
+        Returns
+        -------
+        Backend specific arguments, keyword-arguments
+        """
+        ret = []
+        for result, start_index_of_arguments in zip(
+            [args_result, kwargs_result], [0, len(args_result.values)]
+        ):
+            temp = self._ivy.copy_nest(result.original, to_mutable=False)
+            self._ivy.set_nest_at_indices(
+                temp,
+                result.indices,
+                self.test_flags.apply_flags(
+                    result.values,
+                    self.input_dtypes,
+                    start_index_of_arguments,
+                    backend=self.backend,
+                    on_device=self.on_device,
+                ),
+            )
+            ret.append(temp)
+        return ret[0], ret[1]
 
     def _call_function(self):
         pass
