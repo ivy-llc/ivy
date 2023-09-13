@@ -1163,24 +1163,12 @@ def _wrap_function(
 
 
 def casting_modes_ops(fn, ret_dtype_target=None):
-    # Get the function signature
-    signature = inspect.signature(fn)
-    # Extract argument names
-    arg_names = signature.parameters.keys()
-    ret_dtype_target = (
-        ret_dtype_target if ret_dtype_target is not None else list(arg_names)
-    )
-
     @functools.wraps(fn)
     def method(*args, **kwargs):
-        bound_args = signature.bind(*args, **kwargs)
-        bound_args.apply_defaults()
-        target_inputs = [bound_args.arguments[arg] for arg in ret_dtype_target]
-        # NOTE: we filter the arguments that have None values, this is fine if it
-        # stays None throughout the function, but if it changes values in the
-        # middle and it affects the result it might lead to wrong prediction
-        target_inputs = [trg for trg in target_inputs if trg is not None]
-
+        # Get the function signature
+        signature = inspect.signature(fn)
+        # Extract argument names
+        arg_names = [param.name for param in signature.parameters.values()]
         # we first check if it has unsupported/supported dtypes uniquely added to it
         intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
             set(ivy.invalid_dtypes)
@@ -1198,22 +1186,27 @@ def casting_modes_ops(fn, ret_dtype_target=None):
                 return fn(*args, **kwargs)
 
         # specifies which dtype to cast the output to
-        cast_to = None
+        to_cast = None
         if "dtype" in kwargs and kwargs["dtype"] is not None:
-            cast_to = kwargs["dtype"]
+            to_cast = kwargs["dtype"]
             dtype = caster(kwargs["dtype"], intersect)
             if dtype:
                 kwargs["dtype"] = ivy.as_native_dtype(dtype)
-        else:
-            if len(target_inputs) == 1:
-                cast_to = ivy.default_dtype(item=target_inputs[0])
-            elif len(target_inputs) >= 2:
-                reference_input = ivy.promote_types_of_inputs(*target_inputs[:2])[0]
-                for arg in target_inputs[2:]:
-                    reference_input = ivy.promote_types_of_inputs(reference_input, arg)[
-                        0
-                    ]
-                cast_to = reference_input.dtype
+
+        if not to_cast and ret_dtype_target:
+            for arg in ret_dtype_target:
+                to_cast = ivy.promote_types(
+                    to_cast,
+                    (
+                        ivy.dtype(
+                            args[arg_names.index(arg)]
+                            if arg not in kwargs
+                            else kwargs[arg]
+                        )
+                        if arg
+                        else None
+                    ),
+                )
 
         def mini_helper(x):
             if not hasattr(x, "dtype"):
@@ -1226,7 +1219,9 @@ def casting_modes_ops(fn, ret_dtype_target=None):
         args = ivy.nested_map(args, mini_helper, include_derived=True)
         kwargs = ivy.nested_map(kwargs, mini_helper)
         return (
-            ivy.astype(fn(*args, **kwargs), cast_to) if cast_to else fn(*args, **kwargs)
+            ivy.astype(fn(*args, **kwargs), ivy.to_native(to_cast))
+            if to_cast
+            else fn(*args, **kwargs)
         )
 
     return method
