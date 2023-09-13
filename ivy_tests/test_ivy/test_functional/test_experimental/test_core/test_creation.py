@@ -34,10 +34,10 @@ def _random_tr_data(draw):
         st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
     )
     rank = min(shape)
-    dtype = draw(st.sampled_from(["float32", "float64"]))
+    dtype = draw(helpers.get_dtypes("valid", full=False))
     full = draw(st.booleans())
     seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
-    return shape, rank, dtype, full, seed
+    return shape, rank, dtype[0], full, seed
 
 
 @st.composite
