@@ -98,8 +98,6 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.1 and below": "uint32"}, "paddle")
     def rank(self):
-        # print(self)
-        # print(1)
         return ivy.matrix_rank(self)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
@@ -757,9 +755,3 @@ class Tensor:
 
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
-
-
-#
-# ivy_tensor = ivy.array([[1., 1.]])
-# result = Tensor.rank(ivy_tensor)
-# print(result)
