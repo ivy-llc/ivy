@@ -602,9 +602,9 @@ def test_jax_identity(
 
 # integer
 @handle_frontend_test(
-    fn_tree="jax.numpy.integer",
+    fn_tree="jax.numpy.int64",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("integer")
     ),
 )
 def test_jax_integer(
