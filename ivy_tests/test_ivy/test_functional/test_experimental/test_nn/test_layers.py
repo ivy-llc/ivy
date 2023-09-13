@@ -385,6 +385,42 @@ def _x_and_ifftn(draw):
 
 
 @st.composite
+def _x_and_iffttwo(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("complex"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e10,
+        )
+    )
+    axes = draw(
+        st.lists(
+            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    norm = draw(st.sampled_from(["forward", "ortho", "backward"]))
+
+    # Shape for s can be larger, smaller or equal to the size of the input
+    # along the axes specified by axes.
+    # Here, we're generating a list of integers corresponding to each axis in axes.
+    s = draw(
+        st.lists(
+            st.integers(min_fft_points, 256), min_size=len(axes), max_size=len(axes)
+        )
+    )
+
+    return dtype, x, s, axes, norm
+
+
+@st.composite
 def _x_and_rfftn(draw):
     min_rfftn_points = 2
     dtype = draw(helpers.get_dtypes("float"))
@@ -990,6 +1026,34 @@ def test_ifft(*, d_x_d_n_n, test_flags, backend_fw, fn_name):
     test_gradients=st.just(False),
 )
 def test_ifftn(
+    *,
+    d_x_d_s_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, s, axes, norm = d_x_d_s_n
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x,
+        s=s,
+        axes=axes,
+        norm=norm,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.iffttwo",
+    d_x_d_s_n=_x_and_iffttwo(),
+    ground_truth_backend="numpy",
+    test_gradients=st.just(False),
+)
+def test_iffttwo(
     *,
     d_x_d_s_n,
     test_flags,

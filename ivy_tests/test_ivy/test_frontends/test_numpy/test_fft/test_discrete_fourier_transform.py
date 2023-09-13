@@ -7,6 +7,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     _x_and_ifft,
     _x_and_rfftn,
+    _x_and_iffttwo,
 )
 
 
@@ -150,6 +151,29 @@ def test_numpy_ifftshift(
         test_values=True,
         x=arr[0],
         axes=None,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.iffttwo",
+    dtype_and_x=_x_and_iffttwo(),
+)
+def test_numpy_iffttwo(
+    dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x, dim, norm, n = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axes=None,
+        norm=norm,
     )
 
 

@@ -2636,6 +2636,92 @@ fft2.mixed_backend_wrappers = {
 }
 
 
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@handle_exceptions
+@to_native_arrays_and_back
+def iffttwo(
+    inputArray: Union[ivy.Array, ivy.NativeArray],
+    shapeLength: Optional[Union[int, Tuple[int, ...]]] = None,
+    axesNumber: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
+    normalization: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the 2-dimensional inverse discrete Fourier Transform.
+
+    Parameters
+    ----------
+    inputArray:
+        Input array of complex numbers.
+    shapeLength:
+        Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+        `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+        the input is cropped. If larger, input is padded with zeros. If `s` is not
+        given, shape of input along axes specified by axes is used.
+    axesNumber:
+        Axes over which to compute the IFFT. If not given, last `len(s)` axes are
+        used, or all axes if `s` is also not specified. Repeated indices in axes
+        means inverse transform over that axis is performed multiple times.
+    normalization:
+        Indicates direction of the forward/backward pair of transforms is scaled
+        and with what normalization factor. "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$. "forward"
+        indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    out
+        The truncated or zero-padded input, transformed along the axes indicated
+        by axes, or by a combination of s or x, as explained in the parameters
+        section above.
+
+    Raises
+    ------
+    ValueError
+        If `s` and `axes` have different length.
+    IndexError
+        If an element of axes is larger than the number of axes of x.
+
+    Examples
+    --------
+    >>> inputArray = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+    ...                 0.98193269+0.49560517j],
+    ...                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+    ...                 0.2343787 +0.83528011j]])
+    >>> y = ivy.iffttwo(inputArray)
+    >>> print(y)
+    ivy.array([[ 0.51476765+0.66160417j, -0.04319742-0.05411636j,
+            -0.015561  -0.04216015j],
+           [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
+            -0.08371392+0.17252843j],
+           [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
+             0.05344324+0.07972424j]])
+
+    >>> inputArray = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+    ...                 0.98193269+0.49560517j],
+    ...                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+    ...                 0.2343787 +0.83528011j]])
+    >>>b=ivy.iffttwo(inputArray,shapeLength=[2,1],axesNumber=[0,1],normalization='ortho')
+    >>> print(b)
+    ivy.array([[ 0.8344667 +0.98222595j],
+           [-0.48472244+0.30233797j]])
+    """
+    return ivy.current_backend(inputArray).iffttwo(
+        inputArray,
+        shapeLength=shapeLength,
+        axesNumber=axesNumber,
+        normalization=normalization,
+        out=out,
+    )
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable

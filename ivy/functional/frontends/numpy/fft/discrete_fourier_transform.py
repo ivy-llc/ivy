@@ -105,6 +105,14 @@ def ifftshift(x, axes=None):
 
 @with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
+def iffttwo(a, shapeLength=None, axesNumber=2, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    a = ivy.iffttwo(a, s=shapeLength, axes=axesNumber, norm=norm)
+    return a
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
 def ihfft(a, n=None, axis=-1, norm=None):
     if n is None:
         n = a.shape[axis]
