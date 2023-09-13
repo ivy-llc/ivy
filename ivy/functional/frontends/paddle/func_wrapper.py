@@ -50,10 +50,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
+            args, _to_ivy_array, include_derived={"tuple": True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
+            kwargs, _to_ivy_array, include_derived={"tuple": True}, shallow=False
         )
 
         return fn(*new_args, **new_kwargs)
@@ -82,7 +82,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             ivy.unset_default_float_dtype()
         # convert all arrays in the return to `paddle_frontend.Tensor` instances
         return _from_ivy_array_to_paddle_frontend_tensor(
-            ret, nested=True, include_derived={tuple: True}
+            ret, nested=True, include_derived={"tuple": True}
         )
 
     return new_fn

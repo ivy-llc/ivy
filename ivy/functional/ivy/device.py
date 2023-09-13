@@ -132,7 +132,6 @@ class DefaultDevice:
         ivy.unset_default_device()
         ivy.unset_soft_device_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -831,7 +830,7 @@ def default_device(
             return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
-        ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
+        ret = "cpu"
     else:
         ret = default_device_stack[-1]
     if as_native:
