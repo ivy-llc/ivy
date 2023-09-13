@@ -9,6 +9,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
+    handle_numpy_out_where,
 )
 
 
@@ -19,6 +20,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_out_where
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _add(
@@ -35,14 +37,13 @@ def _add(
 ):
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.add(x1, x2, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_out_where
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _divide(
@@ -59,8 +60,6 @@ def _divide(
 ):
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.divide(x1, x2, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 

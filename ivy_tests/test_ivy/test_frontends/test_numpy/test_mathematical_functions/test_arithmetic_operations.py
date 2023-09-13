@@ -2,6 +2,8 @@
 from hypothesis import assume, strategies as st
 import numpy as np
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -38,25 +40,32 @@ def test_numpy_add(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where, input_dtype=input_dtypes, test_flags=test_flags
-    )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x1=xs[0],
-        x2=xs[1],
-        out=None,
-        where=where,
-        casting=casting,
-        order="K",
-        dtype=dtype,
-        subok=True,
-    )
+    if ivy.bfloat16 not in input_dtypes + [dtype]:
+        where, input_dtypes, test_flags, out = (
+            np_frontend_helpers.handle_where_and_array_bools(
+                where=where,
+                input_dtype=input_dtypes,
+                test_flags=test_flags,
+                ufunc=True,
+                xs=xs,
+            )
+        )
+        helpers.test_frontend_function(
+            input_dtypes=input_dtypes,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            x1=xs[0],
+            x2=xs[1],
+            out=out,
+            where=where,
+            casting=casting,
+            order="K",
+            dtype=dtype,
+            subok=True,
+        )
 
 
 # divide
@@ -87,13 +96,20 @@ def test_numpy_divide(
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
+
+    if ivy.bfloat16 in input_dtypes + [dtype]:
+        return
     assume(not np.any(np.isclose(xs[1], 0.0)))
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
+    where, input_dtypes, test_flags, out = (
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            test_flags=test_flags,
+            ufunc=True,
+            xs=xs,
+        )
     )
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
@@ -104,7 +120,7 @@ def test_numpy_divide(
         rtol=1e-03,
         x1=xs[0],
         x2=xs[1],
-        out=None,
+        out=out,
         where=where,
         casting=casting,
         order="K",
