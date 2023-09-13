@@ -150,7 +150,7 @@ def pytest_configure(config):
                         target=backend_proc, args=(input_queue, output_queue)
                     )
                     # start the process so that it loads the framework
-                    input_queue.put(fw + "/" + version)
+                    input_queue.put(f"{fw}/{version}")
                     proc.start()
 
                 # we have the process running, the framework imported within,
@@ -179,7 +179,7 @@ def pytest_configure(config):
             proc = mp.Process(target=frontend_proc, args=(queue,))
             # start the process so that it loads the framework
             proc.start()
-            queue.put(fw + "/" + ver)
+            queue.put(f"{fw}/{ver}")
             # we have the process running, the framework imported within,
             # we now pack the queue and the process and store it in dict
             # for future access
@@ -380,7 +380,7 @@ def pytest_collection_finish(session):
     if session.config.option.my_test_dump is not None:
         for item in session.items:
             item_path = os.path.relpath(item.path)
-            print("{}::{}".format(item_path, item.name))
+            print(f"{item_path}::{item.name}")
 
         for backend in mod_backend:
             proc = mod_backend[backend]
