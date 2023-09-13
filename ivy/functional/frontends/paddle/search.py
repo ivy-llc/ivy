@@ -87,17 +87,14 @@ def sort(x, /, *, axis=-1, descending=False, name=None):
 def topk(x, k, axis=None, largest=True, sorted=True, name=None):
     return ivy.top_k(x, k, axis=axis, largest=largest, sorted=sorted)
 
-#bucketize
-
+#mode
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
-
 @to_ivy_arrays_and_back
-def bucketize(x, boundaries, right=True, dtype="int64", name=None):
-    return ivy.bucketize(x, boundaries, right=right, dtype=dtype, name=name)
-
+def mode(x, axis=None, keepdim=False, name=None):
+    return ivy.mode(x, axis=axis, keepdim=keepdim, name=name)
 
 # where
 @with_supported_dtypes(
