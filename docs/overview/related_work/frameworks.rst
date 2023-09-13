@@ -49,71 +49,69 @@ Frameworks
 .. _`Dex language`: https://github.com/google-research/dex-lang
 .. _`Haskell`: https://www.haskell.org/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
-.. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
-.. |matlab| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/matlab.png
+.. |matlab| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/matlab.png
     :height: 20pt
     :class: dark-light
-.. |scipy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/scipy.png
+.. |scipy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/scipy.png
     :height: 20pt
     :class: dark-light
-.. |torch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/torch.png
+.. |torch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/torch.png
     :height: 20pt
     :class: dark-light
-.. |numpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/numpy.png
+.. |numpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/numpy.png
     :height: 20pt
     :class: dark-light
-.. |scikit-learn| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/scikit-learn.png
+.. |scikit-learn| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/scikit-learn.png
     :height: 15pt
     :class: dark-light
-.. |theano| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/theano.png
+.. |theano| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/theano.png
     :height: 10pt
     :class: dark-light
-.. |pandas| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/pandas.png
+.. |pandas| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/pandas.png
     :height: 22pt
     :class: dark-light
-.. |julia| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/julia.png
+.. |julia| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/julia.png
     :height: 20pt
     :class: dark-light
-.. |apache-spark-mllib| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/apache-spark-mllib.png
+.. |apache-spark-mllib| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/apache-spark-mllib.png
     :height: 20pt
     :class: dark-light
-.. |caffe| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/caffe.png
+.. |caffe| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/caffe.png
     :height: 10pt
     :class: dark-light
-.. |chainer| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/chainer.png
+.. |chainer| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/chainer.png
     :height: 20pt
     :class: dark-light
-.. |tensorflow-1| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/tensorflow-1.png
+.. |tensorflow-1| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/tensorflow-1.png
     :height: 20pt
     :class: dark-light
-.. |mxnet| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/mxnet.png
+.. |mxnet| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/mxnet.png
     :height: 20pt
     :class: dark-light
-.. |cntk| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/cntk.png
+.. |cntk| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/cntk.png
     :height: 20pt
     :class: dark-light
-.. |pytorch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/pytorch.png
+.. |pytorch| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/pytorch.png
     :height: 22pt
     :class: dark-light
-.. |flux| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/flux.png
+.. |flux| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/flux.png
     :height: 22pt
     :class: dark-light
-.. |jax| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/jax.png
+.. |jax| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/jax.png
     :height: 20pt
     :class: dark-light
-.. |tensorflow-2| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/tensorflow-2.png
+.. |tensorflow-2| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/tensorflow-2.png
     :height: 20pt
     :class: dark-light
-.. |dex-language| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/frameworks/dex-language.png
+.. |dex-language| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/dex-language.png
     :height: 20pt
     :class: dark-light
 
 Here we list some of the most prominent frameworks for array computation.
 These are the individual frameworks which the wrapper frameworks mentioned above generally wrap around and abstract.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/related_work/frameworks/ml_framework_timeline.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/related_work/frameworks/ml_framework_timeline.png?raw=true
    :width: 100%
 
 MATLAB |matlab|
@@ -127,7 +125,7 @@ As of 2020, MATLAB has more than 4 million users worldwide, who come from variou
 SciPy |scipy|
 -------------
 First released in 2001, `SciPy`_ is a Python framework used for scientific computing and technical computing, with modules for optimization, linear algebra, integration, interpolation, special functions, FFT, signal and image processing, ODE solvers and other tasks common in science and engineering.
-While the user interface is in Python, the backend involves Fortran, Cython, C++ and C for high runtime efficiency.
+While the user interface is in Python, the backend involves Fortran, Cython, C++, and C for high runtime efficiency.
 It is built to work with `NumPy`_ arrays, and provides many user-friendly and efficient numerical routines, such as routines for numerical integration and optimization.
 
 Torch |torch|
@@ -147,13 +145,13 @@ It has long been the go-to framework for numeric computing in Python.
 
 SciKit Learn |scikit-learn|
 ---------------------------
-First released in 2007, `Scikit-learn`_ is a Python framework which features various classification, regression and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries `NumPy`_ and `SciPy`_.
+First released in 2007, `Scikit-learn`_ is a Python framework which features various classification, regression, and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means, and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries `NumPy`_ and `SciPy`_.
 
 Theano |theano|
 ---------------
 Initially released in 2007, `Theano`_ is a Python framework which focuses on manipulating and evaluating mathematical expressions, especially matrix-valued ones, with an inbuilt optimizing compiler.
 Computations are expressed using a `NumPy`_-esque syntax and are compiled to run efficiently on either CPU or GPU architectures.
-Notably, it includes an extensible graph framework suitable for rapid development of custom operators and symbolic optimizations, and it implements an extensible graph transpilation framework.
+Notably, it includes an extensible graph framework suitable for the rapid development of custom operators and symbolic optimizations, and it implements an extensible graph transpilation framework.
 It is now being continued under the name `Aesara`_.
 
 Pandas |pandas|
@@ -211,7 +209,7 @@ CNTK |cntk|
 -----------
 Originally released in 2016, the `Microsoft Cognitive Toolkit (CNTK)`_ is an open-source toolkit for commercial-grade distributed deep learning, written entirely in C++.
 It describes neural networks as a series of computational steps via a directed graph.
-CNTK allows the user to easily realize and combine popular model types such as feed-forward DNNs, convolutional neural networks (CNNs) and recurrent neural networks (RNNs/LSTMs).
+CNTK allows the user to easily realize and combine popular model types such as feed-forward DNNs, convolutional neural networks (CNNs), and recurrent neural networks (RNNs/LSTMs).
 CNTK implements stochastic gradient descent (SGD, error backpropagation) learning with automatic differentiation and parallelization across multiple GPUs and servers.
 It is no longer being actively developed, having succumbed to the increasing popularity of the frameworks using Python frontend interfaces.
 
@@ -221,7 +219,7 @@ PyTorch |pytorch|
 PyTorch operates based on asynchronous scheduling on the target device, without any pre-compilation of the full computation graph on the target device required.
 This made it possible to combine asynchronous scheduled efficient kernels with pure Python control flow, and also made it easy to query and monitor the intermediate values in the model, with the boundaries of the “computation graph” having been broken down.
 This quickly made it very popular for researchers.
-Generally PyTorch is the choice of the ML researcher, ML practitioner and the hobbyist.
+Generally, PyTorch is the choice of the ML researcher, ML practitioner, and the hobbyist.
 PyTorch is very Pythonic, very simple to use, very forgiving, and has a tremendous ecosystem built around it.
 No other framework comes close to having anything like the `PyTorch Ecosystem`_, with a vast collection of third-party libraries in various important topics for ML research.
 
@@ -271,7 +269,3 @@ They propose an explicit nested indexing style that mirrors application of funct
 The goal of the project is to explore: type systems for array programming, mathematical program transformations like differentiation and integration, user-directed compilation to parallel hardware, and interactive and incremental numerical programming and visualization.
 It is quite early and still in an experimental phase, but this framework would provide hugely significant fundamental improvements over all existing frameworks if it reaches a mature stage of development.
 The language is built on top of `Haskell`_.
-
-**Round Up**
-
-If you have any questions, please feel free to reach out on `discord`_ in the `related work channel`_ or in the `related work forum`_!
