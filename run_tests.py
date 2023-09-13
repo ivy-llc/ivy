@@ -2,6 +2,9 @@
 import os
 import sys
 from pymongo import MongoClient
+import requests
+from run_tests_CLI.get_all_tests import BACKENDS
+
 
 submodules = (
     "test_paddle",
@@ -43,6 +46,18 @@ result_config = {
     "success": "https://img.shields.io/badge/-success-success",
     "failure": "https://img.shields.io/badge/-failure-red",
 }
+
+
+def get_latest_package_version(package_name):
+    try:
+        url = f"https://pypi.org/pypi/{package_name}/json"
+        response = requests.get(url)
+        response.raise_for_status()
+        package_info = response.json()
+        return package_info["info"]["version"]
+    except requests.exceptions.RequestException as e:
+        print(f"Error: Failed to fetch package information for {package_name}.")
+        return None
 
 
 def make_clickable(url, name):
@@ -177,14 +192,10 @@ if __name__ == "__main__":
         priority_flag = True
     else:
         priority_flag = False
-    # Multi Version Testing
-    if version_flag == "true":
-        run_multiversion_testing()
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
-    db_multi = cluster["Ivy_tests_multi"]
-    db_gpu = cluster["Ivy_tests_multi_gpu"]
+    db = cluster["Ivy_tests_multi_gpu"]
     db_priority = cluster["Ivy_tests_priority"]
     if with_gpu:
         os.system("docker pull unifyai/multicuda:base_and_requirements")
@@ -196,23 +207,37 @@ if __name__ == "__main__":
             print(f"{line[:-1]}")
             print(f"{'*' * 100}\n")
             sys.stdout.flush()
-            if with_gpu:
-                ret = os.system(
-                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis'
-                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                    f" --tb=short {test} --device=gpu:0 -B={backend}"
-                    # noqa
-                )
-            else:
+            if version_flag == "true":
+                backends = [backend]
+                other_backends = [fw for fw in BACKENDS if fw != backend.split("/")[0]]
+                for backend in other_backends:
+                    backends.append(backend + "/" + get_latest_package_version(backend))
+                print("Backends:", backends)
                 ret = os.system(
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
-                    f" pytest --tb=short {test} --backend {backend}"
-                    # noqa
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
+                    f" python docker/multiversion_framework_directory.py {backends};"
+                    f"python -m pytest --tb=short {test} --backend={backend}"
                 )
+            else:
+                if with_gpu:
+                    ret = os.system(
+                        f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                        ' "$(pwd)"/.hypothesis:/.hypothesis'
+                        " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                        f" --tb=short {test} --device=gpu:0 -B={backend}"
+                        # noqa
+                    )
+                else:
+                    ret = os.system(
+                        f"docker run --rm --env REDIS_URL={redis_url} --env"
+                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
+                        f" pytest --tb=short {test} --backend {backend}"
+                        # noqa
+                    )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
                 failed = True
@@ -235,25 +260,18 @@ if __name__ == "__main__":
                     "gpu" if with_gpu else "cpu",
                 )
             else:
-                if not with_gpu:
-                    update_individual_test_results(
-                        db_multi[coll[0]],
-                        coll[1],
-                        submod,
-                        backend,
-                        test_fn,
-                        res,
-                        "latest-stable",
-                        frontend_version,
-                    )
+                backend_version = (
+                    backend.split("/")[1] if version_flag == "true" else "latest-stable"
+                )
+                print(backend_version)
                 update_individual_test_results(
-                    db_gpu[coll[0]],
+                    db[coll[0]],
                     coll[1],
                     submod,
                     backend,
                     test_fn,
                     res,
-                    "latest-stable",
+                    backend_version,
                     frontend_version,
                     "gpu" if with_gpu else "cpu",
                 )
