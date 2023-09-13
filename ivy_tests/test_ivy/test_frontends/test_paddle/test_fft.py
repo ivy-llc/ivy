@@ -251,7 +251,7 @@ def test_paddle_rfftfreq(
         min_value=-10,
         max_value=10,
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=4,
         min_dim_size=2,
         valid_axis=True,
         force_int_axis=True,
@@ -275,6 +275,6 @@ def test_paddle_irfftn(
         fn_tree=fn_tree,
         x=x[0],
         s=None,
-        axes=[axis],
+        axes=[-1],
         norm=norm,
     )
