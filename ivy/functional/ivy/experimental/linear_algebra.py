@@ -161,9 +161,7 @@ def eigh_tridiagonal(
         return eigenvalues
     return eigenvalues, eigenvectors
 
-
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -171,6 +169,7 @@ def eigh_tridiagonal(
 @handle_device_shifting
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     offset: int = 0,
     padding_value: float = 0,
     align: str = "RIGHT_LEFT",
@@ -204,8 +203,9 @@ def diagflat(
     ret : ivy.Array
         The 2-D output array.
 
-    Examples
-    --------
+    Functional Examples
+    ------------------
+
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1,2], [3,4]])
