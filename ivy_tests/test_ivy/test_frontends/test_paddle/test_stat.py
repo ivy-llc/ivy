@@ -128,6 +128,7 @@ def test_paddle_numel(
         x=x[0],
     )
 
+
 # quantile
 @handle_frontend_test(
     fn_tree="paddle.quantile",
