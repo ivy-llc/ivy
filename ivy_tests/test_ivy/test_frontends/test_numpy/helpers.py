@@ -311,14 +311,50 @@ def where(draw, *, shape=None):
 
 
 # noinspection PyShadowingNames
-def handle_where_and_array_bools(where, input_dtype, test_flags):
+def handle_where_and_array_bools(where, input_dtype, test_flags, ufunc=False, xs=None):
     if isinstance(where, list) or isinstance(where, tuple):
         where = where[0]
         test_flags.as_variable += [False]
         test_flags.native_arrays += [False]
         input_dtype += ["bool"]
+    if ufunc:
+        if ivy.all(where):
+            out = None
+        else:
+            test_flags.generate_frontend_arrays = True
+            if len(xs) > 1:
+                input_dtype.insert(-1, ivy.promote_types(*input_dtype[:2]))
+                out = np.zeros(ivy.broadcast_shapes(xs[0].shape, xs[1].shape))
+            else:
+                input_dtype.insert(-1, input_dtype[0])
+                out = np.zeros_like(xs[0])
+        return where, input_dtype, test_flags, out
+
+    else:
         return where, input_dtype, test_flags
-    return where, input_dtype, test_flags
+
+
+# def handle_where_and_array_bools(where, input_dtype, test_flags, ufunc=False,xs=None):
+#     if where is True and ufunc:
+#         return where, input_dtype, test_flags, None
+#     if isinstance(where, list) or isinstance(where, tuple):
+#         where = where[0]
+#         test_flags.as_variable += [False]
+#         test_flags.native_arrays += [False]
+#         input_dtype += ["bool"]
+#
+#         if where is True and ufunc:
+#             return where, input_dtype, test_flags, None
+#         if where is not True and ufunc:
+#             test_flags.generate_frontend_arrays = True
+#             if len(xs)>1:
+#                 input_dtype.insert(-1, ivy.promote_types(*input_dtype[:2]))
+#                 out = np.zeros(ivy.broadcast_shapes(xs[0].shape, xs[1].shape))
+#             else:
+#                 input_dtype.insert(-1, input_dtype[0])
+#                 out = np.zeros_like(xs[0])
+#             return where, input_dtype, test_flags, out
+#     return where, input_dtype, test_flags
 
 
 # noinspection PyShadowingNames
