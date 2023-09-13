@@ -161,9 +161,7 @@ def eigh_tridiagonal(
         return eigenvalues
     return eigenvalues, eigenvectors
 
-
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -172,7 +170,6 @@ def eigh_tridiagonal(
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     offset: int = 0,
     padding_value: float = 0,
     align: str = "RIGHT_LEFT",
@@ -185,24 +182,30 @@ def diagflat(
 
     Parameters
     ----------
-    x
-        Input data, which is flattened and set as the k-th diagonal of the output.
-    k
-        Diagonal to set.
-        Positive value means superdiagonal,
-        0 refers to the main diagonal,
-        and negative value means subdiagonal.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+    x : Union[ivy.Array, ivy.NativeArray]
+        Input data, which is flattened and set as the diagonal of the output.
+    offset : int, optional
+        Diagonal offset. Positive value means superdiagonal, 0 refers to the main diagonal,
+        and negative value means subdiagonal. Default is 0.
+    padding_value : float, optional
+        Value to fill the off-diagonal elements with. Default is 0.
+    align : str, optional
+        Alignment of the diagonal within the output array. Default is "RIGHT_LEFT".
+    num_rows : int, optional
+        Number of rows in the output array. If not specified (-1), it is inferred from the input data.
+    num_cols : int, optional
+        Number of columns in the output array. If not specified (-1), it is inferred from the input data.
+    out : Optional[Union[ivy.Array, ivy.NativeArray]], optional
+        Optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    ret
+    ret : ivy.Array
         The 2-D output array.
 
-    Examples
-    --------
+    Functional Examples
+    ------------------
+
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1,2], [3,4]])
@@ -213,7 +216,7 @@ def diagflat(
                [0, 0, 0, 4]])
 
     >>> x = ivy.array([1,2])
-    >>> ivy.diagflat(x, k=1)
+    >>> ivy.diagflat(x, offset=1)
     ivy.array([[0, 1, 0],
                [0, 0, 2],
                [0, 0, 0]])
