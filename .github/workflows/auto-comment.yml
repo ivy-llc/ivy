@@ -1,28 +1,62 @@
-name: Auto Comment
+name: Check Semantic and welcome new contributors
 
 on:
   pull_request_target:
-    types: [opened]
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+  workflow_call:
+
+permissions:
+  pull-requests: write
 
 jobs:
-  auto_comment:
+  semantics:
+    name: Semantics
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Comment
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+      - uses: amannn/action-semantic-pull-request@v3.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-              body: `Thanks for contributing to Ivy! 😊👏
-                Here are some of the important points from our Contributing Guidelines 📝:
-                1. Feel free to ignore the \`run_tests (1)\`, \`run_tests (2)\`, … jobs, and only look at the \`display_test_results\` job. 👀 It contains the following two sections:
-                - **Combined Test Results:** This shows the results of all the ivy tests that ran on the PR. ✔️
-                - **New Failures Introduced:** This lists the tests that are passing on main, but fail on the PR Fork. Please try to make sure that there are no such tests. 💪
-                2. The \`lint / Check formatting / check-formatting\` tests check for the formatting of your code. 📜 If it fails, please check the exact error message in the logs and fix the same. ⚠️🔧
-                3. Finally, the \`test-docstrings / run-docstring-tests\` check for the changes made in docstrings of the functions. This may be skipped, as well. 📚
-                Happy coding! 🎉👨‍💻`
-            })
+  pr-compliance-checks:
+    name: PR Compliance Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: mtfoley/pr-compliance-action@v0.5.0
+        with:
+          body-auto-close: false
+          protected-branch-auto-close: false
+          body-comment: >
+            ## Issue Reference
+
+            In order to be considered for merging, the pull request description must refer to a
+            specific issue number. This is described in our
+            [contributing guide](https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues) and our PR template. 
+
+            This check is looking for a phrase similar to: "Fixes #XYZ" or "Resolves #XYZ" where XYZ is the issue
+            number that this PR is meant to address.
+
+  welcome:
+    name: Welcome
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: semantics
+    if: github.event.action == 'opened'
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-message: |-
+            Congrats on making your first Pull Request and thanks for supporting Ivy! 🎉
+            Joing the conversation in our [Discord](https://discord.com/invite/sXyFF8tDtm)
+
+            Here are some notes to understand our tests: 
+            - We have merged all the tests in one file called \`display_test_results\` job. 👀 It contains the following two sections:
+              - **Combined Test Results:** This shows the results of all the ivy tests that ran on the PR. ✔️
+              - **New Failures Introduced:** This lists the tests that are passing on main, but fail on the PR Fork. 
+            Please try to make sure that there are no such tests. 💪
