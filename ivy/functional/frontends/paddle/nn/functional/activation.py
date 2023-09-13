@@ -144,15 +144,6 @@ def relu_(x, name=None):
     return x
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def sigmoid(x, dtype=None, name=None):
-    x = ivy.astype(x, dtype) if dtype else x
-    ret = ivy.sigmoid(x)
-    ret = ivy.astype(ret, dtype) if dtype else ret
-    return ret
-
-
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def rrelu(
@@ -208,6 +199,15 @@ def selu(
     ret = ivy.where(x > 0, x, alpha * ivy.expm1(x))
     arr = scale * ret
     return ivy.astype(arr, x.dtype)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def sigmoid(x, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ret = ivy.sigmoid(x)
+    ret = ivy.astype(ret, dtype) if dtype else ret
+    return ret
 
 
 def silu(x, name=None):
