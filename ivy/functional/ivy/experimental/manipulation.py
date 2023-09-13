@@ -33,6 +33,51 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+# Helpers #
+# ------- #
+
+
+def _to_tf_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [[pad_width] * 2] * ndim
+    elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
+        pad_width = pad_width * ndim
+    return pad_width
+
+
+def _check_paddle_pad(
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            (
+                (
+                    mode == "reflect"
+                    and reflect_type == "even"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or mode in ["edge", "wrap"]
+            )
+            and len(input_shape) <= ndim_limit
+        )
+    )
+
+
+def _to_paddle_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [pad_width] * (2 * ndim)
+    else:
+        if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
+            pad_width = pad_width * ndim
+        pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
+    return pad_width
+
+
 @handle_exceptions
 @handle_nestable
 @handle_partial_mixed_function
@@ -451,8 +496,8 @@ def rot90(
     m
         Input array of two or more dimensions.
     copy
-        boolean indicating whether or not to copy the input array. 
-        If True, the function must always copy. 
+        boolean indicating whether or not to copy the input array.
+        If True, the function must always copy.
         If False, the function must never copy.
         In case copy is False we avoid copying by returning a view of the input array.
     k
@@ -2587,3 +2632,70 @@ def choose(
     ivy.array([20, 1, 12, 3])
     """
     return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+
+
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_nestable
+@handle_exceptions
+@handle_device_shifting
+def column_stack(
+    arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Create a new array by horizontally stacking the arrays in arrays.
+
+    Equivalent to `ivy.hstack(arrays)`, except each zero or one dimensional
+    array `x` in arrays is first reshaped into a `(x.size(), 1)` column
+    before being stacked horizontally.
+
+    Parameters
+    ----------
+    arrays
+        Arrays to be stacked.
+    out
+        Output array.
+
+    Returns
+    -------
+    ret
+        Stacked input.
+
+    Examples
+    --------
+    Arrays of different dtypes up to dimension 2.
+    >>> a0 = ivy.array(True)
+    >>> a1 = ivy.array([7])
+    >>> a2 = ivy.array([[11.3, 13.7]])
+    >>> ivy.column_stack((a0, a1, a2))
+    ivy.array([[ 1.        ,  7.        , 11.30000019, 13.69999981]])
+
+    Arrays of dimension 3.
+    >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> b = ivy.array([[[11, 12]], [[13, 14]]])
+    >>> ivy.column_stack((a, b))
+    ivy.array([[[ 1,  2],
+                [ 3,  4],
+                [11, 12]],
+
+               [[ 5,  6],
+                [ 7,  8],
+                [13, 14]]])
+    """
+    arrays = [ivy.reshape(x, shape=(-1, 1)) if x.ndim < 2 else x for x in arrays]
+
+    return ivy.hstack(arrays, out=out)
+
+
+column_stack.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_out_argument",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
