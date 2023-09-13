@@ -11,8 +11,20 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64", "bool", "complex")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
     backend_version,
 )
 def median(
@@ -28,11 +40,14 @@ def median(
     # only axis in the tensor so it needs to be handled manually
 
     ret_dtype = input.dtype
-    if paddle.is_complex(input):
-        ret = paddle.complex(
-            paddle.median(input.real(), axis=axis, keepdim=True),
-            paddle.median(input.imag(), axis=axis, keepdim=True),
-        )
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if paddle.is_complex(input):
+            ret = paddle.complex(
+                paddle.median(input.real(), axis=axis, keepdim=True),
+                paddle.median(input.imag(), axis=axis, keepdim=True),
+            )
+        else:
+            ret = paddle.median(input.cast("float32"), axis=axis, keepdim=True)
     else:
         ret = paddle.median(input, axis=axis, keepdim=True)
     if not keepdims:
@@ -47,10 +62,6 @@ def median(
     return ret.astype(ret_dtype)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float",)},
-    backend_version,
-)
 def nanmean(
     a: paddle.Tensor,
     /,
@@ -64,11 +75,14 @@ def nanmean(
     a = a.cast(
         ret_dtype
     )  # this is necessary to match other FWs behaviour which cast before calculation
-    if paddle.is_complex(a):
-        ret = paddle.complex(
-            paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
-            paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
-        )
+    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
+        if paddle.is_complex(a):
+            ret = paddle.complex(
+                paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
+                paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
+            )
+        else:
+            ret = paddle.nanmean(a.cast("float32"), axis=axis, keepdim=keepdims)
     else:
         ret = paddle.nanmean(a, axis=axis, keepdim=keepdims)
 
@@ -345,10 +359,6 @@ def histogram(
     return paddle.histogram(a, bins=bins, min=min_range, max=max_range)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64")},
-    backend_version,
-)
 def nanmedian(
     input: paddle.Tensor,
     /,
@@ -359,13 +369,26 @@ def nanmedian(
     overwrite_input: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if dtype is None:
-        dtype = input.dtype
+    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = input.dtype
+        input = input.cast("float32")
+        paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
     return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float",)},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "bool",
+            )
+        }
+    },
     backend_version,
 )
 def unravel_index(
@@ -386,8 +409,22 @@ def unravel_index(
     return tuple(reversed(coord))
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
     backend_version,
 )
 def bincount(
@@ -403,7 +440,6 @@ def bincount(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
 def igamma(
     a: paddle.Tensor,
     /,
@@ -413,15 +449,20 @@ def igamma(
 ) -> paddle.Tensor:
     results = []
     ret_dtype = a.dtype if out is None else out.dtype
+    if paddle.float16 in [a.dtype, x.dtype]:
+        a = a.astype("float32")
+        x = x.astype("float32")
 
     for ai, xi in zip(a.flatten(), x.flatten()):
+        ai = ai.astype("float64")
+        xi = xi.astype("float64")
 
-        def _integrand(t):
+        def integrand(t):
             return paddle.exp(-t) * paddle.pow(t, ai - 1)
 
         intervals = paddle.linspace(0, xi, 10001).astype("float64")
         interval_width = xi / 10000
-        values = _integrand(intervals)
+        values = integrand(intervals)
         integral = paddle.multiply((values[:-1] + values[1:]) / 2, interval_width)
         result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
         results.append(result)
@@ -429,7 +470,6 @@ def igamma(
     return paddle.to_tensor(results, dtype=ret_dtype).reshape(a.shape)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
 def cov(
     x1: paddle.Tensor,
     x2: paddle.Tensor = None,
@@ -464,6 +504,15 @@ def cov(
         else:
             ddof = 0
 
+    if dtype is None:
+        x1 = x1.astype("float64")
+        if x2 is not None:
+            x2 = x2.astype("float64")
+    else:
+        x1 = x1.astype(dtype)
+        if x2 is not None:
+            x2 = x2.astype(dtype)
+
     X = x1
     if not rowVar and X.shape[0] != 1:
         X = paddle.transpose(X, perm=tuple(range(len(X.shape) - 1, -1, -1)))
@@ -484,8 +533,8 @@ def cov(
     )
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("int64", "float64", "complex")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cummax(
     x: paddle.Tensor,
@@ -497,7 +546,11 @@ def cummax(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    if x.dtype in (paddle.complex128, paddle.complex64):
+    if x.dtype in (paddle.bool, paddle.float16):
+        x = paddle.cast(x, "float64")
+    elif x.dtype in (paddle.int16, paddle.int8, paddle.uint8):
+        x = paddle.cast(x, "int64")
+    elif x.dtype in (paddle.complex128, paddle.complex64):
         x = paddle.cast(paddle.real(x), "float64")
 
     if not (exclusive or reverse):
@@ -608,8 +661,9 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16")}},
+    backend_version,
 )
 def cummin(
     x: paddle.Tensor,

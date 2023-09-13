@@ -11,19 +11,28 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
-    with_unsupported_dtypes,
-    with_supported_dtypes,
-)
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
 
 # Array API Standard #
 # -------------------#
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "complex",
+                "bool",
+            )
+        }
+    },
     backend_version,
 )
 def cholesky(
@@ -32,10 +41,6 @@ def cholesky(
     return paddle.linalg.cholesky(x, upper=upper)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
-    backend_version,
-)
 def cross(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -56,30 +61,53 @@ def cross(
         return paddle.moveaxis(ret, 1, axisc)
 
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x1):
+            return paddle.complex(
+                _cross(x1.real(), x2.real(), axisa, axisb, axisc, axis),
+                _cross(x1.real(), x2.real(), axisa, axisb, axisc, axis),
+            )
+        return _cross(
+            x1.cast("float32"),
+            x2.cast("float32"),
+            axisa,
+            axisb,
+            axisc,
+            axis,
+        ).cast(ret_dtype)
     return _cross(x1, x2, axisa, axisb, axisc, axis)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    ret = paddle.linalg.det(x)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        ret = paddle.linalg.det(x.cast("float32")).cast(x.dtype)
+    else:
+        ret = paddle.linalg.det(x)
     if x.ndim == 2:
         ret = paddle_backend.squeeze(ret, axis=0)
     return ret
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-        )
-    },
-    backend_version,
-)
 def diagonal(
     x: paddle.Tensor,
     /,
@@ -89,13 +117,25 @@ def diagonal(
     axis2: int = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                paddle.diagonal(x.real(), offset=offset, axis1=axis1, axis2=axis2),
+                paddle.diagonal(x.imag(), offset=offset, axis1=axis1, axis2=axis2),
+            )
+        return paddle.diagonal(
+            x.cast("float32"), offset=offset, axis1=axis1, axis2=axis2
+        ).cast(x.dtype)
     return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
-)
 def eigh(
     x: paddle.Tensor,
     /,
@@ -110,10 +150,6 @@ def eigh(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
-)
 def eigvalsh(
     x: paddle.Tensor,
     /,
@@ -124,20 +160,26 @@ def eigvalsh(
     return paddle.linalg.eigvalsh(x, UPLO=UPLO)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float",)},
-    backend_version,
-)
 def inner(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     return paddle.inner(x1, x2).squeeze().cast(ret_dtype)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def inv(
@@ -148,20 +190,21 @@ def inv(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x = x.cast("float32")
     if adjoint:
         x = paddle.moveaxis(x, -2, -1).conj()
     return paddle.inverse(x).cast(ret_dtype)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def matmul(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -174,21 +217,37 @@ def matmul(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
 
     if adjoint_a:
         x1 = paddle.moveaxis(x1, -2, -1).conj()
     if adjoint_b:
         x2 = paddle.moveaxis(x2, -2, -1).conj()
-    ret = paddle.matmul(x1, x2, transpose_x=transpose_a, transpose_y=transpose_b)
+    ret = paddle.matmul(x1, x2, transpose_x=transpose_a, transpose_y=transpose_b).cast(
+        ret_dtype
+    )
     # handle case where ret should be 0d.
     if x1.ndim == 1 and x2.ndim == 1:
-        return ret.squeeze()
+        ret_dtype = ret.dtype
+        if ret_dtype in [paddle.int16]:
+            ret = ret.cast(paddle.int32)
+        return ret.squeeze().astype(ret_dtype)
 
     return ret
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_norm(
@@ -259,10 +318,6 @@ def matrix_norm(
     return ret
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
-)
 def eig(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> Tuple[paddle.Tensor]:
@@ -273,8 +328,8 @@ def eig(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_power(
@@ -283,8 +338,8 @@ def matrix_power(
     return paddle.linalg.matrix_power(x, n)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_rank(
@@ -321,18 +376,6 @@ def matrix_rank(
     return ret
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def matrix_transpose(
     x: paddle.Tensor,
     /,
@@ -345,35 +388,39 @@ def matrix_transpose(
         x = paddle.conj(x)
     perm = list(range(x.ndim))
     perm[-1], perm[-2] = perm[-2], perm[-1]
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.transpose(x.cast("float32"), perm=perm).cast(x.dtype)
     return paddle.transpose(x, perm=perm)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float",)},
-    backend_version,
-)
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return paddle.outer(x1, x2)
+    ret_dtype = x1.dtype
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
+    return paddle.outer(x1, x2).cast(ret_dtype)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
-)
 def pinv(
     x: paddle.Tensor,
     /,
     *,
     rtol: Optional[Union[float, Tuple[float]]] = None,
-    hermitian: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if rtol is None:
-        return paddle.linalg.pinv(x, hermitian=hermitian)
-    return paddle.linalg.pinv(x, rcond=rtol, hermitian=hermitian)
+        return paddle.linalg.pinv(x)
+    return paddle.linalg.pinv(x, rcond=rtol)
 
 
 def tensorsolve(
@@ -388,8 +435,8 @@ def tensorsolve(
     raise IvyNotImplementedException()
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def qr(
@@ -404,8 +451,8 @@ def qr(
     return res(q, r)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def slogdet(
@@ -423,8 +470,8 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def solve(
@@ -451,14 +498,26 @@ def solve(
     return ret
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svd(
     x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
-    ret = paddle.linalg.svd(x, full_matrices=full_matrices)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        ret = paddle.linalg.svd(x.cast("float32"), full_matrices=full_matrices)
+        ret = tuple(r.cast(x.dtype) for r in ret)
+    else:
+        ret = paddle.linalg.svd(x, full_matrices=full_matrices)
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
         return results(*ret)
@@ -467,8 +526,8 @@ def svd(
         return results(ret[1])
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svdvals(
@@ -477,10 +536,6 @@ def svdvals(
     return paddle_backend.svd(x)[1]
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float",)},
-    backend_version,
-)
 def tensordot(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -490,17 +545,33 @@ def tensordot(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     ret = paddle.tensordot(x1, x2, axes=axes)
-    return ret.squeeze() if x1.ndim == axes else ret
+    return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
-@with_supported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": (
-            "int32",
-            "int64",
-            "float",
-        )
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "unsigned",
+                "float16",
+                "complex",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -566,17 +637,6 @@ def vector_norm(
 # ----- #
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def diag(
     x: paddle.Tensor,
     /,
@@ -584,15 +644,24 @@ def diag(
     k: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return paddle.complex(
-            paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
-        )
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
+            )
+        return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex")}},
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
     backend_version,
 )
 def vander(

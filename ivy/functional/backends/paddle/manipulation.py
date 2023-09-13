@@ -7,7 +7,7 @@ import paddle
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # noinspection PyProtectedMember
 from . import backend_version
@@ -69,10 +69,6 @@ def expand_dims(
     return x.reshape(out_shape)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64", "bool")},
-    backend_version,
-)
 def flip(
     x: paddle.Tensor,
     /,
@@ -83,21 +79,11 @@ def flip(
 ) -> paddle.Tensor:
     if axis is None:
         axis = list(range(x.ndim))
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.flip(x.cast("float32"), axis).cast(x.dtype)
     return paddle.flip(x, axis)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def permute_dims(
     x: paddle.Tensor,
     /,
@@ -106,6 +92,8 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.transpose(x.cast("float32"), axes).cast(x.dtype)
     return paddle.transpose(x, axes)
 
 
@@ -163,17 +151,6 @@ def reshape(
     return ret
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def roll(
     x: paddle.Tensor,
     /,
@@ -182,22 +159,17 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.roll(x.cast("float32"), shift, axis).cast(x.dtype)
     return paddle.roll(x, shift, axis)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float",
-            "bool",
-            "int8",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def squeeze(
     x: paddle.Tensor,
     /,
@@ -219,18 +191,13 @@ def squeeze(
         x_shape = x.shape
         x_shape.pop(axis)
         return paddle_backend.reshape(x, x_shape)
+    if x.dtype in [paddle.int16, paddle.float16]:
+        return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
@@ -256,7 +223,11 @@ def stack(
             first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype
         )
 
-    if dtype in [
+    if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.bool]:
+        arrays = list(map(lambda x: x.cast("float32"), arrays))
+        return paddle.stack(arrays, axis=axis).cast(dtype)
+
+    elif dtype in [
         paddle.complex64,
         paddle.complex128,
     ]:
@@ -274,21 +245,6 @@ def stack(
 # ------#
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "bfloat16",
-            "float",
-            "int32",
-            "int64",
-            "uint8",
-            "int8",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def split(
     x: paddle.Tensor,
     /,
@@ -331,17 +287,16 @@ def split(
                 f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
             )
 
-    if paddle.is_complex(x):
-        imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
-        real_list = paddle.split(x.real(), num_or_size_splits, axis)
-        return [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
+    if x.dtype in [paddle.int16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
+            real_list = paddle.split(x.real(), num_or_size_splits, axis)
+            return [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
+        ret = paddle.split(x.cast("int32"), num_or_size_splits, axis)
+        return [tensor.cast(x.dtype) for tensor in ret]
     return paddle.split(x, num_or_size_splits, axis)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64", "complex")},
-    backend_version,
-)
 def repeat(
     x: paddle.Tensor,
     /,
@@ -366,26 +321,28 @@ def repeat(
 
     if axis is not None:
         axis = axis % x.ndim
-    if paddle.is_complex(x):
-        return paddle.complex(
-            paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
-            paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
-        )
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
+                paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
+            )
+
+        return paddle.repeat_interleave(
+            x.cast("float32"), repeats=repeats, axis=axis
+        ).cast(x.dtype)
 
     return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "float",
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -421,20 +378,11 @@ def tile(
             shape = paddle_backend.multiply(x.shape, repeats).tolist()
         return paddle.zeros(shape).cast(x.dtype)
 
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.tile(x.cast("float32"), repeats).cast(x.dtype)
     return paddle.tile(x, repeats)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        ),
-    },
-    backend_version,
-)
 def constant_pad(
     x: paddle.Tensor,
     /,
@@ -451,6 +399,16 @@ def constant_pad(
         else:
             paddings.append(item[0])
             paddings.append(item[1])
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.nn.functional.pad(
+            x.cast("float32"), pad=paddings, value=value
+        ).cast(x.dtype)
     return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
 
@@ -508,18 +466,6 @@ def clip(
     return x
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def unstack(
     x: paddle.Tensor,
     /,
@@ -534,10 +480,22 @@ def unstack(
         axis = axis % x.ndim
     else:
         axis = 0
-    if paddle.is_complex(x):
-        real_list = paddle.unbind(x.real(), axis)
-        imag_list = paddle.unbind(x.imag(), axis)
-        ret = [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            real_list = paddle.unbind(x.real(), axis)
+            imag_list = paddle.unbind(x.imag(), axis)
+            ret = [paddle.complex(a, b) for a, b in zip(real_list, imag_list)]
+        else:
+            ret = paddle.unbind(x.cast("float32"), axis)
+            ret = list(map(lambda a: a.cast(x.dtype), ret))
+
     else:
         ret = paddle.unbind(x, axis)
     if keepdims:

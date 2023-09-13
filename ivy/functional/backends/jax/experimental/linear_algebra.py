@@ -2,9 +2,6 @@ import math
 from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
-from . import backend_version
-
-from ivy import with_supported_dtypes
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
@@ -117,10 +114,9 @@ def eig(
     return jnp.linalg.eig(x)
 
 
-@with_supported_dtypes(
-    {"0.4.14 and below": {"float32", "float64", "complex"}}, backend_version
-)
 def eigvals(x: JaxArray, /) -> JaxArray:
+    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
+        x = x.astype(jnp.float64)
     return jnp.linalg.eigvals(x)
 
 

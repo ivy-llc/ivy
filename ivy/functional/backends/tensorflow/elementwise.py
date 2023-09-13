@@ -600,8 +600,8 @@ def positive(
     return tf.experimental.numpy.positive(x)
 
 
-@with_supported_dtypes(
-    {"2.13.0 and below": ("float", "int32", "int64", "complex")},
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64", "float64")},
     backend_version,
 )
 def pow(
@@ -620,6 +620,14 @@ def pow(
         ret = tf.experimental.numpy.power(x1, x2)
         return tf.where(x1 == 0, ivy.nan + ivy.nan * 1j, ret)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if isinstance(x1, tf.Tensor) and isinstance(x2, tf.Tensor):
+        if x1.dtype.is_unsigned or x2.dtype.is_unsigned:
+            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+            if x1.dtype.is_unsigned:
+                x1 = tf.cast(x1, tf.float64)
+            if x2.dtype.is_unsigned:
+                x2 = tf.cast(x2, tf.float64)
+            return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
     if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
         return tf.cast(
             tf.experimental.numpy.power(tf.cast(x1, tf.float32), x2),
@@ -668,10 +676,6 @@ def round(
         return tf.cast(tf.round(x * factor) / factor_deno, ret_dtype)
 
 
-@with_supported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float", "int32", "int64", "complex")},
-    backend_version,
-)
 def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -679,6 +683,8 @@ def sign(
     np_variant: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
+        return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
     if x.dtype in [tf.complex64, tf.complex128] and np_variant:
         real = tf.math.real(x)
         imag = tf.math.imag(x)

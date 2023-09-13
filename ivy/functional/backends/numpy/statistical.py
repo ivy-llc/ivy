@@ -171,7 +171,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16", "bool")}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -183,7 +183,10 @@ def cumprod(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        if x.dtype == "bool":
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
     if not (exclusive or reverse):
         return np.cumprod(x, axis, dtype=dtype, out=out)
     elif exclusive and reverse:
@@ -205,7 +208,6 @@ def cumprod(
 cumprod.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16", "bool")}, backend_version)
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
@@ -216,6 +218,8 @@ def cumsum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
+        if x.dtype == "bool":
+            dtype = ivy.default_int_dtype(as_native=True)
         if ivy.is_int_dtype(x.dtype):
             dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
         dtype = _infer_dtype(x.dtype)

@@ -9,10 +9,8 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy import with_supported_dtypes
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.utils.exceptions import _check_inplace_update_support
-from . import backend_version
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -102,20 +100,6 @@ def to_list(x: paddle.Tensor, /) -> list:
     return x.tolist()
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": [
-            "float16",
-            "float32",
-            "float64",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-        ]
-    },
-    backend_version,
-)
 def gather(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -166,23 +150,20 @@ def gather(
     if batch_dims is not None:
         batch_dims = batch_dims % params.ndim
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    if params.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(params):
+            return paddle.complex(_gather(params.real()), _gather(params.imag()))
+        return _gather(params.cast("float32")).cast(params.dtype)
     return _gather(params)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "float16",
-            "float32",
-            "float64",
-            "int16",
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
 def gather_nd(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -282,7 +263,21 @@ def gather_nd(
     # flat_indices now has shape [(B1.B2), i1, ..., iK, C]
     indices = paddle_backend.concat((index_grid, flat_indices), axis=-1)
     # indices has shape [(B1.B2), i1, ..., iK, 2+C]
-    out = paddle.gather_nd(params, indices)
+    if params.dtype in [
+        paddle.int8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if paddle.is_complex(params):
+            out = paddle.complex(
+                paddle.gather_nd(params.real(), indices),
+                paddle.gather_nd(params.imag(), indices),
+            )
+        else:
+            out = paddle.gather_nd(params.cast("float32"), indices).cast(params.dtype)
+    else:
+        out = paddle.gather_nd(params, indices)
     # out has shape [(B1.B2), i1, ..., iK, N-C]. Now we reshape batch to
     # its original form.
     out_shape = out.shape
@@ -386,10 +381,6 @@ def scatter_flat(
     )
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float32", "float64", "complex")},
-    backend_version,
-)
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -484,6 +475,23 @@ def scatter_nd(
             updates.imag(),
         )
         ret = paddle.complex(result_real, result_imag)
+    elif target_dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        target, updates, updates_ = (
+            target.cast("float32"),
+            updates.cast("float32"),
+            updates_.cast("float32"),
+        )
+        ret = paddle.scatter_nd_add(
+            paddle.scatter_nd_add(target, indices, -updates_),
+            indices,
+            updates,
+        ).cast(target_dtype)
     else:
         ret = paddle.scatter_nd_add(
             paddle.scatter_nd_add(target, indices, -updates_),

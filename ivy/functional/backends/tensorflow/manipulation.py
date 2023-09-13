@@ -328,7 +328,7 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     x_min: Union[Number, tf.Tensor, tf.Variable],

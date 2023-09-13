@@ -5,16 +5,15 @@ from typing import Optional, Tuple, Union, Any
 # local
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
-    with_supported_dtypes,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def diagflat(
     x: paddle.Tensor,
@@ -46,8 +45,8 @@ def diagflat(
         )(diag)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
@@ -70,34 +69,16 @@ def matrix_exp(
     raise IvyNotImplementedException()
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")}, backend_version
-)
 def eig(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> Tuple[paddle.Tensor]:
     return paddle.linalg.eig(x)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")}, backend_version
-)
 def eigvals(x: paddle.Tensor, /) -> paddle.Tensor:
     return paddle.linalg.eig(x)[0]
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "bool",
-            "float",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def adjoint(
     x: paddle.Tensor,
     /,

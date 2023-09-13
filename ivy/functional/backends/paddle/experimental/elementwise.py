@@ -17,7 +17,10 @@ from ivy.functional.backends.paddle.elementwise import _elementwise_helper
 from .. import backend_version
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float",)}, backend_version)
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
+    backend_version,
+)
 def lgamma(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -25,7 +28,7 @@ def lgamma(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64")},
+    {"2.5.1 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -40,8 +43,8 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
@@ -104,8 +107,8 @@ def copysign(
     return result
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
 )
 def nansum(
     x: paddle.Tensor,
@@ -122,7 +125,9 @@ def nansum(
     return result
 
 
-@with_supported_dtypes({"2.5.1 and below": "float"}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+)
 def isclose(
     a: paddle.Tensor,
     b: paddle.Tensor,
@@ -136,9 +141,6 @@ def isclose(
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "bool", "int32", "int64")}, backend_version
-)
 def diff(
     x: Union[paddle.Tensor, list, tuple],
     /,
@@ -150,6 +152,8 @@ def diff(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        x = x.cast("float32")
 
     def _tensor(val):
         if val is not None and not isinstance(val, paddle.Tensor):
@@ -184,7 +188,24 @@ def hypot(
     raise IvyNotImplementedException()
 
 
-@with_supported_dtypes({"2.5.1 and below": "float"}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def allclose(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -248,8 +269,22 @@ _BERNOULLI_COEFS = [
 ]
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float", "int32", "int64", "bool")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "float16",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def zeta(
     x: paddle.Tensor,
@@ -572,8 +607,10 @@ def count_nonzero(
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "complex",
-            "float",
+            "complex64",
+            "complex128",
+            "float32",
+            "float64",
             "int32",
             "int64",
         )
@@ -592,7 +629,12 @@ def modf(
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float",)},
+    {
+        "2.5.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
     backend_version,
 )
 def digamma(

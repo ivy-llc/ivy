@@ -6,7 +6,7 @@ import torch.nn.functional as tnf
 
 import ivy
 
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 # Array API Standard #
@@ -95,7 +95,6 @@ def nonzero(
     return torch.stack(res, dim=1)
 
 
-@with_supported_dtypes({"2.0.1 and below and below": ("bool",)}, backend_version)
 def where(
     condition: torch.Tensor,
     x1: Union[float, int, torch.Tensor],
@@ -105,6 +104,8 @@ def where(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if condition.dtype is not torch.bool:
+        condition = condition == 1.0
     return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 

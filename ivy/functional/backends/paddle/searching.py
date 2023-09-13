@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 from .elementwise import _elementwise_helper
 
@@ -12,15 +12,14 @@ from .elementwise import _elementwise_helper
 # ------------------ #
 
 
-@with_supported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": (
-            "float",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-        )
+        "2.5.1 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
     },
     backend_version,
 )
@@ -35,6 +34,8 @@ def argmax(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else paddle.int64
+    if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
+        x = x.cast("float32")
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
         ret = paddle.argmax(x, axis=axis, keepdim=keepdims)
@@ -52,17 +53,14 @@ def argmax(
     return ret.astype(dtype)
 
 
-@with_supported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": (
-            "float16",
-            "float32",
-            "float64",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-        )
+        "2.5.1 and below": {
+            "cpu": (
+                "complex64",
+                "complex128",
+            )
+        }
     },
     backend_version,
 )
@@ -77,6 +75,8 @@ def argmin(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else paddle.int64
+    if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
+        x = x.cast("float32")
     if select_last_index:
         x = paddle_backend.flip(x, axis=axis)
         ret = paddle.argmin(x, axis=axis, keepdim=keepdims)
@@ -94,21 +94,6 @@ def argmin(
     return ret.astype(dtype)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": [
-            "int16",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-            "bool",
-            "complex",
-        ]
-    },
-    backend_version,
-)
 def nonzero(
     x: paddle.Tensor,
     /,
@@ -117,11 +102,20 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor]]:
-    if paddle.is_complex(x):
-        real_idx = paddle.nonzero(x.real())
-        imag_idx = paddle.nonzero(x.imag())
-        idx = paddle.concat([real_idx, imag_idx], axis=0)
-        res = paddle.unique(idx, axis=0)
+    if x.dtype in [
+        paddle.int8,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if paddle.is_complex(x):
+            real_idx = paddle.nonzero(x.real())
+            imag_idx = paddle.nonzero(x.imag())
+            idx = paddle.concat([real_idx, imag_idx], axis=0)
+            res = paddle.unique(idx, axis=0)
+        else:
+            res = paddle.nonzero(x.cast("float32"))
     else:
         res = paddle.nonzero(x)
 
@@ -146,19 +140,6 @@ def nonzero(
     return res.T
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-            "complex",
-        )
-    },
-    backend_version,
-)
 def where(
     condition: paddle.Tensor,
     x1: Union[float, int, paddle.Tensor],
@@ -176,43 +157,46 @@ def where(
     condition, x1, x2 = arrays
     condition = condition.cast("bool") if condition.dtype != paddle.bool else condition
 
-    if ret_dtype in [paddle.complex64, paddle.complex128]:
+    if ret_dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1 = x1.cast("float32")
+        x2 = x2.cast("float32")
+        result = paddle.where(condition, x1, x2)
+    elif ret_dtype in [paddle.complex64, paddle.complex128]:
         result_real = paddle.where(condition, paddle.real(x1), paddle.real(x2))
         result_imag = paddle.where(condition, paddle.imag(x1), paddle.imag(x2))
         result = paddle.complex(result_real, result_imag)
     else:
         result = paddle.where(condition, x1, x2)
 
-    return result.squeeze() if scalar_out else result
+    return result.squeeze().cast(ret_dtype) if scalar_out else result.cast(ret_dtype)
 
 
 # Extra #
 # ----- #
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": [
-            "int16",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-            "bool",
-            "complex",
-        ]
-    },
-    backend_version,
-)
 def argwhere(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.ndim == 0:
         return paddle.zeros(shape=[int(bool(x.item())), 0], dtype="int64")
-    if paddle.is_complex(x):
-        real_idx = paddle.nonzero(x.real())
-        imag_idx = paddle.nonzero(x.imag())
-        idx = paddle.concat([real_idx, imag_idx], axis=0)
-        return paddle.unique(idx, axis=0)
+    if x.dtype in [
+        paddle.int8,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if paddle.is_complex(x):
+            real_idx = paddle.nonzero(x.real())
+            imag_idx = paddle.nonzero(x.imag())
+            idx = paddle.concat([real_idx, imag_idx], axis=0)
+            return paddle.unique(idx, axis=0)
+        return paddle.nonzero(x.cast("float32"))
     return paddle.nonzero(x)

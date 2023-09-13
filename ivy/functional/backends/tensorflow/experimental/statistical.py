@@ -653,7 +653,6 @@ def cov(
     return tf.math.truediv(c, fact)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float64", "int64")}, backend_version)
 def cummax(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -664,6 +663,13 @@ def cummax(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
+    if x.dtype in (tf.bool, tf.float16):
+        x = tf.cast(x, tf.float64)
+    elif x.dtype in (tf.int16, tf.int8, tf.uint8):
+        x = tf.cast(x, tf.int64)
+    elif x.dtype in (tf.complex128, tf.complex64):
+        x = tf.cast(tf.math.real(x), tf.float64)
+
     if exclusive or reverse:
         if exclusive and reverse:
             x, indices = __find_cummax(

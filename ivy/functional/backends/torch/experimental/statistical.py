@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, Sequence
 import torch
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 import ivy
 from ..statistical import _infer_dtype
@@ -566,8 +566,8 @@ def cov(
 cov.support_native_out = False
 
 
-@with_supported_dtypes(
-    {"2.0.1 and below": ("int64", "float64")},
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("uint8", "bfloat16", "float16")},
     backend_version,
 )
 def cummax(
@@ -580,6 +580,13 @@ def cummax(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
+    if x.dtype in (torch.bool, torch.float16):
+        x = x.to(dtype=torch.float64)
+    elif x.dtype in (torch.int16, torch.int8, torch.uint8):
+        x = x.to(dtype=torch.int64)
+    elif x.dtype in (torch.complex64, torch.complex128):
+        x = x.real.to(dtype=torch.float64)
+
     if exclusive or reverse:
         if exclusive and reverse:
             x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)

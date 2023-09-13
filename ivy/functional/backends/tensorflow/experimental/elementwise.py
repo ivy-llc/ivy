@@ -246,7 +246,6 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
     return axis
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("int", "unsigned")}, backend_version)
 def gradient(
     x: tf.Tensor,
     /,
@@ -324,6 +323,9 @@ def gradient(
     slice2 = [slice(None)] * N
     slice3 = [slice(None)] * N
     slice4 = [slice(None)] * N
+
+    if x.dtype.is_integer:
+        x = x.astype(tf.experimental.numpy.float64)
 
     for axis, ax_dx in zip(axes, dx):
         if x.shape[axis] < edge_order + 1:
