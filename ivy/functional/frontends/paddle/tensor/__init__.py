@@ -2,6 +2,8 @@ from . import attribute
 from .attribute import *
 from . import creation
 from .creation import *
+from . import einsum
+from .einsum import *
 from . import linalg
 from .linalg import *
 from . import logic

@@ -144,8 +144,9 @@ def random_uniform(
     ret
         Drawn samples from the parameterized uniform distribution.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     >>> ivy.random_uniform()
     ivy.array(0.26431865)
 
@@ -257,8 +258,9 @@ def random_normal(
      ret
         Drawn samples from the parameterized normal distribution.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     >>> ivy.random_normal()
     ivy.array(-0.22346112)
 

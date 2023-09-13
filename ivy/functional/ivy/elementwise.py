@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Optional, Union, Literal
+from typing import Optional, Union
 
 # local
 import ivy
@@ -12,7 +12,6 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
-    handle_complex_input,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -556,8 +555,9 @@ def asin(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-2.4, -0, +0, 3.2, float('nan')])
@@ -1107,8 +1107,9 @@ def bitwise_and(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([2, 3, 7])
@@ -1539,8 +1540,9 @@ def bitwise_xor(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >>> a = ivy.array([1, 2, 3])
@@ -2704,8 +2706,9 @@ def floor(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2,3,4])
@@ -3080,8 +3083,8 @@ def greater(
 @handle_array_function
 @handle_device_shifting
 def greater_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -3118,8 +3121,9 @@ def greater_equal(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
@@ -3144,6 +3148,30 @@ def greater_equal(
     ivy.array([[[0.],
             [1.],
             [0.]]])
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.native_array([4, 5, 0])
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    ivy.array([False, False,  True])
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+    ...                   b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.greater_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
+    }
 
     With :class:`ivy.Container` input:
 
@@ -3495,8 +3523,9 @@ def isfinite(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
@@ -4990,8 +5019,9 @@ def not_equal(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    ------------------
+
     With :class:`ivy.Array` inputs:
 
     >>> x1 = ivy.array([1, 0, 1, 1])
@@ -5145,8 +5175,9 @@ def positive(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3 ,5, 7])
@@ -5189,8 +5220,8 @@ def positive(
 @handle_array_function
 @handle_device_shifting
 def pow(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[int, float, ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -5200,6 +5231,13 @@ def pow(
     each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i``
     (the exponent), where ``x2_i`` is the corresponding element of the input array
     ``x2``.
+
+    .. note::
+       If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when
+       ``x2_i`` is negative (i.e., less than zero) is unspecified and thus
+       implementation-dependent. If ``x1`` has an integer data type and ``x2`` has a
+       floating-point data type, behavior is implementation-dependent (type promotion
+       between data type "kinds" (integer versus floating-point) is unspecified).
 
     **Special cases**
 
@@ -5319,13 +5357,6 @@ def pow(
 
 
 pow.unsupported_gradients = {"torch": ["float16"]}
-
-
-def _complex_to_inf(exponent):
-    if exponent < 0:
-        return float("inf") + ivy.nan * 1j
-    else:
-        return -0 * 1j
 
 
 @handle_exceptions
@@ -6363,12 +6394,10 @@ def tan(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
-@handle_complex_input
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -6438,9 +6467,6 @@ def tanh(
         input array whose elements each represent a hyperbolic angle. Should have a
         real-valued floating-point data
         type.
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output, for writing the result to. It must have a shape that the inputs
         broadcast to.

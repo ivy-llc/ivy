@@ -7,6 +7,7 @@ Navigating the Code
 .. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
+.. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 
 Categorization
 --------------
@@ -133,7 +134,7 @@ Keyword-only parameters will mandate the use of argument names when calling func
 Similar arguments can be kept together in the argument list, rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
-Arrays always have a type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
+Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
 The reasons for each of these features are explained in the following sections.
 
@@ -164,7 +165,7 @@ Again, the reasons for these features are explained in the following sections.
 Submodule Helper Functions
 --------------------------
 
-At times, helper functions specific to the submodule are required to:
+At times, helper functions specific to submodule is required to:
 
 * keep the code clean and readable
 * be imported in their respective backend implementations

@@ -15,26 +15,26 @@ We want our ML unification journey to be as inclusive as possible, this is all o
 The contributor guide is split into the sections below, it's best to go from start to finish, but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
 
-| (a) `Setting Up <contributing/setting_up.rst>`_
+| (a) `Setting Up <https://unify.ai/docs/ivy/overview/contributing/setting_up.html>`_
 | Building the right environment 🏛️
 |
-| (b) `The Basics <contributing/the_basics.rst>`_
+| (b) :ref:`The Basics`
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
-| (c) `Building the Docs <contributing/building_the_docs.rst>`_
+| (c) :ref:`Building the Docs`
 | How to build the documentation locally 🏗️
 |
-| (d) `Deep Dive <deep_dive.rst>`_
+| (d) :ref:`Deep Dive`
 | Take a deep dive into the codebase 🤿
 |
-| (e) `Open Tasks <contributing/open_tasks.rst>`_
+| (e) :ref:`Open Tasks`
 | See where you can help us out! 🙋
 |
-| (f) `Helpful Resources <contributing/helpful_resources.rst>`_
+| (f) :ref:`Applied Libraries`
+| Getting started with our applied libraries! 📚
+| 
+| (g) :ref:`Helpful Resources`
 | Resources you would find useful when learning Ivy 📖
-|
-| (g) `Error Handling <contributing/error_handling.rst>`_
-| Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
    :hidden:
@@ -46,8 +46,8 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/building_the_docs.rst
    Deep Dive <https://unify.ai/docs/ivy/overview/deep_dive.html>
    contributing/open_tasks.rst
+   contributing/applied_libraries.rst
    contributing/helpful_resources.rst
-   contributing/error_handling.rst
 
 **Video**
 

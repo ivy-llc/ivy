@@ -40,9 +40,9 @@ def test_numpy_argsort(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.lexsort",
+    fn_tree="numpy.sort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
@@ -50,7 +50,7 @@ def test_numpy_argsort(
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_lexsort(
+def test_numpy_sort(
     *,
     dtype_x_axis,
     frontend,
@@ -60,6 +60,7 @@ def test_numpy_lexsort(
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -67,7 +68,7 @@ def test_numpy_lexsort(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        keys=x[0],
+        a=x[0],
         axis=axis,
     )
 
@@ -101,6 +102,73 @@ def test_numpy_msort(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.sort_complex",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_sort_complex(
+    *,
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        test_values=False,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.lexsort",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_lexsort(
+    *,
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        keys=x[0],
+        axis=axis,
     )
 
 
@@ -139,72 +207,4 @@ def test_numpy_partition(
         a=x,
         kth=kth,
         axis=axis,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.sort",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_numpy_sort(
-    *,
-    dtype_x_axis,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x, axis = dtype_x_axis
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        axis=axis,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.sort_complex",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        min_dim_size=1,
-        min_axis=-1,
-        max_axis=0,
-    ),
-    test_with_out=st.just(False),
-)
-def test_numpy_sort_complex(
-    *,
-    dtype_x_axis,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x, axis = dtype_x_axis
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        test_values=False,
     )

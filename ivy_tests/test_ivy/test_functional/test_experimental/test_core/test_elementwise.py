@@ -7,8 +7,82 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-# --- Helpers --- #
-# --------------- #
+# Helpers #
+# ------- #
+# lgamma
+@handle_test(
+    fn_tree="functional.ivy.experimental.lgamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+    ),
+    test_gradients=st.just(False),
+)
+def test_lgamma(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
+# sinc
+@handle_test(
+    fn_tree="functional.ivy.experimental.sinc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
+    test_gradients=st.just(False),
+)
+def test_sinc(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        atol_=1e-02,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
+# fmax
+@handle_test(
+    fn_tree="functional.ivy.experimental.fmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
+        num_arrays=2,
+    ),
+    test_gradients=st.just(False),
+)
+def test_fmax(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+    )
 
 
 # float_power_helper
@@ -39,29 +113,50 @@ def _float_power_helper(draw, *, available_dtypes=None):
     return (dtype1[0], dtype2[0]), (x1[0], x2[0])
 
 
-# nansum
-@st.composite
-def _get_castable_dtypes_values(draw, *, allow_nan=False):
-    available_dtypes = helpers.get_dtypes("numeric")
-    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
-    dtype, values = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            num_arrays=1,
-            large_abs_safety_factor=24,
-            small_abs_safety_factor=24,
-            safety_factor_scale="log",
-            shape=shape,
-            allow_nan=allow_nan,
-        )
+# float_power
+@handle_test(
+    fn_tree="functional.ivy.experimental.float_power",
+    dtype_and_x=_float_power_helper(),
+    test_gradients=st.just(False),
+)
+def test_float_power(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+        rtol_=1e-1,
+        atol_=1e-1,
     )
-    axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    dtype1, values, dtype2 = draw(
-        helpers.get_castable_dtype(
-            draw(helpers.get_dtypes("float")), dtype[0], values[0]
-        )
+
+
+# copysign
+@handle_test(
+    fn_tree="functional.ivy.experimental.copysign",
+    dtype_x1_x2=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=0,
+        allow_nan=False,
+        shared_dtype=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_copysign(dtype_x1_x2, test_flags, backend_fw, fn_name, on_device):
+    (x1_dtype, x2_dtype), (x1, x2) = dtype_x1_x2
+    helpers.test_function(
+        input_dtypes=[x1_dtype, x2_dtype],
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x1=x1,
+        x2=x2,
     )
-    return [dtype1], [values], axis, dtype2
 
 
 @st.composite
@@ -89,106 +184,124 @@ def _get_dtype_values_axis_for_count_nonzero(
     return [input_dtype, output_dtype], values, axis
 
 
-@st.composite
-def _lerp_data_helper(draw):
-    mixed_fn_compos = draw(st.booleans())
-    is_torch_backend = ivy.current_backend_str() == "torch"
-
-    kwargs = {
-        "shared_dtype": True,
-        "large_abs_safety_factor": 2.5,
-        "small_abs_safety_factor": 2.5,
-        "safety_factor_scale": "log",
-        "allow_nan": False,
-        "allow_inf": False,
-    }
-
-    if is_torch_backend and not mixed_fn_compos:
-        dtype1, start_end = draw(
-            helpers.dtype_and_values(
-                available_dtypes=(
-                    helpers.get_dtypes("numeric", mixed_fn_compos=mixed_fn_compos)
-                ),
-                num_arrays=2,
-                **kwargs,
-            )
-        )
-        dtype2, weight = draw(
-            helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes(
-                    "integer", mixed_fn_compos=mixed_fn_compos
-                ),
-                num_arrays=1,
-                **kwargs,
-            )
-        )
-        input_dtypes = dtype1 + dtype2
-        inputs = start_end + weight
-    else:
-        input_dtypes, inputs = draw(
-            helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes(
-                    "valid", mixed_fn_compos=mixed_fn_compos
-                ),
-                num_arrays=3,
-                **kwargs,
-            )
-        )
-
-    return input_dtypes, inputs[0], inputs[1], inputs[2]
-
-
-@st.composite
-def _sparsify_tensor_stg(draw):
-    dtype, tensor, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            ret_shape=True,
-            min_num_dims=1,
-            min_dim_size=1,
-            min_value=10,
-        )
+# count_nonzero
+@handle_test(
+    fn_tree="functional.ivy.experimental.count_nonzero",
+    dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
+        in_available_dtypes="integer",
+        out_available_dtypes="integer",
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_count_nonzero(
+    *, dtype_values_axis, keepdims, test_flags, on_device, fn_name, backend_fw
+):
+    i_o_dtype, a, axis = dtype_values_axis
+    helpers.test_function(
+        input_dtypes=i_o_dtype[0],
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        a=a[0],
+        axis=axis,
+        keepdims=keepdims,
+        dtype=i_o_dtype[1][0],
     )
 
-    size = 1
-    for dim in shape:
-        size *= dim
 
-    card = draw(st.integers(min_value=1, max_value=size))
-
-    return dtype, tensor[0], card
-
-
-# ldexp
+# nansum
 @st.composite
-def ldexp_args(draw):
-    dtype1, x1 = draw(
+def _get_castable_dtypes_values(draw, *, allow_nan=False):
+    available_dtypes = helpers.get_dtypes("numeric")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
         helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
+            available_dtypes=available_dtypes,
             num_arrays=1,
-            shared_dtype=True,
-            min_value=-100,
-            max_value=100,
-            min_num_dims=1,
-            max_num_dims=3,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            allow_nan=allow_nan,
         )
     )
-    dtype2, x2 = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["int32", "int64"],
-            num_arrays=1,
-            shared_dtype=True,
-            min_value=-100,
-            max_value=100,
-            min_num_dims=1,
-            max_num_dims=3,
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("float")), dtype[0], values[0]
         )
     )
-    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
+    return [dtype1], [values], axis, dtype2
 
 
-# --- Main --- #
-# ------------ #
+# nansum
+@handle_test(
+    fn_tree="functional.ivy.experimental.nansum",
+    dtype_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_nansum(
+    *, dtype_x_axis_dtype, keep_dims, test_flags, on_device, fn_name, backend_fw
+):
+    input_dtype, x, axis, dtype = dtype_x_axis_dtype
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+        dtype=dtype,
+    )
+
+
+# isclose
+@handle_test(
+    fn_tree="functional.ivy.experimental.isclose",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
+        num_arrays=2,
+        shared_dtype=True,
+        allow_nan=True,
+    ),
+    rtol=st.floats(
+        min_value=1e-05, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
+    atol=st.floats(
+        min_value=1e-08, max_value=1e-01, exclude_min=True, exclude_max=True
+    ),
+    equal_nan=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_isclose(
+    *, dtype_and_x, rtol, atol, equal_nan, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        a=x[0],
+        b=x[1],
+        rtol=rtol,
+        atol=atol,
+        equal_nan=equal_nan,
+    )
 
 
 # allclose
@@ -231,103 +344,54 @@ def test_allclose(
     )
 
 
+# fix
 @handle_test(
-    fn_tree="functional.ivy.experimental.binarizer",
+    fn_tree="functional.ivy.experimental.fix",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    threshold=helpers.floats(),
-    container_flags=st.just([False]),
-)
-def test_binarizer(
-    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-        threshold=threshold,
-    )
-
-
-# conj
-@handle_test(
-    fn_tree="conj",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex")
-    ),
-    test_with_out=st.just(False),
-)
-def test_conj(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# copysign
-@handle_test(
-    fn_tree="functional.ivy.experimental.copysign",
-    dtype_x1_x2=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_num_dims=0,
-        allow_nan=False,
-        shared_dtype=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
     ),
     test_gradients=st.just(False),
 )
-def test_copysign(dtype_x1_x2, test_flags, backend_fw, fn_name, on_device):
-    (x1_dtype, x2_dtype), (x1, x2) = dtype_x1_x2
+def test_fix(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=[x1_dtype, x2_dtype],
+        input_dtypes=input_dtype,
         test_flags=test_flags,
-        on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        x1=x1,
-        x2=x2,
+        on_device=on_device,
+        x=x[0],
     )
 
 
-# count_nonzero
+# nextafter
 @handle_test(
-    fn_tree="functional.ivy.experimental.count_nonzero",
-    dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
-        in_available_dtypes="integer",
-        out_available_dtypes="integer",
+    fn_tree="functional.ivy.experimental.nextafter",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
         min_num_dims=1,
-        max_num_dims=10,
-        min_dim_size=1,
-        max_dim_size=10,
+        max_num_dims=3,
     ),
-    keepdims=st.booleans(),
-    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_count_nonzero(
-    *, dtype_values_axis, keepdims, test_flags, on_device, fn_name, backend_fw
-):
-    i_o_dtype, a, axis = dtype_values_axis
+def test_nextafter(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=i_o_dtype[0],
+        input_dtypes=input_dtype,
         test_flags=test_flags,
-        on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        a=a[0],
-        axis=axis,
-        keepdims=keepdims,
-        dtype=i_o_dtype[1][0],
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
     )
 
 
@@ -381,131 +445,38 @@ def test_diff(
     )
 
 
-# digamma
+# zeta
 @handle_test(
-    fn_tree="functional.ivy.experimental.digamma",
+    fn_tree="functional.ivy.experimental.zeta",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
         min_value=-10,
         max_value=10,
         min_num_dims=1,
         max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-    ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
-    ground_truth_backend="tensorflow",
+    ),
+    test_gradients=st.just(False),
 )
-def test_digamma(
+def test_zeta(
     dtype_and_x,
-    backend_fw,
     test_flags,
     fn_name,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
-        fn_name=fn_name,
+        backend_to_test=backend_fw,
         on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-02,
+        atol_=1e-02,
         x=x[0],
-    )
-
-
-# fix
-@handle_test(
-    fn_tree="functional.ivy.experimental.fix",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-    ),
-    test_gradients=st.just(False),
-)
-def test_fix(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# float_power
-@handle_test(
-    fn_tree="functional.ivy.experimental.float_power",
-    dtype_and_x=_float_power_helper(),
-    test_gradients=st.just(False),
-)
-def test_float_power(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtypes, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x1=x[0],
-        x2=x[1],
-        rtol_=1e-1,
-        atol_=1e-1,
-    )
-
-
-# fmax
-@handle_test(
-    fn_tree="functional.ivy.experimental.fmax",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
-        safety_factor_scale="log",
-        num_arrays=2,
-    ),
-    test_gradients=st.just(False),
-)
-def test_fmax(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x1=x[0],
-        x2=x[1],
-    )
-
-
-# frexp
-@handle_test(
-    fn_tree="functional.ivy.experimental.frexp",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
-        num_arrays=1,
-        shared_dtype=True,
-        min_value=-100,
-        max_value=100,
-        min_num_dims=1,
-        max_num_dims=3,
-    ),
-    test_gradients=st.just(False),
-)
-def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
+        q=x[1],
     )
 
 
@@ -544,6 +515,32 @@ def test_gradient(
     )
 
 
+# xlogy
+@handle_test(
+    fn_tree="functional.ivy.experimental.xlogy",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        num_arrays=2,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    test_gradients=st.just(False),
+)
+def test_xlogy(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
 # hypot
 @handle_test(
     fn_tree="functional.ivy.experimental.hypot",
@@ -572,43 +569,75 @@ def test_hypot(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# isclose
 @handle_test(
-    fn_tree="functional.ivy.experimental.isclose",
+    fn_tree="functional.ivy.experimental.binarizer",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
-        safety_factor_scale="log",
-        num_arrays=2,
-        shared_dtype=True,
-        allow_nan=True,
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
-    rtol=st.floats(
-        min_value=1e-05, max_value=1e-01, exclude_min=True, exclude_max=True
-    ),
-    atol=st.floats(
-        min_value=1e-08, max_value=1e-01, exclude_min=True, exclude_max=True
-    ),
-    equal_nan=st.booleans(),
-    test_gradients=st.just(False),
+    threshold=helpers.floats(),
+    container_flags=st.just([False]),
 )
-def test_isclose(
-    *, dtype_and_x, rtol, atol, equal_nan, test_flags, backend_fw, fn_name, on_device
+def test_binarizer(
+    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        a=x[0],
-        b=x[1],
-        rtol=rtol,
-        atol=atol,
-        equal_nan=equal_nan,
+        on_device=on_device,
+        x=x[0],
+        threshold=threshold,
     )
+
+
+# conj
+@handle_test(
+    fn_tree="conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+    test_with_out=st.just(False),
+)
+def test_conj(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# ldexp
+@st.composite
+def ldexp_args(draw):
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            num_arrays=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            min_num_dims=1,
+            max_num_dims=3,
+        )
+    )
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            num_arrays=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            min_num_dims=1,
+            max_num_dims=3,
+        )
+    )
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
 
 
 @handle_test(
@@ -627,6 +656,55 @@ def test_ldexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         x1=x[0],
         x2=x[1],
     )
+
+
+@st.composite
+def _lerp_data_helper(draw):
+    mixed_fn_compos = draw(st.booleans())
+    is_torch_backend = ivy.current_backend_str() == "torch"
+
+    kwargs = {
+        "shared_dtype": True,
+        "large_abs_safety_factor": 2.5,
+        "small_abs_safety_factor": 2.5,
+        "safety_factor_scale": "log",
+        "allow_nan": False,
+        "allow_inf": False,
+    }
+
+    if is_torch_backend and not mixed_fn_compos:
+        dtype1, start_end = draw(
+            helpers.dtype_and_values(
+                available_dtypes=(
+                    helpers.get_dtypes("numeric", mixed_fn_compos=mixed_fn_compos)
+                ),
+                num_arrays=2,
+                **kwargs,
+            )
+        )
+        dtype2, weight = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "integer", mixed_fn_compos=mixed_fn_compos
+                ),
+                num_arrays=1,
+                **kwargs,
+            )
+        )
+        input_dtypes = dtype1 + dtype2
+        inputs = start_end + weight
+    else:
+        input_dtypes, inputs = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes(
+                    "valid", mixed_fn_compos=mixed_fn_compos
+                ),
+                num_arrays=3,
+                **kwargs,
+            )
+        )
+
+    return input_dtypes, inputs[0], inputs[1], inputs[2]
 
 
 # lerp
@@ -658,30 +736,28 @@ def test_lerp(
     )
 
 
-# lgamma
+# frexp
 @handle_test(
-    fn_tree="functional.ivy.experimental.lgamma",
+    fn_tree="functional.ivy.experimental.frexp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        safety_factor_scale="log",
+        available_dtypes=["float32", "float64"],
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
     ),
     test_gradients=st.just(False),
 )
-def test_lgamma(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
+def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
-        on_device=on_device,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -716,161 +792,33 @@ def test_modf(
     )
 
 
-# nansum
+# digamma
 @handle_test(
-    fn_tree="functional.ivy.experimental.nansum",
-    dtype_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
-    keep_dims=st.booleans(),
-    test_gradients=st.just(False),
-)
-def test_nansum(
-    *, dtype_x_axis_dtype, keep_dims, test_flags, on_device, fn_name, backend_fw
-):
-    input_dtype, x, axis, dtype = dtype_x_axis_dtype
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-        fn_name=fn_name,
-        x=x[0],
-        axis=axis,
-        keepdims=keep_dims,
-        dtype=dtype,
-    )
-
-
-# nextafter
-@handle_test(
-    fn_tree="functional.ivy.experimental.nextafter",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
-        num_arrays=2,
-        shared_dtype=True,
-        min_value=-10,
-        max_value=10,
-        min_num_dims=1,
-        max_num_dims=3,
-    ),
-    test_gradients=st.just(False),
-)
-def test_nextafter(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x1=x[0],
-        x2=x[1],
-    )
-
-
-# sinc
-@handle_test(
-    fn_tree="functional.ivy.experimental.sinc",
+    fn_tree="functional.ivy.experimental.digamma",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
-    ),
-    test_gradients=st.just(False),
-)
-def test_sinc(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        atol_=1e-02,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
-
-
-# sparsify_tensor
-@handle_test(
-    fn_tree="functional.ivy.experimental.sparsify_tensor",
-    tensor_data=_sparsify_tensor_stg(),
-)
-def test_sparsify_tensor(
-    tensor_data,
-    test_flags,
-    on_device,
-    fn_name,
-    backend_fw,
-):
-    dtype, tensor, card = tensor_data
-
-    helpers.test_function(
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        on_device=on_device,
-        fn_name=fn_name,
-        input_dtypes=dtype,
-        tensor=tensor,
-        card=card,
-    )
-
-
-# xlogy
-@handle_test(
-    fn_tree="functional.ivy.experimental.xlogy",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
-        num_arrays=2,
         min_value=-10,
         max_value=10,
         min_num_dims=1,
         max_num_dims=3,
-    ),
-    test_gradients=st.just(False),
+        min_dim_size=1,
+        max_dim_size=3,
+    ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
+    ground_truth_backend="tensorflow",
 )
-def test_xlogy(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-    )
-
-
-# zeta
-@handle_test(
-    fn_tree="functional.ivy.experimental.zeta",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_value=-10,
-        max_value=10,
-        min_num_dims=1,
-        max_num_dims=3,
-    ),
-    test_gradients=st.just(False),
-)
-def test_zeta(
+def test_digamma(
     dtype_and_x,
+    backend_fw,
     test_flags,
     fn_name,
     on_device,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        test_flags=test_flags,
         backend_to_test=backend_fw,
-        on_device=on_device,
+        test_flags=test_flags,
         fn_name=fn_name,
-        rtol_=1e-02,
-        atol_=1e-02,
+        on_device=on_device,
         x=x[0],
-        q=x[1],
     )

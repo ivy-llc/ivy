@@ -4,7 +4,7 @@
 import ivy
 from ivy import with_unsupported_dtypes
 import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import _to_ivy_array
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype, _to_ivy_array
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
@@ -86,9 +86,7 @@ class EagerTensor:
         return self.__rand__(y)
 
     def __array__(self, dtype=None, name="array"):
-        if not dtype:
-            return ivy.to_numpy(self.ivy_array)
-        return ivy.to_numpy(self.ivy_array).astype(dtype)
+        return array(ivy.asarray(self.ivy_array, dtype=to_ivy_dtype(dtype)))
 
     def __bool__(self, name="bool"):
         temp = ivy.squeeze(self.ivy_array, axis=None)

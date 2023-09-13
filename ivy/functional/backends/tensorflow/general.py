@@ -16,7 +16,6 @@ import tensorflow as tf
 import ivy
 from ivy.functional.ivy.gradients import _is_variable
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 from ...ivy.general import _broadcast_to
 
@@ -37,7 +36,7 @@ def array_equal(
     /,
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
-    return bool(tf.experimental.numpy.array_equal(x0, x1))
+    return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
 def container_types():
@@ -158,7 +157,7 @@ def gather_nd(
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     try:
         return tf.gather_nd(params, indices, batch_dims=batch_dims)
-    except Exception:  # fall back to compositional implementation
+    except:  # fall back to compositional implementation # noqa: E722
         batch_dims = batch_dims % len(params.shape)
         result = []
         if batch_dims == 0:
@@ -242,7 +241,10 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        _check_inplace_update_support(x, ensure_in_backend)
+        if ensure_in_backend or ivy.is_native_array(x):
+            raise ivy.utils.exceptions.IvyException(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)

@@ -122,25 +122,8 @@ def cross(input, other, dim=None, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "uint16",
-            "uint32",
-            "uint64",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-        )
-    },
-    "torch",
-)
 def cummax(input, dim, *, out=None):
-    input_dtype = input.dtype
-    result_values, result_indices = ivy.cummax(input, axis=dim, out=out)
-    result_values = result_values.astype(input_dtype)
-    return result_values, result_indices
+    return ivy.cummax(input, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -164,15 +147,6 @@ def cumsum(input, dim, *, dtype=None, out=None):
 @to_ivy_arrays_and_back
 def diag(input, diagonal=0, *, out=None):
     return ivy.diag(input, k=diagonal)
-
-
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
-)
-@to_ivy_arrays_and_back
-def diagflat(x, offset=0, name=None):
-    arr = ivy.diagflat(x, offset=offset)
-    return arr
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")

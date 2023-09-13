@@ -14,11 +14,6 @@ submodules = (
     "test_stateful",
     "test_misc",
     "test_scipy",
-    "test_pandas",
-    "test_mindspore",
-    "test_onnx",
-    "test_sklearn",
-    "test_xgboost",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -33,11 +28,6 @@ db_dict = {
     "test_misc": ["misc", 19],
     "test_paddle": ["paddle", 20],
     "test_scipy": ["scipy", 21],
-    "test_pandas": ["pandas", 22],
-    "test_mindspore": ["mindspore", 23],
-    "test_onnx": ["onnx", 24],
-    "test_sklearn": ["sklearn", 25],
-    "test_xgboost": ["xgboost", 26],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
@@ -46,10 +36,9 @@ result_config = {
 
 
 def make_clickable(url, name):
-    return (
-        f'<a href="{url}" rel="noopener noreferrer" '
-        + f'target="_blank"><img src={name}></a>'
-    )
+    return '<a href="{}" rel="noopener noreferrer" '.format(
+        url
+    ) + 'target="_blank"><img src={}></a>'.format(name)
 
 
 def get_submodule(test_path):
@@ -57,10 +46,9 @@ def get_submodule(test_path):
     for name in submodules:
         if name in test_path:
             if name == "test_functional":
-                if len(test_path) > 3 and test_path[3] == "test_experimental":
-                    coll = db_dict[f"test_experimental/{test_path[4]}"]
-                else:
-                    coll = db_dict[f"test_functional/{test_path[-2]}"]
+                coll = db_dict["test_functional/" + test_path[-2]]
+            elif name == "test_experimental":
+                coll = db_dict["test_experimental/" + test_path[-2]]
             else:
                 coll = db_dict[name]
             break
@@ -81,16 +69,16 @@ def update_individual_test_results(
     frontend_version=None,
     device=None,
 ):
-    key = f"{submod}.{backend}"
+    key = submod + "." + backend
     if backend_version is not None:
         backend_version = backend_version.replace(".", "_")
-        key += f".{backend_version}"
+        key += "." + backend_version
     if frontend_version is not None:
         frontend_version = frontend_version.replace(".", "_")
-        key += f".{frontend_version}"
-    key += f".{test}"
+        key += "." + frontend_version
+    key += "." + test
     if device:
-        key += f".{device}"
+        key += "." + device
     collection.update_one(
         {"_id": id},
         {"$set": {key: result}},
@@ -100,7 +88,10 @@ def update_individual_test_results(
 
 
 def remove_from_db(collection, id, submod, backend, test):
-    collection.update_one({"_id": id}, {"$unset": {f"{submod}.{backend}.": test}})
+    collection.update_one(
+        {"_id": id},
+        {"$unset": {submod + "." + backend + ".": test}},
+    )
     return
 
 
@@ -167,7 +158,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 8 and sys.argv[8] != "null":
         run_id = sys.argv[8]
     else:
-        run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
+        run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
     failed = False
     # GPU Testing
     with_gpu = False
@@ -219,7 +210,13 @@ if __name__ == "__main__":
             else:
                 res = make_clickable(run_id, result_config["success"])
             frontend_version = None
-            if coll[0] in ["numpy", "jax", "tensorflow", "torch", "paddle"]:
+            if (
+                coll[0] == "numpy"
+                or coll[0] == "jax"
+                or coll[0] == "tensorflow"
+                or coll[0] == "torch"
+                or coll[0] == "paddle"
+            ):
                 frontend_version = "latest-stable"
             if priority_flag:
                 print("Updating Priority DB")

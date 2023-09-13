@@ -3,7 +3,6 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Array:
@@ -74,7 +73,6 @@ class Array:
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
 
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(
         self,
         /,
@@ -84,22 +82,6 @@ class Array:
         keepdims=False,
     ):
         return jax_frontend.numpy.argmax(
-            self,
-            axis=axis,
-            out=out,
-            keepdims=keepdims,
-        )
-
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
-    def argmin(
-        self,
-        /,
-        *,
-        axis=None,
-        out=None,
-        keepdims=False,
-    ):
-        return jax_frontend.numpy.argmin(
             self,
             axis=axis,
             out=out,

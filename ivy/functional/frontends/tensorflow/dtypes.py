@@ -101,7 +101,7 @@ class DType:
         if other is None:
             return False
 
-        if not isinstance(other, DType):
+        if type(other) != DType:  # pylint: disable=unidiomatic-typecheck
             try:
                 other = as_dtype(other)
             except ivy.utils.exceptions.IvyException:

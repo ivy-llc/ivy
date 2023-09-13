@@ -136,8 +136,9 @@ def binary_cross_entropy(
         The binary cross entropy between the given distributions.
 
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 1, 0, 0])
@@ -210,7 +211,8 @@ def binary_cross_entropy(
     }
 
     Instance Method Examples
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+    ------------------------
+
     Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([1, 0, 0, 0])
@@ -305,8 +307,9 @@ def sparse_cross_entropy(
     ret
         The sparse cross-entropy loss between the given distributions
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
     >> x = ivy.array([2])
@@ -357,7 +360,8 @@ def sparse_cross_entropy(
     }
 
     Instance Method Examples
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+    ------------------------
+
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2])

@@ -186,7 +186,7 @@ def leaky_relu(x, negative_slope=0.01):
 @to_ivy_arrays_and_back
 def log_sigmoid(x):
     x = _type_conversion(x)
-    return ivy.logsigmoid(x, complex_mode="jax").astype(x.dtype)
+    return ivy.negative(ivy.softplus(ivy.negative(x))).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -286,7 +286,7 @@ def selu(x):
 @to_ivy_arrays_and_back
 def sigmoid(x):
     x = _type_conversion(x)
-    ret = ivy.sigmoid(x, complex_mode="jax")
+    ret = ivy.sigmoid(x)
     return ivy.astype(ret, x.dtype)
 
 

@@ -1,9 +1,11 @@
-from typing import Union, Callable, Any, Iterable, Dict
+from typing import Union, Callable, Any, Iterable
 import ivy
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     to_native_arrays_and_back,
+    to_ivy_arrays_and_back,
+    handle_device_shifting,
 )
 
 
@@ -11,7 +13,7 @@ def if_else(
     cond: Callable,
     body_fn: Callable,
     orelse_fn: Callable,
-    vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
+    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
     Take a condition function and two functions as input. If the condition is True, the
@@ -37,7 +39,8 @@ def if_else(
 
     Examples
     --------
-    >>> cond = lambda x: True
+    >>> x = 1
+    >>> cond = x > 0
     >>> body_fn = lambda x: x + 1
     >>> orelse_fn = lambda x: x - 1
     >>> vars = (1,)
@@ -45,27 +48,32 @@ def if_else(
     >>> print(result)
     2
 
-    >>> cond = lambda x: True
+    >>> x = 0
+    >>> cond = x - 2 == 0
     >>> body_fn = lambda x: x * 2
     >>> orelse_fn = lambda x: x / 2
     >>> vars = ivy.array([1, 2, 3])
     >>> result = ivy.if_else(cond, body_fn, orelse_fn, vars=(vars,))
     >>> print(result)
-    ivy.array([0.5, 1.0, 1.5])
+    ivy.array([0.5, 1. , 1.5])
     """
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
-    def _if_else(cond, body_fn, orelse_fn, **vars):
+    @handle_device_shifting
+    def _if_else(cond, body_fn, orelse_fn, vars):
         return current_backend().if_else(cond, body_fn, orelse_fn, vars)
 
-    return _if_else(cond, body_fn, orelse_fn, **vars)
+    body_fn = to_ivy_arrays_and_back(body_fn)
+    orelse_fn = to_ivy_arrays_and_back(orelse_fn)
+
+    return _if_else(cond, body_fn, orelse_fn, vars)
 
 
 def while_loop(
     test_fn: Callable,
     body_fn: Callable,
-    vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
+    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
     Take a test function, a body function and a set of variables as input. The body
@@ -103,15 +111,19 @@ def while_loop(
     >>> vars = (i, j)
     >>> result = ivy.while_loop(test_fn, body_fn, vars=vars)
     >>> print(result)
-    (3, 8)
+    (3, 4)
     """
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
-    def _while_loop(test_fn, body_fn, **vars):
+    @handle_device_shifting
+    def _while_loop(test_fn, body_fn, vars):
         return current_backend().while_loop(test_fn, body_fn, vars)
 
-    return _while_loop(test_fn, body_fn, **vars)
+    test_fn = to_ivy_arrays_and_back(test_fn)
+    body_fn = to_ivy_arrays_and_back(body_fn)
+
+    return _while_loop(test_fn, body_fn, vars)
 
 
 def for_loop(
@@ -140,15 +152,17 @@ def for_loop(
 
     Example
     ----
-    >>> def body_fn(k, args):
-    >>>     print(k+1)
-    >>>     return args
-    >>>
-    >>> lst = [5,6]
-    >>>
-    >>> ivy.for_loop(lst, body_fn, ())
-    5
-    6
+    ```
+    def body_fn(k, args):
+        print(k+1)
+        return args
+
+    lst = [5,6]
+
+    ivy.for_loop(lst, body_fn, ())
+    >>> 5
+    >>> 6
+    ```
     """
     iterator = iterable.__iter__()
 
@@ -195,6 +209,10 @@ def cmp_is(left, right):
 
 def cmp_isnot(left, right):
     return left is not right
+
+
+def cast_bool(x):
+    return bool(x)
 
 
 def _tuple_to_dict(t):

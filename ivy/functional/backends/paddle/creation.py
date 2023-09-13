@@ -13,13 +13,13 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
 )
 from ivy.functional.ivy.creation import (
-    _asarray_to_native_arrays_and_back,
-    _asarray_infer_device,
-    _asarray_handle_nestable,
-    _asarray_infer_dtype,
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+    asarray_infer_dtype,
     NestedSequence,
     SupportsBufferProtocol,
-    _asarray_inputs_to_native_shapes,
+    asarray_inputs_to_native_shapes,
     _remove_np_bfloat16,
 )
 from . import backend_version
@@ -64,11 +64,11 @@ def arange(
         return paddle.arange(start, stop, step).cast(dtype)
 
 
-@_asarray_to_native_arrays_and_back
-@_asarray_infer_device
-@_asarray_handle_nestable
-@_asarray_inputs_to_native_shapes
-@_asarray_infer_dtype
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
+@asarray_inputs_to_native_shapes
+@asarray_infer_dtype
 def asarray(
     obj: Union[
         paddle.Tensor,
@@ -210,17 +210,10 @@ def full(
         dtype = ivy.default_dtype(item=fill_value)
     if not isinstance(shape, Sequence):
         shape = [shape]
-    if isinstance(fill_value, complex):
-        fill_value = paddle.to_tensor(fill_value)
-        ret_real = paddle.full(shape=shape, fill_value=fill_value.real())
-        ret_imag = paddle.full(shape=shape, fill_value=fill_value.imag())
-        ret = paddle.complex(ret_real, ret_imag)
+    if ivy.as_native_dtype(dtype) is paddle.int8:
+        return paddle.full(shape=shape, fill_value=fill_value).cast(dtype)
     else:
-        dtype_ = None if ivy.as_native_dtype(dtype) == paddle.int8 else dtype
-        ret = paddle.full(shape=shape, fill_value=fill_value, dtype=dtype_)
-    if ret.dtype != ivy.as_native_dtype(dtype):
-        return ret.cast(dtype)
-    return ret
+        return paddle.full(shape=shape, fill_value=fill_value, dtype=dtype)
 
 
 def full_like(
