@@ -434,6 +434,11 @@ def minimum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def mod(x, y, name=None):
+    return ivy.remainder(x, y)
+
+
+@to_ivy_arrays_and_back
 def multiply(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.multiply(x, y)
