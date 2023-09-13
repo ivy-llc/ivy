@@ -40,6 +40,19 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             self.test_flags.container = [
                 self.test_flags.container[0] for _ in range(total_num_arrays)
             ]
+        # Update variable flags to be compatible with float dtype and with_out args
+        self.test_flags.as_variable = [
+            v if self._ivy.is_float_dtype(d) and not self.test_flags.with_out else False
+            for v, d in zip(self.test_flags.as_variable, self.input_dtypes)
+        ]
+
+        # TODO this is not ideal, modifying Hypothesis generated value
+        # May result in weird bugs. Should instead update strategies to
+        # Not generate this in first place.
+        # update instance_method flag to only be considered if the
+        self.test_flags.instance_method = self.test_flags.instance_method and (
+            not self.test_flags.native_arrays[0] or self.test_flags.container[0]
+        )
         return self.test_flags
 
     def _preprocess_args(self):
