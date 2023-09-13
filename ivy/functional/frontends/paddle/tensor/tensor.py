@@ -5,7 +5,8 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
 )
-from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
+
+from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array, to_ivy_arrays_and_back
 
 
 class Tensor:
@@ -747,3 +748,11 @@ class Tensor:
 
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+        "paddle",
+    )
+    @to_ivy_arrays_and_back
+    def logcumsumexp(self, axis=None, dtype=None, name=None):
+        return paddle_frontend.Tensor.logcumsumexp(self._ivy_array, axis=axis, dtype=dtype, name=name)
