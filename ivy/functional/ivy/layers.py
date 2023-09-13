@@ -855,12 +855,12 @@ def multi_head_attention(
         k = static_k
     if ivy.exists(static_v):
         v = static_v
-    batch_dim, num_queries = q.shape[:2]
+    batch_dim, num_queries, pre_embed_dim = q.shape
     num_keys = k.shape[1]
     ivy.assertions.check_true(
         emb_dim % num_heads == 0, "features must be divisible by number of heads"
     )
-    dims_per_head = emb_dim // num_heads
+    dims_per_head = pre_embed_dim // num_heads
 
     if bias_k is not None and bias_v is not None:
         k = ivy.concat([k, ivy.tile(bias_k, (batch_dim*num_heads, 1, 1))], axis=1)
