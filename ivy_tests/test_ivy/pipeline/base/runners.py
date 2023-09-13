@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
 import numpy as np  # for type hint only
 
@@ -55,6 +55,30 @@ class TestCaseSubRunner(ABC):
             for k in list(test_arguments.keys())[num_positional_args:]
         }
         return args, kwargs
+
+    def _get_nested_np_arrays(self, nest):
+        """
+        Search for a NumPy arrays in a nest.
+
+        Parameters
+        ----------
+        nest
+            nest to search in.
+
+        Returns
+        -------
+            Items found, indices, and total number of arrays found
+        """
+        indices = self.backend_handler.nested_argwhere(
+            nest, lambda x: isinstance(x, np.ndarray)
+        )
+
+        ret = self.backend_handler.multi_index_nest(nest, indices)
+        return ret, indices, len(ret)
+
+    @abstractproperty
+    def backend_handler(self):
+        pass
 
     @abstractmethod
     def _search_args():
