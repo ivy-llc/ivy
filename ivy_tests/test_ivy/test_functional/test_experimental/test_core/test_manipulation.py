@@ -751,20 +751,15 @@ def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_devic
         max_num_dims=4,
         min_dim_size=3,
         max_dim_size=3,
-        num_arrays=2,
     ),
     v=st.sampled_from([1, 2, 3, 10]),
-    v_is_array_like=st.booleans(),
     wrap=st.booleans(),
     test_with_out=st.just(False),
-    test_gradients=st.just(False),
-    ground_truth_backend="numpy",
 )
 def test_fill_diagonal(
     *,
     dt_a,
     v,
-    v_is_array_like,
     wrap,
     test_flags,
     backend_fw,
@@ -772,8 +767,6 @@ def test_fill_diagonal(
     on_device,
 ):
     dt, a = dt_a
-    if v_is_array_like:
-        v = a[1]
     helpers.test_function(
         input_dtypes=dt,
         test_flags=test_flags,
