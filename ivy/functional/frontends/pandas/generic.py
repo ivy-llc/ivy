@@ -1,6 +1,9 @@
 import ivy
 import numpy as np
 import copy as py_copy
+from ivy.functional.frontends.pandas.func_wrapper import outputs_to_self_class
+import ivy.functional.frontends.pandas.series as series
+from ivy.functional.frontends.pandas.index import Index
 
 
 class NDFrame:
@@ -22,9 +25,11 @@ class NDFrame:
         orig_data_len = len(self.orig_data)
         if index is None:
             if data_is_array_or_like:
-                index = ivy.arange(orig_data_len).tolist()
+                index = ivy.arange(orig_data_len)
             elif isinstance(data, dict):
                 index = list(data.keys())
+            elif isinstance(data, series.Series):
+                index = data.index
         elif isinstance(data, dict) and len(index) > orig_data_len:
             for i in index:
                 if i not in data:
@@ -43,13 +48,19 @@ class NDFrame:
                 data = [data] * len(index)
             self.index = index
             self.array = ivy.array(data)
+        elif isinstance(data, series.Series):
+            self.array = data.array
+            self.index = index
         elif isinstance(data, str):
             pass  # TODO: implement string series
         else:
             raise TypeError(
-                "Data must be one of array, dict, iterables or scalar value, got"
-                f" {type(data)}"
+                "Data must be one of array, dict, iterables, scalar value or Series."
+                f" Got {type(data)}"
             )
+        self.index = (
+            Index(self.index) if not isinstance(self.index, Index) else self.index
+        )
 
     @property
     def data(self):
@@ -61,10 +72,9 @@ class NDFrame:
             ret = dict(zip(self.orig_data.keys(), ret))
         return ret
 
+    @outputs_to_self_class
     def abs(self):
-        return self.__class__(
-            ivy.abs(self.array), index=self.index, name=self.name, columns=self.columns
-        )
+        return ivy.abs(self.array)
 
     def to_numpy(self, dtype=None, copy=False, na_value=None):
         ret = self.array.to_numpy()
@@ -75,3 +85,13 @@ class NDFrame:
         if copy:
             return ret.copy()
         return ret
+
+    def __array__(self):
+        return self.array.to_numpy()
+
+    @outputs_to_self_class
+    def __array_wrap__(self, array):
+        return array
+
+    def __getattr__(self, item):
+        raise NotImplementedError

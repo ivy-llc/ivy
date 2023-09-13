@@ -14,18 +14,13 @@ def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
-    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
         x = tf.convert_to_tensor(x)
-    x_dtype = ivy.dtype(x)
-    if any(("uint" in x_dtype, "bool" in x_dtype)):
+    if any(("uint" in x.dtype.name, "bool" in x.dtype.name)):
         return x
-    ret = ivy.where(where, tf.abs(x), x)
-    if ivy.is_complex_dtype(x_dtype):
-        return ivy.real(ret)
-    return ret
+    return tf.abs(x)
 
 
 def acos(
@@ -268,7 +263,7 @@ def exp2(
     return tf.math.pow(2, x, name=None)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, "tensorflow")
+@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, backend_version)
 def expm1(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -358,7 +353,6 @@ def isfinite(
         return tf.math.is_finite(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def isinf(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -367,16 +361,17 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
-    else:
-        if detect_negative and detect_positive:
-            return tf.math.is_inf(x)
-        elif detect_negative:
-            return tf.experimental.numpy.isneginf(x)
-        elif detect_positive:
-            return tf.experimental.numpy.isposinf(x)
-        return tf.zeros_like(x, tf.bool)
+    if not ivy.is_complex_dtype(x):
+        if ivy.is_int_dtype(x):
+            return tf.zeros_like(x, tf.bool)
+        else:
+            if detect_negative and detect_positive:
+                return tf.math.is_inf(x)
+            elif detect_negative:
+                return tf.experimental.numpy.isneginf(x)
+            elif detect_positive:
+                return tf.experimental.numpy.isposinf(x)
+    return tf.zeros_like(x, tf.bool)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
@@ -610,12 +605,20 @@ def positive(
     backend_version,
 )
 def pow(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[int, float, tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
+        ret = tf.experimental.numpy.power(x1, x2)
+        return tf.where(
+            ivy.isinf(x2), ivy.nan + ivy.nan * 1j if x2 < 0 else -0 * 1j, ret
+        )
+    if ivy.is_complex_dtype(x2) and ivy.any(x1 == 0):
+        ret = tf.experimental.numpy.power(x1, x2)
+        return tf.where(x1 == 0, ivy.nan + ivy.nan * 1j, ret)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if isinstance(x1, tf.Tensor) and isinstance(x2, tf.Tensor):
         if x1.dtype.is_unsigned or x2.dtype.is_unsigned:
@@ -625,6 +628,11 @@ def pow(
             if x2.dtype.is_unsigned:
                 x2 = tf.cast(x2, tf.float64)
             return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
+    if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
+        return tf.cast(
+            tf.experimental.numpy.power(tf.cast(x1, tf.float32), x2),
+            x1.dtype,
+        )
     return tf.experimental.numpy.power(x1, x2)
 
 
@@ -749,6 +757,7 @@ def tanh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    complex_mode="jax",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.tanh(x)

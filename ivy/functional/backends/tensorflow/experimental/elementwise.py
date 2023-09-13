@@ -11,6 +11,19 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
+def lgamma(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.lgamma(x)
+
+
 def sinc(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -242,7 +255,7 @@ def gradient(
     edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     # https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/function_base.py#L969-L1312
-    device = x.device
+    x.device
     x = tf.experimental.numpy.asanyarray(x)
     N = x.ndim  # number of dimensions
     if axis is None:
@@ -401,8 +414,7 @@ def gradient(
                 a * x[tuple(slice2)] + b * x[tuple(slice3)] + c * x[tuple(slice4)]
             )
 
-        with tf.device(device):
-            outvals.append(tf.convert_to_tensor(out))
+        outvals.append(tf.convert_to_tensor(out))
 
         # reset the slice object in this dimension to ":"
         slice1[axis] = slice(None)
@@ -494,3 +506,12 @@ def modf(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.modf(x)
+
+
+def digamma(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.digamma(x)

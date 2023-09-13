@@ -1,24 +1,48 @@
 """Base class for deriving trainable modules."""
 
 # global
+from collections import OrderedDict
 import functools
 import os
 import abc
 import copy
-import pickle
+import dill
 from typing import Optional, Tuple, Dict
 
 # local
 import ivy
 from ivy.data_classes.container import Container
 from ivy.func_wrapper import _get_first_array
+from ivy.functional.ivy.gradients import _is_variable
 from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
 
 
 # Base #
 # -----#
-class Module(ModuleConverters, ModuleHelpers):
+
+
+class ModuleMeta:
+    def __new__(cls, *args, **kwargs):
+        # check the module of the class
+        # if it's stateful, it's internal
+        # we leave this untouched
+        if "stateful" in cls.__module__:
+            # we are not assigning it a variable
+            pass
+        else:
+            # first check if a var is already assigned
+            # this would mean it is a nested custom class
+            if not hasattr(Module, "_init_var"):
+                # if not , create it and add
+                Module._init_var = [cls]
+            else:
+                Module._init_var.append(cls)
+        instance = super().__new__(cls)
+        return instance
+
+
+class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     """Module is a base class for deriving trainable modules."""
 
     def __init__(
@@ -27,6 +51,7 @@ class Module(ModuleConverters, ModuleHelpers):
         *args,
         device=None,
         v=None,
+        buffers=None,
         build_mode="on_init",
         compile_on_next_step=False,
         store_vars=True,
@@ -38,6 +63,7 @@ class Module(ModuleConverters, ModuleHelpers):
         devices=None,
         dtype=None,
         dynamic_backend=None,
+        training=True,
         **kwargs,
     ):
         """
@@ -75,13 +101,16 @@ class Module(ModuleConverters, ModuleHelpers):
             is raised during the compiled forward pass. Default is ``True``.
         with_partial_v
             Whether to allow partial specification of variables. Default is ``False``.
+        training
+            specifies whether the module is in training or evaluation mode. Default is
+            ``True``.
         devices
             devices on which to distribute the module's variables
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
         ivy.utils.assertions.check_elem_in_list(build_mode, valid_build_modes)
-        self._dev = ivy.default(
+        self._device = ivy.default(
             device,
             ivy.default(
                 lambda: devices[0],
@@ -89,7 +118,7 @@ class Module(ModuleConverters, ModuleHelpers):
                 catch_exceptions=True,
             ),
         )
-        self._devs = ivy.default(devices, [self._dev])
+        self._devices = ivy.default(devices, [self._device])
         self._build_mode = build_mode
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
@@ -121,9 +150,53 @@ class Module(ModuleConverters, ModuleHelpers):
         self._module_graph = None
         self._target = None
         self._lazy_compiled = False
+        self._dynamic_backend = dynamic_backend
+        self.training = training
         if build_mode != "on_init":
             return
-        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+        if hasattr(Module, "_init_var"):
+            if "stateful" in self.__module__:
+                # we know we are operating within the
+                # context of another class, and it's a
+                # stateful class internally defined
+                # so we freeze weight generation
+                # unless `v` or `with_partial_v` is passed
+
+                if v or with_partial_v:
+                    # build only if `v` or `with_partial_v`
+                    self.build(
+                        *args,
+                        dynamic_backend=dynamic_backend,
+                        buffers=buffers,
+                        **kwargs,
+                    )
+                # we don't want to delete the class variable now
+                # since there could be other child modules
+                return
+            # we know this is the custom class that has triggered the
+            # class var, so we do the building, and after that delete
+            # the class variable, but before that we check if it's a
+            # nested scenario, because if it's another custom class initialised
+            # within another one, then we have to hold variable initialisation
+            # here too, unless `v` or `with_partial_v`
+            if len(Module._init_var) > 1 and not v and not with_partial_v:
+                # hold off initialisation, delete key for this class and
+                # move on
+                Module._init_var.pop()
+                return
+            self.build(
+                *args, dynamic_backend=dynamic_backend, buffers=buffers, **kwargs
+            )
+            if Module._init_var[-1] == self.__class__.__name__:
+                # you delete it, only if this is the class that caused it's creation
+                Module._init_var.pop()
+
+            # do a final check if _init_var  becomes empty, then delete it all together
+            if not Module._init_var:
+                del Module._init_var
+
+            return
+        self.build(*args, dynamic_backend=dynamic_backend, buffers=buffers, **kwargs)
 
     # Private #
     # --------#
@@ -143,7 +216,6 @@ class Module(ModuleConverters, ModuleHelpers):
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
         """
-
         _fn_with_var_arg_wrapper = functools.partial(
             self._fn_with_var_arg_wrapper,
             fn=fn,
@@ -154,7 +226,9 @@ class Module(ModuleConverters, ModuleHelpers):
         _fn_with_var_arg_wrapper.wrapped = True
         return _fn_with_var_arg_wrapper
 
-    def _find_variables(self, /, *, obj=None, _visited=None):
+    def _find_variables(
+        self, /, *, obj=None, _visited=None, without_initialisation=False
+    ):
         """
         Find all internal variables in obj. Return empty Container if obj is None.
 
@@ -182,16 +256,32 @@ class Module(ModuleConverters, ModuleHelpers):
             obj.top_v = self._top_v_fn
             obj.top_mod = self._top_mod_fn
             self._sub_mods.add(obj)
-            return obj.v
+
+            if not obj.built_ and without_initialisation:
+                return lambda: obj._build_and_return_v(
+                    *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
+                )
+
+            return obj._build_and_return_v(
+                *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
+            )
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
             return vs
@@ -199,10 +289,28 @@ class Module(ModuleConverters, ModuleHelpers):
             return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__":
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
+
+    def _build_and_return_v(self, *args, **kwargs):
+        self.build(*args, **kwargs)
+        return self.v
+
+    def _find_child_objects(self, /, *, obj=None, _visited=None):
+        pass
+
+    def _find_buffers(self):
+        for obj in self.__dict__.keys():
+            if isinstance(getattr(self, obj), ivy.Module):
+                # simply fetch it's buffer
+                if hasattr(getattr(self, obj), "buffers"):
+                    self.buffers.update({obj: getattr(self, obj).buffers})
 
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
@@ -343,6 +451,33 @@ class Module(ModuleConverters, ModuleHelpers):
             vs = vs.cont_prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
+    def _set_buffers(self, buffers):
+        """
+        Set the buffers of the given class instance, according to the buffers passed.
+
+        Parameters
+        ----------
+        buffers
+            a dictionary with variable names and corresponding values
+
+        override
+            if true, sets the variable as an attribute even if it doesn't exist
+        """
+        for buffer in buffers:
+            if hasattr(self, buffer):
+                # check if this value is another nested dictionary, if yes
+                # we recurse
+                if isinstance(buffers[buffer], dict):
+                    getattr(self, buffer)._set_buffers(buffers=buffers[buffer])
+                else:
+                    setattr(self, buffer, buffers[buffer])
+            else:
+                if hasattr(self, "buffers"):
+                    self.buffers.update({buffer: buffers[buffer]})
+                else:
+                    setattr(self, "buffers", {buffer: buffers[buffer]})
+                setattr(self, buffer, buffers[buffer])
+
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
@@ -409,7 +544,7 @@ class Module(ModuleConverters, ModuleHelpers):
             self._check_submod_ret()
         return ret
 
-    def _call(self, *args, v=None, **kwargs):
+    def _call(self, *args, v=None, buffers=None, **kwargs):
         """
         Compute forward pass of the layer, treating layer instance as callable function.
 
@@ -431,6 +566,10 @@ class Module(ModuleConverters, ModuleHelpers):
                 from_call=True,
                 dtype=_get_first_array(*args, **kwargs).dtype,
             )
+        if buffers:
+            buffers_orig = self.buffers.copy()
+            self.buffers = {}
+            self._set_buffers(buffers)
         if v is not None:
             v_orig = self.v
             self.v = (
@@ -440,7 +579,11 @@ class Module(ModuleConverters, ModuleHelpers):
             )
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
+            if buffers:
+                self.buffers = {}
+                self._set_buffers(buffers_orig)
             return ret
+
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
         return self._forward_with_tracking(*args, **kwargs)
@@ -451,6 +594,7 @@ class Module(ModuleConverters, ModuleHelpers):
         self,
         *args,
         v=None,
+        buffers=None,
         stateful=None,
         arg_stateful_idxs=None,
         kwarg_stateful_idxs=None,
@@ -512,7 +656,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
         # convert variables to native arrays so that they can be tracked
         v = ivy.to_native(v)
-        ret = self._call(*args, v=v, **kwargs)
+        ret = self._call(*args, v=v, buffers=buffers, **kwargs)
         self._unset_submod_flags()
         return ret
 
@@ -539,6 +683,7 @@ class Module(ModuleConverters, ModuleHelpers):
         device=None,
         dtype=None,
         dynamic_backend=None,
+        buffers=None,
         **kwargs,
     ):
         """
@@ -560,9 +705,8 @@ class Module(ModuleConverters, ModuleHelpers):
         ret
             True for successfully built a module.
         """
-        self._dev = ivy.default(device, self._dev)
+        self._device = ivy.default(device, self._device)
         # return False if not from_call but build_mode is on_call
-
         if not from_call and self._build_mode == "on_call":
             return self.v
         if dtype:
@@ -576,17 +720,34 @@ class Module(ModuleConverters, ModuleHelpers):
         # kwargs["dtype"] = dtype
 
         # build local Module, and any child modules flagged with "explicit" build mode
+        # this gets the child modules initialised at best, their weights
+        # remain un-generated
         built = ivy.default(self._build(*args, **kwargs), True)
+
+        # this creates weights for this Module only
+        created = Container(
+            self._create_variables(device=self._device, dtype=dtype),
+            dynamic_backend=False,
+        )
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(
-            self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=False
-        )
+
         created_n_found = Container(
-            dict(**self._find_variables(obj=self), **created),
+            dict(
+                **self._find_variables(
+                    obj=self,
+                    without_initialisation=(
+                        True
+                        if v_from_constructor and not self._with_partial_v
+                        else False
+                    ),
+                ),
+                **created,
+            ),
             dynamic_backend=dynamic_backend,
         )
+        created_n_found.cont_config["build_callable"] = True
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
@@ -598,10 +759,13 @@ class Module(ModuleConverters, ModuleHelpers):
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created
                 )
+
                 ivy.Container.cont_assert_identical_structure(
-                    [created_n_found, v_from_constructor]
+                    [created_n_found, v_from_constructor],
+                    assert_and_assign=True,
                 )
-                self.v = v_from_constructor
+
+                self.v = created_n_found
         else:
             self.v = created_n_found
         # remove duplicates
@@ -611,7 +775,7 @@ class Module(ModuleConverters, ModuleHelpers):
             # update child modules to share the same device
             for k, v in self.__dict__.items():
                 if isinstance(v, ivy.Module):
-                    v._dev = self._dev
+                    v._device = self._device
 
             # build during forward pass
             self._forward(*args, **kwargs)
@@ -622,7 +786,7 @@ class Module(ModuleConverters, ModuleHelpers):
                 created_n_found = Container(
                     dict(
                         **self._find_variables(obj=self),
-                        **self._create_variables(device=self._dev, dtype=dtype),
+                        **self._create_variables(device=self._device, dtype=dtype),
                     )
                 )
                 self.v = created_n_found
@@ -645,7 +809,43 @@ class Module(ModuleConverters, ModuleHelpers):
         if not self._store_vars:
             # ToDo: verify variables in self.v are released once this method exits
             self.v = ivy.Container()
+
+        # once all variables built, find and assign buffers
+        if buffers:
+            self._set_buffers(buffers=buffers)
+            self._find_buffers()
+
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
+
+    def register_buffer(self, var_name, value):
+        """Set the buffer at any place within the class."""
+        self._set_buffers({var_name: value})
+
+    def eval(self):
+        # disables training mode for child modules
+        self.train(mode=False)
+
+    def train(self, mode: bool = True):
+        # enables/disables training mode
+        self.training = mode
+        for module in self.v:
+            module = getattr(self, module, None)
+            if isinstance(module, ivy.Module):
+                module.train(mode=mode)
+
+    def to_device(self, device):
+        # moves the weights and buffers
+        # to the specified device
+        self._device = ivy.default(device, self._device)
+        # moving weights and buffers to new device
+        for key, obj in self.state_dict().items():
+            if isinstance(obj, ivy.Module):
+                obj.to_device(device)
+            elif ivy.is_ivy_array(obj) or isinstance(obj, ivy.Container):
+                obj.to_device(device, out=obj)
+
+            else:
+                ivy.to_device(obj, device=device, obj=obj)
 
     def __repr__(self):
         return object.__repr__(self)
@@ -660,6 +860,10 @@ class Module(ModuleConverters, ModuleHelpers):
     @property
     def built_(self):
         return self._built
+
+    @property
+    def device_(self):
+        return self._device
 
     def show_graph(
         self,
@@ -687,6 +891,35 @@ class Module(ModuleConverters, ModuleHelpers):
             highlight_subgraph=highlight_subgraph,
             fname=fname,
         )
+
+    def __getattribute__(self, name):
+        if name == "v":
+            if super().__getattribute__("v") is None and not self.built_:
+                self._build_and_return_v(
+                    *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+                )
+        if name != "buffers":
+            if hasattr(self, "buffers"):
+                if name in self.buffers:
+                    return self.buffers[name]
+        return super().__getattribute__(name)
+
+    def __setattr__(self, name, value):
+        if hasattr(self, "buffers"):
+            if name in self.buffers:
+                self.buffers[name] = value
+                return
+        return super().__setattr__(name, value)
+
+    def __delattr__(self, name):
+        if hasattr(self, "buffers"):
+            if name in self.buffers:
+                del self.buffers[name]
+        else:
+            super().__delattr__(name)
+
+    def state_dict(self):
+        return {**self.v, **getattr(self, "buffers", {})}
 
     def compile(
         self,
@@ -740,7 +973,7 @@ class Module(ModuleConverters, ModuleHelpers):
         if ivy.current_backend_str() == "paddle":
             self._convert_tensors_to_numpy()
         with open(filename, "wb") as f:
-            pickle.dump(self, f)
+            dill.dump(self, f)
         if ivy.current_backend_str() == "paddle":
             self._convert_numpy_to_tensors()
 
@@ -760,7 +993,237 @@ class Module(ModuleConverters, ModuleHelpers):
             The loaded module object.
         """
         with open(filename, "rb") as f:
-            loaded = pickle.load(f)
+            loaded = dill.load(f)
         if ivy.current_backend_str() == "paddle":
             loaded._convert_numpy_to_tensors()
         return loaded
+
+
+class _HaikuIvyModule(Module):
+    def __init__(self, *args, params_hk, native_module, device, devices, **kwargs):
+        self._native_module = native_module
+        self._args = args
+        self._kwargs = kwargs
+        ivy.Module.__init__(
+            self,
+            params_hk,
+            *args,
+            build_mode="on_init",
+            device=device,
+            devices=devices,
+            **kwargs,
+        )
+
+    def _create_variables(self, device, dtype):
+        return self._hk_params
+
+    def _build(self, params_hk, *args, **kwargs):
+        pass
+
+        args, kwargs = ivy.args_to_native(*args, **kwargs)
+        # noinspection PyUnresolvedReferences
+        params_dict = self._hk_flat_map_to_dict(params_hk)
+        self._hk_params = ivy.Container(params_dict, dynamic_backend=False)
+        param_iterator = self._hk_params.cont_to_iterator()
+        _, param0 = next(param_iterator, ["_", 0])
+        if hasattr(param0, "device"):
+            self._device = ivy.as_ivy_dev(param0.device())
+        else:
+            self._device = ivy.as_ivy_dev("cpu")
+
+    def _forward(self, *a, **kw):
+        a, kw = ivy.args_to_native(*a, **kw)
+        params_hk = self._dict_to_hk_flat_map(self.v.cont_to_dict())
+        ret = self._native_module.apply(params_hk, 0, *a, **kw)
+        if isinstance(ret, tuple):
+            return ivy.args_to_native(*ret)
+        return ivy.to_native(ret)
+
+    def _hk_flat_map_to_dict(self, hk_flat_map):
+        from haiku._src.data_structures import FlatMapping
+
+        ret_dict = dict()
+        for k, v in hk_flat_map.items():
+            new_k = k.replace("/", "|")
+            if isinstance(v, FlatMapping):
+                ret_dict[new_k] = self._hk_flat_map_to_dict(v)
+            else:
+                ret_dict[new_k] = v
+        return ret_dict
+
+    def _dict_to_hk_flat_map(self, dict_in):
+        from haiku._src.data_structures import FlatMapping
+
+        ret_flat_map = dict()
+        for k, v in dict_in.items():
+            new_k = k.replace("|", "/")
+            if isinstance(v, dict):
+                ret_flat_map[new_k] = self._dict_to_hk_flat_map(v)
+            else:
+                ret_flat_map[new_k] = v
+        return FlatMapping(ret_flat_map)
+
+
+class _FlaxIvyModule(Module):
+    def __init__(self, *args, params_fx, native_module, device, devices, **kwargs):
+        self._native_module = native_module
+        self._args = args
+        self._kwargs = kwargs
+        ivy.Module.__init__(
+            self,
+            params_fx,
+            *args,
+            build_mode="on_init",
+            device=device,
+            devices=devices,
+            **kwargs,
+        )
+
+    def _create_variables(self, device, dtype):
+        return self._fx_params
+
+    def _build(self, params_fx, *args, **kwargs):
+        import flax
+
+        args, kwargs = ivy.args_to_native(*args, **kwargs)
+        # noinspection PyUnresolvedReferences
+        params_dict = flax.core.unfreeze(params_fx)
+        self._fx_params = ivy.Container(params_dict, dynamic_backend=False)
+        param_iterator = self._fx_params.cont_to_iterator()
+        _, param0 = next(param_iterator, ["_", 0])
+        self._device = ivy.as_ivy_dev(ivy.dev(param0))
+
+    def _forward(self, *a, **kw):
+        import flax
+
+        a, kw = ivy.args_to_native(*a, **kw)
+        params_fx = flax.core.freeze(self.v.cont_to_dict())
+        ret = self._native_module.apply(params_fx, *a, **kw)
+        if isinstance(ret, tuple):
+            return ivy.args_to_native(*ret)
+        return ivy.to_native(ret)
+
+
+class _KerasIvyModule(Module):
+    def __init__(self, *args, native_module, device, devices, **kwargs):
+        self._native_module = native_module
+        self._args = args
+        self._kwargs = kwargs
+
+        ivy.Module.__init__(self, *args, device=device, devices=devices, **kwargs)
+
+    def _create_variables(self, device=None, dtype=None):
+        return self._native_params
+
+    def _build(self, *args, **kwargs):
+        self._native_params = ivy.Container(
+            OrderedDict(
+                sorted([(param.name, param) for param in self._native_module.variables])
+            ),
+            dynamic_backend=False,
+        )
+
+    def _forward(self, *a, **kw):
+        a, kw = ivy.args_to_native(*a, **kw)
+        ret = self._native_module(*a, **kw)
+        if isinstance(ret, tuple):
+            return ivy.args_to_native(*ret)
+        return ivy.to_native(ret)
+
+
+class _PaddleIvyModule(Module):
+    def __init__(self, *args, native_module, device, devices, **kwargs):
+        self._native_module = native_module
+        self._args = args
+        self._kwargs = kwargs
+
+        ivy.Module.__init__(self, *args, device=device, devices=devices, **kwargs)
+
+    def _create_variables(self, device=None, dtype=None):
+        return self._native_params
+
+    def _build(self, *args, **kwargs):
+        self._native_params = ivy.Container(
+            OrderedDict(
+                sorted(
+                    [
+                        (k.replace(".", "/"), v)
+                        for k, v in dict(self._native_module.named_parameters()).items()
+                    ]
+                )
+            ),
+            dynamic_backend=False,
+        )
+
+    def _forward(self, *a, **kw):
+        a, kw = ivy.args_to_native(*a, **kw)
+        ret = self._native_module(*a, **kw)
+        if isinstance(ret, tuple):
+            return ivy.args_to_native(*ret)
+        return ivy.to_native(ret)
+
+
+class _TorchIvyModule(Module):
+    def __init__(self, *args, native_module, device, devices, inplace_update, **kwargs):
+        self._native_module = native_module
+        self._args = args
+        self._kwargs = kwargs
+        self._update_v = (
+            self._inplace_update_v if inplace_update else self._replace_update_v
+        )
+        ivy.Module.__init__(self, *args, device=device, devices=devices, **kwargs)
+
+    def _create_variables(self, device=None, dtype=None):
+        return self._native_params
+
+    def _build(self, *args, **kwargs):
+        self._native_params = ivy.Container(
+            OrderedDict(
+                sorted(
+                    [
+                        (k.replace(".", "/"), v)
+                        for k, v in dict(self._native_module.named_parameters()).items()
+                    ]
+                )
+            ),
+            dynamic_backend=False,
+        )
+
+    @staticmethod
+    def _inplace_update(p, v):
+        p.data = v.data
+
+    def _inplace_update_v(self, new_v):
+        ivy.Container.cont_multi_map(
+            lambda xs, kc: self._inplace_update(xs[0], xs[1]),
+            [self._native_params, new_v],
+        )
+
+    def _replace_update_v(self, new_v, native=None):
+        import torch
+
+        native = ivy.default(native, self._native_module)
+        for k, v in new_v.items():
+            if isinstance(v, ivy.Container):
+                # noinspection PyProtectedMember
+                native._modules[k] = self._replace_update_v(v, native._modules[k])
+            elif _is_variable(v):
+                # noinspection PyProtectedMember
+                native.__setattr__(k, v)
+            elif isinstance(v, torch.Tensor):
+                # noinspection PyProtectedMember
+                native.__setattr__(k, torch.nn.Parameter(v))
+            else:
+                raise ivy.utils.exceptions.IvyException(
+                    "found item in variable container {} which was neither a "
+                    "sub ivy.Container nor a variable.".format(v)
+                )
+        return native
+
+    def _forward(self, *a, **kw):
+        a, kw = ivy.args_to_native(*a, **kw)
+        self._update_v(self.v)
+        ret = self._native_module(*a, **kw)
+        if isinstance(ret, tuple):
+            return ivy.args_to_native(*ret)
+        return ivy.to_native(ret)

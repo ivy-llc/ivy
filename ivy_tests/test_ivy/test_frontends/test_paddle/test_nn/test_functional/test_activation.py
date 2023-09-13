@@ -7,29 +7,51 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# selu
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _generate_prelu_arrays(draw):
+    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    input = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(arr_size), min_value=0, max_value=10
+        )
+    )
+    weight = draw(
+        helpers.array_values(dtype=dtype[0], shape=(1,), min_value=0, max_value=1.0)
+    )
+    input_weight = input, weight
+    return dtype, input_weight
+
+
+# --- Main --- #
+# ------------ #
+
+
+# celu
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.selu",
+    fn_tree="paddle.nn.functional.celu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        safety_factor_scale="log",
-        small_abs_safety_factor=20,
     ),
-    scale=helpers.ints(min_value=2, max_value=10),
     alpha=helpers.ints(min_value=1, max_value=10),
 )
-def test_paddle_selu(
+def test_paddle_celu(
     *,
     dtype_and_x,
-    scale,
     alpha,
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
+        backend_to_test=backend_fw,
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
@@ -37,7 +59,116 @@ def test_paddle_selu(
         on_device=on_device,
         x=x[0],
         alpha=alpha,
-        scale=scale,
+    )
+
+
+# elu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.elu",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+)
+def test_paddle_elu(
+    *,
+    dtype_and_input,
+    alpha,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        alpha=alpha,
+    )
+
+
+# gelu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.gelu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
+    ),
+    approximate=st.booleans(),
+)
+def test_paddle_gelu(
+    *,
+    dtype_and_x,
+    approximate,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        x=x[0],
+        approximate=approximate,
+    )
+
+
+# gumbel_softmax
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.gumbel_softmax",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+        min_value=-30.0,
+        max_value=30.0,
+    ),
+    dtypes=helpers.get_dtypes("float", none=False, full=False),
+    temperature=st.floats(min_value=1e-3, max_value=10),
+    hard=st.booleans(),
+)
+def test_paddle_gumbel_softmax(
+    *,
+    dtype_x_and_axis,
+    dtypes,
+    temperature,
+    hard,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        temperature=temperature,
+        hard=hard,
     )
 
 
@@ -57,16 +188,52 @@ def test_paddle_hardshrink(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
         threshold=threshold,
+    )
+
+
+# hardsigmoid
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.hardsigmoid",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    slope=helpers.ints(min_value=0, max_value=10),
+    offset=helpers.ints(min_value=0, max_value=10),
+)
+def test_paddle_hardsigmoid(
+    *,
+    dtype_and_x,
+    slope,
+    offset,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        slope=slope,
+        offset=offset,
     )
 
 
@@ -84,11 +251,13 @@ def test_paddle_hardswish(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -113,11 +282,13 @@ def test_paddle_hardtanh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -128,21 +299,17 @@ def test_paddle_hardtanh(
     )
 
 
-# gelu
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.gelu",
+    fn_tree="paddle.nn.functional.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        safety_factor_scale="log",
-        small_abs_safety_factor=20,
+        available_dtypes=helpers.get_dtypes("float"),
     ),
-    approximate=st.booleans(),
 )
-def test_paddle_gelu(
+def test_paddle_leaky_relu(
     *,
     dtype_and_x,
-    approximate,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -150,124 +317,40 @@ def test_paddle_gelu(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
+        negative_slope=0.01,
         x=x[0],
-        approximate=approximate,
     )
 
 
-# hardsigmoid
+# log_sigmoid
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.hardsigmoid",
+    fn_tree="paddle.nn.functional.log_sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=3,
+        small_abs_safety_factor=3,
+        safety_factor_scale="linear",
     ),
-    slope=helpers.ints(min_value=0, max_value=10),
-    offset=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
 )
-def test_paddle_hardsigmoid(
+def test_paddle_log_sigmoid(
     *,
     dtype_and_x,
-    slope,
-    offset,
-    on_device,
-    fn_tree,
     frontend,
+    backend_fw,
     test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        slope=slope,
-        offset=offset,
-    )
-
-
-# relu6
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.relu6",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_relu6(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# softshrink
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.softshrink",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    threshold=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-)
-def test_paddle_softshrink(
-    *,
-    dtype_and_input,
-    threshold,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        threshold=threshold,
-    )
-
-
-# softsign
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.softsign",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        safety_factor_scale="log",
-        small_abs_safety_factor=20,
-    ),
-)
-def test_paddle_softsign(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -298,10 +381,12 @@ def test_paddle_log_softmax(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -313,20 +398,34 @@ def test_paddle_log_softmax(
     )
 
 
-@st.composite
-def _generate_prelu_arrays(draw):
-    arr_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    input = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(arr_size), min_value=0, max_value=10
-        )
+# mish
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.mish",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
+    ),
+)
+def test_paddle_mish(
+    *,
+    dtype_and_input,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
-    weight = draw(
-        helpers.array_values(dtype=dtype[0], shape=(1,), min_value=0, max_value=1.0)
-    )
-    input_weight = input, weight
-    return dtype, input_weight
 
 
 # prelu
@@ -341,11 +440,13 @@ def test_paddle_prelu(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_input_and_weight
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -354,32 +455,81 @@ def test_paddle_prelu(
     )
 
 
-# celu
+# relu
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.celu",
+    fn_tree="paddle.nn.functional.relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    alpha=helpers.ints(min_value=1, max_value=10),
 )
-def test_paddle_celu(
-    *,
+def test_paddle_relu(
     dtype_and_x,
-    alpha,
-    on_device,
-    fn_tree,
     frontend,
     test_flags,
+    backend_fw,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
+# relu6
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.relu6",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_relu6(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        alpha=alpha,
+    )
+
+
+# relu_
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.relu_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_relu_(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
     )
 
 
@@ -396,15 +546,272 @@ def test_paddle_rrelu(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
+        backend_to_test=backend_fw,
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        x=x[0],
+    )
+
+
+# selu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.selu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
+    ),
+    scale=helpers.ints(min_value=2, max_value=10),
+    alpha=helpers.ints(min_value=1, max_value=10),
+)
+def test_paddle_selu(
+    *,
+    dtype_and_x,
+    scale,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        alpha=alpha,
+        scale=scale,
+    )
+
+
+# silu
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.silu",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_silu(
+    *,
+    dtype_and_input,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# softmax_
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softmax_",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+        min_value=-30.0,
+        max_value=30.0,
+    ),
+    dtypes=helpers.get_dtypes("float", none=False, full=False),
+)
+def test_paddle_softmax_(
+    *,
+    dtype_x_and_axis,
+    dtypes,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        dtype=ivy.as_ivy_dtype(dtypes[0]),
+    )
+
+
+# softplus
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softplus",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    beta=st.floats(min_value=1e-3, max_value=10),  # strategy for the beta argument
+    threshold=st.floats(
+        min_value=1e-3, max_value=10
+    ),  # strategy for the threshold argument
+)
+def test_paddle_softplus(
+    *,
+    dtype_and_input,
+    beta,
+    threshold,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        beta=beta,
+        threshold=threshold,
+    )
+
+
+# softshrink
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softshrink",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    threshold=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+)
+def test_paddle_softshrink(
+    *,
+    dtype_and_input,
+    threshold,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        threshold=threshold,
+    )
+
+
+# softsign
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softsign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
+    ),
+)
+def test_paddle_softsign(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# swish
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.swish",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_swish(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# tanh_
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.tanh_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_tanh_(
+    *,
+    dtype_and_x,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -423,202 +830,16 @@ def test_paddle_tanhshrink(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        x=x[0],
-    )
-
-
-# relu_
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.relu_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_relu_(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        x=x[0],
-    )
-
-
-# elu
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.elu",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-)
-def test_paddle_elu(
-    *,
-    dtype_and_input,
-    alpha,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        alpha=alpha,
-    )
-
-
-# mish
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.mish",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        safety_factor_scale="log",
-        small_abs_safety_factor=20,
-    ),
-)
-def test_paddle_mish(
-    *,
-    dtype_and_input,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.softplus",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-    ),
-)
-def test_paddle_softplus(
-    *,
-    dtype_and_input,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.leaky_relu",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_leaky_relu(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        negative_slope=0.01,
-        x=x[0],
-    )
-
-
-# log_sigmoid
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.log_sigmoid",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=3,
-        small_abs_safety_factor=3,
-        safety_factor_scale="linear",
-    ),
-    test_with_out=st.just(False),
-)
-def test_paddle_log_sigmoid(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# silu
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.silu",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_silu(
-    *,
-    dtype_and_input,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
         x=x[0],
     )

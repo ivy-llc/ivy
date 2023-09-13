@@ -13,13 +13,13 @@ class _ContainerWithRandomExperimental(ContainerBase):
         alpha: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         size: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        seed: Optional[int] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -30,10 +30,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         alpha
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
@@ -86,7 +86,7 @@ class _ContainerWithRandomExperimental(ContainerBase):
         *,
         size: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -97,10 +97,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         Parameters
         ----------
         self
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
@@ -149,13 +149,13 @@ class _ContainerWithRandomExperimental(ContainerBase):
         /,
         *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        device: Optional[str] = None,
-        dtype: Optional[str] = None,
-        seed: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        device: Optional[Union[str, ivy.Container]] = None,
+        dtype: Optional[Union[str, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -220,13 +220,13 @@ class _ContainerWithRandomExperimental(ContainerBase):
         /,
         *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        device: Optional[str] = None,
-        dtype: Optional[str] = None,
-        seed: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        device: Optional[Union[str, ivy.Container]] = None,
+        dtype: Optional[Union[str, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -288,15 +288,15 @@ class _ContainerWithRandomExperimental(ContainerBase):
     def static_poisson(
         lam: ivy.Container,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        seed: Optional[int] = None,
-        fill_value: Optional[Union[float, int]] = 0,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        fill_value: Optional[Union[float, int, ivy.Container]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -363,10 +363,10 @@ class _ContainerWithRandomExperimental(ContainerBase):
         /,
         *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
-        fill_value: Optional[Union[float, int]] = 0,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        fill_value: Optional[Union[float, int, ivy.Container]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -427,16 +427,18 @@ class _ContainerWithRandomExperimental(ContainerBase):
     def static_bernoulli(
         probs: ivy.Container,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        logits: Optional[Union[float, ivy.Array, ivy.NativeArray]] = None,
-        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        seed: Optional[int] = None,
-        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        logits: Optional[
+            Union[float, ivy.Array, ivy.NativeArray, ivy.Container]
+        ] = None,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
 
@@ -500,11 +502,13 @@ class _ContainerWithRandomExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        logits: Optional[Union[float, ivy.Array, ivy.NativeArray]] = None,
+        logits: Optional[
+            Union[float, ivy.Array, ivy.NativeArray, ivy.Container]
+        ] = None,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
-        seed: Optional[int] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -562,13 +566,13 @@ class _ContainerWithRandomExperimental(ContainerBase):
         /,
         *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        device: Optional[str] = None,
-        dtype: Optional[str] = None,
-        seed: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        device: Optional[Union[str, ivy.Container]] = None,
+        dtype: Optional[Union[str, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ):
         """
@@ -637,9 +641,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
         /,
         *,
         shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
-        device: Optional[str] = None,
-        dtype: Optional[str] = None,
-        seed: Optional[int] = None,
+        device: Optional[Union[str, ivy.Container]] = None,
+        dtype: Optional[Union[str, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ):
         """

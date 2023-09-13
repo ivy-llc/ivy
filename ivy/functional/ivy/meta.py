@@ -26,11 +26,55 @@ def _compute_cost_and_update_grads(
     batched,
     num_tasks,
 ):
+    """
+    Compute cost and update gradients.
+
+    This function computes the cost and updates gradients for optimization.
+
+    Parameters
+    ----------
+    cost_fn : function
+        The cost function.
+    order : int
+        The order of computation.
+    batch : object
+        The batch data.
+    variables : ivy.Container
+        The variables for optimization.
+    outer_v : object
+        Outer variable.
+    keep_outer_v : bool
+        Whether to keep outer variable.
+    average_across_steps_or_final : bool
+        Whether to average across steps or final.
+    all_grads : list
+        List to accumulate gradients.
+    unique_outer : bool
+        Whether outer variables are unique.
+    batched : bool
+        Whether the data is batched.
+    num_tasks : int
+        Number of tasks.
+
+    Returns
+    -------
+    object
+        The computed cost.
+
+    Examples
+    --------
+    >>> # Example usage here
+    >>> pass
+    """
     if order == 1:
-        cost, inner_grads = ivy.execute_with_gradients(
-            lambda v: cost_fn(
+
+        def cost_fn_with_variable(v):
+            return cost_fn(
                 batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v
-            ),
+            )
+
+        cost, inner_grads = ivy.execute_with_gradients(
+            cost_fn_with_variable,
             (
                 variables.cont_at_key_chains(outer_v, ignore_none=True)
                 if keep_outer_v
@@ -38,23 +82,28 @@ def _compute_cost_and_update_grads(
             ),
             retain_grads=False,
         )
+
         var = (
             variables.cont_at_key_chains(outer_v, ignore_none=True)
             if keep_outer_v
             else variables.cont_prune_key_chains(outer_v, ignore_none=True)
         )
+
         inner_grads = ivy.Container(
             {
                 k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
                 for k, v in var.cont_to_iterator()
             }
         )
+
         if batched:
             inner_grads = ivy.multiply(inner_grads, num_tasks)
+
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
         cost = cost_fn(batch, v=variables)
+
     return cost
 
 
@@ -562,9 +611,9 @@ def reptile_step(
     inner_learning_rate
         The learning rate of the inner loop.
     inner_optimization_step
-        The function used for the inner loop optimization. It takes the learnable weights,
-        the derivative of the cost with respect to the weights, and the learning rate as
-        arguments, and returns the updated variables.
+        The function used for the inner loop optimization. It takes the learnable
+        weights,the derivative of the cost with respect to the weights, and the learning
+        rate as arguments, and returns the updated variables.
         Default is `gradient_descent_update`.
     batched
         Whether to batch along the time dimension and run the meta steps in batch.
@@ -604,7 +653,8 @@ def reptile_step(
     ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
     ... })
 
-    >>> cost, gradients = ivy.reptile_step(batch, inner_cost_fn, variables, 5, 0.01, num_tasks=num_tasks)
+    >>> cost, gradients = ivy.reptile_step(batch, inner_cost_fn, variables, 5, 0.01,
+    ...                                    num_tasks=num_tasks)
     >>> print(cost)
     ivy.array(1.4485182)
     >>> print(gradients)
@@ -617,8 +667,9 @@ def reptile_step(
     ...     "latent": _variable(ivy.array([1.0, 2.0]))
     ... })
 
-    >>> cost, gradients, firsts = ivy.reptile_step(batch, inner_cost_fn, variables, 4, 0.025,
-    ...                                            batched=False, num_tasks=2, return_inner_v='first')
+    >>> cost, gradients, firsts = ivy.reptile_step(batch, inner_cost_fn, variables, 4,
+    ...                                            0.025, batched=False, num_tasks=2,
+    ...                                            return_inner_v='first')
     >>> print(cost)
     ivy.array(0.9880483)
     >>> print(gradients)

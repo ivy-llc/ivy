@@ -147,8 +147,7 @@ class Dropout(Module):
         """
         self._prob = prob
         self._scale = scale
-        self.training = training
-        Module.__init__(self, device=None, v=None, dtype=dtype)
+        Module.__init__(self, device=None, v=None, dtype=dtype, training=training)
 
     def _create_variables(self, device, dtype=None):
         """
@@ -210,6 +209,7 @@ class MultiHeadAttention(Module):
         v=None,
         build_mode="on_init",
         dtype=None,
+        training=True,
     ):
         """
         Multi Head Attention layer.
@@ -258,6 +258,8 @@ class MultiHeadAttention(Module):
         dtype
             the desired data type of the internal variables to be created if not provided.
             Default is ``None``.
+        training
+            If True, dropout is used, otherwise dropout is not activated.
         """
         # proj
 
@@ -285,6 +287,7 @@ class MultiHeadAttention(Module):
             build_mode=build_mode,
             with_partial_v=True,
             dtype=dtype,
+            training=training,
         )
 
     def _create_variables(self, device, dtype=None):
@@ -371,7 +374,6 @@ class MultiHeadAttention(Module):
         is_causal=False,
         return_attention_weights=False,
         average_attention_weights=True,
-        training=False,
     ):
         """
         Perform forward pass of the MultiHeadAttention layer.
@@ -396,8 +398,6 @@ class MultiHeadAttention(Module):
             If true, indicates that the returned ``attention_weights`` should be averaged across
             heads. Otherwise, ``attention_weights`` are provided separately per head. Note that this flag only has an
             effect when ``return_attention_weights=True``. Default: ``True`` (i.e. average weights across heads)
-        training
-            If True, dropout is used, otherwise dropout is not activated.
 
         Returns
         -------
@@ -408,8 +408,8 @@ class MultiHeadAttention(Module):
         """
         return ivy.multi_head_attention(
             query,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=self._num_heads,
             scale=self._scale,
             attention_mask=attention_mask,
@@ -432,7 +432,7 @@ class MultiHeadAttention(Module):
             return_attention_weights=return_attention_weights,
             average_attention_weights=average_attention_weights,
             dropout=self._dropout_rate,
-            training=training,
+            training=self.training,
         )
 
 
@@ -2097,41 +2097,130 @@ class Dct(Module):
         )
 
 
+# EMBEDDING #
+# ----------#
+
+
 class Embedding(Module):
-    def __init__(self, indices, /, *, max_norm=None, out=None, device=None, dtype=None):
+    def __init__(
+        self,
+        num_embeddings: int,
+        embedding_dim: int,
+        padding_idx=None,
+        max_norm=None,
+        /,
+        *,
+        weight_initializer=GlorotUniform(),
+        device=None,
+        v=None,
+        dtype=None,
+    ):
         """
-        Class for embedding indices into a dense representation.
+        Class for embedding indices into a dense representation. The Embedding layer is
+        a simple lookup table for dense vectors. It's typically used to store word
+        embeddings and query them using indices.
 
         Parameters
         ----------
-        indices
-            The indices to embed.
-        max_norm
-            If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
-        out
-            If given, the result will be inserted into this tensor. Default: None
+        num_embeddingss : int
+            Number of embeddings.
+        embedding_dim : int
+            Dimension of the embeddings.
+        padding_idx : int
+            If given, pads the output with zeros whenever it encounters the index.
+        max_norm : float
+            If given, each embedding vector with L2 norm larger than max_norm is renormalized to have norm max_norm.
+        weight_initializer : Initializer
+            Initializer for the weights.
+        device : str
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        v : dict
+            the variables for the embedding layer, as a container, constructed internally
+            by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
         """
-        self._indices = indices
+        self._num_embeddings = num_embeddings
+        self._embedding_dim = embedding_dim
+        self._padding_idx = padding_idx
         self._max_norm = max_norm
-        self._out = out
-        Module.__init__(self, device=device, dtype=dtype)
+        self._weight_initializer = weight_initializer
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _forward(self, inputs):
+    def _create_variables(self, device, dtype=None):
+        """
+        Create internal variables for the layer.
+
+        Parameters
+        ----------
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
+        """
+        v = {
+            "w": self._weight_initializer.create_variables(
+                (self._num_embeddings, self._embedding_dim),
+                device,
+                self._embedding_dim,
+                self._num_embeddings,
+                dtype=dtype,
+            )
+        }
+        return v
+
+    def _pad_embd(self, indices, embd):
+        mask = ivy.expand_dims(indices == self._padding_idx, axis=-1)
+        mask_val = ivy.array(0.0, dtype=embd.dtype)
+        return ivy.where(mask, mask_val, embd)
+
+    def _forward(self, indices):
         """
         Forward pass of the layer.
 
         Parameters
         ----------
-        inputs
+        indices
             The input array to the layer.
 
         Returns
         -------
             The output array of the layer.
         """
-        return ivy.embedding(
-            inputs,
-            self._indices,
-            max_norm=self._max_norm,
-            out=self._out,
-        )
+        emb = ivy.embedding(self.v.w, indices, max_norm=self._max_norm)
+        if self._padding_idx is not None:
+            emb = self._pad_embd(indices, emb)
+        return emb
+
+
+class Identity(Module):
+    def __init__(self):
+        """
+        Identity layer. The layer is argument insensitive and returns the input argument
+        as output when called.
+
+        It's typically used as a placeholder when no operation is to be
+        performed. It doesn't have any learnable parameter.
+        """
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array.
+        dtype
+            The desired data type of the internal variables to be created if not
+            provided. Default is ``None``.
+
+        Returns
+        -------
+            The input array as it is.
+        """
+        return x

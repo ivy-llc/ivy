@@ -62,7 +62,6 @@ def index_nest(
     >>> y = [1]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    >>> z
     {
         a: ivy.array([3., 4.]),
         b: 60
@@ -218,7 +217,35 @@ def set_nest_at_index(
 
 
 @handle_exceptions
-def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
+    """
+    Recursively inserts a value into a nested data structure at a specified index.
+
+    This function traverses a nested data structure and inserts the provided `value`
+    at the specified `index`.
+
+    Parameters
+    ----------
+    nest : Iterable
+        The nested data structure.
+    index : Tuple
+        The index specifying the location where the `value` should be inserted.
+    value : object
+        The value to be inserted.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> nest = [[1, 2], [3, 4]]
+    >>> index = (1, 1)
+    >>> value = 99
+    >>> insert_into_nest_at_index(nest, index, value)
+    >>> print(nest)
+    [[1, 2], [3, 99, 4]]
+    """
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -420,7 +447,13 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
     indices
         A tuple of tuples of indices for the indices at which to prune.
     """
-    [prune_nest_at_index(nest, index) for index in indices]
+    # Delete first deeper elements and elements with larger index
+    indices_sorted = sorted(
+        indices,
+        key=str,
+        reverse=True,
+    )
+    [prune_nest_at_index(nest, index) for index in indices_sorted]
 
 
 @handle_exceptions
@@ -594,7 +627,8 @@ def map_nest_at_indices(
     >>> function = lambda x : x ** 2
     >>> ivy.map_nest_at_indices(nest, indices, function)
     >>> print(nest)
-    ivy.array([[-9., 8., -17.], [11., -3., 5.]])
+    ivy.array([[ -9.,  64., -17.],
+           [ 11.,   9.,  25.]])
     """
     is_tuple = isinstance(nest, tuple)
     nest_type = type(nest) if is_tuple else lambda x: x
@@ -1002,7 +1036,7 @@ def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
     fn: Callable,
-    include_derived: Optional[Union[Dict[type, bool], bool]] = None,
+    include_derived: Optional[Union[Dict[str, bool], bool]] = None,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
     to_mutable: bool = False,
     max_depth: Optional[int] = None,
@@ -1055,24 +1089,101 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
+
+    Examples
+    --------
+    With :class:`Tuple` inputs:
+
+    >>> x = ([[1., 2.], [3., 4.]])
+    >>> function = lambda a : a * 2
+    >>> ivy.nested_map(x, function)
+    [[2.0, 4.0], [6.0, 8.0]]
+    >>> print(x)
+    [[2.0, 4.0], [6.0, 8.0]]
+
+    With :code:`Dict` input:
+
+    >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
+    >>> function = lambda a : a + 1
+    >>> ivy.nested_map(x, function)
+    {1 : [2, [3, 4]], 2: (5, 6)}
+    >>> print(x)
+    {1 : [2, [3, 4]], 2: (5, 6)}
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
+    >>> function = lambda a: a + 'H'
+    >>> ivy.nested_map(x, function)
+    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
+    >>> print(x)
+    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(
+    ...   a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
+    ... )
+    >>> function = lambda a : a  + 1
+    >>> ivy.nested_map(x, function)
+    {
+        a: ivy.array([[2, 3, 4],
+                      [10, 9, 8]]),
+        b: ivy.array([[5, 6, 7],
+                      [13, 14, 15]])
+    }
+    >>> print(x)
+    {
+        a: ivy.array([[2, 3, 4],
+                      [10, 9, 8]]),
+        b: ivy.array([[5, 6, 7],
+                      [13, 14, 15]])
+    }
+
+    >>> nest = ([1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3})
+    >>> function = lambda a :  a * 2
+    >>> ivy.nested_map(nest, function,  to_ignore=list)
+    ([1, 2, 1, 2], [3, 4, 3, 4], [5, 6, 5, 6], {'a': 2, 'b': 4, 'c': 6})
+
+    >>> nest = [[1, 2], [3, [4, 5]], [[6], [7, 8, [9, 10]]]]
+    >>> function = lambda a :  a * 2
+    >>> ivy.nested_map(nest, function, max_depth = 3)
+    [[2, 4], [6, [8, 10]], [[12], [14, 16, [9, 10]]]]
+
+    >>> nest = ([23, 25, 1337], [63, 98, 6])
+    >>> function = lambda a :  a + 1
+    >>> ivy.nested_map(nest, function, to_mutable = True)
+    [[24, 25, 1338], [64, 99, 7]]
     """
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
-        include_derived = {tuple: True, list: True, dict: True}
+        include_derived = {"tuple": True, "list": True, "dict": True}
     elif not include_derived:
         include_derived = {}
-    for t in (tuple, list, dict):
+    for t in ("tuple", "list", "dict"):
         if t not in include_derived:
             include_derived[t] = False
+    # to ensure all keys are strings
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
+    # TODO: Fixes iterating over tracked instances from the graph
+    # during transpilation. However, there might be a better fix
+    # than this. Remove the check below if that's the case
+    if (
+        hasattr(x, "is_tracked_proxy")
+        and hasattr(class_instance, "__bases__")
+        and not set(class_instance.__bases__).intersection(set(to_ignore))
+    ):
+        to_ignore += (class_instance,)
     tuple_check_fn = ivy.default(
         _tuple_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[tuple]
+            if include_derived["tuple"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
@@ -1080,7 +1191,7 @@ def nested_map(
         _list_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[list]
+            if include_derived["list"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
@@ -1088,11 +1199,10 @@ def nested_map(
         _dict_check_fn,
         (
             (lambda x_, t_: isinstance(x_, t_))
-            if include_derived[dict]
+            if include_derived["dict"]
             else (lambda x_, t_: type(x_) is t_)
         ),
     )
-
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
             nested_map(

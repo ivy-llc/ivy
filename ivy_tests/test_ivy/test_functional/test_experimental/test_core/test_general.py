@@ -7,6 +7,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _reduce_helper(draw):
     # ToDo: remove the filtering when supported dtypes are fixed for mixed functions
@@ -35,6 +39,10 @@ def _reduce_helper(draw):
     return dtype, operand[0], init_value[0], func, axes
 
 
+# --- Main --- #
+# ------------ #
+
+
 # reduce
 @handle_test(
     fn_tree="functional.ivy.experimental.reduce",
@@ -48,7 +56,7 @@ def test_reduce(*, args, keepdims, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         operand=operand,

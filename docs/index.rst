@@ -1,27 +1,42 @@
 .. title:: Home
 
-.. include:: ../README.rst
+.. include:: ../README.md
+  :parser: myst_parser.sphinx_
+
 
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Overview
+
+  Home <self>
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: The Basics
 
   overview/get_started.rst
-  Examples <https://unify.ai/demos/>
-  overview/glossary.rst
-  overview/faq.rst
+  demos/quickstart.ipynb
 
 
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Users
+  :caption: Demos
 
-  overview/background.rst
-  overview/design.rst
+  demos/learn_the_basics.rst
+  demos/guides.rst
+  demos/examples_and_demos.rst
+
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Background
+
+  overview/motivation.rst
   overview/related_work.rst
-  overview/extensions.rst
 
 
 .. toctree::
@@ -29,24 +44,24 @@
   :maxdepth: -1
   :caption: Contributors
 
-  overview/deep_dive.rst
+  overview/design.rst
   overview/contributing.rst
+  overview/deep_dive.rst
+  overview/glossary.rst
+  overview/faq.rst
 
 
 .. toctree::
   :hidden:
   :maxdepth: -1
-  :caption: Compiling and Transpiling
+  :caption: API Reference
 
-  compiler/setting_up.rst
-  compiler/compiler.rst
-  compiler/transpiler.rst
+  overview/one_liners.rst
 
 
 .. autosummary::
   :toctree: docs/functional
   :template: top_functional_toc.rst
-  :caption: API Reference
   :recursive:
   :hide-table:
 
