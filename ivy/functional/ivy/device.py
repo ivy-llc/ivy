@@ -132,7 +132,6 @@ class DefaultDevice:
         ivy.unset_default_device()
         ivy.unset_soft_device_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
