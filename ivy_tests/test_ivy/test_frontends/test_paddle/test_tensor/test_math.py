@@ -359,7 +359,7 @@ def test_paddle_cumprod(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cumsum",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
