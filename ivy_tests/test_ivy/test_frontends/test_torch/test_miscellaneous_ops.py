@@ -537,7 +537,33 @@ def test_torch_clone(
         input=x[0],
     )
 
-
+#combinations
+@handle_frontend_test(
+        fn_tree="torch.combinations",
+        dtypes_and_x =helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("tensor")
+        ),
+        test_with_out=st.just(False)
+)
+def test_torch_combinations(
+    dtypes_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, x = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=["tensor"],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x[0],
+    )
+    
 # corrcoef
 @handle_frontend_test(
     fn_tree="torch.corrcoef",
