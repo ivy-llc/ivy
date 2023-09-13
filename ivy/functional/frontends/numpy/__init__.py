@@ -13,6 +13,7 @@ from .ndarray import *
 from . import scalars
 from .scalars import *
 
+__version__ = ivy.__version__
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
