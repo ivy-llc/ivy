@@ -38,7 +38,6 @@ class Splitter:
         self.min_weight_leaf = min_weight_leaf
 
         self.rand_r_state = random_state.randint(0, 0x7FFFFFFF)
-
         self.samples = None
         self.weighted_n_samples = 0.0
 
@@ -51,7 +50,7 @@ class Splitter:
 
     def init(self, X, y, sample_weight, missing_values_in_feature_mask=None):
         n_samples = X.shape[0]
-
+        
         # Create a list to store indices of positively weighted samples
         samples = []
 
@@ -129,6 +128,26 @@ class Splitter:
         """Return the impurity of the current node."""
         return self.criterion.node_impurity()
 
+    
+class BestSplitter(Splitter):
+    """Splitter for finding the best split on dense data."""
+    
+    def __init__(self, X, y, sample_weight, missing_values_in_feature_mask):
+        super().__init__(X, y, sample_weight, missing_values_in_feature_mask)
+        self.partitioner = DensePartitioner(
+            X, self.samples, self.feature_values, missing_values_in_feature_mask
+        )
+
+    def node_split(self, impurity, split, n_constant_features):
+        return node_split_best(
+            self,
+            self.partitioner,
+            self.criterion,
+            impurity,
+            split,
+            n_constant_features,
+        )
+
 
 class DensePartitioner:
     """
@@ -186,6 +205,14 @@ class DensePartitioner:
         self.n_missing = n_missing
 
 
+def sort(feature_values, samples, n):
+    if n == 0:
+        return
+    maxd = 2 * int(math.log(n))
+    introsort(feature_values, samples, n, maxd)
+
+    
+    
 class SparsePartitioner:
     def __init__(
         self,
@@ -427,6 +454,49 @@ def introsort(feature_values, samples, n, maxd):
         samples = samples[r:]
         n -= r
 
+        
+def heapsort(feature_values, samples, n):
+    # Heapify
+    start = (n - 2) // 2
+    end = n
+    while True:
+        sift_down(feature_values, samples, start, end)
+        if start == 0:
+            break
+        start -= 1
+
+    # Sort by shrinking the heap, putting the max element immediately after it
+    end = n - 1
+    while end > 0:
+        swap(feature_values, samples, 0, end)
+        sift_down(feature_values, samples, 0, end)
+        end -= 1
+
+def sift_down(feature_values, samples, start, end):
+    # Restore heap order in feature_values[start:end] by moving the max element to start.
+    root = start
+    while True:
+        child = root * 2 + 1
+
+        # Find the max of root, left child, right child
+        maxind = root
+        if child < end and feature_values[samples[maxind]] < feature_values[samples[child]]:
+            maxind = child
+        if child + 1 < end and feature_values[samples[maxind]] < feature_values[samples[child + 1]]:
+            maxind = child + 1
+
+        if maxind == root:
+            break
+        else:
+            swap(feature_values, samples, root, maxind)
+            root = maxind
+
+
+# Define the swap function here
+def swap(feature_values, samples, i, j):
+    feature_values[samples[i]], feature_values[samples[j]] = feature_values[samples[j]], feature_values[samples[i]]
+    samples[i], samples[j] = samples[j], samples[i]
+
 
 def median3(feature_values, n):
     # Median of three pivot selection, after Bentley and McIlroy (1993).
@@ -462,12 +532,12 @@ def node_split_best(
 
     features = list(splitter.features)
     constant_features = list(splitter.constant_features)
-    splitter.n_features
+    n_features = splitter.n_features
     feature_values = list(splitter.feature_values)
     max_features = splitter.max_features
     min_samples_leaf = splitter.min_samples_leaf
     min_weight_leaf = splitter.min_weight_leaf
-    random.Random(splitter.rand_r_state)
+    random_state = random.Random(splitter.rand_r_state)
 
     n_visited_features = 0
     n_found_constants = 0
@@ -483,10 +553,7 @@ def node_split_best(
         f_j = random.randint(n_drawn_constants, f_i - n_found_constants - 1)
 
         if f_j < n_known_constants:
-            features[n_drawn_constants], features[f_j] = (
-                features[f_j],
-                features[n_drawn_constants],
-            )
+            features[n_drawn_constants], features[f_j] = features[f_j], features[n_drawn_constants]
             n_drawn_constants += 1
             continue
 
@@ -496,15 +563,8 @@ def node_split_best(
         n_missing = partitioner.n_missing
         end_non_missing = end - n_missing
 
-        if (
-            end_non_missing == start
-            or feature_values[end_non_missing - 1]
-            <= feature_values[start] + FEATURE_THRESHOLD
-        ):
-            features[f_j], features[n_total_constants] = (
-                features[n_total_constants],
-                features[f_j],
-            )
+        if end_non_missing == start or feature_values[end_non_missing - 1] <= feature_values[start] + FEATURE_THRESHOLD:
+            features[f_j], features[n_total_constants] = features[n_total_constants], features[f_j]
             n_found_constants += 1
             n_total_constants += 1
             continue
@@ -543,25 +603,16 @@ def node_split_best(
                 current_split.pos = p
                 criterion.update(current_split.pos)
 
-                if (
-                    criterion.weighted_n_left < min_weight_leaf
-                    or criterion.weighted_n_right < min_weight_leaf
-                ):
+                if criterion.weighted_n_left < min_weight_leaf or criterion.weighted_n_right < min_weight_leaf:
                     continue
 
                 current_proxy_improvement = criterion.proxy_impurity_improvement()
 
                 if current_proxy_improvement > best_proxy_improvement:
                     best_proxy_improvement = current_proxy_improvement
-                    current_split.threshold = (
-                        feature_values[p_prev] / 2.0 + feature_values[p] / 2.0
-                    )
+                    current_split.threshold = (feature_values[p_prev] / 2.0 + feature_values[p] / 2.0)
 
-                    if (
-                        current_split.threshold == feature_values[p]
-                        or current_split.threshold == float("inf")
-                        or current_split.threshold == -float("inf")
-                    ):
+                    if current_split.threshold == feature_values[p] or current_split.threshold == float("inf") or current_split.threshold == -float("inf"):
                         current_split.threshold = feature_values[p_prev]
 
                     current_split.n_missing = n_missing
@@ -581,10 +632,7 @@ def node_split_best(
                 criterion.missing_go_to_left = missing_go_to_left
                 criterion.update(p)
 
-                if not (
-                    criterion.weighted_n_left < min_weight_leaf
-                    or criterion.weighted_n_right < min_weight_leaf
-                ):
+                if not (criterion.weighted_n_left < min_weight_leaf or criterion.weighted_n_right < min_weight_leaf):
                     current_proxy_improvement = criterion.proxy_impurity_improvement()
 
                     if current_proxy_improvement > best_proxy_improvement:
@@ -609,12 +657,19 @@ def node_split_best(
             criterion.reset()
             criterion.update(best_split.pos)
             criterion.children_impurity(
-                best_split.impurity_left, best_split.impurity_right
+                best_split.impurity_left,
+                best_split.impurity_right
             )
             best_split.improvement = criterion.impurity_improvement(
-                impurity, best_split.impurity_left, best_split.impurity_right
+                impurity,
+                best_split.impurity_left,
+                best_split.impurity_right
             )
-            shift_missing_values_to_left_if_required(best_split, samples, end)
+            shift_missing_values_to_left_if_required(
+                best_split,
+                samples,
+                end
+            )
 
         memcpy(features, constant_features, sizeof(SIZE_t) * n_known_constants)
         memcpy(

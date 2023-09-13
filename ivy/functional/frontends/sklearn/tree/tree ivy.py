@@ -1,6 +1,4 @@
 import numpy as np
-
-
 from scipy.sparse import issparse
 from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
@@ -13,16 +11,20 @@ from scipy.sparse import isspmatrix_csr
 from numpy import float32 as DTYPE
 from numpy import float64 as DOUBLE
 
-EPSILON = np.finfo(np.double).eps
 # Define constants
 INFINITY = np.inf
+EPSILON = np.finfo(np.double).eps
+
 # Some handy constants (BestFirstTreeBuilder)
 IS_FIRST = 1
-IS_LEFT = 1
 IS_NOT_FIRST = 0
+IS_LEFT = 1
 IS_NOT_LEFT = 0
+
 TREE_LEAF = -1
 TREE_UNDEFINED = -2
+_TREE_LEAF = TREE_LEAF
+_TREE_UNDEFINED = TREE_UNDEFINED
 
 
 # Since you're dealing with Cython-specific types and features,
@@ -39,6 +41,10 @@ class Node:
         self.missing_go_to_left = None
 
 
+dummy = Node()
+# Create a numpy dtype for Node using the dummy object
+NODE_DTYPE = np.asarray([dummy], dtype=object).dtype
+
 # =============================================================================
 # TreeBuilder
 # =============================================================================
@@ -46,7 +52,6 @@ class Node:
 
 class TreeBuilder:
     """Interface for different tree building strategies."""
-
     def __init__(self):
         self.splitter = None
         self.min_samples_split = None
@@ -72,12 +77,10 @@ class TreeBuilder:
         y,
         sample_weight,
     ):
-        """Check input dtype, layout, and format."""
+        """Check input dtype, layout, and format"""
         if issparse(X):
-            X = (
-                X.tocsc()
-            )  # tocsc() is a method provided by the scipy.sparse module in the SciPy library. It's used to convert a sparse matrix to the Compressed Sparse Column (CSC) format.
-            X.sort_indices()  # This is done to ensure that the indices of non-zero elements within the matrix are sorted in ascending order.
+            X = X.tocsc() #tocsc() is a method provided by the scipy.sparse module in the SciPy library. It's used to convert a sparse matrix to the Compressed Sparse Column (CSC) format. 
+            X.sort_indices() #This is done to ensure that the indices of non-zero elements within the matrix are sorted in ascending order.
 
             if X.data.dtype != DTYPE:
                 X.data = np.ascontiguousarray(X.data, dtype=DTYPE)
@@ -104,9 +107,7 @@ class TreeBuilder:
 # Depth first builder ---------------------------------------------------------
 # A record on the stack for depth-first tree growing
 class StackRecord:
-    def __init__(
-        self, start, end, depth, parent, is_left, impurity, n_constant_features
-    ):
+    def __init__(self, start, end, depth, parent, is_left, impurity, n_constant_features):
         self.start = start
         self.end = end
         self.depth = depth
@@ -136,6 +137,144 @@ class SplitRecord:
         self.impurity_right = impurity_right
         self.missing_go_to_left = missing_go_to_left
         self.n_missing = n_missing
+
+
+class DepthFirstTreeBuilder(TreeBuilder):
+    """Build a decision tree in depth-first fashion."""
+
+    def __init__(
+        self, splitter, min_samples_split,
+        min_samples_leaf, min_weight_leaf,
+        max_depth, min_impurity_decrease
+    ):
+        self.splitter = splitter
+        self.min_samples_split = min_samples_split
+        self.min_samples_leaf = min_samples_leaf
+        self.min_weight_leaf = min_weight_leaf
+        self.max_depth = max_depth
+        self.min_impurity_decrease = min_impurity_decrease
+
+    def build(
+        self,
+        tree,
+        X,
+        y,
+        sample_weight=None,
+        missing_values_in_feature_mask=None
+    ):
+        """Build a decision tree from the training set (X, y)."""
+
+        # Check input
+        X, y, sample_weight = self._check_input(X, y, sample_weight)
+
+        # Initial capacity
+        init_capacity = (2 ** (tree.max_depth + 1)) - 1 if tree.max_depth <= 10 else 2047
+
+        tree._resize(init_capacity)
+
+        # Parameters
+        splitter = self.splitter
+        max_depth = self.max_depth
+        min_samples_leaf = self.min_samples_leaf
+        min_weight_leaf = self.min_weight_leaf
+        min_samples_split = self.min_samples_split
+        min_impurity_decrease = self.min_impurity_decrease
+
+        # Recursive partition (without actual recursion)
+        splitter.init(X, y, sample_weight, missing_values_in_feature_mask)
+
+        stack = []
+
+        # Push root node onto stack
+        stack.append(
+            StackRecord(
+                start=0,
+                end=splitter.n_samples,
+                depth=0,
+                parent=_TREE_UNDEFINED,
+                is_left=False,
+                impurity=INFINITY,
+                n_constant_features=0
+            )
+        )
+        weighted_n_node_samples = np.zeros(1, dtype=np.double)
+        while stack:
+            stack_record = stack.pop()
+
+            start = stack_record.start
+            end = stack_record.end
+            depth = stack_record.depth
+            parent = stack_record.parent
+            is_left = stack_record.is_left
+            impurity = stack_record.impurity
+            n_constant_features = stack_record.n_constant_features
+
+            n_node_samples = end - start
+            splitter.node_reset(start, end, weighted_n_node_samples)
+
+            is_leaf = (
+                depth >= max_depth
+                or n_node_samples < min_samples_split
+                or n_node_samples < 2 * min_samples_leaf
+                or np.sum(sample_weight[start:end]) < 2 * min_weight_leaf
+            )
+
+            if is_left:
+                impurity = splitter.node_impurity()
+
+            is_leaf = is_leaf or impurity <= EPSILON
+
+            if not is_leaf:
+                split = SplitRecord()  # No idea what is SplitRecord in original code. Maybe this never gets called, not sure
+                splitter.node_split(impurity, split, n_constant_features)
+                is_leaf = (
+                    is_leaf
+                    or split.pos >= end
+                    or (split.improvement + EPSILON < min_impurity_decrease)
+                )
+
+            node_id = tree._add_node(
+                parent,
+                is_left,
+                is_leaf,
+                split.feature if not is_leaf else 0,
+                split.threshold if not is_leaf else 0,
+                impurity,
+                n_node_samples,
+                np.sum(sample_weight[start:end]),
+                split.missing_go_to_left,
+            )
+
+            if node_id == np.iinfo(np.intp).max:
+                raise MemoryError()
+
+            splitter.node_value(tree.value + node_id * tree.value_stride)
+
+            if not is_leaf:
+                # Push right child on stack
+                stack.append(
+                    StackRecord(
+                        start=split.pos,
+                        end=end,
+                        depth=depth + 1,
+                        parent=node_id,
+                        is_left=False,
+                        impurity=split.impurity_right,
+                        n_constant_features=n_constant_features,
+                    )
+                )
+                # Push left child on stack
+                stack.append(
+                    StackRecord(
+                        start=start,
+                        end=split.pos,
+                        depth=depth + 1,
+                        parent=node_id,
+                        is_left=True,
+                        impurity=split.impurity_left,
+                        n_constant_features=n_constant_features,
+                    )
+                )
 
 
 class Tree:
@@ -205,22 +344,23 @@ class Tree:
 
     def _resize(self, capacity):
         """
-        Resize all inner arrays to `capacity`.
-
-        If `capacity` is -1, then double the size of the inner arrays.
+        Resize all inner arrays to `capacity`. If `capacity` is -1, then double the size of the inner arrays.
         Returns -1 in case of failure to allocate memory (and raise MemoryError), or 0 otherwise.
         """
         if self._resize_c(capacity) != 0:
             # Raise MemoryError if resizing fails
             raise MemoryError()
 
-    def _resize_c(self, capacity=float("inf")):
-        """Guts of _resize Returns -1 in case of failure to allocate memory (and raise
-        MemoryError), or 0 otherwise."""
+    def _resize_c(self, capacity=float('inf')):
+        """
+        Guts of _resize
+        Returns -1 in case of failure to allocate memory (and raise MemoryError),
+        or 0 otherwise.
+        """
         if capacity == self.capacity and self.nodes is not None:
             return 0
 
-        if capacity == float("inf"):
+        if capacity == float('inf'):
             if self.capacity == 0:
                 capacity = 3  # default initial value
             else:
@@ -229,7 +369,6 @@ class Tree:
         # This section is relevant if the code is dealing with C arrays.
         # In Python, resizing arrays is handled automatically by lists or numpy arrays.
         # You won't need to explicitly reallocate memory or initialize values like this.
-
         # replaced safe_realloc(&self.nodes, capacity) with the following
         new_nodes = np.empty(capacity, dtype=object)
         for i in range(len(self.nodes)):
@@ -333,9 +472,7 @@ class Tree:
         # Initialize output
         out = np.zeros(n_samples, dtype=np.intp)
 
-        with np.nditer(
-            X, flags=["c_index", "multi_index"], op_flags=["readonly"], order="C"
-        ) as it:
+        with np.nditer(X, flags=['c_index', 'multi_index'], op_flags=['readonly'], order='C') as it:
             for x_value, index in it:
                 node = self.nodes
                 # While node not a leaf
@@ -443,7 +580,7 @@ class Tree:
             indices[indptr[i + 1]] = node - self.nodes
             indptr[i + 1] += 1
 
-        indices = indices[: indptr[n_samples]]
+        indices = indices[:indptr[n_samples]]
         data = np.ones(shape=len(indices), dtype=np.intp)
         out = csr_matrix((data, indices, indptr), shape=(n_samples, self.node_count))
 
@@ -504,7 +641,7 @@ class Tree:
             indices[indptr[i + 1]] = node - self.nodes
             indptr[i + 1] += 1
 
-        indices = indices[: indptr[n_samples]]
+        indices = indices[:indptr[n_samples]]
         data = np.ones(shape=len(indices), dtype=np.intp)
         out = csr_matrix((data, indices, indptr), shape=(n_samples, self.node_count))
 
@@ -622,20 +759,12 @@ class Tree:
 
                 if current_node.left_child == _TREE_LEAF:
                     # Leaf node
-                    out[sample_idx] += (
-                        weight_stack[stack_size] * self.value[current_node_idx]
-                    )
+                    out[sample_idx] += weight_stack[stack_size] * self.value[current_node_idx]
                     total_weight += weight_stack[stack_size]
                 else:
-                    is_target_feature = any(
-                        target_feature == current_node.feature
-                        for target_feature in target_features
-                    )
+                    is_target_feature = any(target_feature == current_node.feature for target_feature in target_features)
                     if is_target_feature:
-                        if (
-                            X[sample_idx, current_node.feature]
-                            <= current_node.threshold
-                        ):
+                        if X[sample_idx, current_node.feature] <= current_node.threshold:
                             node_idx_stack.append(current_node.left_child)
                             weight_stack.append(weight_stack[stack_size])
                             stack_size += 1
@@ -644,26 +773,14 @@ class Tree:
                             weight_stack.append(weight_stack[stack_size])
                             stack_size += 1
                     else:
-                        left_sample_frac = (
-                            self.nodes[current_node.left_child].weighted_n_node_samples
-                            / current_node.weighted_n_node_samples
-                        )
+                        left_sample_frac = self.nodes[current_node.left_child].weighted_n_node_samples / current_node.weighted_n_node_samples
                         current_weight = weight_stack[stack_size]
-                        node_idx_stack.extend(
-                            [current_node.left_child, current_node.right_child]
-                        )
-                        weight_stack.extend(
-                            [
-                                current_weight * left_sample_frac,
-                                current_weight * (1 - left_sample_frac),
-                            ]
-                        )
+                        node_idx_stack.extend([current_node.left_child, current_node.right_child])
+                        weight_stack.extend([current_weight * left_sample_frac, current_weight * (1 - left_sample_frac)])
                         stack_size += 2
 
             if not (0.999 < total_weight < 1.001):
-                raise ValueError(
-                    f"Total weight should be 1.0 but was {total_weight:.9f}"
-                )
+                raise ValueError(f"Total weight should be 1.0 but was {total_weight:.9f}")
 
 
 class DepthFirstTreeBuilder(TreeBuilder):
