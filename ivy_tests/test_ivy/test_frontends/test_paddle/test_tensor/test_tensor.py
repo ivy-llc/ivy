@@ -2728,17 +2728,19 @@ def test_paddle_tensor_pow(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="prod",
-    dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        valid_axis=True,
-        force_int_axis=True,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         min_value=-5,
         max_value=5,
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    keep_dims=st.booleans(),
 )
 def test_paddle_tensor_prod(
-    dtypes_and_x,
+    dtype_x_axis,
+    keep_dims,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -2746,13 +2748,16 @@ def test_paddle_tensor_prod(
     on_device,
     backend_fw,
 ):
-    input_dtype, x, axis = dtypes_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"axis": axis},
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdim": keep_dims,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
