@@ -68,7 +68,7 @@ Some common important tasks are:
 Formatting checklist
 ~~~~~~~~~~~~~~~~~~~~
 
-After creating your Pull Request on github, you should then produce the checklist for the formatting task as follows: 
+After creating your Pull Request on github, you should then produce the checklist for the formatting task as follows:
 
 1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
    An example of this is shown below.
@@ -95,7 +95,7 @@ The PR assignee will then see this comment and address your issues.
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
    :width: 420
 
-**Notes**: 
+**Notes**:
 
 1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
 2. The checklist items' statuses should be manually updated by the PR author.
@@ -236,7 +236,7 @@ A general workflow for these tasks would be:
 
 #. Analyze the function type, we have a very detailed section for it in the deep dive `Function Types Guide <../deep_dive/function_types.rst>`_
 #. Every function will have a different file structure according to the function type, refer to :ref:`overview/contributing/open_tasks:Where to place a backend function` subsection below.
-#. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
+#. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
 #. Write tests for the function using the `Ivy Tests <../deep_dive/ivy_tests.rst>`_ guide, and make sure they are passing.
 
@@ -245,7 +245,7 @@ A few points to keep in mind while doing this:
 #. Make sure all the positional arguments are positional-only and optional arguments are keyword-only.
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
-If you’re stuck on a function which requires complex compositions, feel free to reselect a function 
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function
 
 Extending the Ivy API
 ~~~~~~~~~~~~~~~~~~~~~~~

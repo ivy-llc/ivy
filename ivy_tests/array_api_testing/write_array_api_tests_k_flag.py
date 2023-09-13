@@ -40,7 +40,7 @@ for fpath in fpaths:
                     continue
                 if ("#" not in s) or (
                     "#" in s
-                    and not (framework in s.lower())
+                    and (framework not in s.lower())
                     and any(f in s.lower() for f in framework_tests_to_run)
                 ):
                     tests_to_run += (
