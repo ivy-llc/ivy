@@ -120,4 +120,3 @@ jobs:
       - name: Check on failures
         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.tests.outcome != 'success'
         run: exit 1
-
