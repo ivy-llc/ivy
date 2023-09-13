@@ -418,6 +418,58 @@ def test_paddle_mse_loss(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.nn.functional.multi_label_soft_margin_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-2,
+        max_value=2,
+        shared_dtype=True,
+        allow_inf=False,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype_and_weight=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_value=-2,
+        max_value=2,
+    ),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+)
+def test_paddle_multi_label_soft_margin_loss(
+    dtype_and_x,
+    dtype_and_weight,
+    reduction,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x = dtype_and_x
+    weight_dtype, weight = dtype_and_weight
+    helpers.test_frontend_function(
+        input_dtypes=[
+            x_dtype[0],
+            x_dtype[1],
+            weight_dtype[0],
+        ],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        weight=weight[0],
+        reduction=reduction,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.nn.functional.nll_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -583,6 +635,66 @@ def test_paddle_smooth_l1_loss(
         label=x[1],
         reduction=reduction,
         delta=delta,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softmax_with_cross_entropy",
+    dtype_and_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=1e-04,
+        max_value=1,
+        min_num_dims=2,
+        allow_inf=False,
+        shared_dtype=True,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    soft_label=st.booleans(),
+    numeric_stable_mode=st.booleans(),
+    return_softmax=st.booleans(),
+)
+def test_paddle_softmax_with_cross_entropy(
+    dtype_and_x_and_axis,
+    soft_label,
+    numeric_stable_mode,
+    return_softmax,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, axis = dtype_and_x_and_axis
+    logits = x[0]
+    labels = x[1]
+    label_dtype = x_dtype
+    ignore_index = 0
+    if soft_label:
+        labels = labels / ivy.sum(labels).to_native()
+    else:
+        labels = ivy.argmax(labels, axis=axis).to_native()
+        flattened_labels = labels.flatten()
+        ignore_index = ivy.randint(0, flattened_labels.size)
+        ignore_index = flattened_labels[ignore_index]
+        label_dtype = [str(labels.dtype)]
+    if on_device == "cpu" or soft_label:
+        numeric_stable_mode = True
+    helpers.test_frontend_function(
+        input_dtypes=[x_dtype[0], label_dtype[0]],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=logits,
+        label=labels,
+        soft_label=soft_label,
+        ignore_index=ignore_index,
+        numeric_stable_mode=numeric_stable_mode,
+        return_softmax=return_softmax,
+        axis=axis,
     )
 
 

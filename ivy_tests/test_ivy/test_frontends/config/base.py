@@ -128,7 +128,7 @@ class FrontendConfigWithBackend(FrontendConfig):
         return self.backend.as_native_dtype(dtype)
 
     def as_native_device(self, device: str):
-        return self.backend_as_native_dev(device)
+        return self.backend.as_native_dev(device)
 
     def isscalar(self, x):
         return self.backend.isscalar(x)
