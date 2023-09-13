@@ -69,21 +69,21 @@ def hfft(x, n=None, axis=-1, norm="backward", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64")},
+    {"2.5.1 and below": "complex64"},
     "paddle",
 )
 @to_ivy_arrays_and_back
-def hfft2(x, s=None, axis=(-2, -1), norm='backward'):
-    #check if the input tensor x is a hermitian complex
+def hfft2(x, s=None, axis=(-2, -1), norm="backward"):
+    # check if the input tensor x is a hermitian complex
     if not ivy.allclose(ivy.conj(ivy.matrix_transpose(x)), x):
         raise ValueError("Input tensor x must be Hermitian complex.")
 
     fft_result = ivy.fft2(x, s=s, dim=axis, norm=norm)
 
     # Depending on the norm, apply scaling and normalization
-    if norm == 'forward':
+    if norm == "forward":
         fft_result /= ivy.sqrt(ivy.prod(ivy.shape(fft_result)))
-    elif norm == 'ortho':
+    elif norm == "ortho":
         fft_result /= ivy.sqrt(ivy.prod(ivy.shape(x)))
 
     return ivy.real(fft_result)  # Return the real part of the result
@@ -152,4 +152,3 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
-

@@ -108,15 +108,19 @@ def test_paddle_hfft(
 
 
 @given(
-    s=st.one_of(st.none(), st.tuples(st.integers(min_value=1), st.integers(min_value=1))),
+    s=st.one_of(
+        st.none(), st.tuples(st.integers(min_value=1), st.integers(min_value=1))
+    ),
     axis=st.one_of(st.none(), st.tuples(st.integers(min_value=-2, max_value=-1))),
-    shape=st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=2).map(tuple)
+    shape=st.lists(st.integers(min_value=1, max_value=10), min_size=2, max_size=2).map(
+        tuple
+    ),
 )
 @handle_frontend_test(
     fn_tree="paddle.fft.hfft2",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("complex64"),
-    )
+    ),
 )
 def test_paddle_hfft2(
     dtype_x_axis,
@@ -132,7 +136,7 @@ def test_paddle_hfft2(
     input_dtypes, x, axis = dtype_x_axis
     x = x.reshape(shape)  # reshape x to the generated shape
 
-    for norm in ['backward', 'forward', 'ortho']:
+    for norm in ["backward", "forward", "ortho"]:
         helpers.test_frontend_function(
             input_dtypes=input_dtypes,
             frontend=frontend,
@@ -281,4 +285,3 @@ def test_paddle_rfftfreq(
         n=n,
         d=d,
     )
-        
