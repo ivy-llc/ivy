@@ -102,18 +102,18 @@ class BackendTestCaseRunner(TestCaseRunner):
             f"do not match\n {target_elements}!={ground_truth_elements} \n\n"
         )
 
-    def _call_target(self, input_dtypes, test_arguments, test_flags):
+    def _run_target(self, input_dtypes, test_arguments, test_flags):
         sub_runner_target = FunctionTestCaseSubRunner(input_dtypes, test_flags)
         sub_runner_target.get_results(test_arguments)
 
-    def _call_ground_truth(self, input_dtypes, test_arguments, test_flags):
+    def _run_ground_truth(self, input_dtypes, test_arguments, test_flags):
         pass
 
     def run(self, input_dtypes, test_arguments, test_flags):
-        target_results: TestCaseSubRunnerResult = self._call_target(
+        target_results: TestCaseSubRunnerResult = self._run_target(
             input_dtypes, test_arguments, test_flags
         )
-        ground_truth_results: TestCaseSubRunnerResult = self._call_ground_truth(
+        ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
             input_dtypes, test_arguments, test_flags
         )
 
