@@ -353,9 +353,9 @@ def slogdet(input, name=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
-def solve(matrix, rhs):
+def solve(matrix, rhs, /, *, adjoint=False, name=None):
     matrix, rhs = check_tensorflow_casting(matrix, rhs)
-    return ivy.solve(matrix, rhs)
+    return ivy.solve(matrix, rhs, adjoint=adjoint)
 
 
 @to_ivy_arrays_and_back

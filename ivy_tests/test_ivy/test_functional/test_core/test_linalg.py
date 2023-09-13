@@ -872,12 +872,12 @@ def test_slogdet(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
 
 @handle_test(
     fn_tree="functional.ivy.solve",
-    x=helpers.get_first_solve_matrix(adjoint=True),
-    y=helpers.get_second_solve_matrix(),
+    x=helpers.get_first_solve_batch_matrix(choose_adjoint=True),
+    y=helpers.get_second_solve_batch_matrix(),
 )
 def test_solve(*, x, y, test_flags, backend_fw, fn_name, on_device):
     input_dtype1, x1, adjoint = x
-    input_dtype2, x2 = y
+    input_dtype2, x2, _ = y
     helpers.test_function(
         input_dtypes=[input_dtype1, input_dtype2],
         test_flags=test_flags,
