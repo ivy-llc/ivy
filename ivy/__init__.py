@@ -435,11 +435,11 @@ class Shape(Sequence):
         if self.rank not in (None, rank):
             raise ValueError("Shape %s must have rank %d" % (self, rank))
 
-    def unknown_shape(rank=None, **kwargs):
+    def unknown_shape(self, rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
         if kwargs:
-            raise TypeError("Unknown argument: %s" % kwargs)
+            raise TypeError(f"Unknown argument: {kwargs}")
         if rank is None:
             return Shape(None)
         else:
@@ -463,7 +463,7 @@ class Shape(Sequence):
         else:
             return self
 
-    def as_shape(shape):
+    def as_shape(self, shape):
         if isinstance(shape, Shape):
             return shape
         else:
