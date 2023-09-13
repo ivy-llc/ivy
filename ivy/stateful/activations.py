@@ -3,7 +3,7 @@
 # local
 import ivy
 from ivy.stateful.module import Module
-from typing import Literal
+from typing import Literal, Optional
 
 
 class GELU(Module):
@@ -147,10 +147,25 @@ class LeakyReLU(Module):
 
 
 class LogSoftmax(Module):
-    def __init__(self, axis: int = -1):
-        """Apply the LOG SOFTMAX activation function."""
+    def __init__(
+        self,
+        axis: Optional[int] = -1,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
+        """
+        Apply the LOG SOFTMAX activation function.
+
+        Parameters
+        ----------
+        axis
+            The dimension log_softmax would be performed on. The default is ``None``
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
         Module.__init__(self)
         self._axis = axis
+        self._complex_mode = complex_mode
 
     def _forward(self, x):
         """
@@ -159,14 +174,13 @@ class LogSoftmax(Module):
         ----------
         x
             Inputs to process *[batch_shape, d]*.
-        axis
-            The dimension log_softmax would be performed on. The default is ``None``
+
         Returns
         -------
          ret
             The outputs following the LOG SOFTMAX activation *[batch_shape, d]*
         """
-        return ivy.log_softmax(x, axis=self._axis)
+        return ivy.log_softmax(x, axis=self._axis, complex_mode=self._complex_mode)
 
 
 class Softmax(Module):
