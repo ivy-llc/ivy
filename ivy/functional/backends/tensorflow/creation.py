@@ -9,13 +9,13 @@ import tensorflow as tf
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_infer_dtype,
-    asarray_handle_nestable,
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_infer_dtype,
+    _asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_inputs_to_native_shapes,
 )
 from . import backend_version
 
@@ -65,11 +65,11 @@ def arange(
             return tf.range(start, stop, delta=step, dtype=dtype)
 
 
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
-@asarray_infer_dtype
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         tf.Tensor,
@@ -93,6 +93,9 @@ def asarray(
     try:
         ret = tf.convert_to_tensor(obj, dtype)
     except (TypeError, ValueError):
+        obj = (
+            obj if isinstance(obj, tf.Tensor) else tf.convert_to_tensor(obj, tf.float64)
+        )
         ret = tf.cast(obj, dtype)
     return tf.identity(ret) if copy else ret
 
@@ -190,11 +193,7 @@ def full(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    return tf.fill(
-        shape,
-        tf.constant(fill_value, dtype=dtype),
-    )
+    return tf.experimental.numpy.full(shape, fill_value, dtype=dtype)
 
 
 def full_like(
@@ -206,7 +205,6 @@ def full_like(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 

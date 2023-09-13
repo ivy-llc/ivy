@@ -277,6 +277,9 @@ def constant_pad(
     value: Number = 0.0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if 0 in x.shape:
+        new_shape = [s + sum(pad_width[i]) for i, s in enumerate(x.shape)]
+        return torch.ones(new_shape, dtype=x.dtype) * value
     if x.shape == ():
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
@@ -321,14 +324,21 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if hasattr(x_min, "dtype"):
-        x_min = torch.asarray(x_min, device=x.device)
-        x_max = torch.asarray(x_max, device=x.device)
-        promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
-        promoted_type = torch.promote_types(promoted_type, x.dtype)
-        x_min = x_min.to(promoted_type)
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
         x_max = x_max.to(promoted_type)
-        x = x.to(promoted_type)
+    x = x.to(promoted_type)
+    if x_min is not None:
+        x_min = x_min.to(promoted_type)
     return torch.clamp(x, x_min, x_max, out=out)
 
 
