@@ -187,13 +187,17 @@ def test_relu(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
 @handle_test(
     fn_tree="functional.ivy.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
+    ground_truth_backend="jax",
 )
-def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_sigmoid(
+    *, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device
+):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -204,6 +208,7 @@ def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-2,
         atol_=1e-2,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 
