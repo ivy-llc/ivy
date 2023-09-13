@@ -3612,7 +3612,7 @@ def test_paddle_backward(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"data": x[0]},  # Adjust data initialization as needed
+        init_all_as_kwargs_np={"data": x[0]},  
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"grad_tensor": grad_tensor, "retain_graph": retain_graph},
         frontend_method_data=frontend_method_data,
