@@ -6,6 +6,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy import with_supported_dtypes
 
 
 # beta
@@ -638,14 +639,18 @@ def test_numpy_negative_binomial(
 
 
 # noncentral_chisquare
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    "jax",
+)
 @handle_frontend_test(
     fn_tree="numpy.random.noncentral_chisquare",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_df=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         exclude_min=True,
     ),
-    dtype_and_y=helpers.dtype_and_values(
+    dtype_and_nonc=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
     ),
@@ -653,8 +658,8 @@ def test_numpy_negative_binomial(
     test_with_out=st.just(False),
 )
 def test_numpy_noncentral_chisquare(
-    dtype_and_x,
-    dtype_and_y,
+    dtype_and_df,
+    dtype_and_nonc,
     size,
     frontend,
     test_flags,
@@ -662,9 +667,9 @@ def test_numpy_noncentral_chisquare(
     backend_fw,
     on_device,
 ):
-    input_dtype_x, x = dtype_and_x
-    input_dtype_y, y = dtype_and_y
-    input_dtype = input_dtype_x + input_dtype_y
+    input_dtype = dtype_and_df[0] + dtype_and_nonc[0]
+    df = dtype_and_df[1]
+    nonc = dtype_and_nonc[1]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -673,8 +678,8 @@ def test_numpy_noncentral_chisquare(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        df=x[0],
-        nonc=y[0],
+        df=df[0],
+        nonc=nonc[0],
         size=size,
     )
 
