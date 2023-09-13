@@ -3618,7 +3618,7 @@ def test_paddle_tensor_unsqueeze_(
         allow_inf=False,
     ),
 )
-def test_paddle_tensor_rank_(
+def test_paddle_tensor_zero_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3652,7 +3652,7 @@ def test_paddle_tensor_rank_(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_tensor_dim(
+def test_paddle_tensor_rank(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3668,7 +3668,7 @@ def test_paddle_tensor_dim(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=[],
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
