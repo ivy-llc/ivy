@@ -710,10 +710,10 @@ def scaled_dot_product_attention(
 @handle_array_function
 def multi_head_attention(
     query: Union[ivy.Array, ivy.NativeArray],
-    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     /,
     *,
+    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     num_heads: int = 8,
     scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
