@@ -40,7 +40,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
     def get_results(self, test_arguments):
         # split the arguments into their positional and keyword components
-        args_np, kwargs_np = self.split_args_to_args_and_kwargs(
+        args_np, kwargs_np = self._split_args_to_args_and_kwargs(
             num_positional_args=self.test_flags.num_positional_args,
             test_arguments=test_arguments,
         )
