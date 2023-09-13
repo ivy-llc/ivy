@@ -161,8 +161,8 @@ if __name__ == "__main__":
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    f" python docker/multiversion_framework_directory.py {' '.join(backends)};"
-                    f"pytest --tb=short {test} --backend={backend}"
+                    f' /bin/bash -c "python docker/multiversion_framework_directory.py {" ".join(backends)};'
+                    f'pytest --tb=short {test} --backend={backend}"'
                 )
             else:
                 if with_gpu:
