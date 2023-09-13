@@ -249,9 +249,8 @@ def available_sub_backend_implementations(obj: str) -> list:
     """
     obj = _check_callable(obj)
     sub_backends = ivy.current_backend().available_sub_backends()
-    result = []
     if not sub_backends:
-        return result
+        return []
     if not _sub_backends_implementations_already_verified():
         _verify_sub_backends_implementations(sub_backends)
     return _available_implementations_for(obj)
