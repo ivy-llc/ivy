@@ -3,7 +3,7 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
     TestCaseSubRunner,
     TestCaseSubRunnerResult,
-    TestArgumentsSearchResult
+    TestArgumentsSearchResult,
 )
 
 
@@ -24,8 +24,29 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def _ivy(self):
         return self.__ivy
 
-    def _search_args(self):
-        pass
+    def _search_args(self, test_arguments):
+        # split the arguments into their positional and keyword components
+        args_np, kwargs_np = self._split_args_to_args_and_kwargs(
+            num_positional_args=self.test_flags.num_positional_args,
+            test_arguments=test_arguments,
+        )
+
+        # Extract all arrays from the arguments and keyword arguments
+        arg_np_arrays, arrays_args_indices, n_args_arrays = self._get_nested_np_arrays(
+            args_np
+        )
+        kwarg_np_arrays, arrays_kwargs_indices, n_kwargs_arrays = (
+            self._get_nested_np_arrays(kwargs_np)
+        )
+
+        total_num_arrays = n_args_arrays + n_kwargs_arrays
+        args_result = TestArgumentsSearchResult(
+            args_np, arg_np_arrays, arrays_args_indices
+        )
+        kwargs_result = TestArgumentsSearchResult(
+            kwargs_np, kwarg_np_arrays, arrays_kwargs_indices
+        )
+        return args_result, kwargs_result, total_num_arrays
 
     def _preprocess_flags(self, total_num_arrays):
         # Make all array-specific test flags and dtypes equal in length
@@ -65,25 +86,9 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         pass
 
     def get_results(self, test_arguments):
-        # split the arguments into their positional and keyword components
-        args_np, kwargs_np = self._split_args_to_args_and_kwargs(
-            num_positional_args=self.test_flags.num_positional_args,
-            test_arguments=test_arguments,
-        )
-
-        # Extract all arrays from the arguments and keyword arguments
-        arg_np_arrays, arrays_args_indices, n_args_arrays = self._get_nested_np_arrays(
-            args_np
-        )
-        kwarg_np_arrays, arrays_kwargs_indices, n_kwargs_arrays = (
-            self._get_nested_np_arrays(kwargs_np)
-        )
-
-        total_num_arrays = n_args_arrays + n_kwargs_arrays
+        args_result, kwargs_result, total_num_arrays = self._search_args(test_arguments)
         self._preprocess_flags(total_num_arrays)
-
-        args, kwargs, idx_args, idx_kwargs = self._search_args(test_arguments)
-        args, kwargs = self._preprocess_args(args, kwargs, idx_args, idx_kwargs)
+        args, kwargs = self._preprocess_args(args_result, kwargs_result)
         return self._call_function(args, kwargs)
 
 
