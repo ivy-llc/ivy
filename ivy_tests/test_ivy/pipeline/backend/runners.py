@@ -114,7 +114,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             ret.append(temp)
         return ret[0], ret[1]
 
-    def _call_function(self):
+    def _call_function(self, args, kwargs):
         pass
 
     def get_results(self, test_arguments):
