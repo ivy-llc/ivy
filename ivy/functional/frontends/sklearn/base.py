@@ -36,3 +36,20 @@ class RegressorMixin:
 class MultiOutputMixin:
     def _more_tags(self):
         return {"multioutput": True}
+
+
+def is_classifier(estimator):
+    """
+    Return True if the given estimator is (probably) a classifier.
+
+    Parameters
+    ----------
+    estimator : object
+        Estimator object to test.
+
+    Returns
+    -------
+    out : bool
+        True if estimator is a classifier and False otherwise.
+    """
+    return getattr(estimator, "_estimator_type", None) == "classifier"

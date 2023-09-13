@@ -6,7 +6,6 @@ from scipy.sparse import isspmatrix_csr
 
 from ._splitter import SplitRecord
 
-
 # Define constants
 INFINITY = ivy.inf
 EPSILON = ivy.finfo(ivy.double).eps
@@ -48,7 +47,7 @@ class TreeBuilder:
         self.min_weight_leaf = None
         self.max_depth = None
         self.min_impurity_decrease = None
-    
+
     def build(
         self,
         tree,
@@ -84,24 +83,23 @@ class TreeBuilder:
         if y.base.dtype != "float32" or not y.base.flags.contiguous:
             y = ivy.ascontiguousarray(y, dtype="float32")
 
-        if (
-            sample_weight is not None and
-            (
-                sample_weight.base.dtype != "float32" or
-                not sample_weight.base.flags.contiguous
-            )
+        if sample_weight is not None and (
+            sample_weight.base.dtype != "float32"
+            or not sample_weight.base.flags.contiguous
         ):
             sample_weight = ivy.asarray(sample_weight, dtype="float32", order="C")
 
         return X, y, sample_weight
 
 
-
 # Depth first builder ---------------------------------------------------------
 # A record on the stack for depth-first tree growing
 
+
 class StackRecord:
-    def __init__(self, start, end, depth, parent, is_left, impurity, n_constant_features):
+    def __init__(
+        self, start, end, depth, parent, is_left, impurity, n_constant_features
+    ):
         self.start = start
         self.end = end
         self.depth = depth
@@ -251,10 +249,10 @@ class Tree:
         self.max_depth = None
         self.node_count = None
         self.capacity = None
-        self.nodes = [] #replaced it with array since this array will contain nodes 
+        self.nodes = []  # replaced it with array since this array will contain nodes
         self.value = None
         self.value_stride = None
-        
+
         size_t_dtype = "float32"
 
         n_classes = _check_n_classes(n_classes, size_t_dtype)
@@ -305,10 +303,21 @@ class Tree:
     def _resize(self, capacity):
         raise NotImplementedError
 
-    def _resize_c(self, capacity=float('inf')):
+    def _resize_c(self, capacity=float("inf")):
         raise NotImplementedError
 
-    def _add_node(self, parent, is_left, is_leaf, feature, threshold, impurity, n_node_samples, weighted_n_node_samples, missing_go_to_left):
+    def _add_node(
+        self,
+        parent,
+        is_left,
+        is_leaf,
+        feature,
+        threshold,
+        impurity,
+        n_node_samples,
+        weighted_n_node_samples,
+        missing_go_to_left,
+    ):
         """
         Add a node to the tree.
 
@@ -319,6 +328,7 @@ class Tree:
         node_id = self.node_count
 
         node = Node()  #self.nodes contains a list of nodes, it returns the node at node_id location
+
         self.nodes.append(node)
         node.impurity = impurity
         node.n_node_samples = n_node_samples
@@ -357,7 +367,7 @@ class Tree:
         if self.n_outputs == 1:
             out = out.reshape(X.shape[0], self.max_n_classes)
         return out
-    
+
     def apply(self, X):
         """Finds the terminal region (=leaf node) for each sample in X."""
         if issparse(X):
@@ -437,7 +447,7 @@ class Tree:
             out[i] = self.nodes.index(node)
 
         return out
-    
+
     def decision_path(self, X):
         if issparse(X):
             return self._decision_path_sparse_csr(X)
@@ -445,7 +455,6 @@ class Tree:
             return self._decision_path_dense(X)
 
     def _decision_path_dense(self, X):
-
         # Check input
         if not isinstance(X, ivy.data_classes.array.array.Array):
             raise ValueError("X should be a ivy.data_classes.array.array.Array, got %s" % type(X))
@@ -469,7 +478,7 @@ class Tree:
 
             # Add all external nodes
             while node.left_child != _TREE_LEAF:
-                indices[indptr[i + 1]] = node 
+                indices[indptr[i + 1]] = node
                 indptr[i + 1] += 1
 
                 if X[i, node.feature] <= node.threshold:
@@ -490,7 +499,6 @@ class Tree:
     
     #not tested
     def _decision_path_sparse_csr(self, X):
-
         # Check input
         if not isspmatrix_csr(X):
             raise ValueError("X should be in csr_matrix format, got %s" % type(X))
@@ -543,6 +551,7 @@ class Tree:
             indices[indptr[i + 1]] = node - self.nodes
             indptr[i + 1] += 1
 
+            
         indices = indices[:indptr[n_samples]]
         data = ivy.ones(shape=len(indices), dtype="int32")
         out = csr_matrix((data, indices, indptr), shape=(n_samples, self.node_count))
@@ -564,11 +573,10 @@ class Tree:
 
         return depths.base
 
-    
-    '''
+    """
     This code is typically used after fitting a decision tree model to assess the importance of each feature in making predictions.
     The feature importances indicate the contribution of each feature to the overall decision-making process of the tree.
-    '''
+    """
     def compute_feature_importances(self, normalize=True):
         # Compute the importance of each feature (variable).
 
@@ -582,9 +590,9 @@ class Tree:
 
                 # Calculate the importance for the feature associated with this node.
                 importance = (
-                    node.weighted_n_node_samples * node.impurity -
-                    left.weighted_n_node_samples * left.impurity -
-                    right.weighted_n_node_samples * right.impurity
+                    node.weighted_n_node_samples * node.impurity
+                    - left.weighted_n_node_samples * left.impurity
+                    - right.weighted_n_node_samples * right.impurity
                 )
 
                 importances[node.feature] += importance
@@ -597,46 +605,47 @@ class Tree:
                 importances /= total_importance
 
         return importances
-    
+
     def _get_value_ndarray(self):
-        shape = (
-            int(self.node_count),
-            int(self.n_outputs),
-            int(self.max_n_classes)
-        )
+        shape = (int(self.node_count), int(self.n_outputs), int(self.max_n_classes))
         arr = ivy.array(self.value, dtype="float32").reshape(shape)
         return arr
-    
-    '''
+
+    """
     this code creates a NumPy structured array that wraps the internal nodes of a decision tree. 
     This array can be used to access and manipulate the tree's nodes efficiently in Python.
-    '''
+    """
+
     def _get_node_tensor(self):
         # Create a tensor with a custom data type for the tree nodes
         nodes_tensor = ivy.zeros(self.node_count, dtype="float32")
 
         # Fill the tensor with node data
         for i, node in enumerate(self.nodes):
-            nodes_tensor[i] = ivy.array((
-                node.impurity,
-                node.n_node_samples,
-                node.weighted_n_node_samples,
-                node.left_child,
-                node.right_child,
-                node.feature,
-                node.threshold,
-                node.missing_go_to_left,
-            ), dtype="float32")
+            nodes_tensor[i] = ivy.array(
+                (
+                    node.impurity,
+                    node.n_node_samples,
+                    node.weighted_n_node_samples,
+                    node.left_child,
+                    node.right_child,
+                    node.feature,
+                    node.threshold,
+                    node.missing_go_to_left,
+                ),
+                dtype="float32",
+            )
 
         # Attach a reference to the tree
         nodes_tensor.tree_reference = self
 
         return nodes_tensor
-    
-    '''
+
+    """
     This code effectively computes the partial dependence values for a set of grid points based on a given decision tree. 
     Partial dependence helps understand how the model's predictions change with variations in specific features while keeping other features constant.
-    '''   
+    """
+    
     def compute_partial_dependence(self, X, target_features, out):
         weight_stack = ivy.zeros(self.node_count, dtype="float32")
         node_idx_stack = ivy.zeros(self.node_count, dtype="int32")
@@ -683,10 +692,145 @@ class Tree:
             raise ValueError("Total weight should be 1.0 but was %.9f" % ivy.sum(weight_stack))
 
 
+class DepthFirstTreeBuilder(TreeBuilder):
+    """Build a decision tree in depth-first fashion."""
+
+    def __init__(
+        self,
+        splitter,
+        min_samples_split,
+        min_samples_leaf,
+        min_weight_leaf,
+        max_depth,
+        min_impurity_decrease,
+    ):
+        self.splitter = splitter
+        self.min_samples_split = min_samples_split
+        self.min_samples_leaf = min_samples_leaf
+        self.min_weight_leaf = min_weight_leaf
+        self.max_depth = max_depth
+        self.min_impurity_decrease = min_impurity_decrease
+
+    def build(
+        self, tree, X, y, sample_weight=None, missing_values_in_feature_mask=None
+    ):
+        """Build a decision tree from the training set (X, y)."""
+
+        # Check input
+        X, y, sample_weight = self._check_input(X, y, sample_weight)
+
+        # Parameters
+        splitter = self.splitter
+        max_depth = self.max_depth
+        min_samples_leaf = self.min_samples_leaf
+        min_weight_leaf = self.min_weight_leaf
+        min_samples_split = self.min_samples_split
+        min_impurity_decrease = self.min_impurity_decrease
+
+        # Recursive partition (without actual recursion)
+        splitter.init(X, y, sample_weight, missing_values_in_feature_mask)
+
+        stack = []
+
+        # Push root node onto stack
+        stack.append(
+            StackRecord(
+                start=0,
+                end=splitter.n_samples,
+                depth=0,
+                parent=_TREE_UNDEFINED,
+                is_left=False,
+                impurity=INFINITY,
+                n_constant_features=0,
+            )
+        )
+        weighted_n_node_samples = ivy.zeros(1, dtype="float32")
+        while stack:
+            stack_record = stack.pop()
+
+            start = stack_record.start
+            end = stack_record.end
+            depth = stack_record.depth
+            parent = stack_record.parent
+            is_left = stack_record.is_left
+            impurity = stack_record.impurity
+            n_constant_features = stack_record.n_constant_features
+
+            n_node_samples = end - start
+            splitter.node_reset(start, end, weighted_n_node_samples)
+
+            is_leaf = (
+                depth >= max_depth
+                or n_node_samples < min_samples_split
+                or n_node_samples < 2 * min_samples_leaf
+                or ivy.sum(sample_weight[start:end]) < 2 * min_weight_leaf
+            )
+
+            if is_left:
+                impurity = splitter.node_impurity()
+
+            is_leaf = is_leaf or impurity <= EPSILON
+
+            if not is_leaf:
+                split = (
+                    SplitRecord()
+                )  # No idea what is SplitRecord in original code. Maybe this never gets called, not sure
+                splitter.node_split(impurity, split, n_constant_features)
+                is_leaf = (
+                    is_leaf
+                    or split.pos >= end
+                    or (split.improvement + EPSILON < min_impurity_decrease)
+                )
+
+            node_id = tree._add_node(
+                parent,
+                is_left,
+                is_leaf,
+                split.feature if not is_leaf else 0,
+                split.threshold if not is_leaf else 0,
+                impurity,
+                n_node_samples,
+                ivy.sum(sample_weight[start:end]),
+                split.missing_go_to_left,
+            )
+
+            splitter.node_value(tree.value + node_id * tree.value_stride)
+
+            if not is_leaf:
+                # Push right child on stack
+                stack.append(
+                    StackRecord(
+                        start=split.pos,
+                        end=end,
+                        depth=depth + 1,
+                        parent=node_id,
+                        is_left=False,
+                        impurity=split.impurity_right,
+                        n_constant_features=n_constant_features,
+                    )
+                )
+                # Push left child on stack
+                stack.append(
+                    StackRecord(
+                        start=start,
+                        end=split.pos,
+                        depth=depth + 1,
+                        parent=node_id,
+                        is_left=True,
+                        impurity=split.impurity_left,
+                        n_constant_features=n_constant_features,
+                    )
+                )
+
+
+# --- Helpers --- #
+# --------------- #
+
+
 def _check_n_classes(n_classes, expected_dtype):
     if n_classes.ndim != 1:
         raise ValueError(
-            f"Wrong dimensions for n_classes from the pickle: "
+            "Wrong dimensions for n_classes from the pickle: "
             f"expected 1, got {n_classes.ndim}"
         )
 
@@ -704,7 +848,5 @@ def _check_n_classes(n_classes, expected_dtype):
     )
 
 
-
-
-
-
+_TREE_LEAF = TREE_LEAF
+_TREE_UNDEFINED = TREE_UNDEFINED

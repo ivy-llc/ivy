@@ -1,31 +1,32 @@
-#splitter.init
-#splitter.n_samples
-#splitter.node_reset
-#splitter.node_impurity
-#splitter.node_split
-#splitter.node_value
+# splitter.init
+# splitter.n_samples
+# splitter.node_reset
+# splitter.node_impurity
+# splitter.node_split
+# splitter.node_value
 
 import ivy
+import random
 
 
-def init_split(split_record, start_pos):
-    split_record.impurity_left = float('inf')
-    split_record.impurity_right = float('inf')
-    split_record.pos = start_pos
-    split_record.feature = 0
-    split_record.threshold = 0.0
-    split_record.improvement = float('-inf')
-    split_record.missing_go_to_left = False
-    split_record.n_missing = 0
+class SplitRecord:
+    def __init__():
+        raise NotImplementedError(
+            "No idea what SplitRecord is, just created to remove error!"
+        )
 
 
 class Splitter:
-    """Abstract splitter class.
-
-    Splitters are called by tree builders to find the best splits on both
-    sparse and dense data, one split at a time.
     """
-    def __init__(self, criterion, max_features, min_samples_leaf, min_weight_leaf, random_state):
+    Abstract splitter class.
+
+    Splitters are called by tree builders to find the best splits on
+    both sparse and dense data, one split at a time.
+    """
+
+    def __init__(
+        self, criterion, max_features, min_samples_leaf, min_weight_leaf, random_state
+    ):
         self.criterion = criterion
         self.random_state = random_state
 
@@ -37,7 +38,6 @@ class Splitter:
         self.min_weight_leaf = min_weight_leaf
 
         self.rand_r_state = random_state.randint(0, 0x7FFFFFFF)
-        
         self.samples = None
         self.weighted_n_samples = 0.0
 
@@ -83,12 +83,21 @@ class Splitter:
 
         if missing_values_in_feature_mask is not None:
             self.criterion.init_sum_missing()
-        
+
         return 0
-    
+
     def __reduce__(self):
-        return (type(self), (self.criterion, self.max_features, self.min_samples_leaf,
-                self.min_weight_leaf, self.random_state), self.__getstate__())
+        return (
+            type(self),
+            (
+                self.criterion,
+                self.max_features,
+                self.min_samples_leaf,
+                self.min_weight_leaf,
+                self.random_state,
+            ),
+            self.__getstate__(),
+        )
 
     def node_reset(self, start, end, weighted_n_node_samples):
         self.start = start
@@ -100,12 +109,12 @@ class Splitter:
             self.weighted_n_samples,
             self.samples,
             start,
-            end
+            end,
         )
 
         weighted_n_node_samples[0] = self.criterion.weighted_n_node_samples
         return 0
-    
+
     def node_split(self, impurity, split, n_constant_features):
         # This is a placeholder method; actual implementation required.
         # You should add your computation logic here to find the best split.
@@ -118,6 +127,7 @@ class Splitter:
     def node_impurity(self):
         """Return the impurity of the current node."""
         return self.criterion.node_impurity()
+
     
 class BestSplitter(Splitter):
     """Splitter for finding the best split on dense data."""
@@ -138,10 +148,13 @@ class BestSplitter(Splitter):
             n_constant_features,
         )
 
-class DensePartitioner:
-    """Partitioner specialized for dense data.
 
-    Note that this partitioner is agnostic to the splitting strategy (best vs. random).
+class DensePartitioner:
+    """
+    Partitioner specialized for dense data.
+
+    Note that this partitioner is agnostic to the splitting strategy
+    (best vs. random).
     """
 
     def __init__(self, X, samples, feature_values, missing_values_in_feature_mask):
@@ -165,15 +178,18 @@ class DensePartitioner:
         n_missing = 0
         missing_values_in_feature_mask = self.missing_values_in_feature_mask
 
-        if missing_values_in_feature_mask is not None and missing_values_in_feature_mask[current_feature]:
+        if (
+            missing_values_in_feature_mask is not None
+            and missing_values_in_feature_mask[current_feature]
+        ):
             i, current_end = self.start, self.end - 1
             while i <= current_end:
-                if isnan(X[samples[current_end], current_feature]):
+                if ivy.isnan(X[samples[current_end], current_feature]):
                     n_missing += 1
                     current_end -= 1
                     continue
 
-                if isnan(X[samples[i], current_feature]):
+                if ivy.isnan(X[samples[i], current_feature]):
                     samples[i], samples[current_end] = samples[current_end], samples[i]
                     n_missing += 1
                     current_end -= 1
@@ -189,12 +205,225 @@ class DensePartitioner:
         self.n_missing = n_missing
 
 
-
 def sort(feature_values, samples, n):
     if n == 0:
         return
     maxd = 2 * int(math.log(n))
     introsort(feature_values, samples, n, maxd)
+
+    
+    
+class SparsePartitioner:
+    def __init__(
+        self,
+        X,
+        samples,
+        n_samples,
+        feature_values,
+        missing_values_in_feature_mask,
+    ):
+        if not self.isspmatrix_csc(X):
+            raise ValueError("X should be in csc format")
+
+        self.samples = samples
+        self.feature_values = feature_values
+
+        # Initialize X
+        n_total_samples = X.shape[0]
+
+        self.X_data = X.data
+        self.X_indices = X.indices
+        self.X_indptr = X.indptr
+        self.n_total_samples = n_total_samples
+
+        # Initialize auxiliary arrays used for partitioning
+        self.index_to_samples = ivy.full(n_total_samples, fill_value=-1, dtype=ivy.intp)
+        self.sorted_samples = ivy.empty(n_samples, dtype=ivy.intp)
+        self.n_missing = 0  # Placeholder for missing values (not supported yet)
+        self.missing_values_in_feature_mask = missing_values_in_feature_mask
+
+        self.start_positive = 0
+        self.end_negative = 0
+        self.is_samples_sorted = False
+
+    def init_node_split(self, start, end):
+        self.start = start
+        self.end = end
+        self.is_samples_sorted = False
+
+    def sort_samples_and_feature_values(self, current_feature):
+        # Simultaneously sort based on feature_values
+        self.extract_nnz(current_feature)
+        # Rest of the code for sorting...
+
+    def find_min_max(
+        self, current_feature, min_feature_value_out, max_feature_value_out
+    ):
+        # Find the minimum and maximum value for current_feature
+        self.extract_nnz(current_feature)
+        # Rest of the code for finding min and max...
+
+    def next_p(self, p_prev, p):
+        # Compute the next p_prev and p for iterating over feature values
+        # Rest of the code...
+        pass
+
+    def partition_samples(self, current_threshold):
+        # Partition samples for feature_values at the current_threshold
+        return self._partition(current_threshold, self.start_positive)
+
+    def partition_samples_final(
+        self, best_pos, best_threshold, best_feature, n_missing
+    ):
+        # Partition samples for X at the best_threshold and best_feature
+        self.extract_nnz(best_feature)
+        self._partition(best_threshold, best_pos)
+
+    def _partition(self, threshold, zero_pos):
+        # Partition samples based on threshold
+        # Rest of the code...
+        pass
+
+    def extract_nnz(self, feature):
+        # Extract and partition values for a given feature
+        # Rest of the code...
+        pass
+
+    def isspmatrix_csc(self, X):
+        # Check if X is in CSC format
+        # You may need to implement this function according to your specific requirements
+        # For the example, we assume it's already in CSC format
+        return True
+
+
+class BestSplitter(Splitter):
+    """Splitter for finding the best split on dense data."""
+
+    def __init__(self, X, y, sample_weight, missing_values_in_feature_mask):
+        super().__init__(X, y, sample_weight, missing_values_in_feature_mask)
+        self.partitioner = DensePartitioner(
+            X, self.samples, self.feature_values, missing_values_in_feature_mask
+        )
+
+    def node_split(self, impurity, split, n_constant_features):
+        return node_split_best(
+            self,
+            self.partitioner,
+            self.criterion,
+            impurity,
+            split,
+            n_constant_features,
+        )
+
+
+class BestSparseSplitter(Splitter):
+    """Splitter for finding the best split, using sparse data."""
+
+    def __init__(self, X, y, sample_weight, missing_values_in_feature_mask):
+        super().__init__(X, y, sample_weight, missing_values_in_feature_mask)
+        self.partitioner = SparsePartitioner(
+            X,
+            self.samples,
+            self.n_samples,
+            self.feature_values,
+            missing_values_in_feature_mask,
+        )
+
+    def node_split(self, impurity, split, n_constant_features):
+        return node_split_best(
+            self,
+            self.partitioner,
+            self.criterion,
+            impurity,
+            split,
+            n_constant_features,
+        )
+
+
+class RandomSplitter(Splitter):
+    """Splitter for finding the best random split on dense data."""
+
+    def __init__(
+        self,
+        X,
+        y,
+        sample_weight,
+        missing_values_in_feature_mask,
+    ):
+        Splitter.__init__(self, X, y, sample_weight, missing_values_in_feature_mask)
+        self.partitioner = DensePartitioner(
+            X, self.samples, self.feature_values, missing_values_in_feature_mask
+        )
+
+    def node_split(self, impurity, split, n_constant_features):
+        return node_split_random(
+            self,
+            self.partitioner,
+            self.criterion,
+            impurity,
+            split,
+            n_constant_features,
+        )
+
+
+class RandomSparseSplitter(Splitter):
+    """Splitter for finding the best random split, using sparse data."""
+
+    def __init__(
+        self,
+        X,
+        y,
+        sample_weight,
+        missing_values_in_feature_mask,
+    ):
+        Splitter.__init__(self, X, y, sample_weight, missing_values_in_feature_mask)
+        self.partitioner = SparsePartitioner(
+            X,
+            self.samples,
+            self.n_samples,
+            self.feature_values,
+            missing_values_in_feature_mask,
+        )
+
+    def node_split(self, impurity, split, n_constant_features):
+        return node_split_random(
+            self,
+            self.partitioner,
+            self.criterion,
+            impurity,
+            split,
+            n_constant_features,
+        )
+
+
+def heapsort(feature_values, samples, n):
+    # Heapify
+    start = (n - 2) // 2
+    end = n
+    while True:
+        sift_down(feature_values, samples, start, end)
+        if start == 0:
+            break
+        start -= 1
+
+    # Sort by shrinking the heap, putting the max element immediately after it
+    end = n - 1
+    while end > 0:
+        swap(feature_values, samples, 0, end)
+        sift_down(feature_values, samples, 0, end)
+        end -= 1
+
+
+def init_split(split_record, start_pos):
+    split_record.impurity_left = float("inf")
+    split_record.impurity_right = float("inf")
+    split_record.pos = start_pos
+    split_record.feature = 0
+    split_record.threshold = 0.0
+    split_record.improvement = float("-inf")
+    split_record.missing_go_to_left = False
+    split_record.n_missing = 0
+
 
 def introsort(feature_values, samples, n, maxd):
     while n > 1:
@@ -225,6 +454,7 @@ def introsort(feature_values, samples, n, maxd):
         samples = samples[r:]
         n -= r
 
+        
 def heapsort(feature_values, samples, n):
     # Heapify
     start = (n - 2) // 2
@@ -287,9 +517,10 @@ def median3(feature_values, n):
     else:
         return b
 
-import random
 
-def node_split_best(splitter, partitioner, criterion, impurity, split, n_constant_features):
+def node_split_best(
+    splitter, partitioner, criterion, impurity, split, n_constant_features
+):
     start = splitter.start
     end = splitter.end
     end_non_missing = end
@@ -314,7 +545,10 @@ def node_split_best(splitter, partitioner, criterion, impurity, split, n_constan
     n_known_constants = n_constant_features[0]
     n_total_constants = n_known_constants
 
-    while f_i > n_total_constants and (n_visited_features < max_features or n_visited_features <= n_found_constants + n_drawn_constants):
+    while f_i > n_total_constants and (
+        n_visited_features < max_features
+        or n_visited_features <= n_found_constants + n_drawn_constants
+    ):
         n_visited_features += 1
         f_j = random.randint(n_drawn_constants, f_i - n_found_constants - 1)
 
@@ -414,7 +648,7 @@ def node_split_best(splitter, partitioner, criterion, impurity, split, n_constan
             best_split.pos,
             best_split.threshold,
             best_split.feature,
-            best_split.n_missing
+            best_split.n_missing,
         )
 
         if best_split.n_missing != 0:
@@ -440,13 +674,20 @@ def node_split_best(splitter, partitioner, criterion, impurity, split, n_constan
         memcpy(features, constant_features, sizeof(SIZE_t) * n_known_constants)
         memcpy(
             constant_features[n_known_constants:],
-            features[n_known_constants:n_known_constants + n_found_constants],
-            sizeof(SIZE_t) * n_found_constants
+            features[n_known_constants : n_known_constants + n_found_constants],
+            sizeof(SIZE_t) * n_found_constants,
         )
 
         split[0] = best_split
         n_constant_features[0] = n_total_constants
         return 0
+
+
+def node_split_random(
+    splitter, partitioner, criterion, impurity, split, n_constant_features
+):
+    raise NotImplementedError("Function not implemented yet!")
+
 
 def shift_missing_values_to_left_if_required(best, samples, end):
     # The partitioner partitions the data such that the missing values are in
@@ -461,3 +702,44 @@ def shift_missing_values_to_left_if_required(best, samples, end):
             samples[i], samples[current_end] = samples[current_end], samples[i]
         best.pos += best.n_missing
 
+
+def sift_down(feature_values, samples, start, end):
+    # Restore heap order in feature_values[start:end] by moving the max element to start.
+    root = start
+    while True:
+        child = root * 2 + 1
+
+        # Find the max of root, left child, right child
+        maxind = root
+        if (
+            child < end
+            and feature_values[samples[maxind]] < feature_values[samples[child]]
+        ):
+            maxind = child
+        if (
+            child + 1 < end
+            and feature_values[samples[maxind]] < feature_values[samples[child + 1]]
+        ):
+            maxind = child + 1
+
+        if maxind == root:
+            break
+        else:
+            swap(feature_values, samples, root, maxind)
+            root = maxind
+
+
+def sort(feature_values, samples, n):
+    if n == 0:
+        return
+    maxd = 2 * int(math.log(n))
+    introsort(feature_values, samples, n, maxd)
+
+
+# Define the swap function here
+def swap(feature_values, samples, i, j):
+    feature_values[samples[i]], feature_values[samples[j]] = (
+        feature_values[samples[j]],
+        feature_values[samples[i]],
+    )
+    samples[i], samples[j] = samples[j], samples[i]

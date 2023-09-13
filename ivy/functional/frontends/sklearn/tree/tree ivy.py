@@ -1,56 +1,7 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import numpy as np
-
-
-
 from scipy.sparse import issparse
 from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # =============================================================================
@@ -59,7 +10,6 @@ from scipy.sparse import isspmatrix_csr
 
 from numpy import float32 as DTYPE
 from numpy import float64 as DOUBLE
-
 
 # Define constants
 INFINITY = np.inf
@@ -76,6 +26,7 @@ TREE_UNDEFINED = -2
 _TREE_LEAF = TREE_LEAF
 _TREE_UNDEFINED = TREE_UNDEFINED
 
+
 # Since you're dealing with Cython-specific types and features,
 # it's important to provide a dummy definition for Node.
 class Node:
@@ -89,12 +40,15 @@ class Node:
         self.weighted_n_node_samples = None
         self.missing_go_to_left = None
 
+
 dummy = Node()
 # Create a numpy dtype for Node using the dummy object
 NODE_DTYPE = np.asarray([dummy], dtype=object).dtype
+
 # =============================================================================
 # TreeBuilder
 # =============================================================================
+
 
 class TreeBuilder:
     """Interface for different tree building strategies."""
@@ -105,7 +59,7 @@ class TreeBuilder:
         self.min_weight_leaf = None
         self.max_depth = None
         self.min_impurity_decrease = None
-    
+
     def build(
         self,
         tree,
@@ -141,18 +95,13 @@ class TreeBuilder:
         if y.base.dtype != DTYPE or not y.base.flags.contiguous:
             y = np.ascontiguousarray(y, dtype=DTYPE)
 
-        if (
-            sample_weight is not None and
-            (
-                sample_weight.base.dtype != DOUBLE or
-                not sample_weight.base.flags.contiguous
-            )
+        if sample_weight is not None and (
+            sample_weight.base.dtype != DOUBLE
+            or not sample_weight.base.flags.contiguous
         ):
             sample_weight = np.asarray(sample_weight, dtype=DOUBLE, order="C")
 
         return X, y, sample_weight
-
-
 
 
 # Depth first builder ---------------------------------------------------------
@@ -169,9 +118,17 @@ class StackRecord:
 
 
 class SplitRecord:
-    def __init__(self, feature, pos, threshold, improvement,
-                 impurity_left, impurity_right, missing_go_to_left,
-                 n_missing):
+    def __init__(
+        self,
+        feature,
+        pos,
+        threshold,
+        improvement,
+        impurity_left,
+        impurity_right,
+        missing_go_to_left,
+        n_missing,
+    ):
         self.feature = feature
         self.pos = pos
         self.threshold = threshold
@@ -180,9 +137,6 @@ class SplitRecord:
         self.impurity_right = impurity_right
         self.missing_go_to_left = missing_go_to_left
         self.n_missing = n_missing
-
-
-
 
 
 class DepthFirstTreeBuilder(TreeBuilder):
@@ -367,11 +321,12 @@ class Tree:
         self.value = None
         self.nodes = None
 
-    #NOT CONSIDERING PICKINLING FOR NOW
+    # NOT CONSIDERING PICKINLING FOR NOW
     def __reduce__(self):
         """Reduce re-implementation, for pickling."""
         raise NotImplementedError
-    #NOT CONSIDERING PICKINLING FOR NOW
+
+    # NOT CONSIDERING PICKINLING FOR NOW
     def __getstate__(self):
         """Getstate re-implementation, for pickling."""
         d = {}
@@ -381,7 +336,8 @@ class Tree:
         d["nodes"] = self._get_node_ndarray()
         d["values"] = self._get_value_ndarray()
         return d
-    #NOT CONSIDERING PICKINLING FOR NOW
+
+    # NOT CONSIDERING PICKINLING FOR NOW
     def __setstate__(self, d):
         """Setstate re-implementation, for unpickling."""
         raise NotImplementedError
@@ -413,7 +369,6 @@ class Tree:
         # This section is relevant if the code is dealing with C arrays.
         # In Python, resizing arrays is handled automatically by lists or numpy arrays.
         # You won't need to explicitly reallocate memory or initialize values like this.
-        
         # replaced safe_realloc(&self.nodes, capacity) with the following
         new_nodes = np.empty(capacity, dtype=object)
         for i in range(len(self.nodes)):
@@ -433,9 +388,18 @@ class Tree:
         self.capacity = capacity
         return 0
 
-
-    def _add_node(self, parent, is_left, is_leaf, feature, threshold, impurity,
-              n_node_samples, weighted_n_node_samples, missing_go_to_left):
+    def _add_node(
+        self,
+        parent,
+        is_left,
+        is_leaf,
+        feature,
+        threshold,
+        impurity,
+        n_node_samples,
+        weighted_n_node_samples,
+        missing_go_to_left,
+    ):
         """
         Add a node to the tree.
 
@@ -479,19 +443,19 @@ class Tree:
     def predict(self, X):
         """Predict target for X."""
         out = self._get_value_ndarray()[self.apply(X), :, :]
-        
+
         if self.n_outputs == 1:
             out = out.reshape(X.shape[0], self.max_n_classes)
-        
+
         return out
-    
+
     def apply(self, X):
         """Finds the terminal region (=leaf node) for each sample in X."""
         if issparse(X):
             return self._apply_sparse_csr(X)
         else:
             return self._apply_dense(X)
-        
+
     def _apply_dense(self, X):
         """Finds the terminal region (=leaf node) for each sample in X."""
 
@@ -528,7 +492,7 @@ class Tree:
                 out[index[0]] = node - self.nodes  # node offset
 
         return out
-    
+
     def _apply_sparse_csr(self, X):
         """Finds the terminal region (=leaf node) for each sample in sparse X."""
         if not isinstance(X, csr_matrix):
@@ -567,7 +531,7 @@ class Tree:
             out[i] = node - self.nodes  # node offset
 
         return out
-    
+
     def decision_path(self, X):
         """Finds the decision path (=node) for each sample in X."""
         if issparse(X):
@@ -621,7 +585,7 @@ class Tree:
         out = csr_matrix((data, indices, indptr), shape=(n_samples, self.node_count))
 
         return out
-    
+
     def _decision_path_sparse_csr(self, X):
         """Finds the decision path (=node) for each sample in X."""
 
@@ -684,7 +648,8 @@ class Tree:
         return out
 
     def compute_node_depths(self):
-        """Compute the depth of each node in a tree.
+        """
+        Compute the depth of each node in a tree.
 
         .. versionadded:: 1.3
 
@@ -721,9 +686,10 @@ class Tree:
                 right = nodes[node.right_child]
 
                 importances[node.feature] += (
-                    node.weighted_n_node_samples * node.impurity -
-                    left.weighted_n_node_samples * left.impurity -
-                    right.weighted_n_node_samples * right.impurity)
+                    node.weighted_n_node_samples * node.impurity
+                    - left.weighted_n_node_samples * left.impurity
+                    - right.weighted_n_node_samples * right.impurity
+                )
             node += 1
 
         for i in range(self.n_features):
@@ -737,40 +703,44 @@ class Tree:
                 importances /= normalizer
 
         return importances
-    
-    def _get_value_ndarray(self):
-        """Wraps value as a 3-d NumPy array.
 
-        The array keeps a reference to this Tree, which manages the underlying
-        memory.
+    def _get_value_ndarray(self):
+        """
+        Wraps value as a 3-d NumPy array.
+
+        The array keeps a reference to this Tree, which manages the
+        underlying memory.
         """
         shape = (self.node_count, self.n_outputs, self.max_n_classes)
         arr = np.ndarray(shape, dtype=np.float64, buffer=self.value)
         arr.base = self
         return arr
-    
-    def _get_node_ndarray(self):
-        """Wraps nodes as a NumPy struct array.
 
-        The array keeps a reference to this Tree, which manages the underlying
-        memory. Individual fields are publicly accessible as properties of the
-        Tree.
+    def _get_node_ndarray(self):
+        """
+        Wraps nodes as a NumPy struct array.
+
+        The array keeps a reference to this Tree, which manages the
+        underlying memory. Individual fields are publicly accessible as
+        properties of the Tree.
         """
         shape = (self.node_count,)
-        dtype = np.dtype([
-            ('left_child', np.intp),
-            ('right_child', np.intp),
-            ('feature', np.intp),
-            ('threshold', np.float64),
-            ('impurity', np.float64),
-            ('n_node_samples', np.intp),
-            ('weighted_n_node_samples', np.float64),
-            ('missing_go_to_left', np.uint8)
-        ])
+        dtype = np.dtype(
+            [
+                ("left_child", np.intp),
+                ("right_child", np.intp),
+                ("feature", np.intp),
+                ("threshold", np.float64),
+                ("impurity", np.float64),
+                ("n_node_samples", np.intp),
+                ("weighted_n_node_samples", np.float64),
+                ("missing_go_to_left", np.uint8),
+            ]
+        )
         arr = np.ndarray(shape, dtype=dtype, buffer=self.nodes)
         arr.base = self
         return arr
-    
+
     def compute_partial_dependence(self, X, target_features, out):
         out.fill(0.0)  # Initialize the output array
 
@@ -813,10 +783,155 @@ class Tree:
                 raise ValueError(f"Total weight should be 1.0 but was {total_weight:.9f}")
 
 
+class DepthFirstTreeBuilder(TreeBuilder):
+    """Build a decision tree in depth-first fashion."""
+
+    def __init__(
+        self,
+        splitter,
+        min_samples_split,
+        min_samples_leaf,
+        min_weight_leaf,
+        max_depth,
+        min_impurity_decrease,
+    ):
+        self.splitter = splitter
+        self.min_samples_split = min_samples_split
+        self.min_samples_leaf = min_samples_leaf
+        self.min_weight_leaf = min_weight_leaf
+        self.max_depth = max_depth
+        self.min_impurity_decrease = min_impurity_decrease
+
+    def build(
+        self, tree, X, y, sample_weight=None, missing_values_in_feature_mask=None
+    ):
+        """Build a decision tree from the training set (X, y)."""
+
+        # Check input
+        X, y, sample_weight = self._check_input(X, y, sample_weight)
+
+        # Initial capacity
+        init_capacity = (
+            (2 ** (tree.max_depth + 1)) - 1 if tree.max_depth <= 10 else 2047
+        )
+
+        tree._resize(init_capacity)
+
+        # Parameters
+        splitter = self.splitter
+        max_depth = self.max_depth
+        min_samples_leaf = self.min_samples_leaf
+        min_weight_leaf = self.min_weight_leaf
+        min_samples_split = self.min_samples_split
+        min_impurity_decrease = self.min_impurity_decrease
+
+        # Recursive partition (without actual recursion)
+        splitter.init(X, y, sample_weight, missing_values_in_feature_mask)
+
+        stack = []
+
+        # Push root node onto stack
+        stack.append(
+            StackRecord(
+                start=0,
+                end=splitter.n_samples,
+                depth=0,
+                parent=_TREE_UNDEFINED,
+                is_left=False,
+                impurity=INFINITY,
+                n_constant_features=0,
+            )
+        )
+        weighted_n_node_samples = np.zeros(1, dtype=np.double)
+        while stack:
+            stack_record = stack.pop()
+
+            start = stack_record.start
+            end = stack_record.end
+            depth = stack_record.depth
+            parent = stack_record.parent
+            is_left = stack_record.is_left
+            impurity = stack_record.impurity
+            n_constant_features = stack_record.n_constant_features
+
+            n_node_samples = end - start
+            splitter.node_reset(start, end, weighted_n_node_samples)
+
+            is_leaf = (
+                depth >= max_depth
+                or n_node_samples < min_samples_split
+                or n_node_samples < 2 * min_samples_leaf
+                or np.sum(sample_weight[start:end]) < 2 * min_weight_leaf
+            )
+
+            if is_left:
+                impurity = splitter.node_impurity()
+
+            is_leaf = is_leaf or impurity <= EPSILON
+
+            if not is_leaf:
+                split = (
+                    SplitRecord()
+                )  # No idea what is SplitRecord in original code. Maybe this never gets called, not sure
+                splitter.node_split(impurity, split, n_constant_features)
+                is_leaf = (
+                    is_leaf
+                    or split.pos >= end
+                    or (split.improvement + EPSILON < min_impurity_decrease)
+                )
+
+            node_id = tree._add_node(
+                parent,
+                is_left,
+                is_leaf,
+                split.feature if not is_leaf else 0,
+                split.threshold if not is_leaf else 0,
+                impurity,
+                n_node_samples,
+                np.sum(sample_weight[start:end]),
+                split.missing_go_to_left,
+            )
+
+            if node_id == np.iinfo(np.intp).max:
+                raise MemoryError()
+
+            splitter.node_value(tree.value + node_id * tree.value_stride)
+
+            if not is_leaf:
+                # Push right child on stack
+                stack.append(
+                    StackRecord(
+                        start=split.pos,
+                        end=end,
+                        depth=depth + 1,
+                        parent=node_id,
+                        is_left=False,
+                        impurity=split.impurity_right,
+                        n_constant_features=n_constant_features,
+                    )
+                )
+                # Push left child on stack
+                stack.append(
+                    StackRecord(
+                        start=start,
+                        end=split.pos,
+                        depth=depth + 1,
+                        parent=node_id,
+                        is_left=True,
+                        impurity=split.impurity_left,
+                        n_constant_features=n_constant_features,
+                    )
+                )
+
+
+# --- Helpers --- #
+# --------------- #
+
+
 def _check_n_classes(n_classes, expected_dtype):
     if n_classes.ndim != 1:
         raise ValueError(
-            f"Wrong dimensions for n_classes from the pickle: "
+            "Wrong dimensions for n_classes from the pickle: "
             f"expected 1, got {n_classes.ndim}"
         )
 
@@ -834,7 +949,8 @@ def _check_n_classes(n_classes, expected_dtype):
     )
 
 
-
-
-
-
+dummy = Node()
+# Create a numpy dtype for Node using the dummy object
+NODE_DTYPE = np.asarray([dummy], dtype=object).dtype
+_TREE_LEAF = TREE_LEAF
+_TREE_UNDEFINED = TREE_UNDEFINED
