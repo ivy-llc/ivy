@@ -152,7 +152,7 @@ def test_numpy_frombuffer(
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_frombuffer(
+def test_numpy_diag(
     dtype_and_a,
     frontend,
     test_flags,
