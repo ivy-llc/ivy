@@ -31,8 +31,7 @@ def _test_paddle_take_helper(draw):
     return dtypes, xs, indices, mode
 
 
-# --- Main --- #
-# ------------ #
+
 
 
 # abs

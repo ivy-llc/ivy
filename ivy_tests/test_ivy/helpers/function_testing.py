@@ -199,8 +199,16 @@ def test_function_backend_computation(
         else:
             target_fn = ivy_backend.__dict__[fn_name]
 
+        # Make copy of arguments for functions that might use inplace update by default
+        copy_kwargs = copy.deepcopy(kwargs)
+        copy_args = copy.deepcopy(args)
+
         ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-            fw, target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+            fw,
+            target_fn,
+            *copy_args,
+            test_compile=test_flags.test_compile,
+            **copy_kwargs,
         )
 
         assert ivy_backend.nested_map(
@@ -965,7 +973,7 @@ def test_frontend_function(
 
     # change ivy device to native devices
     if "device" in kwargs_frontend:
-        kwargs_frontend["device"] = frontend_config.as_native_dev(
+        kwargs_frontend["device"] = frontend_config.as_native_device(
             kwargs_frontend["device"]
         )
 
@@ -2092,7 +2100,7 @@ def test_frontend_method(
                 frontend_config.as_native_dtype(x)
                 if isinstance(x, frontend_config.Dtype)
                 else (
-                    frontend_config.as_native_dev(x)
+                    frontend_config.as_native_device(x)
                     if isinstance(x, frontend_config.Device)
                     else x
                 )
@@ -2114,7 +2122,7 @@ def test_frontend_method(
 
     # change ivy device to native devices
     if "device" in kwargs_method_frontend:
-        kwargs_method_frontend["device"] = frontend_config.as_native_dev(
+        kwargs_method_frontend["device"] = frontend_config.as_native_device(
             kwargs_method_frontend["device"]
         )
     frontend_creation_fn = getattr(
