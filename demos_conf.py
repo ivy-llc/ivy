@@ -1,5 +1,6 @@
 youtube_map = {
     "demos/quickstart": "9myf5tekBWU",
+    "demos/learn_the_basics/01_write_ivy_code": "lYW_V4ZkYEo",
 }
 
 nbsphinx_execute = 'never'
