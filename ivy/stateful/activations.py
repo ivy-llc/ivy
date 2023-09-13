@@ -482,17 +482,8 @@ class ELU(Module):
 
 
 class LogSigmoid(Module):
-    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
-        """
-        Apply the LogSigmoid activation function.
-
-        Parameter
-        ----------
-        complex_mode
-            Specifies how to handle complex input. See
-            ``ivy.func_wrapper.handle_complex_input`` for more detail.
-        """
-        self._complex_mode = complex_mode
+    def __init__(self):
+        """Apply the LogSigmoid activation function."""
         Module.__init__(self)
 
     def _forward(self, x):
@@ -508,4 +499,4 @@ class LogSigmoid(Module):
         ret
             The outputs following the LogSigmoid activation *[batch_shape, d]*
         """
-        return ivy.logsigmoid(x, complex_mode=self._complex_mode)
+        return ivy.logsigmoid(x)
