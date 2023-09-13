@@ -49,7 +49,13 @@ class Criterion:
         The absolute impurity improvement is only computed by the
         impurity_improvement method once the best split has been found.
         """
-        impurity_left, impurity_right = self.children_impurity()
+
+        impurity_left = 0.0
+        impurity_right = 0.0
+        impurity_left, impurity_right = self.children_impurity(
+            impurity_left, impurity_right
+        )
+      
         return (
             -self.weighted_n_right * impurity_right
             - self.weighted_n_left * impurity_left
