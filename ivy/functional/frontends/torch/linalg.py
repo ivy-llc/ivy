@@ -5,7 +5,7 @@ import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from collections import namedtuple
-from scipy.linalg import ldl
+import scipy
 
 
 @to_ivy_arrays_and_back
@@ -133,8 +133,8 @@ def inv_ex(A, *, check_errors=False, out=None):
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def ldl_factor(A, *, hermitian=False, out=None):
-    l, d, perm = ldl(A, lower=True, hermitian=hermitian)
-    L = l[perm, :]  # obtain lower triangular matrix
+    l, d, perm = scipy.linalg.ldl(A, lower=True, hermitian=hermitian)
+    L = l[perm, :]
     n = len(L)
     LD = ivy.copy_array(L)
     for i in range(n):
@@ -145,8 +145,8 @@ def ldl_factor(A, *, hermitian=False, out=None):
                 LD[i, j] = d[i, j]
     # TODO: return actual pivot values as the present one is just permutation array
     # NOTE: LD returns same o/p as Pytorch but only if the matrix is +ve definite
-    # HELP: please help in implementing this project.
-    return LD, perm + 1
+    # HELP: please help in implementing this function.
+    return LD, perm
 
 
 @to_ivy_arrays_and_back
