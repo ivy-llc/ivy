@@ -7,9 +7,19 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
 
 
 class FunctionTestCaseSubRunner(TestCaseSubRunner):
-    def __init__(self, input_dtypes, test_flags):
+    def __init__(self, backend_handler, backend, input_dtypes, test_flags):
+        self._backend_handler = backend_handler
+        self.__ivy = self._backend_handler.set_backend(backend)
         self.test_flags = test_flags
         self.input_dtypes = input_dtypes
+
+    @property
+    def backend_handler(self):
+        return self._backend_handler
+
+    @property
+    def _ivy(self):
+        return self.__ivy
 
     def _search_args(self):
         pass
@@ -59,6 +69,11 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         args, kwargs, idx_args, idx_kwargs = self._search_args(test_arguments)
         args, kwargs = self._preprocess_args(args, kwargs, idx_args, idx_kwargs)
         return self._call_function(args, kwargs)
+
+    def exit(self):
+        self._backend_handler.unset_backend()
+        del self.__ivy
+        del self._backend_handler
 
 
 class BackendTestCaseRunner(TestCaseRunner):

@@ -69,15 +69,17 @@ class TestCaseSubRunner(ABC):
         -------
             Items found, indices, and total number of arrays found
         """
-        indices = self.backend_handler.nested_argwhere(
-            nest, lambda x: isinstance(x, np.ndarray)
-        )
+        indices = self._ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
 
-        ret = self.backend_handler.multi_index_nest(nest, indices)
+        ret = self._ivy.multi_index_nest(nest, indices)
         return ret, indices, len(ret)
 
     @abstractproperty
     def backend_handler(self):
+        pass
+
+    @abstractproperty
+    def _ivy(self):
         pass
 
     @abstractmethod
