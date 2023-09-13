@@ -74,6 +74,9 @@ class TestCaseSubRunner(ABC):
         ret = self._ivy.multi_index_nest(nest, indices)
         return ret, indices, len(ret)
 
+    def exit(self):
+        self._backend_handler.unset_backend()
+
     @abstractproperty
     def backend_handler(self):
         pass

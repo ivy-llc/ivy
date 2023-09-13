@@ -70,11 +70,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         args, kwargs = self._preprocess_args(args, kwargs, idx_args, idx_kwargs)
         return self._call_function(args, kwargs)
 
-    def exit(self):
-        self._backend_handler.unset_backend()
-        del self.__ivy
-        del self._backend_handler
-
 
 class BackendTestCaseRunner(TestCaseRunner):
     def __init__(
