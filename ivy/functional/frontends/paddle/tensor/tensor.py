@@ -96,6 +96,9 @@ class Tensor:
     def dim(self):
         return self.ivy_array.ndim
 
+    def rank(self):
+        return paddle_frontend.rank(self)
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def abs(self):
         return paddle_frontend.abs(self)
