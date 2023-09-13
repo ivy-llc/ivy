@@ -8,7 +8,10 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
 
 
 class FunctionTestCaseSubRunner(TestCaseSubRunner):
-    def __init__(self, backend_handler, backend, device, input_dtypes, test_flags):
+    def __init__(
+        self, fn_name, backend_handler, backend, device, input_dtypes, test_flags
+    ):
+        self.fn_name = fn_name
         self._backend_handler = backend_handler
         self.backend = backend
         self.on_device = device
@@ -166,6 +169,7 @@ class BackendTestCaseRunner(TestCaseRunner):
 
     def _run_target(self, input_dtypes, test_arguments, test_flags):
         sub_runner_target = FunctionTestCaseSubRunner(
+            self.fn_name,
             self.backend_handler,
             self.backend_to_test,
             self.on_device,
