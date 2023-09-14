@@ -45,34 +45,42 @@ def test_paddle_layer_norm(
     )
 
 
-# instance_norm
+# normalize
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.instance_norm",
-    values_tuple=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("float"),
+    fn_tree="paddle.nn.functional.normalize",
+    dtype_and_x_and_axis=helpers.arrays_and_axes(
+        available_dtypes=helpers.get_dtypes(kind="valid"),
+        num=1,
+        return_dtype=True,
+        force_int_axis=True,
     ),
-    eps=st.floats(min_value=0.01, max_value=0.1),
+    p=st.floats(min_value=0.1, max_value=2),
+    negative_axis=st.booleans(),
 )
-def test_paddle_instance_norm(
+def test_paddle_normalize(
     *,
-    values_tuple,
-    normalized_shape,
-    eps,
+    dtype_and_x_and_axis,
+    p,
+    negative_axis,
     test_flags,
     frontend,
+    backend_fw,
     on_device,
     fn_tree,
 ):
-    (dtype, x, normalized_shape, scale, offset) = values_tuple
+    dtype, x, axis = dtype_and_x_and_axis
+    if axis:
+        axis = -axis if negative_axis else axis
+    else:
+        axis = 0
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
         x=x[0],
-        normalized_shape=normalized_shape,
-        weight=scale[0],
-        bias=offset[0],
-        epsilon=eps,
+        p=p,
+        axis=axis,
     )
