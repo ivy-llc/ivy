@@ -48,3 +48,9 @@ def rsqrt_(x, name=None):
 @to_ivy_arrays_and_back
 def sqrt_(x, name=None):
     return ivy.inplace_update(x, sqrt(x))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def subtract_(x, y, name=None):
+    return ivy.inplace_update(x, subtract(x, y))
