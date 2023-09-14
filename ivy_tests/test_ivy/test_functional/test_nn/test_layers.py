@@ -246,27 +246,6 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         st.none(),
     ))
 
-    _out_dim = draw(helpers.ints(min_value=4, max_value=16))
-    out_proj_weights = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(_out_dim, _embed_dim),
-                min_value=0,
-                max_value=2,
-            ),
-            st.none(),
-        )
-    )
-    out_proj_bias = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype=dtype[0], shape=(_out_dim,), min_value=0, max_value=10
-            ),
-            st.none(),
-        )
-    )
-
     _mask_shape = (
         _num_queries,
         _num_queries if _self_attention and _qkv_same_dim else _num_keys,
