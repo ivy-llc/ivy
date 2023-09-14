@@ -83,6 +83,30 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     k_proj_weights = None
     v_proj_weights = None
 
+    _out_dim = draw(helpers.ints(min_value=4, max_value=16))
+    out_proj_weights = draw(
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_out_dim, _embed_dim),
+                min_value=-5,
+                max_value=5,
+            ),
+            st.none(),
+        )
+    )
+    out_proj_bias = draw(
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_out_dim,),
+                min_value=-10,
+                max_value=10,
+            ),
+            st.none(),
+        )
+    )
+
     if _qkv_same_dim:
         if not _self_attention and not same_pre_embed_dim:
             _pre_embed_dim = draw(helpers.ints(min_value=4, max_value=16))
@@ -120,15 +144,14 @@ def _mha_helper(draw, same_pre_embed_dim=False):
             else st.none()
         )
         in_proj_weights = draw(
-            st.one_of(
-                helpers.array_values(
-                    dtype=dtype[0],
-                    shape=(3 * _embed_dim, _pre_embed_dim),
-                    min_value=0,
-                    max_value=10,
-                ),
-                st.none(),
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(3 * _embed_dim, _pre_embed_dim),
+                min_value=-10,
+                max_value=10,
             )
+            if (_pre_embed_dim != _embed_dim and out_proj_weights is None) or draw(st.booleans())
+            else st.none()
         )
     else:
         _q_dim = draw(helpers.ints(min_value=2, max_value=8))
