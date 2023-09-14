@@ -355,8 +355,17 @@ class Tanh(Module):
 
 
 class ReLU6(Module):
-    def __init__(self):
-        """Apply the RELU6 activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the TANH activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -372,7 +381,7 @@ class ReLU6(Module):
          ret
             The outputs following the RELU6 activation *[batch_shape, d]*
         """
-        return ivy.relu6(x)
+        return ivy.relu6(x, complex_mode=self._complex_mode)
 
 
 class Hardswish(Module):

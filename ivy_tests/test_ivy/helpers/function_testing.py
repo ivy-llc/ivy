@@ -248,29 +248,11 @@ def test_function_backend_computation(
                     lambda x, _: x[0] is x[1], [test_ret, out]
                 ),
                 lambda x: not x,
-            )
+            ), "the array in out argument does not contain same value as the returned"
             if not max(test_flags.container) and ivy_backend.native_inplace_support:
                 # these backends do not always support native inplace updates
                 assert not ivy_backend.nested_any(
                     ivy_backend.nested_multi_map(
-                        lambda x, _: x[0].data is x[1].data, [test_ret, out]
-                    ),
-                    lambda x: not x,
-                )
-            # TODO use context manager
-            test_ret = (
-                ret_from_target[getattr(ivy.__dict__[fn_name], "out_index")]
-                if hasattr(ivy.__dict__[fn_name], "out_index")
-                else ret_from_target
-            )
-            assert not ivy.nested_any(
-                ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
-                lambda x: not x,
-            ), "the array in out argument does not contain same value as the returned"
-            if not max(test_flags.container) and ivy_backend.native_inplace_support:
-                # these backends do not always support native inplace updates
-                assert not ivy.nested_any(
-                    ivy.nested_multi_map(
                         lambda x, _: x[0].data is x[1].data, [test_ret, out]
                     ),
                     lambda x: not x,
@@ -2018,6 +2000,11 @@ def test_frontend_method(
             on_device=on_device,
         )
         # End Method #
+        local_importer = ivy_backend.utils.dynamic_import
+
+        create_frontend_array = local_importer.import_module(
+            f"ivy.functional.frontends.{frontend}"
+        )._frontend_array
 
         args_constructor_ivy, kwargs_constructor_ivy = ivy_backend.args_to_ivy(
             *args_constructor, **kwargs_constructor
@@ -2025,6 +2012,7 @@ def test_frontend_method(
         args_method_ivy, kwargs_method_ivy = ivy_backend.args_to_ivy(
             *args_method, **kwargs_method
         )
+
         args_constructor_np = ivy_backend.nested_map(
             args_constructor_ivy,
             lambda x: (
@@ -2061,23 +2049,34 @@ def test_frontend_method(
             frontend_fw_module, frontend_method_data.init_name
         )
 
-        # Run testing
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
-        ret, ret_np_flat = get_ret_and_flattened_np_array(
+        ret = get_frontend_ret(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
-            precision_mode=method_flags.precision_mode,
-            *args_method,
+            *args_method_ivy,
+            frontend_array_function=(
+                create_frontend_array if method_flags.test_compile else None
+            ),
+            as_ivy_arrays=(not method_flags.generate_frontend_arrays),
             test_compile=method_flags.test_compile,
-            **kwargs_method,
+            precision_mode=method_flags.precision_mode,
+            **kwargs_method_ivy,
         )
 
-        # ToDo: uncomment once test_frontend_method has been updated to test for
-        #  frontend array arguments like test_frontend_function where
-        #  test_flags.generate_frontend_arrays is being used
-        # assert ivy_backend.nested_map(
-        #     ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
-        # ), "Frontend method returned non-frontend arrays: {}".format(ret)
+        if method_flags.generate_frontend_arrays:
+            assert ivy_backend.nested_map(
+                ret,
+                lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True,
+            ), "Frontend method returned non-frontend arrays: {}".format(ret)
+
+        if method_flags.generate_frontend_arrays:
+            ret_np_flat = flatten_frontend_to_np(
+                ret=ret,
+                frontend_array_fn=create_frontend_array,
+                backend=backend_to_test,
+            )
+        else:
+            ret_np_flat = flatten_and_to_np(ret=ret, backend=backend_to_test)
 
     # Compute the return with the native frontend framework
     frontend_config = get_frontend_config(frontend)
