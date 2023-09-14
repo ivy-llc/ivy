@@ -122,8 +122,11 @@ def test_prelu(*, dtype_and_x, slope, test_flags, backend_fw, fn_name, on_device
         small_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
-def test_relu6(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_relu6(
+    *, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device
+):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -132,6 +135,7 @@ def test_relu6(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 

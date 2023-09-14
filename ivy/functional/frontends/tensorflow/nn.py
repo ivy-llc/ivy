@@ -440,6 +440,7 @@ def relu(features, name=None):
     return ivy.relu(features)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu6(features, name=None):
     return ivy.relu6(features)
