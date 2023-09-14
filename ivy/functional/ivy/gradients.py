@@ -279,7 +279,7 @@ def _variable(x):
     ret = ivy.nested_map(
         current_backend(x).variable, x, include_derived=True, shallow=False
     )
-    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
+    return ivy.nested_map(ivy.to_ivy, ret, include_derived=True)
 
 
 def _is_variable(x, exclusive=False, to_ignore=None) -> bool:

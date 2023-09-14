@@ -3,7 +3,6 @@
 # global
 from builtins import map as _map
 from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
-import copy
 from collections import UserDict, OrderedDict
 
 # local
@@ -724,14 +723,7 @@ def nested_argwhere(
     """
     to_ignore = ivy.default(to_ignore, ())
     _index = list() if _index is None else _index
-    if (isinstance(nest, (tuple, list))) and not isinstance(nest, to_ignore):
-        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
-            cond_met = fn(nest)
-            ind = ivy.argwhere(cond_met)
-            _indices = list()
-            for i in range(len(ind)):
-                _indices.append(_index + ind.to_list()[i])
-            return _indices
+    if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
         n = 0
         _indices = []
         for i, item in enumerate(nest):
@@ -822,9 +814,7 @@ def all_nested_indices(
     include_nests: bool = False,
     _index: Optional[Union[int, Sequence[int]]] = None,
     _base: bool = True,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> List:
     """
     Return indices of all the elements in nest.
 
@@ -841,9 +831,6 @@ def all_nested_indices(
     _base
         Whether the current function call is the first function call in the
         recursive stack. Used internally, do not set manually.
-    out
-        Optional output array, for writing the result to. It must have a shape
-        that the inputs broadcast to.
 
     Returns
     -------
@@ -863,13 +850,6 @@ def all_nested_indices(
     >>> print(y)
     [['a'], ['b', 0], ['b', 1, 0], ['b', 1, 1], ['c', 0], ['c', 1]]
 
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([0., 1., 2., 3., 4.])
-    >>> y = ivy.all_nested_indices(x, False, out=x)
-    >>> print(y)
-    [[]]
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
@@ -879,12 +859,6 @@ def all_nested_indices(
     """
     _index = list() if _index is None else _index
     if isinstance(nest, (tuple, list)):
-        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
-            ind = ivy.argwhere(ivy.ones_like(nest))
-            indices = list()
-            for i in range(len(ind)):
-                indices.append(_index + ind.to_list()[i])
-            return indices
         _indices = [
             all_nested_indices(
                 item,
@@ -1269,16 +1243,13 @@ def nested_any(
         A boolean, whether the function evaluates to true for any leaf node.
     """
     if isinstance(nest, (tuple, list)):
-        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
-            if ivy.any(fn(nest)):
-                return True
-        for i, item in enumerate(nest):
+        for item in nest:
             if nested_any(item, fn, check_nests, False):
                 return True
         if check_nests and fn(nest):
             return True
     elif isinstance(nest, dict):
-        for k, v in nest.items():
+        for v in nest.values():
             if nested_any(v, fn, check_nests, False):
                 return True
         if check_nests and fn(nest):
@@ -1363,8 +1334,6 @@ def copy_nest(
             return class_instance(**dict(zip(nest._fields, ret_list)))
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list):
-        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
-            return copy.deepcopy(nest)
         return class_instance(
             [
                 copy_nest(
