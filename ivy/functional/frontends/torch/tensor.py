@@ -1694,6 +1694,25 @@ class Tensor:
         self.ivy_array = self.floor().ivy_array
         return self
 
+    @numpy_to_torch_style_args
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "int8",
+                "int16",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float64",
+            )
+        },
+        "torch",
+    )
+    def diff(self, n=1, dim=-1, prepend=None, append=None):
+        return torch_frontend.diff(self, n=n, dim=dim, prepend=prepend, append=append)
+
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)
 
