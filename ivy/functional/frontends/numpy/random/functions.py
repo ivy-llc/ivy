@@ -5,6 +5,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
 )
+from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -174,6 +175,10 @@ def negative_binomial(n, p, size=None):
     return ivy.poisson(lam=lambda_, shape=size)
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    "numpy",
+)
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def noncentral_chisquare(df, nonc, size=None):

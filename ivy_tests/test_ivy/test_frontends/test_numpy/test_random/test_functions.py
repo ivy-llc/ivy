@@ -6,7 +6,6 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy import with_supported_dtypes
 
 
 # beta
@@ -639,10 +638,6 @@ def test_numpy_negative_binomial(
 
 
 # noncentral_chisquare
-@with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")},
-    "jax",
-)
 @handle_frontend_test(
     fn_tree="numpy.random.noncentral_chisquare",
     dtype_and_df=helpers.dtype_and_values(
