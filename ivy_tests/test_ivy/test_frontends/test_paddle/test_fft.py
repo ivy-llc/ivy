@@ -111,11 +111,6 @@ def test_paddle_hfft(
     fn_tree="paddle.fft.hfftn",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("complex"),
-        min_value=-10,
-        max_value=10,
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
     ),
 )
 def test_paddle_hfftn(
