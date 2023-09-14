@@ -92,18 +92,18 @@ def _mha_helper(draw, same_pre_embed_dim=False):
             helpers.array_values(
                 shape=(*_batch_dim, _num_queries, _pre_embed_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="log",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         k = draw(
             helpers.array_values(
                 shape=(*_batch_dim, _num_keys, _pre_embed_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="log",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
             if not _self_attention
             else st.none()
@@ -112,9 +112,9 @@ def _mha_helper(draw, same_pre_embed_dim=False):
             helpers.array_values(
                 shape=(*_batch_dim, _num_keys, _pre_embed_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="log",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
             if not _self_attention
             else st.none()
@@ -138,27 +138,27 @@ def _mha_helper(draw, same_pre_embed_dim=False):
             helpers.array_values(
                 shape=(*_batch_dim, _num_queries, _q_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="log",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         k = draw(
             helpers.array_values(
                 shape=(*_batch_dim, _num_keys, _k_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="log",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         v = draw(
             helpers.array_values(
                 shape=(*_batch_dim, _num_keys, _v_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="log",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         q_proj_weights = draw(
