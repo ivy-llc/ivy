@@ -565,6 +565,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _sin,
     _tan,
     _degrees,
+    _arctan2,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
@@ -672,6 +673,7 @@ true_divide = ufunc("_divide")
 arccos = ufunc("_arccos")
 arcsin = ufunc("_arcsin")
 arctan = ufunc("_arctan")
+arctan2 = ufunc("_arctan2")
 cos = ufunc("_cos")
 deg2rad = ufunc("_deg2rad")
 rad2deg = ufunc("_rad2deg")
