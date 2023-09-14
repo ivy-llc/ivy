@@ -1327,6 +1327,7 @@ def test_multi_head_attention(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_values=(dropout == 0),
         atol_=1e-02,
         rtol_=1e-02,
         query=q,
