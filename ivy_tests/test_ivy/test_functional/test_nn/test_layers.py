@@ -1343,16 +1343,16 @@ def test_multi_head_attention(
         in_proj_bias=in_proj_bias,
         out_proj_bias=out_proj_bias,
         is_causal=is_causal,
-        return_attention_weights=return_attention_weights,
-        average_attention_weights=average_attention_weights,
-        dropout=dropout,
-        training=training,
         key_padding_mask=key_padding_mask,
         bias_k=bias_k,
         bias_v=bias_v,
         static_k=static_k,
         static_v=static_v,
         add_zero_attn=add_zero_attn,
+        return_attention_weights=return_attention_weights,
+        average_attention_weights=average_attention_weights,
+        dropout=dropout,
+        training=training,
     )
 
 
