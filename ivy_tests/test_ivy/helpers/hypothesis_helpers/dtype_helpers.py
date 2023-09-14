@@ -44,14 +44,19 @@ def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
         input_queue.put(("_get_type_dict_helper", framework, kind, is_frontend_test))
         return output_queue.get()
     else:
-        return _get_type_dict_helper(framework, kind, is_frontend_test)
+        return _get_type_dict_helper(
+            framework, kind, is_frontend_test, multiversion=False
+        )
 
 
-def _get_type_dict_helper(framework, kind, is_frontend_test):
+def _get_type_dict_helper(framework, kind, is_frontend_test, multiversion=True):
     if is_frontend_test:
         framework_module = get_frontend_config(framework).supported_dtypes
     else:
-        framework_module = ivy.with_backend(framework)
+        if multiversion:
+            framework_module = ivy
+        else:
+            framework_module = ivy.with_backend(framework)
 
     if kind == "valid":
         return framework_module.valid_dtypes
