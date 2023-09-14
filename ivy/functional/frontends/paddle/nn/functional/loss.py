@@ -264,6 +264,24 @@ def mse_loss(input, label, reduction="mean", name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def multi_label_soft_margin_loss(
+    input, label, weight=None, reduction="mean", name=None
+):
+    reduction = _get_reduction_func(reduction)
+    loss = -(
+        label * ivy.log(ivy.sigmoid(input))
+        + (1 - label) * ivy.log(1 - ivy.sigmoid(input))
+    )
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+    loss = ivy.mean(loss, axis=-1)
+    ret = reduction(loss).astype(input.dtype)
+    return ret
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def nll_loss(
     input,
     label,
@@ -365,6 +383,67 @@ def smooth_l1_loss(
     elif reduction == "sum":
         out = ivy.sum(out)
     return out.astype(label.dtype)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
+    "paddle",
+)
+@inputs_to_ivy_arrays
+def softmax_with_cross_entropy(
+    logits,
+    label,
+    soft_label=False,
+    ignore_index=-100,
+    numeric_stable_mode=True,
+    return_softmax=False,
+    axis=-1,
+):
+    input_dims = len(list(logits.shape))
+    if input_dims == 0:
+        raise ValueError("The dimention of input should be larger than zero!")
+    label_dims = len(list(label.shape))
+    if input_dims - 1 != label_dims and input_dims != label_dims:
+        raise ValueError(
+            "Expected nput_dims - 1 = label_dims or input_dims == label_dims           "
+            "  (got nput_dims{}, label_dims{})".format(input_dims, label_dims)
+        )
+    logits = ivy.array(logits)
+    label = ivy.array(label)
+    if input_dims - 1 == label_dims:
+        label = ivy.expand_dims(label, axis=axis)
+    if numeric_stable_mode:
+        max_logits = ivy.max(logits, axis=axis, keepdims=True)
+        log_max_sum_logits = ivy.log(
+            ivy.sum(ivy.exp(ivy.subtract(logits, max_logits)), axis=axis, keepdims=True)
+        )
+        softmax = ivy.exp(
+            ivy.subtract(ivy.subtract(logits, max_logits), log_max_sum_logits)
+        )
+    else:
+        softmax = ivy.softmax(logits, axis=axis)
+
+    if soft_label:
+        loss = -ivy.sum(
+            ivy.multiply(
+                label,
+                ivy.subtract(
+                    logits, ivy.log(ivy.sum(ivy.exp(logits), axis=axis, keepdims=True))
+                ),
+            ),
+            axis=axis,
+            keepdims=True,
+        )
+    else:
+        mask = ivy.not_equal(label.astype("float64"), float(ignore_index))
+        loss = ivy.add(
+            -ivy.take_along_axis(logits, label, axis),
+            ivy.log(ivy.sum(ivy.exp(logits), axis=axis, keepdims=True)),
+        )
+        loss = ivy.multiply(loss, mask)
+    if return_softmax:
+        return paddle.to_tensor(loss), paddle.to_tensor(softmax)
+    return paddle.to_tensor(loss)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32",)}, "paddle")

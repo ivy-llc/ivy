@@ -286,6 +286,16 @@ def linspace(start, stop, num, name=None, axis=0):
 
 
 @to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    sparse = False
+    indexing = "xy"
+    if "indexing" in kwargs:
+        indexing = kwargs["indexing"]
+
+    return ivy.meshgrid(*args, sparse=sparse, indexing=indexing)
+
+
+@to_ivy_arrays_and_back
 def no_op(name=None):
     return
 
@@ -463,6 +473,11 @@ def squeeze(input, axis=None, name=None):
 @to_ivy_arrays_and_back
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def stop_gradient(input, name=None):
+    return ivy.stop_gradient(input)
 
 
 # ToDo: find a way around for negative indexing, which torch does not support
