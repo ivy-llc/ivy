@@ -8536,7 +8536,7 @@ def test_torch_tensor_logical_not_(
     init_tree="torch.tensor",
     method_name="logical_or",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("bool", "integer"),
         num_arrays=2,
     ),
 )
