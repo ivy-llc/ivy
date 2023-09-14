@@ -50,7 +50,7 @@ jobs:
             - We have merged all the tests in one file called \`display_test_results\` job. 👀 It contains the following two sections:
               - **Combined Test Results:** This shows the results of all the ivy tests that ran on the PR. ✔️
               - **New Failures Introduced:** This lists the tests that fails on this PR.
-           
+
             Please make sure they are passing. 💪
 
             Keep in mind that we will assign an engineer for this task and they will look at it based on the workload that they have, so be patient.
