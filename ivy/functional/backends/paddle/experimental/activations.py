@@ -102,7 +102,9 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.selu(x.cast("float32")).cast(x.dtype)
 
 
-def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def silu(
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.silu(x)
     if paddle.is_complex(x):

@@ -291,13 +291,14 @@ def sigmoid(x):
 
 
 @with_supported_dtypes(
-    {"0.4.14 and below": ("complex", "float")},
+    {"0.4.14 and below": ("float",)},
     "jax",
 )
 @to_ivy_arrays_and_back
 def silu(x):
     x = _type_conversion(x)
-    return ivy.multiply(x, ivy.sigmoid(x))
+    # return ivy.multiply(x, ivy.sigmoid(x))
+    return ivy.silu(x, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back

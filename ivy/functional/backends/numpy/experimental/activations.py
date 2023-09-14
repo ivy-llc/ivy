@@ -75,7 +75,9 @@ selu.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def silu(
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     ret = np.asarray(x * (1 / (1 + np.exp(-x))))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
