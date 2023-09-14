@@ -809,7 +809,8 @@ class _ContainerWithLayers(ContainerBase):
         dropout_p
             Specifies the dropout probablity, if greater than 0.0, dropout is applied
         is_causal
-            If true, assumes causal attention masking and errors if both `mask` and `is_causal` are set.
+            If true, assumes causal attention masking and errors if both `mask` and
+            `is_causal` are set.
         training
             If True, dropout is used, otherwise dropout is not activated.
         key_chains
@@ -931,7 +932,8 @@ class _ContainerWithLayers(ContainerBase):
         dropout_p
             Specifies the dropout probablity, if greater than 0.0, dropout is applied
         is_causal
-            If true, assumes causal attention masking and errors if both `mask` and `is_causal` are set.
+            If true, assumes causal attention masking and errors if both `mask` and
+            `is_causal` are set.
         training
             If True, dropout is used, otherwise dropout is not activated.
         key_chains
@@ -968,11 +970,16 @@ class _ContainerWithLayers(ContainerBase):
 
         >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
         ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True)
+        >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, dropout_p=0.1,
+        ...                                           is_causal=True, training=True)
         >>> print(result)
         {
-            a: ivy.array([[[5.19999981, 1.], [2.59249449, 2.68226194], [4.4000001, 5.5999999]]]),
-            b: ivy.array([[[0.2, 1.], [2.19603825, 2.9960382], [4.4000001, 5.5999999]]])
+            a: ivy.array([[[5.19999981, 1.],
+                           [2.59249449, 2.68226194],
+                           [4.4000001, 5.5999999]]]),
+            b: ivy.array([[[0.2, 1.],
+                           [2.19603825, 2.9960382],
+                           [4.4000001, 5.5999999]]])
         }
 
         >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
@@ -982,13 +989,21 @@ class _ContainerWithLayers(ContainerBase):
         >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
         ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
         >>> mask =
-        ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
-        ...               b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]]))
+        ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0, 1.0]]]),
+        ...               b=ivy.array([[[1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0,1.0]]]))
         >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,mask=mask)
         >>> print(result)
         {
-            a: ivy.array([[[4.26894283, 5.40236187], [4.39999437, 5.59999037], [4.4000001, 5.5999999]]]),
-            b: ivy.array([[[4.35046196, 5.54282808], [4.39989519, 5.5998764], [4.4000001, 5.5999999]]])
+            a: ivy.array([[[4.26894283, 5.40236187],
+                           [4.39999437, 5.59999037],
+                           [4.4000001, 5.5999999]]]),
+            b: ivy.array([[[4.35046196, 5.54282808],
+                           [4.39989519, 5.5998764],
+                           [4.4000001, 5.5999999]]])
 
         }
         """
@@ -1011,11 +1026,11 @@ class _ContainerWithLayers(ContainerBase):
     @staticmethod
     def _static_multi_head_attention(
         query: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         /,
         *,
-        num_heads: Optional[Union[int, ivy.Container]] = 8,
+        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        num_heads: Union[int, ivy.Container] = 8,
         scale: Optional[Union[float, ivy.Container]] = None,
         attention_mask: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
@@ -1039,22 +1054,22 @@ class _ContainerWithLayers(ContainerBase):
         out_proj_bias: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
-        is_causal: Optional[Union[bool, ivy.Container]] = False,
-        return_attention_weights: Optional[Union[bool, ivy.Container]] = False,
-        average_attention_weights: Optional[Union[bool, ivy.Container]] = True,
-        dropout: Optional[Union[float, ivy.Container]] = 0.0,
-        training: Optional[Union[bool, ivy.Container]] = False,
+        is_causal: Union[bool, ivy.Container] = False,
+        return_attention_weights: Union[bool, ivy.Container] = False,
+        average_attention_weights: Union[bool, ivy.Container] = True,
+        dropout: Union[float, ivy.Container] = 0.0,
+        training: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+    ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "multi_head_attention",
             query,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=num_heads,
             scale=scale,
             attention_mask=attention_mask,
@@ -1079,11 +1094,11 @@ class _ContainerWithLayers(ContainerBase):
 
     def multi_head_attention(
         self: ivy.Container,
-        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         /,
         *,
-        num_heads: Optional[Union[int, ivy.Container]] = 8,
+        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        num_heads: Union[int, ivy.Container] = 8,
         scale: Optional[Union[float, ivy.Container]] = None,
         attention_mask: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
@@ -1107,21 +1122,21 @@ class _ContainerWithLayers(ContainerBase):
         out_proj_bias: Optional[
             Union[ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
-        is_causal: Optional[Union[bool, ivy.Container]] = False,
-        return_attention_weights: Optional[Union[bool, ivy.Container]] = False,
-        average_attention_weights: Optional[Union[bool, ivy.Container]] = True,
-        dropout: Optional[Union[float, ivy.Container]] = 0.0,
-        training: Optional[Union[bool, ivy.Container]] = False,
+        is_causal: Union[bool, ivy.Container] = False,
+        return_attention_weights: Union[bool, ivy.Container] = False,
+        average_attention_weights: Union[bool, ivy.Container] = True,
+        dropout: Union[float, ivy.Container] = 0.0,
+        training: Union[bool, ivy.Container] = False,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+    ) -> ivy.Container:
         return self._static_multi_head_attention(
             self,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=num_heads,
             scale=scale,
             attention_mask=attention_mask,
@@ -2090,7 +2105,7 @@ class _ContainerWithLayers(ContainerBase):
         filter_format
             Either "channel_first" or "channel_last". Defaults to "channel_last".
         x_dilations
-            The dilation factor for each dimension of input. (Default value = 1)    
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         bias
@@ -2175,7 +2190,7 @@ class _ContainerWithLayers(ContainerBase):
         filter_format
             Either "channel_first" or "channel_last". Defaults to "channel_last".
         x_dilations
-            The dilation factor for each dimension of input. (Default value = 1)    
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         bias

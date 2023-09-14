@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import numpy as np
@@ -15,6 +15,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[np.ndarray] = None,
 ):
     x_dtype = x.dtype
@@ -43,7 +44,9 @@ thresholded_relu.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def relu6(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def relu6(
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.minimum(np.maximum(x, 0, dtype=x.dtype), 6, out=out, dtype=x.dtype)
 
 
@@ -52,7 +55,9 @@ relu6.support_native_out = True
 
 @with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
-def logsigmoid(input: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def logsigmoid(
+    input: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return -(np.log1p(np.exp(-(input))))
 
 

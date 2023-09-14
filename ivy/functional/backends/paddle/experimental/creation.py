@@ -7,6 +7,7 @@ from paddle.device import core
 from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
 )
 
 
@@ -185,3 +186,47 @@ def unsorted_segment_sum(
         res = paddle.cast(res, "int32")
 
     return res
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "complex",
+            )
+        }
+    },
+    backend_version,
+)
+def trilu(
+    x: paddle.Tensor,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if upper:
+        return paddle.triu(x=x, diagonal=k)
+    return paddle.tril(x=x, diagonal=k)
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    n_fft = (dft_length - 1) * 2
+    mel_mat = paddle.audio.functional.compute_fbank_matrix(
+        sample_rate,
+        n_fft,
+        num_mel_bins,
+        lower_edge_hertz,
+        upper_edge_hertz,
+    )
+    return paddle.transpose(mel_mat, (1, 0))
