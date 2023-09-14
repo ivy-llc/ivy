@@ -131,6 +131,12 @@ class SuppressPrint:
             sys.stderr = self._original_stderr
 
 
+def _remove_numbers(dtype, bfloat_to_float=False):
+    if dtype == "bfloat16":
+        return "float"
+    return "".join(c for c in dtype if not c.isnumeric())
+
+
 def _is_dtype_err_jax(e, dtype):
     dtype_err_substrings = [
         f"does not accept dtype {dtype}. Accepted dtypes are",
@@ -204,10 +210,7 @@ def _is_dtype_err_np(e, dtype):
             f" 'numpy.dtypes.{dtype.capitalize()}DType'>,"
         ),
         f"Unsupported dtype dtype('{dtype}')",
-        (
-            "cannot take arguments of type"
-            f" {''.join(c for c in dtype if not c.isnumeric())}"
-        ),
+        f"cannot take arguments of type {_remove_numbers(dtype)}",
         f"to dtype('{dtype}') according to the rule 'safe'",
         f"Cannot cast scalar from dtype('{dtype}') to dtype",
         "a must be an array of real numbers",
@@ -244,7 +247,60 @@ def _is_dtype_err_np(e, dtype):
 
 
 def _is_dtype_err_paddle(e, dtype):
-    return False
+    dtype_err_substrings = [
+        f"Selected wrong DataType `{dtype}`. Paddle support following DataTypes:",
+        f"(Unimplemented) Data type ({dtype}) is not supported when casting data type.",
+        f"'{dtype}'",
+        (
+            f"The type of data we are trying to retrieve ({dtype}) does not match the"
+            " type of data"
+        ),
+        (
+            f"does not match the type of data ({dtype}) currently contained in the"
+            " container."
+        ),
+        f"data type <class 'numpy.{dtype}'> not inexact",
+        "Invalid integer data type",
+        f"must be list of int, but got {_remove_numbers(dtype)}",
+        f"randint cannot take arguments of type {_remove_numbers(dtype, True)}",
+        f"as_ivy_dtype: dtype({dtype})",
+        "(NotFound) There are no kernels which are registered in the kron operator.",
+        f"must be int, but got {_remove_numbers(dtype, True)}",
+        "Elements in Input(x) should all be integers",
+        f"Invalid dtype 'paddle.{dtype}'. Valid dtypes are",
+    ]
+    only_int32 = (
+        ["Selected wrong DataType `int64`. Paddle support following DataTypes:"]
+        if dtype == "int32"
+        else []
+    )
+    only_complex128 = (
+        ["Selected wrong DataType `complex64`. Paddle support following DataTypes:"]
+        if dtype == "complex128"
+        else []
+    )
+    only_complex = (
+        ["The filled value is out of range for target type"]
+        if dtype in DTYPE_CLASSES["complex"]
+        else []
+    )
+    only_bool = (
+        [
+            (
+                "Tensor(shape=[1, 2], dtype=bool, place=Place(cpu),"
+                " stop_gradient=True,\n       [[False, False]]) must be lesser than"
+                " Tensor(shape=[1, 2], dtype=bool, place=Place(cpu),"
+                " stop_gradient=True,\n       [[False, False]])"
+            ),
+            "data type <class 'numpy.bool_'> not inexact",
+        ]
+        if dtype == "bool"
+        else []
+    )
+    substrings_to_check = (
+        dtype_err_substrings + only_int32 + only_complex128 + only_complex + only_bool
+    )
+    return any(s in str(e) for s in substrings_to_check)
 
 
 # These aren't equivalences, per se, they're just other dtypes tf might complain about
@@ -1184,17 +1240,15 @@ def run_dtype_setter(
                                 min_example[k] = find(
                                     specifier=v, condition=lambda _: True
                                 )
-                            except KeyboardInterrupt as e:
-                                for device in test_handler.iterate_devices():
-                                    test_handler.set_result(
-                                        "skipped", "Timeout generating example."
-                                    )
-                                raise e
                             finally:
                                 timer.cancel()
                 except KeyboardInterrupt:
                     # Why interrupt_main() uses a KeyboardInterrupt is beyond me,
                     # but I suppose this is what we have to do
+                    for device in test_handler.iterate_devices():
+                        test_handler.set_result(
+                            "skipped", "Timeout generating example."
+                        )
                     continue
                 except Exception as e:
                     for device in test_handler.iterate_devices():
@@ -1202,6 +1256,17 @@ def run_dtype_setter(
                     continue
 
                 for device in test_handler.iterate_devices():
+                    if (
+                        fn_name == "conv_general_transpose"
+                        and test_handler.backend == "paddle"
+                        and dtype == "float16"
+                    ):
+                        test_handler.set_result(
+                            "skipped",
+                            "paddle_backend.conv_general_transpose causes a segfault"
+                            " for dtype float16.",
+                        )
+                        continue
                     try:
                         _test_function_called = False
                         with SuppressPrint():
@@ -1215,10 +1280,12 @@ def run_dtype_setter(
                         test_handler.set_result("supported")
                     except FromFunctionException as ffe:
                         e = ffe.wrapped_error
+                        if "IvyNotImplementedException" in repr(type(e)):
+                            test_handler.set_result("skipped", "Not implemented")
                         if is_dtype_err[test_handler.backend](e, dtype):
                             test_handler.set_result("unsupported")
                         else:
-                            test_handler.set_result("unsure", str(e))
+                            test_handler.set_result("unsure", str(e) or type(e))
                     except NoTestFunctionException:
                         test_handler.set_result(
                             "skipped", "Test does not use test_function"
@@ -1227,7 +1294,7 @@ def run_dtype_setter(
                         test_handler.set_result("skipped", "Unsatisfied assumption")
                     except Exception as e:
                         test_handler.set_result(
-                            "skipped", "In test function: " + str(e)
+                            "skipped", "In test function: " + (str(e) or type(e))
                         )
         test_handler.complete_test()
     test_globals._unset_backend()
