@@ -1,11 +1,11 @@
 # local
 import math
+import torch
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from collections import namedtuple
-
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
@@ -310,11 +310,11 @@ def svd(A, /, *, full_matrices=True, driver=None, out=None):
 )
 def svdvals(A, *, driver=None, out=None):
     # TODO: add handling for driver
-    if driver == 'gesvd':
+    if driver == "gesvd":
         return torch.linalg.svdvals(A, out=out, driver=driver)
-    elif driver == 'gesvdj':
+    elif driver == "gesvdj":
         return torch.linalg.svdvals(A, out=out, driver=driver)
-    elif driver == 'gesvda':
+    elif driver == "gesvda":
         return torch.linalg.svdvals(A, out=out, driver=driver)
     return ivy.svdvals(A, out=out)
 
