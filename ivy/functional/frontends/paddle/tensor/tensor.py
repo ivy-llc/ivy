@@ -281,6 +281,11 @@ class Tensor:
     def isinf(self, name=None):
         return paddle_frontend.Tensor(ivy.isinf(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def tanh_(self, name=None):
+        y = self.tanh(self)
+        return ivy.inplace_update(self, y)
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "uint16")}, "paddle")
     def unsqueeze_(self, axis=None, name=None):
         self.ivy_array = paddle_frontend.Tensor(
