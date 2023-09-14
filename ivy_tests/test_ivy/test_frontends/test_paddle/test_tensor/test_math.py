@@ -209,6 +209,7 @@ def test_paddle_sqrt_(
 
 
 
+
 # ceil_
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.ceil_",
@@ -2096,6 +2097,13 @@ def test_paddle_stanh(
     fn_tree="paddle.subtract",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+
+# subtract_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.subtract_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+
         num_arrays=2,
         allow_inf=False,
         large_abs_safety_factor=2,
@@ -2104,7 +2112,9 @@ def test_paddle_stanh(
         shared_dtype=True,
     ),
 )
-def test_paddle_subtract(
+
+def test_paddle_subtract_(
+
     *,
     dtype_and_x,
     on_device,
@@ -2124,6 +2134,7 @@ def test_paddle_subtract(
         x=x[0],
         y=x[1],
     )
+
 
 
 # take
@@ -2238,4 +2249,3 @@ def test_paddle_trunc(
         on_device=on_device,
         x=x[0],
     )
-
