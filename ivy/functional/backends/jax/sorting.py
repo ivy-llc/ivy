@@ -82,9 +82,51 @@ def searchsorted(
 # msort
 @with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
 def msort(
-    a: Union[JaxArray, list, tuple],
+    a: Union[JaxArray,  list, tuple],
     /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    """
+    Return a new sorted array along the first axis using the mergesort algorithm.
+
+    Parameters
+    ----------
+    a : Union[JaxArray, list, tuple]
+        Input array or sequence to be sorted. It should have elements with
+        comparable data types.
+    out : JaxArray, optional
+        An optional output array to store the sorted result. If provided,
+        it must have the same shape as 'a'. Defaults to None.
+
+    Returns
+    -------
+    JaxArray
+        A new sorted array. The data type of the output is determined by the
+        data type of the input 'a'.
+
+    Examples
+    --------
+
+    With a list input:
+
+    >>> lst = [3, 1, 2]
+    >>> ivy.msort(lst)
+    ivy.array([1, 2, 3])
+
+    With a tuple input:
+
+    >>> tpl = (3, 1, 2)
+    >>> ivy.msort(tpl)
+    ivy.array([1, 2, 3])
+
+    Using an output array:
+
+    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
+    >>> ivy.msort(a)
+    ivy.array(
+    [[6, 2, 6],
+     [8, 9, 6]]
+    )
+    """
     return jnp.sort(a, axis=0, kind="mergesort")
