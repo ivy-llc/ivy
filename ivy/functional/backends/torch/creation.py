@@ -613,4 +613,4 @@ def pad(tensor, sizes_of_pad, mode='constant', value=0):
             pad_pairs = pad_pairs[::-1]
             pad_list = [item for pair in pad_pairs for item in pair]
 
-            return torch.nn.functional.pad(tensor, pad_list, mode, value)
+    return torch.nn.functional.pad(tensor, pad_list, mode, value)
