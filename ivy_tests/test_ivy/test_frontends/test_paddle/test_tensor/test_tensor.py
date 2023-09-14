@@ -3642,4 +3642,3 @@ def test_paddle_tensor_zero_(
         frontend=frontend,
         on_device=on_device,
     )
-
