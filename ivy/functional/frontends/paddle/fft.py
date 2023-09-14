@@ -32,6 +32,7 @@ def fftfreq(n, d=1.0, dtype=None, name=None):
     if d * n == 0:
         raise ValueError("d or n should not be 0.")
 
+    dtype = ivy.default_dtype()
     val = 1.0 / (n * d)
     pos_max = (n + 1) // 2
     neg_max = n // 2
