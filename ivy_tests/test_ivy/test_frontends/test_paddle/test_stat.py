@@ -155,6 +155,9 @@ def test_paddle_quantile(
     test_flags,
 ):
     input_dtypes, x, axis = dtype_and_x
+    # Convert axis if it's a tuple
+    if isinstance(axis, tuple):
+        axis = axis[0] if len(axis) == 1 else list(axis)
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
