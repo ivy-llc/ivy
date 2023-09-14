@@ -36,7 +36,7 @@ jobs:
 
             In order to be considered for merging, the pull request description must refer to a
             specific issue number. This is described in our
-            [contributing guide](https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues) and our PR template. 
+            [contributing guide](https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues) and our PR template.
 
             This check is looking for a phrase similar to: "Fixes #XYZ" or "Resolves #XYZ" where XYZ is the issue
             number that this PR is meant to address.
@@ -55,8 +55,8 @@ jobs:
             Congrats on making your first Pull Request and thanks for supporting Ivy! 🎉
             Joing the conversation in our [Discord](https://discord.com/invite/sXyFF8tDtm)
 
-            Here are some notes to understand our tests: 
+            Here are some notes to understand our tests:
             - We have merged all the tests in one file called \`display_test_results\` job. 👀 It contains the following two sections:
               - **Combined Test Results:** This shows the results of all the ivy tests that ran on the PR. ✔️
-              - **New Failures Introduced:** This lists the tests that are passing on main, but fail on the PR Fork. 
+              - **New Failures Introduced:** This lists the tests that are passing on main, but fail on the PR Fork.
             Please try to make sure that there are no such tests. 💪
