@@ -295,8 +295,17 @@ class SiLU(Module):
 
 
 class Sigmoid(Module):
-    def __init__(self):
-        """Apply the SIGMOID activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the SIGMOID activation function.
+
+        Parameter
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -312,7 +321,7 @@ class Sigmoid(Module):
          ret
             The outputs following the SIGMOID activation *[batch_shape, d]*
         """
-        return ivy.sigmoid(x)
+        return ivy.sigmoid(x, complex_mode=self._complex_mode)
 
 
 class Tanh(Module):
