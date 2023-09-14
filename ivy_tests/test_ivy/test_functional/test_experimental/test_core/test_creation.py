@@ -480,19 +480,10 @@ def test_random_tt(
             assert np.prod(shape) == np.prod(x_gt.shape)
 
     else:
-        weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
-        factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
-        weights_gt = helpers.flatten_and_to_np(
-            ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
-        )
+        factors = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
         factors_gt = helpers.flatten_and_to_np(
-            ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+            ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
         )
-
-        for w, w_gt in zip(weights, weights_gt):
-            assert w.shape[-1] == rank
-            assert w_gt.shape[-1] == rank
-
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
 
