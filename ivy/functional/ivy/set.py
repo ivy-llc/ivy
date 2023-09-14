@@ -158,6 +158,9 @@ def unique_all(
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
+    *,
+    axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
     Return the unique elements of an input array ``x``, and the indices from the set of
