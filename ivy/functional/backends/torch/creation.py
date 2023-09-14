@@ -604,7 +604,7 @@ def triu_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
-import torch
+
 
 def pad(tensor, sizes_of_pad, mode='constant', value=0):
     if len(sizes_of_pad) == tensor.dim():
