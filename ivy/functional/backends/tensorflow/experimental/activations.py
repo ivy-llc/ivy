@@ -38,7 +38,6 @@ def thresholded_relu(
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
 
-# @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def relu6(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu6(x)
 
