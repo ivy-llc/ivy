@@ -469,6 +469,7 @@ def test_random_tr_throws_error_when_rank_first_last_elem_not_equal():
     data=_random_tucker_data(),
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
+    test_gradients=st.just(False),
 )
 def test_random_tucker(
     *,
@@ -507,18 +508,18 @@ def test_random_tucker(
             assert np.prod(shape) == np.prod(x_gt.shape)
 
     else:
-        weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+        core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
         factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
-        weights_gt = helpers.flatten_and_to_np(
+        core_gt = helpers.flatten_and_to_np(
             ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
         )
         factors_gt = helpers.flatten_and_to_np(
             ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
         )
 
-        for w, w_gt in zip(weights, weights_gt):
-            assert len(w) == rank
-            assert len(w_gt) == rank
+        for c, c_gt in zip(core, core_gt):
+            assert np.prod(c.shape) == np.prod(rank)
+            assert np.prod(c_gt.shape) == np.prod(rank)
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
