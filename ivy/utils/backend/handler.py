@@ -251,14 +251,13 @@ def _modify_module_symbols(
     )
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
+        v = _wrap_if_got_efficient_implementations(v) if v else v
         compositional = k not in backend.__dict__
         if compositional:
             if k in invalid_dtypes and k in target.__dict__:
                 del target.__dict__[k]
                 continue
-            v = _verify_efficient_implementations(v) if v else v
             backend.__dict__[k] = v
-        v = _verify_efficient_implementations(v) if v else v
         target.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
@@ -276,9 +275,9 @@ def _modify_module_symbols(
             )
 
 
-def _verify_efficient_implementations(v):
+def _wrap_if_got_efficient_implementations(v):
     if callable(v):
-        if ivy.available_sub_backend_implementations(v):
+        if ivy.available_sub_backend_implementations(v.__name__):
             return _handle_efficient_implementation_available(v)
     return v
 
