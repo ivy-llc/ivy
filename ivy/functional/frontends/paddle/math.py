@@ -110,6 +110,14 @@ def atanh(x, name=None):
     return ivy.atanh(x)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def broadcast_shape(x):
+    return ivy.broadcast_shapes(*x)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def ceil(x, name=None):
