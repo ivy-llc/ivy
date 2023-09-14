@@ -35,6 +35,88 @@ def sort(
     stable: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    """
+    Return a sorted copy of an array.
+
+    Parameters
+    ----------
+    x : JaxArray
+        Input array to be sorted.
+    axis : int, optional
+        Axis along which to sort. If set to -1, the function must sort along
+        the last axis. Default: -1.
+    descending : bool, optional
+        If True, sort the elements in descending order; if False (default),
+        sort in ascending order.
+    stable : bool, optional
+        If True (default), use a stable sorting algorithm to maintain the
+        relative order of x values which compare as equal. If False, the
+        returned indices may or may not maintain the relative order of x
+        values which compare as equal (i.e., the relative order of x values
+        which compare as equal is implementation-dependent). Default: True.
+    out : Optional[JaxArray], optional
+        An optional output array, for writing the result to. It must have the
+        same shape as x. Defaults to None.
+
+    Returns
+    -------
+    JaxArray
+        An array with the same dtype and shape as x, with the elements sorted
+        along the given axis.
+
+    Examples
+    --------
+    With ivy.Array input:
+
+    >>> x = ivy.array([7, 8, 6])
+    >>> y = ivy.sort(x)
+    >>> print(y)
+    ivy.array([6, 7, 8])
+
+    Sorting along a specific axis:
+
+    >>> x = ivy.array([[[8.9,0], [19,5]],[[6,0.3], [19,0.5]]])
+    >>> y = ivy.sort(x, axis=1, descending=True, stable=False)
+    >>> print(y)
+    ivy.array([[[19. ,  5. ],[ 8.9,  0. ]],[[19. ,  0.5],[ 6. ,  0.3]]])
+
+    Sorting in descending order:
+
+    >>> x = ivy.array([1.5, 3.2, 0.7, 2.5])
+    >>> y = ivy.zeros(5)
+    >>> ivy.sort(x, descending=True, stable=False, out=y)
+    >>> print(y)
+    ivy.array([3.2, 2.5, 1.5, 0.7])
+
+    Using an output array:
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
+    >>> ivy.sort(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.1,  2.2,  3.3],
+                [-6.6, -5.5, -4.4]
+             ])
+
+    With ivy.Container input:
+
+    >>> x = ivy.Container(a=ivy.array([8, 6, 6]),b=ivy.array([[9, 0.7], [0.4, 0]]))
+    >>> y = ivy.sort(x, descending=True)
+    >>> print(y)
+    {
+        a: ivy.array([8, 6, 6]),
+        b: ivy.array([[9., 0.7], [0.4, 0.]])
+    }
+
+
+    >>> x = ivy.Container(a=ivy.array([3, 0.7, 1]),b=ivy.array([[4, 0.9], [0.6, 0.2]]))
+    >>> y = ivy.sort(x, descending=False, stable=False)
+    >>> print(y)
+    {
+        a: ivy.array([0.7, 1., 3.]),
+        b: ivy.array([[0.9, 4.], [0.2, 0.6]])
+    }
+
+    """
     kind = "stable" if stable else "quicksort"
     ret = jnp.asarray(jnp.sort(x, axis=axis, kind=kind))
     if descending:
@@ -87,46 +169,4 @@ def msort(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    """
-    Return a new sorted array along the first axis using the mergesort algorithm.
-
-    Parameters
-    ----------
-    a : Union[JaxArray, list, tuple]
-        Input array or sequence to be sorted. It should have elements with
-        comparable data types.
-    out : JaxArray, optional
-        An optional output array to store the sorted result. If provided,
-        it must have the same shape as 'a'. Defaults to None.
-
-    Returns
-    -------
-    JaxArray
-        A new sorted array. The data type of the output is determined by the
-        data type of the input 'a'.
-
-    Examples
-    --------
-
-    With a list input:
-
-    >>> lst = [3, 1, 2]
-    >>> ivy.msort(lst)
-    ivy.array([1, 2, 3])
-
-    With a tuple input:
-
-    >>> tpl = (3, 1, 2)
-    >>> ivy.msort(tpl)
-    ivy.array([1, 2, 3])
-
-    Using an output array:
-
-    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
-    >>> ivy.msort(a)
-    ivy.array(
-    [[6, 2, 6],
-     [8, 9, 6]]
-    )
-    """
     return jnp.sort(a, axis=0, kind="mergesort")
