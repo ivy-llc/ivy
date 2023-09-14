@@ -1836,6 +1836,27 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "float32",
+                "float64",
+                "complex",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "int8",
+            )
+        },
+        "torch",
+    )
+    def lcm_(self, other, *, out=None):
+        self.ivy_array = self.lcm(other, out=out).ivy_array
+        return self
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
                 "bfloat16",
                 "int8",
                 "uint8",
@@ -1964,6 +1985,25 @@ class Tensor:
     )
     def cummax(self, dim):
         return torch_frontend.cummax(self, dim)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def triu(self, diagonal=0):
+        return torch_frontend.triu(self, diagonal)
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("bfloat16",)},
