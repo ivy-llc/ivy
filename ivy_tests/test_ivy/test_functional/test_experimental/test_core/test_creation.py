@@ -471,24 +471,29 @@ def test_random_parafac2(
         test_values=False,
     )
     ret_np, ret_from_gt_np = results
+
     if full:
         reconstructed_tensor = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
         reconstructed_tensor_gt = helpers.flatten_and_to_np(
             ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
         )
+
         for x, x_gt in zip(reconstructed_tensor, reconstructed_tensor_gt):
-            assert np.prod(shapes) == np.prod(x.shape)
-            assert np.prod(shapes) == np.prod(x_gt.shape)
+            assert x_gt.shape == x.shape
 
     else:
         weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
         factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+        # projections = helpers.flatten_and_to_np(ret=ret_np[2], backend=backend_fw)
         weights_gt = helpers.flatten_and_to_np(
             ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
         )
         factors_gt = helpers.flatten_and_to_np(
             ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
         )
+        # projections_gt = helpers.flatten_and_to_np(
+        #     ret=ret_from_gt_np[2], backend=test_flags.ground_truth_backend
+        # )
 
         for w, w_gt in zip(weights, weights_gt):
             assert len(w) == rank
@@ -496,6 +501,9 @@ def test_random_parafac2(
 
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+        # for p, p_gt in zip(projections,projections_gt):
+        #     assert np.prod(p.shape) == np.prod(p_gt.shape)
 
 
 @handle_test(

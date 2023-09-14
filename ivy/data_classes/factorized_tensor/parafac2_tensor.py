@@ -138,7 +138,7 @@ class Parafac2Tensor(FactorizedTensor):
         (shape, rank)
             size of the full tensor and rank of the CP tensor
         """
-        if isinstance(parafac2_tensor, Parafac2Tensor):
+        if isinstance(parafac2_tensor, ivy.Parafac2Tensor):
             # it's already been validated at creation
             return parafac2_tensor.shape, parafac2_tensor.rank
 

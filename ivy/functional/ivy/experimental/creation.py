@@ -880,7 +880,7 @@ def random_parafac2(
     Parameters
     ----------
     shapes
-        A shape of the tensor to generate
+        A shapes of the tensor to generate
     rank
         rank of the Parafac2 decomposition
     full
@@ -900,7 +900,7 @@ def random_parafac2(
         ivy.qr(ivy.random_uniform(shape=(shape[0], rank), dtype=dtype, seed=seed))[0]
         for shape in shapes
     ]
-    weights, factors = random_cp(
+    weights, factors = ivy.random_cp(
         [len(shapes), rank, shapes[0][1]],
         rank,
         normalise_factors=False,
