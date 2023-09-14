@@ -34,11 +34,12 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
 
 @to_ivy_arrays_and_back
+def qr(x, /, *, full_matrices="reduced"):
+    return ivy.qr(x, mode=full_matrices)
+
+
+@to_ivy_arrays_and_back
 def svd(x, /, *, full_matrices=True, compute_uv=True):
     if not compute_uv:
         return ivy.svdvals(x)
     return ivy.svd(x, full_matrices=full_matrices)
-
-@to_ivy_arrays_and_back
-def qr(a, mode="reduced"):
-    return ivy.qr(a, mode=mode)
