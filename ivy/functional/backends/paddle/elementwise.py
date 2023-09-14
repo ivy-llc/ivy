@@ -908,17 +908,15 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 @with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-        )
-    },
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64", "complex")},
     backend_version,
 )
 def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.multiply(
+            paddle.exp(x.real()),
+            paddle.complex(paddle.cos(x.imag()), paddle.sin(x.imag())),
+        )
     return paddle.exp(x)
 
 
