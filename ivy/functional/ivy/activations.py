@@ -731,6 +731,19 @@ def mish(
     return current_backend(x).mish(x, out=out)
 
 
+def _hardswish_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    def hard_sigmoid(x):
+        return ivy.relu6(x + 3.0) / 6
+
+    return ivy.multiply(x, hard_sigmoid(x).astype(x.dtype))
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -738,8 +751,13 @@ def mish(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_complex_input
 def hardswish(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the hardswish activation function element-wise.
@@ -748,6 +766,9 @@ def hardswish(
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -777,3 +798,6 @@ def hardswish(
     }
     """
     return current_backend(x).hardswish(x, out=out)
+
+
+hardswish.jax_like = _hardswish_jax_like

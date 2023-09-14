@@ -48,15 +48,17 @@ def test_gelu(
 @handle_test(
     fn_tree="functional.ivy.hardswish",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
 def test_hardswish(
     *,
     dtype_and_x,
+    complex_mode,
     test_flags,
     backend_fw,
     fn_name,
@@ -70,6 +72,7 @@ def test_hardswish(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 

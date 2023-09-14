@@ -203,6 +203,10 @@ def mish(
     {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def hardswish(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return F.hardswish(x)
