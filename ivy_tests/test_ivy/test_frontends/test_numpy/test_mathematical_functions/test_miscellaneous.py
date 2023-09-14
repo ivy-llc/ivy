@@ -374,7 +374,7 @@ def test_numpy_gcd(
 @handle_frontend_test(
     fn_tree="numpy.gradient",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=("float32", "float16", "float64"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=2,
