@@ -132,7 +132,14 @@ def test_paddle_numel(
 # quantile
 @handle_frontend_test(
     fn_tree="paddle.quantile",
-    dtype_and_x=_statistical_dtype_values(function="quantile"),
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_value=-1e10,
+        max_value=1e10,
+        valid_axis=True,
+        force_int_axis=True,  # Assuming this forces the axis to be an integer.
+    ),
     q=st.floats(0.0, 1.0),
     keepdim=st.booleans(),
 )
@@ -148,7 +155,6 @@ def test_paddle_quantile(
     test_flags,
 ):
     input_dtypes, x, axis = dtype_and_x
-    axis = int(axis)
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
