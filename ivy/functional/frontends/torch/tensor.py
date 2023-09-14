@@ -437,9 +437,6 @@ class Tensor:
     def logical_or(self, other):
         return torch_frontend.logical_or(self, other)
 
-    def logical_xor(self, other):
-        return torch_frontend.logical_xor(self, other)
-
     def bitwise_not(self):
         return torch_frontend.bitwise_not(self)
 
