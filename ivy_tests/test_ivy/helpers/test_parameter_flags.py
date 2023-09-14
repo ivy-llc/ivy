@@ -372,6 +372,58 @@ def method_flags(
     )
 
 
+class FrontendInitTestFlags(TestFlags):
+    def __init__(
+        self,
+        num_positional_args,
+        as_variable,
+        native_arrays,
+    ):
+        self.num_positional_args = num_positional_args
+        self.native_arrays = native_arrays
+        self.as_variable = as_variable
+
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
+        ret = []
+        with BackendHandler.update_backend(backend) as backend:
+            for i, entry in enumerate(args_to_iterate, start=offset):
+                x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
+                if self.as_variable[i]:
+                    x = backend.gradients._variable(x)
+                if self.native_arrays[i]:
+                    x = backend.to_native(x)
+                ret.append(x)
+        return ret
+
+    def __str__(self):
+        return (
+            f"num_positional_args={self.num_positional_args}. "
+            f"native_arrays={self.native_arrays}. "
+            f"as_variable={self.as_variable}. "
+        )
+
+    def __repr__(self):
+        return self.__str__()
+
+
+@st.composite
+def frontend_init_flags(
+    draw,
+    *,
+    num_positional_args,
+    as_variable,
+    native_arrays,
+):
+    return draw(
+        st.builds(
+            FrontendInitTestFlags,
+            num_positional_args=num_positional_args,
+            as_variable=as_variable,
+            native_arrays=native_arrays,
+        )
+    )
+
+
 class FrontendMethodTestFlags(TestFlags):
     def __init__(
         self,
@@ -380,12 +432,14 @@ class FrontendMethodTestFlags(TestFlags):
         native_arrays,
         precision_mode,
         test_compile,
+        generate_frontend_arrays,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
         self.precision_mode = precision_mode
         self.test_compile = test_compile
+        self.generate_frontend_arrays = generate_frontend_arrays
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
@@ -406,6 +460,7 @@ class FrontendMethodTestFlags(TestFlags):
             f"as_variable={self.as_variable}. "
             f"precision_mode={self.precision_mode}. "
             f"test_compile={self.test_compile}."
+            f"generate_frontend_arrays={self.generate_frontend_arrays}."
         )
 
     def __repr__(self):
@@ -421,6 +476,7 @@ def frontend_method_flags(
     native_arrays,
     precision_mode,
     test_compile,
+    generate_frontend_arrays,
 ):
     return draw(
         st.builds(
@@ -430,5 +486,6 @@ def frontend_method_flags(
             native_arrays=native_arrays,
             precision_mode=precision_mode,
             test_compile=test_compile,
+            generate_frontend_arrays=generate_frontend_arrays,
         )
     )
