@@ -248,29 +248,11 @@ def test_function_backend_computation(
                     lambda x, _: x[0] is x[1], [test_ret, out]
                 ),
                 lambda x: not x,
-            )
+            ), "the array in out argument does not contain same value as the returned"
             if not max(test_flags.container) and ivy_backend.native_inplace_support:
                 # these backends do not always support native inplace updates
                 assert not ivy_backend.nested_any(
                     ivy_backend.nested_multi_map(
-                        lambda x, _: x[0].data is x[1].data, [test_ret, out]
-                    ),
-                    lambda x: not x,
-                )
-            # TODO use context manager
-            test_ret = (
-                ret_from_target[getattr(ivy.__dict__[fn_name], "out_index")]
-                if hasattr(ivy.__dict__[fn_name], "out_index")
-                else ret_from_target
-            )
-            assert not ivy.nested_any(
-                ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
-                lambda x: not x,
-            ), "the array in out argument does not contain same value as the returned"
-            if not max(test_flags.container) and ivy_backend.native_inplace_support:
-                # these backends do not always support native inplace updates
-                assert not ivy.nested_any(
-                    ivy.nested_multi_map(
                         lambda x, _: x[0].data is x[1].data, [test_ret, out]
                     ),
                     lambda x: not x,
