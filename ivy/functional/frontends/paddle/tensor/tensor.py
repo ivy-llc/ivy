@@ -759,9 +759,8 @@ class Tensor:
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
 
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-def backward(self, x):
-    return paddle_frontend.Tensor.backward(self.x)
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def backward(self, x):
+        return paddle_frontend.Tensor.backward(self.x)
