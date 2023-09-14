@@ -312,5 +312,11 @@ def ackermann(x, y):
         return ivy.ackermann(x - 1, 1)
     elif x > 0 and y > 0:
         return ivy.ackermann(x - 1, ivy.ackermann(x, y - 1))
+        
+def factorial(x):
+    if x == 0:
+        return 1
+    else:
+        return ivy.x * factorial(x - 1)
 
 # TODO: Ibeta for Future Release
