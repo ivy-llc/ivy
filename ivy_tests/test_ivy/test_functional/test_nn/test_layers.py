@@ -165,30 +165,33 @@ def _mha_helper(draw, same_pre_embed_dim=False):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(_embed_dim, _q_dim),
-                min_value=0,
-                max_value=2,
+                min_value=-5,
+                max_value=5,
             )
         )
         k_proj_weights = draw(
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(_embed_dim, _k_dim),
-                min_value=0,
-                max_value=2,
+                min_value=-5,
+                max_value=5,
             )
         )
         v_proj_weights = draw(
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(_embed_dim, _v_dim),
-                min_value=0,
-                max_value=2,
+                min_value=-5,
+                max_value=5,
             )
         )
     in_proj_bias = draw(
         st.one_of(
             helpers.array_values(
-                dtype=dtype[0], shape=(3 * _embed_dim,), min_value=0, max_value=10
+                dtype=dtype[0],
+                shape=(3 * _embed_dim,),
+                min_value=-10,
+                max_value=10,
             ),
             st.none(),
         )
@@ -203,9 +206,9 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         helpers.array_values(
             shape=_static_shape,
             dtype=dtype[0],
-            large_abs_safety_factor=7,
-            small_abs_safety_factor=7,
-            safety_factor_scale="linear",
+            max_value=1000,
+            min_value=-1000,
+            abs_smallest_val=1e-06,
         ),
         st.none(),
     ))
@@ -213,9 +216,9 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         helpers.array_values(
             shape=_static_shape,
             dtype=dtype[0],
-            large_abs_safety_factor=7,
-            small_abs_safety_factor=7,
-            safety_factor_scale="linear",
+            max_value=1000,
+            min_value=-1000,
+            abs_smallest_val=1e-06,
         ),
         st.none(),
     ))
