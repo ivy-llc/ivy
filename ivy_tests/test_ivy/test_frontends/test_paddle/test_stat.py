@@ -157,7 +157,7 @@ def test_paddle_quantile(
         on_device=on_device,
         x=x[0],
         q=q,
-        axis=axis,
+        axis=int,
         keepdim=keepdim,
     )
 
