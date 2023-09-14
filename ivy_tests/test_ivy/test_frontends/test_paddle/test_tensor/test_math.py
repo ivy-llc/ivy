@@ -3,10 +3,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# --- Main --- #
-# ------------ #
-
-
 # ceil_
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.ceil_",
@@ -210,6 +206,7 @@ def test_paddle_sqrt_(
         on_device=on_device,
         x=x[0],
     )
+
 
 # tanh_
 @handle_frontend_test(

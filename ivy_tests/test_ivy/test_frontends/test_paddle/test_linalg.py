@@ -349,7 +349,7 @@ def test_paddle_cholesky(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.cholesky_solve",
+    fn_tree="paddle.linalg.cholesky_solve",
     x=_get_second_matrix(),
     y=_get_paddle_cholesky_matrix(),
     test_with_out=st.just(False),
@@ -382,7 +382,7 @@ def test_paddle_cholesky_solve(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.cond",
+    fn_tree="paddle.linalg.cond",
     dtype_and_x=_get_dtype_and_matrix_non_singular(dtypes=["float32", "float64"]),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     test_with_out=st.just(False),
@@ -523,7 +523,7 @@ def test_paddle_dot(
 
 # eig
 @handle_frontend_test(
-    fn_tree="paddle.eig",
+    fn_tree="paddle.linalg.eig",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -570,7 +570,7 @@ def test_paddle_eig(
 
 # eigh
 @handle_frontend_test(
-    fn_tree="paddle.eigh",
+    fn_tree="paddle.linalg.eigh",
     dtype_and_input=_get_dtype_and_square_matrix(real_and_complex_only=True),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
@@ -620,7 +620,7 @@ def test_paddle_eigh(
 
 # eigvals
 @handle_frontend_test(
-    fn_tree="paddle.eigvals",
+    fn_tree="paddle.linalg.eigvals",
     dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
     test_with_out=st.just(False),
 )
@@ -728,7 +728,7 @@ def test_paddle_matmul(
 
 # matrix_power
 @handle_frontend_test(
-    fn_tree="paddle.matrix_power",
+    fn_tree="paddle.linalg.matrix_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -795,7 +795,7 @@ def test_paddle_norm(
 
 # pinv
 @handle_frontend_test(
-    fn_tree="paddle.pinv",
+    fn_tree="paddle.linalg.pinv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
@@ -840,7 +840,7 @@ def test_paddle_pinv(
 
 # qr
 @handle_frontend_test(
-    fn_tree="paddle.qr",
+    fn_tree="paddle.linalg.qr",
     dtype_and_x=_get_dtype_and_matrix(),
     mode=st.sampled_from(("reduced", "complete")),
     test_with_out=st.just(False),
@@ -871,7 +871,7 @@ def test_paddle_qr(
 
 # solve
 @handle_frontend_test(
-    fn_tree="paddle.solve",
+    fn_tree="paddle.linalg.solve",
     x=_get_first_matrix(),
     y=_get_second_matrix(),
     test_with_out=st.just(False),
