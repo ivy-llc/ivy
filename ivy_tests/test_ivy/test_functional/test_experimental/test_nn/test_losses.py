@@ -245,8 +245,8 @@ def test_poisson_nll_loss(
         full=full,
         eps=epsilon,
         reduction=reduction,
-        rtol_=1e-03,
-        atol_=1e-04,
+        rtol_=1e-05,
+        atol_=1e-05,
     )
 
 
