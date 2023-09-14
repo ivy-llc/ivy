@@ -104,7 +104,7 @@ def _infer_dtype(dtype: paddle.dtype):
 
 
 def _validate_quantile(q):
-    if isinstance(q, float):
+    if isinstance(q, float) or isinstance(q, list):
         q = paddle.to_tensor(q)
     if q.ndim == 1 and q.size < 10:
         for i in range(q.size):
@@ -207,7 +207,7 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None, interpolation="nearest"):
 
 
 def _quantile(a, q, axis=None, interpolation="nearest"):
-    if isinstance(q, float):
+    if isinstance(q, float) or isinstance(q, list):
         q = paddle.to_tensor(q)
     ret_dtype = a.dtype
     if q.ndim > 1:
