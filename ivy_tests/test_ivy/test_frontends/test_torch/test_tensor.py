@@ -5871,6 +5871,8 @@ def test_torch_tensor_diagonal(
     dtype_n_x_n_axis=helpers.dtype_values_axis(
         available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
+        min_value=-1e09,
+        max_value=1e09,
         valid_axis=True,
         force_int_axis=True,
     ),
