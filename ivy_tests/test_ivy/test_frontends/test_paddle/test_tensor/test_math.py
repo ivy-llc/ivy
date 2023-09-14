@@ -179,7 +179,6 @@ def test_paddle_rsqrt_(
         x=x[0],
     )
 
-
 # sqrt_
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.sqrt_",
