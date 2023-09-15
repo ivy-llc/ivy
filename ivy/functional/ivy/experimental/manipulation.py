@@ -1024,39 +1024,6 @@ def _check_arguments(
     )
 
 
-def _handle_reduction_op(reduction, arr, indices, values):
-    # TODO: implement correct flagging for accumulation
-    accumulate = len(arr) != len(indices)
-    if reduction in ["add", "sum"]:
-        if accumulate:
-            for i, index in enumerate(indices):
-                arr[index] += values[i]
-        else:
-            arr[indices] += values
-    elif reduction in ["mul", "multiply", "prod"]:
-        if accumulate:
-            for i, index in enumerate(indices):
-                arr[index] *= values[i]
-        else:
-            arr[indices] *= values
-    elif reduction == "mean":
-        idx, _, _, element_count = ivy.unique_all(indices)
-        element_count += 1
-        if hasattr(arr, "numpy"):
-            arr = arr.numpy()
-        for i, index in enumerate(indices):
-            arr[index] += values[i]
-        for i in idx:
-            arr[i] = arr[indices][i] / element_count[i]
-    elif reduction == "assign":
-        arr[indices] = values
-    elif reduction == "amax":
-        arr[indices] = ivy.maximum(values, arr[indices])
-    elif reduction == "amin":
-        arr[indices] = ivy.minimum(values, arr[indices])
-    return arr
-
-
 @handle_exceptions
 @handle_nestable
 @handle_partial_mixed_function
