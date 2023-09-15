@@ -894,7 +894,7 @@ def multi_head_attention(
     # apply attention mask
     if is_causal:
         attention_mask = ivy.where(
-            ivy.tril(ivy.ones((num_queries, num_keys))) == 0.0, float("-inf"), 0
+            ivy.tril(ivy.ones((num_queries, num_keys))) == 0.0, 1, 0
         )
     if ivy.exists(attention_mask):
         if ivy.is_int_dtype(attention_mask):
@@ -905,7 +905,6 @@ def multi_head_attention(
             attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
         if add_zero_attn:
             attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
-        attention_mask = ivy.expand_dims(attention_mask, axis=0)
         attn_scores = ivy.where(attention_mask, float("-inf"), attn_scores)
 
     # apply key_padding_mask
