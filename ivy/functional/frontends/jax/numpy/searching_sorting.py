@@ -178,27 +178,25 @@ def unique(
 def union1d(ar1, ar2, *, size=None, fill_value=None):
     x = ivy.array(ar1)
     y = ivy.array(ar2)
-    # elements only from ar1
-    mask_1 = ivy.isin(ar1,ar2, invert=True)
-    # elements only from ar2
-    mask_2f = ivy.isin(ar2, ar1 ,invert=False)
-    # elements common in both ar1 and ar2
-    mask_2t = ivy.isin(ar2, ar1 ,invert=True)
     # concatenating arrays
-    result_concat = ivy.concat((x[mask_1], y[mask_2f], y[mask_2t]))
-    result_arranged = ivy.sort(result_concat)
-    n = len(result_concat)
+    result_concat = ivy.concat((x, y))
+    result_unique_values = ivy.unique_values(result_concat)
+    result_arranged = ivy.sort(result_unique_values)
+    data_type = ivy.dtype(result_arranged)
+    n = len(result_unique_values)
     if size is None:
         result = result_arranged
     else:
         if size <= n:
             result = result_arranged[0:size]
         else:
+            width = size - n
             if fill_value is None:
-                fill_value = result_arranged[0]
-                width = size - n
-                result = ivy.constant_pad(result_arranged, pad_width = (0,width), value = fill_value)
-            else:
-                result = ivy.constant_pad(result_arranged, pad_width=size, value=fill_value)
+                if result_arranged[0] <= 0:
+                    fill_value = 0.0
+                else:
+                    fill_value = result_arranged[0]
+            constant_pad = ivy.linspace(fill_value,fill_value, num=width, dtype=data_type)
+            result = ivy.concat((result_arranged, constant_pad))
 
     return result

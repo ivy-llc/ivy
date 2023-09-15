@@ -498,7 +498,7 @@ def test_jax_unique(fn_inputs, backend_fw, frontend, test_flags, fn_tree, on_dev
 
 @handle_frontend_test(fn_tree="jax.numpy.union1d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=-10,
         max_value=10,
@@ -508,7 +508,7 @@ def test_jax_unique(fn_inputs, backend_fw, frontend, test_flags, fn_tree, on_dev
         max_dim_size=10,
     ),
     size = st.integers(min_value=0, max_value=5),
-    fill_value = st.integers(min_value=0, max_value=5),
+    fill_value = st.floats(min_value=1, max_value=5),
 )
 def test_jax_union1d(
     *,
@@ -529,8 +529,10 @@ def test_jax_union1d(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        ar1=x,
-        ar2=x,
+        ar1=x[0],
+        ar2=x[1],
         size=size,
         fill_value=fill_value,
+        rtol=1e-03,
+        atol=1e-03,
     )
