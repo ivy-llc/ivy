@@ -142,8 +142,10 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
         axes = list(range(len(x.shape)))
 
     if s is None:
-        s = [x.shape[axis] if axis != axes[-1] else 2 * (x.shape[axis] - 1) 
-            for axis in axes]
+        s = [
+            x.shape[axis] if axis != axes[-1] else 2 * (x.shape[axis] - 1) 
+            for axis in axes
+        ]
 
     freq_domain = x
     for axis, size in zip(axes, s):
