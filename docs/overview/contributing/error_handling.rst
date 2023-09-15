@@ -10,7 +10,7 @@ Error Handling
 
 This section, "Error Handling" aims to assist you in navigating through some common errors you might encounter while working with the Ivy's Functional API. We'll go through some common errors which you might encounter while working as a contributor or a developer.
 
-#. This is the case where we pass in a dtype to `torch` which is not actually supported by the torch's native framework itself. The function which was 
+#. This is the case where we pass in a dtype to `torch` which is not actually supported by the torch's native framework itself.
 
    .. code-block:: python
 
@@ -33,17 +33,17 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E           ),
         E           fn_name='logaddexp2',
         E       )
-        E       
+        E
         E       You can reproduce this example by temporarily adding @reproduce_failure('6.82.4', b'AXicY2BkAAMoBaaR2WAAAACVAAY=') as a decorator on your test case
 
 #. This is the case where the value from the ground-truth backend(tensorflow) does not match the value of the backend(jax) we are testing for this case.
 
    .. code-block:: python
-        
+
         E       AssertionError:  the results from backend jax and ground truth framework tensorflow do not match
-        E        0.25830078125!=0.258544921875 
-        E       
-        E       
+        E        0.25830078125!=0.258544921875
+        E
+        E
         E       Falsifying example: test_acosh(
         E           backend_fw='jax',
         E           on_device='cpu',
@@ -61,10 +61,10 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E           ),
         E           fn_name='acosh',
         E       )
-        E       
+        E
         E       You can reproduce this example by temporarily adding @reproduce_failure('6.82.4', b'AXicY2BAABYQwQgiAABDAAY=') as a decorator on your test case
 
-#. This is a similar assertion as stated in point 2 but with torch and ground-truth tensorflow not matching but the matrices are quite different so there should be an issue in the backends rather than a numerical instability here:
+#. This is a similar assertion as stated in point 2 but with torch and ground-truth tensorflow not matching but the matrices are quite different so there should be an issue in the backends rather than a numerical instability here.
 
    .. code-block:: python
 
@@ -73,9 +73,9 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E        [1.41421356 1.41421356 1.41421356]
         E        [1.41421356        inf 1.41421356]]!=[[1.41421356e+000 1.41421356e+000 1.41421356e+000]
         E        [1.41421356e+000 1.41421356e+000 1.41421356e+000]
-        E        [1.41421356e+000 1.34078079e+154 1.41421356e+000]] 
-        E       
-        E       
+        E        [1.41421356e+000 1.34078079e+154 1.41421356e+000]]
+        E
+        E
         E       Falsifying example: test_abs(
         E           backend_fw='torch',
         E           on_device='cpu',
@@ -96,7 +96,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E               container=[False],
         E           ),
         E       )
-        E       
+        E
         E       You can reproduce this example by temporarily adding @reproduce_failure('6.82.4', b'AXicY2ZkYAIiBiBgZIAAxqHEXsAAB7jUQAAAMtEAzQ==') as a decorator on your test case
 
 
