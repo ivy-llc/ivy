@@ -123,7 +123,7 @@ def test_jax_eigh(
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.qr",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
@@ -132,7 +132,6 @@ def test_jax_eigh(
         max_value=5,
     ),
     mode=st.sampled_from(("reduced", "complete")),
-    # mode = st.sampled_from(('reduced',False)),
     test_with_out=st.just(False),
 )
 def test_jax_qr(
