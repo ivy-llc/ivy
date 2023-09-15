@@ -154,7 +154,10 @@ def _mha_helper(draw, same_pre_embed_dim=False):
             else st.none()
         )
     else:
-        _q_dim = draw(helpers.ints(min_value=2, max_value=8))
+        if not same_pre_embed_dim:
+            _q_dim = draw(helpers.ints(min_value=2, max_value=8))
+        else:
+            _q_dim = _embed_dim
         _k_dim = draw(helpers.ints(min_value=2, max_value=8))
         _v_dim = draw(helpers.ints(min_value=2, max_value=8))
         q = draw(
