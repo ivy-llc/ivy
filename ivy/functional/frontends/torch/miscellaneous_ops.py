@@ -541,3 +541,16 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+def histc(input, bins=100, min=0, max=0, *, out= None):
+    input_ivy = ivy.flatten(input) # torch.histc results in a 1D tensor so I flattened it out.
+    if min ==0 and max ==0:
+        min = ivy.min(input_ivy); max = ivy.max(input_ivy)
+    if min == max:
+        range = (min - 1e-2 , min + 1e-2)
+    else:
+        range = (min , max)
+    
+    return ivy.histogram(input_ivy, bins = bins, range=range, axis =0)
