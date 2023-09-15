@@ -4250,6 +4250,7 @@ def test_torch_tensor_bernoulli_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
     backend_fw,
     **kwargs,
 ):
@@ -4272,6 +4273,7 @@ def test_torch_tensor_bernoulli_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device
     )
 
 
