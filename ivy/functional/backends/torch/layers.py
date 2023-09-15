@@ -53,7 +53,7 @@ def multi_head_attention(
         ivy.expand_dims(x, axis=1) if len(x.shape) == 2 else ivy.swapaxes(x, 0, 1)
         for x in [query, key, value]
     ]
-    return torch.nn.functional.multi_head_attention_forward(
+    ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,
         value,
@@ -80,6 +80,12 @@ def multi_head_attention(
         average_attn_weights=average_attention_weights,
         is_causal=is_causal,
     )
+    ret = list(ret)
+    # torch returns bathed attention out even when the inputs where un-batched
+    ret[0] = ret[0].squeeze(1)
+    if return_attention_weights:
+        return ret
+    return ret[0]
 
 
 multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: \
