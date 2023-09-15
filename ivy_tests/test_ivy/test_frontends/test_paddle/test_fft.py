@@ -275,6 +275,6 @@ def test_paddle_irfftn(
         fn_tree=fn_tree,
         x=x[0],
         s=None,
-        axes=[axis],
+        axes=None,
         norm=norm,
     )
