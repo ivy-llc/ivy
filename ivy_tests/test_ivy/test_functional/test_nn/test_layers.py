@@ -273,20 +273,20 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     ))
 
     bias_k = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype=dtype[0], shape=(_embed_dim,), min_value=0, max_value=10
-            ),
-            st.none(),
+        helpers.array_values(
+            dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
         )
+        if (not _qkv_same_dim or _pre_embed_dim == _embed_dim) and draw(st.booleans())
+        else
+        st.none()
     )
     bias_v = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype=dtype[0], shape=(_embed_dim,), min_value=0, max_value=10
-            ),
-            st.none(),
+        helpers.array_values(
+            dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
         )
+        if (not _qkv_same_dim or _pre_embed_dim == _embed_dim) and draw(st.booleans())
+        else
+        st.none()
     )
 
     scale = draw(st.one_of(st.floats(), st.none()))
