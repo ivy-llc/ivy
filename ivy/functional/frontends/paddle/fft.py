@@ -168,7 +168,6 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
     return result_t
 
 
-
 @to_ivy_arrays_and_back
 def rfftfreq(n, d=1.0, dtype=None, name=None):
     dtype = ivy.default_dtype()
