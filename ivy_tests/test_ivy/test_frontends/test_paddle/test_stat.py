@@ -162,7 +162,9 @@ def test_paddle_quantile(
         assert isinstance(dtype_x_and_axis, tuple), "dtype_x_and_axis should be a tuple"
         input_dtypes, x_values, axis = dtype_x_and_axis
         assert input_dtypes in helpers.get_dtypes("valid"), "Invalid data type"
-        assert isinstance(x_values, list) and len(x_values) == 1, "x_values should be a list of length 1"
+        assert (
+            isinstance(x_values, list) and len(x_values) == 1
+        ), "x_values should be a list of length 1"
         assert isinstance(axis, (int, tuple, list)), "Invalid axis type"
 
         # Check keepdim
