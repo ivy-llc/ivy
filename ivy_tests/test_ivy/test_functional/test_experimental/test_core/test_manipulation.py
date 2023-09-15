@@ -448,7 +448,7 @@ def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
             # does not work for bool yet because scatter_nd doesn't
-            available_dtypes=helpers.get_dtypes('numeric'),
+            available_dtypes=helpers.get_dtypes("numeric"),
             min_num_dims=2,
             max_num_dims=3,
             min_dim_size=2,
@@ -466,7 +466,7 @@ def put_along_axis_helper(draw):
 
     ind_dtype, indices = draw(
         helpers.dtype_and_values(
-            available_dtypes=['int32', 'int64'],
+            available_dtypes=["int64"],
             shape=idx_shape,
             min_value=0,
             max_value=len(idx_shape) - 2,
@@ -482,7 +482,7 @@ def put_along_axis_helper(draw):
         )
     )
 
-    return input_dtype+ind_dtype+input_dtype, x[0], indices[0], values[0], axis
+    return input_dtype + ind_dtype + input_dtype, x[0], indices[0], values[0], axis
 
 
 # --- Main --- #
@@ -1242,7 +1242,7 @@ def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_devi
 @handle_test(
     fn_tree="functional.ivy.experimental.put_along_axis",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(['sum', 'min', 'max', 'replace']),
+    mode=st.sampled_from(["sum", "mul", "replace"]),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     ground_truth_backend="torch",

@@ -394,12 +394,19 @@ def scatter_nd(
         res = tf.tensor_scatter_nd_min(target, indices, updates)
     elif reduction == "max":
         res = tf.tensor_scatter_nd_max(target, indices, updates)
+    elif reduction in ["mul", "prod"]:
+        updates = ivy.multiply(ivy.gather_nd(target, indices), updates).data
+        res = tf.tensor_scatter_nd_update(target, indices, updates)
+    elif reduction == "mean":
+        updates = ivy.gather_nd(target, indices) + ivy.sum(updates)
+        updates /= len(indices) + 1
+        res = tf.tensor_scatter_nd_update(target, indices, updates)
     elif reduction == "replace":
         res = tf.tensor_scatter_nd_update(target, indices, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            '"sum", "min", "max", "mul", "prod", "mean" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)

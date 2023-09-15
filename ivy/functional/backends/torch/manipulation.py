@@ -372,14 +372,16 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: Literal['sum', 'min', 'max', 'replace'] = 'replace',
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     mode_mappings = {
         "sum": "sum",
         "min": "amin",
         "max": "amax",
-        "replace": "replace"
+        "mul": "prod",
+        "prod": "prod",
+        "replace": "replace",
     }
     mode = mode_mappings.get(mode, mode)
     indices = indices.to(torch.int64)
@@ -387,3 +389,14 @@ def put_along_axis(
         return torch.scatter(arr, axis, indices, values, out=out)
     else:
         return torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+    "sum",
+    "mul",
+    "prod",
+    "mean",
+    "max",
+    "min",
+]

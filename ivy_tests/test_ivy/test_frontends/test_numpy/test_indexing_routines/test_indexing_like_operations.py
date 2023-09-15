@@ -6,7 +6,7 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
     put_along_axis_helper,
 )
 
@@ -137,7 +137,7 @@ def test_numpy_put_along_axis(
 ):
     dtypes, x, indices, values, axis = args
     helpers.test_frontend_function(
-        input_dtypes=[dtypes, "int64", dtypes],
+        input_dtypes=dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         frontend=frontend,

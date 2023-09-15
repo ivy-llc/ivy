@@ -1809,7 +1809,7 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: Literal['sum', 'min', 'max', 'replace'] = 'replace',
+    mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
     out: Optional[ivy.Array] = None,
 ) -> None:
     """
@@ -1826,7 +1826,7 @@ def put_along_axis(
         The values to put into `arr`.
     axis : int
         The axis over which to put the `values`.
-    mode : {'sum', 'min', 'max', 'replace'}
+    mode : {'sum', 'min', 'max', 'mul', 'replace'}
         The reduction operation to apply.
     out : ndarray, optional
         Output array in which to place the result.
@@ -1845,7 +1845,7 @@ def put_along_axis(
     >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
     >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
     >>> values = ivy.array([[9, 8, 7], [6, 5, 4]])
-    >>> ivy.put_along_axis(arr, indices, values, 1, mode='assign')
+    >>> ivy.put_along_axis(arr, indices, values, 1, mode='replace')
     >>> print(arr)
     ivy.array([[9, 7, 5],
                [4, 2, 6]])
@@ -1881,6 +1881,7 @@ put_along_axis.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
         "outputs_to_ivy_arrays",
+        "inputs_to_native_arrays",
     ),
     "to_skip": "handle_partial_mixed_function",
 }

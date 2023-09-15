@@ -1708,7 +1708,7 @@ class Tensor:
         {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
     def scatter_add_(self, dim, index, src):
-        self.ivy_array = ivy.put_along_axis(self.ivy_array, index, src, dim, mode="add")
+        self.ivy_array = ivy.put_along_axis(self.ivy_array, index, src, dim, mode="sum")
         return self
 
     @with_supported_dtypes(
@@ -1716,7 +1716,13 @@ class Tensor:
     )
     def scatter_(self, dim, index, src, *, reduce=None):
         if reduce is None:
-            reduce = "assign"
+            reduce = "replace"
+        else:
+            mode_mappings = {
+                "add": "sum",
+                "multiply": "mul",
+            }
+            reduce = mode_mappings.get(reduce, reduce)
         self.ivy_array = ivy.put_along_axis(
             self.ivy_array, index, src, dim, mode=reduce
         )
@@ -1741,7 +1747,7 @@ class Tensor:
         {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
     def scatter(self, dim, index, src):
-        return torch_frontend.scatter_reduce(self, dim, index, src, reduce="assign")
+        return torch_frontend.scatter_reduce(self, dim, index, src, reduce="replace")
 
     @with_supported_dtypes(
         {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"

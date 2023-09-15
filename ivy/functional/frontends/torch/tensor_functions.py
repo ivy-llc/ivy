@@ -34,7 +34,7 @@ def numel(input):
     {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
 )
 def scatter(input, dim, index, src):
-    return ivy.put_along_axis(input, index, src, dim, mode="assign")
+    return ivy.put_along_axis(input, index, src, dim, mode="replace")
 
 
 @to_ivy_arrays_and_back
@@ -42,7 +42,7 @@ def scatter(input, dim, index, src):
     {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
 )
 def scatter_add(input, dim, index, src):
-    return ivy.put_along_axis(input, index, src, dim, mode="add")
+    return ivy.put_along_axis(input, index, src, dim, mode="sum")
 
 
 @to_ivy_arrays_and_back

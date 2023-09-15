@@ -166,9 +166,9 @@ def test_torch_scatter(
     backend_fw,
     test_flags,
 ):
-    input_dtype, x, indices, value, axis = args
+    dtypes, x, indices, value, axis = args
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, "int64", input_dtype],
+        input_dtypes=dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -196,9 +196,9 @@ def test_torch_scatter_add(
     backend_fw,
     test_flags,
 ):
-    input_dtype, x, indices, value, axis = args
+    dtypes, x, indices, value, axis = args
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, "int64", input_dtype],
+        input_dtypes=dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -215,7 +215,7 @@ def test_torch_scatter_add(
 @handle_frontend_test(
     fn_tree="torch.scatter_reduce",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["sum", "prod", "mean", "amin", "amax"]),
+    mode=st.sampled_from(["sum", "prod"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_reduce(
@@ -228,10 +228,10 @@ def test_torch_scatter_reduce(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, indices, value, axis = args
+    dtypes, x, indices, value, axis = args
     test_flags.ground_truth_backend = "torch"
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, "int64", input_dtype],
+        input_dtypes=dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

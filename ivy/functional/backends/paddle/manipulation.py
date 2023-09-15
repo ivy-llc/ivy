@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable
+from typing import Union, Optional, Tuple, List, Sequence, Iterable, Literal
 import math
 import paddle
 
@@ -513,15 +513,23 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: str = "assign",
+    mode: Literal["sum", "mul", "replace"] = "replace",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    mode_mappings = {
+        "sum": "add",
+        "mul": "mul",
+        "prod": "mul",
+        "replace": "assign",
+    }
+    mode = mode_mappings.get(mode, mode)
     ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
 
 put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
-    "assign",
-    "add",
+    "replace",
+    "sum",
     "mul",
+    "prod",
 ]
