@@ -139,7 +139,7 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
 
     if s is None:
         s = [
-            x.shape[axis] if axis != (len(x.shape) - 1) else 2 * (x.shape[axis] - 1) 
+            x.shape[axis] if axis != (len(x.shape) - 1) else 2 * (x.shape[axis] - 1)
             for axis in axes
         ]
 
@@ -151,7 +151,8 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
             x,
             s=[s[axes.index(axis)] for axis in remaining_axes],
             axes=remaining_axes,
-            norm=norm)
+            norm=norm
+        )
 
     if include_last_axis:
         axis = len(x.shape) - 1
