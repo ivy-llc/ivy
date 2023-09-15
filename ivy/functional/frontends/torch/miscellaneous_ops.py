@@ -456,7 +456,7 @@ def corrcoef(input):
     return ivy.corrcoef(input, y=None, rowvar=True)
 
 @to_ivy_arrays_and_back
-def ivy_cdist(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
+def cdist(x1, x2, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
     pairwise_diff = x1[:, :, None] - x2[:, None, :]
     if p == 2.0:
         if compute_mode == 'use_mm_for_euclid_dist_if_necessary' and (pairwise_diff.shape[1] > 25 or pairwise_diff.shape[2] > 25):
