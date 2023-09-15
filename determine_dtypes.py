@@ -279,6 +279,9 @@ def _is_dtype_err_paddle(e, dtype):
         f"must be int, but got {_remove_numbers(dtype, True)}",
         "Elements in Input(x) should all be integers",
         f"Invalid dtype 'paddle.{dtype}'. Valid dtypes are",
+        f"but got paddle.{dtype}",
+        f"holds the wrong type, it holds {dtype}",
+        "The data type of input Variable must be",
     ]
     only_int32 = (
         ["Selected wrong DataType `int64`. Paddle support following DataTypes:"]
