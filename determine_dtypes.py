@@ -401,6 +401,10 @@ TORCH_SECONDARY_DTPYES_MAP = {
 }
 
 
+# TODO: check on is_floating_point (gets given tf tensor)
+# TODO: from_numpy (obviously doesn't want tensor input)
+# TODO: check can_cast (gets DType, not torch.dtype)
+# TODO: check on triplet_margin_with_distance_loss (it's talking about tf dtypes)
 def _is_dtype_err_torch(e, dtype):
     torch_dtype = TORCH_DTYPES_MAP[dtype]
     secondary_dtype = (
@@ -410,6 +414,7 @@ def _is_dtype_err_torch(e, dtype):
     )
     dtype_err_substrings = [
         f"\" not implemented for '{torch_dtype}'",
+        f"not implemented for {torch_dtype}",
         f"{torch_dtype} type is not supported by",
         f"{torch_dtype} inputs not supported for",
         f"not supported for {torch_dtype}",
@@ -447,11 +452,46 @@ def _is_dtype_err_torch(e, dtype):
         "only supports double, float and half tensors",
         f"expected probabilities tensor to have floating type, got {torch_dtype}",
         f"expected scalar type Double but found {torch_dtype}",
+        f"only supports floating-point dtypes for input, got: {torch_dtype}",
+        f"is not implemented for {torch_dtype.lower()}",
+        "only supports floating-point dtypes",
+        f"does not support {dtype} input",
+        "is not implemented for tensors with non-complex dtypes.",
+        (
+            "input dtype should be either floating point or complex. Got"
+            f" {torch_dtype} instead."
+        ),
+        f"Expected floating point type for result tensor, but got: {torch_dtype}",
+        (
+            "Optional dtype must be either a floating point or complex dtype. Got:"
+            f" {torch_dtype}"
+        ),
+        (
+            "only supported for half, float and double tensors, but got a tensor of"
+            f" scalar type: {torch_dtype}"
+        ),
+        (
+            "For integral input tensors, argument beta must not be a floating point"
+            " number."
+        ),
+        f"Unknown Complex ScalarType for {torch_dtype}",
+        f"supports floating point, complex, and integer tensors, but got {torch_dtype}",
+        f"result type Float can't be cast to the desired output type {secondary_dtype}",
+        "Integral inputs not supported.",
+        f"result type Float can't be cast to the desired output type {torch_dtype}",
+        f"to have floating point type, but got torch.{dtype}",
+        (
+            "expected common dtype to be floating point, yet common dtype is"
+            f" {torch_dtype}"
+        ),
+        f"dtype must be a floating point but you specified {torch_dtype}",
+        f"expected scalar type Float but found {torch_dtype}",
     ]
     only_if_bool = [
         "currently does not support bool dtype on CUDA.",
         "operator, on a bool tensor is not supported.",
         "operator, with two bool tensors is not supported.",
+        "operator, with a bool tensor is not supported.",
         "tensor([[False, False]]) must be lesser than tensor([[False, False]])",
         (
             "tensor([[False, False]], device='cuda:0') must be lesser than"
@@ -459,6 +499,7 @@ def _is_dtype_err_torch(e, dtype):
         ),
         "Boolean inputs not supported for",
         "Expected parameter concentration (Tensor of shape (",
+        "The input tensor may not be a boolean tensor.",
     ]
     only_if_complex = [
         "currently does not support complex dtypes on CUDA.",
@@ -466,7 +507,10 @@ def _is_dtype_err_torch(e, dtype):
         "not implemented for complex tensors",
         f"expects a real-valued input tensor, but got {torch_dtype}",
         "is not yet implemented for complex tensors.",
-        "does not support complex inputs",
+        "expects standard deviation to be non-complex",
+        "is not intended to support complex numbers.",
+        "does not support complex input",
+        "Complex inputs not supported.",
     ]
     substrings_to_check = (
         (only_if_bool if dtype == "bool" else [])
