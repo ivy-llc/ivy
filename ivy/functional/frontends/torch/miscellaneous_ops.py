@@ -98,36 +98,25 @@ def clone(input):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float64",)}, "torch")
 def combinations(input, r=2):
     input_dtype = input.dtype
-
     if len(input) < r or r <= 0:
         if r == 0:
             return ivy.empty((0), dtype=input_dtype)
-            
         return ivy.empty((0, r), dtype=input_dtype)
-
     n = input.shape[0]
     indices = ivy.arange(r)
     combinations = [input[indices]]
-
     while True:
-        # Find the first index that can be incremented
         for i in range(r-1, -1, -1):
             if indices[i] != i + n - r:
                 break
         else:
             break
-
         indices[i] += 1
-        
-        # Update the following indices to form the next combination
         for j in range(i+1, r):
             indices[j] = indices[j-1] + 1
-
         combinations.append(input[indices])
-
     return ivy.array(combinations, dtype=input_dtype)
 
 

@@ -537,34 +537,6 @@ def test_torch_clone(
         input=x[0],
     )
 
-'''
-# combinations
-@handle_frontend_test(
-    fn_tree="torch.combinations",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_torch_combinations(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-    )
-'''
 
 @handle_frontend_test(
     fn_tree="torch.combinations",
@@ -587,12 +559,6 @@ def test_torch_combinations(
     backend_fw,
 ):    
     (input_dtype, x) = dtype_and_x
-    
-    #print(f"input_dtype: {input_dtype}")
-    
-    #print(f"--------------------------------")
-    #print(f"x.type: {type(x[0])}, x: {x[0]}, x.shape: {x[0].shape}")
-    #print(f"--------------------------------")
     
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
