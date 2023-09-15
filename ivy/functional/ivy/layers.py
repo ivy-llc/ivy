@@ -2340,3 +2340,21 @@ def _get_num_padded_values(i, p, n, k, s):
     return max(0, left_padding - current_index) + max(
         0, current_index + k - n - left_padding
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    return current_backend().nms(
+        boxes, scores, iou_threshold, max_output_size, score_threshold
+    )
