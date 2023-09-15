@@ -278,5 +278,3 @@ def test_paddle_rfftfreq(
         n=n,
         d=d,
     )
-
-
