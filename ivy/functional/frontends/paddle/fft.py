@@ -134,7 +134,7 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
 
     if axes is None:
         axes = list(range(len(x.shape)))
-        
+
     include_last_axis = len(x.shape) - 1 in axes
 
     if s is None:
