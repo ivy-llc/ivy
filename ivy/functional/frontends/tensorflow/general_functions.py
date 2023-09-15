@@ -266,6 +266,19 @@ def gather_nd(params, indices, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def gradients(
+    y,
+    x,
+    grad_y=None,
+    name="gradients",
+    gate_gradients=False,
+    aggregation_method=None,
+    stop_gradients=None,
+):
+    return ivy.gradients(y, x)
+
+
+@to_ivy_arrays_and_back
 def identity(input, name=None):
     return ivy.copy_array(input)
 
