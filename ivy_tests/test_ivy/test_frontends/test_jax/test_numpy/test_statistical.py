@@ -959,6 +959,19 @@ def test_jax_nanmin(
         where=where,
     )
 
+# digitize
+@handle_frontend_test(
+    fn_tree="jax.numpy.digitize",
+    aliases=[],
+    dtype_x_axis=[('float32', [1.5, 2.0, 2.5, 3.0, 3.5], None)],  # Example input data and no axis
+    where=None,  # No 'where' parameter for this test
+    keepdims=False,  # Set to False for this test
+)
+def test_ivy_digitize(*args, **kwargs):
+    np_helpers.test_frontend_function(*args, **kwargs)
+
+if __name__ == "__main__":
+    test_ivy_digitize()
 
 # nanstd
 @handle_frontend_test(
