@@ -2,6 +2,9 @@
 import os
 import sys
 from pymongo import MongoClient
+import requests
+from run_tests_CLI.get_all_tests import BACKENDS
+
 
 submodules = (
     "test_paddle",
@@ -43,6 +46,18 @@ result_config = {
     "success": "https://img.shields.io/badge/-success-success",
     "failure": "https://img.shields.io/badge/-failure-red",
 }
+
+
+def get_latest_package_version(package_name):
+    try:
+        url = f"https://pypi.org/pypi/{package_name}/json"
+        response = requests.get(url)
+        response.raise_for_status()
+        package_info = response.json()
+        return package_info["info"]["version"]
+    except requests.exceptions.RequestException as e:
+        print(f"Error: Failed to fetch package information for {package_name}.")
+        return None
 
 
 def make_clickable(url, name):
@@ -96,64 +111,6 @@ def update_individual_test_results(
         {"$set": {key: result}},
         upsert=True,
     )
-    return
-
-
-def remove_from_db(collection, id, submod, backend, test):
-    collection.update_one({"_id": id}, {"$unset": {f"{submod}.{backend}.": test}})
-    return
-
-
-def run_multiversion_testing():
-    failed = False
-    cluster = MongoClient(
-        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
-    )
-    db = cluster["Ivy_tests_multi"]
-    with open("tests_to_run", "r") as f:
-        for line in f:
-            test, backend = line.split(",")
-            backend = backend.strip("\n")
-            coll, submod, test_fn = get_submodule(test)
-            frontend_version = None
-            if ";" in backend:
-                # This is a frontend test
-                backend, frontend = backend.split(";")
-                frontend_version = "/".join(frontend.split("/")[1:])
-                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /bin/bash -c "/opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend} {frontend} numpy/1.23.1; /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}" '  # noqa
-                ret = os.system(command)
-            else:
-                ret = os.system(
-                    f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base'
-                    " /opt/miniconda/envs/multienv/bin/python"
-                    " docker/multiversion_framework_directory.py backend"
-                    f" {backend};/opt/miniconda/envs/multienv/bin/python pytest"
-                    f" --tb=short {test} --backend={backend.split('/')[0]}"
-                    # noqa
-                )
-            if ret != 0:
-                res = make_clickable(run_id, result_config["failure"])
-                failed = True
-            else:
-                res = make_clickable(run_id, result_config["success"])
-            backend_list = backend.split("/")
-            backend_name = backend_list[0] + "\n"
-            backend_version = "/".join(backend_list[1:])
-            update_individual_test_results(
-                db[coll[0]],
-                coll[1],
-                submod,
-                backend_name,
-                test_fn,
-                res,
-                backend_version,
-                frontend_version,
-            )
-    if failed:
-        exit(1)
-    exit(0)
 
 
 if __name__ == "__main__":
@@ -177,14 +134,10 @@ if __name__ == "__main__":
         priority_flag = True
     else:
         priority_flag = False
-    # Multi Version Testing
-    if version_flag == "true":
-        run_multiversion_testing()
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
-    db_multi = cluster["Ivy_tests_multi"]
-    db_gpu = cluster["Ivy_tests_multi_gpu"]
+    db = cluster["Ivy_tests_multi_gpu"]
     db_priority = cluster["Ivy_tests_priority"]
     if with_gpu:
         os.system("docker pull unifyai/multicuda:base_and_requirements")
@@ -195,24 +148,41 @@ if __name__ == "__main__":
             print(f"\n{'*' * 100}")
             print(f"{line[:-1]}")
             print(f"{'*' * 100}\n")
+            backend_version = "latest-stable"
             sys.stdout.flush()
-            if with_gpu:
-                ret = os.system(
-                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis'
-                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                    f" --tb=short {test} --device=gpu:0 -B={backend}"
-                    # noqa
-                )
-            else:
+            if version_flag == "true":
+                backends = [backend.strip()]
+                [backend_name, backend_version] = backend.split("/")
+                other_backends = [fw for fw in BACKENDS if fw != backend_name]
+                for backend in other_backends:
+                    backends.append(backend + "/" + get_latest_package_version(backend))
+                print("Backends:", backends)
                 ret = os.system(
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
-                    f" pytest --tb=short {test} --backend {backend}"
-                    # noqa
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
+                    ' /bin/bash -c "python docker/multiversion_framework_directory.py'
+                    f" {' '.join(backends)};pytest --tb=short"
+                    f' {test} --backend={backend}"'
                 )
+            else:
+                if with_gpu:
+                    ret = os.system(
+                        f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                        ' "$(pwd)"/.hypothesis:/.hypothesis'
+                        " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                        f" --tb=short {test} --device=gpu:0 -B={backend}"
+                        # noqa
+                    )
+                else:
+                    ret = os.system(
+                        f"docker run --rm --env REDIS_URL={redis_url} --env"
+                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
+                        f" -m pytest --tb=short {test} --backend {backend}"
+                        # noqa
+                    )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
                 failed = True
@@ -235,25 +205,15 @@ if __name__ == "__main__":
                     "gpu" if with_gpu else "cpu",
                 )
             else:
-                if not with_gpu:
-                    update_individual_test_results(
-                        db_multi[coll[0]],
-                        coll[1],
-                        submod,
-                        backend,
-                        test_fn,
-                        res,
-                        "latest-stable",
-                        frontend_version,
-                    )
+                print(backend_version)
                 update_individual_test_results(
-                    db_gpu[coll[0]],
+                    db[coll[0]],
                     coll[1],
                     submod,
                     backend,
                     test_fn,
                     res,
-                    "latest-stable",
+                    backend_version,
                     frontend_version,
                     "gpu" if with_gpu else "cpu",
                 )
