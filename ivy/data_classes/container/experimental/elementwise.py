@@ -3018,6 +3018,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         -------
         ret
             container including the sparsified tensor computed element-wise
+
         Examples
         --------
         >>> x = ivy.Container(
@@ -3062,6 +3063,91 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_sparsify_tensor(
             self,
             card,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_real(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container containing input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output container in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The real part of a complex (or real) tensor.
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+                a=ivy.array([-2.25 + 4.75j, 3.25 + 5.75j])
+            )
+        >>> ivy.Container.static_real(x)
+            {
+                a: ivy.array([-2.25, 3.25]),
+            }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "real",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def real(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.real.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.real also applies to this method with minimal changes.
+        """
+        return self.static_real(
+            self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

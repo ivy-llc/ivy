@@ -464,3 +464,12 @@ def digamma(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return js.special.digamma(x)
+
+
+def real(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.real(x)

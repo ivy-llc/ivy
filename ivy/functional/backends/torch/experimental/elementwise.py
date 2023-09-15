@@ -383,3 +383,12 @@ def digamma(
 
 
 digamma.support_native_out = True
+
+
+def real(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.real(x)

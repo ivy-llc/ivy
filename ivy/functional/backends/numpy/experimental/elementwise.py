@@ -480,3 +480,12 @@ def lgamma(
     # Vectorize 'func' for element-wise operations on 'x', output matching 'x' dtype.
     vfunc = np.vectorize(func, otypes=[x.dtype])
     return vfunc(x)
+
+
+def real(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.real(x)

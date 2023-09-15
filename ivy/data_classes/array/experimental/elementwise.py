@@ -1064,3 +1064,35 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
         """
         return ivy.sparsify_tensor(self._data, card, out=out)
+
+    def real(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.real. This method simply wraps the
+        function, and so the docstring for ivy.real also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The real part of a complex (or real) tensor.
+
+        Examples
+        --------
+        >>> x = ivy.array([-2.25 + 4.75j, 3.25 + 5.75j])
+        >>> y = ivy.real(x)
+        ivy.array([-2.25, 3.25])
+        """
+        return ivy.real(self._data, out=out)

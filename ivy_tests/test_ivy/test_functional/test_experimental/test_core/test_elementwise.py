@@ -767,6 +767,25 @@ def test_nextafter(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# real
+@handle_test(
+    fn_tree="functional.ivy.experimental.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_real(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # sinc
 @handle_test(
     fn_tree="functional.ivy.experimental.sinc",
