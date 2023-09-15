@@ -37,7 +37,7 @@ def fft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
             )
     
     # Apply FFT along the first axis
-    fft_first_axis = fft(x, n=s[0] if s else None, axis=axes[0], norm=norm)
+    fft_first_axis = fft(x, n=s[0] if s else None, axis=axes[0], norm=norm) 
     
     # Apply FFT along the second axis
     fft_second_axis = fft(
