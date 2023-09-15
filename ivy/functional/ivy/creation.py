@@ -266,11 +266,9 @@ _T_co = TypeVar("_T_co", covariant=True)
 
 
 class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
-        ...
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]: ...
 
-    def __len__(self, /) -> int:
-        ...
+    def __len__(self, /) -> int: ...
 
 
 # Array API Standard #
@@ -1961,7 +1959,7 @@ def one_hot(
     ret
         Tensor of zeros with the same shape and type as a, unless dtype provided which
         overrides.
-    
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -1993,11 +1991,11 @@ def one_hot(
     >>> z = x.one_hot(y)
     >>> print(z)
     {
-        a: ivy.array([[0., 1., 0., 0., 0.], 
+        a: ivy.array([[0., 1., 0., 0., 0.],
                     [0., 0., 1., 0., 0.]]),
-        b: ivy.array([[0., 0., 0., 1., 0.], 
+        b: ivy.array([[0., 0., 0., 1., 0.],
                     [0., 1., 0., 0., 0.]]),
-        c: ivy.array([[0., 0., 1., 0., 0.], 
+        c: ivy.array([[0., 0., 1., 0., 0.],
                     [0., 0., 0., 1., 0.]])
     }
 

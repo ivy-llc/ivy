@@ -807,6 +807,12 @@ class _ArrayWithGeneral(abc.ABC):
         >>> c = a.array_equal(b)
         >>> print(c)
         True
+
+        >>> i = ivy.array([1, 2])
+        >>> j = ivy.array([1, 2, 3])
+        >>> k = i.array_equal(j)
+        >>> print(k)
+        False
         """
         return ivy.array_equal(self, x)
 
@@ -1347,7 +1353,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> b = x.get_num_dims(as_array=False)
         >>> print(b)
         3
-        
+
         >>> b = x.get_num_dims(as_array=True)
         >>> print(b)
         ivy.array(3)
