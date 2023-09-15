@@ -161,8 +161,9 @@ if __name__ == "__main__":
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    f' /bin/bash -c "python docker/multiversion_framework_directory.py {" ".join(backends)};'
-                    f'pytest --tb=short {test} --backend={backend}"'
+                    ' /bin/bash -c "python docker/multiversion_framework_directory.py'
+                    f" {' '.join(backends)};pytest --tb=short"
+                    f' {test} --backend={backend}"'
                 )
             else:
                 if with_gpu:
@@ -178,8 +179,8 @@ if __name__ == "__main__":
                     ret = os.system(
                         f"docker run --rm --env REDIS_URL={redis_url} --env"
                         f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
-                        f" pytest --tb=short {test} --backend {backend}"
+                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
+                        f" -m pytest --tb=short {test} --backend {backend}"
                         # noqa
                     )
             if ret != 0:
