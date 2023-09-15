@@ -93,27 +93,39 @@
 
 ------------------------------------------------------------------------
 
-Ivy is both an ML transpiler and a framework, currently supporting JAX,
-TensorFlow, PyTorch, and Numpy.
+Ivy is an open-source machine learning framework and transpiler that 
+enables you to: 
 
-Ivy unifies all ML frameworks 💥 enabling you not only to **write code
-that can be used with any of these frameworks as the backend**, but also
-to **convert 🔄 any function, model, or library written in any of them to
-your preferred framework!**
+- 💥 **Accelerate your development**: this will allow you to make your 
+machine learning model 3x faster than the one you have.
+- 🔄 **Convert your code into any framework**: you can benefit from all 
+the machine learning ecosystems with different and save time from 
+reproducing the same algorithms with ivy. You can connect machine 
+learning frameworks together. 
+- 🔥 **Autotune and optimize your model**: you can compress your model, 
+get the best cost, and more with Ivy. 
+- ⚒️ **Write framework-free code**: when you use Ivy as a framework, 
+you can set your favorite machine learning framework as a backend and 
+get its benefits. 
+- 💻 **Deploy your model**: you can deploy the model on the cloud or 
+have your own containerized machine learning to run on any machine 
+you want without any issues.
 
-You can check out [Ivy as a transpiler](#ivy-as-a-transpiler) and [Ivy
-as a framework](#ivy-as-a-framework) to learn more about this, try out
-Ivy straight away going through the [Setting up Ivy](#setting-up-ivy)
-section, or dive deep into Ivy\'s [Documentation](#documentation) and
-[Examples](#examples)!
+Join our growing community 🌍 to interact with people using Ivy. 
+ 
+Let's unify.ai together 🦾
 
-If you would like to contribute, you can join our growing
-[Community](#community) 🌍, check out our [Contributing](#contributing)
-guide, and take a look at the [open
-tasks](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html)
-if you\'d like to dive straight in 🧑‍💻
+------------------------------------------------------------------------
 
-**Let\'s** [unify.ai](https://unify.ai) **together 🦾**
+# Getting started: 
+
+You can start by reading tutorials and explore our demos, 
+Here is a good starting point for you:
+- [How to Convert your code?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html) 
+- [How to write a framework-free code?](https://unify.ai/docs/ivy/demos/learn_the_basics/02_unify_code.html) 
+- Accelerate your development (WIP)
+- Autotune and optimize models (WIP) 
+
 
 ------------------------------------------------------------------------
 
