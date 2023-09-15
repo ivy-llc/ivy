@@ -10,4 +10,9 @@ def layer_norm(x, normalized_shape, weight=None, bias=None, epsilon=1e-05, name=
     return ivy.layer_norm(x, normalized_shape, weight, bias, epsilon)
 
 
-Fixed merge conflict
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def batch_norm(x, mean, variance, offset = None,scale= None,training = False,epsilon = 1e-5,
+                momentum = 1e-1,  data_format = "NSC"):
+    return ivy.batch_norm(x, mean,variance, offset, scale, training,
+                        epsilon, momentum,data_format)
