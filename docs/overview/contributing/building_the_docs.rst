@@ -3,7 +3,7 @@ Building the Docs
 
 This document describes how to build the Ivy docs. If you want to know more about how
 our custom building pipeline work, check our `Building the Docs Pipeline
-<../deep_dive/building_the_docs_pipline.rst>`_ deep dive
+<../deep_dive/building_the_docs_pipeline.rst>`_ deep dive
 
 Building the Docs using Docker
 ------------------------------
