@@ -494,3 +494,40 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.transpose(0, *range(2, dims + 2), 1)
     return res
+
+
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    change_id = False
+
+    if scores is not None and score_threshold is not float("-inf"):
+        keep_idx = scores > score_threshold
+        boxes = boxes[keep_idx]
+        scores = scores[keep_idx]
+        change_id = True
+        nonzero = paddle.nonzero(keep_idx).flatten()
+
+    if len(boxes) < 2:
+        if len(boxes) == 1:
+            ret = paddle.to_tensor([0], dtype=paddle.int64)
+        else:
+            ret = paddle.to_tensor([], dtype=paddle.int64)
+    else:
+        ret = paddle.vision.ops.nms(boxes, iou_threshold, scores)
+
+    # print("ret of paddle", ret)
+    if len(ret) > 1 and scores is not None:
+        ret = sorted(
+            ret.flatten().tolist(), reverse=True, key=lambda x: (scores[x], -x)
+        )
+        ret = paddle.to_tensor(ret, dtype=paddle.int64).flatten()
+
+    if change_id and len(ret) > 0:
+        ret = paddle.to_tensor(nonzero[ret], dtype=paddle.int64).flatten()
+
+    return ret.flatten()[:max_output_size]
