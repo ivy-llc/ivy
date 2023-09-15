@@ -139,8 +139,8 @@ def cosh(x, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def count_nonzero(x, axis=None, keepdims=False, name=None):
-    return ivy.astype(ivy.count_nonzero(x, axis=axis, keepdims=keepdims), ivy.int64)
+def count_nonzero(x, axis=None, keepdim=False, name=None):
+    return ivy.astype(ivy.count_nonzero(x, axis=axis, keepdims=keepdim), ivy.int64)
 
 
 @with_supported_dtypes(
