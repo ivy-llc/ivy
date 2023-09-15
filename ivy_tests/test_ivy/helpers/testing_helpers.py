@@ -747,6 +747,7 @@ def handle_frontend_method(
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
+    generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
     """
@@ -798,12 +799,10 @@ def handle_frontend_method(
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            init_flags = pf.frontend_method_flags(
+            init_flags = pf.frontend_init_flags(
                 num_positional_args=init_num_positional_args,
                 as_variable=_get_runtime_flag_value(init_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(init_native_arrays),
-                test_compile=_get_runtime_flag_value(test_compile),
-                precision_mode=_get_runtime_flag_value(precision_mode),
             )
 
             method_flags = pf.frontend_method_flags(
@@ -812,6 +811,9 @@ def handle_frontend_method(
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
                 test_compile=_get_runtime_flag_value(test_compile),
                 precision_mode=_get_runtime_flag_value(precision_mode),
+                generate_frontend_arrays=_get_runtime_flag_value(
+                    generate_frontend_arrays
+                ),
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
