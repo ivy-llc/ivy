@@ -18,7 +18,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float", "complex")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -60,18 +60,19 @@ def gelu(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
-        if approximate:
-            return (
-                0.5
-                * x
-                * (1 + paddle_backend.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
-            )
-        return 0.5 * x * (1 + paddle_backend.erf(x / paddle_backend.sqrt(2)))
+        sqrt_2_over_pi = 0.7978845608
+        # the other magic number comes directly from the formula in
+        # https://doi.org/10.48550/arXiv.1606.08415
+        return (
+            0.5
+            * x
+            * (1 + paddle_backend.tanh(sqrt_2_over_pi * (x + 0.044715 * x * x * x)))
+        )
     return F.gelu(x, approximate=approximate)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float16", "float32", "float64", "complex")},
+    {"2.5.1 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def sigmoid(
