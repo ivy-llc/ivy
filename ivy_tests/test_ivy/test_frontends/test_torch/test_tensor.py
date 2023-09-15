@@ -4252,6 +4252,7 @@ def test_torch_tensor_bernoulli_(
     init_flags,
     method_flags,
     backend_fw,
+    test_with_out=None,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
