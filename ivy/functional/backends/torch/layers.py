@@ -85,10 +85,14 @@ def multi_head_attention(
         is_causal=is_causal,
     )
     ret = list(ret)
-    # torch returns batched tensors even when the inputs were un-batched
-    ret[0] = ret[0].squeeze(1)
+    # possibly a bug: torch returns batched tensors even when the inputs were un-batched
+    if num_dims == 2:
+        ret[0] = ret[0].squeeze(1)
+    else:
+        ret[0] = ret[0].swapaxes(0, 1)
     if return_attention_weights:
-        ret[1] = ret[1].squeeze(0)
+        if num_dims == 2:
+            ret[1] = ret[1].squeeze(0)
         return tuple(ret)
     return ret[0]
 
