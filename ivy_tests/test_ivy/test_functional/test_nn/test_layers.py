@@ -268,7 +268,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     )
 
     key_padding_mask = draw(st.one_of(
-        helpers.array_values(dtype="bool", shape=(*_batch_dim, _num_keys)),
+        helpers.array_values(dtype=_mask_dtype, shape=(*_batch_dim, _mask_shape[-1])),
         st.none(),
     ))
 

@@ -909,16 +909,16 @@ def multi_head_attention(
 
     # apply key_padding_mask
     if key_padding_mask is not None:
-        if key_padding_mask.ndim == 1:
+        if not ivy.is_bool_dtype(key_padding_mask):
+            key_padding_mask = key_padding_mask.astype(ivy.bool)
+        if num_dims == 2:
             key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
         if add_zero_attn:
             key_padding_mask = ivy.pad(key_padding_mask, [(0, 0), (0, 1)])
         if bias_k is not None and bias_v is not None:
             key_padding_mask = ivy.pad(key_padding_mask, [(0, 0), (0, 1)])
-        key_padding_mask = ivy.tile(key_padding_mask, (1, num_heads, num_queries, 1))
-        attn_scores = attn_scores.reshape((batch_dim, num_heads, num_queries, -1))
+        key_padding_mask = ivy.tile(key_padding_mask, (batch_dim * num_heads, num_queries, 1))
         attn_scores = ivy.where(key_padding_mask, float("-inf"), attn_scores)
-        attn_scores = attn_scores.reshape((batch_dim * num_heads, num_queries, -1))
 
     # get attention weights
     attn_weights = ivy.softmax(attn_scores, axis=-1)
