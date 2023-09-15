@@ -9,45 +9,6 @@ from ivy.utils.assertions import check_equal
 
 
 @to_ivy_arrays_and_back
-def pixel_unshuffle(x, downscale_factor, data_format="NCHW"):
-    input_shape = ivy.shape(x)
-
-    if data_format == "NCHW":
-        b, c, h, w = input_shape
-    else:
-        b, h, w, c = input_shape
-
-    check_equal(
-        c % (downscale_factor ** 2),
-        0,
-        message=(
-            "pixel unshuffle expects input channel to be divisible by square of downscale"
-            " factor, but got input with size {}, downscale factor={}, and"
-            " self.size(1)={}, is not divisible by {}".format(
-                input_shape, downscale_factor, c, downscale_factor ** 2
-            )
-        ),
-        as_array=False,
-    )
-
-    oc = c // (downscale_factor ** 2)
-    oh = h // downscale_factor
-    ow = w // downscale_factor
-
-    if data_format == "NCHW":
-        x_reshaped = ivy.reshape(x, (b, oc, downscale_factor, downscale_factor, oh, ow))
-    else:
-        x_reshaped = ivy.reshape(x, (b, oh, ow, downscale_factor, downscale_factor, oc))
-
-    if data_format == "NCHW":
-        return ivy.reshape(
-            ivy.permute_dims(x_reshaped, (0, 1, 4, 2, 5, 3)), (b, oc, oh, ow)
-        )
-    return ivy.reshape(
-        ivy.permute_dims(x_reshaped, (0, 4, 1, 5, 2, 3)), (b, oh, ow, oc)
-    )
-
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def affine_grid(theta, out_shape, align_corners=True):
     if len(out_shape) == 4:
