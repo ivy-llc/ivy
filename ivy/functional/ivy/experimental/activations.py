@@ -214,6 +214,28 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
+def _relu6_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        ivy.logical_or(
+            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+        ),
+        ivy.array(0, dtype=x.dtype),
+        ivy.where(
+            ivy.logical_or(
+                ivy.real(x) > 6, ivy.logical_and(ivy.real(x) == 6, ivy.imag(x) > 0)
+            ),
+            ivy.array(6, dtype=x.dtype),
+            x,
+        ),
+    )
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -222,8 +244,13 @@ def thresholded_relu(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def relu6(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the rectified linear unit 6 function element-wise.
@@ -232,6 +259,9 @@ def relu6(
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -258,6 +288,9 @@ def relu6(
     ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
     """
     return current_backend(x).relu6(x, out=out)
+
+
+relu6.jax_like = _relu6_jax_like
 
 
 @handle_exceptions
