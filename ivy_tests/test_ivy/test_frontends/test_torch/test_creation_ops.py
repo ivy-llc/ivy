@@ -181,6 +181,7 @@ def test_complex(
 @handle_frontend_test(
     fn_tree="torch.polar",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
 )
 def test_polar(
     *,

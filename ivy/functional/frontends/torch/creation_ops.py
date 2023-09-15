@@ -256,6 +256,7 @@ def ones_like_v_0p4p0_and_above(
 
 
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+@to_ivy_arrays_and_back
 def polar(
     abs,
     angle,
