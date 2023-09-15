@@ -550,3 +550,69 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    """
+    boxes is a numpy array : num_boxes, 4
+    scores ia  nump array : num_boxes,
+    """
+    change_id = False
+    if score_threshold is not float("-inf") and scores is not None:
+        keep_idx = scores > score_threshold
+        boxes = boxes[keep_idx]
+        scores = scores[keep_idx]
+        change_id = True
+        nonzero = np.nonzero(keep_idx)[0].flatten()
+    if scores is None:
+        scores = np.ones((boxes.shape[0],), dtype=boxes.dtype)
+
+    if len(boxes) < 2:
+        if len(boxes) == 1:
+            ret = np.array([0], dtype=np.int64)
+        else:
+            ret = np.array([], dtype=np.int64)
+    else:
+        x1 = boxes[:, 0]
+        y1 = boxes[:, 1]
+        x2 = boxes[:, 2]
+        y2 = boxes[:, 3]
+
+        areas = (x2 - x1) * (y2 - y1)
+        order = (-1 * scores).argsort(kind="stable")  # get boxes with more ious first
+        keep = []
+
+        while order.size > 0:
+            i = order[0]  # pick maxmum iou box
+            keep.append(i)
+            xx1 = np.maximum(x1[i], x1[order[1:]])
+            yy1 = np.maximum(y1[i], y1[order[1:]])
+            xx2 = np.minimum(x2[i], x2[order[1:]])
+            yy2 = np.minimum(y2[i], y2[order[1:]])
+
+            w = np.maximum(0.0, xx2 - xx1)  # maximum width
+            h = np.maximum(0.0, yy2 - yy1)  # maxiumum height
+            inter = w * h
+            ovr = inter / (areas[i] + areas[order[1:]] - inter)
+            inds = np.where(ovr <= iou_threshold)[0]
+
+            order = order[inds + 1]
+
+        ret = np.array(keep)
+
+    if len(ret) > 1 and scores is not None:
+        ret = sorted(
+            ret.flatten().tolist(), reverse=True, key=lambda x: (scores[x], -x)
+        )
+        ret = np.array(ret, dtype=np.int64).flatten()
+
+    if change_id and len(ret) > 0:
+        ret = np.array(nonzero[ret], dtype=np.int64).flatten()
+
+    return ret.flatten()[:max_output_size]
