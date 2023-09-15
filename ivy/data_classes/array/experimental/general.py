@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Callable, Sequence
+from typing import Union, Callable, Sequence, Tuple, List
 
 # local
 import ivy
@@ -47,3 +47,33 @@ class _ArrayWithGeneralExperimental(abc.ABC):
         ivy.array([6, 15])
         """
         return ivy.reduce(self, init_value, computation, axes=axes, keepdims=keepdims)
+
+    def sequence_length(
+        self: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        /,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.sequence_length. This method simply wraps the
+        function, and so the docstring for ivy.sequence_length also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The sequence to act on.
+
+        Returns
+        -------
+        ret
+            The length of sequences.
+
+        Examples
+        --------
+        >>> x = [ivy.array([1, 2, 3]), ivy.array([4, 5, 6])]
+        >>> x.sequence_length()
+        ivy.array(2)
+        """
+        return ivy.sequence_length(self)

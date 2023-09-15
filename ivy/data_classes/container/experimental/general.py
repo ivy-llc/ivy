@@ -153,3 +153,56 @@ class _ContainerWithGeneralExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def _static_sequence_length(
+        x: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """
+        Container instance method variant of ivy.sequence_length.This method simply wraps the
+        function, and so the docstring for ivy.sequence_length also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+           The input container.
+
+        Returns
+        -------
+        ret
+            A tuple containing the sequences.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[ivy.array([1, 5, 9])],\
+                                b=[ivy.array([1, 2, 3, 4]), ivy.array([5, 6, 7])])
+        >>> ivy.sequence_length(x)
+        ivy.Container(a=ivy.array(1), b=ivy.array(2))
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "sequence_length",
+            x,
+        )
+
+    def sequence_length(
+        self: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """
+        Container instance method variant of ivy.sequence_length.This method simply wraps the
+        function, and so the docstring for ivy.sequence_length also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+           The input container.
+
+        Returns
+        -------
+        ret
+            A tuple containing the sequences.
+        """
+        return self._static_sequence_length(self)

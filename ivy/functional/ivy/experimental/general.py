@@ -95,3 +95,39 @@ reduce.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def sequence_length(
+    x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+) -> int:
+    """
+    Return the length of the input array's elements.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        An integer specifying the element size in bytes.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.sequence_length(x)
+    ivy.array(1)
+
+    >>> x = [ivy.array([4., 5., 6.]), ivy.array([7., 8., 9.])]
+    >>> ivy.sequence_length(x)
+    ivy.array(2)
+    """
+    return ivy.current_backend().sequence_length(x)
