@@ -223,28 +223,6 @@ def test_paddle_irfft(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.fft.rfftfreq",
-    n=st.integers(min_value=1, max_value=1000),
-    sample_rate=st.integers(min_value=1, max_value=20),
-)
-def test_paddle_rfftfreq(
-    n, sample_rate, backend_fw, frontend, test_flags, fn_tree, on_device
-):
-    d = 1 / sample_rate
-    helpers.test_frontend_function(
-        input_dtypes=[int],
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=True,
-        n=n,
-        d=d,
-    )
-
-
-@handle_frontend_test(
     fn_tree="paddle.fft.irfftn",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("complex"),
@@ -278,3 +256,27 @@ def test_paddle_irfftn(
         axes=None,
         norm=norm,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.fft.rfftfreq",
+    n=st.integers(min_value=1, max_value=1000),
+    sample_rate=st.integers(min_value=1, max_value=20),
+)
+def test_paddle_rfftfreq(
+    n, sample_rate, backend_fw, frontend, test_flags, fn_tree, on_device
+):
+    d = 1 / sample_rate
+    helpers.test_frontend_function(
+        input_dtypes=[int],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        n=n,
+        d=d,
+    )
+
+
