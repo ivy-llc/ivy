@@ -1110,6 +1110,9 @@ class Tensor:
         self.ivy_array = self.atan2(other).ivy_array
         return self
 
+    def fmax(self, other):
+        return torch_frontend.fmax(self, other)
+        
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
