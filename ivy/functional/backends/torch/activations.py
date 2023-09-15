@@ -156,6 +156,10 @@ def mish(
     backend_version,
 )
 def hardswish(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.hardswish(x)
