@@ -82,8 +82,8 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def gather_nd(x, index, name=None):
-    return ivy.gather_nd(x, index, name)
+def gather_nd(params, indices, axis=-1, batch_dims=0, name=None):
+    return ivy.gather_nd(params, indices, batch_dims=batch_dims)
 
 
 @to_ivy_arrays_and_back
