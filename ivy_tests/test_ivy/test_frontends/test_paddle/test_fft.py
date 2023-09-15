@@ -57,7 +57,10 @@ def test_paddle_fft(
         force_int_axis=True,
     ),
     s=st.one_of(
-        st.tuples(st.integers(min_value=2, max_value=10), st.integers(min_value=2, max_value=10)),
+        st.tuples(
+            st.integers(min_value=2, max_value=10),
+            st.integers(min_value=2, max_value=10),
+        ),
         st.just(None),
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
