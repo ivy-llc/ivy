@@ -1378,7 +1378,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         axis: int,
         /,
         *,
-        mode: Optional[str] = "assign",
+        mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

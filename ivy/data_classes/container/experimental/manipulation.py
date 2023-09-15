@@ -3794,7 +3794,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         axis: Union[int, ivy.Container],
         /,
         *,
-        mode: Optional[Union[str, ivy.Container]] = "assign",
+        mode: Optional[
+            Union[Literal["sum", "min", "max", "mul", "mean", "replace"], ivy.Container]
+        ] = "replace",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -3829,7 +3831,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         axis: Union[int, ivy.Container],
         /,
         *,
-        mode: Optional[Union[str, ivy.Container]] = "assign",
+        mode: Optional[
+            Union[Literal["sum", "min", "max", "mul", "mean", "replace"], ivy.Container]
+        ] = "replace",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
