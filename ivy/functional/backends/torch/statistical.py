@@ -7,7 +7,7 @@ import torch
 # local
 import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 # Array API Standard #
@@ -66,6 +66,7 @@ def max(
 max.support_native_out = True
 
 
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, backend_version)
 def mean(
     x: torch.Tensor,
     /,
@@ -82,10 +83,6 @@ def mean(
             return ivy.inplace_update(out, x)
         else:
             return x
-    if "float" not in str(x.dtype) and "complex" not in str(x.dtype):  # unsupported
-        return torch.mean(x.to(torch.float32), dim=axis, keepdim=keepdims, out=out).to(
-            x.dtype
-        )
     return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
 
 
