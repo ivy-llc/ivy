@@ -34,4 +34,4 @@ jobs:
           destination-repository-name: 'Mapping'
           user-email: rashul.chutani@gmail.com
           commit-message: Update Array API Tests Mapping
-          target-branch: master
+          target-branch: main
