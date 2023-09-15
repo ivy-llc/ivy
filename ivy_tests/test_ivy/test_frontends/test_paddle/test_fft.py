@@ -47,34 +47,6 @@ def test_paddle_fft(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.fft.fftshift",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-)
-def test_paddle_fftshift(
-    dtype_x_axis, frontend, test_flags, fn_tree, on_device, backend_fw
-):
-    input_dtype, x, axes = dtype_x_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=True,
-        x=x[0],
-        axes=axes,
-    )
-
-
-@handle_frontend_test(
     fn_tree="paddle.fft.fft2",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -110,6 +82,34 @@ def test_paddle_fft2(
         s=s,
         axes=axes,
         norm=norm,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.fft.fftshift",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_paddle_fftshift(
+    dtype_x_axis, frontend, test_flags, fn_tree, on_device, backend_fw
+):
+    input_dtype, x, axes = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x[0],
+        axes=axes,
     )
 
 
