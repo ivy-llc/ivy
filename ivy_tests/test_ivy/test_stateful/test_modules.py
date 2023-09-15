@@ -396,7 +396,7 @@ def test_module_to_device(dummy, on_device):
         if getattr(mod, "buffers", None):
             for key, obj in mod.buffers.items():
                 if isinstance(obj, ivy.Container) or isinstance(obj, dict):
-                    ivy.nested_map(obj, lambda x: assertion(x.device, on_device))
+                    ivy.nested_map(lambda x: assertion(x.device, on_device), obj)
                 else:
                     assertion(obj.device, on_device)
 

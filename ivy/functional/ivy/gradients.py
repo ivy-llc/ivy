@@ -49,27 +49,25 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         return x
 
     # Convert all required arrays to float variables
-    map_fn = lambda x: ivy.nested_map(
-        x, fn=inner_fn, include_derived=True, shallow=False
-    )
+    map_fn = lambda x: ivy.nested_map(inner_fn, x, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
         xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
-        ivy.nested_map(xs_required, map_fn, include_derived=True)
+        ivy.nested_map(map_fn, xs_required, include_derived=True)
         ivy.set_nest_at_indices(xs, xs_grad_idxs, xs_required)
         return xs
-    return ivy.nested_map(xs, map_fn, include_derived=True, shallow=False)
+    return ivy.nested_map(map_fn, xs, include_derived=True, shallow=False)
 
 
 def _get_required_native_variables(xs, xs_grad_idxs):
     """Extract all required native variables from a nested structure."""
     # To make sure that only the required arrays are converted to native arrays
-    xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
+    xs = ivy.nested_map(ivy.to_ivy, xs, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
         xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
-        ivy.nested_map(xs_required, ivy.to_native, include_derived=True)
+        ivy.nested_map(ivy.to_native, xs_required, include_derived=True)
         ivy.set_nest_at_indices(xs, xs_grad_idxs, xs_required)
     else:
-        xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
+        xs = ivy.nested_map(ivy.to_native, xs, include_derived=True, shallow=False)
 
     def map_fn(x):
         if ivy.is_native_array(x):
@@ -78,7 +76,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
 
     # Extract all those required native arrays and None for all others
     xs = ivy.nested_map(
-        xs, map_fn, include_derived=True, to_mutable=True, shallow=False
+        map_fn, xs, include_derived=True, to_mutable=True, shallow=False
     )
 
     # Prune all None values
@@ -150,7 +148,7 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
     if ivy.is_array(x):
         return [], map_fn(x)
 
-    x = ivy.nested_map(x, map_fn, include_derived=True, shallow=False)
+    x = ivy.nested_map(map_fn, x, include_derived=True, shallow=False)
     arr_idxs = ivy.nested_argwhere(x, lambda x: ivy.is_native_array(x))
     if _check_if_empty(arr_idxs):
         return arr_idxs, []
@@ -223,8 +221,8 @@ def _stop_grad_and_index(func_ret, retain_grads, grads):
     """Stop gradient propagation of the function results."""
     if not retain_grads:
         func_ret = ivy.nested_map(
-            func_ret,
             lambda x: ivy.stop_gradient(x) if ivy.is_array(x) else x,
+            func_ret,
             include_derived=True,
         )
     if isinstance(grads, dict):
@@ -257,16 +255,16 @@ _idxs_to_str = lambda idxs: [
 
 
 _to_ivy = lambda xs: ivy.nested_map(
-    xs,
     lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x,
+    xs,
     include_derived=True,
     shallow=False,
 )
 
 
 _non_finite_to_zero = lambda xs: ivy.nested_map(
-    xs,
     lambda x: ivy.where(ivy.isfinite(x), x, 0.0) if ivy.is_array(x) else x,
+    xs,
     include_derived=True,
     shallow=False,
 )
@@ -279,16 +277,16 @@ _non_finite_to_zero = lambda xs: ivy.nested_map(
 def _variable(x):
     x = ivy.to_native(x, nested=True)
     ret = ivy.nested_map(
-        x, current_backend(x).variable, include_derived=True, shallow=False
+        current_backend(x).variable, x, include_derived=True, shallow=False
     )
-    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
+    return ivy.nested_map(ivy.to_ivy, ret, include_derived=True)
 
 
 def _is_variable(x, exclusive=False, to_ignore=None) -> bool:
     x = ivy.to_native(x, nested=True, to_ignore=to_ignore)
     return ivy.nested_map(
-        x,
         lambda x: current_backend(x).is_variable(x, exclusive=exclusive),
+        x,
         include_derived=True,
         shallow=False,
         to_ignore=to_ignore,
@@ -313,9 +311,9 @@ def _variable_data(
     """
     x = ivy.to_native(x, nested=True)
     ret = ivy.nested_map(
-        x, lambda x: current_backend(x).variable_data(x), include_derived=True
+        lambda x: current_backend(x).variable_data(x), x, include_derived=True
     )
-    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
+    return ivy.nested_map(ivy.to_ivy, ret, include_derived=True)
 
 
 @handle_exceptions
