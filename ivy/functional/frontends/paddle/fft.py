@@ -143,7 +143,7 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
 
     if s is None:
         s = [
-            x.shape[axis] if axis != axes[-1] else 2 * (x.shape[axis] - 1) 
+            x.shape[axis] if axis != axes[-1] else 2 * (x.shape[axis] - 1)
             for axis in axes
         ]
 
