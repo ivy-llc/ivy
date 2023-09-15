@@ -154,6 +154,24 @@ def test_paddle_quantile(
     backend_fw,
     test_flags,
 ):
+    def _validate_parameters():
+        # Check if q is between 0 and 1
+        assert 0 <= q <= 1, "q value should be between 0 and 1"
+
+        # Check dtype_x_and_axis
+        assert isinstance(dtype_x_and_axis, tuple), "dtype_x_and_axis should be a tuple"
+        input_dtypes, x_values, axis = dtype_x_and_axis
+        assert input_dtypes in helpers.get_dtypes("valid"), "Invalid data type"
+        assert isinstance(x_values, list) and len(x_values) == 1, "x_values should be a list of length 1"
+        assert isinstance(axis, (int, tuple, list)), "Invalid axis type"
+
+        # Check keepdim
+        assert isinstance(keepdim, bool), "keepdim should be a boolean value"
+
+        # Add other validations if you have constraints on other parameters
+
+    _validate_parameters()
+    
     input_dtypes, (x,), axis = dtype_x_and_axis
     # Convert axis if it's a tuple
     if isinstance(axis, tuple):
