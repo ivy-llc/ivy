@@ -123,12 +123,10 @@ def expand_dims(
     x
         input array.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     axis
         axis position (zero-based). If x has rank (i.e, number of dimensions) N, a
         valid axis must reside on the closed-interval [-N-1, N]. If provided a negative
@@ -162,29 +160,30 @@ def expand_dims(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([0, 1, 2]) #x.shape->(3,)
-    >>> y = ivy.expand_dims(x) #y.shape->(1, 3)
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = ivy.expand_dims(x)
     >>> print(y)
     ivy.array([[0, 1, 2]])
 
     >>> x = ivy.array([[0.5, -0.7, 2.4],
-    ...                [  1,    2,   3]]) #x.shape->(2, 3)
+    ...                [  1,    2,   3]])
     >>> y = ivy.zeros((2, 1, 3))
-    >>> ivy.expand_dims(x, axis=1, out=y) #y.shape->(2, 1, 3)
+    >>> ivy.expand_dims(x, axis=1, out=y)
     >>> print(y)
     ivy.array([[[0.5, -0.7, 2.4]],
                [[ 1.,   2.,  3.]]])
 
     >>> x = ivy.array([[-1, -2],
-    ...                [ 3,  4]]) #x.shape->(2, 2)
-    >>> ivy.expand_dims(x, axis=0, out=x) #x.shape->(1, 2, 2)
-    >>> print(x)
+    ...                [ 3,  4]])
+    >>> y = ivy.zeros((1, 2, 2))
+    >>> ivy.expand_dims(x, axis=0, out=y)
+    >>> print(y)
     ivy.array([[[-1, -2],
                 [3,  4]]])
 
     >>> x = ivy.array([[-1.1, -2.2, 3.3],
-    ...                [ 4.4,  5.5, 6.6]]) #x.shape->(2, 3)
-    >>> y = ivy.expand_dims(x, axis=(0, -1)) #y.shape->(1, 2, 3, 1)
+    ...                [ 4.4,  5.5, 6.6]])
+    >>> y = ivy.expand_dims(x, axis=(0, -1))
     >>> print(y)
     ivy.array([[[[-1.1],
                  [-2.2],
@@ -194,8 +193,8 @@ def expand_dims(
                  [ 6.6]]]])
 
     >>> x = ivy.array([[-1.7, -3.2, 2.3],
-    ...                [ 6.3,  1.4, 5.7]]) #x.shape->(2, 3)
-    >>> y = ivy.expand_dims(x, axis=[0, 1, -1]) ##y.shape->(1, 1, 2, 3, 1)
+    ...                [ 6.3,  1.4, 5.7]])
+    >>> y = ivy.expand_dims(x, axis=[0, 1, -1])
     >>> print(y)
     ivy.array([[[[[-1.7],
                   [-3.2],
@@ -262,12 +261,10 @@ def flip(
     x
         input array.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     axis
         axis (or axes) along which to flip. If axis is None, all input array axes are
         flipped. If axis is negative, axis is counted from the last dimension. If
@@ -304,14 +301,14 @@ def flip(
     ivy.array([5, 4, 3])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
+    >>> y = ivy.zeros((2, 3))
     >>> ivy.flip(x, out=y)
     >>> print(y)
     ivy.array([[6, 5, 4],
                [3, 2, 1]])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
-    >>> y = ivy.zeros((3, 3))
+    >>> y = ivy.zeros((2, 3))
     >>> ivy.flip(x, axis=0, out=y)
     >>> print(y)
     ivy.array([[4, 5, 6],
@@ -361,12 +358,10 @@ def permute_dims(
         tuple containing a permutation of (0, 1, ..., N-1) where N is the number of axes
         (dimensions) of x.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -421,7 +416,8 @@ def permute_dims(
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b = ivy.array([[3., 4., 5.]]))
-    >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
+    >>> y = ivy.Container(a=ivy.zeros((3, 1)), b= ivy.zeros((3, 1)))
+    >>> ivy.permute_dims(x, axes=(1, 0), out=y)
     >>> print(y)
     {
         a: ivy.array([[0.],
@@ -466,12 +462,10 @@ def reshape(
         can be -1. In this case, the value is inferred from the length of the array and
         remaining dimensions.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     order
         Read the elements of x using this index order, and place the elements into
         the reshaped array using this index order.
@@ -705,12 +699,10 @@ def squeeze(
         axis (or axes) to squeeze. If a specified axis has a size greater than one, a
         ValueError is. If None, then all squeezable axes are squeezed. Default: ``None``
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -731,9 +723,8 @@ def squeeze(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
@@ -1033,8 +1024,8 @@ def constant_pad(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5])
@@ -1043,10 +1034,15 @@ def constant_pad(
     ivy.array([0, 0, 1, 2, 3, 4, 5, 0, 0, 0])
 
     >>> x = ivy.array([[1, 2], [3, 4]])
-    >>> y = ivy.constant_pad(x, pad_width = [[2, 3]])
+    >>> y = ivy.constant_pad(x, pad_width=[(2, 3), (2, 3)])
     >>> print(y)
-    ivy.array([[0, 0, 1, 2, 0, 0, 0],
-                [0, 0, 3, 4, 0, 0, 0]])
+    ivy.array([[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 2, 0, 0, 0],
+            [0, 0, 3, 4, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]])
 
     >>> x = ivy.array([[1, 2], [3, 4]])
     >>> y = ivy.constant_pad(x, pad_width = [[3, 2], [2, 3]])
@@ -1059,11 +1055,14 @@ def constant_pad(
                 [0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0]])
 
-    >>> x = ivy.array([[2], [3]])
-    >>> y = ivy.zeros((2, 3))
-    >>> ivy.constant_pad(x, pad_width = [[1, 1]], value = 5.0, out = y)
-    ivy.array([[5, 2, 5],
-       [5, 3, 5]])
+    >>> x = ivy.array([[2.], [3.]])
+    >>> y = ivy.zeros((4, 3))
+    >>> ivy.constant_pad(x, pad_width = [(1, 1), (1, 1)], value = 5.0, out= y)
+    >>> print(y)
+    ivy.array([[5., 5., 5.],
+           [5., 2., 5.],
+           [5., 3., 5.],
+           [5., 5., 5.]])
 
     With :class:`ivy.Container` input:
 
@@ -1072,8 +1071,8 @@ def constant_pad(
     >>> y = ivy.constant_pad(x, pad_width = [[2, 3]], value = 5.0)
     >>> print(y)
     {
-            a: ivy.array([5, 5, 1, 2, 3, 5, 5, 5]),
-            b: ivy.array([5, 5, 4, 5, 6, 5, 5, 5])
+        a: ivy.array([5., 5., 1., 2., 3., 5., 5., 5.]),
+        b: ivy.array([5., 5., 3., 4., 5., 5., 5., 5.])
     }
     """
     return current_backend(x).constant_pad(x, pad_width=pad_width, value=value, out=out)
@@ -1179,12 +1178,10 @@ def split(
     x
         array to be divided into sub-arrays.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     num_or_size_splits
         Number of equal arrays to divide the array into along the given axis if an
         integer. The size of each split element if a sequence of integers or 1-D array.
@@ -1271,12 +1268,10 @@ def swapaxes(
     axis1
         Second axis to be swapped.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1291,8 +1286,8 @@ def swapaxes(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0, 1, 2]])
@@ -1348,9 +1343,9 @@ def swapaxes(
                       [5.]])
     }
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    # Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
@@ -1388,8 +1383,8 @@ def tile(
         The tiled output array.
 
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,3,4])
@@ -1429,9 +1424,9 @@ def tile(
     }
 
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    # Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).tile(x, repeats, out=out)
 
@@ -1460,12 +1455,10 @@ def unstack(
     x
         Input array to unstack.
     copy
-        boolean indicating whether to copy the input array.
+        boolean indicating whether or not to copy the input array.
         If True, the function must always copy.
-        If False, the function must never copy and must
-        raise a ValueError in case a copy would be necessary.
-        If None, the function must reuse existing memory buffer if possible
-        and copy otherwise. Default: ``None``.
+        If False, the function must never copy.
+        In case copy is False we avoid copying by returning a view of the input array.
     axis
         Axis for which to unpack the array.
     keepdims
@@ -1588,7 +1581,7 @@ def zero_pad(
     ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 0., 0., 0.])
 
     >>> x = ivy.array([[1., 2., 3.],[4, 5, 6]])
-    >>> y = ivy.zero_pad(x, pad_width = [[2, 3]])
+    >>> y = ivy.zero_pad(x, pad_width = [[2, 3], [2, 3]])
     >>> print(y)
     ivy.array([[0., 0., 0., 0., 0., 0., 0., 0.],
        [0., 0., 0., 0., 0., 0., 0., 0.],

@@ -84,12 +84,35 @@ def assert_same_type_and_shape(values, this_key_chain=None):
             ), "returned dtype = {}, ground-truth returned dtype = {}".format(x_d, y_d)
 
 
+def assert_same_type(ret_from_target, ret_from_gt, backend_to_test, gt_backend):
+    """
+    Assert that the return types from the target and ground truth frameworks are the
+    same.
+
+    checks with a string comparison because with_backend returns
+    different objects. Doesn't check recursively.
+    """
+
+    def _assert_same_type(x, y):
+        assert_msg = (
+            f"ground truth backend ({gt_backend}) returned"
+            f" {type(y)} but target backend ({backend_to_test}) returned"
+            f" {type(x)}"
+        )
+        assert str(type(x)) == str(type(y)), assert_msg
+
+    ivy.nested_multi_map(
+        lambda x, _: _assert_same_type(x[0], x[1]), [ret_from_target, ret_from_gt]
+    )
+
+
 def value_test(
     *,
     ret_np_flat,
     ret_np_from_gt_flat,
     rtol=None,
     atol=1e-6,
+    specific_tolerance_dict=None,
     backend: str,
     ground_truth_backend="TensorFlow",
 ):
@@ -108,6 +131,8 @@ def value_test(
         Relative Tolerance Value.
     atol
         Absolute Tolerance Value.
+    specific_tolerance_dict
+        (Optional) Dictionary of specific rtol and atol values according to the dtype.
     ground_truth_backend
         Ground Truth Backend Framework.
 
@@ -117,14 +142,14 @@ def value_test(
     """
     assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
 
-    if type(ret_np_flat) != list:
+    if type(ret_np_flat) != list:  # noqa: E721
         ret_np_flat = [ret_np_flat]
-    if type(ret_np_from_gt_flat) != list:
+    if type(ret_np_from_gt_flat) != list:  # noqa: E721
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
     assert len(
         ret_np_flat
     ) == len(ret_np_from_gt_flat), (
-        "The length of results from backend {} and ground truth"
+        "The length of results from backend {} and ground truth "
         "framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
         "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
@@ -135,9 +160,23 @@ def value_test(
         )
     )
     # value tests, iterating through each array in the flattened returns
-    if not rtol:
+    if specific_tolerance_dict is not None:
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
-            rtol = TOLERANCE_DICT.get(str(ret_np_from_gt.dtype), 1e-03)
+            dtype = str(ret_np_from_gt.dtype)
+            if specific_tolerance_dict.get(dtype) is not None:
+                rtol = specific_tolerance_dict.get(dtype)
+            else:
+                rtol = TOLERANCE_DICT.get(dtype, 1e-03) if rtol is None else rtol
+            assert_all_close(
+                ret_np,
+                ret_np_from_gt,
+                backend=backend,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
+    elif rtol is not None:
+        for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
@@ -148,6 +187,7 @@ def value_test(
             )
     else:
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
+            rtol = TOLERANCE_DICT.get(str(ret_np_from_gt.dtype), 1e-03)
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,

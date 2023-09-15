@@ -41,7 +41,6 @@ BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
-BuiltWithCopyStrategy = st.just(False)
 BuiltCompileStrategy = _compile_strategy()
 BuiltFrontendArrayStrategy = st.booleans()
 
@@ -53,7 +52,6 @@ flags_mapping = {
     "instance_method": "BuiltInstanceStrategy",
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
-    "with_copy": "BuiltWithCopyStrategy",
     "inplace": "BuiltInplace",
     "test_compile": "BuiltCompileStrategy",
 }
@@ -83,7 +81,6 @@ class FunctionTestFlags(TestFlags):
         ground_truth_backend,
         num_positional_args,
         with_out,
-        with_copy,
         instance_method,
         as_variable,
         native_arrays,
@@ -94,7 +91,6 @@ class FunctionTestFlags(TestFlags):
         self.ground_truth_backend = ground_truth_backend
         self.num_positional_args = num_positional_args
         self.with_out = with_out
-        self.with_copy = with_copy
         self.instance_method = instance_method
         self.native_arrays = native_arrays
         self.container = container
@@ -121,7 +117,6 @@ class FunctionTestFlags(TestFlags):
             f"ground_truth_backend={self.ground_truth_backend}"
             f"num_positional_args={self.num_positional_args}. "
             f"with_out={self.with_out}. "
-            f"with_copy={self.with_copy}"
             f"instance_method={self.instance_method}. "
             f"native_arrays={self.native_arrays}. "
             f"container={self.container}. "
@@ -142,7 +137,6 @@ def function_flags(
     num_positional_args,
     instance_method,
     with_out,
-    with_copy,
     test_gradients,
     test_compile,
     as_variable,
@@ -155,7 +149,6 @@ def function_flags(
             ground_truth_backend=ground_truth_backend,
             num_positional_args=num_positional_args,
             with_out=with_out,
-            with_copy=with_copy,
             instance_method=instance_method,
             test_gradients=test_gradients,
             test_compile=test_compile,
@@ -171,7 +164,6 @@ class FrontendFunctionTestFlags(TestFlags):
         self,
         num_positional_args,
         with_out,
-        with_copy,
         inplace,
         as_variable,
         native_arrays,
@@ -179,7 +171,6 @@ class FrontendFunctionTestFlags(TestFlags):
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
-        self.with_copy = with_copy
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
@@ -201,7 +192,6 @@ class FrontendFunctionTestFlags(TestFlags):
         return (
             f"num_positional_args={self.num_positional_args}. "
             f"with_out={self.with_out}. "
-            f"with_copy={self.with_copy}"
             f"inplace={self.inplace}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
@@ -218,7 +208,6 @@ def frontend_function_flags(
     *,
     num_positional_args,
     with_out,
-    with_copy,
     inplace,
     as_variable,
     native_arrays,
@@ -229,7 +218,6 @@ def frontend_function_flags(
             FrontendFunctionTestFlags,
             num_positional_args=num_positional_args,
             with_out=with_out,
-            with_copy=with_copy,
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,

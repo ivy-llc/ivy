@@ -172,11 +172,6 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
-    inplace_updates = [test_flags.with_out, test_flags.with_copy]
-    assert (
-        inplace_updates.count(True) <= 1
-    ), "only at most one of with_out or with_copy can be set as True"
-
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -360,22 +355,6 @@ def test_function(
                     " returned"
                 )
 
-        if test_flags.with_copy:
-            array_fn = ivy_backend.is_array
-            if "copy" in list(inspect.signature(target_fn).parameters.keys()):
-                kwargs["copy"] = True
-            first_array = ivy_backend.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
-            ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
-                backend_to_test,
-                target_fn,
-                *args,
-                test_compile=test_flags.test_compile,
-                **kwargs,
-            )
-            assert not np.may_share_memory(first_array, ret_)
-
         # compute the return with a Ground Truth backend
         ret_device = None
         if isinstance(ret_from_target, ivy_backend.Array):
@@ -539,10 +518,9 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
-    inplace_updates = [test_flags.with_out, test_flags.with_copy, test_flags.inplace]
     assert (
-        inplace_updates.count(True) <= 1
-    ), "only at most one of with_out or with_copy or with_inplace can be set as True"
+        not test_flags.with_out or not test_flags.inplace
+    ), "only one of with_out or with_inplace can be set as True"
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
@@ -633,13 +611,6 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
-        if test_flags.generate_frontend_arrays:
-            assert _is_frontend_array(ret)
-            array_fn = _is_frontend_array
-        else:
-            assert ivy_backend.is_array(ret)
-            array_fn = ivy_backend.is_array
-
         if test_flags.with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -715,26 +686,15 @@ def test_frontend_function(
                     else:
                         assert ret.data is out.data
                 assert ret is out
-
-        elif test_flags.with_copy:
-            assert not isinstance(ret, tuple)
-
-            if "copy" in list(inspect.signature(frontend_fn).parameters.keys()):
-                copy_kwargs["copy"] = True
-            first_array = ivy_backend.func_wrapper._get_first_array(
-                *copy_args, array_fn=array_fn, **copy_kwargs
-            )
-            ret_ = get_frontend_ret(
-                backend_to_test, frontend_fn, *copy_args, **copy_kwargs
-            )
-            if _is_frontend_array(first_array):
-                first_array = first_array.ivy_array
-            if _is_frontend_array(ret_):
-                ret_ = ret_.ivy_array
-            assert not np.may_share_memory(first_array, ret_)
-
         elif test_flags.inplace:
             assert not isinstance(ret, tuple)
+
+            if test_flags.generate_frontend_arrays:
+                assert _is_frontend_array(ret)
+                array_fn = _is_frontend_array
+            else:
+                assert ivy_backend.is_array(ret)
+                array_fn = ivy_backend.is_array
 
             if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update

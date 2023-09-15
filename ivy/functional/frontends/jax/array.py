@@ -3,6 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Array:
@@ -45,6 +46,10 @@ class Array:
     def T(self):
         return self.ivy_array.T
 
+    @property
+    def ndim(self):
+        return self.ivy_array.ndim
+
     # Instance Methods #
     # ---------------- #
 
@@ -69,6 +74,7 @@ class Array:
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
 
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(
         self,
         /,
@@ -78,6 +84,22 @@ class Array:
         keepdims=False,
     ):
         return jax_frontend.numpy.argmax(
+            self,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+        )
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def argmin(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return jax_frontend.numpy.argmin(
             self,
             axis=axis,
             out=out,
@@ -123,6 +145,27 @@ class Array:
             fill_value=fill_value,
         )
 
+    def prod(
+        self,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+        out=None,
+    ):
+        return jax_frontend.numpy.product(
+            self,
+            axis=axis,
+            dtype=self.dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+            out=out,
+        )
+
     def ravel(self, order="C"):
         return jax_frontend.numpy.ravel(
             self,
@@ -138,6 +181,27 @@ class Array:
             order=order,
         )
 
+    def sum(
+        self,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+    ):
+        return jax_frontend.numpy.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+        )
+
     def argsort(self, axis=-1, kind="stable", order=None):
         return jax_frontend.numpy.argsort(self, axis=axis, kind=kind, order=order)
 
@@ -145,6 +209,16 @@ class Array:
         return jax_frontend.numpy.any(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
+
+    def reshape(self, *args, order="C"):
+        if not isinstance(args[0], int):
+            if len(args) > 1:
+                raise TypeError(
+                    "Shapes must be 1D sequences of concrete values of integer type,"
+                    f" got {args}."
+                )
+            args = args[0]
+        return jax_frontend.numpy.reshape(self, tuple(args), order)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
@@ -264,8 +338,7 @@ class Array:
         )
 
     def __iter__(self):
-        ndim = len(self.shape)
-        if ndim == 0:
+        if self.ndim == 0:
             raise TypeError("iteration over a 0-d Array not supported")
         for i in range(self.shape[0]):
             yield self[i]
@@ -273,8 +346,24 @@ class Array:
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
 
+    def repeat(self, repeats, axis=None, *, total_repeat_length=None):
+        return jax_frontend.numpy.repeat(self, repeats, axis=axis)
+
     def searchsorted(self, v, side="left", sorter=None, *, method="scan"):
         return jax_frontend.numpy.searchsorted(self, v, side=side, sorter=sorter)
+
+    def max(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+        where=None,
+    ):
+        return jax_frontend.numpy.max(
+            self, axis=axis, out=out, keepdims=keepdims, where=where
+        )
 
     def ptp(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.ptp(self, axis=axis, keepdims=keepdims)
@@ -304,3 +393,8 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
+
+
+# Jax supports DeviceArray from 0.4.13 and below
+# Hence aliasing it here
+DeviceArray = Array

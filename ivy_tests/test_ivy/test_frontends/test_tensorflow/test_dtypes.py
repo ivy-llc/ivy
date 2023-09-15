@@ -38,7 +38,7 @@ def test_tensorflow_as_dtype(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_cast(
