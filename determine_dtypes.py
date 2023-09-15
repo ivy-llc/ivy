@@ -77,23 +77,6 @@ DTYPE_DECORATORS = {
     "with_supported_device_and_dtypes",
     "with_unsupported_device_and_dtypes",
 }
-"""
-TODO list (prioritised):
-
-########## MUST HAVE ############
-#. configure is_dtype_err for paddle
-#. get it working for frontends
-#. configure other is_dtype_err functions
-#. get it working for methods if needed
-
-########## NICE TO HAVE ########
-#. break control flow from the test at the end of test_function
-#. prettify the output to make it easier to read
-
-########## FOR MAINTENANCE ########
-#. remove hard-coded dtype classes
-#. big ol' refactor and cleanup
-"""
 
 
 class NoTestException(Exception):
@@ -238,6 +221,12 @@ def _is_dtype_err_np(e, dtype):
         "a must be an array of real numbers",
         "must be real number, not complex",
         "i0 not supported for complex values",
+        (
+            "dtype of `to_begin` must be compatible with input `ary` under the"
+            " `same_kind` rule."
+        ),
+        f"This operation is not supported for {dtype} values",
+        "only int indices permitted",
     ] + (
         [
             f"Cannot cast array data from dtype('{MAP_HIGHER[dtype]}') to dtype",
