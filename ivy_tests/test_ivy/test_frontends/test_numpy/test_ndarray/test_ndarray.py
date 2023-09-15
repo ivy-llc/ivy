@@ -11,6 +11,9 @@ from ivy_tests.test_ivy.helpers import (
     assert_all_close,
     BackendHandler,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _statistical_dtype_values,
+)
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
@@ -3643,14 +3646,10 @@ def test_numpy_ndarray_transpose(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="var",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        valid_axis=True,
-    ),
+    dtype_x_axis=_statistical_dtype_values(function="var"),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
     dtype=helpers.get_dtypes(kind="valid"),
-    ddof=0,
 )
 def test_numpy_ndarray_var(
     dtype_x_axis,
@@ -3674,7 +3673,6 @@ def test_numpy_ndarray_var(
         method_all_as_kwargs_np={
             "axis": axis,
             "dtype": dtype,
-            "ddof": 0,
             "keepdims": keepdims,
             "where": where,
         },
