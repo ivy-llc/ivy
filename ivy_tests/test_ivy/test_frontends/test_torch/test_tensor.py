@@ -4243,6 +4243,7 @@ def test_torch_tensor_bernoulli(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_out=st.just(True),
 )
 def test_torch_tensor_bernoulli_(
     dtype_and_x,
