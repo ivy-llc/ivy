@@ -297,8 +297,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     return_attention_weights = draw(st.booleans())
     average_attention_weights = draw(st.booleans())
 
-    return (
-        dtype,
+    ret = (
         q,
         k,
         v,
@@ -324,6 +323,8 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         return_attention_weights,
         average_attention_weights,
     )
+    ret_dtypes = [str(r.dtype) for r in ret if ivy.is_array(r)]
+    return ret_dtypes, *ret
 
 
 # Convolutions #
