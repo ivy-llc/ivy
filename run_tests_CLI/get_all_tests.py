@@ -37,14 +37,13 @@ def extract_tests_from_dir(directory):
 
 def get_all_tests():
     test_names_without_backend = extract_tests_from_dir("ivy_tests/test_ivy")
-    test_names_without_backend = list(set(test_names_without_backend))
-    test_names_without_backend.sort()
+    test_names_without_backend = sorted(set(test_names_without_backend))
     random.Random(4).shuffle(test_names_without_backend)
 
     test_names = []
     for test_name in test_names_without_backend:
         for backend in BACKENDS:
-            test_backend = test_name + "," + backend
+            test_backend = f"{test_name},{backend}"
             test_names.append(test_backend)
 
     return test_names

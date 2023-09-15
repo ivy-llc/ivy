@@ -236,7 +236,7 @@ def _pow_helper_shared_dtype(draw):
     dtype1, dtype2 = dtype
     x1, x2 = x
     if "int" in dtype2:
-        x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
+        x2 = ivy.nested_map(lambda x: abs(x), x2, include_derived={"list": True})
 
     if ivy.is_int_dtype(dtype2):
         max_val = ivy.iinfo(dtype2).max
@@ -1795,6 +1795,45 @@ def test_tensorflow_Expm1(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_FFT(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
+# FFT2D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT2D",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_FFT2D(
     *,
     dtype_and_x,
     frontend,
@@ -3480,38 +3519,6 @@ def test_tensorflow_Rsqrt(
     )
 
 
-
-# Softsign
-@handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.Softsign",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_Softsign(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        features=x[0],
-    )
-
-
-
 # Shape
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Shape",
@@ -3724,6 +3731,36 @@ def test_tensorflow_Softmax(
     test_with_out=st.just(False),
 )
 def test_tensorflow_Softplus(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+    )
+
+
+# Softsign
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Softsign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Softsign(
     *,
     dtype_and_x,
     frontend,

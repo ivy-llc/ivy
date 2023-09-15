@@ -93,15 +93,13 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if detect_negative and detect_positive:
-        return paddle.isinf(x)
-
-    if detect_negative:
-        return paddle_backend.equal(x, float("-inf"))
-
-    if detect_positive:
-        return paddle_backend.equal(x, float("inf"))
-
+    if not ivy.is_complex_dtype(x):
+        if detect_negative and detect_positive:
+            return paddle.isinf(x)
+        if detect_negative:
+            return paddle_backend.equal(x, float("-inf"))
+        if detect_positive:
+            return paddle_backend.equal(x, float("inf"))
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
@@ -719,9 +717,15 @@ def tanh(
     ]:
         return paddle.tanh(x.astype("float32")).astype(x.dtype)
     if paddle.is_complex(x):
-        tanh_a = paddle.tanh(paddle.real(x))
-        tan_b = paddle.tan(paddle.imag(x))
-        return (tanh_a + 1j * tan_b) / (1 + 1j * (tanh_a * tan_b))
+        tanh_a = paddle.tanh(x.real())
+        tan_b = paddle.tan(x.imag())
+        return paddle.divide(
+            paddle.complex(tanh_a, tan_b),
+            paddle.complex(
+                paddle.ones_like(tanh_a),
+                paddle.multiply(tanh_a, tan_b),
+            ),
+        )
     return paddle.tanh(x)
 
 
@@ -800,8 +804,8 @@ def square(
     {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )
 def pow(
-    x1: Union[float, paddle.Tensor],
-    x2: Union[float, paddle.Tensor],
+    x1: paddle.Tensor,
+    x2: Union[int, float, paddle.Tensor],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
@@ -829,38 +833,36 @@ def pow(
 def round(
     x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    def _np_round(x, decimals):
+    def _np_round(x):
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
-        eps = 1e-6 * paddle.sign(x)
 
-        # check if the integer is even or odd
-        candidate_ints = paddle_backend.remainder(paddle_backend.trunc(x), 2.0).astype(
-            bool
+        one = paddle.to_tensor(1, dtype="int64")
+
+        # check if the number is even or odd
+        is_even = paddle.bitwise_and(paddle_backend.trunc(x).astype("int64"), one) == 0
+
+        # round the number to the nearest integer
+        round_x = paddle.sign(x) * paddle.where(
+            is_even, paddle.floor(x.abs()), paddle.ceil(x.abs())
         )
-        # check if the fraction is exactly half
-        candidate_fractions = paddle_backend.equal(
-            paddle_backend.abs(paddle_backend.subtract(x, paddle_backend.trunc(x))),
-            0.5,
-        )
-        x = paddle_backend.where(
-            paddle.logical_and(~candidate_ints, candidate_fractions),
-            x - eps,
-            x,
-        )
-        factor = paddle_backend.pow(10.0, decimals).astype(x.dtype)
-        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
-        return paddle_backend.divide(
-            paddle.round(paddle_backend.multiply(x, factor)), factor_denom
+
+        # if the number was rounded up from an even number
+        #   round the number down to the nearest even number
+        return paddle.where(
+            paddle.logical_and(
+                paddle.bitwise_and(round_x.astype("int64"), one) == 1.0,
+                is_even,
+            ),
+            round_x - 1.0,
+            round_x,
         )
 
     if x.dtype not in [paddle.float32, paddle.float64]:
         if paddle.is_complex(x):
-            return paddle.complex(
-                _np_round(x.real(), decimals), _np_round(x.imag(), decimals)
-            )
-        return _np_round(x.astype("float32"), decimals).astype(x.dtype)
-    return _np_round(x, decimals).astype(x.dtype)
+            return paddle.complex(_np_round(x.real()), _np_round(x.imag()))
+        return _np_round(x.astype("float32")).astype(x.dtype)
+    return _np_round(x).astype(x.dtype)
 
 
 def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
