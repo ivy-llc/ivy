@@ -16,7 +16,7 @@ import ivy.functional.frontends.numpy as np_frontend
 def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
-            x, _from_ivy_array_to_jax_frontend_array, include_derived, shallow=False
+            _from_ivy_array_to_jax_frontend_array, x, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array):
         return jax_frontend.Array(x)
@@ -28,8 +28,8 @@ def _from_ivy_array_to_jax_frontend_array_weak_type(
 ):
     if nested:
         return ivy.nested_map(
-            x,
             _from_ivy_array_to_jax_frontend_array_weak_type,
+            x,
             include_derived,
             shallow=False,
         )
@@ -111,10 +111,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
         # convert all arrays in the inputs to ivy.Array instances
         new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, args, include_derived={"tuple": True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, kwargs, include_derived={"tuple": True}, shallow=False
         )
         # add the original out argument back to the keyword arguments
         if has_out:
