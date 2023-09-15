@@ -7,34 +7,140 @@ EPSILON = 10 * np.finfo("double").eps
 
 
 class Criterion:
+    """
+    Interface for impurity criteria.
+
+    This object stores methods on how to calculate how good a split is
+    using different metrics.
+    """
+
     def __getstate__(self):
         return {}
 
     def __setstate__(self, d):
         pass
 
-    def init(self, y, sample_weight, weighted_n_samples, sample_indices, start, end):
+    def init(
+        self,
+        y,
+        sample_weight,
+        weighted_n_samples: float,
+        sample_indices: list,
+        start: int,
+        end: int,
+    ):
+        """
+        Placeholder for a method which will initialize the criterion.
+
+        Returns -1 in case of failure to allocate memory (and raise MemoryError)
+        or 0 otherwise.
+
+        Parameters
+        ----------
+        y : ndarray, dtype=DOUBLE_t
+            y is a buffer that can store values for n_outputs target variables
+            stored as a Cython memoryview.
+        sample_weight : ndarray, dtype=DOUBLE_t
+            The weight of each sample stored as a Cython memoryview.
+        weighted_n_samples : double
+            The total weight of the samples being considered
+        sample_indices : ndarray, dtype=SIZE_t
+            A mask on the samples. Indices of the samples in X and y we want to use,
+            where sample_indices[start:end] correspond to the samples in this node.
+        start : SIZE_t
+            The first sample to be used on this node
+        end : SIZE_t
+            The last sample used on this node
+        """
         pass
 
     def init_missing(self, n_missing):
+        """
+        Initialize sum_missing if there are missing values.
+
+        This method assumes that caller placed the missing samples in
+        self.sample_indices[-n_missing:]
+
+        Parameters
+        ----------
+        n_missing: SIZE_t
+            Number of missing values for specific feature.
+        """
         pass
 
     def reset(self):
+        """
+        Reset the criterion at pos=start.
+
+        This method must be implemented by the subclass.
+        """
         pass
 
     def reverse_reset(self):
+        """
+        Reset the criterion at pos=end.
+
+        This method must be implemented by the subclass.
+        """
         pass
 
     def update(self, new_pos):
+        """
+        Updated statistics by moving sample_indices[pos:new_pos] to the left child.
+
+        This updates the collected statistics by moving sample_indices[pos:new_pos]
+        from the right child to the left child. It must be implemented by
+        the subclass.
+
+        Parameters
+        ----------
+        new_pos : SIZE_t
+            New starting index position of the sample_indices in the right child
+        """
         pass
 
     def node_impurity(self):
+        """
+        Placeholder for calculating the impurity of the node.
+
+        Placeholder for a method which will evaluate the impurity of the
+        current node, i.e. the impurity of sample_indices[start:end].
+        This is the primary function of the criterion class. The smaller
+        the impurity the better.
+        """
         pass
 
     def children_impurity(self, impurity_left, impurity_right):
+        """
+        Placeholder for calculating the impurity of children.
+
+        Placeholder for a method which evaluates the impurity in
+        children nodes, i.e. the impurity of sample_indices[start:pos] + the impurity
+        of sample_indices[pos:end].
+
+        Parameters
+        ----------
+        impurity_left : double pointer
+            The memory address where the impurity of the left child should be
+            stored.
+        impurity_right : double pointer
+            The memory address where the impurity of the right child should be
+            stored
+        """
         pass
 
     def node_value(self, dest):
+        """
+        Placeholder for storing the node value.
+
+        Placeholder for a method which will compute the node value
+        of sample_indices[start:end] and save the value into dest.
+
+        Parameters
+        ----------
+        dest : double pointer
+            The memory address where the node value should be stored.
+        """
         pass
 
     def proxy_impurity_improvement(self):
@@ -55,13 +161,15 @@ class Criterion:
         impurity_left, impurity_right = self.children_impurity(
             impurity_left, impurity_right
         )
-      
+
         return (
             -self.weighted_n_right * impurity_right
             - self.weighted_n_left * impurity_left
         )
 
-    def impurity_improvement(self, impurity_parent, impurity_left, impurity_right):
+    def impurity_improvement(
+        self, impurity_parent: float, impurity_left: float, impurity_right: float
+    ):
         """
         Compute the improvement in impurity.
 
@@ -97,6 +205,7 @@ class Criterion:
         )
 
     def init_sum_missing(self):
+        """Init sum_missing to hold sums for missing values."""
         pass
 
 
