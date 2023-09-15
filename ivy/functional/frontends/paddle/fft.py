@@ -157,10 +157,8 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
         complex_result = ivy.ifftn(combined_freq_terms, s=[size], axes=[-1], norm=norm)
         freq_domain = ivy.moveaxis(complex_result, -1, axis)
 
-
     real_result = ivy.real(freq_domain)
     result_t = ivy.astype(real_result, output_dtype)
-
     return result_t
 
 
@@ -171,4 +169,4 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
-
+    
