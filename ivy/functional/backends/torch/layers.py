@@ -91,6 +91,7 @@ def multi_head_attention(
 
 multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: \
     not ivy.exists(kwargs['scale']) and \
+    ivy.exists(kwargs['out_proj_weights']) and \
     (not kwargs['is_causal'] or not kwargs['return_attention_weights']) and \
     _get_embed_dim(
         kwargs['in_proj_weights'],
