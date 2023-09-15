@@ -4251,9 +4251,15 @@ def test_torch_tensor_bernoulli_(
     init_flags,
     method_flags,
     backend_fw,
-    **kwargs
+    **kwargs,
 ):
     input_dtype, x = dtype_and_x
+    if len(x) < 3:
+        generator_val = None
+        out_val = None
+    else:
+        generator_val = x[1]
+        out_val = x[2]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -4261,7 +4267,7 @@ def test_torch_tensor_bernoulli_(
             "input": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"generator": x[1], "out": x[2]},
+        method_all_as_kwargs_np={"generator": generator_val, "out": out_val},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
