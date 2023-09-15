@@ -15,36 +15,34 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
     ret = ivy.fft(ivy.astype(x, "complex128"), axis, norm=norm, n=n)
     return ivy.astype(ret, x.dtype)
 
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
 )
-
-
 @to_ivy_arrays_and_back
 def fft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
-    """
-    Compute the 2D Fast Fourier Transform.
-
-    :param x: Input tensor.
-    :param s: Shape (length along each transformed axis), to be used for zero-padding.
-    :param axes: Axes over which to compute the FFT. Default is the last two axes.
-    :param norm: Normalization mode. Default is "backward".
-    :param name: Optional name for the operation.
-    :return: Tensor containing the 2D FFT of x.
-    """
 
     # Check if s is provided
     if s is not None:
         # If s is provided, zero-pad the input tensor x along the specified axes
         for ax, length in zip(axes, s):
-            x = ivy.pad(x, [(0, max(0, length - x.shape[ax])) if i == ax else (0, 0) for i in range(x.ndim)])
+            
+            x = ivy.pad(
+                x,
+                [
+                    (0, max(0, length - x.shape[ax])) if i == ax else (0, 0)
+                    for i in range(x.ndim)
+                ],
+            )
     
     # Apply FFT along the first axis
     fft_first_axis = fft(x, n=s[0] if s else None, axis=axes[0], norm=norm)
     
     # Apply FFT along the second axis
-    fft_second_axis = fft(fft_first_axis, n=s[1] if s else None, axis=axes[1], norm=norm)
+    fft_second_axis = fft(
+        fft_first_axis, n=s[1] if s else None, axis=axes[1], norm=norm
+    )
 
     return fft_second_axis
 
