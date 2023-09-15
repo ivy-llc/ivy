@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
 )
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
+    _get_required_native_variables,
     _get_y_and_ret_idxs,
     _get_native_y,
     _set_duplicates,
@@ -108,6 +109,7 @@ def execute_with_gradients(
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
         _get_required_float_variables(xs, xs_grad_idxs)
     )
+    output_grads = _get_required_native_variables(output_grads, None)
     func_ret = func(xs)
     xs = xs1
 
@@ -118,7 +120,9 @@ def execute_with_gradients(
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
-        assert output_grads is None or isinstance(output_grads, ivy.NativeArray)
+        assert output_grads is None or isinstance(
+            output_grads, ivy.NativeArray
+        ), f"output_grads must be None or a single array, but was {(output_grads)}"
         grads = _set_duplicates(
             _grad_func(torch.clone(y), xs, retain_grads, output_grads),
             required_duplicate_index_chains,
