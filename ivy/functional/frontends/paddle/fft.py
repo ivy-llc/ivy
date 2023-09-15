@@ -169,4 +169,3 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
-    
