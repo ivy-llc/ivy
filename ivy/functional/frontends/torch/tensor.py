@@ -1732,6 +1732,8 @@ class Tensor:
         {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
     def scatter_reduce_(self, dim, index, src, reduce, *, include_self=True):
+        if reduce == "prod":
+            reduce = "mul"
         self.ivy_array = ivy.put_along_axis(
             self.ivy_array, index, src, dim, mode=reduce
         )

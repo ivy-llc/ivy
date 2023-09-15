@@ -513,13 +513,12 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: Literal["sum", "mul", "replace"] = "replace",
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     mode_mappings = {
         "sum": "add",
         "mul": "mul",
-        "prod": "mul",
         "replace": "assign",
     }
     mode = mode_mappings.get(mode, mode)
@@ -531,5 +530,4 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
     "replace",
     "sum",
     "mul",
-    "prod",
 ]

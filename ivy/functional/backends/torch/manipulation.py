@@ -368,7 +368,7 @@ def unstack(
 def put_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
-    values: torch.Tensor,
+    values: Union[int, torch.Tensor],
     axis: int,
     /,
     *,
@@ -380,7 +380,6 @@ def put_along_axis(
         "min": "amin",
         "max": "amax",
         "mul": "prod",
-        "prod": "prod",
         "replace": "replace",
     }
     mode = mode_mappings.get(mode, mode)
@@ -395,7 +394,6 @@ put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode i
     "replace",
     "sum",
     "mul",
-    "prod",
     "mean",
     "max",
     "min",

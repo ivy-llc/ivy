@@ -50,4 +50,6 @@ def scatter_add(input, dim, index, src):
     {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
 )
 def scatter_reduce(input, dim, index, src, reduce, *, include_self=True):
+    if reduce == "prod":
+        reduce = "mul"
     return ivy.put_along_axis(input, index, src, dim, mode=reduce)

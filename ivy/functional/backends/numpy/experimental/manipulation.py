@@ -495,11 +495,11 @@ def column_stack(
 def put_along_axis(
     arr: np.ndarray,
     indices: np.ndarray,
-    values: np.ndarray,
+    values: Union[int, np.ndarray],
     axis: int,
     /,
     *,
-    mode: str = None,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
     out: Optional[np.ndarray] = None,
 ):
     np.put_along_axis(arr, indices, values, axis)
