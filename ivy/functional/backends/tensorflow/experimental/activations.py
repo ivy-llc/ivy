@@ -80,3 +80,11 @@ def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Te
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    ret = tf.nn.sigmoid(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

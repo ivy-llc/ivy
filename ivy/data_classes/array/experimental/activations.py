@@ -288,3 +288,36 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([ 0.39, -0.57])
         """
         return ivy.elu(self._data, alpha=alpha, out=out)
+
+    def sigmoid(
+        self,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
+        function, and so the docstring for ivy.sigmoid also applies to this method with
+        minimal.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the sigmoid activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.sigmoid()
+        >>> print(y)
+        ivy.array([ 0.40, -0.70])
+        """
+        return ivy.sigmoid(self._data, out=out)

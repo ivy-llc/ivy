@@ -159,6 +159,35 @@ def test_selu(*, dtype_and_input, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# sigmoid
+@handle_test(
+    fn_tree="functional.ivy.experimental.sigmoid",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+)
+def test_sigmoid(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # silu
 @handle_test(
     fn_tree="functional.ivy.experimental.silu",

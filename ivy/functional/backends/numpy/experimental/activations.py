@@ -98,3 +98,14 @@ def elu(
 
 
 elu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.divide(1, np.add(1, np.exp(-x))).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+sigmoid.support_native_out = True

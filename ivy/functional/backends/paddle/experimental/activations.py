@@ -121,3 +121,31 @@ def elu(
         )
         return ret
     return F.elu(x.cast("float32"), alpha).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "bfloat16",
+                "float16",
+            )
+        }
+    },
+    backend_version,
+)
+def sigmoid(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.sigmoid(x)
+
+    if paddle.is_complex(x):
+        ret = (
+            paddle_backend.divide(
+                1,
+                paddle_backend.add(1, paddle_backend.exp(-x)),
+            ),
+        )
+        return ret
+    return F.sigmoid(x).cast(x.dtype)
