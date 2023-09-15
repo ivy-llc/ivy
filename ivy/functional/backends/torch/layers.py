@@ -50,7 +50,7 @@ def multi_head_attention(
         in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query,
     )[1]
     query, key, value = [
-        ivy.expand_dims(x, axis=1) if len(x.shape) == 2 else ivy.swapaxes(x, 0, 1)
+        torch.swapaxes(x, 0, 1) if len(x.shape) == 3 else x
         for x in [query, key, value]
     ]
     ret = torch.nn.functional.multi_head_attention_forward(
