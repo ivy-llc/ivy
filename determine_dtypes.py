@@ -352,10 +352,34 @@ def _is_dtype_err_tf(e, dtype):
         f"The input data type is not supported, DataType : {dtype}",
         "Argument `concentration` must be float type.",
         "Argument `probs` must having floating type.",
-    ]
+        f"Tensor conversion requested dtype int32 for Tensor with dtype {dtype}",
+        f"Invalid dtype tf.{dtype} in",
+        "Expected x to be numeric,",
+        f"was expected to be a bool tensor but is a {dtype} tensor",
+        f"was expected to be a {dtype} tensor but is a ",
+        "`x.dtype` must be a floating point tensor",
+        "AttrValue has invalid DataType",
+        "`x` and `y` must have the same dtype, got",
+    ] + (
+        [
+            f"was expected to be a bool tensor but is a {TF_DTYPES_MAP[dtype]} tensor",
+        ]
+        if dtype in TF_DTYPES_MAP
+        else []
+    )
     value_for_attr = [
         f"Value for attr '{attr}' of {t} is not in the list of allowed values:"
-        for attr in ["T", "Tidx", "TI", "out_type", "Tmultiples", "dtype", "Tcomplex"]
+        for attr in [
+            "T",
+            "Tidx",
+            "TI",
+            "out_type",
+            "Tmultiples",
+            "dtype",
+            "Tcomplex",
+            "Tb",
+            "Ta",
+        ]
         for t in [dtype] + ([TF_DTYPES_MAP[dtype]] if dtype in TF_DTYPES_MAP else [])
     ]
     value_to_param = [
