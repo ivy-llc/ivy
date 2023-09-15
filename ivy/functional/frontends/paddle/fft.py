@@ -32,8 +32,8 @@ def fft2(x, s=None, axes=(-2, -1), norm="backward", name=None):
                     (0, max(0, length - x.shape[ax])) if i == ax else (0, 0)
                     for i in range(x.ndim)
                 ],
-            )    
-    
+            )
+            
     # Apply FFT along the first axis
     fft_first_axis = fft(x, n=s[0] if s else None, axis=axes[0], norm=norm)
 
