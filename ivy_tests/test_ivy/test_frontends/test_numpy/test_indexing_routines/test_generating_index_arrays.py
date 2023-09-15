@@ -126,7 +126,7 @@ def test_numpy_tril_indices(
 @handle_frontend_test(
     fn_tree="numpy.tril_indices_from",
     dtype_and_values=helpers.dtype_and_values(
-        dtype=["float16"],
+        dtype=["float32"],
         min_dim_size=3,
         max_dim_size=3,
         min_num_dims=2,
