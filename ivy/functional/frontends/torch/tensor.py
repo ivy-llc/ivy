@@ -112,7 +112,8 @@ class Tensor:
 
     @device.setter
     def cuda(self, device=None):
-        return self.device = device
+        self.device = device
+        return self
 
     @ivy_array.setter
     def ivy_array(self, array):
