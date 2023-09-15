@@ -92,13 +92,18 @@ def assert_same_type(ret_from_target, ret_from_gt, backend_to_test, gt_backend):
     checks with a string comparison because with_backend returns
     different objects. Doesn't check recursively.
     """
-    # ToDo: do this with nested map
-    assert_msg = (
-        f"ground truth backend ({gt_backend}) returned"
-        f" {type(ret_from_gt)} but target backend ({backend_to_test}) returned"
-        f" {type(ret_from_target)}"
+
+    def _assert_same_type(x, y):
+        assert_msg = (
+            f"ground truth backend ({gt_backend}) returned"
+            f" {type(y)} but target backend ({backend_to_test}) returned"
+            f" {type(x)}"
+        )
+        assert str(type(x)) == str(type(y)), assert_msg
+
+    ivy.nested_multi_map(
+        lambda x, _: _assert_same_type(x[0], x[1]), [ret_from_target, ret_from_gt]
     )
-    assert str(type(ret_from_target)) == str(type(ret_from_gt)), assert_msg
 
 
 def value_test(
