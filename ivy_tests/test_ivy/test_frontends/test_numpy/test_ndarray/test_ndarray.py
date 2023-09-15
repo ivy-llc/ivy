@@ -14,7 +14,6 @@ from ivy_tests.test_ivy.helpers import (
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
-from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
@@ -3643,49 +3642,48 @@ def test_numpy_ndarray_transpose(
 
 
 # var
-@handle_frontend_test(
-    fn_tree="numpy.var",
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="var",
     dtype_and_x=_statistical_dtype_values(function="var"),
-    dtype=helpers.get_dtypes("valid", full=False, none=True),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
-def test_numpy_var(
-    dtype_and_x,
-    dtype,
-    where,
+def test_numpy_ndarray_var(
+    dtype_x_axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
     frontend,
     backend_fw,
-    test_flags,
-    fn_tree,
     on_device,
-    keep_dims,
+    keepdims,
+    where,
+    dtype,
 ):
-    input_dtypes, x, axis, correction = dtype_and_x
-    if isinstance(axis, tuple):
-        axis = axis[0]
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-    assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "dtype": dtype,
+            "keepdims": keepdims,
+            "where": where,
+        },
         frontend=frontend,
         backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        rtol_=1e-2,
+        atol_=1e-2,
         on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
-        x=x[0],
-        axis=axis,
-        ddof=correction,
-        keepdims=keep_dims,
-        out=None,
-        dtype=dtype[0],
-        where=where,
     )
 
 
