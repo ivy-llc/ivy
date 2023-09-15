@@ -939,8 +939,8 @@ def multi_head_attention(
     if return_attention_weights:
         if average_attention_weights:
             attn_weights = attn_weights.mean(axis=1)
-            if num_dims == 2:
-                attn_weights = attn_weights.squeeze(axis=0)
+        if num_dims == 2:
+            attn_weights = attn_weights.squeeze(axis=0)
         return attention_out, attn_weights
     else:
         return attention_out
