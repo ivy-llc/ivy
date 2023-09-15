@@ -40,6 +40,7 @@ import ivy
 def test_check_all(results):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -48,6 +49,7 @@ def test_check_all(results):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -79,6 +81,7 @@ def test_check_all(results):
 def test_check_all_or_any_fn(args, fn, type, limit):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -89,6 +92,7 @@ def test_check_all_or_any_fn(args, fn, type, limit):
             local_vars = {**locals()}
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -112,6 +116,7 @@ def test_check_all_or_any_fn(args, fn, type, limit):
 def test_check_any(results):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -120,6 +125,7 @@ def test_check_any(results):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -165,6 +171,7 @@ def test_check_dev_correct_formatting(device):
 def test_check_dimensions(x):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -176,6 +183,7 @@ def test_check_dimensions(x):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -201,6 +209,7 @@ def test_check_dimensions(x):
 def test_check_elem_in_list(elem, list, inverse):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -209,6 +218,7 @@ def test_check_elem_in_list(elem, list, inverse):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -222,7 +232,6 @@ def test_check_elem_in_list(elem, list, inverse):
     if inverse:
         if elem not in list:
             assert not lines.strip()
-
         if elem in list:
             assert "must not be one" in lines.strip()
 
@@ -242,6 +251,7 @@ def test_check_elem_in_list(elem, list, inverse):
 def test_check_equal(x1, x2, inverse):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -250,6 +260,7 @@ def test_check_equal(x1, x2, inverse):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -278,6 +289,7 @@ def test_check_equal(x1, x2, inverse):
 def test_check_exists(x, inverse):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -286,6 +298,7 @@ def test_check_exists(x, inverse):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -319,6 +332,7 @@ def test_check_exists(x, inverse):
 def test_check_false(expression):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -327,6 +341,7 @@ def test_check_false(expression):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -357,6 +372,7 @@ def test_check_false(expression):
 def test_check_gather_input_valid(params, indices, axis, batch_dims):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -368,6 +384,7 @@ def test_check_gather_input_valid(params, indices, axis, batch_dims):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -401,6 +418,7 @@ def test_check_gather_input_valid(params, indices, axis, batch_dims):
 def test_check_gather_nd_input_valid(params, indices, batch_dims):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -412,6 +430,7 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -442,6 +461,7 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
 def test_check_greater(x1, x2, allow_equal):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -450,6 +470,7 @@ def test_check_greater(x1, x2, allow_equal):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -480,6 +501,7 @@ def test_check_greater(x1, x2, allow_equal):
 def test_check_inplace_sizes_valid(var, data):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -491,6 +513,7 @@ def test_check_inplace_sizes_valid(var, data):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -511,6 +534,7 @@ def test_check_inplace_sizes_valid(var, data):
 def test_check_isinstance(x, allowed_types):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -519,6 +543,7 @@ def test_check_isinstance(x, allowed_types):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -550,6 +575,7 @@ def test_check_isinstance(x, allowed_types):
 def test_check_jax_x64_flag(dtype):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -561,6 +587,7 @@ def test_check_jax_x64_flag(dtype):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -588,6 +615,7 @@ def test_check_jax_x64_flag(dtype):
 def test_check_kernel_padding_size(kernel_size, padding_size):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -599,6 +627,7 @@ def test_check_kernel_padding_size(kernel_size, padding_size):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -624,6 +653,7 @@ def test_check_kernel_padding_size(kernel_size, padding_size):
 def test_check_less(x1, x2, allow_equal):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -632,6 +662,7 @@ def test_check_less(x1, x2, allow_equal):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -660,6 +691,7 @@ def test_check_less(x1, x2, allow_equal):
 def test_check_same_dtype(x1, x2):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -671,6 +703,7 @@ def test_check_same_dtype(x1, x2):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -697,6 +730,7 @@ def test_check_same_dtype(x1, x2):
 def test_check_shape(x1, x2):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -708,6 +742,7 @@ def test_check_shape(x1, x2):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -735,6 +770,7 @@ def test_check_shape(x1, x2):
 def test_check_shapes_broadcastable(var, data):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -746,6 +782,7 @@ def test_check_shapes_broadcastable(var, data):
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -771,6 +808,7 @@ def test_check_shapes_broadcastable(var, data):
 def test_check_true(expression):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -779,6 +817,7 @@ def test_check_true(expression):
         except Exception as e:
             print(e)
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
@@ -816,6 +855,7 @@ def test_check_true(expression):
 def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
     filename = "except_out.txt"
     orig_stdout = sys.stdout
+
     with open(filename, "w") as f:
         sys.stdout = f
         lines = ""
@@ -827,6 +867,7 @@ def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments
             print(e)
 
         sys.stdout = orig_stdout
+
     with open(filename) as f:
         lines += f.read()
 
