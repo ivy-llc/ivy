@@ -84,6 +84,11 @@ class TestCaseSubRunner(ABC):
     def exit(self):
         self._backend_handler.unset_backend()
 
+    def compile_if_required(self, fn, test_compile=False, args=None, kwargs=None):
+        if test_compile:
+            fn = self._ivy.compile(fn, args=args, kwargs=kwargs)
+        return fn
+
     @abstractproperty
     def backend_handler(self):
         pass
