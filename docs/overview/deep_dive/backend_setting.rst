@@ -23,35 +23,35 @@ When calling `this function`_ for setting the backend, the following steps are p
 #. loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and (a) add the primary function from the backend if it exists, (b) else add the compositional function from :code:`ivy_original_dict`.
 #. `wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`.
    Wrapping is used in order to avoid excessive code duplication in every backend function implementation.
-   This is explained in more detail in the next section: :ref:`Function Wrapping`.
+   This is explained in more detail in the next section: `Function Wrapping <function_wrapping.rst>`_.
 
 It's helpful to look at an example:
 
 .. code-block:: python
 
    x = ivy.array([[2., 3.]])
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.numpy' from '/opt/project/ivy/functional/backends/numpy/__init__.py'>
 
 .. code-block:: python
 
    y = ivy.multiply(torch.Tensor([3.]), torch.Tensor([4.]))
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 .. code-block:: python
 
    ivy.set_backend('jax')
    z = ivy.matmul(jax.numpy.array([[2.,3.]]), jax.numpy.array([[5.],[6.]]))
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.jax' from '/opt/project/ivy/functional/backends/jax/__init__.py'>
    ivy.previous_backend()
-   ivy.get_backend()
+   ivy.current_backend()
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_.
 However when the current backend is set to the previous using the :func:`ivy.previous_backend`, the `implicit_backend`_ will be used as a fallback, which will assume the backend from the last run.
-While the `implicit_backend`_ functionality gives more freedom to the user, the recommended way of doing things would be set the backend explicitly.
+While the `implicit_backend`_ functionality gives more freedom to the user, the recommended way of doing things would be to set the backend explicitly.
 In addition, all the previously set backends can be cleared by calling :func:`ivy.unset_backend`.
 
 Dynamic Backend Setting
@@ -74,7 +74,7 @@ Essentially, when the user calls :code:`ivy.set_backend(<backend>, dynamic=True)
 #. Next, the global :code:`ivy.__dict__` is updated to the new backend as mentioned in the Backend Setting section above.
 #. Finally, the objects are `converted from numpy`_ to the target backend using the newly set backend.
 
-By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`). 
+By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`).
 Here's an example to illustrate how this works in practice:
 
 .. code-block:: python
