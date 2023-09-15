@@ -223,52 +223,6 @@ def _reduce_window_helper(draw, get_func_st):
 
 
 @st.composite
-def _sliding_window_helper(draw):
-    dtype = draw(helpers.get_dtypes("valid", full=False, index=2))
-    ndim = draw(st.integers(min_value=1, max_value=4))
-    _, others = draw(
-        helpers.dtype_and_values(
-            num_arrays=4,
-            dtype=["int64"] * 4,
-            shape=(ndim,),
-            min_value=1,
-            max_value=3,
-            small_abs_safety_factor=1,
-            large_abs_safety_factor=1,
-        )
-    )
-    others = [other.tolist() for other in others]
-    window, dilation = others[0], others[2]
-    op_shape = []
-    for i in range(ndim):
-        min_x = window[i] + (window[i] - 1) * (dilation[i] - 1)
-        op_shape.append(draw(st.integers(min_x, min_x + 1)))
-    dtype, operand = draw(
-        helpers.dtype_and_values(
-            dtype=dtype,
-            shape=op_shape,
-        )
-    )
-    padding = draw(
-        st.one_of(
-            st.lists(
-                st.tuples(
-                    st.integers(min_value=0, max_value=3),
-                    st.integers(min_value=0, max_value=3),
-                ),
-                min_size=ndim,
-                max_size=ndim,
-            ),
-            st.sampled_from(["SAME", "VALID"]),
-        )
-    )
-    for i, arg in enumerate(others):
-        if len(np.unique(arg)) == 1 and draw(st.booleans()):
-            others[i] = arg[0]
-    return dtype * 2, operand, others, padding
-
-
-@st.composite
 def _valid_dct(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
@@ -1306,4 +1260,26 @@ def test_rfftn(
         s=s,
         axes=axes,
         norm=norm,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.sliding_window",
+    all_args=helpers.arrays_for_pooling(3, 3, 3, 3, return_dilation=True),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
+    dtypes, input, k, stride, padding, dilation = all_args
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=input,
+        window_size=k,
+        stride=stride,
+        dilation=dilation[0],
+        padding=padding,
     )

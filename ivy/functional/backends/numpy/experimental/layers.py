@@ -15,9 +15,6 @@ from ivy.functional.ivy.layers import (
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import (
     _padding_ceil_mode,
-    _padtype_to_pads,
-    _dilate,
-    _conv_view,
 )
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -1049,33 +1046,3 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
-
-
-def sliding_window(
-    input: np.ndarray,
-    kernel_size: Union[int, Sequence[int]],
-    /,
-    *,
-    stride: Union[int, Tuple[int, int]] = 1,
-    dilation: Union[int, Tuple[int, int]] = 1,
-    padding: Union[str, int, Tuple[int, int]] = "VALID",
-) -> np.ndarray:
-    k_size, stride, padding, dilation = map(
-        lambda x: tuple([x] * len(input.shape)) if isinstance(x, int) else x,
-        [kernel_size, stride, padding, dilation],
-    )
-
-    if isinstance(padding, str):
-        pads = _padtype_to_pads(input.shape, k_size, stride, padding)
-    else:
-        pads = padding
-
-    input = input.reshape((1, 1) + input.shape)
-    if dilation:
-        identity = ivy.array(0)
-        input = _dilate(input, dilation, identity)
-
-    view = _conv_view(input, [1, 1] + list(k_size), stride, pads, identity)[0]
-    view = ivy.reshape(view, (*view.shape[1 : 1 + len(k_size)], -1))
-
-    return view

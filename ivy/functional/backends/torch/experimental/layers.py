@@ -1028,6 +1028,13 @@ def sliding_window(
         new_shape = (1,) * extend_dims + input_shape
         input = input.reshape(new_shape).float()
 
+    stride = (stride,) * 2 if isinstance(stride, int) else tuple(stride) * 2
+    dilation = (dilation,) * 2 if isinstance(dilation, int) else tuple(dilation) * 2
+
+    kernel_size = (kernel_size,) * 2 if isinstance(kernel_size, int) else kernel_size
+    if len(kernel_size) < 2:
+        kernel_size = (kernel_size) * 2
+
     # check padding and convert to right format
     if isinstance(padding, str):
         # convert padding from str to seq
@@ -1046,9 +1053,5 @@ def sliding_window(
             padding = 0
     else:
         padding = (padding,) * 2 if isinstance(padding, int) else padding
-
-    kernel_size = (kernel_size,) * 2 if isinstance(kernel_size, int) else kernel_size
-    dilation = (dilation,) * 2 if isinstance(dilation, int) else dilation
-    stride = (stride,) * 2 if isinstance(stride, int) else stride
 
     return torch.nn.functional.unfold(input, kernel_size, dilation, padding, stride)
