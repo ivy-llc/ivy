@@ -875,9 +875,8 @@ def multi_head_attention(
 
     # add extra batch of zeros to key and value
     if add_zero_attn:
-        zero_attn_shape = (batch_dim * num_heads, 1, dims_per_head)
-        k = ivy.concat([k, ivy.zeros(zero_attn_shape, dtype=k.dtype)], axis=1)
-        v = ivy.concat([v, ivy.zeros(zero_attn_shape, dtype=v.dtype)], axis=1)
+        k = ivy.concat([k, ivy.zeros((batch_dim, 1, k.shape[-1]))], axis=1)
+        v = ivy.concat([v, ivy.zeros((batch_dim, 1, v.shape[-1]))], axis=1)
 
     # isolate heads
     q = q.reshape((batch_dim, num_queries, num_heads, dims_per_head)).permute_dims(
