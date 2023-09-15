@@ -151,7 +151,7 @@ def irfftn(x, s=None, axes=None, norm=norm, name=None):
             x,
             s=[s[axes.index(axis)] for axis in remaining_axes],
             axes=remaining_axes,
-            norm=norm
+            norm=norm,
         )
 
     if include_last_axis:
