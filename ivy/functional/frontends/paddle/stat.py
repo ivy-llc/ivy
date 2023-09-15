@@ -57,7 +57,7 @@ def numel(x, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def quantile(x, q, axis=None, keepdim=False):
+def quantile(x, q, axis=None, keepdim=False, name=None):
     return ivy.quantile(x, q, axis=axis, keepdims=keepdim)
 
 
