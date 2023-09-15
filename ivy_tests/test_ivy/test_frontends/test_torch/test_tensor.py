@@ -4243,6 +4243,7 @@ def test_torch_tensor_bernoulli(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_out=st.just(True),
 )
 def test_torch_tensor_bernoulli_(
     dtype_and_x,
@@ -4252,15 +4253,7 @@ def test_torch_tensor_bernoulli_(
     method_flags,
     on_device,
     backend_fw,
-    **kwargs,
 ):
-    input_dtype, x = dtype_and_x
-    if len(x) < 3:
-        generator_val = None
-        out_val = None
-    else:
-        generator_val = x[1]
-        out_val = x[2]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -4268,12 +4261,11 @@ def test_torch_tensor_bernoulli_(
             "input": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"generator": generator_val, "out": out_val},
+        method_all_as_kwargs_np={"generator": x[1], "out": x[2]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        on_device=on_device
     )
 
 
