@@ -4287,3 +4287,56 @@ def is_ivy_nested_array(x: Any, /) -> bool:
         Boolean, whether or not x is an ivy nested array.
     """
     return isinstance(x, ivy.NestedArray)
+
+
+def gradients(
+    y: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
+    grad_y: Union[ivy.Array, ivy.NativeArray] = None,
+    name: str = "gradients",
+    gate_gradients: bool = False,
+    aggregation_method: Callable = None,
+    stop_gradients: Union[ivy.Array, ivy.NativeArray] = None,
+) -> ivy.Array:
+    """
+    Calculate gradients of function y with respect to input(s) x.
+
+    Parameters
+    ----------
+    y
+        Array of tensors to be differentiated.
+    x
+        Array of tensors to be used for differentiation.
+    grad_y
+        Array of tensors the same size as y and
+        holding the gradients computed for each y in y.
+    name
+         to use for grouping all the gradient ops together. Defaults to 'gradients'.
+    gate_gradients
+        If True, add a tuple around the gradients returned for an operations.
+        This avoids some race conditions.
+    aggregation_method
+        Specifies the method used to combine gradient terms.
+        Accepted values are constants defined in the class AggregationMethod.
+    stop_gradients
+        A Tensor or list of tensors not to differentiate through.
+    Returns
+    -------
+    ret
+        Array of length len(x) where each array is the sum(dy/dx)
+        for y in y and for x in x.
+    Examples
+    --------
+    >>> x = ivy.Constant(2.0, dtype= ivy.float32)
+    >>> y = x ** x
+    >>> ivy.gradients(y, x)
+    """
+    return current_backend(y, x).gradients(
+        y,
+        x,
+        grad_y=grad_y,
+        name=name,
+        gate_gradients=gate_gradients,
+        aggregation_method=aggregation_method,
+        stop_gradients=stop_gradients,
+    )
