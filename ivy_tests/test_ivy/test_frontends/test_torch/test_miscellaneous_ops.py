@@ -568,43 +568,43 @@ def test_torch_combinations(
 
 @handle_frontend_test(
     fn_tree="torch.combinations",
-    dtype_and_tensors=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=st.integers(min_value=1, max_value=5),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
         min_num_dims=1,
         max_num_dims=1,
-        max_dim_size=5,
-        shared_dtype=True,
     ),
+    r=st.integers(min_value=0, max_value=5),
 )
 def test_torch_combinations(
     *,
-    dtype_and_tensors,
-    on_device,
-    fn_tree,
+    dtype_and_x,
+    r,
     frontend,
+    fn_tree,
+    on_device,
     test_flags,
     backend_fw,
-):
-    dtypes, tensors = dtype_and_tensors
-    if isinstance(dtypes, list):  # If more than one value was generated
-        args = {
-            f"x{i}": np.array(tensor, dtype=dtypes[i])
-            for i, tensor in enumerate(tensors)
-        }
-    else:  # If exactly one value was generated
-        args = {"x0": np.array(tensors, dtype=dtypes)}
-    test_flags.num_positional_args = len(tensors)
+):    
+    (input_dtype, x) = dtype_and_x
+    
+    #print(f"input_dtype: {input_dtype}")
+    
+    #print(f"--------------------------------")
+    #print(f"x.type: {type(x[0])}, x: {x[0]}, x.shape: {x[0].shape}")
+    #print(f"--------------------------------")
+    
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        **args,
+        input=x[0],
+        r=r,
     )
-
+    
 
 # corrcoef
 @handle_frontend_test(

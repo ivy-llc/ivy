@@ -98,9 +98,15 @@ def clone(input):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float64",)}, "torch")
 def combinations(input, r=2):
-    if len(input) < r:
-        return ivy.array([])
+    input_dtype = input.dtype
+
+    if len(input) < r or r <= 0:
+        if r == 0:
+            return ivy.empty((0), dtype=input_dtype)
+            
+        return ivy.empty((0, r), dtype=input_dtype)
 
     n = input.shape[0]
     indices = ivy.arange(r)
@@ -122,7 +128,7 @@ def combinations(input, r=2):
 
         combinations.append(input[indices])
 
-    return ivy.array(combinations)
+    return ivy.array(combinations, dtype=input_dtype)
 
 
 @to_ivy_arrays_and_back
