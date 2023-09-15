@@ -321,31 +321,18 @@ torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
 ret = torch_fn(torch_x)
 ```
 
-## Documentation
+## 📚 Documentation
 
-The [Ivy Docs page](https://unify.ai/docs/ivy/) holds all the relevant
-information about Ivy and its framework API reference.
-
-There, you will find the
-[Design](https://unify.ai/docs/ivy/overview/design.html) page, which is
-a user-focused guide about the architecture and the building blocks of
-Ivy. Likewise, you can take a look at the [Deep
-dive](https://unify.ai/docs/ivy/overview/deep_dive.html), which is
-oriented towards potential contributors of the code base and explains
-the nuances of Ivy in full detail 🔎
-
-Another important sections of the docs is
-[Background](https://unify.ai/docs/ivy/overview/background.html), which
-contextualises the problem Ivy is trying to solve and the current [ML
-Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion),
-explaining both (1) why is important [to solve this
-problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify)
-and (2) how we are adhering to existing
-[standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization)
-to make this happen.
-
-Lastly, you can also find there the [Related
-Work](https://unify.ai/docs/ivy/overview/related_work.html) section,
-which paints a clear picture of the role Ivy plays in the ML stack,
-comparing it to other existing solutions in terms of functionalities and
-level.
+You can find our extensive documentation from this [Ivy Docs page](https://unify.ai/docs/ivy/)  which includes: 
+- [Docs](https://unify.ai/docs/ivy/): the full extensive documentation 
+    - [Design](https://unify.ai/docs/ivy/overview/design.html): the design decision, architecture, and building blocks (layers and nodes)  of Ivy. 
+    - [Deep
+dive](https://unify.ai/docs/ivy/overview/deep_dive.html)explains our code base and how to contribute to a specific field. 
+    - [Background](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve through
+        - the current [ML
+Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion),, 
+        - explaining both why is important [to solve this
+problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify) and 
+        - how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
+    - [Related
+Work](https://unify.ai/docs/ivy/overview/related_work.html)   which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
