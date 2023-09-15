@@ -21,13 +21,13 @@ This formatter ensures a standardized order of declarations within Python files,
 How the Formatter Works:
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Header Management**: 
+1. **Header Management**:
    - Removes pre-existing headers in the source code based on specific patterns.
 
-2. **Comments Handling**: 
+2. **Comments Handling**:
    - Extracts code components along with their leading comments, ensuring that relevant comments are retained during the reordering process.
 
-3. **Dependency Handling**: 
+3. **Dependency Handling**:
    - Constructs dependency graphs to understand and maintain the relationships between classes and assignments.
 
 4. **Sorting Logic**:

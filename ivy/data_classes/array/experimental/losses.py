@@ -251,3 +251,47 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array([0.35667497, 0.22314353, 1.60943791])
         """
         return ivy.soft_margin_loss(self._data, target, reduction=reduction, out=out)
+
+    def kl_div(
+        self: ivy.Array,
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: Optional[str] = "mean",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.kl_div. This method simply wraps the
+        function, and so the docstring for ivy.kl_div also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array containing input probability distribution.
+        target
+            Array contaiing target probability distribution.
+        reduction
+            'none': No reduction will be applied to the output.
+            'mean': The output will be averaged.
+            'batchmean': The output will be divided by batch size.
+            'sum': The output will be summed.
+            Default: 'mean'.
+        out
+            Optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The Kullback-Leibler divergence loss between the two input arrays.
+
+        Examples
+        --------
+        >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+        >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+        >>> output_array = input.kl_div(target)
+        >>> print(output_array)
+        ivy.array(0.0916)
+        """
+        return ivy.kl_div(self._data, target, reduction=reduction, out=out)

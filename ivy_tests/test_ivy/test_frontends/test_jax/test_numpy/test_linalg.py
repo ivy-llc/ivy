@@ -500,6 +500,40 @@ def test_jax_inv(
     )
 
 
+# least squares
+@handle_frontend_test(
+    fn_tree="jax.numpy.linalg.lstsq",
+    dtype_and_a=helpers.get_first_solve_matrix(adjoint=True),
+    dtype_and_b=helpers.get_second_solve_matrix(),
+    test_with_out=st.just(False),
+)
+def test_jax_lstsq(
+    *,
+    dtype_and_a,
+    dtype_and_b,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    a_dtype, a, _ = dtype_and_a
+    b_dtype, b = dtype_and_b
+    helpers.test_frontend_function(
+        input_dtypes=[a_dtype, b_dtype],
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        b=b,
+        test_values=False,
+    )
+
+
 # matrix_power
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.matrix_power",
