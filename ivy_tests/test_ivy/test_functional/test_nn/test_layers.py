@@ -224,9 +224,9 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     )
 
     _static_shape = (
-        _num_batches*num_heads,
+        *_batch_dim,
         _num_queries if _self_attention and _qkv_same_dim else _num_keys,
-        _embed_dim//num_heads,
+        _embed_dim,
     )
     static_k = draw(st.one_of(
         helpers.array_values(

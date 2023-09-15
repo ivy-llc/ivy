@@ -855,8 +855,12 @@ def multi_head_attention(
         else:
             emb_dim = q.shape[-1]
     if ivy.exists(static_k):
+        if len(static_k.shape) == 2:
+            static_k = ivy.expand_dims(static_k, axis=0)
         k = static_k
     if ivy.exists(static_v):
+        if len(static_v.shape) == 2:
+            static_v = ivy.expand_dims(static_v, axis=0)
         v = static_v
     batch_dim, num_queries, pre_embed_dim = q.shape
     num_keys = k.shape[1]

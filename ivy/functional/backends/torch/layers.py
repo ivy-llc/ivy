@@ -53,10 +53,16 @@ def multi_head_attention(
     emb_dim = _get_embed_dim(
         in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query,
     )[1]
-    query, key, value = [
-        torch.swapaxes(x, 0, 1) if len(x.shape) == 3 else x
-        for x in [query, key, value]
-    ]
+    num_dims = query.ndim
+    if num_dims == 3:
+        num_batches = query.shape[0]
+        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
+    else:
+        num_batches = 1
+    if static_k is not None:
+        static_k = static_k.reshape(num_batches*num_heads, key.shape[0], emb_dim//num_heads)
+    if static_v is not None:
+        static_v = static_v.reshape(num_batches*num_heads, value.shape[0], emb_dim//num_heads)
     ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,
