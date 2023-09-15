@@ -866,8 +866,12 @@ def multi_head_attention(
     dims_per_head = pre_embed_dim // num_heads
 
     if bias_k is not None and bias_v is not None:
-        k = ivy.concat([k, ivy.tile(bias_k, (batch_dim*num_heads, 1, 1))], axis=1)
-        v = ivy.concat([v, ivy.tile(bias_v, (batch_dim*num_heads, 1, 1))], axis=1)
+        ivy.assertions.check_true(
+            not (ivy.exists(static_k) or ivy.exists(static_v)),
+            "bias cannot be added to static key or value",
+        )
+        k = ivy.concat([k, ivy.tile(bias_k, (batch_dim, 1, 1))], axis=1)
+        v = ivy.concat([v, ivy.tile(bias_v, (batch_dim, 1, 1))], axis=1)
 
     # add extra batch of zeros to key and value
     if add_zero_attn:
