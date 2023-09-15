@@ -104,37 +104,6 @@ def empty_strided(
     requires_grad=False,
     pin_memory=False,
 ):
-    if dtype == "int8":
-        pass
-    elif dtype == "int16":
-        pass
-    elif dtype == "int32":
-        pass
-    elif dtype == "int64":
-        pass
-    elif dtype == "uint8":
-        pass
-    elif dtype == "uint16":
-        pass
-    elif dtype == "uint32":
-        pass
-    elif dtype == "uint64":
-        pass
-    elif dtype == "bfloat16":
-        pass
-    elif dtype == "float16":
-        pass
-    elif dtype == "float32":
-        pass
-    elif dtype == "float64":
-        pass
-    elif dtype == "complex64":
-        pass
-    elif dtype == "complex128":
-        pass
-    elif dtype == "bool":
-        pass
-
     max_offsets = [(s - 1) * st for s, st in zip(size, stride)]
     items = sum(max_offsets) + 1
     empty_array = empty(items, dtype=dtype, device=device)

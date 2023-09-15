@@ -337,23 +337,17 @@ def test_torch_empty_strided(
     backend_fw,
 ):
     x_dtype, x, size, stride, offset = dtype_x_and_other
-    try:
-        helpers.test_frontend_function(
-            input_dtypes=x_dtype,
-            backend_to_test=backend_fw,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            size=size,
-            stride=stride,
-            test_values=False,
-        )
-    except Exception as e:
-        if hasattr(e, "message") and "out of bounds for storage of size" in e.message:
-            assume(False)
-        else:
-            raise e
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        size=size,
+        stride=stride,
+        test_values=False,
+    )
 
 
 # from_dlpack
