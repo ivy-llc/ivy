@@ -597,6 +597,7 @@ def handle_frontend_test(
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
+        wrapped_test.original = test_fn
 
         return wrapped_test
 

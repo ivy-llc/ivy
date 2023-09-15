@@ -11,6 +11,7 @@ from unittest import mock
 from hypothesis import find, strategies as st, errors as hyp_errors
 import numpy as np  # used by the (mock) test function
 import re
+from abc import ABC, abstractmethod
 
 # used to implement a timeout on hypothesis.find
 import threading
@@ -132,12 +133,18 @@ class SuppressPrint:
 
 
 def _remove_numbers(dtype, bfloat_to_float=False):
-    if dtype == "bfloat16":
+    if dtype == "bfloat16" and bfloat_to_float:
         return "float"
     return "".join(c for c in dtype if not c.isnumeric())
 
 
+# TODO: check lax.conv et al. (gets given ivy arrays instead of jax arrays)
 def _is_dtype_err_jax(e, dtype):
+    short_type = (
+        "PRED"
+        if dtype == "bool"
+        else dtype[0].upper() + "".join(c for c in dtype if c.isnumeric())
+    )
     dtype_err_substrings = [
         f"does not accept dtype {dtype}. Accepted dtypes are",
         f"Unsupported dtype {dtype}",
@@ -154,7 +161,16 @@ def _is_dtype_err_jax(e, dtype):
             f" of np.inexact), but got {dtype}"
         ),
         f"must be a float or complex dtype, got {dtype}",
+        (
+            "JAX encountered invalid PRNG key data: expected key_data.dtype = uint32;"
+            f" got dtype={dtype}"
+        ),
         "[[False False]] must be lesser than [[False False]]",
+        f"must be inexact; got {dtype}",
+        "Scanned function carry input and carry output must have equal types",
+        "output and input must have identical types, got",
+        f"unimplemented for {short_type}",
+        f"pad operand and padding_value must be same dtype: got {dtype} and",
     ]
     only_if_complex = [
         (
@@ -165,13 +181,19 @@ def _is_dtype_err_jax(e, dtype):
         "only real valued inputs supported for",
         "does not support complex input",
         "must be a float dtype, got complex",
+        "does not support complex-valued inputs",
+        "not well defined for complex",
+        "is not compatible with complex inputs.",
     ]
     only_non_int = [
         f"must have integer or boolean type, got indexer with type {dtype}",
         "Invalid integer data type",
         "Arguments to jax.numpy.gcd must be integers",
+        "Arguments to jax.numpy.lcm must be integers.",
         f"only accepts integer dtypes, got {dtype}",
         f" must have an integer type; got {dtype}",
+        "concrete values of integer type",
+        f"must be an integer type, but got {dtype}",
     ]
     substrings_to_check = (
         (only_if_complex if dtype in DTYPE_CLASSES["complex"] else [])
@@ -454,7 +476,7 @@ def _is_dtype_err_torch(e, dtype):
     return any(s in str(e) for s in substrings_to_check)
 
 
-is_dtype_err = {
+dtype_err_fns_map = {
     "jax": _is_dtype_err_jax,
     "mindspore": lambda _: False,  # TODO
     "mxnet": lambda _: False,  # TODO
@@ -471,15 +493,26 @@ is_dtype_err = {
 
 
 def _path_to_test_path(file_path: Path):
-    out = BACKENDS_TESTS_DIR
-    if file_path.parent.stem == "experimental":
-        out = out / "test_experimental"
-    out = out / ("test_nn" if file_path.stem in NN_FILES else "test_core")
-    if file_path.stem in REMAP_FILES:
-        out = out / (REMAP_FILES[file_path.stem] + ".py")
+    if BACKENDS_DIR in file_path.parents:
+        out = BACKENDS_TESTS_DIR
+        if file_path.parent.stem == "experimental":
+            out = out / "test_experimental"
+        out = out / ("test_nn" if file_path.stem in NN_FILES else "test_core")
+        if file_path.stem in REMAP_FILES:
+            out = out / (REMAP_FILES[file_path.stem] + ".py")
+        else:
+            out = out / f"test_{file_path.stem}.py"
+        return out
     else:
+        out = FRONTENDS_TESTS_DIR
+        started = False
+        for p in file_path.parents[::-1]:
+            if started:
+                out = out / f"test_{p.name}"
+            if p == FRONTENDS_DIR:
+                started = True
         out = out / f"test_{file_path.stem}.py"
-    return out
+        return out
 
 
 def _extract_fn_names(file_path: Path):
@@ -604,7 +637,7 @@ def _get_decorator_string(dtype_lists, is_supported, version_string="backend_ver
     return ret
 
 
-class BackendFileTester:
+class BaseFileTester(ABC):
     def __init__(
         self,
         file_path: Path,
@@ -618,14 +651,6 @@ class BackendFileTester:
         if verbosity >= 1:
             print()
             print(self.file_path)
-        for i in range(1, len(self.file_path.parents)):
-            if self.file_path.parents[i].stem == "backends":
-                self.backend = self.file_path.parents[i - 1].stem
-                if verbosity >= 2:
-                    print(f"Backend: {self.backend}")
-                break
-        else:
-            raise Exception("No backend was identified.")
 
         self.test_path = _path_to_test_path(self.file_path)
         self.result = {}
@@ -646,15 +671,6 @@ class BackendFileTester:
         self.is_set_up = False
 
     def setup_test(self):
-        ivy.set_backend(self.backend)
-
-        if "gpu:0" in self.devices and not ivy.gpu_is_available():
-            self.devices.remove("gpu:0")
-        if "tpu:0" in self.devices and not ivy.tpu_is_available():
-            self.devices.remove("tpu:0")
-
-        self.dtypes = ivy.valid_dtypes
-
         discovered_fn_names = _extract_fn_names(self.file_path)
         if len(self.fn_names) == 0:
             self.fn_names = discovered_fn_names
@@ -702,6 +718,10 @@ class BackendFileTester:
                 print(f"DType {dtype}: ", end="", flush=True)
             yield dtype
 
+    @abstractmethod
+    def get_test_name(self, fn_name):
+        pass
+
     def iterate_fn_names(self):
         for fn_name in self.fn_names:
             if fn_name is None:
@@ -709,7 +729,7 @@ class BackendFileTester:
                     print("-", end="", flush=True)
                 continue
             self.current_fn_name = fn_name
-            yield fn_name
+            yield fn_name, self.get_test_name(fn_name)
 
     def iterate_devices(self):
         for device in self.devices:
@@ -753,6 +773,22 @@ class BackendFileTester:
                 )
             )
             print(char, end="", flush=True)
+
+    @abstractmethod
+    def get_decorator_string(self, *args):
+        pass
+
+    @abstractmethod
+    def get_fresh_import_strings(self, decorator_import_string):
+        pass
+
+    @abstractmethod
+    def run_test_function(self, the_test_func, min_example):
+        pass
+
+    @abstractmethod
+    def is_dtype_err(self, e):
+        pass
 
     def complete_test(self):
         # Skip functions for which all dtypes are skipped
@@ -911,8 +947,7 @@ class BackendFileTester:
 
             if existing_decorator_data is not None:
                 versions_and_dtypes = existing_decorator_data
-                current_version_str = version(PYPI_NAMES[self.backend])
-                current_version = _version_str_to_ints(current_version_str)
+                current_version = _version_str_to_ints(self.current_version)
                 latest_version_tuple = _version_str_to_ints(latest_known_version)
                 if current_version == latest_version_tuple:
                     for d in self.devices:
@@ -934,12 +969,14 @@ class BackendFileTester:
                         parts = latest_known_version.split(" ")
                         if len(parts) == 1:
                             new_version_string = (
-                                latest_known_version + " to " + current_version_str
+                                latest_known_version + " to " + self.current_version
                             )
                         elif "to" in latest_known_version:
-                            new_version_string = parts[0] + " to " + current_version_str
+                            new_version_string = (
+                                parts[0] + " to " + self.current_version
+                            )
                         elif "below" in latest_known_version:
-                            new_version_string = current_version_str + " and below"
+                            new_version_string = self.current_version + " and below"
                         versions_and_dtypes[new_version_string] = {}
                         for d in versions_and_dtypes[latest_known_version].keys():
                             versions_and_dtypes[new_version_string][d] = (
@@ -952,15 +989,15 @@ class BackendFileTester:
                             )
                         del versions_and_dtypes[latest_known_version]
                     else:
-                        versions_and_dtypes[current_version_str] = {}
+                        versions_and_dtypes[self.current_version] = {}
                         for d in self.devices:
-                            versions_and_dtypes[current_version_str][d] = {
+                            versions_and_dtypes[self.current_version][d] = {
                                 "supported": self.result[f][d]["supported"],
                                 "unsupported": self.result[f][d]["unsupported"],
                             }
             else:
                 versions_and_dtypes = {
-                    version(PYPI_NAMES[self.backend]): {
+                    self.current_version: {
                         d: {
                             "supported": self.result[f][d]["supported"],
                             "unsupported": self.result[f][d]["unsupported"],
@@ -1005,7 +1042,7 @@ class BackendFileTester:
                         reduced_versions_and_dtypes[v][d] = reduced_versions_and_dtypes[
                             v
                         ][d][0 if use_supported else 1]
-                self.decorators[f] = _get_decorator_string(
+                self.decorators[f] = self.get_decorator_string(
                     reduced_versions_and_dtypes, use_supported
                 )
             if self.verbosity >= 2:
@@ -1046,13 +1083,10 @@ class BackendFileTester:
                     f" {', '.join(list(desired_decorators))}\n"
                 )
                 if len(imported_decorators) == 0:
-                    code_text = code_text.replace(
-                        "import ivy\n",
-                        "import ivy\n"
-                        + decorator_import_string
-                        + "from . import backend_version\n",
-                        1,
+                    pattern, replacement = self.get_fresh_import_strings(
+                        decorator_import_string
                     )
+                    code_text = code_text.replace(pattern, replacement, 1)
                 else:
                     code_text = REGEX_DICT["imported_wrappers"].sub(
                         decorator_import_string,
@@ -1065,6 +1099,122 @@ class BackendFileTester:
         else:
             with open(self.file_path, "w") as f:
                 f.write(code_text)
+
+
+class BackendFileTester(BaseFileTester):
+    def __init__(
+        self,
+        file_path: Path,
+        devices=[],
+        fn_names=[],
+        verbosity=0,
+        handle_unsure="supported",
+        safety_mode=False,
+    ):
+        super().__init__(
+            file_path, devices, fn_names, verbosity, handle_unsure, safety_mode
+        )
+        for i in range(1, len(file_path.parents)):
+            if file_path.parents[i].stem == "backends":
+                self.backend = file_path.parents[i - 1].stem
+                if verbosity >= 2:
+                    print(f"Backend: {self.backend}")
+                break
+        else:
+            raise Exception("No backend was identified.")
+        self.current_version = version(PYPI_NAMES[self.backend])
+        self._is_dtype_err = dtype_err_fns_map[self.backend]
+
+    def setup_test(self):
+        ivy.set_backend(self.backend)
+
+        if "gpu:0" in self.devices and not ivy.gpu_is_available():
+            self.devices.remove("gpu:0")
+        if "tpu:0" in self.devices and not ivy.tpu_is_available():
+            self.devices.remove("tpu:0")
+
+        self.dtypes = ivy.valid_dtypes
+
+        return super().setup_test()
+
+    def get_test_name(self, fn_name):
+        return f"test_{fn_name}"
+
+    def get_decorator_string(self, *args):
+        return _get_decorator_string(*args, version_string="backend_version")
+
+    def get_fresh_import_strings(self, decorator_import_string):
+        return (
+            "import ivy\n",
+            f"import ivy\n{decorator_import_string}from . import backend_version\n",
+        )
+
+    def run_test_function(self, the_test_func, min_example):
+        return the_test_func(
+            **min_example,
+            backend_fw=self.backend,
+            on_device=self.current_device,
+        )
+
+    def is_dtype_err(self, e):
+        return self._is_dtype_err(e, self.current_dtype)
+
+
+class FrontendFileTester(BaseFileTester):
+    def __init__(
+        self,
+        file_path: Path,
+        devices=[],
+        fn_names=[],
+        verbosity=0,
+        handle_unsure="supported",
+        safety_mode=False,
+    ):
+        super().__init__(
+            file_path, devices, fn_names, verbosity, handle_unsure, safety_mode
+        )
+        for i in range(1, len(file_path.parents)):
+            if file_path.parents[i].stem == "frontends":
+                self.frontend = file_path.parents[i - 1].stem
+                if verbosity >= 2:
+                    print(f"Frontend: {self.frontend}")
+                break
+        else:
+            raise Exception("No frontend was identified.")
+        self.current_version = version(PYPI_NAMES[self.frontend])
+        self._is_dtype_err = dtype_err_fns_map[self.frontend]
+
+    def setup_test(self):
+        frontend_config = importlib.import_module(
+            f"ivy_tests.test_ivy.test_frontends.config.{self.frontend}"
+        ).get_config()
+        valid_devices = frontend_config.supported_devices.valid_devices
+        self.devices = [d for d in self.devices if d.partition(":")[0] in valid_devices]
+        self.dtypes = frontend_config.supported_dtypes.valid_dtypes
+        return super().setup_test()
+
+    def get_test_name(self, fn_name):
+        return f"test_{self.frontend}_{fn_name}"
+
+    def get_decorator_string(self, *args):
+        return _get_decorator_string(*args, version_string=f"'{self.frontend}'")
+
+    def get_fresh_import_strings(self, decorator_import_string):
+        return (
+            "import ivy_tests.test_ivy.helpers as helpers\n",
+            f"import ivy_tests.test_ivy.helpers as helpers\n{decorator_import_string}",
+        )
+
+    def run_test_function(self, the_test_func, min_example):
+        return the_test_func(
+            **min_example,
+            frontend=self.frontend,
+            on_device=self.current_device,
+            backend_fw="tensorflow",  # chosen for full dtype support
+        )
+
+    def is_dtype_err(self, e):
+        return self._is_dtype_err(e, self.current_dtype)
 
 
 def _kwargs_to_args_n_kwargs(num_positional_args, kwargs):
@@ -1081,6 +1231,50 @@ def _get_nested_np_arrays(nest):
 
 # global variable. I don't like using these but I don't see another option
 _test_function_called = False
+
+
+def create_args_kwargs(
+    *,
+    backend: str,
+    args_np,
+    arg_np_vals,
+    args_idxs,
+    kwargs_np,
+    kwarg_np_vals,
+    kwargs_idxs,
+    input_dtypes,
+    test_flags,
+    on_device,
+):
+    # create args
+    with helpers.BackendHandler.update_backend(backend) as ivy_backend:
+        args = ivy_backend.copy_nest(args_np, to_mutable=False)
+        ivy_backend.set_nest_at_indices(
+            args,
+            args_idxs,
+            test_flags.apply_flags(
+                arg_np_vals,
+                input_dtypes,
+                0,
+                backend=backend,
+                on_device=on_device,
+            ),
+        )
+
+        # create kwargs
+        kwargs = ivy_backend.copy_nest(kwargs_np, to_mutable=False)
+        ivy_backend.set_nest_at_indices(
+            kwargs,
+            kwargs_idxs,
+            test_flags.apply_flags(
+                kwarg_np_vals,
+                input_dtypes,
+                len(arg_np_vals),
+                backend=backend,
+                on_device=on_device,
+            ),
+        )
+    return args, kwargs
 
 
 def mock_test_function(
@@ -1136,32 +1330,17 @@ def mock_test_function(
             for v, d in zip(test_flags.as_variable, input_dtypes)
         ]
 
-        # create args
-        args = ivy_backend.copy_nest(args_np, to_mutable=False)
-        ivy_backend.set_nest_at_indices(
-            args,
-            arrays_args_indices,
-            test_flags.apply_flags(
-                arg_np_arrays,
-                input_dtypes,
-                0,
-                backend=backend_to_test,
-                on_device=on_device,
-            ),
-        )
-
-        # create kwargs
-        kwargs = ivy_backend.copy_nest(kwargs_np, to_mutable=False)
-        ivy_backend.set_nest_at_indices(
-            kwargs,
-            arrays_kwargs_indices,
-            test_flags.apply_flags(
-                kwarg_np_arrays,
-                input_dtypes,
-                len(arg_np_arrays),
-                backend=backend_to_test,
-                on_device=on_device,
-            ),
+        args, kwargs = create_args_kwargs(
+            backend=backend_to_test,
+            args_np=args_np,
+            arg_np_vals=arg_np_arrays,
+            args_idxs=arrays_args_indices,
+            kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_arrays,
+            kwargs_idxs=arrays_kwargs_indices,
+            input_dtypes=input_dtypes,
+            test_flags=test_flags,
+            on_device=on_device,
         )
 
         # Ignore the instance method flag and run it directly from the API
@@ -1173,6 +1352,154 @@ def mock_test_function(
             raise FromFunctionException(str(e), e)
 
 
+def mock_test_frontend_function(
+    *,
+    input_dtypes,
+    test_flags,
+    backend_to_test,
+    on_device="cpu",
+    frontend,
+    fn_tree,
+    gt_fn_tree=None,
+    rtol=None,
+    atol=1e-06,
+    tolerance_dict=None,
+    test_values=True,
+    **all_as_kwargs_np,
+):
+    global _test_function_called
+    _test_function_called = True
+
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = _kwargs_to_args_n_kwargs(
+        num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
+    )
+
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # make all lists equal in length
+    num_arrays = c_arg_vals + c_kwarg_vals
+    if len(input_dtypes) < num_arrays:
+        input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
+    if len(test_flags.as_variable) < num_arrays:
+        test_flags.as_variable = [test_flags.as_variable[0] for _ in range(num_arrays)]
+    if len(test_flags.native_arrays) < num_arrays:
+        test_flags.native_arrays = [
+            test_flags.native_arrays[0] for _ in range(num_arrays)
+        ]
+
+    with helpers.BackendHandler.update_backend(backend_to_test) as ivy_backend:
+        # update var flags to be compatible with float dtype and with_out args
+        test_flags.as_variable = [
+            v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
+            for v, d in zip(test_flags.as_variable, input_dtypes)
+        ]
+
+        local_importer = ivy_backend.utils.dynamic_import
+
+        # strip the decorator to get an Ivy array
+        # TODO, fix testing for jax frontend for x32
+        if frontend == "jax":
+            local_importer.import_module("ivy.functional.frontends.jax").config.update(
+                "jax_enable_x64", True
+            )
+
+        _, _, fn_name = fn_tree.rpartition(".")
+
+        # if gt_fn_tree and gt_fn_name are different from our frontend structure
+        if gt_fn_tree is not None:
+            split_index = gt_fn_tree.rfind(".")
+            gt_frontend_submods, gt_fn_name = (
+                gt_fn_tree[:split_index],
+                gt_fn_tree[split_index + 1 :],
+            )
+        else:
+            gt_frontend_submods, gt_fn_name = fn_tree[25 : fn_tree.rfind(".")], fn_name
+
+        # apply test flags etc.
+        args, kwargs = create_args_kwargs(
+            backend=backend_to_test,
+            args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
+            kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
+            input_dtypes=input_dtypes,
+            test_flags=test_flags,
+            on_device=on_device,
+        )
+
+        # strip the decorator to get an Ivy array
+        # ToDo, fix testing for jax frontend for x32
+        if frontend == "jax":
+            importlib.import_module("ivy.functional.frontends.jax").config.update(
+                "jax_enable_x64", True
+            )
+
+        args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
+
+        def arrays_to_numpy(x):
+            return (
+                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
+            )
+
+        gt_args_np = ivy.nested_map(
+            args_for_test,
+            arrays_to_numpy,
+            shallow=False,
+        )
+        gt_kwargs_np = ivy.nested_map(
+            kwargs_for_test,
+            arrays_to_numpy,
+            shallow=False,
+        )
+
+    # create frontend framework args
+    frontend_config = helpers.get_frontend_config(frontend)
+    args_frontend = ivy.nested_map(
+        gt_args_np,
+        lambda x: (
+            frontend_config.native_array(x)
+            if isinstance(x, np.ndarray)
+            else (
+                frontend_config.as_native_dtype(x)
+                if isinstance(x, frontend_config.Dtype)
+                else x
+            )
+        ),
+        shallow=False,
+    )
+    kwargs_frontend = ivy.nested_map(
+        gt_kwargs_np,
+        lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
+    )
+
+    # change ivy dtypes to native dtypes
+    if "dtype" in kwargs_frontend and kwargs_frontend["dtype"] is not None:
+        kwargs_frontend["dtype"] = frontend_config.as_native_dtype(
+            kwargs_frontend["dtype"]
+        )
+
+    # change ivy device to native devices
+    if "device" in kwargs_frontend:
+        kwargs_frontend["device"] = frontend_config.as_native_device(
+            kwargs_frontend["device"]
+        )
+
+    # compute the return via the frontend framework
+    frontend_fw = importlib.import_module(gt_frontend_submods)
+    frontend_fw_fn = frontend_fw.__dict__[gt_fn_name]
+
+    try:
+        frontend_fw_fn(*args_frontend, **kwargs_frontend)
+    except Exception as e:
+        raise FromFunctionException(str(e), e)
+
+
 def run_dtype_setter(
     files_list: List[Path],
     devices=DEVICES,
@@ -1181,6 +1508,7 @@ def run_dtype_setter(
 ):
     global _test_function_called
     helpers.test_function = mock.Mock(wraps=mock_test_function)
+    helpers.test_frontend_function = mock.Mock(wraps=mock_test_frontend_function)
     sys.modules["ivy_tests.test_ivy.helpers"] = helpers
 
     test_globals._set_backend("tensorflow")
@@ -1189,7 +1517,10 @@ def run_dtype_setter(
         print("============== RUNNING =============")
 
     for file in files_list:
-        test_handler = BackendFileTester(file, devices, fn_names, **options)
+        if BACKENDS_DIR in file.parents:
+            test_handler = BackendFileTester(file, devices, fn_names, **options)
+        else:
+            test_handler = FrontendFileTester(file, devices, fn_names, **options)
         try:
             test_handler.setup_test()
         except NoTestException:
@@ -1201,9 +1532,7 @@ def run_dtype_setter(
 
             test_file = _import_module_from_path(test_handler.test_path)
 
-            for fn_name in test_handler.iterate_fn_names():
-                test_fn = f"test_{fn_name}"
-
+            for fn_name, test_fn in test_handler.iterate_fn_names():
                 # we only need to check these once for each function
                 if dtype == test_handler.dtypes[0]:
                     if test_fn not in test_file.__dict__:
@@ -1217,7 +1546,7 @@ def run_dtype_setter(
                     # typing.get_type_hints or inspect.signature but there are weird
                     # edge cases that those don't work for (e.g. ivy.asarray breaks
                     # typing.get_type_hints)
-                    if not any(
+                    if isinstance(test_handler, BackendFileTester) and not any(
                         t in str(p)
                         for t in ARRAY_OR_DTYPE_CLASSES
                         for p in ivy.__dict__[fn_name].__annotations__.values()
@@ -1245,18 +1574,18 @@ def run_dtype_setter(
                 except KeyboardInterrupt:
                     # Why interrupt_main() uses a KeyboardInterrupt is beyond me,
                     # but I suppose this is what we have to do
-                    for device in test_handler.iterate_devices():
+                    for _ in test_handler.iterate_devices():
                         test_handler.set_result(
                             "skipped", "Timeout generating example."
                         )
                     continue
                 except Exception as e:
-                    for device in test_handler.iterate_devices():
+                    for _ in test_handler.iterate_devices():
                         test_handler.set_result("skipped", "In hypothesis: " + str(e))
                     continue
 
-                for device in test_handler.iterate_devices():
-                    if (
+                for _ in test_handler.iterate_devices():
+                    if isinstance(test_handler, BackendFileTester) and (
                         fn_name == "conv_general_transpose"
                         and test_handler.backend == "paddle"
                         and dtype == "float16"
@@ -1270,10 +1599,8 @@ def run_dtype_setter(
                     try:
                         _test_function_called = False
                         with SuppressPrint():
-                            test_file.__dict__[test_fn].original(
-                                **min_example,
-                                backend_fw=test_handler.backend,
-                                on_device=device,
+                            test_handler.run_test_function(
+                                test_file.__dict__[test_fn].original, min_example
                             )
                         if not _test_function_called:
                             raise NoTestFunctionException()
@@ -1282,7 +1609,7 @@ def run_dtype_setter(
                         e = ffe.wrapped_error
                         if "IvyNotImplementedException" in repr(type(e)):
                             test_handler.set_result("skipped", "Not implemented")
-                        if is_dtype_err[test_handler.backend](e, dtype):
+                        if test_handler.is_dtype_err(e):
                             test_handler.set_result("unsupported")
                         else:
                             test_handler.set_result("unsure", str(e) or type(e))
