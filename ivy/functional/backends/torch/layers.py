@@ -46,6 +46,10 @@ def multi_head_attention(
 ) -> torch.Tensor:
     if key is None and value is None:
         key = value = query
+    if attention_mask is not None and attention_mask.dtype != torch.bool:
+        attention_mask = attention_mask.to(torch.bool)
+    if key_padding_mask is not None and key_padding_mask.dtype != torch.bool:
+        key_padding_mask = key_padding_mask.to(torch.bool)
     emb_dim = _get_embed_dim(
         in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query,
     )[1]
@@ -92,6 +96,7 @@ def multi_head_attention(
 multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: \
     not ivy.exists(kwargs['scale']) and \
     ivy.exists(kwargs['out_proj_weights']) and \
+    (not kwargs['is_causal'] or ivy.exists(kwargs['attention_mask'])) and \
     (not kwargs['is_causal'] or not kwargs['return_attention_weights']) and \
     _get_embed_dim(
         kwargs['in_proj_weights'],
