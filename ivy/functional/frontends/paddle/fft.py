@@ -138,13 +138,20 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
     include_last_axis = len(x.shape) - 1 in axes
 
     if s is None:
-        s = [x.shape[axis] if axis != (len(x.shape) - 1) else 2 * (x.shape[axis] - 1) for axis in axes]
+        s = [
+            x.shape[axis] if axis != (len(x.shape) - 1) else 2 * (x.shape[axis] - 1) 
+            for axis in axes
+        ]
 
     real_result = x
     remaining_axes = [axis for axis in axes if axis != (len(x.shape) - 1)]
 
     if remaining_axes:
-        real_result = ivy.ifftn(x, s=[s[axes.index(axis)] for axis in remaining_axes], axes=remaining_axes, norm=norm)
+        real_result = ivy.ifftn(
+            x,
+            s=[s[axes.index(axis)] for axis in remaining_axes],
+            axes=remaining_axes,
+            norm=norm)
 
     if include_last_axis:
         axis = len(x.shape) - 1
