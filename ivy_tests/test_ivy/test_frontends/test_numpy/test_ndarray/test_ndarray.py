@@ -3646,8 +3646,8 @@ def test_numpy_ndarray_transpose(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="var",
-    dtype_and_x=_statistical_dtype_values(function="var"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype_x_axis=_statistical_dtype_values(function="var"),
+    dtype=helpers.get_dtypes("valid", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
