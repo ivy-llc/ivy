@@ -124,6 +124,27 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     return time_domain
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def rfft(x, n=None, axis=-1, norm="backward", name=None):
+    # Ensure x is a complex type for FFT calculations
+    x_complex = ivy.astype(x, "complex128")
+    
+    # Perform FFT
+    fft_result = ivy.fft(x_complex, n=n, axis=axis, norm=norm)
+    
+    # Extract positive frequency terms
+    n = fft_result.shape[axis] if n is None else n
+    pos_freq_idx = n // 2 + 1
+    slice_obj = [slice(None)] * len(fft_result.shape)
+    slice_obj[axis] = slice(0, pos_freq_idx)
+    
+    return fft_result[tuple(slice_obj)]
+
+
 @to_ivy_arrays_and_back
 def rfftfreq(n, d=1.0, dtype=None, name=None):
     dtype = ivy.default_dtype()
