@@ -35,7 +35,7 @@ def variable_data(x: torch.Tensor, /) -> torch.Tensor:
     return x.data
 
 
-def _grad_func(y, xs, retain_grads):
+def _grad_func(y, xs, retain_grads, grad_outputs=None):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
@@ -50,6 +50,7 @@ def _grad_func(y, xs, retain_grads):
         grads = torch.autograd.grad(
             y,
             xs,
+            grad_outputs,
             retain_graph=True,
             create_graph=retain_grads,
             allow_unused=True,
@@ -61,6 +62,7 @@ def _grad_func(y, xs, retain_grads):
                 torch.autograd.grad(
                     [y],
                     [v for k, v in xs.cont_to_iterator()],
+                    grad_outputs,
                     retain_graph=True,
                     create_graph=retain_grads,
                     allow_unused=True,
@@ -100,6 +102,7 @@ def execute_with_gradients(
     retain_grads: bool = False,
     xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
     ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    output_grads: Optional[Sequence[torch.Tensor]] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
@@ -115,19 +118,26 @@ def execute_with_gradients(
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
+        assert output_grads is None or isinstance(output_grads, ivy.NativeArray)
         grads = _set_duplicates(
-            _grad_func(torch.clone(y), xs, retain_grads),
+            _grad_func(torch.clone(y), xs, retain_grads, output_grads),
             required_duplicate_index_chains,
         )
     else:
         # Gradient calculation for multiple outputs
         # ToDo: use functorch.jacrev if it fixes the issue with broken memory reference
+        assert (
+            output_grads is None
+            or isinstance(output_grads, list)
+            or isinstance(output_grads, tuple)
+        )
+        assert len(output_grads) == len(y) if output_grads is not None else True
         y = _get_native_y(y)
         grad_arr_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
         grad_arr_values = ivy.multi_index_nest(y, grad_arr_idxs)
         grads_ = [
-            _grad_func(torch.clone(arr_value), xs, retain_grads)
-            for arr_value in grad_arr_values
+            _grad_func(torch.clone(arr_value), xs, retain_grads, output_grads[idx])
+            for idx, arr_value in enumerate(grad_arr_values)
         ]
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
