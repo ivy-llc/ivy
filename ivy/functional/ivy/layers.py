@@ -897,7 +897,7 @@ def multi_head_attention(
             ivy.tril(ivy.ones((num_queries, num_keys))) == 0.0, 1, 0
         )
     if ivy.exists(attention_mask):
-        if ivy.is_int_dtype(attention_mask):
+        if not ivy.is_bool_dtype(attention_mask):
             attention_mask = attention_mask.astype(ivy.bool)
         if attention_mask.ndim == 2:
             attention_mask = ivy.tile(attention_mask, (batch_dim * num_heads, 1, 1))
