@@ -129,7 +129,7 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def irfftn(x, s=None, axes=None, norm=norm, name=None):
+def irfftn(x, s=None, axes=None, norm="backward", name=None):
     x = ivy.array(x)
 
     if axes is None:
