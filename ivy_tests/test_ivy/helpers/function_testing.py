@@ -199,13 +199,21 @@ def test_function_backend_computation(
         else:
             target_fn = ivy_backend.__dict__[fn_name]
 
+        # Make copy of arguments for functions that might use inplace update by default
+        copy_kwargs = copy.deepcopy(kwargs)
+        copy_args = copy.deepcopy(args)
+
         ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-            fw, target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+            fw,
+            target_fn,
+            *copy_args,
+            test_compile=test_flags.test_compile,
+            **copy_kwargs,
         )
 
         assert ivy_backend.nested_map(
-            ret_from_target,
             lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
+            ret_from_target,
         ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
 
         # Assert indices of return if the indices of the out array provided
@@ -216,7 +224,7 @@ def test_function_backend_computation(
                 else ret_from_target
             )
             out = ivy_backend.nested_map(
-                test_ret, ivy_backend.zeros_like, to_mutable=True, include_derived=True
+                ivy_backend.zeros_like, test_ret, to_mutable=True, include_derived=True
             )
             if instance_method:
                 ret_from_target, ret_np_flat_from_target = (
@@ -240,29 +248,11 @@ def test_function_backend_computation(
                     lambda x, _: x[0] is x[1], [test_ret, out]
                 ),
                 lambda x: not x,
-            )
+            ), "the array in out argument does not contain same value as the returned"
             if not max(test_flags.container) and ivy_backend.native_inplace_support:
                 # these backends do not always support native inplace updates
                 assert not ivy_backend.nested_any(
                     ivy_backend.nested_multi_map(
-                        lambda x, _: x[0].data is x[1].data, [test_ret, out]
-                    ),
-                    lambda x: not x,
-                )
-            # TODO use context manager
-            test_ret = (
-                ret_from_target[getattr(ivy.__dict__[fn_name], "out_index")]
-                if hasattr(ivy.__dict__[fn_name], "out_index")
-                else ret_from_target
-            )
-            assert not ivy.nested_any(
-                ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
-                lambda x: not x,
-            ), "the array in out argument does not contain same value as the returned"
-            if not max(test_flags.container) and ivy_backend.native_inplace_support:
-                # these backends do not always support native inplace updates
-                assert not ivy.nested_any(
-                    ivy.nested_multi_map(
                         lambda x, _: x[0].data is x[1].data, [test_ret, out]
                     ),
                     lambda x: not x,
@@ -324,8 +314,8 @@ def test_function_ground_truth_computation(
             **kwargs,
         )
         assert gt_backend.nested_map(
-            ret_from_gt,
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
+            ret_from_gt,
         ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
@@ -334,8 +324,8 @@ def test_function_ground_truth_computation(
                 else ret_from_gt
             )
             out_from_gt = gt_backend.nested_map(
-                test_ret_from_gt,
                 gt_backend.zeros_like,
+                test_ret_from_gt,
                 to_mutable=True,
                 include_derived=True,
             )
@@ -770,8 +760,8 @@ def test_frontend_function(
         # test if frontend array was returned
         if test_flags.generate_frontend_arrays:
             assert ivy_backend.nested_map(
-                ret,
                 lambda x: (_is_frontend_array(x) if ivy_backend.is_array(x) else True),
+                ret,
                 shallow=False,
             ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
@@ -784,7 +774,6 @@ def test_frontend_function(
             if test_flags.generate_frontend_arrays:
                 if is_ret_tuple:
                     ret = ivy_backend.nested_map(
-                        ret,
                         lambda _x: (
                             arrays_to_frontend(
                                 backend=backend_to_test,
@@ -793,6 +782,7 @@ def test_frontend_function(
                             if not _is_frontend_array(_x)
                             else _x
                         ),
+                        ret,
                         include_derived=True,
                     )
                 elif not _is_frontend_array(ret):
@@ -802,12 +792,12 @@ def test_frontend_function(
             else:
                 if is_ret_tuple:
                     ret = ivy_backend.nested_map(
-                        ret,
                         lambda _x: (
                             ivy_backend.array(_x)
                             if not ivy_backend.is_array(_x)
                             else _x
                         ),
+                        ret,
                         include_derived=True,
                     )
                 elif not ivy_backend.is_array(ret):
@@ -916,7 +906,7 @@ def test_frontend_function(
 
         if not test_values:
             ret = ivy_backend.nested_map(
-                ret, _frontend_array_to_ivy, include_derived={"tuple": True}
+                _frontend_array_to_ivy, ret, include_derived={"tuple": True}
             )
 
         def arrays_to_numpy(x):
@@ -927,20 +917,19 @@ def test_frontend_function(
             )
 
         gt_args_np = ivy.nested_map(
-            args_for_test,
             arrays_to_numpy,
+            args_for_test,
             shallow=False,
         )
         gt_kwargs_np = ivy.nested_map(
-            kwargs_for_test,
             arrays_to_numpy,
+            kwargs_for_test,
             shallow=False,
         )
 
     # create frontend framework args
     frontend_config = get_frontend_config(frontend)
     args_frontend = ivy.nested_map(
-        gt_args_np,
         lambda x: (
             frontend_config.native_array(x)
             if isinstance(x, np.ndarray)
@@ -950,11 +939,12 @@ def test_frontend_function(
                 else x
             )
         ),
+        gt_args_np,
         shallow=False,
     )
     kwargs_frontend = ivy.nested_map(
-        gt_kwargs_np,
         lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        gt_kwargs_np,
         shallow=False,
     )
 
@@ -1065,7 +1055,7 @@ def test_gradient_backend_computation(
                 args=args,
                 kwargs=kwargs,
             )(*args, **kwargs)
-            return ivy_backend.nested_map(ret, ivy_backend.mean, include_derived=True)
+            return ivy_backend.nested_map(ivy_backend.mean, ret, include_derived=True)
 
         with ivy_backend.PreciseMode(test_flags.precision_mode):
             _, grads = ivy_backend.execute_with_gradients(
@@ -1128,7 +1118,7 @@ def test_gradient_ground_truth_computation(
                 args=args,
                 kwargs=kwargs,
             )(*args, **kwargs)
-            return gt_backend.nested_map(ret, gt_backend.mean, include_derived=True)
+            return gt_backend.nested_map(gt_backend.mean, ret, include_derived=True)
 
         with gt_backend.PreciseMode(test_flags.precision_mode):
             _, grads_from_gt = gt_backend.execute_with_gradients(
@@ -1518,8 +1508,8 @@ def test_method_ground_truth_computation(
             **kwargs_gt_method,
         )
         assert gt_backend.nested_map(
-            ret_from_gt,
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
+            ret_from_gt,
         ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
 
         fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
@@ -2012,6 +2002,11 @@ def test_frontend_method(
             on_device=on_device,
         )
         # End Method #
+        local_importer = ivy_backend.utils.dynamic_import
+
+        create_frontend_array = local_importer.import_module(
+            f"ivy.functional.frontends.{frontend}"
+        )._frontend_array
 
         args_constructor_ivy, kwargs_constructor_ivy = ivy_backend.args_to_ivy(
             *args_constructor, **kwargs_constructor
@@ -2019,32 +2014,33 @@ def test_frontend_method(
         args_method_ivy, kwargs_method_ivy = ivy_backend.args_to_ivy(
             *args_method, **kwargs_method
         )
+
         args_constructor_np = ivy_backend.nested_map(
-            args_constructor_ivy,
             lambda x: (
                 ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
             ),
+            args_constructor_ivy,
             shallow=False,
         )
         kwargs_constructor_np = ivy_backend.nested_map(
-            kwargs_constructor_ivy,
             lambda x: (
                 ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
             ),
+            kwargs_constructor_ivy,
             shallow=False,
         )
         args_method_np = ivy_backend.nested_map(
-            args_method_ivy,
             lambda x: (
                 ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
             ),
+            args_method_ivy,
             shallow=False,
         )
         kwargs_method_np = ivy_backend.nested_map(
-            kwargs_method_ivy,
             lambda x: (
                 ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
             ),
+            kwargs_method_ivy,
             shallow=False,
         )
 
@@ -2055,38 +2051,48 @@ def test_frontend_method(
             frontend_fw_module, frontend_method_data.init_name
         )
 
-        # Run testing
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
-        ret, ret_np_flat = get_ret_and_flattened_np_array(
+        ret = get_frontend_ret(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
-            precision_mode=method_flags.precision_mode,
-            *args_method,
+            *args_method_ivy,
+            frontend_array_function=(
+                create_frontend_array if method_flags.test_compile else None
+            ),
+            as_ivy_arrays=(not method_flags.generate_frontend_arrays),
             test_compile=method_flags.test_compile,
-            **kwargs_method,
+            precision_mode=method_flags.precision_mode,
+            **kwargs_method_ivy,
         )
 
-        # ToDo: uncomment once test_frontend_method has been updated to test for
-        #  frontend array arguments like test_frontend_function where
-        #  test_flags.generate_frontend_arrays is being used
-        # assert ivy_backend.nested_map(
-        #     ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
-        # ), "Frontend method returned non-frontend arrays: {}".format(ret)
+        if method_flags.generate_frontend_arrays:
+            assert ivy_backend.nested_map(
+                lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True,
+                ret,
+            ), "Frontend method returned non-frontend arrays: {}".format(ret)
+
+        if method_flags.generate_frontend_arrays:
+            ret_np_flat = flatten_frontend_to_np(
+                ret=ret,
+                frontend_array_fn=create_frontend_array,
+                backend=backend_to_test,
+            )
+        else:
+            ret_np_flat = flatten_and_to_np(ret=ret, backend=backend_to_test)
 
     # Compute the return with the native frontend framework
     frontend_config = get_frontend_config(frontend)
     args_constructor_frontend = ivy.nested_map(
-        args_constructor_np,
         lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        args_constructor_np,
         shallow=False,
     )
     kwargs_constructor_frontend = ivy.nested_map(
-        kwargs_constructor_np,
         lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        kwargs_constructor_np,
         shallow=False,
     )
     args_method_frontend = ivy.nested_map(
-        args_method_np,
         lambda x: (
             frontend_config.native_array(x)
             if isinstance(x, np.ndarray)
@@ -2100,11 +2106,12 @@ def test_frontend_method(
                 )
             )
         ),
+        args_method_np,
         shallow=False,
     )
     kwargs_method_frontend = ivy.nested_map(
-        kwargs_method_np,
         lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        kwargs_method_np,
         shallow=False,
     )
 
@@ -2379,7 +2386,7 @@ def get_ret_and_flattened_np_array(
                 return ivy_backend.to_ivy(x)
             return x
 
-        ret = ivy_backend.nested_map(ret, map_fn, include_derived={"tuple": True})
+        ret = ivy_backend.nested_map(map_fn, ret, include_derived={"tuple": True})
         return ret, flatten_and_to_np(backend=backend_to_test, ret=ret)
 
 
@@ -2399,24 +2406,24 @@ def get_frontend_ret(
     with BackendHandler.update_backend(backend) as ivy_backend:
         if not as_ivy_arrays and test_compile:
             args, kwargs = ivy_backend.nested_map(
-                (args, kwargs), _frontend_array_to_ivy, include_derived={"tuple": True}
+                _frontend_array_to_ivy, (args, kwargs), include_derived={"tuple": True}
             )
         with ivy_backend.PreciseMode(precision_mode):
             ret = frontend_fn(*args, **kwargs)
         if test_compile and frontend_array_function is not None:
             if as_ivy_arrays:
                 ret = ivy_backend.nested_map(
-                    ret, ivy_backend.asarray, include_derived={"tuple": True}
+                    ivy_backend.asarray, ret, include_derived={"tuple": True}
                 )
             else:
                 ret = ivy_backend.nested_map(
-                    ret,
                     arrays_to_frontend(backend, frontend_array_function),
+                    ret,
                     include_derived={"tuple": True},
                 )
         elif as_ivy_arrays:
             ret = ivy_backend.nested_map(
-                ret, _frontend_array_to_ivy, include_derived={"tuple": True}
+                _frontend_array_to_ivy, ret, include_derived={"tuple": True}
             )
     return ret
 
@@ -2542,14 +2549,14 @@ def args_to_frontend(
 ):
     with BackendHandler.update_backend(backend) as ivy_backend:
         frontend_args = ivy_backend.nested_map(
-            args,
             arrays_to_frontend(backend=backend, frontend_array_fn=frontend_array_fn),
+            args,
             include_derived,
             shallow=False,
         )
         frontend_kwargs = ivy_backend.nested_map(
-            kwargs,
             arrays_to_frontend(backend=backend, frontend_array_fn=frontend_array_fn),
+            kwargs,
             include_derived,
             shallow=False,
         )
