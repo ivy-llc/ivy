@@ -146,7 +146,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
             "uint8",
             "int8",
             "int16",
-            "bfloat16",
+            "float16bfloat16",
         )
     },
     backend_version,
