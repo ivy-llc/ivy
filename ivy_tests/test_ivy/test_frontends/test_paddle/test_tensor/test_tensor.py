@@ -421,6 +421,8 @@ def test_paddle_tensor_abs(
         frontend=frontend,
         on_device=on_device,
     )
+
+
 # diff
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -456,6 +458,8 @@ def test_paddle__diff(
         frontend=frontend,
         on_device=on_device,
     )
+
+    
 # acosh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
