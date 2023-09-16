@@ -209,6 +209,12 @@ def trapezoid(y, x=None, *, dx=None, dim=-1):
     return ivy.trapz(y, x=x, dx=dx, axis=dim)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def trapz(y, x, *, dim=-1):
+    return trapezoid(y, x, dim=dim)
+
+
 @to_ivy_arrays_and_back
 def vdot(input, other, *, out=None):
     if len(input.shape) != 1 or len(other.shape) != 1:

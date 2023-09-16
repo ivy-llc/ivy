@@ -950,6 +950,35 @@ def test_torch_trapezoid(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.trapz",
+    test_with_out=st.just(False),
+    dtype_y_x=_get_dtype_and_matrices(),
+    dim=st.integers(min_value=-1, max_value=1),
+)
+def test_torch_trapz(
+    dtype_y_x,
+    dim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, y, x = dtype_y_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=y,
+        x=x,
+        dim=dim,
+    )
+
+
 # vdot
 @handle_frontend_test(
     fn_tree="torch.vdot",
