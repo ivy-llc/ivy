@@ -2046,7 +2046,6 @@ def solve(
   
     Examples
     --------
-
     With class:`ivy.Array` input:
     
     >>> A = ivy.array([[1.1, 1.2, 1.3],
