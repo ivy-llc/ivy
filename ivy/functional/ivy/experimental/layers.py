@@ -2541,6 +2541,15 @@ def sliding_window(
             padding=padding,
         )
 
+    if ivy.current_backend_str == "paddle":
+        return ivy.current_backend(input).sliding_window(
+            input,
+            kernel_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
     # convert to 2D
     n = len(input.shape)
     if n > 2:

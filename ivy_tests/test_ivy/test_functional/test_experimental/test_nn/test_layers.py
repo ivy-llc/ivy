@@ -1261,7 +1261,7 @@ def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device)
         fn_name=fn_name,
         input=input,
         window_size=k,
-        stride=stride,
+        stride=stride[0],
         dilation=dilation[0],
         padding=padding,
     )

@@ -1483,4 +1483,6 @@ def sliding_window(
                 f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
             )
 
-    return tf.image.extract_patches(input, kernel_size, stride, dilation, padding)
+    return tf.image.extract_patches(
+        images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding
+    )

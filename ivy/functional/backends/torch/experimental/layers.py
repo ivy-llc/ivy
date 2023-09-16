@@ -1054,4 +1054,6 @@ def sliding_window(
     else:
         padding = (padding,) * 2 if isinstance(padding, int) else padding
 
-    return torch.nn.functional.unfold(input, kernel_size, dilation, padding, stride)
+    return torch.nn.functional.unfold(
+        input, kernel_size, dilation=dilation, padding=padding, stride=stride
+    )
