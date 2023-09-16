@@ -314,6 +314,7 @@ def tensorsolve(
     return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
+@with_unsupported_dtypes({"1.25.4 and below": ("bfloat16",)}, backend_version)
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,
