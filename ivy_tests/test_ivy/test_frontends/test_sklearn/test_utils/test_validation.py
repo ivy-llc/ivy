@@ -56,3 +56,31 @@ def test_sklearn_column_or_1d(
         on_device=on_device,
         y=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="sklearn.utils.validation._num_samples",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+)
+def test_sklearn_num_samples(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        on_device=on_device,
+        x=x[0],
+    )
