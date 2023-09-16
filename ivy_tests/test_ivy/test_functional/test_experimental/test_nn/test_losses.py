@@ -55,6 +55,55 @@ def test_huber_loss(
     )
 
 
+# kl_div
+@handle_test(
+    fn_tree="functional.ivy.experimental.kl_div",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    reduction=st.sampled_from(["none", "sum", "batchmean", "mean"]),
+    test_with_out=st.just(False),
+)
+def test_kl_div(
+    dtype_and_input,
+    dtype_and_target,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, input = dtype_and_input
+    target_dtype, target = dtype_and_target
+
+    helpers.test_function(
+        input_dtypes=input_dtype + target_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-02,
+        input=input[0],
+        target=target[0],
+        reduction=reduction,
+    )
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_loss",
     dtype_input=helpers.dtype_and_values(

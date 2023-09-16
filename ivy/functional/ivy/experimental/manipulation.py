@@ -2632,3 +2632,70 @@ def choose(
     ivy.array([20, 1, 12, 3])
     """
     return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+
+
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_nestable
+@handle_exceptions
+@handle_device_shifting
+def column_stack(
+    arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Create a new array by horizontally stacking the arrays in arrays.
+
+    Equivalent to `ivy.hstack(arrays)`, except each zero or one dimensional
+    array `x` in arrays is first reshaped into a `(x.size(), 1)` column
+    before being stacked horizontally.
+
+    Parameters
+    ----------
+    arrays
+        Arrays to be stacked.
+    out
+        Output array.
+
+    Returns
+    -------
+    ret
+        Stacked input.
+
+    Examples
+    --------
+    Arrays of different dtypes up to dimension 2.
+    >>> a0 = ivy.array(True)
+    >>> a1 = ivy.array([7])
+    >>> a2 = ivy.array([[11.3, 13.7]])
+    >>> ivy.column_stack((a0, a1, a2))
+    ivy.array([[ 1.        ,  7.        , 11.30000019, 13.69999981]])
+
+    Arrays of dimension 3.
+    >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> b = ivy.array([[[11, 12]], [[13, 14]]])
+    >>> ivy.column_stack((a, b))
+    ivy.array([[[ 1,  2],
+                [ 3,  4],
+                [11, 12]],
+
+               [[ 5,  6],
+                [ 7,  8],
+                [13, 14]]])
+    """
+    arrays = [ivy.reshape(x, shape=(-1, 1)) if x.ndim < 2 else x for x in arrays]
+
+    return ivy.hstack(arrays, out=out)
+
+
+column_stack.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_out_argument",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
