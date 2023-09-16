@@ -115,7 +115,10 @@ def execute_with_gradients(
 
     # Getting the relevant outputs from the function return for gradient calculation
     ret_grad_idxs, y, ret_idxs = _get_y_and_ret_idxs(
-        func_ret, ret_grad_idxs, create_var=True
+        func_ret,
+        ret_grad_idxs,
+        create_var=True,
+        reshape=False,  # !!!reshape=False set temporarily!!!
     )
 
     if isinstance(y, ivy.NativeArray):
