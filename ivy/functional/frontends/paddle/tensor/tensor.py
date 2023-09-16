@@ -62,7 +62,7 @@ class Tensor:
     # -------------------#
 
     def __getitem__(self, item):
-        ivy_args = ivy.nested_map([self, item], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
         return paddle_frontend.Tensor(ret)
 
