@@ -1,6 +1,45 @@
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+import numbers
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+)
 from ivy.func_wrapper import with_unsupported_dtypes
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+@to_ivy_arrays_and_back
+def _num_samples(x):
+    message = "Expected sequence or array_like, got %s" % type(x)
+    if hasattr(x, "fit") and callable(x.fit):
+        raise TypeError(message)
+
+    if not hasattr(x, "__len__") and not hasattr(x, "shape"):
+        if hasattr(x, "__array__"):
+            x = ivy.asarray(x)
+        else:
+            raise TypeError(message)
+
+    if hasattr(x, "shape") and x.shape is not None:
+        if len(x.shape) == 0:
+            raise TypeError(
+                "Singleton array %r cannot be considered a valid collection." % x
+            )
+        if isinstance(x.shape[0], numbers.Integral):
+            ret = ivy.astype(x.shape[0], "int64")
+            return ret
+
+    try:
+        ret = ivy.astype(len(x), "int64")
+        return ret
+    except TypeError as type_error:
+        raise TypeError(message) from type_error
+
+
+# --- Main --- #
+# ------------ #
 
 
 @to_ivy_arrays_and_back
