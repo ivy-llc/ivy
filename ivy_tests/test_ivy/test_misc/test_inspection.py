@@ -6,6 +6,10 @@ from typing import List, Tuple, Dict, Optional, Union
 import ivy
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _fn0(xs: Optional[List[ivy.Array]] = None):
     return xs
 
@@ -27,6 +31,10 @@ def _fn2(
     return a, bs, cs
 
 
+# --- Main --- #
+# ------------ #
+
+
 @pytest.mark.parametrize(
     "fn_n_spec",
     [
@@ -35,6 +43,8 @@ def _fn2(
         (_fn2, [[(0, "a"), int], [(2, "cs"), "optional", str]]),
     ],
 )
-def test_fn_array_spec(fn_n_spec):
+def test_fn_array_spec(fn_n_spec, backend_fw):
+    ivy.set_backend(backend_fw)
     fn, spec = fn_n_spec
     assert ivy.fn_array_spec(fn) == spec
+    ivy.previous_backend()

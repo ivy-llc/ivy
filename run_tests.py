@@ -2,18 +2,26 @@
 import os
 import sys
 from pymongo import MongoClient
+import requests
+from run_tests_CLI.get_all_tests import BACKENDS
+
 
 submodules = (
     "test_paddle",
-    "test_functional",
-    "test_experimental",
-    "test_stateful",
     "test_tensorflow",
     "test_torch",
     "test_jax",
     "test_numpy",
+    "test_functional",
+    "test_experimental",
+    "test_stateful",
     "test_misc",
     "test_scipy",
+    "test_pandas",
+    "test_mindspore",
+    "test_onnx",
+    "test_sklearn",
+    "test_xgboost",
 )
 db_dict = {
     "test_functional/test_core": ["core", 10],
@@ -28,6 +36,11 @@ db_dict = {
     "test_misc": ["misc", 19],
     "test_paddle": ["paddle", 20],
     "test_scipy": ["scipy", 21],
+    "test_pandas": ["pandas", 22],
+    "test_mindspore": ["mindspore", 23],
+    "test_onnx": ["onnx", 24],
+    "test_sklearn": ["sklearn", 25],
+    "test_xgboost": ["xgboost", 26],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
@@ -35,10 +48,23 @@ result_config = {
 }
 
 
+def get_latest_package_version(package_name):
+    try:
+        url = f"https://pypi.org/pypi/{package_name}/json"
+        response = requests.get(url)
+        response.raise_for_status()
+        package_info = response.json()
+        return package_info["info"]["version"]
+    except requests.exceptions.RequestException as e:
+        print(f"Error: Failed to fetch package information for {package_name}.")
+        return None
+
+
 def make_clickable(url, name):
-    return '<a href="{}" rel="noopener noreferrer" '.format(
-        url
-    ) + 'target="_blank"><img src={}></a>'.format(name)
+    return (
+        f'<a href="{url}" rel="noopener noreferrer" '
+        + f'target="_blank"><img src={name}></a>'
+    )
 
 
 def get_submodule(test_path):
@@ -46,11 +72,13 @@ def get_submodule(test_path):
     for name in submodules:
         if name in test_path:
             if name == "test_functional":
-                coll = db_dict["test_functional/" + test_path[-2]]
-            elif name == "test_experimental":
-                coll = db_dict["test_experimental/" + test_path[-2]]
+                if len(test_path) > 3 and test_path[3] == "test_experimental":
+                    coll = db_dict[f"test_experimental/{test_path[4]}"]
+                else:
+                    coll = db_dict[f"test_functional/{test_path[-2]}"]
             else:
                 coll = db_dict[name]
+            break
     submod_test = test_path[-1]
     submod, test_fn = submod_test.split("::")
     submod = submod.replace("test_", "").replace(".py", "")
@@ -66,81 +94,23 @@ def update_individual_test_results(
     result,
     backend_version=None,
     frontend_version=None,
+    device=None,
 ):
-    key = submod + "." + backend
+    key = f"{submod}.{backend}"
     if backend_version is not None:
         backend_version = backend_version.replace(".", "_")
-        key += "." + backend_version
+        key += f".{backend_version}"
     if frontend_version is not None:
         frontend_version = frontend_version.replace(".", "_")
-        key += "." + frontend_version
-    key += "." + test
+        key += f".{frontend_version}"
+    key += f".{test}"
+    if device:
+        key += f".{device}"
     collection.update_one(
         {"_id": id},
         {"$set": {key: result}},
         upsert=True,
     )
-    return
-
-
-def remove_from_db(collection, id, submod, backend, test):
-    collection.update_one(
-        {"_id": id},
-        {"$unset": {submod + "." + backend + ".": test}},
-    )
-    return
-
-
-def run_multiversion_testing():
-    failed = False
-    cluster = MongoClient(
-        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
-    )
-    db = cluster["Ivy_tests_multi"]
-    with open("tests_to_run", "r") as f:
-        for line in f:
-            test, backend = line.split(",")
-            backend = backend.strip("\n")
-            coll, submod, test_fn = get_submodule(test)
-            frontend_version = None
-            if ";" in backend:
-                # This is a frontend test
-                backend, frontend = backend.split(";")
-                frontend_version = "/".join(frontend.split("/")[1:])
-                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /bin/bash -c "/opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend} {frontend} numpy/1.23.1; /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}" '  # noqa
-                ret = os.system(command)
-            else:
-                ret = os.system(
-                    f"docker run --rm --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base'
-                    " /opt/miniconda/envs/multienv/bin/python"
-                    " docker/multiversion_framework_directory.py backend"
-                    f" {backend};/opt/miniconda/envs/multienv/bin/python pytest"
-                    f" --tb=short {test} --backend={backend.split('/')[0]}"
-                    # noqa
-                )
-            if ret != 0:
-                res = make_clickable(run_id, result_config["failure"])
-                failed = True
-            else:
-                res = make_clickable(run_id, result_config["success"])
-            backend_list = backend.split("/")
-            backend_name = backend_list[0] + "\n"
-            backend_version = "/".join(backend_list[1:])
-            update_individual_test_results(
-                db[coll[0]],
-                coll[1],
-                submod,
-                backend_name,
-                test_fn,
-                res,
-                backend_version,
-                frontend_version,
-            )
-    if failed:
-        exit(1)
-    exit(0)
 
 
 if __name__ == "__main__":
@@ -150,23 +120,27 @@ if __name__ == "__main__":
     version_flag = sys.argv[4]
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
-    if len(sys.argv) > 7 and sys.argv[7] != "null":
-        run_id = sys.argv[7]
+    priority_flag = sys.argv[7]
+    if len(sys.argv) > 8 and sys.argv[8] != "null":
+        run_id = sys.argv[8]
     else:
-        run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
+        run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
     failed = False
-    # Gpu based testing
+    # GPU Testing
     with_gpu = False
     if gpu_flag == "true":
         with_gpu = True
-    # multiversion testing
-    if version_flag == "true":
-        run_multiversion_testing()
+    if priority_flag == "true":
+        priority_flag = True
+    else:
+        priority_flag = False
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
-    db_multi = cluster["Ivy_tests_multi"]
-    db_gpu = cluster["Ivy_tests_gpu"]
+    db = cluster["Ivy_tests_multi_gpu"]
+    db_priority = cluster["Ivy_tests_priority"]
+    if with_gpu:
+        os.system("docker pull unifyai/multicuda:base_and_requirements")
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
@@ -174,41 +148,53 @@ if __name__ == "__main__":
             print(f"\n{'*' * 100}")
             print(f"{line[:-1]}")
             print(f"{'*' * 100}\n")
+            backend_version = "latest-stable"
             sys.stdout.flush()
-            if with_gpu:
-                ret = os.system(
-                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
-                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis'
-                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
-                    f" --tb=short {test} --device=gpu:0 -B={backend}"
-                    # noqa
-                )
-            else:
+            if version_flag == "true":
+                backends = [backend.strip()]
+                [backend_name, backend_version] = backend.split("/")
+                other_backends = [fw for fw in BACKENDS if fw != backend_name]
+                for backend in other_backends:
+                    backends.append(backend + "/" + get_latest_package_version(backend))
+                print("Backends:", backends)
                 ret = os.system(
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
-                    f" pytest --tb=short {test} --backend {backend}"
-                    # noqa
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
+                    ' /bin/bash -c "python docker/multiversion_framework_directory.py'
+                    f" {' '.join(backends)};pytest --tb=short"
+                    f' {test} --backend={backend}"'
                 )
+            else:
+                if with_gpu:
+                    ret = os.system(
+                        f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                        ' "$(pwd)"/.hypothesis:/.hypothesis'
+                        " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                        f" --tb=short {test} --device=gpu:0 -B={backend}"
+                        # noqa
+                    )
+                else:
+                    ret = os.system(
+                        f"docker run --rm --env REDIS_URL={redis_url} --env"
+                        f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
+                        f" -m pytest --tb=short {test} --backend {backend}"
+                        # noqa
+                    )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
                 failed = True
             else:
                 res = make_clickable(run_id, result_config["success"])
             frontend_version = None
-            if (
-                coll[0] == "numpy"
-                or coll[0] == "jax"
-                or coll[0] == "tensorflow"
-                or coll[0] == "torch"
-                or coll[0] == "paddle"
-            ):
+            if coll[0] in ["numpy", "jax", "tensorflow", "torch", "paddle"]:
                 frontend_version = "latest-stable"
-            if not with_gpu:
+            if priority_flag:
+                print("Updating Priority DB")
                 update_individual_test_results(
-                    db_multi[coll[0]],
+                    db_priority[coll[0]],
                     coll[1],
                     submod,
                     backend,
@@ -216,17 +202,20 @@ if __name__ == "__main__":
                     res,
                     "latest-stable",
                     frontend_version,
+                    "gpu" if with_gpu else "cpu",
                 )
             else:
+                print(backend_version)
                 update_individual_test_results(
-                    db_gpu[coll[0]],
+                    db[coll[0]],
                     coll[1],
                     submod,
                     backend,
                     test_fn,
                     res,
-                    "latest-stable",
+                    backend_version,
                     frontend_version,
+                    "gpu" if with_gpu else "cpu",
                 )
 
     if failed:

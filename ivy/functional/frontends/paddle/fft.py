@@ -7,7 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("complex64", "complex128")},
+    {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -18,7 +18,7 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 @with_supported_dtypes(
     {
-        "2.5.0 and below": (
+        "2.5.1 and below": (
             "int32",
             "int64",
             "float32",
@@ -47,7 +47,50 @@ def fftshift(x, axes=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("complex64", "complex128")},
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def hfft(x, n=None, axis=-1, norm="backward", name=None):
+    """Compute the FFT of a signal that has Hermitian symmetry, resulting in a real
+    spectrum."""
+    # Determine the input shape and axis length
+    input_shape = x.shape
+    input_len = input_shape[axis]
+
+    # Calculate n if not provided
+    if n is None:
+        n = 2 * (input_len - 1)
+
+    # Perform the FFT along the specified axis
+    result = ivy.fft(x, axis, n=n, norm=norm)
+
+    return ivy.real(result)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": "complex64"},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def hfft2(x, s=None, axis=(-2, -1), norm="backward"):
+    # check if the input tensor x is a hermitian complex
+    if not ivy.allclose(ivy.conj(ivy.matrix_transpose(x)), x):
+        raise ValueError("Input tensor x must be Hermitian complex.")
+
+    fft_result = ivy.fft2(x, s=s, dim=axis, norm=norm)
+
+    # Depending on the norm, apply scaling and normalization
+    if norm == "forward":
+        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(fft_result)))
+    elif norm == "ortho":
+        fft_result /= ivy.sqrt(ivy.prod(ivy.shape(x)))
+
+    return ivy.real(fft_result)  # Return the real part of the result
+
+    
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -57,26 +100,8 @@ def ifft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("complex64", "complex128")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
-    if n is None:
-        n = 2 * (x.shape[axis] - 1)
-
-    pos_freq_terms = ivy.take_along_axis(x, range(n // 2 + 1), axis)
-    neg_freq_terms = ivy.conj(pos_freq_terms[1:-1][::-1])
-    combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axis)
-    time_domain = ivy.ifft(combined_freq_terms, axis, norm=norm, n=n)
-    if ivy.isreal(x):
-        time_domain = ivy.real(time_domain)
-    return time_domain
-
-
-@with_supported_dtypes(
     {
-        "2.5.0 and below": (
+        "2.5.1 and below": (
             "int32",
             "int64",
             "float32",
@@ -100,3 +125,30 @@ def ifftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
+    if n is None:
+        n = 2 * (x.shape[axis] - 1)
+
+    pos_freq_terms = ivy.take_along_axis(x, range(n // 2 + 1), axis)
+    neg_freq_terms = ivy.conj(pos_freq_terms[1:-1][::-1])
+    combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axis)
+    time_domain = ivy.ifft(combined_freq_terms, axis, norm=norm, n=n)
+    if ivy.isreal(x):
+        time_domain = ivy.real(time_domain)
+    return time_domain
+
+
+@to_ivy_arrays_and_back
+def rfftfreq(n, d=1.0, dtype=None, name=None):
+    dtype = ivy.default_dtype()
+    val = 1.0 / (n * d)
+    pos_max = n // 2 + 1
+    indices = ivy.arange(0, pos_max, dtype=dtype)
+    return indices * val

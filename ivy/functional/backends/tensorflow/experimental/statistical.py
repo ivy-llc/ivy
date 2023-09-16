@@ -10,6 +10,9 @@ from ivy import (
 )
 from .. import backend_version
 
+# from ivy.functional.backends.paddle.experimental.statistical import to_positive_axis
+from copy import deepcopy
+
 
 def histogram(
     a: tf.Tensor,
@@ -112,6 +115,169 @@ def nanmean(
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
+def _infer_dtype(dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
+
+
+def nanprod(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return (
+        tf.experimental.numpy.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype)
+        * initial
+    )
+
+
+def _validate_quantile(q):
+    if tf.experimental.numpy.ndim(q) == 1 and tf.size(q) < 10:
+        for i in range(tf.size(q)):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
+    else:
+        if not (tf.math.reduce_all(0 <= q) and tf.math.reduce_all(q <= 1)):
+            return False
+    return True
+
+
+def to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
+
+
+def _handle_axis(a, q, fn, keepdims=False, axis=None):
+    nd = tf.experimental.numpy.ndim(a)
+    axis_arg = deepcopy(axis)
+    if axis is not None:
+        axis = to_positive_axis(axis, nd)
+
+        if len(axis) == 1:
+            axis_arg = axis[0]
+        else:
+            keep = set(range(nd)) - set(axis)
+            nkeep = len(keep)
+
+            for i, s in enumerate(sorted(keep)):
+                a = tf.experimental.numpy.moveaxis(a, s, i)
+            a = tf.reshape(
+                a,
+                [
+                    *a.shape[:nkeep],
+                    -1,
+                ],
+            )
+            axis_arg = -1
+
+    ret = fn(a, q, axis=axis_arg)
+
+    if keepdims:
+        if axis is None:
+            index_ret = (None,) * nd
+        else:
+            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
+        ret = ret[(Ellipsis,) + index_ret]
+
+    return ret
+
+
+def _quantile(a, q, axis=None):
+    ret_dtype = a.dtype
+    if tf.experimental.numpy.ndim(q) > 1:
+        raise ValueError("q argument must be a scalar or 1-dimensional!")
+    if axis is None:
+        axis = 0
+        a = tf.reshape(a, [-1])
+    elif axis != 0:
+        a = tf.experimental.numpy.moveaxis(a, axis, 0)
+        axis = 0
+
+    n = a.shape[axis]
+
+    indices = q * (n - 1)
+
+    a = tf.sort(a, axis)
+
+    indices_below = tf.cast(tf.math.floor(indices), dtype=tf.int32)
+    indices_upper = tf.cast(tf.math.ceil(indices), dtype=tf.int32)
+
+    weights = indices - tf.cast(indices_below, dtype=ret_dtype)
+
+    indices_below = tf.clip_by_value(indices_below, 0, n - 1)
+    indices_upper = tf.clip_by_value(indices_upper, 0, n - 1)
+    tensor_upper = tf.gather(a, indices_upper, axis=axis)
+    tensor_below = tf.gather(a, indices_below, axis=axis)
+
+    pred = weights <= 0.5
+    out = tf.where(pred, tensor_below, tensor_upper)
+
+    return tf.cast(out, ret_dtype)
+
+
+def _compute_quantile_wrapper(
+    x,
+    q,
+    axis=None,
+    keepdims=False,
+    interpolation="linear",
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
+            return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
+        else:
+            axis = tuple(axis) if isinstance(axis, list) else axis
+
+            return tfp.stats.percentile(
+                x,
+                tf.math.multiply(q, 100),
+                axis=axis,
+                interpolation=interpolation,
+                keepdims=keepdims,
+            )
+    else:
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+        )
+
+
 def quantile(
     a: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, float],
@@ -122,16 +288,14 @@ def quantile(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-
-    result = tfp.stats.percentile(
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
         a,
-        tf.math.multiply(q, 100),
+        q,
         axis=axis,
-        interpolation=interpolation,
         keepdims=keepdims,
+        interpolation=interpolation,
     )
-    return result
 
 
 def corrcoef(
@@ -211,7 +375,6 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
 
     the result which we get from our _nanmedian_helper = [5., 6.]
     """
-
     dtype = input.dtype
     temp = tf.cast(input, tf.float64)
     num_dim = tf.rank(temp)
@@ -373,6 +536,15 @@ def bincount(
     )
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def igamma(
     a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:

@@ -16,6 +16,7 @@ import tensorflow as tf
 import ivy
 from ivy.functional.ivy.gradients import _is_variable
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 from ...ivy.general import _broadcast_to
 
@@ -36,7 +37,7 @@ def array_equal(
     /,
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
-    return bool((tf.experimental.numpy.array_equal(x0, x1)))
+    return bool(tf.experimental.numpy.array_equal(x0, x1))
 
 
 def container_types():
@@ -45,6 +46,29 @@ def container_types():
 
 def current_backend_str() -> str:
     return "tensorflow"
+
+
+def _check_query(query):
+    return not isinstance(query, list) and (
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+    )
+
+
+def get_item(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    query: Union[tf.Tensor, tf.Variable, Tuple],
+    *,
+    copy: bool = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return x.__getitem__(query)
+
+
+get_item.partial_mixed_handler = lambda x, query, **kwargs: (
+    all(_check_query(i) for i in query)
+    if isinstance(query, tuple)
+    else _check_query(query)
+)
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -134,7 +158,7 @@ def gather_nd(
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     try:
         return tf.gather_nd(params, indices, batch_dims=batch_dims)
-    except:  # fall back to compositional implementation
+    except Exception:  # fall back to compositional implementation
         batch_dims = batch_dims % len(params.shape)
         result = []
         if batch_dims == 0:
@@ -218,10 +242,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend or ivy.is_native_array(x):
-            raise ivy.utils.exceptions.IvyException(
-                "TensorFlow does not support inplace updates of the tf.Tensor"
-            )
+        _check_inplace_update_support(x, ensure_in_backend)
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
@@ -353,6 +374,9 @@ def scatter_nd(
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
+    if len(updates.shape) == 0:
+        indices = tf.expand_dims(indices, 0)
+        updates = tf.expand_dims(updates, 0)
 
     # implementation
     target = out
@@ -512,7 +536,3 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
-
-
-def strides(x: Union[tf.Tensor, tf.Variable]) -> Tuple[int]:
-    return x.numpy().strides

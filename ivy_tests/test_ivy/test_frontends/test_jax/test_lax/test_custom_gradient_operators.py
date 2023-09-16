@@ -18,10 +18,12 @@ def test_jax_stop_gradient(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,

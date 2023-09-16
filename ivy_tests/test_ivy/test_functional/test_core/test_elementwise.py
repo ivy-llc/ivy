@@ -9,14 +9,15 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
+import ivy_tests.test_ivy.helpers.globals as test_globals
 
-_zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
+_zero = np.asarray(0, dtype="uint8")
 
 
-def not_too_close_to_zero(x):
-    f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
-    return f(x)
+# --- Helpers --- #
+# --------------- #
 
 
 # this is not used yet and will be used when ``where`` argument is added
@@ -34,6 +35,127 @@ def _array_with_mask(draw):
     return ([dtype[0], dtype2[0]], x, where)
 
 
+# trapz
+@st.composite
+def _either_x_dx(draw):
+    rand = (draw(st.integers(min_value=0, max_value=1)),)
+    if rand == 0:
+        either_x_dx = draw(
+            helpers.dtype_and_values(
+                avaliable_dtypes=st.shared(
+                    helpers.get_dtypes("float"), key="trapz_dtype"
+                ),
+                min_value=-100,
+                max_value=100,
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            )
+        )
+        return rand, either_x_dx
+    else:
+        either_x_dx = draw(
+            st.floats(min_value=-10, max_value=10),
+        )
+        return rand, either_x_dx
+
+
+@st.composite
+def min_max_helper(draw):
+    use_where = draw(st.booleans())
+    if use_where:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                small_abs_safety_factor=6,
+                large_abs_safety_factor=6,
+                safety_factor_scale="log",
+            )
+        )
+    else:
+        dtype_and_x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                min_value=-1e5,
+                max_value=1e5,
+                safety_factor_scale="log",
+            )
+        )
+    return dtype_and_x, use_where
+
+
+@st.composite
+def pow_helper(draw, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    dtype1 = dtype1[0]
+
+    def cast_filter(dtype1_x1_dtype2):
+        dtype1, _, dtype2 = dtype1_x1_dtype2
+        with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.can_cast(dtype1, dtype2):
+                return True
+        return False
+
+    dtype1, x1, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype1, x1).filter(
+            cast_filter
+        )
+    )
+    with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_int_dtype(dtype2):
+            max_val = ivy_backend.iinfo(dtype2).max
+        else:
+            max_val = ivy_backend.finfo(dtype2).max
+
+    max_x1 = np.max(np.abs(x1[0]))
+    if max_x1 in [0, 1]:
+        max_value = None
+    else:
+        max_value = int(math.log(max_val) / math.log(max_x1))
+        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
+            max_value = None
+    dtype_and_x2 = draw(
+        st.one_of(
+            helpers.dtype_and_values(
+                small_abs_safety_factor=16,
+                large_abs_safety_factor=16,
+                safety_factor_scale="log",
+                max_value=max_value,
+                dtype=[dtype2],
+            ),
+            st.floats(max_value=max_value),
+            st.integers(max_value=max_value),
+        )
+    )
+    input_dtypes = [dtype1]
+    if isinstance(dtype_and_x2, tuple):
+        input_dtypes += dtype_and_x2[0]
+        x2 = dtype_and_x2[1][0]
+    else:
+        x2 = dtype_and_x2
+    return input_dtypes, [x1[0], x2]
+
+
+# --- Main --- #
+# ------------ #
+
+
+def not_too_close_to_zero(x):
+    return np.where(np.isclose(x, 0), x + 1, x)
+
+
 # abs
 @handle_test(
     fn_tree="functional.ivy.abs",
@@ -44,33 +166,9 @@ def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
-    )
-
-
-# acosh
-@handle_test(
-    fn_tree="functional.ivy.acosh",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
-    ),
-)
-def test_acosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
         x=x[0],
     )
 
@@ -79,7 +177,7 @@ def test_acosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.acos",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -89,7 +187,32 @@ def test_acos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+    )
+
+
+# acosh
+@handle_test(
+    fn_tree="functional.ivy.acosh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_value=1,
+        large_abs_safety_factor=2.1,
+        small_abs_safety_factor=2.1,
+        safety_factor_scale="log",
+    ),
+)
+def test_acosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -116,7 +239,7 @@ def test_add(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
@@ -127,11 +250,49 @@ def test_add(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# angle
+@handle_test(
+    fn_tree="functional.ivy.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    deg=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_angle(
+    *,
+    dtype_and_x,
+    deg,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, z = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        z=z[0],
+        deg=deg,
+    )
+
+
 # asin
 @handle_test(
     fn_tree="functional.ivy.asin",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -141,7 +302,7 @@ def test_asin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -154,7 +315,7 @@ def test_asin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.asinh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -164,7 +325,7 @@ def test_asinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -176,14 +337,19 @@ def test_asinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # atan
 @handle_test(
     fn_tree="functional.ivy.atan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
 )
 def test_atan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -210,7 +376,7 @@ def test_atan2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -223,14 +389,16 @@ def test_atan2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # atanh
 @handle_test(
     fn_tree="functional.ivy.atanh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_atanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -254,11 +422,32 @@ def test_bitwise_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# bitwise_invert
+@handle_test(
+    fn_tree="functional.ivy.bitwise_invert",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        array_api_dtypes=True,
+    ),
+    test_gradients=st.just(False),
+)
+def test_bitwise_invert(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
     )
 
 
@@ -296,32 +485,11 @@ def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_
         # to dtype bits - 1 while other backends overflow to zero
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
         x2=x[1],
-    )
-
-
-# bitwise_invert
-@handle_test(
-    fn_tree="functional.ivy.bitwise_invert",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
-        array_api_dtypes=True,
-    ),
-    test_gradients=st.just(False),
-)
-def test_bitwise_invert(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
     )
 
 
@@ -340,7 +508,7 @@ def test_bitwise_or(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -372,7 +540,7 @@ def test_bitwise_right_shift(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -395,7 +563,7 @@ def test_bitwise_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -417,7 +585,7 @@ def test_ceil(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -427,14 +595,16 @@ def test_ceil(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # cos
 @handle_test(
     fn_tree="functional.ivy.cos",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_cos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -444,14 +614,34 @@ def test_cos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # cosh
 @handle_test(
     fn_tree="functional.ivy.cosh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+    ),
 )
 def test_cosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.deg2rad",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_deg2rad(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -477,7 +667,7 @@ def test_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -498,7 +688,7 @@ def test_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -506,17 +696,42 @@ def test_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# Extra #
+# ------#
+
+
+# erf
+@handle_test(
+    fn_tree="functional.ivy.erf",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_erf(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+    )
+
+
 # exp
 @handle_test(
     fn_tree="functional.ivy.exp",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_exp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -527,7 +742,7 @@ def test_exp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.exp2",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-10,
         max_value=10,
         min_num_dims=1,
@@ -543,7 +758,7 @@ def test_exp2(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
@@ -552,14 +767,20 @@ def test_exp2(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # expm1
 @handle_test(
     fn_tree="functional.ivy.expm1",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        # Can't use linear or log safety factor, since the function is exponential,
+        # next best option is a hardcoded maximum that won't break any data type.
+        # expm1 is designed for very small values anyway
+        max_value=20.0,
+    ),
 )
 def test_expm1(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -581,7 +802,7 @@ def test_floor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -608,7 +829,7 @@ def test_floor_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -640,8 +861,69 @@ def test_fmin(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# fmod
+@handle_test(
+    fn_tree="functional.ivy.fmod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=False,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
+        safety_factor_scale="log",
+    ),
+    test_gradients=st.just(False),
+)
+def test_fmod(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    # Make sure values is not too close to zero
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    # jax raises inconsistent gradients for negative numbers in x1
+    if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
+        test_flags.test_gradients = False
+    test_flags.as_variable = [test_flags.as_variable, False]
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# gcd
+@handle_test(
+    fn_tree="functional.ivy.gcd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_gcd(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
     )
@@ -658,11 +940,11 @@ def test_fmin(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_greater(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -681,17 +963,52 @@ def test_greater(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_greater_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# imag
+@handle_test(
+    fn_tree="functional.ivy.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        val=x[0],
     )
 
 
@@ -708,7 +1025,7 @@ def test_isfinite(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -739,7 +1056,7 @@ def test_isinf(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -761,10 +1078,58 @@ def test_isnan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# isreal
+@handle_test(
+    fn_tree="functional.ivy.isreal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex")
+    ),
+    test_gradients=st.just(False),
+)
+def test_isreal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# lcm
+@handle_test(
+    fn_tree="functional.ivy.lcm",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int16", "int32", "int64"],
+        num_arrays=2,
+        shared_dtype=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_lcm(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
     )
 
 
@@ -781,13 +1146,13 @@ def test_isnan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -806,13 +1171,13 @@ def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x[0], x[1])) or np.any(np.isclose(x[1], x[0]))))
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -823,7 +1188,10 @@ def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # log
 @handle_test(
     fn_tree="functional.ivy.log",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
+    ),
 )
 def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -832,9 +1200,33 @@ def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        x=x[0],
+    )
+
+
+# log10
+@handle_test(
+    fn_tree="functional.ivy.log10",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
+    ),
+)
+def test_log10(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    # avoid logging values too close to zero
+    assume(not np.any(np.isclose(x[0], 0)))
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
@@ -843,8 +1235,9 @@ def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.log1p",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         small_abs_safety_factor=2,
+        large_abs_safety_factor=2.1,
         safety_factor_scale="log",
     ),
 )
@@ -855,7 +1248,7 @@ def test_log1p(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -865,7 +1258,10 @@ def test_log1p(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # log2
 @handle_test(
     fn_tree="functional.ivy.log2",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
+    ),
 )
 def test_log2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -874,31 +1270,10 @@ def test_log2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
-        x=x[0],
-    )
-
-
-# log10
-@handle_test(
-    fn_tree="functional.ivy.log10",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-)
-def test_log10(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    # avoid logging values too close to zero
-    assume(not np.any(np.isclose(x[0], 0)))
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
         x=x[0],
     )
 
@@ -919,7 +1294,7 @@ def test_logaddexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -949,7 +1324,7 @@ def test_logaddexp2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -973,7 +1348,7 @@ def test_logical_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -992,7 +1367,7 @@ def test_logical_not(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1013,7 +1388,7 @@ def test_logical_or(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1035,11 +1410,57 @@ def test_logical_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# maximum
+@handle_test(
+    fn_tree="functional.ivy.maximum",
+    dtype_and_x_and_use_where=min_max_helper(),
+)
+def test_maximum(
+    *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
+):
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x1=x[0],
+        x2=x[1],
+        use_where=use_where,
+    )
+
+
+# minimum
+@handle_test(
+    fn_tree="functional.ivy.minimum",
+    dtype_and_x_and_use_where=min_max_helper(),
+)
+def test_minimum(
+    *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
+):
+    (input_dtype, x), use_where = dtype_and_x_and_use_where
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x1=x[0],
+        x2=x[1],
+        use_where=use_where,
     )
 
 
@@ -1056,30 +1477,11 @@ def test_multiply(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
         x2=x[1],
-    )
-
-
-# negative
-@handle_test(
-    fn_tree="functional.ivy.negative",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-)
-def test_negative(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
     )
 
 
@@ -1117,7 +1519,7 @@ def test_nan_to_num(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1125,6 +1527,25 @@ def test_nan_to_num(
         nan=nan,
         posinf=posinf,
         neginf=neginf,
+    )
+
+
+# negative
+@handle_test(
+    fn_tree="functional.ivy.negative",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_negative(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
     )
 
 
@@ -1142,7 +1563,7 @@ def test_not_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1162,98 +1583,59 @@ def test_positive(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
     )
 
 
-@st.composite
-def pow_helper(draw, available_dtypes=None):
-    if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("numeric")
-    dtype1, x1 = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            small_abs_safety_factor=16,
-            large_abs_safety_factor=16,
-            safety_factor_scale="log",
-        )
-    )
-    dtype1 = dtype1[0]
-
-    def cast_filter(dtype1_x1_dtype2):
-        dtype1, _, dtype2 = dtype1_x1_dtype2
-        if ivy.can_cast(dtype1, dtype2):
-            return True
-        return False
-
-    dtype1, x1, dtype2 = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), dtype1, x1).filter(
-            cast_filter
-        )
-    )
-    if ivy.is_int_dtype(dtype2):
-        max_val = ivy.iinfo(dtype2).max
-    else:
-        max_val = ivy.finfo(dtype2).max
-    max_x1 = np.max(np.abs(x1[0]))
-    if max_x1 in [0, 1]:
-        max_value = None
-    else:
-        max_value = int(math.log(max_val) / math.log(max_x1))
-        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
-            max_value = None
-    dtype2, x2 = draw(
-        helpers.dtype_and_values(
-            small_abs_safety_factor=16,
-            large_abs_safety_factor=16,
-            safety_factor_scale="log",
-            max_value=max_value,
-            dtype=[dtype2],
-        )
-    )
-    dtype2 = dtype2[0]
-    if "int" in dtype2:
-        x2 = ivy.nested_map(
-            x2[0], lambda x: abs(x), include_derived={list: True}, shallow=False
-        )
-    return [dtype1, dtype2], [x1, x2]
-
-
 # pow
 @handle_test(
     fn_tree="functional.ivy.pow",
     dtype_and_x=pow_helper(),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
+    try:
+        helpers.test_function(
+            input_dtypes=input_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-2,
+            atol_=1e-2,
+            x1=x[0],
+            x2=x[1],
+        )
+    except Exception as e:
+        if any(
+            error_string in str(e)
+            for error_string in ["overflow", "too large to convert to"]
+        ):
+            assume(False)
+        else:
+            raise
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
 
-    # Make sure x2 isn't a float when x1 is integer
-    assume(
-        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
-    )
-
-    # Make sure x2 is non-negative when both is integer
-    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
-        x[1] = np.abs(x[1])
-
-    x[0] = not_too_close_to_zero(x[0])
-    x[1] = not_too_close_to_zero(x[1])
+@handle_test(
+    fn_tree="functional.ivy.rad2deg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_rad2deg(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x1=x[0],
-        x2=x[1],
+        x=x[0],
     )
 
 
@@ -1269,9 +1651,34 @@ def test_real(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        x=x[0],
+    )
+
+
+# reciprocal
+@handle_test(
+    fn_tree="functional.ivy.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        small_abs_safety_factor=4,
+        large_abs_safety_factor=4,
+        safety_factor_scale="log",
+        num_arrays=1,
+    ),
+)
+def test_reciprocal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
         x=x[0],
     )
 
@@ -1300,7 +1707,7 @@ def test_remainder(*, dtype_and_x, modulus, test_flags, backend_fw, fn_name, on_
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1325,7 +1732,7 @@ def test_round(*, dtype_and_x, decimals, test_flags, backend_fw, fn_name, on_dev
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1350,7 +1757,7 @@ def test_sign(*, dtype_and_x, np_variant, test_flags, backend_fw, fn_name, on_de
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1361,14 +1768,16 @@ def test_sign(*, dtype_and_x, np_variant, test_flags, backend_fw, fn_name, on_de
 # sin
 @handle_test(
     fn_tree="functional.ivy.sin",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1378,16 +1787,45 @@ def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # sinh
 @handle_test(
     fn_tree="functional.ivy.sinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_sinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        x=x[0],
+    )
+
+
+# sqrt
+@handle_test(
+    fn_tree="functional.ivy.sqrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        allow_inf=False,
+        # Safety factor is to account for complex, where taking square root
+        # involves taking absolute value first
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ).filter(lambda x: x[0][0] not in ["bfloat16"]),
+)
+def test_sqrt(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 
@@ -1406,30 +1844,9 @@ def test_square(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
-    )
-
-
-# sqrt
-@handle_test(
-    fn_tree="functional.ivy.sqrt",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), allow_inf=False
-    ),
-)
-def test_sqrt(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
         x=x[0],
     )
 
@@ -1451,7 +1868,7 @@ def test_subtract(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_dev
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1465,14 +1882,16 @@ def test_subtract(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_dev
 # tan
 @handle_test(
     fn_tree="functional.ivy.tan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1484,46 +1903,24 @@ def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # tanh
 @handle_test(
     fn_tree="functional.ivy.tanh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
-def test_tanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-2,
         x=x[0],
+        complex_mode=complex_mode,
     )
-
-
-# trapz
-@st.composite
-def _either_x_dx(draw):
-    rand = (draw(st.integers(min_value=0, max_value=1)),)
-    if rand == 0:
-        either_x_dx = draw(
-            helpers.dtype_and_values(
-                avaliable_dtypes=st.shared(
-                    helpers.get_dtypes("float"), key="trapz_dtype"
-                ),
-                min_value=-100,
-                max_value=100,
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3,
-            )
-        )
-        return rand, either_x_dx
-    else:
-        either_x_dx = draw(
-            st.floats(min_value=-10, max_value=10),
-        )
-        return rand, either_x_dx
 
 
 @handle_test(
@@ -1559,7 +1956,7 @@ def test_trapz(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
@@ -1582,163 +1979,7 @@ def test_trunc(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# Extra #
-# ------#
-
-
-# erf
-@handle_test(
-    fn_tree="functional.ivy.erf",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-)
-def test_erf(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x=x[0],
-    )
-
-
-@st.composite
-def min_max_helper(draw):
-    use_where = draw(st.booleans())
-    if use_where:
-        dtype_and_x = draw(
-            helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
-                num_arrays=2,
-                small_abs_safety_factor=6,
-                large_abs_safety_factor=6,
-                safety_factor_scale="log",
-            )
-        )
-    else:
-        dtype_and_x = draw(
-            helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
-                num_arrays=2,
-                min_value=-1e5,
-                max_value=1e5,
-                safety_factor_scale="log",
-            )
-        )
-    return dtype_and_x, use_where
-
-
-# minimum
-@handle_test(
-    fn_tree="functional.ivy.minimum",
-    dtype_and_x_and_use_where=min_max_helper(),
-)
-def test_minimum(
-    *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
-):
-    (input_dtype, x), use_where = dtype_and_x_and_use_where
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x1=x[0],
-        x2=x[1],
-        use_where=use_where,
-    )
-
-
-# maximum
-@handle_test(
-    fn_tree="functional.ivy.maximum",
-    dtype_and_x_and_use_where=min_max_helper(),
-)
-def test_maximum(
-    *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
-):
-    (input_dtype, x), use_where = dtype_and_x_and_use_where
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x1=x[0],
-        x2=x[1],
-        use_where=use_where,
-    )
-
-
-# reciprocal
-@handle_test(
-    fn_tree="functional.ivy.reciprocal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        small_abs_safety_factor=4,
-        large_abs_safety_factor=4,
-        safety_factor_scale="log",
-        num_arrays=1,
-    ),
-)
-def test_reciprocal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
-        x=x[0],
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.deg2rad",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-)
-def test_deg2rad(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.rad2deg",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-)
-def test_rad2deg(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1763,193 +2004,11 @@ def test_trunc_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         x1=x[0],
         x2=x[1],
-    )
-
-
-# isreal
-@handle_test(
-    fn_tree="functional.ivy.isreal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex")
-    ),
-    test_gradients=st.just(False),
-)
-def test_isreal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# fmod
-@handle_test(
-    fn_tree="functional.ivy.fmod",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=False,
-        large_abs_safety_factor=6,
-        small_abs_safety_factor=6,
-        safety_factor_scale="log",
-    ),
-    test_gradients=st.just(False),
-)
-def test_fmod(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    # Make sure values is not too close to zero
-    assume(not np.any(np.isclose(x[0], 0)))
-    assume(not np.any(np.isclose(x[1], 0)))
-    # jax raises inconsistent gradients for negative numbers in x1
-    if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
-        test_flags.test_gradients = False
-    test_flags.as_variable = [test_flags.as_variable, False]
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x1=x[0],
-        x2=x[1],
-    )
-
-
-# lcm
-@handle_test(
-    fn_tree="functional.ivy.lcm",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int16", "int32", "int64"],
-        num_arrays=2,
-        shared_dtype=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
-    ),
-    test_gradients=st.just(False),
-)
-def test_lcm(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x1=x[0],
-        x2=x[1],
-    )
-
-
-# gcd
-@handle_test(
-    fn_tree="functional.ivy.gcd",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
-        shared_dtype=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
-    ),
-    test_gradients=st.just(False),
-)
-def test_gcd(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x1=x[0],
-        x2=x[1],
-    )
-
-
-# imag
-@handle_test(
-    fn_tree="functional.ivy.imag",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-5,
-        max_value=5,
-        max_dim_size=5,
-        max_num_dims=5,
-        min_dim_size=1,
-        min_num_dims=1,
-        allow_inf=False,
-        allow_nan=False,
-    ),
-    test_gradients=st.just(False),
-)
-def test_imag(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        val=x[0],
-    )
-
-
-# angle
-@handle_test(
-    fn_tree="functional.ivy.angle",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float64"],
-        min_value=-5,
-        max_value=5,
-        max_dim_size=5,
-        max_num_dims=5,
-        min_dim_size=1,
-        min_num_dims=1,
-        allow_inf=False,
-        allow_nan=False,
-    ),
-    deg=st.booleans(),
-    test_gradients=st.just(False),
-)
-def test_angle(
-    *,
-    dtype_and_x,
-    deg,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    input_dtype, z = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        z=z[0],
-        deg=deg,
     )
