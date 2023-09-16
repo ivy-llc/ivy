@@ -1,5 +1,6 @@
 # global
 import ivy
+import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
