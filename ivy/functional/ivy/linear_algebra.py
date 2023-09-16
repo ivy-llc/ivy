@@ -2006,12 +2006,12 @@ def solve(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
+"""
     Return the solution x to the system of linear equations represented by the well-
     determined (i.e., full rank) linear matrix equation Ax = B.
 
-    Parameters
-    ----------
+Parameters
+---------
     x1
         coefficient array A having shape (..., M, M) and whose innermost two dimensions
         form square matrices. Must be of full rank (i.e., all rows or, equivalently,
@@ -2026,8 +2026,8 @@ def solve(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
-    Returns
-    -------
+Returns
+-------
     ret
         an array containing the solution to the system AX = B for each square matrix.
         The returned array must have the same shape as x2 (i.e., the array corresponding
@@ -2043,10 +2043,9 @@ def solve(
     Both the description and the type hints above assume an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
-  ------
   
-  Function Examples:
+Function Examples:
+------
 
   With class:`ivy.Array` input:
 
