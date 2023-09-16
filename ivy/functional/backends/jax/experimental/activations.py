@@ -1,4 +1,6 @@
 from typing import Optional, Union, Literal
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # global
 import jax
@@ -69,6 +71,7 @@ def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
 def elu(
     x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -78,6 +81,7 @@ def elu(
     return ret
 
 
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
 def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jax.nn.sigmoid(x)
     if ivy.exists(out):

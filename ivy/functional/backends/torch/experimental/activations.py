@@ -60,7 +60,7 @@ def silu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.nn.functional.silu(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def elu(
     x: torch.Tensor, /, *, alpha: float = 1.0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -70,7 +70,7 @@ def elu(
     return ivy.astype(ret, x.dtype)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = torch.nn.functional.sigmoid(x)
     if ivy.exists(out):
