@@ -169,7 +169,7 @@ def test_jax_numpy_ifft(
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.ifft2",
     dtype_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_value=-1e5,
         max_value=1e5,
