@@ -551,6 +551,13 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def rad2deg(self, name=None):
         return paddle_frontend.Tensor(ivy.rad2deg(self._ivy_array))
+    
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def diff(self, y, name=None):
+        self.ivy_array = paddle_frontend.Tensor(
+            ivy.diff(self._ivy_array, _to_ivy_array(y))
+        ).ivy_array
+        return self
 
     @with_unsupported_dtypes(
         {
