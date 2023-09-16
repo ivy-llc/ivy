@@ -1110,6 +1110,10 @@ class Tensor:
         self.ivy_array = self.atan2(other).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def fmax(self, other):
+        return torch_frontend.fmax(self, other)
+
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
