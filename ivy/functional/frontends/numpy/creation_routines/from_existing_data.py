@@ -34,3 +34,34 @@ def copy(a, order="K", subok=False):
 @handle_numpy_dtype
 def frombuffer(buffer, dtype=float, count=-1, offset=0, *, like=None):
     return ivy.frombuffer(buffer)
+
+
+@handle_numpy_dtype
+def loadtxt(
+    fname,
+    dtype=float,
+    comments="#",
+    delimiter=None,
+    converters=None,
+    skiprows=0,
+    usecols=None,
+    unpack=False,
+    ndmin=0,
+    encoding="bytes",
+    max_rows=None,
+    *,
+    like=None,
+):
+    return ivy.loadtxt(
+        fname,
+        dtype=dtype,
+        comments=comments,
+        delimiter=delimiter,
+        converters=converters,
+        skiprows=skiprows,
+        usecols=usecols,
+        unpack=unpack,
+        ndmin=ndmin,
+        encoding=encoding,
+        max_rows=max_rows,
+    )
