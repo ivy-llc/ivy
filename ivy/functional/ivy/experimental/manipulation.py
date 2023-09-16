@@ -2177,14 +2177,13 @@ def unique_consecutive(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_function
 def fill_diagonal(
     a: Union[ivy.Array, ivy.NativeArray],
-    v: Union[int, float],
+    v: Union[int, float, ivy.Array, ivy.NativeArray],
     /,
     *,
     wrap: bool = False,
@@ -2197,16 +2196,50 @@ def fill_diagonal(
     a
         Array at least 2D.
     v
-        The value to write on the diagonal.
+        Value(s) to write on the diagonal. If val is scalar, the
+        value is written along the diagonal. If array-like, the
+        flattened val is written along the diagonal, repeating if
+        necessary to fill all diagonal entries.
+
     wrap
-        The diagonal ‘wrapped’ after N columns for tall matrices.
+        The diagonal 'wrapped' after N columns for tall matrices.
 
     Returns
     -------
     ret
         Array with the diagonal filled.
     """
-    return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+    shape = a.shape
+    max_end = ivy.prod(ivy.array(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = int(1 + (ivy.cumprod(ivy.array(shape[:-1]), axis=0)).sum())
+    end = int(max_end if end > max_end else end)
+    a = ivy.reshape(a, (-1,))
+    steps = ivy.arange(0, end, step)
+    if isinstance(v, ivy.Array) or isinstance(v, ivy.NativeArray):
+        v = ivy.reshape(v, (-1,)).astype(a.dtype)
+        v = ivy.tile(v, int(ivy.ceil(len(steps) / v.shape[0])))[: len(steps)]
+    else:
+        v = ivy.repeat(v, len(steps))
+    ivy.scatter_flat(steps, v, size=a.shape[0], reduction="replace", out=a)
+    a = ivy.reshape(a, shape)
+    return a
+
+
+fill_diagonal.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_nestable
