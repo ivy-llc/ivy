@@ -2006,12 +2006,12 @@ def solve(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-"""
+    """
     Return the solution x to the system of linear equations represented by the well-
     determined (i.e., full rank) linear matrix equation Ax = B.
 
-Parameters
----------
+    Parameters
+    ----------
     x1
         coefficient array A having shape (..., M, M) and whose innermost two dimensions
         form square matrices. Must be of full rank (i.e., all rows or, equivalently,
@@ -2026,8 +2026,8 @@ Parameters
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
-Returns
--------
+    Returns
+    -------
     ret
         an array containing the solution to the system AX = B for each square matrix.
         The returned array must have the same shape as x2 (i.e., the array corresponding
@@ -2044,12 +2044,10 @@ Returns
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
   
-Function Examples:
-------
+    Examples
+    --------
 
-  With class:`ivy.Array` input:
-
-  - For shape(A) = (3,3) and shape(B) = (3,1):
+    With class:`ivy.Array` input:
     
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
@@ -2064,10 +2062,8 @@ Function Examples:
                    [0]])
     >>> print(x.shape)
     (1,3)
-    
-    (The simplest case in which Ax=B)
 
-  - For shape(A) = (2,3,3) and shape(B) = (2,3,1):
+    For shape(A) = (2,3,3) and shape(B) = (2,3,1):
     
     >>> A = ivy.array([[[11.1, 11.2, 11.3],
                         [12.1, 12.2, 12.3],
@@ -2093,7 +2089,7 @@ Function Examples:
     >>> print(x.shape)
     (2,1,3)
 
-  - For shape(A) = (3,3) and shape(B) = (3,2):
+    For shape(A) = (3,3) and shape(B) = (3,2):
     
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
@@ -2112,7 +2108,7 @@ Function Examples:
     >>> print(x.shape)
     (2,1,3)
 
-  With class:`ivy.Container` input:
+    With class:`ivy.Container` input:
 
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
