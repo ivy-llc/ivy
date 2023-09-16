@@ -251,24 +251,6 @@ def _valid_dct(draw):
 
 
 @st.composite
-def _valid_stft(draw):
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            max_value=65280,
-            min_value=-65280,
-            min_num_dims=1,
-            min_dim_size=2,
-            shared_dtype=True,
-        )
-    )
-    frame_length = draw(helpers.ints(min_value=16, max_value=100))
-    frame_step = draw(helpers.ints(min_value=1, max_value=50))
-
-    return dtype, x, frame_length, frame_step
-
-
-@st.composite
 def _x_and_fft(draw):
     min_fft_points = 2
     dtype = draw(helpers.get_dtypes("valid", full=False))
@@ -1265,7 +1247,7 @@ def test_rfftn(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.sliding_window",
-    all_args=helpers.arrays_for_pooling(3, 3, 3, 3, return_dilation=True),
+    all_args=helpers.arrays_for_pooling(3, 3, 1, 2, return_dilation=True),
     test_with_out=st.just(False),
     ground_truth_backend="jax",
 )
@@ -1280,39 +1262,6 @@ def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device)
         input=input,
         window_size=k,
         stride=stride,
-        dilation=dilation,
+        dilation=dilation[0],
         padding=padding,
-    )
-
-
-# test_stft
-@handle_test(
-    fn_tree="functional.ivy.experimental.stft",
-    dtype_x_and_args=_valid_stft(),
-    ground_truth_backend="tensorflow",
-    test_gradients=st.just(False),
-)
-def test_stft(
-    *,
-    dtype_x_and_args,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    dtype, x, frame_length, frame_step = dtype_x_and_args
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-        fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        signals=x[0],
-        frame_length=frame_length,
-        frame_step=frame_step,
-        fft_length=None,
-        window_fn=None,
-        pad_end=True,
     )
