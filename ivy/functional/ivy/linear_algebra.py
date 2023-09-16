@@ -2043,7 +2043,6 @@ def solve(
     Both the description and the type hints above assume an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-    
     Examples
     --------
     With class:`ivy.Array` input:    
@@ -2059,8 +2058,7 @@ def solve(
                    [0],
                    [0]])
     >>> print(x.shape)
-    (1,3)
-    
+    (1,3)    
     For shape(A) = (2,3,3) and shape(B) = (2,3,1):    
     >>> A = ivy.array([[[11.1, 11.2, 11.3],
                         [12.1, 12.2, 12.3],
@@ -2085,7 +2083,6 @@ def solve(
                 [0]]])
     >>> print(x.shape)
     (2,1,3)
-
     For shape(A) = (3,3) and shape(B) = (3,2):
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
@@ -2103,7 +2100,6 @@ def solve(
                 [0]]])
     >>> print(x.shape)
     (2,1,3)
-
     With class:`ivy.Container` input:
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
