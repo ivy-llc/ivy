@@ -1280,6 +1280,39 @@ def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device)
         input=input,
         window_size=k,
         stride=stride,
-        dilation=dilation[0],
+        dilation=dilation,
         padding=padding,
+    )
+
+
+# test_stft
+@handle_test(
+    fn_tree="functional.ivy.experimental.stft",
+    dtype_x_and_args=_valid_stft(),
+    ground_truth_backend="tensorflow",
+    test_gradients=st.just(False),
+)
+def test_stft(
+    *,
+    dtype_x_and_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, frame_length, frame_step = dtype_x_and_args
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        signals=x[0],
+        frame_length=frame_length,
+        frame_step=frame_step,
+        fft_length=None,
+        window_fn=None,
+        pad_end=True,
     )
