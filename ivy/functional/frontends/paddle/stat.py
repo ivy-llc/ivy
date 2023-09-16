@@ -58,7 +58,8 @@ def numel(x, name=None):
 )
 @to_ivy_arrays_and_back
 def quantile(x, q, axis=None, keepdim=False, name=None):
-    return ivy.quantile(x, q, axis=axis, keepdims=keepdim)
+    result = ivy.quantile(x, q, axis=axis, keepdims=keepdim)
+    return result.astype(np.float64)
 
 
 @with_supported_dtypes(
