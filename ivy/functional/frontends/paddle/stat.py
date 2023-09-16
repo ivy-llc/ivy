@@ -53,8 +53,8 @@ def numel(x, name=None):
     return ivy.array(prod if prod > 0 else ivy.array(length, dtype=ivy.int64))
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "uint16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
