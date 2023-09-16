@@ -11,6 +11,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 from ivy_tests.test_ivy.test_frontends.test_jax.test_numpy.test_manipulations import (
     _get_input_and_reshape,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_splits,
+)
+
 
 CLASS_TREE = "ivy.functional.frontends.jax.numpy.ndarray"
 
@@ -2634,6 +2638,53 @@ def test_jax_repeat(
             method_flags=method_flags,
             on_device=on_device,
         )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="split",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, is_mod_split=True
+    ),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_split(
+    *,
+    dtype_value,
+    indices_or_sections,
+    axis,
+    on_device,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        indices_or_sections=indices_or_sections,
+        on_device=on_device,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        ary=value[0],
+        axis=axis,
+    )
 
 
 @handle_frontend_method(
