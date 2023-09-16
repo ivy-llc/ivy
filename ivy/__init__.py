@@ -590,11 +590,11 @@ class Node(str):
     pass
 
 
-array_significant_figures_stack = list()
-array_decimal_values_stack = list()
-warning_level_stack = list()
-nan_policy_stack = list()
-dynamic_backend_stack = list()
+array_significant_figures_stack = []
+array_decimal_values_stack = []
+warning_level_stack = []
+nan_policy_stack = []
+dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 

@@ -1350,7 +1350,7 @@ def _leaf_has_nans(x):
         return x.has_nans()
     elif ivy.is_array(x):
         return ivy.isnan(x).any()
-    elif x is float("nan"):
+    elif x == float("nan"):
         return True
     return False
 
