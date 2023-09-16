@@ -41,3 +41,10 @@ def ifft(a, n=None, axis=-1, norm=None):
     if norm is None:
         norm = "backward"
     return ivy.ifft(a, axis, norm=norm, n=n)
+
+
+@to_ivy_arrays_and_back
+def ifft2(a, s=None, axes=(-2, -1), norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
