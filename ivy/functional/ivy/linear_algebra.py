@@ -2118,13 +2118,13 @@ def solve(
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
                        [3.1, 3.2, 3.3]]),
-    >>> B = ivy.container(B1 = ivy.array([[1.1], [2.1], [3.1]]), \
+    >>> B = ivy.container(B1 = ivy.array([[1.1], [2.1], [3.1]]),
                           B2 = ivy.array([[2.2], [4.2], [6.2]]))
     >>> x = solve(A,B);
     >>> print(x)
     {
-    B1:ivy.array([[1],[0],[0]]),
-    B2:ivy.array([[2],[0],[0]])
+    B1:([[1],[0],[0]]),
+    B2:([[2],[0],[0]])
     }
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
