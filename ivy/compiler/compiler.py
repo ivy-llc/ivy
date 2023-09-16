@@ -178,52 +178,6 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
-    """
-    Unify and Transpile Callable objects passed as arguments.
-    If args and kwargs specified.
-
-    one or more native Callable objects and transpiles them 
-    from the specified source framework to the target framework.
-        
-    Parameters:
-    objs (Callable):
-        One or more native Callable objects to be unified and transpiled.
-    source (Optional[str]):
-        The framework that the `objs` are originally from. 
-        If not provided, the function will attempt to infer it.
-    args (Optional[Tuple]):
-        If specified, arguments that will be used during transpilation.
-    kwargs (Optional[dict]):
-        If specified, keyword arguments that will be used during transpilation.
-    with_numpy (bool):
-        Whether to enable compatibility with NumPy when transpiling. Default is False.
-    **transpile_kwargs:
-        Additional keyword arguments to be passed to the transpiler.
-
-    Returns:
-    Callable:
-        A transpiled Callable object that can be executed in the target framework.
-
-    Examples:
-    --------
-
-    >>> import ivy
-    >>> ivy.set_backend("torch")
-    >>> x = ivy.array([1.])
-    >>> def fn(x):
-    ...     y = ivy.sum(x)
-    ...     z = ivy.prod(x)
-    ...     a = ivy.sin(y)
-    ...     b = ivy.cos(z)
-    ...     c = ivy.tan(z)
-    ...     i = ivy.round(a)
-    ...     j = ivy.floor(b)
-    ...     k = ivy.ceil(c)
-    ...     return i, j, k
-    >>> transpiled_fn = ivy.unify(fn, source="torch", args=(x,), with_numpy=True)
-
-    The `transpiled_fn` can now be executed in the specified target framework.
-    """
     if python_version[1] == "8":
         from ._compiler_38 import unify as _unify
     else:

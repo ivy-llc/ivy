@@ -1218,7 +1218,6 @@ def test_invert_permutation(
     fn_tree,
     backend_fw,
     on_device,
-    inverted,
     expected,
     actual,
 ):
@@ -1230,7 +1229,7 @@ def test_invert_permutation(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        inputs=x,
+        inputs=x[0],
         expected=expected,
         actual=actual,
     )
