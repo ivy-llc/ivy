@@ -2034,7 +2034,6 @@ def solve(
         to B) and must have a floating-point data type determined by Type Promotion
         Rules.
 
-
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/
@@ -2044,7 +2043,6 @@ def solve(
     Both the description and the type hints above assume an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
 
   ------
   
@@ -2128,23 +2126,6 @@ def solve(
     B1:ivy.array([[1],[0],[0]]),
     B2:ivy.array([[2],[0],[0]])
     }
-=======
-    Examples
-    --------
-    with :class:`ivy.Array` input:
-
-    >>> x1 = ivy.array([[1., 2.],[3., 4.]])
-    >>> x2 = ivy.array([5., 6.])
-    >>> out = ivy.solve(x1, x2)
-    >>> print(out)
-    ivy.array([-4. ,  4.5])
-
-    >>> x1 = ivy.native_array([[1., 2.],[3., 4.]])
-    >>> x2 = ivy.array([5., 6.])
-    >>> z = ivy.zeros_like(x2)
-    >>> ivy.solve(x1, x2, out=z)
-    ivy.array([-4. ,  4.5])
-
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
