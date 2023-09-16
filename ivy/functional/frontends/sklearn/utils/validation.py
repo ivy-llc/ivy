@@ -66,7 +66,6 @@ def check_consistent_length(*arrays):
         )
 
 
-
 @with_unsupported_dtypes({"1.3.0 and below": ("complex",)}, "sklearn")
 @to_ivy_arrays_and_back
 def column_or_1d(y, *, warn=False):
