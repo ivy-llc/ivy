@@ -55,6 +55,18 @@ def as_float_array(X, *, copy=True, force_all_finite=True):
     return ivy.asarray(X, dtype=return_dtype)
 
 
+@to_ivy_arrays_and_back
+def check_consistent_length(*arrays):
+    lengths = [_num_samples(x) for x in arrays if x is not None]
+    uniques = ivy.unique_values(lengths)
+    if len(uniques) > 1:
+        raise ValueError(
+            "Found input variables with inconsistent numbers of samples: %r"
+            % [int(l) for l in lengths]
+        )
+
+
+
 @with_unsupported_dtypes({"1.3.0 and below": ("complex",)}, "sklearn")
 @to_ivy_arrays_and_back
 def column_or_1d(y, *, warn=False):
