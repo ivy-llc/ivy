@@ -746,7 +746,7 @@ def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_devic
 @handle_test(
     fn_tree="fill_diagonal",
     dt_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         max_num_dims=4,
         min_dim_size=3,
