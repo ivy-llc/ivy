@@ -179,7 +179,6 @@ def test_paddle_rsqrt_(
         x=x[0],
     )
 
-
 # sqrt_
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.sqrt_",
@@ -206,8 +205,6 @@ def test_paddle_sqrt_(
         on_device=on_device,
         x=x[0],
     )
-
-
 # subtract_
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.subtract_",
@@ -240,4 +237,32 @@ def test_paddle_subtract_(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+#tanh_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.tanh_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_tanh_(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        x=x[0],
     )
