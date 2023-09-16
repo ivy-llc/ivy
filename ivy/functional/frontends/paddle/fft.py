@@ -145,7 +145,6 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     return time_domain
 
 
-
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
@@ -182,6 +181,7 @@ def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
         result /= ivy.sqrt(n)
     return result
 
+
 @to_ivy_arrays_and_back
 def rfftfreq(n, d=1.0, dtype=None, name=None):
     dtype = ivy.default_dtype()
@@ -189,3 +189,4 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
+    
