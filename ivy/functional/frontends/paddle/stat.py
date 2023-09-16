@@ -60,6 +60,8 @@ def numel(x, name=None):
 @to_ivy_arrays_and_back
 def quantile(x, q, axis=None, keepdim=False, name=None):
     result = ivy.quantile(x, q, axis=axis, keepdims=keepdim)
+    if keepdim and result.shape == ():
+        result = np.expand_dims(result, axis=0)
     return result.astype(np.float64)
 
 
