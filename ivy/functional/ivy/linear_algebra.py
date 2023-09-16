@@ -2343,6 +2343,7 @@ def tensordot(
     /,
     *,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -2364,6 +2365,8 @@ def tensordot(
     axes
         The axes to contract over.
         Default is 2.
+    batched_modes
+        modes on which to contract over, for batched inputs.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2426,7 +2429,9 @@ def tensordot(
         b: ivy.array(76.)
     }
     """
-    return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
+    return current_backend(x1, x2).tensordot(
+        x1, x2, axes=axes, batched_modes=batched_modes, out=out
+    )
 
 
 @handle_exceptions

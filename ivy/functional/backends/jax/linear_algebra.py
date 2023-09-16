@@ -1,6 +1,6 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
+from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple, List
 
 import jax.numpy as jnp
 
@@ -375,13 +375,13 @@ def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
 def tensordot(
     x1: JaxArray,
     x2: JaxArray,
     /,
     *,
     axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)

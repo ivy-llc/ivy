@@ -536,12 +536,14 @@ def svdvals(
     return paddle_backend.svd(x)[1]
 
 
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, backend_version)
 def tensordot(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
     /,
     *,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

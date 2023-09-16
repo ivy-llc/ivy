@@ -432,6 +432,7 @@ def tensordot(
     /,
     *,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to
