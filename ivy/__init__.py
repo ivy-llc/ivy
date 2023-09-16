@@ -433,13 +433,13 @@ class Shape(Sequence):
 
     def assert_has_rank(self, rank):
         if self.rank not in (None, rank):
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
         if kwargs:
-            raise TypeError("Unknown argument: %s" % kwargs)
+            raise TypeError(f"Unknown argument: {kwargs}")
         if rank is None:
             return Shape(None)
         else:
@@ -449,17 +449,17 @@ class Shape(Sequence):
         try:
             return self.merge_with(unknown_shape(rank=rank))
         except ValueError:
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
-            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at least {rank}")
         else:
             return self
 
     def with_rank_at_most(self, rank):
         if self.rank is not None and self.rank > rank:
-            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at most {rank}")
         else:
             return self
 
@@ -502,7 +502,7 @@ class Shape(Sequence):
             raise ivy.utils.exceptions.IvyException(
                 "Cannot convert a partially known Shape to a list"
             )
-        return [dim for dim in self._shape]
+        return list(self._shape)
 
 
 class IntDtype(Dtype):
