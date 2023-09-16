@@ -62,7 +62,7 @@ def check_consistent_length(*arrays):
     if len(uniques) > 1:
         raise ValueError(
             "Found input variables with inconsistent numbers of samples: %r"
-            % [int(l) for l in lengths]
+            % [int(a) for a in lengths]
         )
 
 
