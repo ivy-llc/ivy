@@ -422,7 +422,6 @@ def test_paddle_tensor_abs(
         on_device=on_device,
     )
 
-
 # diff
 @handle_frontend_method(
     class_tree=CLASS_TREE,
