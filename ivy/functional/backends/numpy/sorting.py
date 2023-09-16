@@ -22,7 +22,7 @@ def argsort(
 
     Parameters
     ----------
-    x: ndarray
+    x: ndarray, (required)
         The input NumPy array to be sorted
     axis: int, (optional, default=-1)
         axis along which to sort. If set to ``-1``, the function must sort along the
