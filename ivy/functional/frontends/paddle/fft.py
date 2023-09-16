@@ -88,7 +88,7 @@ def hfft2(x, s=None, axis=(-2, -1), norm="backward"):
 
     return ivy.real(fft_result)  # Return the real part of the result
 
-    
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
