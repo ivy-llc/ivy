@@ -458,8 +458,8 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
 @handle_exceptions
 def set_nest_at_indices(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
-    indices: Union[List[int], Tuple[int], Iterable[int]],
-    values: Union[List[int], Tuple[int], Iterable[int]],
+    indices: Iterable[Iterable[int]],
+    values: Iterable[int],
     /,
     shallow: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple]:
