@@ -507,8 +507,8 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
-            [args, kwargs],
             lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
+            [args, kwargs],
         )
         return fn(*args, **kwargs)
 
@@ -520,8 +520,8 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
-            [args, kwargs],
             lambda x: (x.shape if isinstance(x, ivy.Shape) and ivy.array_mode else x),
+            [args, kwargs],
         )
         return fn(*args, **kwargs)
 
@@ -634,8 +634,8 @@ def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
     def _outputs_to_ivy_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
         return ivy.nested_map(
-            ret,
             lambda x: x.ivy_array if hasattr(x, "ivy_array") else x,
+            ret,
             shallow=False,
         )
 
@@ -1191,8 +1191,8 @@ def casting_modes_ops(fn):
                 x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
             return x
 
-        args = ivy.nested_map(args, mini_helper, include_derived=True)
-        kwargs = ivy.nested_map(kwargs, mini_helper)
+        args = ivy.nested_map(mini_helper, args, include_derived=True)
+        kwargs = ivy.nested_map(mini_helper, kwargs)
         return fn(*args, **kwargs)
 
     return method
@@ -1586,7 +1586,7 @@ def handle_backend_invalid(fn: Callable) -> Callable:
                 )
             return x
 
-        ivy.nested_map(array_vals, func, include_derived=True)
+        ivy.nested_map(func, array_vals, include_derived=True)
 
         return fn(*args, **kwargs)
 

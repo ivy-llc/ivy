@@ -1194,12 +1194,12 @@ class Tensor:
         return self.long()
 
     def __getitem__(self, query, /):
-        ivy_args = ivy.nested_map([self, query], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, query])
         ret = ivy.get_item(*ivy_args)
         return torch_frontend.Tensor(ret, _init_overload=True)
 
     def __setitem__(self, key, value, /):
-        key, value = ivy.nested_map([key, value], _to_ivy_array)
+        key, value = ivy.nested_map(_to_ivy_array, [key, value])
         self.ivy_array[key] = value
 
     def __iter__(self):
