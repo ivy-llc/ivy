@@ -221,7 +221,7 @@ def less_equal(x1, x2, /):
     return ivy.less_equal(x1, x2)
 
 
-# logicend
+# logical_and
 @to_ivy_arrays_and_back
 def logical_and(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
