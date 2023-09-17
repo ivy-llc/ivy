@@ -3711,6 +3711,7 @@ def test_numpy_instance_ilshift__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
