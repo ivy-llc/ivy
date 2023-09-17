@@ -45,9 +45,9 @@ def cholesky(
     -------
     torch.Tensor
         A tensor containing the Cholesky factors for each square matrix. If upper is
-        False, the returned tensor must contain lower-triangular matrices; otherwise, the
-        returned tensor must contain upper-triangular matrices. The returned tensor must
-        have a floating-point data type and the same shape as x.
+        False, the returned tensor must contain lower-triangular matrices; otherwise,
+        the returned tensor must contain upper-triangular matrices. The returned tensor
+        must have a floating-point data type and the same shape as x.
 
     Examples
     --------
