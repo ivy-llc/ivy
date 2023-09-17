@@ -45,13 +45,13 @@ def cholesky(
     ----------
     x : ivy.Array or ivy.NativeArray
         Input array having shape (..., M, M) and whose innermost two dimensions form
-        square symmetric positive-definite matrices. Should have a floating-point 
+        square symmetric positive-definite matrices. Should have a floating-point
         data type.
     upper : bool, optional
         If True, the result must be the upper-triangular Cholesky factor U. If False,
         the result must be the lower-triangular Cholesky factor L. Default: False.
     out : ivy.Array, optional
-        Optional output array, for writing the result to. It must have a shape that 
+        Optional output array, for writing the result to. It must have a shape that
         the inputs broadcast to.
 
     Returns
@@ -60,7 +60,7 @@ def cholesky(
         An array containing the Cholesky factors for each square matrix. If upper is
         False, the returned array must contain lower-triangular matrices; otherwise,
         the returned array must contain upper-triangular matrices. The returned array
-        must have a floating-point data type determined by Type Promotion Rules and 
+        must have a floating-point data type determined by Type Promotion Rules and
         must have the same shape as x.
 
     Examples
@@ -1383,11 +1383,11 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
-    
+
     hermitian
         indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x``
         is assumed to be Hermitian, enabling a more efficient method for finding
-        eigenvalues, but x is not checked inside the function. 
+        eigenvalues, but x is not checked inside the function.
         Instead, We just use the lower triangular of the matrix to compute.
         Default: ``False``.
     out
