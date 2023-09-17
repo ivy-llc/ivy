@@ -41,7 +41,7 @@ def _array_idxes_n_dtype(draw, **kwargs):
 
 
 @st.composite
-def _arrays_dim_idx_n_dtypes(draw, support_dtypes="numberic", unsupport_dtypes=()):
+def _arrays_dim_idx_n_dtypes(draw):
     num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
     num_arrays = 2
     common_shape = draw(
@@ -73,16 +73,8 @@ def _arrays_dim_idx_n_dtypes(draw, support_dtypes="numberic", unsupport_dtypes=(
     )
 
     xs = list()
-    available_input_types = draw(helpers.get_dtypes(support_dtypes))
-
-    unstabled_dtypes = ["float16"]
-    available_input_types = [
-        dtype for dtype in available_input_types if dtype not in unstabled_dtypes
-    ]
-    available_input_types = [
-        dtype for dtype in available_input_types if dtype not in unsupport_dtypes
-    ]
-
+    available_input_types = draw(helpers.get_dtypes("numeric"))
+    available_input_types.remove("float16")  # half summation unstable in backends
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=available_input_types,
