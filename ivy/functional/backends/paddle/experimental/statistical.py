@@ -331,9 +331,14 @@ def corrcoef(
     *,
     y: Optional[paddle.Tensor] = None,
     rowvar: Optional[bool] = True,
+    name: Optional[str] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.linalg.corrcoef(
+        x=x,
+        rowvar=rowvar,
+        name=name,
+    )
 
 
 def histogram(
