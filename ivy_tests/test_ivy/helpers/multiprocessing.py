@@ -2,29 +2,6 @@
 import sys
 import importlib
 
-from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import (
-    array_helpers_dtype_info_helper,
-)
-from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
-    _get_type_dict_helper,
-    cast_filter_helper,
-)
-
-# local
-from .testing_helpers import (
-    _get_supported_devices_dtypes_helper,
-    _get_method_supported_devices_dtypes_helper,
-    num_positional_args_helper,
-)
-from .function_testing import (
-    test_function_backend_computation,
-    test_function_ground_truth_computation,
-    test_method_backend_computation,
-    test_method_ground_truth_computation,
-    test_gradient_backend_computation,
-    test_gradient_ground_truth_computation,
-)
-
 framework_path = "/opt/fw/"
 
 
@@ -38,6 +15,31 @@ def backend_proc(input_queue, output_queue):
     # if jax, do more stuff
     if framework.__name__ == "jax":
         framework.config.update("jax_enable_x64", True)
+
+    # import here to avoid circular import
+    from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import (
+        array_helpers_dtype_info_helper,
+    )
+    from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
+        _get_type_dict_helper,
+        cast_filter_helper,
+    )
+
+    # local
+    from .testing_helpers import (
+        _get_supported_devices_dtypes_helper,
+        _get_method_supported_devices_dtypes_helper,
+        num_positional_args_helper,
+    )
+    from .function_testing import (
+        test_function_backend_computation,
+        test_function_ground_truth_computation,
+        test_method_backend_computation,
+        test_method_ground_truth_computation,
+        test_gradient_backend_computation,
+        test_gradient_ground_truth_computation,
+    )
+
     while True:
         # subsequent arguments will be passed
         data = input_queue.get()
