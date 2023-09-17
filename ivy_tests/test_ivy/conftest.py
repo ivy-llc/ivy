@@ -305,6 +305,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-compile-testing"),
             getopt("--with-compile-testing"),
         ),
+        "transpile": (
+            False,
+            getopt("--with-transpile-frontend"),
+        ),
     }
 
     # final mapping for hypothesis value generation
@@ -359,6 +363,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-compile-testing", action="store_true")
+    parser.addoption("--with-transpile-frontend", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",

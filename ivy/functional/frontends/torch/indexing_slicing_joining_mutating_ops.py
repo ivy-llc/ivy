@@ -260,6 +260,7 @@ def index_reduce(input, dim, index, source, reduce, *, include_self=True, out=No
         if ivy.any(counts == ivy.array(0)):
             counts[counts == ivy.array(0)] = ivy.array(1)
         result /= counts
+
         if not input.is_float_dtype():
             result = ivy.floor(result)
             result = result.astype(input.dtype)

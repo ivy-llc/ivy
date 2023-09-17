@@ -33,6 +33,51 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+# Helpers #
+# ------- #
+
+
+def _to_tf_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [[pad_width] * 2] * ndim
+    elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
+        pad_width = pad_width * ndim
+    return pad_width
+
+
+def _check_paddle_pad(
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            (
+                (
+                    mode == "reflect"
+                    and reflect_type == "even"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or mode in ["edge", "wrap"]
+            )
+            and len(input_shape) <= ndim_limit
+        )
+    )
+
+
+def _to_paddle_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [pad_width] * (2 * ndim)
+    else:
+        if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
+            pad_width = pad_width * ndim
+        pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
+    return pad_width
+
+
 @handle_exceptions
 @handle_nestable
 @handle_partial_mixed_function

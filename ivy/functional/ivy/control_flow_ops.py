@@ -152,17 +152,15 @@ def for_loop(
 
     Example
     ----
-    ```
-    def body_fn(k, args):
-        print(k+1)
-        return args
-
-    lst = [5,6]
-
-    ivy.for_loop(lst, body_fn, ())
-    >>> 5
-    >>> 6
-    ```
+    >>> def body_fn(k, args):
+    >>>     print(k+1)
+    >>>     return args
+    >>>
+    >>> lst = [5,6]
+    >>>
+    >>> ivy.for_loop(lst, body_fn, ())
+    5
+    6
     """
     iterator = iterable.__iter__()
 

@@ -1,4 +1,6 @@
 # general
+import json
+import os
 import pytest
 import importlib
 import inspect
@@ -24,6 +26,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInplaceStrategy,
     BuiltCompileStrategy,
     BuiltFrontendArrayStrategy,
+    BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
@@ -462,6 +465,7 @@ def handle_frontend_test(
     native_array_flags=BuiltNativeArrayStrategy,
     test_compile=BuiltCompileStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
+    transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     **_given_kwargs,
 ):
@@ -528,6 +532,7 @@ def handle_frontend_test(
             native_arrays=native_array_flags,
             test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
+            transpile=transpile,
             precision_mode=precision_mode,
         )
 
@@ -844,3 +849,18 @@ def handle_frontend_method(
 @st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
+
+
+def _create_transpile_report(data: dict, file_name: str, path: str = "root"):
+    json_object = json.dumps(data, indent=6)
+    if path == "root":
+        path = "../../../../"
+    full_path = os.path.join(path, file_name)
+    if os.path.isfile(full_path):
+        with open(full_path, "r") as outfile:
+            # Load the file's existing data
+            data = json.load(outfile)
+            if data["backend_nodes"] > data["backend_nodes"]:
+                return
+    with open(full_path, "w") as outfile:
+        outfile.write(json_object)

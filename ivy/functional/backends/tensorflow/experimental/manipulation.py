@@ -18,6 +18,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
+from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
 
 def moveaxis(
@@ -294,8 +295,10 @@ def pad(
     )
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_tf_pad(
-    args[0].shape, args[1], mode, constant_values, reflect_type
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+    )
 )
 
 
@@ -323,14 +326,6 @@ def _check_tf_pad(input_shape, pad_width, mode, constant_values, reflect_type):
             )
         )
     )
-
-
-def _to_tf_padding(pad_width, ndim):
-    if isinstance(pad_width, Number):
-        pad_width = [[pad_width] * 2] * ndim
-    elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
-        pad_width = pad_width * ndim
-    return pad_width
 
 
 def expand(

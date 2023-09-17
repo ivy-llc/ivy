@@ -577,10 +577,11 @@ with PyCharm
             1. Select the breakpoint-fragment of code, press :code:`Alt+shift+E` Start debugging!
 
             .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/console_coding.png?raw=true
-               :aligh: center
+               :align: center
+
 
     5. Using **try-except**:
-        1. PyChram is great at pointing the lines of code which are causing tests to fail.
+        1. PyCharm is great at pointing the lines of code which are causing tests to fail.
            Navigating to that line, you can add Try-Except block with breakpoints to get in depth understanding of the errors.
 
         .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/the_basics/getting_most_out_of_IDE/try_except.png?raw=true
