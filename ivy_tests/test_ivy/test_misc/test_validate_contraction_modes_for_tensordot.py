@@ -1,8 +1,8 @@
 import pytest
 
-from ivy.functional.ivy.linear_algebra import (
-    _validate_contraction_modes_for_axes,
-    _validate_contraction_modes_for_batches,
+from ivy.utils.tensordot_contraction_modes import (
+    _get_valid_contraction_modes_for_axes,
+    _get_valid_contraction_modes_for_batches,
 )
 
 
@@ -21,7 +21,7 @@ def shapes():
 )
 def test_negative_dims_become_positive(shapes, modes, expected_modes1, expected_modes2):
     shape1, shape2 = shapes
-    modes1, modes2 = _validate_contraction_modes_for_axes(shape1, shape2, modes)
+    modes1, modes2 = _get_valid_contraction_modes_for_axes(shape1, shape2, modes)
     assert (expected_modes1, expected_modes2) == (
         modes1,
         modes2,
@@ -33,18 +33,18 @@ def test_not_equal_length_modes_raises_error(shapes, modes):
     shape1, shape2 = shapes
     modes = [(0, 1, 4), (1, 5, 3, 3)]
     with pytest.raises(ValueError):
-        _validate_contraction_modes_for_axes(shape1, shape2, modes)
+        _get_valid_contraction_modes_for_axes(shape1, shape2, modes)
     with pytest.raises(ValueError):
-        _validate_contraction_modes_for_batches(shape1, shape2, modes)
+        _get_valid_contraction_modes_for_batches(shape1, shape2, modes)
 
 
 @pytest.mark.parametrize("modes", [[(0, 1, 4), (2, 5, 3)]])
 def test_not_same_dimension_in_both_tensors_raises_error(shapes, modes):
     shape1, shape2 = shapes
     with pytest.raises(ValueError):
-        _validate_contraction_modes_for_axes(shape1, shape2, modes)
+        _get_valid_contraction_modes_for_axes(shape1, shape2, modes)
     with pytest.raises(ValueError):
-        _validate_contraction_modes_for_batches(shape1, shape2, modes)
+        _get_valid_contraction_modes_for_batches(shape1, shape2, modes)
 
 
 @pytest.mark.parametrize(
@@ -58,7 +58,7 @@ def test_validate_contraction_modes_for_axes(
     shapes, modes, expected_modes1, expected_modes2
 ):
     shape1, shape2 = shapes
-    modes1, modes2 = _validate_contraction_modes_for_axes(shape1, shape2, modes)
+    modes1, modes2 = _get_valid_contraction_modes_for_axes(shape1, shape2, modes)
     assert (expected_modes1, expected_modes2) == (
         modes1,
         modes2,
@@ -77,7 +77,7 @@ def test_validate_contraction_modes_for_batches(
     shapes, modes, expected_batched_modes1, expected_batched_modes2
 ):
     shape1, shape2 = shapes
-    batched_modes1, batched_modes2 = _validate_contraction_modes_for_batches(
+    batched_modes1, batched_modes2 = _get_valid_contraction_modes_for_batches(
         shape1,
         shape2,
         modes,
