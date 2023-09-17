@@ -1,5 +1,5 @@
 # global
-
+import math
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
@@ -12,6 +12,11 @@ from tensorflow.python.framework.dtypes import DType
 import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.utils.tensordot_contraction_modes import (
+    _get_valid_contraction_modes_for_axes,
+    _get_valid_contraction_modes_for_batches,
+    _final_modes,
+)
 from . import backend_version
 
 
@@ -592,8 +597,44 @@ def tensordot(
     # type casting to float32 which is acceptable for tf.tensordot
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
 
+    if batched_modes is not None:
+        axes = _get_valid_contraction_modes_for_axes(x1.shape, x2.shape, axes)
+        batched_modes = _get_valid_contraction_modes_for_batches(
+            x1.shape, x2.shape, batched_modes
+        )
+        return _tensordot_with_batched_modes(x1, x2, axes, batched_modes)
     ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
     return ret
+
+
+def _tensordot_with_batched_modes(x1, x2, axes, batched_modes):
+    modes1, modes2 = axes
+    batch_modes1, batch_modes2 = batched_modes
+    contraction_shape = [s for (i, s) in enumerate(x1.shape) if i in modes1]
+    contraction_dim = math.prod(contraction_shape)
+    batch_shape = [s for (i, s) in enumerate(x1.shape) if i in batch_modes1]
+
+    # We will reorganize x1 to (batch_modes, new_modes1, contraction_modes)
+    new_modes1 = [i for i in range(x1.ndim) if i not in batch_modes1 + modes1]
+    new_shape1 = [x1.shape[i] for i in new_modes1]
+    x1 = tf.transpose(x1, batch_modes1 + new_modes1 + modes1)
+    x1 = tf.reshape(x1, (*batch_shape, -1, contraction_dim))
+
+    # x2 will be (batch_modes, contraction_modes, new_modes2)
+    new_modes2 = [i for i in range(x2.ndim) if i not in batch_modes2 + modes2]
+    new_shape2 = [x2.shape[i] for i in new_modes2]
+    x2 = tf.transpose(x2, batch_modes2 + modes2 + new_modes2)
+    x2 = tf.reshape(x2, (*batch_shape, contraction_dim, -1))
+
+    res = tf.matmul(x1, x2)
+    res = tf.reshape(res, (*batch_shape, *new_shape1, *new_shape2))
+
+    final_modes = _final_modes(x1, modes1, batch_modes1)
+    final_modes += [i for i in range(res.ndim) if i not in final_modes]
+    if final_modes:
+        res = tf.transpose(res, final_modes)
+
+    return res
 
 
 @with_unsupported_dtypes(
