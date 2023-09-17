@@ -3,7 +3,7 @@
 from functools import reduce as _reduce
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Optional, Union, Sequence, Callable, List
 
 try:
     import functorch

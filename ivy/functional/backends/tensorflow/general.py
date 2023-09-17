@@ -6,7 +6,7 @@ and signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
