@@ -136,7 +136,7 @@ class ModuleWithBuffer(ivy.Module):
     def __init__(self, *args, **kwargs):
         pass
 
-    def _forward(*args, **kwargs):
+    def _forward(self, *args, **kwargs):
         pass
 
 

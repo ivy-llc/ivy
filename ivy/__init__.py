@@ -439,7 +439,7 @@ class Shape(Sequence):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
         if kwargs:
-            raise TypeError("Unknown argument: %s" % kwargs)
+            raise TypeError(f"Unknown argument: {kwargs}")
         if rank is None:
             return Shape(None)
         else:
