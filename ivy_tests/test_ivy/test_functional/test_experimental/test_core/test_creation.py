@@ -441,7 +441,8 @@ def test_random_cp(
             assert np.prod(f.shape) == np.prod(f_gt.shape)
 
 
-# **Uncomment when Tensorly validation is issue is resolved.**
+# **Uncomment when Tensorly validation issue is resolved.**
+#https://github.com/tensorly/tensorly/issues/528
 # @handle_test(
 #     fn_tree="functional.ivy.experimental.random_parafac2",
 #     data=_random_parafac2_data(),
