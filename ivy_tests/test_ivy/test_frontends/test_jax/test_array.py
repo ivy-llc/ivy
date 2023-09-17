@@ -2673,7 +2673,7 @@ def test_jax_split(
     method_flags,
 ):
     input_dtype, value = dtype_value
-    helpers.test_frontend_function(
+    helpers.test_frontend_method(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
