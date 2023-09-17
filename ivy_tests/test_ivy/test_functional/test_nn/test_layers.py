@@ -1309,8 +1309,6 @@ def test_nms(
     fn_name,
     on_device,
 ):
-    if backend_fw in ["torch"]:
-        return
     boxes, scores, iou_threshold, max_output_size, score_threshold = inputs
     helpers.test_function(
         input_dtypes=[ivy.float32, ivy.float32],
