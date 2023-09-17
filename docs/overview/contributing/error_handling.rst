@@ -10,7 +10,7 @@ Error Handling
 
 This section, "Error Handling" aims to assist you in navigating through some common errors you might encounter while working with the Ivy's Functional API. We'll go through some common errors which you might encounter while working as a contributor or a developer.
 
-#. This is the case where we pass in a dtype to `torch` which is not actually supported by the torch's native framework itself. The function which was
+#. This is the case where we pass in a dtype to `torch` which is not actually supported by the torch's native framework itself.
 
    .. code-block:: python
 
@@ -64,7 +64,7 @@ This section, "Error Handling" aims to assist you in navigating through some com
         E
         E       You can reproduce this example by temporarily adding @reproduce_failure('6.82.4', b'AXicY2BAABYQwQgiAABDAAY=') as a decorator on your test case
 
-#. This is a similar assertion as stated in point 2 but with torch and ground-truth tensorflow not matching but the matrices are quite different so there should be an issue in the backends rather than a numerical instability here:
+#. This is a similar assertion as stated in point 2 but with torch and ground-truth tensorflow not matching but the matrices are quite different so there should be an issue in the backends rather than a numerical instability here.
 
    .. code-block:: python
 
