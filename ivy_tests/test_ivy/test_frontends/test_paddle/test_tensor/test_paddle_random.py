@@ -131,7 +131,6 @@ def test_paddle_randn(
     input_dtypes=st.sampled_from(["int64"]),
     dtype=st.sampled_from(["float32", "float64","int32", "int64"]),
 )
-
 def test_paddle_randperm(
     *,
     input_dtypes,
@@ -141,7 +140,12 @@ def test_paddle_randperm(
     fn_tree,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[input_dtypes],
+    input_dtypes=[input_dtypes],
+    frontend=frontend,  # Provide the frontend implementation you're testing
+    fn_tree=fn_tree,  # Specify the function tree or name you're testing
+    test_flags=test_flags,  # Include any relevant test flags
+)
+
 
 
 @handle_frontend_test(
