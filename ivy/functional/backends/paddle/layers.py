@@ -5,7 +5,10 @@ from typing import Optional, Tuple, Union, Sequence
 # global
 import paddle
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    to_native_arrays_and_back,
+)
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.layers import (
     _handle_padding,
@@ -496,6 +499,7 @@ def conv_general_transpose(
     return res
 
 
+@to_native_arrays_and_back
 def nms(
     boxes,
     scores=None,
@@ -520,7 +524,6 @@ def nms(
     else:
         ret = paddle.vision.ops.nms(boxes, iou_threshold, scores)
 
-    # print("ret of paddle", ret)
     if len(ret) > 1 and scores is not None:
         ret = sorted(
             ret.flatten().tolist(), reverse=True, key=lambda x: (scores[x], -x)

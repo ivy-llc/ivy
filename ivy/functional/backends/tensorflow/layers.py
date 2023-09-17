@@ -8,7 +8,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, to_native_arrays_and_back
 from . import backend_version
 from ivy.functional.ivy.layers import (
     _deconv_length,
@@ -493,6 +493,7 @@ def conv_general_transpose(
     return res
 
 
+@to_native_arrays_and_back
 def nms(
     boxes,
     scores=None,
