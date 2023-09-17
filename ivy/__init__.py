@@ -83,6 +83,14 @@ class CPTensor:
     pass
 
 
+class Parafac2Tensor:
+    pass
+
+  
+class TTTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -758,7 +766,8 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor
+from .data_classes.factorized_tensor import TuckerTensor, CPTensor, Parafac2Tensor
+from .data_classes.factorized_tensor import TuckerTensor, CPTensor, TTTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
