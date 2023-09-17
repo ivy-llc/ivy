@@ -120,8 +120,17 @@ def _cos(
     subok=True,
 ):
     ret = ivy.cos(x, out=out)
+    if ivy.is_array(x):
+        ret = ivy.cos(x, out=out)
+    else:
+        x = ivy.array(x)
+        ret = ivy.cos(x)
+    handle_numpy_out(ret)
+
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    handle_numpy_casting(ret)
+    
     return ret
 
 
