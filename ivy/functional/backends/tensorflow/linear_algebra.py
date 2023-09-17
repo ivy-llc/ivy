@@ -19,11 +19,11 @@ from . import backend_version
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def cholesky(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        upper: bool = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    upper: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
         ret = tf.linalg.cholesky(x)
@@ -36,22 +36,22 @@ def cholesky(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-                "complex",
-                "float16",
+            "complex",
+            "float16",
         )
     },
     backend_version,
 )
 def cross(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        axisa: int = -1,
-        axisb: int = -1,
-        axisc: int = -1,
-        axis: Optional[int] = None,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.cross(
@@ -62,40 +62,40 @@ def cross(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     backend_version,
 )
 def det(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.det(x)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def diagonal(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        offset: int = 0,
-        axis1: int = -2,
-        axis2: int = -1,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = -2,
+    axis2: int = -1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def eig(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
     result_tuple = NamedTuple(
         "eig",
@@ -110,11 +110,11 @@ def eig(
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        UPLO: str = "L",
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    UPLO: str = "L",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
     if UPLO not in ("L", "U"):
         raise ValueError("UPLO argument must be 'L' or 'U'")
@@ -137,11 +137,11 @@ def eigh(
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        UPLO: str = "L",
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    UPLO: str = "L",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if UPLO not in ("L", "U"):
         raise ValueError("UPLO argument must be 'L' or 'U'")
@@ -157,24 +157,24 @@ def eigvalsh(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-                "int8",
-                "uint8",
-                "int16",
-                "uint16",
-                "uint32",
-                "uint64",
-                "complex",
+            "int8",
+            "uint8",
+            "int16",
+            "uint16",
+            "uint32",
+            "uint64",
+            "complex",
         )
     },
     backend_version,
 )
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def inner(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.inner(x1, x2)
@@ -183,18 +183,18 @@ def inner(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     backend_version,
 )
 def inv(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        adjoint: bool = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.inv(x, adjoint=adjoint)
 
@@ -203,15 +203,15 @@ def inv(
     {"2.13.0 and below": ("float16", "bfloat16", "bool")}, backend_version
 )
 def matmul(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        transpose_a: bool = False,
-        transpose_b: bool = False,
-        adjoint_a: bool = False,
-        adjoint_b: bool = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     dtype_from = tf.as_dtype(x1.dtype)
@@ -234,13 +234,13 @@ def matmul(
         x2 = tf.cast(x2, dtype_from)
 
     if (
-            x1.shape == ()
-            or x2.shape == ()
-            or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-            or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-            or (len(x1.shape) == 1 and len(x2.shape) >= 2 and x1.shape[0] != x2.shape[-2])
-            or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
-            or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
+        x1.shape == ()
+        or x2.shape == ()
+        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
+        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
+        or (len(x1.shape) == 1 and len(x2.shape) >= 2 and x1.shape[0] != x2.shape[-2])
+        or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
+        or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
     ):
         raise ivy.utils.exceptions.IvyException("Error,shapes not compatible")
 
@@ -282,13 +282,13 @@ def matmul(
     {"2.13.0 and below": ("float32", "float64", "complex")}, backend_version
 )
 def matrix_norm(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
-        axis: Tuple[int, int] = (-2, -1),
-        keepdims: bool = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ord == "nuc":
         x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
@@ -325,11 +325,11 @@ def matrix_norm(
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
-        x: Union[tf.Tensor, tf.Variable],
-        n: int,
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    n: int,
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if n == 0:
         return tf.broadcast_to(tf.eye(x.shape[-2], dtype=x.dtype), x.shape)
@@ -361,13 +361,13 @@ def matrix_power(
 )
 # noinspection PyPep8Naming
 def matrix_rank(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        atol: Optional[Union[float, Tuple[float]]] = None,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
-        hermitian: Optional[bool] = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if (tf.rank(x) < 2) or (0 in x.shape):
         return tf.convert_to_tensor(0, dtype=tf.int64)
@@ -395,25 +395,25 @@ def matrix_rank(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-                "float16",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "uint16",
-                "uint32",
-                "uint64",
+            "float16",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
         )
     },
     backend_version,
 )
 def matrix_transpose(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        conjugate: bool = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    conjugate: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if conjugate:
         x = tf.math.conj(x)
@@ -423,11 +423,11 @@ def matrix_transpose(
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def outer(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.outer(x1, x2)
@@ -438,11 +438,11 @@ def outer(
     backend_version,
 )
 def pinv(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
         ret = tf.linalg.pinv(x)
@@ -454,13 +454,13 @@ def pinv(
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        mode: str = "reduced",
-        out: Optional[
-            Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]
-        ] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[
+        Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]
+    ] = None,
 ) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -479,8 +479,8 @@ def qr(
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def slogdet(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
 ) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     results = NamedTuple("slogdet", [("sign", tf.Tensor), ("logabsdet", tf.Tensor)])
     sign, logabsdet = tf.linalg.slogdet(x)
@@ -492,12 +492,12 @@ def slogdet(
     backend_version,
 )
 def solve(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        adjoint: bool = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if adjoint:
         x1 = tf.linalg.adjoint(x1)
@@ -524,7 +524,7 @@ def solve(
         x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
         x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
         if tf.math.reduce_any(tf.linalg.det(x1) == 0) or (
-                x2.shape[-1] == x2.shape[-2] and tf.math.reduce_any(tf.linalg.det(x2) == 0)
+            x2.shape[-1] == x2.shape[-2] and tf.math.reduce_any(tf.linalg.det(x2) == 0)
         ):
             return x1
         ret = tf.linalg.solve(x1, x2)
@@ -539,11 +539,11 @@ def solve(
     backend_version,
 )
 def svd(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        full_matrices: bool = True,
-        compute_uv: bool = True,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    full_matrices: bool = True,
+    compute_uv: bool = True,
 ) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable], ...]]:
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
@@ -565,10 +565,10 @@ def svd(
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.linalg.svd(x, compute_uv=False)
     return ret
@@ -578,12 +578,12 @@ def svdvals(
         "float32",
 )}, backend_version)
 def tensordot(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        axes: Union[int, Tuple[List[int], List[int]]] = 2,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
@@ -595,13 +595,13 @@ def tensordot(
     backend_version,
 )
 def trace(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        offset: int = 0,
-        axis1: int = 0,
-        axis2: int = 1,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(x, tf.Variable):
         if len(x) == 0:
@@ -614,12 +614,12 @@ def trace(
     backend_version,
 )
 def vecdot(
-        x1: Union[tf.Tensor, tf.Variable],
-        x2: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        axis: int = -1,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
@@ -632,22 +632,22 @@ def vecdot(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-                "float16",
-                "bfloat16",
-                "integer",
+            "float16",
+            "bfloat16",
+            "integer",
         )
     },
     backend_version,
 )
 def vector_norm(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
-        dtype: Optional[DType] = None,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    dtype: Optional[DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype and x.dtype != dtype:
         x = tf.cast(x, dtype)
@@ -659,7 +659,7 @@ def vector_norm(
     elif ord == -inf:
         return tf.reduce_min(abs_x, axis=axis, keepdims=keepdims)
     else:
-        return tf.reduce_sum(abs_x ** ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
+        return tf.reduce_sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
 
 
 # Extra #
@@ -668,11 +668,11 @@ def vector_norm(
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def diag(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        k: int = 0,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    k: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.diag(x, k=k)
 
@@ -682,12 +682,12 @@ def diag(
     backend_version,
 )
 def vander(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        N: Optional[int] = None,
-        increasing: bool = False,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.vander(x, N=N, increasing=increasing)
 
@@ -695,26 +695,26 @@ def vander(
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "uint16",
-                "uint32",
-                "uint64",
-                "float16",
-                "float64",
-                "complex",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "float64",
+            "complex",
         )
     },
     backend_version,
 )
 def vector_to_skew_symmetric_matrix(
-        vector: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    vector: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1

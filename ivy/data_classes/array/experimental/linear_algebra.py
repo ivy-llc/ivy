@@ -677,11 +677,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def tt_matrix_to_tensor(
-            self: Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
-        ) -> ivy.Array:
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This method simply
         wraps the function, and so the docstring for ivy.tt_matrix_to_tensor also
@@ -836,6 +836,3 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             [2, 3, 4, 5]])
         """
         return ivy.general_inner_product(self, b, n_modes, out=out)
-    
-    
-    

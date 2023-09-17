@@ -2021,7 +2021,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
-    
+
     @staticmethod
     def static_tt_matrix_to_tensor(
         tt_matrix: Union[ivy.Array, ivy.NativeArray, ivy.Container],

@@ -22,35 +22,35 @@ from .elementwise import _elementwise_helper
     {
         "2.5.1 and below": {
             "cpu": (
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "uint8",
-                    "float16",
-                    "complex",
-                    "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "float16",
+                "complex",
+                "bool",
             )
         }
     },
     backend_version,
 )
 def cholesky(
-        x: paddle.Tensor, /, *, upper: bool = False, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, upper: bool = False, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.linalg.cholesky(x, upper=upper)
 
 
 def cross(
-        x1: paddle.Tensor,
-        x2: paddle.Tensor,
-        /,
-        *,
-        axisa: int = -1,
-        axisb: int = -1,
-        axisc: int = -1,
-        axis: int = None,
-        out: Optional[paddle.Tensor] = None,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     def _cross(x1, x2, axisa, axisb, axisc, axis):
         if axis is not None:
@@ -109,13 +109,13 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 def diagonal(
-        x: paddle.Tensor,
-        /,
-        *,
-        offset: int = 0,
-        axis1: int = -2,
-        axis2: int = -1,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = -2,
+    axis2: int = -1,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
@@ -137,11 +137,11 @@ def diagonal(
 
 
 def eigh(
-        x: paddle.Tensor,
-        /,
-        *,
-        UPLO: Optional[str] = "L",
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor]:
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
@@ -151,17 +151,17 @@ def eigh(
 
 
 def eigvalsh(
-        x: paddle.Tensor,
-        /,
-        *,
-        UPLO: Optional[str] = "L",
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.linalg.eigvalsh(x, UPLO=UPLO)
 
 
 def inner(
-        x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
@@ -183,11 +183,11 @@ def inner(
     backend_version,
 )
 def inv(
-        x: paddle.Tensor,
-        /,
-        *,
-        adjoint: bool = False,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
     if x.dtype in [
@@ -206,15 +206,15 @@ def inv(
 
 
 def matmul(
-        x1: paddle.Tensor,
-        x2: paddle.Tensor,
-        /,
-        *,
-        transpose_a: bool = False,
-        transpose_b: bool = False,
-        adjoint_a: bool = False,
-        adjoint_b: bool = False,
-        out: Optional[paddle.Tensor] = None,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
@@ -251,13 +251,13 @@ def matmul(
     backend_version,
 )
 def matrix_norm(
-        x: paddle.Tensor,
-        /,
-        *,
-        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Tuple[int, int]] = (-2, -1),
-        keepdims: bool = False,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    axis: Optional[Tuple[int, int]] = (-2, -1),
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     axis_ = list(axis)  # paddle.moveaxis doesn't support tuple axes
     if ord == "nuc":
@@ -319,7 +319,7 @@ def matrix_norm(
 
 
 def eig(
-        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> Tuple[paddle.Tensor]:
     result_tuple = NamedTuple(
         "eig", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
@@ -333,7 +333,7 @@ def eig(
     backend_version,
 )
 def matrix_power(
-        x: paddle.Tensor, n: int, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, n: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.linalg.matrix_power(x, n)
 
@@ -343,13 +343,13 @@ def matrix_power(
     backend_version,
 )
 def matrix_rank(
-        x: paddle.Tensor,
-        /,
-        *,
-        atol: Optional[Union[float, Tuple[float]]] = None,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
-        hermitian: Optional[bool] = False,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    atol: Optional[Union[float, Tuple[float]]] = None,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if (x.ndim < 2) or (0 in x.shape):
         return paddle.to_tensor(0).squeeze().astype(x.dtype)
@@ -377,12 +377,12 @@ def matrix_rank(
 
 
 def matrix_transpose(
-        x: paddle.Tensor,
-        /,
-        *,
-        perm: Optional[Union[Tuple[int], List[int]]] = None,
-        conjugate: bool = False,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    perm: Optional[Union[Tuple[int], List[int]]] = None,
+    conjugate: bool = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if conjugate:
         x = paddle.conj(x)
@@ -394,7 +394,7 @@ def matrix_transpose(
 
 
 def outer(
-        x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
@@ -412,11 +412,11 @@ def outer(
 
 
 def pinv(
-        x: paddle.Tensor,
-        /,
-        *,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if rtol is None:
         return paddle.linalg.pinv(x)
@@ -424,12 +424,12 @@ def pinv(
 
 
 def tensorsolve(
-        x1: paddle.Tensor,
-        x2: paddle.Tensor,
-        /,
-        *,
-        axes: Union[int, Tuple[List[int], List[int]]] = None,
-        out: Optional[paddle.Tensor] = None,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # Implemented as a composite function in ivy.functional.ivy.linear_algebra
     raise IvyNotImplementedException()
@@ -440,11 +440,11 @@ def tensorsolve(
     backend_version,
 )
 def qr(
-        x: paddle.Tensor,
-        /,
-        *,
-        mode: str = "reduced",
-        out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = paddle.linalg.qr(x, mode=mode)
@@ -456,8 +456,8 @@ def qr(
     backend_version,
 )
 def slogdet(
-        x: paddle.Tensor,
-        /,
+    x: paddle.Tensor,
+    /,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     results = NamedTuple(
         "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)]
@@ -475,12 +475,12 @@ def slogdet(
     backend_version,
 )
 def solve(
-        x1: paddle.Tensor,
-        x2: paddle.Tensor,
-        /,
-        *,
-        adjoint: bool = False,
-        out: Optional[paddle.Tensor] = None,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if adjoint:
         x1 = paddle.moveaxis(x1, -2, -1).conj()
@@ -503,7 +503,7 @@ def solve(
     backend_version,
 )
 def svd(
-        x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
+    x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
     if x.dtype in [
         paddle.int8,
@@ -531,7 +531,7 @@ def svd(
     backend_version,
 )
 def svdvals(
-        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle_backend.svd(x)[1]
 
@@ -545,12 +545,12 @@ def svdvals(
     backend_version,
 )
 def tensordot(
-        x1: paddle.Tensor,
-        x2: paddle.Tensor,
-        /,
-        *,
-        axes: Union[int, Tuple[List[int], List[int]]] = 2,
-        out: Optional[paddle.Tensor] = None,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = paddle.tensordot(x1, x2, axes=axes)
@@ -561,37 +561,37 @@ def tensordot(
     {
         "2.5.1 and below": {
             "cpu": (
-                    "int8",
-                    "int16",
-                    "unsigned",
-                    "float16",
-                    "complex",
-                    "bool",
+                "int8",
+                "int16",
+                "unsigned",
+                "float16",
+                "complex",
+                "bool",
             )
         }
     },
     backend_version,
 )
 def trace(
-        x: paddle.Tensor,
-        /,
-        *,
-        offset: int = 0,
-        axis1: int = 0,
-        axis2: int = 1,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = 0,
+    axis2: int = 1,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret = paddle.trace(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret.squeeze() if x.ndim <= 2 else ret
 
 
 def vecdot(
-        x1: paddle.Tensor,
-        x2: paddle.Tensor,
-        /,
-        *,
-        axis: int = -1,
-        out: Optional[paddle.Tensor] = None,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     axes = [axis % x1.ndim]
 
@@ -599,14 +599,14 @@ def vecdot(
 
 
 def vector_norm(
-        x: paddle.Tensor,
-        /,
-        *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: Optional[bool] = False,
-        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
-        dtype: Optional[paddle.dtype] = None,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
+    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if dtype and x.dtype != dtype:
         x = x.astype(dtype)
@@ -635,11 +635,11 @@ def vector_norm(
 
 
 def diag(
-        x: paddle.Tensor,
-        /,
-        *,
-        k: int = 0,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    k: int = 0,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
@@ -662,12 +662,12 @@ def diag(
     backend_version,
 )
 def vander(
-        x: paddle.Tensor,
-        /,
-        *,
-        N: Optional[int] = None,
-        increasing: bool = False,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     N = ivy.default(N, x.shape[-1])
     start, stop, step = N - 1, -1, -1
@@ -684,7 +684,7 @@ def vander(
     backend_version,
 )
 def vector_to_skew_symmetric_matrix(
-        vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     batch_shape = vector.shape[:-1]
     # BS x 3 x 1
