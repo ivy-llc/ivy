@@ -8,8 +8,12 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-cubic_conv1 = lambda A, x: ((A + 2) * x - (A + 3)) * x * x + 1
-cubic_conv2 = lambda A, x: (((A * x) - (5 * A)) * x + (8 * A)) * x - (4 * A)
+def cubic_conv1(A, x):
+    return ((A + 2) * x - (A + 3)) * x * x + 1
+
+
+def cubic_conv2(A, x):
+    return ((A * x - 5 * A) * x + 8 * A) * x - 4 * A
 
 
 # --- Helpers --- #

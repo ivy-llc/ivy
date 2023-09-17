@@ -612,9 +612,11 @@ def test_tensorflow_cond(
     frontend,
     backend_fw,
 ):
-    _test_true_fn = lambda: var + var
+    def _test_true_fn():
+        return var + var
 
-    _test_false_fn = lambda: var * var
+    def _test_false_fn():
+        return var * var
 
     input_dtype, _ = dtype_and_x
     helpers.test_frontend_function(
