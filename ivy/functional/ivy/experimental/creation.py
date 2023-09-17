@@ -861,6 +861,66 @@ def random_cp(
         return ivy.CPTensor((weights, factors))
 
 
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tt(
+    shape: Sequence[int],
+    rank: Union[Sequence[int], int],
+    /,
+    *,
+    full: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+) -> Union[ivy.TTTensor, ivy.Array]:
+    """
+    Generate a random TT/MPS tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the TT decomposition
+        must verify rank[0] == rank[-1] ==1 (boundary conditions)
+        and len(rank) == len(shape)+1
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    seed
+        seed for generating random numbers
+
+    Returns
+    -------
+        ivy.TTTensor
+    """
+    rank = ivy.TTTensor.validate_tt_rank(shape, rank)
+
+    rank = list(rank)
+    if rank[0] != 1:
+        message = (
+            "Provided rank[0] == {} but boundaring conditions dictatate rank[0] =="
+            " rank[-1] == 1.".format(rank[0])
+        )
+        raise ValueError(message)
+    if rank[-1] != 1:
+        message = (
+            "Provided rank[-1] == {} but boundaring conditions dictatate rank[0] =="
+            " rank[-1] == 1.".format(rank[-1])
+        )
+        raise ValueError(message)
+
+    factors = [
+        (ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed))
+        for i, s in enumerate(shape)
+    ]
+
+    if full:
+        return ivy.TTTensor.tt_to_tensor(factors)
+    else:
+        return ivy.TTTensor(factors)
+
+
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
