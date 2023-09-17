@@ -558,6 +558,43 @@ def test_torch_cholesky(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.cumulative_trapezoid",
+    test_with_out=st.just(False),
+    dtype_y_x=_get_dtype_and_matrices(),
+    use_x=st.booleans(),
+    dim=st.integers(min_value=0, max_value=1),
+    dx=st.floats(),
+)
+def test_torch_cumulative_trapezoid(
+    dtype_y_x,
+    use_x,
+    dim,
+    dx,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, y, x = dtype_y_x
+    if use_x:
+        test_flags.num_positional_args = 2
+        kwargs = {"y": y, "x": x, "dim": -1}
+    else:
+        test_flags.num_positional_args = 1
+        kwargs = {"y": y, "dx": dx, "dim": dim}
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
+    )
+
+
 # dot
 @handle_frontend_test(
     fn_tree="torch.dot",

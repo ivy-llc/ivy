@@ -94,6 +94,36 @@ def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
+    def tupleset(t, i, value):
+        list_ = list(t)
+        list_[i] = value
+        return tuple(list_)
+
+    if x is None:
+        d = dx if dx is not None else 1
+    else:
+        if x.ndim == 1:
+            d = ivy.diff(x)
+            shape = [1] * y.ndim
+            shape[dim] = -1
+            d = d.reshape(shape)
+        elif len(x.shape) != len(y.shape):
+            raise ValueError("If given, shape of x must be 1-D or the same as y.")
+        else:
+            d = ivy.diff(x, axis=dim)
+
+        if d.shape[dim] != y.shape[dim] - 1:
+            raise ValueError("If given, length of x along dim must be the same as y.")
+
+    nd = len(y.shape)
+    slice1 = tupleset((slice(None),) * nd, dim, slice(1, None))
+    slice2 = tupleset((slice(None),) * nd, dim, slice(None, -1))
+    return ivy.cumsum(d * (y[slice1] + y[slice2]) / 2.0, axis=dim)
+
+
 @to_ivy_arrays_and_back
 def det(input):
     return torch_frontend.linalg.det(input)
