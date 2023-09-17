@@ -13,5 +13,4 @@ jobs:
   check-formatting:
     name: Check formatting
     uses: unifyai/workflows/.github/workflows/lint.yml@main
-    secrets:
-      IVY_BRANCH_TOKEN: ${{ secrets.IVY_BRANCH_TOKEN }}
+    secrets: inherit
