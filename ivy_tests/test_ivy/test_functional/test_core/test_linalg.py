@@ -3,6 +3,7 @@
 # global
 import sys
 import numpy as np
+import pytest
 from hypothesis import assume, strategies as st
 
 # local
@@ -1048,31 +1049,29 @@ def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_devi
 
 # adopted from tensorly
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_batched_tensordot.py#L9
-def test_tensordot_with_batched_modes_parameter(backend_fw):
+@pytest.mark.parametrize(
+    "shape1, shape2, axes, batched_modes",
+    [
+        ([4, 2, 3, 3], [3, 4, 2, 3], [(0, 3), (1, 3)], [1, 2]),
+        ([4, 3, 3], [3, 4, 2], [], []),
+        ([4, 3, 3], [3, 4, 2], [], [(0,), (1,)]),
+    ],
+)
+def test_tensordot_with_batched_modes_parameter(
+    backend_fw, shape1, shape2, axes, batched_modes
+):
     import ivy
     from tensorly.tenalg.core_tenalg import tensordot
 
     ivy.set_backend(backend_fw)
-    tensor = ivy.random_uniform(shape=(4, 2, 3, 3))
-    tensor2 = ivy.random_uniform(shape=(3, 4, 2, 3))
-    res = ivy.tensordot(tensor, tensor2, axes=((0, 3), (1, 3)), batched_modes=(1, 2))
+    tensor = ivy.random_uniform(shape=shape1)
+    tensor2 = ivy.random_uniform(shape=shape2)
+    res = ivy.tensordot(tensor, tensor2, axes=axes, batched_modes=batched_modes)
     if backend_fw == "tensorflow":
         tensor = tensor.numpy()
         tensor2 = tensor2.numpy()
-    true_res = tensordot(tensor, tensor2, modes=((0, 3), (1, 3)), batched_modes=(1, 2))
+    true_res = tensordot(tensor, tensor2, modes=axes, batched_modes=batched_modes)
     assert np.allclose(res, true_res)
-    # Check for each sample of the batch-size individually
-    for i in range(2):
-        true_res = tensordot(tensor[:, i], tensor2[:, :, i], modes=((0, 2), (1, 2)))
-        np.allclose(res[i], true_res)
-
-    # Test for actual tensordot
-    tensor = ivy.random_uniform(shape=(4, 3, 3))
-    tensor2 = ivy.random_uniform(shape=(3, 4, 2))
-    res = ivy.tensordot(tensor, tensor2, axes=(), batched_modes=())
-    assert res.shape == (4, 3, 3, 3, 4, 2)
-    res = ivy.tensordot(tensor, tensor2, axes=(), batched_modes=((0,), (1,)))
-    assert res.shape == (4, 3, 3, 3, 2)
 
 
 # trace
