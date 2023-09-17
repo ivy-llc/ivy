@@ -440,6 +440,7 @@ def relu(features, name=None):
     return ivy.relu(features)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu6(features, name=None):
     return ivy.relu6(features)
@@ -503,6 +504,23 @@ def silu(features, beta: float = 1.0):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
+
+
+# Softsign
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def softsign(x, name=None):
+    return ivy.softsign(x)
 
 
 # sufficient_statistics

@@ -9,6 +9,7 @@ versions = {
     "scipy": "1.10.1",
     "paddle": "2.5.1",
     "sklearn": "1.3.0",
+    "xgboost": "1.7.6",
 }
 
 
@@ -90,3 +91,5 @@ def set_frontend_to_specific_version(frontend):
             orig_name = fn_name_from_version_specific_fn_name(i, f_version)
             if orig_name:
                 frontend.__dict__[orig_name] = frontend.__dict__[i]
+
+    return f_version

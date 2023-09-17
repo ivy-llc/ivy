@@ -6,7 +6,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, create_concatenable_arrays_dtypes
 from ivy.functional.ivy.experimental.manipulation import _check_bounds
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 
@@ -246,14 +246,11 @@ def _pad_helper(draw):
                 ),
                 min_size=ndim,
                 max_size=ndim,
+            ).filter(
+                lambda x: all(shape[i] + x[i][0] + x[i][1] >= 0 for i in range(ndim))
             )
         )
-        constant_values = draw(
-            helpers.number(
-                min_value=0,
-                max_value=100,
-            ).filter(lambda _x: ivy.as_ivy_dtype(type(_x)) == dtype[0])
-        )
+        constant_values = draw(helpers.number(min_value=0, max_value=100))
     else:
         pad_width = draw(_st_tuples_or_int(ndim))
         constant_values = draw(_st_tuples_or_int(ndim))
@@ -376,6 +373,60 @@ def _soft_thresholding_data(draw):
     )
     threshold = draw(st.sampled_from([threshold_choice_1, threshold_choice_2]))
     return x_dtype + t_dtype, x, threshold
+
+
+@st.composite
+def _st_col_row_stack_arrays(draw, stack_dim):
+    ndim = draw(st.integers(min_value=2, max_value=5))
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
+    arrays, dtypes = draw(
+        create_concatenable_arrays_dtypes(
+            min_num_dims=ndim,
+            max_num_dims=ndim,
+            min_num_arrays=1,
+            max_num_arrays=3,
+            concat_dim=stack_dim,
+            dtypes=[dtype],
+        )
+    )
+    if ndim == 2:
+        non_stack_dim_len = arrays[0].shape[1 - stack_dim]
+        add_1D = draw(st.booleans())
+        if add_1D:
+            arrays_1D, dtypes_1D = draw(
+                create_concatenable_arrays_dtypes(
+                    min_num_dims=None,
+                    max_num_dims=None,
+                    min_num_arrays=1,
+                    max_num_arrays=2,
+                    concat_dim=None,
+                    dtypes=[dtype],
+                    common_shape=[non_stack_dim_len],
+                )
+            )
+            arrays += arrays_1D
+            dtypes += dtypes_1D
+
+        if non_stack_dim_len == 1:
+            add_0D = draw(st.booleans())
+            if add_0D:
+                arrays_0D, dtypes_0D = draw(
+                    create_concatenable_arrays_dtypes(
+                        min_num_dims=0,
+                        max_num_dims=0,
+                        min_num_arrays=1,
+                        max_num_arrays=2,
+                        concat_dim=None,
+                        dtypes=[dtype],
+                    )
+                )
+                arrays += arrays_0D
+                dtypes += dtypes_0D
+
+    arrays_dtypes = draw(st.permutations(list(zip(arrays, dtypes))))
+    arrays, dtypes = list(zip(*arrays_dtypes))
+
+    return list(arrays), list(dtypes)
 
 
 def _st_tuples_or_int(n_pairs, min_val=0):
@@ -555,6 +606,24 @@ def test_broadcast_shapes(*, shapes, test_flags, backend_fw, fn_name, on_device)
     )
 
 
+# column_stack
+@handle_test(
+    fn_tree="functional.ivy.experimental.column_stack",
+    arrays_dtypes=_st_col_row_stack_arrays(stack_dim=1),
+    test_gradients=st.just(False),
+)
+def test_column_stack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
+    arrays, dtypes = arrays_dtypes
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        arrays=arrays,
+    )
+
+
 # concat_from_sequence
 @handle_test(
     fn_tree="functional.ivy.experimental.concat_from_sequence",
@@ -677,20 +746,25 @@ def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_devic
 @handle_test(
     fn_tree="fill_diagonal",
     dt_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         max_num_dims=4,
         min_dim_size=3,
         max_dim_size=3,
+        num_arrays=2,
     ),
     v=st.sampled_from([1, 2, 3, 10]),
+    v_is_array_like=st.booleans(),
     wrap=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_fill_diagonal(
     *,
     dt_a,
     v,
+    v_is_array_like,
     wrap,
     test_flags,
     backend_fw,
@@ -698,6 +772,8 @@ def test_fill_diagonal(
     on_device,
 ):
     dt, a = dt_a
+    if v_is_array_like:
+        v = a[1]
     helpers.test_function(
         input_dtypes=dt,
         test_flags=test_flags,

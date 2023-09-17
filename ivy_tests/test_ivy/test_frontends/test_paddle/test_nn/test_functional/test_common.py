@@ -6,7 +6,7 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_linear_functions import (  # noqa: E501
-    x_and_linear,
+    _x_and_linear,
 )
 
 
@@ -220,7 +220,7 @@ def paddle_unfold_handler(draw, dtype):
 # linear
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.linear",
-    dtype_x_weight_bias=x_and_linear(
+    dtype_x_weight_bias=_x_and_linear(
         dtypes=helpers.get_dtypes("valid", full=False),
     ),
 )
@@ -303,9 +303,7 @@ def test_paddle_cosine_similarity(
     p=st.floats(min_value=0.0, max_value=1.0),
     axis=st.integers(min_value=0, max_value=1),
     training=st.booleans(),
-    mode=st.one_of(
-        *[st.just(seq) for seq in ["upscale_in_train", "downscale_in_infer"]]
-    ),
+    mode=st.sampled_from(["upscale_in_train", "downscale_in_infer"]),
 )
 def test_paddle_dropout(
     *,

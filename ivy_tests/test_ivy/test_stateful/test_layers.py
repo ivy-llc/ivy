@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
     test_layers as exp_layers_tests,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
-    valid_dct,
+    _valid_dct,
 )
 
 all_constant_initializers = (ivy.Zeros, ivy.Ones)
@@ -893,7 +893,7 @@ def test_conv3d_transpose_layer(
 
 @handle_method(
     method_tree="Dct.__call__",
-    dtype_x_and_args=valid_dct(),
+    dtype_x_and_args=_valid_dct(),
 )
 def test_dct(
     *,
@@ -1115,7 +1115,7 @@ def test_embedding_layer(
 # FFT
 @handle_method(
     method_tree="FFT.__call__",
-    x_and_fft=exp_layers_tests.x_and_fft(),
+    x_and_fft=exp_layers_tests._x_and_fft(),
 )
 def test_fft_layer(
     *,

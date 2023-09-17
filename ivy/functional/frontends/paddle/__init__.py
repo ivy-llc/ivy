@@ -215,25 +215,20 @@ def promote_types_of_paddle_inputs(
     return x1, x2
 
 
-from . import vision
 from . import nn
-from .nn.functional.activation import tanh
-from . import linalg
-from . import fft
-from . import signal
-
-from .tensor.attribute import *
-from .tensor.creation import *
-from .tensor.linalg import *
-from .tensor.logic import *
-from .tensor.manipulation import *
-from .tensor.math import *
-from .tensor.random import *
-from .tensor.search import *
-from .tensor.einsum import *
-from .tensor.stat import *
-
+from . import tensor
 from .tensor.tensor import Tensor
+from . import vision
+from .attribute import *
+from .creation import *
+from .fft import *
+from .linalg import *
+from .logic import *
+from .manipulation import *
+from .math import *
+from .random import *
+from .search import *
+from .stat import *
 
 
 _frontend_array = Tensor
@@ -246,4 +241,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)

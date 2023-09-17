@@ -164,7 +164,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = np.full(new_shape, padding_value)
+            new_array = np.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = np.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -224,13 +224,7 @@ def pad(
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return ivy.native_array(padded)
-
+        return _interior_pad(input, constant_values, pad_width)
     if callable(mode):
         return np.pad(
             _flat_array_to_1_dim_array(input),
@@ -405,7 +399,7 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape[i]
+            shape[i] = int(np.prod(x.shape) / np.prod([s for s in shape if s > 0]))
     return np.broadcast_to(x, tuple(shape))
 
 
@@ -476,10 +470,16 @@ def unique_consecutive(
 
 def fill_diagonal(
     a: np.ndarray,
-    v: Union[int, float],
+    v: Union[int, float, np.ndarray],
     /,
     *,
     wrap: bool = False,
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def column_stack(
+    arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.column_stack(arrays)

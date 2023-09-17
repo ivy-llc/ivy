@@ -38,7 +38,7 @@ jobs:
           comment-id: ${{ github.event.comment.id }}
           body: ${{ steps.template.outputs.result }}
           edit-mode: replace
-  
+
   frontend_pr_commented:
     name: Frontend PR comment
     if: ${{ github.event.issue.pull_request && github.event.comment.body == 'add_frontend_checklist' }}

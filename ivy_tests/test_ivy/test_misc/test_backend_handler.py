@@ -163,7 +163,7 @@ def test_dynamic_backend_setter():
     ivy.unset_backend()
 
     ivy.set_backend("tensorflow", dynamic=True)
-    assert type(a.data) == type_a
+    assert type(a.data) == type_a  # noqa: E721
 
     a.dynamic_backend = True
     assert isinstance(a.data, tf.Tensor)

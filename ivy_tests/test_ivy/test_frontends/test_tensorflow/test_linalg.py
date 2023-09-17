@@ -156,25 +156,6 @@ def _get_hermitian_pos_def_matrix(draw):
     return [input_dtype], hpd
 
 
-# solve
-@st.composite
-def _get_second_matrix(draw):
-    input_dtype_strategy = st.shared(
-        st.sampled_from(draw(helpers.get_dtypes("float"))),
-        key="shared_dtype",
-    )
-    input_dtype = draw(input_dtype_strategy)
-
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    return input_dtype, draw(
-        helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
-        )
-    )
-
-
 @st.composite
 def _get_second_matrix(draw):
     # batch_shape, shared, random_size

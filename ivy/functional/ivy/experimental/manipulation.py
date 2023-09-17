@@ -33,6 +33,51 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+# Helpers #
+# ------- #
+
+
+def _to_tf_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [[pad_width] * 2] * ndim
+    elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
+        pad_width = pad_width * ndim
+    return pad_width
+
+
+def _check_paddle_pad(
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+):
+    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    return isinstance(constant_values, Number) and (
+        mode == "constant"
+        or (
+            (
+                (
+                    mode == "reflect"
+                    and reflect_type == "even"
+                    and all(
+                        pad_width[i][0] < s and pad_width[i][1] < s
+                        for i, s in enumerate(input_shape)
+                    )
+                )
+                or mode in ["edge", "wrap"]
+            )
+            and len(input_shape) <= ndim_limit
+        )
+    )
+
+
+def _to_paddle_padding(pad_width, ndim):
+    if isinstance(pad_width, Number):
+        pad_width = [pad_width] * (2 * ndim)
+    else:
+        if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
+            pad_width = pad_width * ndim
+        pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
+    return pad_width
+
+
 @handle_exceptions
 @handle_nestable
 @handle_partial_mixed_function
@@ -451,8 +496,8 @@ def rot90(
     m
         Input array of two or more dimensions.
     copy
-        boolean indicating whether or not to copy the input array. 
-        If True, the function must always copy. 
+        boolean indicating whether or not to copy the input array.
+        If True, the function must always copy.
         If False, the function must never copy.
         In case copy is False we avoid copying by returning a view of the input array.
     k
@@ -747,14 +792,28 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = padded[left_slice]
+    left_chunk = (
+        left_chunk.astype("float32") if ivy.is_int_dtype(left_chunk) else left_chunk
+    )
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
-    left_stat = ivy.round(left_stat) if "int" in left_chunk.dtype else left_stat
+    left_stat = (
+        ivy.round(left_stat).astype(padded.dtype)
+        if ivy.is_int_dtype(padded)
+        else left_stat
+    )
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = padded[right_slice]
+    right_chunk = (
+        right_chunk.astype("float32") if ivy.is_int_dtype(right_chunk) else right_chunk
+    )
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
-    right_stat = ivy.round(right_stat) if "int" in right_chunk.dtype else right_stat
+    right_stat = (
+        ivy.round(right_stat).astype(padded.dtype)
+        if ivy.is_int_dtype(padded)
+        else right_stat
+    )
     return left_stat, right_stat
 
 
@@ -800,39 +859,39 @@ def _set_reflect_both(padded, axis, width_pair, method, include_edge=False):
 def _set_wrap_both(padded, axis, width_pair):
     left_pad, right_pad = width_pair
     period = padded.shape[axis] - right_pad - left_pad
-    new_left_pad = 0
-    new_right_pad = 0
-    if left_pad > 0:
+    while left_pad > 0:
         right_slice = _slice_at_axis(
             slice(
-                -right_pad - min(period, left_pad),
-                -right_pad if right_pad != 0 else None,
+                -width_pair[1] - min(period, left_pad),
+                -width_pair[1] if width_pair[1] != 0 else None,
             ),
             axis,
         )
         right_chunk = padded[right_slice]
         if left_pad > period:
             pad_area = _slice_at_axis(slice(left_pad - period, left_pad), axis)
-            new_left_pad = left_pad - period
+            left_pad = left_pad - period
         else:
             pad_area = _slice_at_axis(slice(None, left_pad), axis)
+            left_pad = 0
         padded[pad_area] = right_chunk
-    if right_pad > 0:
+    while right_pad > 0:
         left_slice = _slice_at_axis(
             slice(
-                left_pad,
-                left_pad + min(period, right_pad),
+                width_pair[0],
+                width_pair[0] + min(period, right_pad),
             ),
             axis,
         )
         left_chunk = padded[left_slice]
         if right_pad > period:
             pad_area = _slice_at_axis(slice(-right_pad, -right_pad + period), axis)
-            new_right_pad = right_pad - period
+            right_pad = right_pad - period
         else:
             pad_area = _slice_at_axis(slice(-right_pad, None), axis)
+            right_pad = 0
         padded[pad_area] = left_chunk
-    return new_left_pad, new_right_pad, padded
+    return padded
 
 
 def _pad_simple(array, pad_width, fill_value=None):
@@ -966,6 +1025,7 @@ def _check_arguments(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1148,12 +1208,9 @@ def pad(
     )
     if mode == "dilated":
         pad_width = _to_dilated(pad_width, input.ndim)
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return padded
+        if not ivy.is_array(constant_values) or constant_values.dtype != input.dtype:
+            constant_values = ivy.asarray(constant_values, dtype=input.dtype)
+        return _interior_pad(input, constant_values, pad_width)
     pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
@@ -1214,10 +1271,7 @@ def pad(
                 )
     elif mode == "wrap":
         for axis, (left_index, right_index) in zip(axes, pad_width):
-            while left_index > 0 or right_index > 0:
-                left_index, right_index, padded = _set_wrap_both(
-                    padded, axis, (left_index, right_index)
-                )
+            padded = _set_wrap_both(padded, axis, (left_index, right_index))
     return padded
 
 
@@ -1946,7 +2000,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = ivy.full(new_shape, padding_value)
+            new_array = ivy.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -2123,14 +2177,13 @@ def unique_consecutive(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_function
 def fill_diagonal(
     a: Union[ivy.Array, ivy.NativeArray],
-    v: Union[int, float],
+    v: Union[int, float, ivy.Array, ivy.NativeArray],
     /,
     *,
     wrap: bool = False,
@@ -2143,16 +2196,50 @@ def fill_diagonal(
     a
         Array at least 2D.
     v
-        The value to write on the diagonal.
+        Value(s) to write on the diagonal. If val is scalar, the
+        value is written along the diagonal. If array-like, the
+        flattened val is written along the diagonal, repeating if
+        necessary to fill all diagonal entries.
+
     wrap
-        The diagonal ‘wrapped’ after N columns for tall matrices.
+        The diagonal 'wrapped' after N columns for tall matrices.
 
     Returns
     -------
     ret
         Array with the diagonal filled.
     """
-    return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+    shape = a.shape
+    max_end = ivy.prod(ivy.array(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = int(1 + (ivy.cumprod(ivy.array(shape[:-1]), axis=0)).sum())
+    end = int(max_end if end > max_end else end)
+    a = ivy.reshape(a, (-1,))
+    steps = ivy.arange(0, end, step)
+    if isinstance(v, ivy.Array) or isinstance(v, ivy.NativeArray):
+        v = ivy.reshape(v, (-1,)).astype(a.dtype)
+        v = ivy.tile(v, int(ivy.ceil(len(steps) / v.shape[0])))[: len(steps)]
+    else:
+        v = ivy.repeat(v, len(steps))
+    ivy.scatter_flat(steps, v, size=a.shape[0], reduction="replace", out=a)
+    a = ivy.reshape(a, shape)
+    return a
+
+
+fill_diagonal.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_nestable
@@ -2549,7 +2636,6 @@ def choose(
 
     Parameters
     ----------
-
     arr
         The source array.
     choices
@@ -2562,12 +2648,11 @@ def choose(
 
     Returns
     -------
-
     ret
         The returned array has the same shape as `indices`.
+
     Examples
     --------
-
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
                         [20, 21, 22, 23], [30, 31, 32, 33]])
     >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
@@ -2580,3 +2665,70 @@ def choose(
     ivy.array([20, 1, 12, 3])
     """
     return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+
+
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_nestable
+@handle_exceptions
+@handle_device_shifting
+def column_stack(
+    arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Create a new array by horizontally stacking the arrays in arrays.
+
+    Equivalent to `ivy.hstack(arrays)`, except each zero or one dimensional
+    array `x` in arrays is first reshaped into a `(x.size(), 1)` column
+    before being stacked horizontally.
+
+    Parameters
+    ----------
+    arrays
+        Arrays to be stacked.
+    out
+        Output array.
+
+    Returns
+    -------
+    ret
+        Stacked input.
+
+    Examples
+    --------
+    Arrays of different dtypes up to dimension 2.
+    >>> a0 = ivy.array(True)
+    >>> a1 = ivy.array([7])
+    >>> a2 = ivy.array([[11.3, 13.7]])
+    >>> ivy.column_stack((a0, a1, a2))
+    ivy.array([[ 1.        ,  7.        , 11.30000019, 13.69999981]])
+
+    Arrays of dimension 3.
+    >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> b = ivy.array([[[11, 12]], [[13, 14]]])
+    >>> ivy.column_stack((a, b))
+    ivy.array([[[ 1,  2],
+                [ 3,  4],
+                [11, 12]],
+
+               [[ 5,  6],
+                [ 7,  8],
+                [13, 14]]])
+    """
+    arrays = [ivy.reshape(x, shape=(-1, 1)) if x.ndim < 2 else x for x in arrays]
+
+    return ivy.hstack(arrays, out=out)
+
+
+column_stack.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_out_argument",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}

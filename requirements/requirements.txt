@@ -10,3 +10,4 @@ google-auth # mod_name=google.auth
 requests
 pyvis
 dill
+astunparse

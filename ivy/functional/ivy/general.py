@@ -53,6 +53,7 @@ array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
 exception_trace_mode_stack = list()
+inplace_mode_stack = list()
 trace_mode_dict = dict()
 trace_mode_dict["frontend"] = "ivy/functional/frontends"
 trace_mode_dict["ivy"] = "ivy/"
@@ -72,7 +73,7 @@ class PreciseMode:
     """Precise Mode Context Manager."""
 
     # noinspection PyShadowingNames
-    def __init__(self, precise_mode):
+    def __init__(self, precise_mode: bool):
         self._precise_mode = precise_mode
 
     def __enter__(self):
@@ -82,7 +83,6 @@ class PreciseMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_precise_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -173,29 +173,56 @@ class ArrayMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_array_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
 
 def get_referrers_recursive(
-    item, depth=0, max_depth=None, seen_set=None, local_set=None
-):
+    item: object,
+    depth: int = 0,
+    max_depth: int = None,
+    seen_set: set = None,
+    local_set: set = None,
+) -> ivy.Container:
     """
-    Summary.
+    Recursively retrieve referrers for an object.
+
+    This function recursively fetches referrers for the specified `item` up to a given
+    `max_depth`.
 
     Parameters
     ----------
-    item
+    item : object
+        The object for which referrers should be retrieved.
+    depth : int, optional
+        Current depth in the recursion. (default is 0)
+    max_depth : int, optional
+        Maximum depth of recursion. If `None`, there's no depth limit. (default is None)
+    seen_set : set, optional
+        Set of seen referrer IDs to prevent duplicates. (default is None)
+    local_set : set, optional
+        Set of local referrer IDs to avoid redundancy. (default is None)
 
-    depth
-         (Default value = 0)
-    max_depth
-         (Default value = None)
-    seen_set
-         (Default value = None)
-    local_set
-         (Default value = None`)
+    Returns
+    -------
+    ivy.Container
+        A container representing referrers and their sub-referrers, respecting the
+        `max_depth`.
+
+    Examples
+    --------
+    >>> import gc
+    >>> def example_function():
+    ...     obj = [1, 2, 3]
+    ...     return get_referrers_recursive(obj, max_depth=2)
+    >>> result = example_function()
+    >>> print(result)
+    Container(
+        'ref_id_1': Container(
+            'ref_id_2': 'tracked',
+            'ref_id_3': 'tracked'
+        )
+    )
     """
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
@@ -204,6 +231,7 @@ def get_referrers_recursive(
         alphabetical_keys=False,
         keyword_color_dict={"repr": "magenta"},
     )
+
     referrers = [
         ref
         for ref in gc.get_referrers(item)
@@ -212,6 +240,7 @@ def get_referrers_recursive(
             and min([k in ref for k in ["depth", "max_depth", "seen_set", "local_set"]])
         )
     ]
+
     local_set.add(str(id(referrers)))
     for ref in referrers:
         ref_id = str(id(ref))
@@ -219,22 +248,28 @@ def get_referrers_recursive(
             continue
         seen = ref_id in seen_set
         seen_set.add(ref_id)
-        refs_rec = lambda: get_referrers_recursive(
-            ref, depth + 1, max_depth, seen_set, local_set
-        )
+
+        def get_referrers_recursive_inner():
+            return get_referrers_recursive(
+                ref, depth + 1, max_depth, seen_set, local_set
+            )
+
         this_repr = "tracked" if seen else str(ref).replace(" ", "")
+
         if not seen and (not max_depth or depth < max_depth):
             val = ivy.Container(
                 repr=this_repr,
                 alphabetical_keys=False,
                 keyword_color_dict={"repr": "magenta"},
             )
-            refs = refs_rec()
+
+            refs = get_referrers_recursive_inner()
             for k, v in refs.items():
                 val[k] = v
         else:
             val = this_repr
         ret_cont[str(ref_id)] = val
+
     return ret_cont
 
 
@@ -839,9 +874,8 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3])
@@ -979,9 +1013,8 @@ def clip_vector_norm(
     ret
         An array with the vector norm downscaled to the max norm if needed.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
@@ -1068,9 +1101,8 @@ def clip_matrix_norm(
     ret
         An array with the matrix norm downscaled to the max norm if needed.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0., 1., 2.]])
@@ -1353,7 +1385,7 @@ def has_nans(
 
 
 @handle_exceptions
-def exists(x: Any) -> bool:
+def exists(x: Any, /) -> bool:
     """
     Check as to whether the input is None or not.
 
@@ -1460,8 +1492,8 @@ def default(
     ret
         x if x exists (is not None), else default.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :code:`Any` input:
 
     >>> x = None
@@ -1872,24 +1904,28 @@ def einops_rearrange(
 
     Suppose we have a set of 32 images in "h w c" format (height-width-channel)
     and concatenate images along height (vertical axis), 960 = 32 * 30
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
     # Concatenate images along horizontal axis, 1280 = 32 * 40
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
     >>> print(x.shape)
     (30, 1280, 3)
 
     # Reorder axes to "b c h w" format for deep learning
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
     >>> print(x.shape)
     (32, 3, 30, 40)
 
     # Flatten each image into a vector, 3600 = 30 * 40 * 3
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
@@ -1897,6 +1933,7 @@ def einops_rearrange(
 
     # Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
     # 128 = 32 * 2 * 2
+
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c',
     ... h1=2, w1=2)
@@ -2768,9 +2805,8 @@ def get_item(
     ret
         New array with the values gathered at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> print(ivy.get_item(x, query))
@@ -2840,9 +2876,8 @@ def set_item(
     ret
         the array with updated values at the specified indices.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> val = ivy.array([10, 10])
@@ -2917,7 +2952,6 @@ def _numel(shape):
 
 
 def _broadcast_to(input, target_shape):
-    input = ivy.squeeze(input)
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
         return ivy.reshape(input, target_shape)
     else:
@@ -2940,7 +2974,7 @@ def _broadcast_to(input, target_shape):
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-# @handle_device_shifting
+@handle_device_shifting
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3040,6 +3074,79 @@ def inplace_update(
 
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
+
+ivy.inplace_mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+
+
+@handle_exceptions
+def set_inplace_mode(mode: str = "lenient") -> None:
+    """
+    Set the memory management behavior for in-place updates in Ivy.
+
+    By default, Ivy creates new arrays in the backend for in-place updates.
+    However, this behavior can be controlled by the user
+    using the 'inplace_mode' parameter.
+
+    Parameters
+    ----------
+    mode : str
+        The mode for memory management during in-place updates.
+        - 'lenient': (Default) In this mode, new arrays will be created during
+                    in-place updates to avoid breaking existing code.
+                    This is the default behavior.
+        - 'strict': In this mode, an error will be raised if the
+                    'inplace_update' function is called
+                    in a backend that doesn't support inplace updates natively.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    >>> set_inplace_mode('lenient')
+    >>> ivy.inplace_mode
+    'lenient'
+
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    Note
+    ----
+    Enabling strict mode can help users have more control over memory management
+    but may lead to errors if the backend doesn't support inplace updates natively.
+    """
+    global inplace_mode_stack
+    inplace_modes = ["lenient", "strict"]
+    ivy.utils.assertions.check_elem_in_list(
+        mode, inplace_modes, False, f"inplace mode must be one of {inplace_modes}"
+    )
+    inplace_mode_stack.append(mode)
+    ivy.__setattr__("inplace_mode", mode, True)
+
+
+@handle_exceptions
+def unset_inplace_mode() -> None:
+    """
+    Reset the memory management behavior for in-place updates in Ivy to the previous
+    state.
+
+    Examples
+    --------
+    >>> set_inplace_mode('strict')
+    >>> ivy.inplace_mode
+    'strict'
+
+    >>> unset_inplace_mode()
+    >>> ivy.inplace_mode
+    'lenient'
+    """
+    global inplace_mode_stack
+    if inplace_mode_stack:
+        inplace_mode_stack.pop(-1)
+        mode = inplace_mode_stack[-1] if inplace_mode_stack else "lenient"
+        ivy.__setattr__("inplace_mode", mode, True)
 
 
 @handle_exceptions
