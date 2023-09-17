@@ -2794,8 +2794,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.trace. This method Returns the sum
-        along the specified diagonals of a matrix (or a stack of matrices).
+        ivy.Container instance method variant of ivy.trace. This method computes the
+        trace of a matrix (or a stack of matrices) by taking the sum along the specified
+        diagonals.
 
         Parameters
         ----------
@@ -2803,8 +2804,12 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             input container having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices. Should have a floating-point data type.
         offset
-            Offset of the diagonal from the main diagonal. Can be both positive and
-            negative. Defaults to 0.
+            offset specifying the off-diagonal relative to the main diagonal.
+            -   ``offset = 0``: the main diagonal.
+            -   ``offset > 0``: off-diagonal above the main diagonal.
+            -   ``offset < 0``: off-diagonal below the main diagonal.
+
+            Default: ``0``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

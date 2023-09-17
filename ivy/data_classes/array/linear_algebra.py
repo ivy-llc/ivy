@@ -911,8 +911,9 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.trace. This method Returns the sum
-        along the specified diagonals of a matrix (or a stack of matrices).
+        ivy.Array instance method variant of ivy.trace. This method computes the trace
+        of a matrix (or a stack of matrices) by taking the sum along the specified
+        diagonals.
 
         Parameters
         ----------
@@ -920,8 +921,12 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             input array having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices. Should have a floating-point data type.
         offset
-            Offset of the diagonal from the main diagonal. Can be both positive and
-            negative. Defaults to 0.
+            offset specifying the off-diagonal relative to the main diagonal.
+            -   ``offset = 0``: the main diagonal.
+            -   ``offset > 0``: off-diagonal above the main diagonal.
+            -   ``offset < 0``: off-diagonal below the main diagonal.
+
+            Default: ``0``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

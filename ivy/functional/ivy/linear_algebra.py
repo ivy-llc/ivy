@@ -2447,8 +2447,8 @@ def trace(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the sum along the specified diagonals of a matrix (or a stack of matrices)
-    ``x``.
+    Compute the trace of a matrix (or a stack of matrices) by taking the sum along the
+    specified diagonals. ``x``.
 
     **Special cases**
 
@@ -2479,16 +2479,20 @@ def trace(
     Returns
     -------
     ret
-         an array containing the traces and whose shape is determined by removing the
-         last two dimensions and storing the traces in the last array dimension. For
-         example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an
-         output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+        an array containing the traces and whose shape is determined by removing the
+        last two dimensions and storing the traces in the last array dimension. For
+        example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an
+        output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
 
-         ::
+        ::
 
-           out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+        out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
 
-         The returned array must have the same data type as ``x``.
+        The returned array must have the same data type as ``x``.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
