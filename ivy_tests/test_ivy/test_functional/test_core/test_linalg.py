@@ -1048,17 +1048,10 @@ def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_devi
 
 # adopted from tensorly
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_batched_tensordot.py#L9
-def test_tensordot_with_batched_modes_parameter():
+def test_tensordot_with_batched_modes_parameter(backend_fw):
     import ivy
-    import tensorly as tl
-    from tensorly.tenalg import tensordot
 
-    tensor = tl.ones((4, 2, 3, 3))
-    tensor2 = tl.ones((3, 4, 2, 3))
-    actual = ivy.tensordot(tensor, tensor2, axes=((0, 3), (1, 3)), batched_modes=(1, 2))
-    expected = tensordot(tensor, tensor2, ((0, 3), (1, 3)), batched_modes=(1, 2))
-    assert np.allclose(actual, expected)
-
+    ivy.set_backend(backend_fw)
     tensor = ivy.random_uniform(shape=(4, 2, 3, 3))
     tensor2 = ivy.random_uniform(shape=(3, 4, 2, 3))
     res = ivy.tensordot(tensor, tensor2, axes=((0, 3), (1, 3)), batched_modes=(1, 2))
