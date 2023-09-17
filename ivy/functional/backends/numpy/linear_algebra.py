@@ -15,6 +15,7 @@ from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.utils.tensordot_contraction_modes import (
     _get_valid_contraction_modes_for_axes,
     _get_valid_contraction_modes_for_batches,
+    _final_modes,
 )
 from . import backend_version
 
@@ -334,7 +335,6 @@ def tensordot(
             x1.shape, x2.shape, batched_modes
         )
         return _tensordot_with_batched_modes(x1, x2, axes, batched_modes)
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
 
 
@@ -366,23 +366,6 @@ def _tensordot_with_batched_modes(x1, x2, axes, batched_modes):
         res = np.transpose(res, final_modes)
 
     return res
-
-
-def _final_modes(x1, modes1, batch_modes1):
-    final_modes = []
-    n_batches = len(batch_modes1)
-    batch_counter = 0
-    free_counter = 0
-    for i in range(np.ndim(x1)):
-        if i in modes1:
-            continue
-        elif i in batch_modes1:
-            final_modes.append(batch_counter)
-            batch_counter += 1
-        else:
-            final_modes.append(free_counter + n_batches)
-            free_counter += 1
-    return final_modes
 
 
 @_scalar_output_to_0d_array

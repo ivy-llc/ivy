@@ -1,3 +1,6 @@
+import ivy
+
+
 def _get_valid_contraction_modes_for_axes(shape1, shape2, axes):
     if isinstance(axes, int):
         modes1 = list(range(-axes, 0))
@@ -104,3 +107,20 @@ def _make_negative_dims_positive(modes1, modes2, shape1, shape2):
             modes1[i] += ndim1
         if modes2[i] < 0:
             modes2[i] += ndim2
+
+
+def _final_modes(x1, modes1, batch_modes1):
+    final_modes = []
+    n_batches = len(batch_modes1)
+    batch_counter = 0
+    free_counter = 0
+    for i in range(ivy.get_num_dims(x1)):
+        if i in modes1:
+            continue
+        elif i in batch_modes1:
+            final_modes.append(batch_counter)
+            batch_counter += 1
+        else:
+            final_modes.append(free_counter + n_batches)
+            free_counter += 1
+    return final_modes
