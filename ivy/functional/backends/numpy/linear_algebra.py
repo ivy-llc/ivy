@@ -12,6 +12,10 @@ import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.utils.tensordot_contraction_modes import (
+    _get_valid_contraction_modes_for_axes,
+    _get_valid_contraction_modes_for_batches,
+)
 from . import backend_version
 
 
@@ -324,8 +328,61 @@ def tensordot(
     batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    axes = _get_valid_contraction_modes_for_axes(x1.shape, x2.shape, axes)
+    if batched_modes is not None:
+        batched_modes = _get_valid_contraction_modes_for_batches(
+            x1.shape, x2.shape, batched_modes
+        )
+        return _tensordot_with_batched_modes(x1, x2, axes, batched_modes)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
+
+
+def _tensordot_with_batched_modes(x1, x2, axes, batched_modes):
+    modes1, modes2 = axes
+    batch_modes1, batch_modes2 = batched_modes
+    contraction_shape = [s for (i, s) in enumerate(np.shape(x1)) if i in modes1]
+    contraction_dim = np.prod(contraction_shape, dtype=np.int32)
+    batch_shape = [s for (i, s) in enumerate(np.shape(x1)) if i in batch_modes1]
+
+    # We will reorganize x1 to (batch_modes, new_modes1, contraction_modes)
+    new_modes1 = [i for i in range(np.ndim(x1)) if i not in batch_modes1 + modes1]
+    new_shape1 = [np.shape(x1)[i] for i in new_modes1]
+    x1 = np.transpose(x1, batch_modes1 + new_modes1 + modes1)
+    x1 = np.reshape(x1, (*batch_shape, -1, contraction_dim))
+
+    # x2 will be (batch_modes, contraction_modes, new_modes2)
+    new_modes2 = [i for i in range(np.ndim(x2)) if i not in batch_modes2 + modes2]
+    new_shape2 = [np.shape(x2)[i] for i in new_modes2]
+    x2 = np.transpose(x2, batch_modes2 + modes2 + new_modes2)
+    x2 = np.reshape(x2, (*batch_shape, contraction_dim, -1))
+
+    res = np.matmul(x1, x2)
+    res = np.reshape(res, (*batch_shape, *new_shape1, *new_shape2))
+
+    final_modes = _final_modes(x1, modes1, batch_modes1)
+    final_modes += [i for i in range(res.ndim) if i not in final_modes]
+    if final_modes:
+        res = np.transpose(res, final_modes)
+
+    return res
+
+
+def _final_modes(x1, modes1, batch_modes1):
+    final_modes = []
+    n_batches = len(batch_modes1)
+    batch_counter = 0
+    free_counter = 0
+    for i in range(np.ndim(x1)):
+        if i in modes1:
+            continue
+        elif i in batch_modes1:
+            final_modes.append(batch_counter)
+            batch_counter += 1
+        else:
+            final_modes.append(free_counter + n_batches)
+            free_counter += 1
+    return final_modes
 
 
 @_scalar_output_to_0d_array
