@@ -221,16 +221,10 @@ def less_equal(x1, x2, /):
     return ivy.less_equal(x1, x2)
 
 
+# logicend
 @to_ivy_arrays_and_back
-# known issue in jnp's documentation of arguments
-# https://github.com/google/jax/issues/9119
 def logical_and(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
-    if x1.dtype == "complex128" or x2.dtype == "complex128":
-        x1 = ivy.astype(x1, ivy.complex128)
-        x2 = ivy.astype(x2, ivy.complex128)
-    else:
-        x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.logical_and(x1, x2)
 
 
