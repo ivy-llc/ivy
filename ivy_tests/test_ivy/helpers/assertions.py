@@ -84,6 +84,28 @@ def assert_same_type_and_shape(values, this_key_chain=None):
             ), "returned dtype = {}, ground-truth returned dtype = {}".format(x_d, y_d)
 
 
+def assert_same_type(ret_from_target, ret_from_gt, backend_to_test, gt_backend):
+    """
+    Assert that the return types from the target and ground truth frameworks are the
+    same.
+
+    checks with a string comparison because with_backend returns
+    different objects. Doesn't check recursively.
+    """
+
+    def _assert_same_type(x, y):
+        assert_msg = (
+            f"ground truth backend ({gt_backend}) returned"
+            f" {type(y)} but target backend ({backend_to_test}) returned"
+            f" {type(x)}"
+        )
+        assert str(type(x)) == str(type(y)), assert_msg
+
+    ivy.nested_multi_map(
+        lambda x, _: _assert_same_type(x[0], x[1]), [ret_from_target, ret_from_gt]
+    )
+
+
 def value_test(
     *,
     ret_np_flat,

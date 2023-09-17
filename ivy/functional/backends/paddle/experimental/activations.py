@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 import paddle
 import paddle.nn.functional as F
 
@@ -10,9 +10,16 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
-def logit(x: paddle.Tensor, /, *, eps: Optional[float] = None, out=None):
+def logit(
+    x: paddle.Tensor,
+    /,
+    *,
+    eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out=None,
+):
     if x.dtype in [paddle.float32, paddle.float64]:
         return paddle.logit(x, eps)
     if eps is None:
@@ -47,7 +54,12 @@ def thresholded_relu(
     )
 
 
-def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
+def relu6(
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.relu6(x)
     if paddle.is_complex(x):
@@ -55,15 +67,18 @@ def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return F.relu6(x.cast("float32")).cast(x.dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
+)
 def logsigmoid(
-    input: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    input: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if input.dtype in [paddle.float32, paddle.float64]:
         return F.log_sigmoid(input)
     if paddle.is_complex(input):
         return paddle_backend.log(
             paddle_backend.divide(
-                1.0, (paddle_backend.add(1.0, paddle_backend.exp(input)))
+                1.0, (paddle_backend.add(1.0, paddle_backend.exp(-input)))
             )
         )
     return F.log_sigmoid(input.cast("float32")).cast(input.dtype)
