@@ -783,8 +783,8 @@ class Gini(ClassificationCriterion):
 
     The Gini Index is then defined as:
 
-        index = sum_{k=0}^{K-1} count_k (1 - count_k)
-              = 1 - sum_{k=0}^{K-1} count_k ** 2
+        index = \sum_{k=0}^{K-1} count_k (1 - count_k)
+              = 1 - \sum_{k=0}^{K-1} count_k ** 2
     """
 
     def node_impurity(self):
