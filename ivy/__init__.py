@@ -83,6 +83,14 @@ class CPTensor:
     pass
 
 
+class Parafac2Tensor:
+    pass
+
+  
+class TTTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -439,7 +447,7 @@ class Shape(Sequence):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
         if kwargs:
-            raise TypeError("Unknown argument: %s" % kwargs)
+            raise TypeError(f"Unknown argument: {kwargs}")
         if rank is None:
             return Shape(None)
         else:
@@ -758,7 +766,8 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor
+from .data_classes.factorized_tensor import TuckerTensor, CPTensor, Parafac2Tensor
+from .data_classes.factorized_tensor import TuckerTensor, CPTensor, TTTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
@@ -787,6 +796,12 @@ from ivy.utils.inspection import fn_array_spec, add_array_specs
 add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
+
+try:
+    from .engines import XLA as xla
+    from .engines import ivy2xla
+except:
+    pass
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722

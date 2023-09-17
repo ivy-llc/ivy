@@ -70,3 +70,26 @@ def soft_margin_loss(
         return np.sum(loss)
     else:
         return loss
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("bool", "bfloat16")}, backend_version)
+@_scalar_output_to_0d_array
+def kl_div(
+    input: np.ndarray,
+    target: np.ndarray,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> np.ndarray:
+    size = np.shape(input)
+
+    loss = np.sum(input * np.log(input / target), axis=-1)
+
+    if reduction == "mean":
+        loss = np.mean(loss)
+    elif reduction == "sum":
+        loss = np.sum(loss)
+    elif reduction == "batchmean":
+        loss = np.divide(np.sum(loss), size[0])
+
+    return loss

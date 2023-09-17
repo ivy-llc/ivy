@@ -116,7 +116,7 @@ Mixed Functions
 ---------------
 ---------------
 
-Sometimes, a function may only be provided by some of the supported backends. In this case, we have to take a mixed approach. We should always have a backend-specific implementation if there is a similar function provided by a certain backend. This maximises runtime efficiency, as the function in the backend will be implemented directly in C or C++. Such functions have some backend-specific implementations in :mod:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends. To support backends that do not have a backend-specific implementation, a compositional implementation is also provided in :mod:`ivy/functional/ivy/category_name.py`. Compositional functions should only be used when there is no similar function to wrap in the backend. 
+Sometimes, a function may only be provided by some of the supported backends. In this case, we have to take a mixed approach. We should always have a backend-specific implementation if there is a similar function provided by a certain backend. This maximises runtime efficiency, as the function in the backend will be implemented directly in C or C++. Such functions have some backend-specific implementations in :mod:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends. To support backends that do not have a backend-specific implementation, a compositional implementation is also provided in :mod:`ivy/functional/ivy/category_name.py`. Compositional functions should only be used when there is no similar function to wrap in the backend.
 
 Because these functions include both a compositional implementation and also at least one backend-specific implementation, these functions are referred to as *mixed*.
 
