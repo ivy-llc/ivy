@@ -96,10 +96,10 @@ def _from_ivy_array_to_torch_frontend_tensor(
 ):
     if nested:
         return ivy.nested_map(
-            x,
             functools.partial(
                 _from_ivy_array_to_torch_frontend_tensor, requires_grad=requires_grad
             ),
+            x,
             include_derived,
             shallow=False,
         )
@@ -145,10 +145,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             )
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, args, include_derived={"tuple": True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, kwargs, include_derived={"tuple": True}, shallow=False
         )
         return fn(*new_args, **new_kwargs)
 
@@ -297,10 +297,10 @@ def to_ivy_shape(fn: Callable) -> Callable:
         # if any of the args are instance of torch_frontend.Size,
         # convert them to ivy.Shape.
         new_args = ivy.nested_map(
-            args,
             lambda x: (
                 x.ivy_shape if isinstance(x, ivy.functional.frontends.torch.Size) else x
             ),
+            args,
             shallow=False,
         )
         return fn(*new_args, **new_kwargs)
