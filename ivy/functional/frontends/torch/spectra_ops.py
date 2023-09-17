@@ -6,12 +6,12 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch import promote_types_of_torch_inputs
 
 
+
 @to_ivy_arrays_and_back
-def stft(input):
-    if len(ivy.shape(input)) > 2:
-        raise ivy.exceptions.IvyError(
-            "stft(): expected input to have two or fewer dimensions but got an"
-            f" input with {ivy.shape(input)} dimansions"
-        )
-    return ivy.stft(input, y=None, rowvar=True)
-        
+def stft(signals, frame_length, frame_step,
+         fft_length=None, window_fn=None, pad_end=False, name=None,
+         ):
+    signals = ivy.asarray(signals)
+    return ivy.stft(signals, frame_length, frame_step, fft_length=fft_length,
+                    window_fn=window_fn, pad_end=pad_end, name=name,
+                   )
