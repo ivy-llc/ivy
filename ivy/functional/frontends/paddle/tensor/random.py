@@ -41,7 +41,7 @@ def randn(shape, dtype=None, name=None):
     "paddle",
 )
 
-@to_ivy_arrays_and_back
+
 def randperm(n, dtype=ivy.int64,name=None):
         arr = ivy.arange(n, dtype=dtype)
         ret = ivy.shuffle(arr)
