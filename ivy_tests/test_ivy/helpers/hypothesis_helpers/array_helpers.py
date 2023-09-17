@@ -669,13 +669,13 @@ def dtype_values_axis(
     Examples
     --------
     >>> dtype_values_axis()
-    (['int16'], [array(29788, dtype=int16)])
+    (['int16'], [array(29788, dtype=int16)], 0)
 
     >>> dtype_values_axis()
-    (['complex128'], [array(1.62222885e+156-2.68281172e-257j)])
+    (['complex128'], [array(1.62222885e+156-2.68281172e-257j)], -1)
 
     >>> dtype_values_axis()
-    (['float64'], [array(-1.40129846e-45)])
+    (['float64'], [array(-1.40129846e-45)], 3)
 
     >>> dtype_values_axis(
     ...     available_dtypes=get_dtypes("numeric"),

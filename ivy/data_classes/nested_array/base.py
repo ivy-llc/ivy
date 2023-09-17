@@ -218,7 +218,7 @@ class NestedArrayBase(abc.ABC):
 
     def ragged_map(self, fn):
         arg = ivy.copy_nest(self._data)
-        ivy.nested_map(arg, lambda x: fn(x), shallow=True)
+        ivy.nested_map(lambda x: fn(x), arg, shallow=True)
         # infer dtype, shape, and device from the first array in the ret data
         arr0_id = ivy.nested_argwhere(arg, ivy.is_ivy_array, stop_after_n_found=1)[0]
         arr0 = ivy.index_nest(arg, arr0_id)
