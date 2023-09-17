@@ -10,7 +10,7 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
 
 
@@ -536,22 +536,11 @@ def svdvals(
     return paddle_backend.svd(x)[1]
 
 
-@with_unsupported_device_and_dtypes(
+@with_supported_dtypes(
     {
-        "2.5.1 and below": {
-            "cpu": (
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "unsigned",
-                    "float16",
-                    "float64",
-                    "bfloat16",
-                    "complex",
-                    "bool",
-            )
-        }
+        "2.5.1 and below": (
+             "float32",
+        )
     },
     backend_version,
 )
@@ -563,6 +552,7 @@ def tensordot(
         axes: Union[int, Tuple[List[int], List[int]]] = 2,
         out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = paddle.tensordot(x1, x2, axes=axes)
     return ret.squeeze() if x1.ndim == axes else ret
 

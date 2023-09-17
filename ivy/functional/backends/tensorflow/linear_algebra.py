@@ -574,19 +574,8 @@ def svdvals(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": (
-        "complex",
-        "float16",
-        "float64",
-        "bfloat16",
-        "int8",
-        "int16",
-        "int32",
-        "int64",
-        "uint8",
-        "uint16",
-        "uint32",
-        "uint64",
+@with_supported_dtypes({"2.13.0 and below": (
+        "float32",
 )}, backend_version)
 def tensordot(
         x1: Union[tf.Tensor, tf.Variable],
@@ -596,7 +585,8 @@ def tensordot(
         axes: Union[int, Tuple[List[int], List[int]]] = 2,
         out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.tensordot(x1, x2, axes=axes)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
     return ret
 
 

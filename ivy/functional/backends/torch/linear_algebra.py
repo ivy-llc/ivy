@@ -424,20 +424,9 @@ svdvals.support_native_out = True
 
 # ToDo: re-add int32 support once
 # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-@with_unsupported_dtypes({
+@with_supported_dtypes({
     "2.0.1 and below": (
-            "complex",
-            "bfloat16",
-            "float16",
-            "float64",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
+            "float32",
     )
 }, backend_version)
 def tensordot(
@@ -448,12 +437,13 @@ def tensordot(
         axes: Union[int, Tuple[List[int], List[int]]] = 2,
         out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     # handle tensordot for axes==0
     # otherwise call with axes
     if axes == 0:
-        ret = (x1.reshape(x1.size() + (1,) * x2.dim()) * x2)
+        ret = (x1.reshape(x1.size() + (1,) * x2.dim()) * x2).type(dtype)
     else:
-        ret = torch.tensordot(x1, x2, dims=axes)
+        ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
     return ret
 
 
