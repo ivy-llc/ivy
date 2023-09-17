@@ -1,9 +1,10 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from functools import reduce as _reduce
+import math
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 
 try:
     import functorch

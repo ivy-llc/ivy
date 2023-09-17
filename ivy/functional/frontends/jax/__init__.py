@@ -7,7 +7,7 @@ from . import config
 from . import array
 from .array import *
 from . import general_functions
-from .general_functions import ivy
+from .general_functions import *
 from . import lax
 from . import nn
 from . import numpy

@@ -3672,7 +3672,6 @@ def test_numpy_ndarray_view(
         on_device=on_device,
     )
 
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -3691,7 +3690,7 @@ def test_numpy_instance_ilshift__(
     method_flags,
     frontend,
     on_device,
-):
+):  
     input_dtypes, x = dtype_and_x
     max_bits = np.iinfo(input_dtypes[0]).bits
     max_shift = max_bits - 1
