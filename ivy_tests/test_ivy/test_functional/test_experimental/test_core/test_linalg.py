@@ -382,6 +382,31 @@ def _get_dtype_value1_value2_cov(
 
 # intialize tucker
 @st.composite
+def _initialize_parafac2_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=4,
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    rank = draw(helpers.ints(min_value=1, max_value=10))
+
+    return (
+        x_dtype,
+        x,
+        rank,
+    )
+
+
+# intialize tucker
+@st.composite
 def _initialize_tucker_data(draw):
     x_dtype, x, shape = draw(
         helpers.dtype_and_values(
@@ -1032,6 +1057,50 @@ def test_general_inner_product(*, data, test_flags, backend_fw, fn_name, on_devi
         b=x[1],
         n_modes=n_modes,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.initialize_parafac2",
+    data=_initialize_parafac2_data(),
+    test_with_out=st.just(False),
+)
+def test_initialize_parafac2(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, rank = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    weights = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    projections = helpers.flatten_and_to_np(ret=ret_np[2], backend=backend_fw)
+
+    weights_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+    projections_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[2], backend=test_flags.ground_truth_backend
+    )
+
+    for w, w_gt in zip(weights, weights_gt):
+        assert np.prod(w.shape) == np.prod(w_gt.shape)
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+    for p, p_gt in zip(projections, projections_gt):
+        assert np.prod(p.shape) == np.prod(p_gt.shape)
 
 
 @handle_test(

@@ -2021,3 +2021,121 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_initialize_parafac2(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[
+                Literal["svd", "random"],
+                ivy.CPTensor,
+                ivy.Parafac2Tensor,
+                ivy.TuckerTensor,
+                ivy.Container,
+            ]
+        ] = "svd",
+        svd: Optional[
+            Optional[Union[Literal["truncated_svd"], ivy.Container]]
+        ] = "truncated_svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[Sequence[ivy.Container], ivy.Container]:
+        """
+        Initiate a random PARAFAC2 decomposition given rank and tensor slices.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            number of components
+        init
+            initialization scheme for parafac decomposition.
+        svd
+            function to use to compute the SVD
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+
+        Returns
+        -------
+        parafac2_tensor : Parafac2Tensor
+            List of initialized factors of the CP decomposition where element `i`
+            is of shape (tensor.shape[i], rank)
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "initialize_parafac2",
+            x,
+            rank,
+            init=init,
+            svd=svd,
+            seed=seed,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def initialize_parafac2(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[
+                Literal["svd", "random"],
+                ivy.CPTensor,
+                ivy.Parafac2Tensor,
+                ivy.TuckerTensor,
+                ivy.Container,
+            ]
+        ] = "svd",
+        svd: Optional[
+            Optional[Union[Literal["truncated_svd"], ivy.Container]]
+        ] = "truncated_svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[Sequence[ivy.Container], ivy.Container]:
+        """
+        Initiate a random PARAFAC2 decomposition given rank and tensor slices.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            number of components
+        init
+            initialization scheme for parafac decomposition.
+        svd
+            function to use to compute the SVD
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+
+        Returns
+        -------
+        parafac2_tensor : Parafac2Tensor
+            List of initialized factors of the CP decomposition where element `i`
+            is of shape (tensor.shape[i], rank)
+        """
+        return self.static_intialize_parafac2(
+            self,
+            rank,
+            init=init,
+            svd=svd,
+            seed=seed,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

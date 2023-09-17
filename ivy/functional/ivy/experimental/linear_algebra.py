@@ -1753,3 +1753,456 @@ def general_inner_product(
         ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
     )
     return ivy.reshape(inner_product, output_shape, out=out)
+
+
+def _compute_projections(
+    x,
+    factors,
+    svd,
+):
+    n_eig = factors[0].shape[1]
+    out = []
+
+    for A, tensor_slice in zip(factors[0], x):
+        lhs = ivy.dot(factors[1], ivy.permute_dims(A * factors[2], (1, 0)))
+        rhs = ivy.permute_dims(tensor_slice, (1, 0))
+        U, _, Vh = _svd_interface(ivy.dot(lhs, rhs), n_eigenvecs=n_eig, method=svd)
+
+        out.append(ivy.permute_dims(ivy.dot(U, Vh), (1, 0)))
+
+    return out
+
+
+def _project_tensor_slices(x, projections):
+    slices = []
+
+    for t, p in zip(x, projections):
+        slices.append(ivy.dot(ivy.permute_dims(p, (1, 0)), t))
+
+    return ivy.stack(slices)
+
+
+def _parafac2_reconstruction_error(
+    x, decomposition, norm_matrices=None, projected_tensor=None
+):
+    """
+    Calculate the reconstruction error of the PARAFAC2 decomposition.
+    This implementation uses the inner product with each matrix for
+    efficiency, as this avoids needing to reconstruct the tensor.
+    This is based on the property that:
+
+    .. math::
+
+        ||tensor - rec||^2 = ||tensor||^2 + ||rec||^2 - 2*<tensor, rec>
+
+    Parameters
+    ----------
+    x
+        Either a third order tensor or a
+        list of second order tensors that may
+        have different number of rows.
+    decomposition
+        * weights
+            1D array of shape (rank, )
+            weights of the (normalized) factors
+        * factors
+            List of factors of the CP decomposition element `i` is of shape
+            (tensor.shape[i], rank)
+        * projections
+            List of projection matrices used to create evolving factors.
+    norm_matrices
+        The norm of the data. This can be optionally provided to
+        avoid recalculating it.
+    projected_tensor
+        The projections of X into an aligned tensor for CP decomposition.
+        This can be optionally provided to avoid recalculating it.
+
+    Returns
+    -------
+    error
+        The norm of the reconstruction error of the PARAFAC2 decomposition.
+    """
+    ivy.Parafac2Tensor.validate_parafac2_tensor(decomposition)
+
+    if norm_matrices is None:
+        norm_X_sq = sum(ivy.sqrt(ivy.sum(ivy.square(t_slice, 2))) ** 2 for t_slice in x)
+    else:
+        norm_X_sq = norm_matrices**2
+
+    weights, (A, B, C), projections = decomposition
+    if weights is not None:
+        A = A * weights
+
+    norm_cmf_sq = 0
+    inner_product = 0
+    CtC = ivy.dot(ivy.permute_dims(C, (1, 0)), C)
+
+    for i, t_slice in enumerate(x):
+        B_i = (projections[i] @ B) * A[i]
+
+        if projected_tensor is None:
+            tmp = ivy.dot(ivy.permute_dims(B_i, (1, 0)), t_slice)
+        else:
+            tmp = (
+                ivy.reshape(A[i], (-1, 1))
+                * ivy.permute_dims(B, (1, 0))
+                @ projected_tensor[i]
+            )
+
+        inner_product += ivy.trace(ivy.dot(tmp, C))
+
+        norm_cmf_sq += ivy.sum((ivy.permute_dims(B_i, (1, 0)) @ B_i) * CtC)
+
+    return ivy.sqrt(norm_X_sq - 2 * inner_product + norm_cmf_sq)
+
+
+# This function has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_parafac2.py#L22
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def initialize_parafac2(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: Sequence[int],
+    /,
+    *,
+    init: Optional[
+        Union[
+            Literal["svd", "random"], ivy.CPTensor, ivy.Parafac2Tensor, ivy.TuckerTensor
+        ]
+    ] = "svd",
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    seed: Optional[int] = None,
+) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
+    """
+    Initiate a random PARAFAC2 decomposition given rank and tensor slices.
+
+    Parameters
+    ----------
+    x
+        input tensor
+    rank
+        number of components
+    init
+        initialization scheme for parafac decomposition.
+    svd
+        function to use to compute the SVD
+    seed
+        Used to create a random seed distribution
+        when init == 'random'
+
+    Returns
+    -------
+    parafac2_tensor : Parafac2Tensor
+        List of initialized factors of the CP decomposition where element `i`
+        is of shape (tensor.shape[i], rank)
+    """
+    shapes = [m.shape for m in x]
+
+    if init == "random":
+        return ivy.random_parafac2(
+            shapes, rank, full=False, seed=seed, dtype=x[0].dtype
+        )
+    elif init == "svd":
+        A = ivy.ones(shape=(len(x), rank), dtype=x[0].dtype)
+        unfolded_mode_2 = ivy.permute_dims(ivy.concat(list(x), axis=0), (1, 0))
+        if ivy.shape(unfolded_mode_2)[0] < rank:
+            raise ValueError(
+                f"Cannot perform SVD init if rank ({rank}) is greater than the number"
+                f" of columns in each tensor slice ({ivy.shape(unfolded_mode_2)[0]})"
+            )
+        C = _svd_interface(unfolded_mode_2, n_eigenvecs=rank, method=svd)[0]
+        B = ivy.eye(rank, dtype=x[0].dtype)
+        projections = _compute_projections(x, (A, B, C), svd)
+        return ivy.Parafac2Tensor((None, [A, B, C], projections))
+
+    elif isinstance(init, (tuple, list, ivy.Parafac2Tensor, ivy.CPTensor)):
+        try:
+            decomposition = ivy.Parafac2Tensor.from_CPTensor(
+                init, parafac2_tensor_ok=True
+            )
+        except ValueError:
+            raise ValueError(
+                "If initialization method is a mapping, then it must "
+                "be possible to convert it to a Parafac2Tensor instance"
+            )
+        if decomposition.rank != rank:
+            raise ValueError("Cannot init with a decomposition of different rank")
+        return decomposition
+    raise ValueError(f'Initialization method "{init}" not recognized')
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def parafac2(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: Optional[Sequence[int]] = None,
+    /,
+    *,
+    n_iter_max: Optional[int] = 2000,
+    init: Optional[
+        Union[Literal["svd", "random"], ivy.CPTensor, ivy.Parafac2Tensor]
+    ] = "random",
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    normalize_factors: Optional[bool] = False,
+    tol: Optional[float] = 1e-8,
+    absolute_tol: Optional[float] = 1e-13,
+    nn_modes: Optional[Union[Literal["all"], int]] = None,
+    seed: Optional[int] = None,
+    verbose: Optional[bool] = False,
+    return_errors: Optional[bool] = False,
+    n_iter_parafac: Optional[int] = 5,
+):
+    """
+    PARAFAC2 decomposition [1]_ of a third order tensor via alternating least squares
+    (ALS) Computes a rank-`rank` PARAFAC2 decomposition of the third-order tensor
+    defined by tensor_slices`. The decomposition is on the form :math:`(A [B_i] C)` such
+    that the i-th frontal slice, :math:`X_i`, of :math:`X` is given by.
+
+    .. math::
+
+        X_i = B_i diag(a_i) C^T,
+
+    where :math:`diag(a_i)` is the diagonal matrix whose nonzero entries
+    are equal to the :math:`i`-th row of the :math:`I times R` factor
+    matrix :math:`A`, :math:`B_i` is a :math:`J_i times R` factor matrix
+    such that the cross product matrix :math:`B_{i_1}^T B_{i_1}` is constant
+    for all :math:`i`, and :math:`C` is a :math:`K times R` factor matrix.
+    To compute this decomposition, we reformulate the expression for
+    :math:`B_i` such that
+
+    .. math::
+
+        B_i = P_i B,
+
+    where :math:`P_i` is a :math:`J_i times R` orthogonal matrix
+    and :math:`B` is a :math:`R times R` matrix.
+
+
+    An alternative formulation of the PARAFAC2 decomposition is that
+    the tensor element :math:`X_{ijk}` is given by
+
+    .. math::
+
+        X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
+
+    with the same constraints hold for :math:`B_i` as above.
+
+
+    Parameters
+    ----------
+    x
+        Either a third order tensor or a list of second order tensors
+        that may have different number of rows. Note that the second
+        mode factor matrices are allowed to change over the first
+        mode, not the third mode as some other implementations use
+        (see note below).
+    rank
+        Number of components.
+    n_iter_max
+        Maximum number of iteration
+    init
+        Type of factor matrix initialization.
+    svd
+        function to use to compute the SVD,
+        acceptable values in tensorly.SVD_FUNS
+    normalize_factors
+        If True, aggregate the weights of each
+        factor in a 1D-tensor of shape (rank, ),
+        which will contain the norms of the factors.
+        Note that there may be some inaccuracies in
+        the component weights.
+    tol
+        Relative reconstruction error decrease tolerance.
+        The algorithm is considered to have converged when
+        :math:`left|| X - hat{X}_{n-1} |^2 - | X -
+        hat{X}_{n} |^2right| < epsilon | X - hat{X}_{n-1} |^2`.
+        That is, when the relative change in sum of squared
+        error is less than the tolerance.
+        .. versionchanged:: 0.6.1
+            Previously, the stopping condition was
+            :math:`left|| X - hat{X}_{n-1} | - | X -
+            hat{X}_{n} |right| < epsilon`.
+    absolute_tol
+        Absolute reconstruction error tolearnce.
+        The algorithm is considered to have
+        converged when :math:`left|| X -
+        hat{X}_{n-1} |^2 - | X - hat{X}_{n} |^2right| < epsilon_text{abs}`.
+        That is, when the relative sum of squared error is less than the
+        specified tolerance. The absolute tolerance is necessary for
+        stopping the algorithm when used on noise-free data that follows
+        the PARAFAC2 constraint.
+        If None, then the machine precision +
+        1000 will be used.
+    nn_modes
+        Used to specify which modes to impose
+        non-negativity constraints on. We cannot impose non-negativity
+        constraints on the the B-mode (mode 1) with the ALS algorithm,
+        so if this mode is among the constrained modes, then a warning
+        will be shown
+    seed
+
+    verbose
+        Level of verbosity
+    return_errors
+        Activate return of iteration errors
+    n_iter_parafac
+        Number of PARAFAC iterations to perform
+        for each PARAFAC2 iteration
+
+    Returns
+    -------
+    Parafac2Tensor
+        * weights : 1D array of shape (rank, )
+            all ones if normalize_factors is False (default),
+            weights of the (normalized) factors otherwise
+        * factors : List of factors of the CP decomposition element `i` is of shape
+            (tensor.shape[i], rank)
+        * projection_matrices : List of projection matrices used to create evolving
+            factors.
+
+    errors
+        A list of reconstruction errors at each iteration of the algorithms.
+
+    References
+    ----------
+    .. [1] Kiers, H.A.L., ten Berge, J.M.F. and Bro, R. (1999),
+            PARAFAC2—Part I. A direct fitting algorithm for the PARAFAC2 model.
+            J. Chemometrics, 13: 275-294.
+
+    Notes
+    -----
+    This formulation of the PARAFAC2 decomposition is slightly different from the
+    one in [1]_. The difference lies in that here, the second mode changes over
+    the first mode, whereas in [1]_, the second mode changes over the third mode.
+    We made this change since that means that the function accept both lists of
+    matrices and a single nd-array as input without any reordering of the modes.
+
+    Because of the reformulation above, :math:`B_i = P_i B`, the :math:`B_i` matrices
+    cannot be constrained to be non-negative with ALS. If this mode is constrained to be
+    non-negative, then :math:`B` will be non-negative, but not the orthogonal `P_i`
+    matrices. Consequently, the `B_i` matrices are unlikely to be non-negative.
+    """
+    weights, factors, projections = ivy.initialize_parafac2(
+        x, rank, init=init, svd=svd, seed=seed
+    )
+
+    rec_errors = []
+    norm_tensor = ivy.sqrt(
+        sum(ivy.sqrt(ivy.sum(ivy.square(tensor_slice))) ** 2 for tensor_slice in x)
+    )
+
+    if absolute_tol is None:
+        absolute_tol = ivy.eps(factors[0].dtype) * 1000
+
+    # If nn_modes is set, we use HALS, otherwise, we use the standard parafac
+    # implementation.
+    if nn_modes is None:
+
+        def parafac_updates(X, w, f):
+            pass
+            # Uncomment when parafac  is implemented
+            # return ivy.parafac(
+            #     X,
+            #     rank,
+            #     n_iter_max=n_iter_parafac,
+            #     init=(w, f),
+            #     svd=svd,
+            #     orthogonalise=False,
+            #     verbose=verbose,
+            #     return_errors=False,
+            #     normalize_factors=False,
+            #     mask=None,
+            #     random_state=random_state,
+            #     tol=1e-100,
+            # )[1]
+
+    else:
+        if nn_modes == "all" or 1 in nn_modes:
+            print(
+                "Mode `1` of PARAFAC2 fitted with ALS cannot be constrained to be truly"
+                " non-negative. See the documentation for more info."
+            )
+
+        def parafac_updates(X, w, f):
+            # Uncomment when non_negative_parafac_hals is implemented
+            # return non_negative_parafac_hals(
+            #     X,
+            #     rank,
+            #     n_iter_max=n_iter_parafac,
+            #     init=(w, f),
+            #     svd=svd,
+            #     nn_modes=nn_modes,
+            #     verbose=verbose,
+            #     return_errors=False,
+            #     tol=1e-100,
+            # )[1]
+            pass
+
+    for iteration in range(n_iter_max):
+        if verbose:
+            print("Starting iteration", iteration)
+        factors[1] = factors[1] * ivy.reshape(weights, (1, -1))
+        weights = ivy.ones(weights.shape, dtype=x[0].dtype)
+
+        projections = _compute_projections(x, factors, svd)
+        projected_tensor = _project_tensor_slices(x, projections)
+        factors = parafac_updates(projected_tensor, weights, factors)
+
+        if normalize_factors:
+            new_factors = []
+            for factor in factors:
+                norms = ivy.sqrt(ivy.sum(ivy.square(factor, axis=0), axis=0))
+                norms = ivy.where(
+                    ivy.abs(norms) <= ivy.eps(factor.dtype),
+                    ivy.ones(ivy.shape(norms), dtype=factors[0].dtype),
+                    norms,
+                )
+
+                weights = weights * norms
+                new_factors.append(factor / (ivy.reshape(norms, (1, -1))))
+
+            factors = new_factors
+
+        if tol:
+            rec_error = _parafac2_reconstruction_error(
+                x,
+                (weights, factors, projections),
+                norm_tensor,
+                projected_tensor,
+            )
+            rec_error /= norm_tensor
+            rec_errors.append(rec_error)
+
+            if iteration >= 1:
+                if verbose:
+                    print(
+                        f"PARAFAC2 reconstruction error={rec_errors[-1]},"
+                        f" variation={rec_errors[-2] - rec_errors[-1]}."
+                    )
+
+                if (
+                    abs(rec_errors[-2] ** 2 - rec_errors[-1] ** 2)
+                    < (tol * rec_errors[-2] ** 2)
+                    or rec_errors[-1] ** 2 < absolute_tol
+                ):
+                    if verbose:
+                        print(f"converged in {iteration} iterations.")
+                    break
+            else:
+                if verbose:
+                    print(f"PARAFAC2 reconstruction error={rec_errors[-1]}")
+
+    parafac2_tensor = ivy.Parafac2Tensor((weights, factors, projections))
+
+    if return_errors:
+        return parafac2_tensor, rec_errors
+    else:
+        return parafac2_tensor

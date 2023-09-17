@@ -784,3 +784,197 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             [2, 3, 4, 5]])
         """
         return ivy.general_inner_product(self, b, n_modes, out=out)
+
+    def initialize_parafac2(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Sequence[int],
+        /,
+        *,
+        init: Optional[
+            Union[
+                Literal["svd", "random"],
+                ivy.CPTensor,
+                ivy.Parafac2Tensor,
+                ivy.TuckerTensor,
+            ]
+        ] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        seed: Optional[int] = None,
+    ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
+        """
+        Initiate a random PARAFAC2 decomposition given rank and tensor slices.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            number of components
+        init
+            initialization scheme for parafac decomposition.
+        svd
+            function to use to compute the SVD
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+
+        Returns
+        -------
+        parafac2_tensor : Parafac2Tensor
+            List of initialized factors of the CP decomposition where element `i`
+            is of shape (tensor.shape[i], rank)
+        """
+        return ivy.initialize_parafac2(self._data, rank, init=init, svd=svd, seed=seed)
+
+    def parafac2(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        /,
+        *,
+        n_iter_max: Optional[int] = 2000,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Parafac2Tensor]
+        ] = "random",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        normalize_factors: Optional[bool] = False,
+        tol: Optional[float] = 1e-8,
+        absolute_tol: Optional[float] = 1e-13,
+        nn_modes: Optional[Union[Literal["all"], int]] = None,
+        seed: Optional[int] = None,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+        n_iter_parafac: Optional[int] = 5,
+    ):
+        """
+        PARAFAC2 decomposition [1]_ of a third order tensor via alternating least
+        squares (ALS) Computes a rank-`rank` PARAFAC2 decomposition of the third-order
+        tensor defined by tensor_slices`. The decomposition is on the form :math:`(A
+        [B_i] C)` such that the i-th frontal slice, :math:`X_i`, of :math:`X` is given
+        by.
+
+        .. math::
+
+            X_i = B_i diag(a_i) C^T,
+
+        where :math:`diag(a_i)` is the diagonal matrix whose nonzero entries
+        are equal to the :math:`i`-th row of the :math:`I times R` factor
+        matrix :math:`A`, :math:`B_i` is a :math:`J_i times R` factor matrix
+        such that the cross product matrix :math:`B_{i_1}^T B_{i_1}` is constant
+        for all :math:`i`, and :math:`C` is a :math:`K times R` factor matrix.
+        To compute this decomposition, we reformulate the expression for
+        :math:`B_i` such that
+
+        .. math::
+
+            B_i = P_i B,
+
+        where :math:`P_i` is a :math:`J_i times R` orthogonal matrix
+        and :math:`B` is a :math:`R times R` matrix.
+
+
+        An alternative formulation of the PARAFAC2 decomposition is that
+        the tensor element :math:`X_{ijk}` is given by
+
+        .. math::
+
+            X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
+
+        with the same constraints hold for :math:`B_i` as above.
+
+
+        Parameters
+        ----------
+        self
+            Either a third order tensor or a list of second order tensors
+            that may have different number of rows. Note that the second
+            mode factor matrices are allowed to change over the first
+            mode, not the third mode as some other implementations use
+            (see note below).
+        rank
+            Number of components.
+        n_iter_max
+            Maximum number of iteration
+        init
+            Type of factor matrix initialization.
+        svd
+            function to use to compute the SVD,
+            acceptable values in tensorly.SVD_FUNS
+        normalize_factors
+            If True, aggregate the weights of each
+            factor in a 1D-tensor of shape (rank, ),
+            which will contain the norms of the factors.
+            Note that there may be some inaccuracies in
+            the component weights.
+        tol
+            Relative reconstruction error decrease tolerance.
+            The algorithm is considered to have converged when
+            :math:`left|| X - hat{X}_{n-1} |^2 - | X -
+            hat{X}_{n} |^2right| < epsilon | X - hat{X}_{n-1} |^2`.
+            That is, when the relative change in sum of squared
+            error is less than the tolerance.
+            .. versionchanged:: 0.6.1
+                Previously, the stopping condition was
+                :math:`left|| X - hat{X}_{n-1} | - | X -
+                hat{X}_{n} |right| < epsilon`.
+        absolute_tol
+            Absolute reconstruction error tolearnce.
+            The algorithm is considered to have
+            converged when :math:`left|| X -
+            hat{X}_{n-1} |^2 - | X - hat{X}_{n} |^2right| < epsilon_text{abs}`.
+            That is, when the relative sum of squared error is less than the
+            specified tolerance. The absolute tolerance is necessary for
+            stopping the algorithm when used on noise-free data that follows
+            the PARAFAC2 constraint.
+            If None, then the machine precision +
+            1000 will be used.
+        nn_modes
+            Used to specify which modes to impose
+            non-negativity constraints on. We cannot impose non-negativity
+            constraints on the the B-mode (mode 1) with the ALS algorithm,
+            so if this mode is among the constrained modes, then a warning
+            will be shown
+        seed
+
+        verbose
+            Level of verbosity
+        return_errors
+            Activate return of iteration errors
+        n_iter_parafac
+            Number of PARAFAC iterations to perform
+            for each PARAFAC2 iteration
+
+        Returns
+        -------
+        Parafac2Tensor
+            * weights : 1D array of shape (rank, )
+                all ones if normalize_factors is False (default),
+                weights of the (normalized) factors otherwise
+            * factors : List of factors of the CP decomposition element `i` is of shape
+                (tensor.shape[i], rank)
+            * projection_matrices : List of projection matrices used to create evolving
+                factors.
+
+        errors
+            A list of reconstruction errors at each iteration of the algorithms.
+
+        References
+        ----------
+        .. [1] Kiers, H.A.L., ten Berge, J.M.F. and Bro, R. (1999),
+                PARAFAC2—Part I. A direct fitting algorithm for the PARAFAC2 model.
+                J. Chemometrics, 13: 275-294.
+        """
+        return ivy.parafac2(
+            self._data,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            tol=tol,
+            absolute_tol=absolute_tol,
+            nn_modes=nn_modes,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            n_iter_parafac=n_iter_parafac,
+        )
