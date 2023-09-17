@@ -8,6 +8,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _generate_data_layer_norm(
     draw,
@@ -84,6 +88,10 @@ def _generate_data_layer_norm(
     return dtype, values, normalized_idxs, weight_values, bias_values
 
 
+# --- Main --- #
+# ------------ #
+
+
 @handle_test(
     fn_tree="functional.ivy.layer_norm",
     values_tuple=_generate_data_layer_norm(
@@ -93,22 +101,13 @@ def _generate_data_layer_norm(
     eps=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_layer_norm(
-    *,
-    values_tuple,
-    new_std,
-    eps,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, values_tuple, new_std, eps, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, normalized_idxs, scale, offset = values_tuple
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=0.5,

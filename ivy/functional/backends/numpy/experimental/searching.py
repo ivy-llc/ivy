@@ -7,7 +7,7 @@ from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
 
-@with_supported_dtypes({"1.25.0 and below": ("int32", "int64")}, backend_version)
+@with_supported_dtypes({"1.25.2 and below": ("int32", "int64")}, backend_version)
 def unravel_index(
     indices: np.ndarray,
     shape: Tuple[int],

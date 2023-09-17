@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, List, Dict
+from typing import Union, Optional, List, Dict, Literal
 
 # local
 import ivy
@@ -12,7 +12,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x: Union[float, int, ivy.Container],
         /,
         *,
-        eps: Optional[float] = None,
+        eps: Optional[Union[float, ivy.Container]] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -28,6 +29,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
             When eps is None the function outpus NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             Optional output Contaner.
 
@@ -62,6 +66,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             "logit",
             x,
             eps=eps,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -69,7 +74,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: Union[float, int, ivy.Container],
         /,
         *,
-        eps: Optional[float] = None,
+        eps: Optional[Union[float, ivy.Container]] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -85,6 +91,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
             When eps is None the function outpus NaN where x < 0 or x > 1.
             and inf or -inf where x = 1 or x = 0, respectively.
             Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             Optional output Contaner.
 
@@ -115,18 +124,18 @@ class _ContainerWithActivationExperimental(ContainerBase):
             b: ivy.array([-1.38629436, 1.38629448, -1.38629436])
         }
         """
-        return self.static_logit(self, eps=eps, out=out)
+        return self.static_logit(self, eps=eps, complex_mode=complex_mode, out=out)
 
     @staticmethod
     def static_thresholded_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        threshold: Union[int, float] = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        threshold: Union[int, float, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -186,11 +195,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        threshold: Union[int, float] = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        threshold: Union[int, float, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -251,10 +260,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         slope: Union[float, ivy.NativeArray, ivy.Array, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -284,10 +293,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         slope: Union[float, ivy.NativeArray, ivy.Array, ivy.Container],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -316,10 +325,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -342,6 +352,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -354,10 +367,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
+        >>> x = ivy.Container(a = ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+        ...                   b = ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.]))
         >>> y = ivy.Container.static_relu6(x)
         >>> print(y)
         {
@@ -372,6 +383,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -379,10 +391,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -405,6 +418,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -417,15 +433,13 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
+        >>> x = ivy.Container(a = ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+        ...                   b= ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.]))
         >>> y = x.relu()
         >>> print(y)
         {
             a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+            b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
         }
         """
         return self.static_relu6(
@@ -434,6 +448,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
             out=out,
         )
 
@@ -442,10 +457,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.logsigmoid. This method simply wraps
@@ -467,6 +483,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -501,16 +520,18 @@ class _ContainerWithActivationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
         )
 
     def logsigmoid(
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         Apply element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
@@ -519,6 +540,9 @@ class _ContainerWithActivationExperimental(ContainerBase):
         ----------
         self
             Input container.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
         Returns
         -------
@@ -541,6 +565,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
         )
 
     @staticmethod
@@ -548,10 +573,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -608,10 +633,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -668,10 +693,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -728,10 +753,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -789,10 +814,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         /,
         *,
         alpha: ivy.Container = 1.0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -852,10 +877,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         /,
         *,
         alpha: ivy.Container = 1.0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 import ivy
@@ -12,7 +12,6 @@ class _ArrayWithElementwise(abc.ABC):
         self: Union[float, ivy.Array, ivy.NativeArray],
         /,
         *,
-        where: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:  # noqa
         """
@@ -24,8 +23,6 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
-        where
-            optional boolean mask, apply the function only to the values that are True
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -43,7 +40,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([ 2.6, 6.6, 1.6, 0.])
         """
-        return ivy.abs(self, where=where, out=out)
+        return ivy.abs(self, out=out)
 
     def acosh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -1409,7 +1406,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1 , 2 ,3 ])
+        >>> x = ivy.array([1., 2., 3.])
         >>> y = x.log1p()
         >>> print(y)
         ivy.array([0.693, 1.1  , 1.39 ])
@@ -2058,7 +2055,7 @@ class _ArrayWithElementwise(abc.ABC):
 
     def pow(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[int, float, ivy.Array, ivy.NativeArray],
         /,
         *,
         out: Optional[ivy.Array] = None,
@@ -2555,7 +2552,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.tan(self._data, out=out)
 
-    def tanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tanh(
+        self: ivy.Array,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
         function, and so the docstring for ivy.tanh also applies to this method with
@@ -2566,6 +2568,9 @@ class _ArrayWithElementwise(abc.ABC):
         self
             input array whose elements each represent a hyperbolic angle.
             Should have a real-valued floating-point data type.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -2584,7 +2589,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([0., 0.762, 0.964])
         """
-        return ivy.tanh(self._data, out=out)
+        return ivy.tanh(self._data, complex_mode=complex_mode, out=out)
 
     def trunc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -2932,7 +2937,7 @@ class _ArrayWithElementwise(abc.ABC):
         --------
         With :class:`ivy.Array` input:
 
-        >>> x=ivy.array([1,5,8,10])
+        >>> x=ivy.array([1., 5., 8., 10.])
         >>> y=x.rad2deg()
         >>> print(y)
         ivy.array([ 57.3, 286. , 458. , 573. ])

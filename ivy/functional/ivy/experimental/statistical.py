@@ -1,11 +1,14 @@
 from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_out_argument,
     to_native_arrays_and_back,
     handle_array_like_without_promotion,
     handle_nestable,
     infer_dtype,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -16,9 +19,11 @@ from ivy.utils.exceptions import handle_exceptions
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -88,7 +93,7 @@ def histogram(
     >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
     >>> z = ivy.histogram(x, bins=y)
     >>> print(z)
-    (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+    ivy.array([1., 0., 1., 1.])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [4.4, 5.5, .6]])
@@ -97,7 +102,7 @@ def histogram(
     >>> dtype = ivy.int32
     >>> y = ivy.histogram(x, bins=bins, range=range, dtype=dtype)
     >>> print(y)
-    (ivy.array([0, 0, 0, 0]), ivy.array([0.   , 0.125, 0.25 , 0.375, 0.5  ]))
+    ivy.array([2, 1, 1, 1])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
@@ -108,28 +113,29 @@ def histogram(
     >>> dtype = ivy.float32
     >>> weights = ivy.array([[1., 1., 1.], [1., 1., 1.]])
     >>> z = ivy.histogram(
-    >>>                     x,
-    >>>                     bins=y,
-    >>>                     axis=axis,
-    >>>                     extend_lower_interval=extend_lower_interval,
-    >>>                     extend_upper_interval=extend_upper_interval,
-    >>>                     dtype=dtype,
-    >>>                     weights=weights)
+    ...                     x,
+    ...                     bins=y,
+    ...                     axis=axis,
+    ...                     extend_lower_interval=extend_lower_interval,
+    ...                     extend_upper_interval=extend_upper_interval,
+    ...                     dtype=dtype,
+    ...                     weights=weights)
     >>> print(z)
-    (ivy.array([[0., 3.],
-    [1., 0.],
-    [1., 0.],
-    [1., 0.],
-    [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    ivy.array([[0., 3.],
+           [1., 0.],
+           [1., 0.],
+           [1., 0.],
+           [0., 0.]])
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
     >>> dtype = ivy.int32
     >>> z = ivy.histogram(x, bins=y, dtype=dtype)
-    >>> print(z.a)
-    >>> print(z.b)
-    (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
-    (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    >>> print(z)
+    {
+        a: ivy.array([1, 1, 1, 0, 0]),
+        b: ivy.array([0, 0, 0, 1, 2])
+    }
     """
     return ivy.current_backend(a).histogram(
         a,
@@ -146,9 +152,11 @@ def histogram(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def median(
     input: ivy.Array,
     /,
@@ -178,8 +186,8 @@ def median(
     ret
         The median of the array elements.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> a = ivy.array([[10, 7, 4], [3, 2, 1]])
     >>> ivy.median(a)
     3.5
@@ -190,10 +198,12 @@ def median(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def nanmean(
     a: ivy.Array,
     /,
@@ -230,8 +240,8 @@ def nanmean(
     ret
         The nanmean of the array elements.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     >>> a = ivy.array([[1, ivy.nan], [3, 4]])
     >>> ivy.nanmean(a)
     2.6666666666666665
@@ -244,9 +254,79 @@ def nanmean(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
+def nanprod(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the product of array elements over a given axis treating Not a Numbers
+    (NaNs) as ones.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the product is computed.
+        The default is to compute the product of the flattened array.
+    dtype
+        The desired data type of returned array. Default is None.
+    out
+        optional output array, for writing the result to.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a.
+    initial
+        The starting value for this product.
+    where
+        Elements to include in the product
+
+    Returns
+    -------
+    ret
+        The product of array elements over a given axis treating
+        Not a Numbers (NaNs) as ones
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+    >>> ivy.nanprod(a)
+    12.0
+    >>> ivy.nanprod(a, axis=0)
+    [3. 4.]
+    >>> ivy.nanprod(a, axis=0, keepdims=True)
+    [[3. 4.]]
+    """
+    return ivy.current_backend(a).nanprod(
+        a,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=dtype,
+        out=out,
+        initial=initial,
+        where=where,
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def quantile(
     a: ivy.Array,
     q: Union[ivy.Array, float],
@@ -275,7 +355,8 @@ def quantile(
         as dimensions with size one. With this option, the result will broadcast
         correctly against the original array a.
     interpolation
-        {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
+        {'nearest', 'linear', 'lower', 'higher', 'midpoint', 'nearest_jax'}.
+        Default value: 'linear'.
         This specifies the interpolation method to use when the desired quantile lies
         between two data points i < j:
         - linear: i + (j - i) * fraction, where fraction is the fractional part of the
@@ -285,6 +366,7 @@ def quantile(
         - nearest: i or j, whichever is nearest.
         - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
         integer dtypes.
+        - nearest_jax: provides jax-like computation for interpolation='nearest'.
     out
         optional output array, for writing the result to.
 
@@ -327,9 +409,11 @@ def quantile(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def corrcoef(
     x: ivy.Array,
     /,
@@ -342,9 +426,11 @@ def corrcoef(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def nanmedian(
     input: ivy.Array,
     /,
@@ -413,9 +499,11 @@ def nanmedian(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def bincount(
     x: ivy.Array,
     /,
@@ -455,9 +543,11 @@ def bincount(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def igamma(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -494,25 +584,7 @@ def igamma(
 
 
 @handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-def nanquantile(
-    a: ivy.Array,
-    q: Union[ivy.Array, float],
-    /,
-    *,
-    axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    return ivy.current_backend(a).nanquantile(
-        a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
-    )
-
-
-@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -586,12 +658,12 @@ def cov(
     Examples
     --------
     With :class:`ivy.Array` input:
-    >>> x = ivy.array([[1,2,3],
-    ...                [4,5,6]])
-    >>> y = x.cov()
+    >>> x = ivy.array([[1, 2, 3],
+    ...                [4, 5, 6]])
+    >>> y = x[0].cov(x[1])
     >>> print(y)
-    ivy.array([[ 1.,  1.  ],
-    ...        [ 1.,  1.  ]]
+    ivy.array([[1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Container` inputs:
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
@@ -599,10 +671,10 @@ def cov(
     >>> z = ivy.Container.static_cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1., -1., -1.]
-                     [ 1.,  1., -1., -1.]),
-        b: ivy.array([-1., -1.,  1.,  1.]
-                     [-1.,  1.,  1.,  1.])
+        a: ivy.array([[1., -1.],
+                      [-1., 1.]]),
+        b: ivy.array([[1., -1.],
+                      [-1., 1.]])
     }
 
     With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -611,52 +683,37 @@ def cov(
     >>> z = ivy.cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1.]
-                     [-1.,  1.]),
-        b: ivy.array([ 1., -1.]
-                     [-1.,  1.])
+        a: ivy.array([[1., -1.],
+                      [-1., 1.]]),
+        b: ivy.array([[1., -1.],
+                      [-1., 1.]])
     }
 
     With :class:`ivy.Array` input and rowVar flag set to False (True by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-    >>> y = x.cov(rowVar=False)
+    >>> y = x[0].cov(x[1], rowVar=False)
     >>> print(y)
-    ivy.array([[ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ]])
+    ivy.array([[1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Array` input and bias flag set to True (False by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-    >>> y = x.cov(bias=True)
+    >>> y = x[0].cov(x[1], bias=True)
     >>> print(y)
-    ivy.array([[ 0.6667,  0.6667  ],
-    ...        [ 0.6667,  0.6667  ]]
+    ivy.array([[0.66666667, 0.66666667],
+           [0.66666667, 0.66666667]])
 
     With :class:`ivy.Array` input with both fweights and aweights given:
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-
     >>> fw = ivy.array([1,2,3])
     >>> aw = ivy.array([ 1.2, 2.3, 3.4 ])
-    >>> y = x.cov(fweights=fw, aweights=aw)
+    >>> y = x[0].cov(x[1], fweights=fw, aweights=aw)
     >>> print(y)
-    ivy.array([[ 0.48447205,  0.48447205  ],
-    ...        [ 0.48447205,  0.48447205  ]]
-
-    With :class:`ivy.Array` input with both fweights and aweights given,
-    and rowVar set to False:
-    >>> x = ivy.array([[1,2,3],
-    ...                [4,5,6]])
-
-    >>> fw = ivy.array([1,3])
-    >>> aw = ivy.array([ 1.5, 4 ])
-    >>> y = x.cov(fweights=fw, aweights=aw, rowVar=False)
-    >>> print(y)
-    ivy.array([[ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ]])
+    ivy.array([[0.48447205, 0.48447205],
+           [0.48447205, 0.48447205]])
     """
     return ivy.current_backend(x1).cov(
         x1,
@@ -667,4 +724,241 @@ def cov(
         fweights=fweights,
         aweights=aweights,
         dtype=dtype,
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def cummax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return a tuple containing the cumulative maximum of elements of input along the
+    given axis and index location of each maximum value found along the given axis.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis along which the cumulative maximum is computed. Default is ``0``.
+    exclusive
+        Whether to perform cummax exclusively. Default is ``False``.
+    reverse
+        Whether to perform the cummax from last to first element in the selected
+        axis. Default is ``False`` (from first to last element)
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Array which holds the result of applying cummax at each
+        original array elements along the specified axis.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-86, -19, 41, 88, -5, 80, 32, 87, -90, -12])
+    >>> y = ivy.cummax(x, exclusive=False, reverse=False)
+    >>> print(y)
+    (ivy.array([-86, -19,  41,  88,  88,  88,  88,  88,  88,  88]),
+    ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3]))
+
+    >>> x = ivy.array([ 14,  15,  49, -24, -39])
+    >>> y = ivy.cummax(x, axis=0, exclusive=False, reverse=False)
+    >>> print(y)
+    (ivy.array([14, 15, 49, 49, 49]), ivy.array([0, 1, 2, 2, 2]))
+
+    >>> x = ivy.array([[ 63,  43, -16,  -4],[ 21,  82,  59,  33]])
+    >>> ivy.cummax(x, axis=0, reverse=False, dtype='int64', out=x)
+    >>> print(x)
+    ivy.array([[0, 0, 0, 0],
+           [0, 1, 1, 1]])
+
+    >>> x = ivy.array([[-36,  83, -81],
+    ...                [ 23,  29,  63],
+    ...                [-83,  85,   2],
+    ...                [ 31,  25, -86],
+    ...                [-10, -52,   0],
+    ...                [ 22,  38,  55],
+    ...                [ 33,  54, -16]])
+    >>> y = ivy.cummax(x, axis=1, exclusive=True, reverse=False)
+    >>> print(y)
+    (ivy.array([[ 0,  0, 83],
+           [ 0, 23, 29],
+           [ 0,  0, 85],
+           [ 0, 31, 31],
+           [ 0,  0,  0],
+           [ 0, 22, 38],
+           [ 0, 33, 54]]), ivy.array([[0, 0, 2],
+           [0, 1, 2],
+           [0, 0, 2],
+           [0, 1, 1],
+           [0, 0, 0],
+           [0, 1, 2],
+           [0, 1, 2]]))
+
+    >>> x = ivy.array([73, 15, 47])
+    >>> y = ivy.cummax(x, axis=0, reverse=True, exclusive=True)
+    >>> print(y)
+    (ivy.array([47, 47,  0]), ivy.array([0, 0, 0]))
+
+    >>> x = ivy.array([-47, -14, -67, 15, -23, -45])
+    >>> y = ivy.cummax(x, axis=0, reverse=True, exclusive=False)
+    >>> print(y)
+    (ivy.array([ 15,  15,  15,  15, -23, -45]), ivy.array([2, 2, 2, 2, 1, 0]))
+    """
+    return ivy.current_backend(x).cummax(
+        x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def cummin(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the cumulative minimum of the elements along a given axis.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis along which the cumulative minimum is computed. Default is ``0``.
+    reverse
+        Whether to perform the cummin from last to first element in the selected
+        axis. Default is ``False`` (from first to last element)
+    dtype
+        Data type of the returned array. Default is ``None``.
+        If None, if the default data type corresponding to the data type “kind”
+        (integer or floating-point) of x has a smaller range of values than the
+        data type of x (e.g., x has data type int64 and the default data type
+        is int32, or x has data type uint64 and the default data type is int64),
+        the returned array must have the same data type as x.
+        If x has a floating-point data type, the returned array must have the
+        default floating-point data type.
+        If x has a signed integer data type (e.g., int16), the returned array
+        must have the default integer data type.
+        If x has an unsigned integer data type (e.g., uint16), the returned
+        array must have an unsigned integer data type having the same number of
+        bits as the default integer data type (e.g., if the default integer data
+        type is int32, the returned array must have a uint32 data type).
+        If the data type (either specified or resolved) differs from the data type
+        of x, the input array should be cast to the specified data type before
+        computing the product.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Array which holds the result of applying cummin at each
+        original array elements along the specified axis.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 5, 2, 0])
+    >>> y = ivy.cummin(x)
+    >>> print(y)
+    ivy.array([1, 1, 1, 0])
+    >>> x = ivy.array([[6, 4, 2],
+    ...                [1, 3, 0]])
+    >>> y = ivy.zeros((2,3))
+    >>> ivy.cummin(x, axis=0, reverse=True, out=y)
+    >>> print(y)
+    ivy.array([[1., 3., 0.],
+           [1., 3., 0.]])
+
+    >>> x = ivy.array([[2, 4, 5],
+    ...                [3, 6, 5],
+    ...                [1, 3, 10]])
+    >>> ivy.cummin(x,axis=1,reverse=True, dtype='int64', out=x)
+    >>> print(x)
+    ivy.array([[ 2,  4,  5],
+           [ 3,  5,  5],
+           [ 1,  3, 10]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]),
+    ...                   b=ivy.array([[3, 5, 7]]))
+    >>> y = ivy.cummin(x, axis= 0)
+    >>> print(y)
+    {
+        a: ivy.array([[1, 3, 5]]),
+        b: ivy.array([[3, 5, 7]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
+    ...                   b=ivy.array([[3, 5, 8],
+    ...                                [5, 6, 5]]),
+    ...                   c=ivy.array([[2, 4, 1],
+    ...                                [3, 6, 9],
+    ...                                [0, 2, 3]]))
+    >>> y = ivy.Container(a = ivy.zeros((1, 3)),
+    ...                   b = ivy.zeros((2, 3)),
+    ...                   c = ivy.zeros((3,3)))
+    >>> ivy.cummin(x,axis=1,reverse=True, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([[1., 3., 4.]]),
+        b: ivy.array([[3., 5., 8.],
+                      [5., 5., 5.]]),
+        c: ivy.array([[1., 1., 1.],
+                      [3., 6., 9.],
+                      [0., 2., 3.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[0],[5]]),
+    ...                   b=ivy.array([[6, 8, 7],
+    ...                                [4, 2, 3]]),
+    ...                   c=ivy.array([[1, 2],
+    ...                                [3, 4],
+    ...                                [6, 4]]))
+    >>> ivy.cummin(x,axis=0,out=x)
+    >>> print(x)
+    {
+        a: ivy.array([[0],
+                      [0]]),
+        b: ivy.array([[6, 8, 7],
+                      [4, 2, 3]]),
+        c: ivy.array([[1, 2],
+                      [1, 2],
+                      [1, 2]])
+    }
+    """
+    return ivy.current_backend(x).cummin(
+        x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )

@@ -9,6 +9,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,11 +20,13 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -32,7 +36,8 @@ def argsort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the indices that sort an array ``x`` along a specified axis.
+    """
+    Return the indices that sort an array ``x`` along a specified axis.
 
     Parameters
     ----------
@@ -136,11 +141,13 @@ def argsort(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -241,9 +248,11 @@ def sort(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def msort(
     a: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -282,11 +291,13 @@ def msort(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],

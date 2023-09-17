@@ -3,6 +3,21 @@ from numbers import Number
 import mxnet as mx
 
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_supported_dtypes
+from .. import backend_version
+
+
+@with_supported_dtypes(
+    {"1.9.1 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
+def lgamma(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    return mx.np.log(mx.npx.gamma(x))
 
 
 def sinc(
@@ -215,4 +230,13 @@ def frexp(
         Union[(Tuple[(None, None)], Tuple[(mx.ndarray.NDArray, mx.ndarray.NDArray)])]
     ] = None,
 ) -> Union[(Tuple[(None, None)], Tuple[(mx.ndarray.NDArray, mx.ndarray.NDArray)])]:
+    raise IvyNotImplementedException()
+
+
+def modf(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Callable, Literal
 
 # local
 import ivy
@@ -12,19 +12,45 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_out_argument,
     inputs_to_ivy_arrays,
+    handle_device_shifting,
+    handle_backend_invalid,
+    handle_complex_input,
 )
 
 
+def _logit_jax_like(
+    x: Union[float, int, ivy.Array],
+    /,
+    *,
+    fn_original: Optional[Callable] = None,
+    eps: Optional[float] = None,
+    out: Optional[ivy.Array] = None,
+):
+    real = ivy.real(x)
+    imag = ivy.imag(x)
+    if eps is None:
+        real = ivy.where(ivy.logical_or(real > 1, real < 0), ivy.nan, real)
+    else:
+        real = ivy.clip(real, eps, 1 - eps)
+    z = ivy.add(real, ivy.multiply(ivy.array(1j, dtype=x.dtype), imag))
+    z = ivy.log(z / (1 - z))
+    return z
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
+@handle_complex_input
 def logit(
     x: Union[float, int, ivy.Array],
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -40,6 +66,9 @@ def logit(
         When eps is None the function outpus NaN where x < 0 or x > 1.
         and inf or -inf where x = 1 or x = 0, respectively.
         Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         Optional output array.
 
@@ -61,6 +90,9 @@ def logit(
     ivy.array([ 1.38629448,  1.38629448, -1.38629436])
     """
     return current_backend(x).logit(x, eps=eps, out=out)
+
+
+logit.jax_like = _logit_jax_like
 
 
 @handle_exceptions
@@ -122,10 +154,12 @@ def prelu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -180,14 +214,43 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
+def _relu6_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        ivy.logical_or(
+            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+        ),
+        ivy.array(0, dtype=x.dtype),
+        ivy.where(
+            ivy.logical_or(
+                ivy.real(x) > 6, ivy.logical_and(ivy.real(x) == 6, ivy.imag(x) > 0)
+            ),
+            ivy.array(6, dtype=x.dtype),
+            x,
+        ),
+    )
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
+@handle_complex_input
 def relu6(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the rectified linear unit 6 function element-wise.
@@ -196,6 +259,9 @@ def relu6(
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -220,30 +286,27 @@ def relu6(
     >>> ivy.relu6(x, out = y)
     >>> print(y)
     ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = {
-                a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-            }
-    >>> x = ivy.relu6(x, out=x)
-    >>> print(x)
-    {
-    a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-    b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
-    }
     """
     return current_backend(x).relu6(x, out=out)
 
 
+relu6.jax_like = _relu6_jax_like
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
+@handle_complex_input
 def logsigmoid(
-    input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
+    input: Union[ivy.NativeArray, ivy.Array],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply element-wise Log-sigmoid of x.
@@ -254,6 +317,9 @@ def logsigmoid(
     ----------
     input
         Input array.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
     Returns
     -------
@@ -287,11 +353,13 @@ def logsigmoid(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -318,38 +386,39 @@ def selu(
     >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
     >>> y = ivy.selu(x)
     >>> print(y)
-    ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
-                4.20280409,  5.25350523,  6.30420589,  7.35490704])
+    ivy.array([-1.11133075,  0.        ,  1.05070102,  2.10140204,  3.15210295,
+            4.20280409,  5.25350523,  6.30420589,  7.35490704])
     >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
     >>> y = ivy.zeros(9)
     >>> ivy.selu(x, out = y)
     >>> print(y)
-    ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
-                4.20280409,  5.25350523,  6.30420589,  7.35490704])
+    ivy.array([-1.11133075,  0.        ,  1.05070102,  2.10140204,  3.15210295,
+            4.20280409,  5.25350523,  6.30420589,  7.35490704])
 
     With :class:`ivy.Container` input:
-    >>> x = ivy.Container(
-            a=ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-            b=ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-        )
+    >>> x = ivy.Container(a=ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+    ...                   b=ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    ...                   )
     >>> x = ivy.selu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([-1.6705687, -1.52016652, -1.11133075, 0.,1.05070102,
-                        2.10140204, 3.15210295, 4.20280409, 5.25350523]),
+        a: ivy.array([-1.6705687, -1.52016652, -1.11133075, 0., 1.05070102,
+                      2.10140204, 3.15210295, 4.20280409, 5.25350523]),
         b: ivy.array([1.05070102, 2.10140204, 3.15210295, 4.20280409, 5.25350523,
-                        6.30420589, 7.35490704, 8.40560818, 9.45630932])
+                      6.30420589, 7.35490704, 8.40560818, 9.45630932])
     }
     """
     return current_backend(x).selu(x, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -393,6 +462,7 @@ def silu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -429,25 +499,25 @@ def elu(
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.elu(x)
     >>> print(y)
-    ivy.array([ 0.39, -0.57])
+    ivy.array([ 0.38999999, -0.57258511])
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.elu(x, out=y)
     >>> print(y)
-    ivy.array([ 1.5 ,  0.7 , -0.91])
+    ivy.array([ 1.5, 0.69999999, -0.90928203])
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.elu(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
-       [-0.98, -0.99 , -0.73]])
+    ivy.array([[ 1.10000002,  2.20000005,  3.29999995],
+           [-0.98772264, -0.99591321, -0.99863964]])
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
     >>> x = ivy.elu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([0., -0.6988]),
-        b: ivy.array([0.40000001, -0.181269])
+        a: ivy.array([0., -0.69880581]),
+        b: ivy.array([0.40000001, -0.18126924])
     }
     """
     return current_backend(x).elu(x, alpha=alpha, out=out)

@@ -8,15 +8,36 @@ import ivy
 import ivy.functional.backends.numpy
 
 
+# functional api
+def test_array(on_device):
+    import jax.numpy as jnp
+
+    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), axis=-1).shape == (2,)
+    import tensorflow as tf
+
+    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), axis=-1).shape == (2,)
+    import numpy as np
+
+    assert ivy.concat((np.ones((1,)), np.ones((1,))), axis=-1).shape == (2,)
+    import torch
+
+    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), axis=-1).shape == (2,)
+    import paddle
+
+    assert ivy.concat((paddle.ones((1,)), paddle.ones((1,))), axis=-1).shape == (2,)
+
+
 # Tests #
 # ------#
 
 
 # training
-def test_training_demo(on_device):
-    if ivy.current_backend_str() == "numpy":
+def test_training_demo(on_device, backend_fw):
+    if backend_fw == "numpy":
         # numpy does not support gradients
         pytest.skip()
+
+    ivy.set_backend(backend_fw)
 
     class MyModel(ivy.Module):
         def __init__(self):
@@ -41,22 +62,4 @@ def test_training_demo(on_device):
         loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
         model.v = optimizer.step(model.v, grads)
 
-
-# functional api
-def test_array(on_device):
     ivy.previous_backend()
-    import jax.numpy as jnp
-
-    assert ivy.concat((jnp.ones((1,)), jnp.ones((1,))), axis=-1).shape == (2,)
-    import tensorflow as tf
-
-    assert ivy.concat((tf.ones((1,)), tf.ones((1,))), axis=-1).shape == (2,)
-    import numpy as np
-
-    assert ivy.concat((np.ones((1,)), np.ones((1,))), axis=-1).shape == (2,)
-    import torch
-
-    assert ivy.concat((torch.ones((1,)), torch.ones((1,))), axis=-1).shape == (2,)
-    import paddle
-
-    assert ivy.concat((paddle.ones((1,)), paddle.ones((1,))), axis=-1).shape == (2,)

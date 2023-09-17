@@ -8,15 +8,19 @@ from ivy.func_wrapper import (
     handle_nestable,
     infer_dtype,
     infer_device,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 # dirichlet
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -53,9 +57,8 @@ def dirichlet(
     ret
         The drawn samples, of shape (size, k).
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> alpha = [1.0, 2.0, 3.0]
     >>> ivy.dirichlet(alpha)
     ivy.array([0.10598304, 0.21537054, 0.67864642])
@@ -80,10 +83,12 @@ def dirichlet(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
+@handle_device_shifting
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -133,10 +138,12 @@ def beta(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
+@handle_device_shifting
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
@@ -182,11 +189,13 @@ def gamma(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
@@ -229,9 +238,8 @@ def poisson(
      ret
         Drawn samples from the poisson distribution
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> lam = [1.0, 2.0, 3.0]
     >>> ivy.poisson(lam)
     ivy.array([1., 4., 4.])
@@ -253,11 +261,13 @@ def poisson(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],

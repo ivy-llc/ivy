@@ -16,76 +16,37 @@
 __version__ = None
 
 import setuptools
-from pathlib import Path
 from setuptools import setup
+from pathlib import Path
+import re
 
 
 def _strip(line):
     return line.split(" ")[0].split("#")[0].split(",")[0]
 
 
-def _replace_logos_html(txt):
-    # html-containing chunks
-    chunks = txt.split(".. raw:: html")
-
-    # light-dark logo
-    chunks[0] = _remove_dark_logo(chunks[0])
-
-    # backend logos
-    backends_chunk = chunks[2]
-    bc = backends_chunk.split("\n\n")
-    img_str = (
-        ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n"  # noqa
-        "   :width: 100%\n"
-        "   :class: dark-light"
-    )
-    backends_chunk = "\n\n".join(bc[0:1] + [img_str] + bc[2:])
-
-    # re-join
-    return "".join(
-        [
-            ".. raw:: html".join(chunks[0:2]),
-            backends_chunk,
-            ".. raw:: html".join(chunks[3:]),
-        ]
-    )
-
-
-def _remove_dark_logo(txt):
-    return txt.split("\n\n")[0]
-
-
-def _is_html(line):
-    line_squashed = line.replace(" ", "")
-    if not line_squashed:
-        return False
-    if line_squashed[0] == "<" and line_squashed[-1] == ">":
-        return True
-    return False
-
-
-def _is_raw_block(line):
-    line_squashed = line.replace(" ", "")
-    if len(line_squashed) < 11:
-        return False
-    if line_squashed[-11:] == "..raw::html":
-        return True
-    return False
-
-
-def read_description(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
 this_directory = Path(__file__).parent
-text = read_description("README.rst")
-lines = _replace_logos_html(text).split("\n")
-lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
-long_description = "\n".join(lines)
+long_description = (this_directory / "README.md").read_text(encoding="utf-8")
+
+# Remove img tags that have class "only-dark"
+long_description = re.sub(
+    r"<img [^>]*class=\"only-dark\"[^>]*>",
+    "",
+    long_description,
+    flags=re.MULTILINE,
+)
+
+# Remove a tags that have class "only-dark"
+long_description = re.sub(
+    r"<a [^>]*class=\"only-dark\"[^>]*>((?:(?!<\/a>).)|\s)*<\/a>\n",
+    "",
+    long_description,
+    flags=re.MULTILINE,
+)
+
+# Apply version
 with open("ivy/_version.py") as f:
     exec(f.read(), __version__)
-
 
 setup(
     name="ivy",

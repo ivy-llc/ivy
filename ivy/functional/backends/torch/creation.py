@@ -11,15 +11,16 @@ import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_unsupported_device_and_dtypes,
-    _get_first_array,
 )
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_handle_nestable,
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_infer_dtype,
+    _asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_inputs_to_native_shapes,
+    _remove_np_bfloat16,
 )
 from . import backend_version
 
@@ -95,10 +96,11 @@ def _stack_tensors(x, dtype):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         torch.Tensor,
@@ -117,60 +119,22 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(obj, torch.Tensor) and dtype is None:
-        if copy is True:
-            return obj.clone().detach().to(device)
-        else:
-            return obj.to(device) if obj.device != device else obj
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
-        contain_tensor = False
-        if isinstance(obj[0], (list, tuple)):
-            first_tensor = _get_first_array(obj)
-            if ivy.exists(first_tensor):
-                contain_tensor = True
-                dtype = first_tensor.dtype
-        if dtype is None:
-            dtype = ivy.default_dtype(item=obj, as_native=True)
-
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
+    if isinstance(obj, Sequence) and len(obj) != 0:
+        contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
-        if isinstance(obj[0], torch.Tensor) or contain_tensor:
-            if copy is True:
-                return (
-                    torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
-                    .clone()
-                    .detach()
-                    .to(device)
-                )
-            else:
-                return _stack_tensors(obj, dtype).to(device)
-
-        # if obj is a list of other objects, expected to be a numerical type.
+        if contain_tensor:
+            ret = _stack_tensors(obj, dtype).to(device)
+            return ret.clone().detach() if copy else ret
+    try:
+        ret = torch.as_tensor(obj, dtype=dtype, device=device)
+    except ValueError as e:
+        if "At least one stride in the given numpy array is negative" in str(e):
+            ret = torch.as_tensor(obj.copy(), dtype=dtype, device=device)
         else:
-            if copy is True:
-                return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
-            else:
-                return torch.as_tensor(obj, dtype=dtype).to(device)
-
-    elif isinstance(obj, np.ndarray) and dtype is None:
-        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-    elif dtype is None:
-        dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
-
-    if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):
-        if copy is True:
-            return (
-                torch.as_tensor(obj.tolist(), dtype=dtype).clone().detach().to(device)
-            )
-        else:
-            return torch.as_tensor(obj.tolist(), dtype=dtype).to(device)
-
-    if copy is True:
-        ret = torch.as_tensor(obj, dtype=dtype).clone().detach()
-        return ret.to(device) if ret.device != device else ret
-    else:
-        ret = torch.as_tensor(obj, dtype=dtype)
-        return ret.to(device) if ret.device != device else ret
+            raise
+    return ret.clone().detach() if copy else ret
 
 
 def empty(
@@ -278,7 +242,6 @@ def full(
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     if isinstance(shape, int):
         shape = (shape,)
     return torch.full(
@@ -302,7 +265,6 @@ def full_like(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 

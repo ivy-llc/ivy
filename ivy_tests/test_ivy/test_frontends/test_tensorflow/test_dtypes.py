@@ -18,10 +18,12 @@ def test_tensorflow_as_dtype(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -36,7 +38,7 @@ def test_tensorflow_as_dtype(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_cast(
@@ -46,12 +48,14 @@ def test_tensorflow_cast(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype + dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

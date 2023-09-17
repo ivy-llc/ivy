@@ -1,5 +1,3 @@
-import numpy as np
-
 import ivy
 
 
@@ -171,7 +169,7 @@ def check_shape(x1, x2, message=""):
             x1, x2, ivy.shape(x1), ivy.shape(x2)
         )
     )
-    if ivy.shape(x1) != ivy.shape(x2):
+    if ivy.shape(x1)[:] != ivy.shape(x2)[:]:
         raise ivy.utils.exceptions.IvyException(message)
 
 
@@ -191,26 +189,48 @@ def check_same_dtype(x1, x2, message=""):
 # -------- #
 
 
-def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
-    if (
-        not (
-            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and isinstance(fill_value, int)
+def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
+    if not (isinstance(num_segments, int)):
+        raise ValueError("num_segments must be of integer type")
+
+    valid_dtypes = [
+        ivy.int32,
+        ivy.int64,
+    ]
+
+    if ivy.backend == "torch":
+        import torch
+
+        valid_dtypes = [
+            torch.int32,
+            torch.int64,
+        ]
+        if isinstance(num_segments, torch.Tensor):
+            num_segments = num_segments.item()
+    elif ivy.backend == "paddle":
+        import paddle
+
+        valid_dtypes = [
+            paddle.int32,
+            paddle.int64,
+        ]
+        if isinstance(num_segments, paddle.Tensor):
+            num_segments = num_segments.item()
+
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an integer dtype")
+
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+
+    if ivy.max(segment_ids) >= num_segments:
+        error_message = (
+            f"segment_ids[{ivy.argmax(segment_ids)}] = "
+            f"{ivy.max(segment_ids)} is out of range [0, {num_segments})"
         )
-        and not (
-            ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
-        )
-        and not (
-            ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, (float, np.float32))
-            or isinstance(fill_value, bool)
-        )
-    ):
-        raise ivy.utils.exceptions.IvyException(
-            "the fill_value: {} and data type: {} are not compatible".format(
-                fill_value, dtype
-            )
-        )
+        raise ValueError(error_message)
+    if num_segments <= 0:
+        raise ValueError("num_segments must be positive")
 
 
 # General #

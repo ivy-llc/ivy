@@ -7,10 +7,10 @@ on:
 jobs:
   publish-release-docs:
     name: Publish Release Docs
-    uses: unifyai/workflows/.github/workflows/docs.yml@master
+    uses: unifyai/workflows/.github/workflows/docs.yml@main
     secrets: inherit
 
   deploy:
-    name: Publish Release Docs
+    name: Deploy to PyPI
     uses: ./.github/workflows/pypi.yml
     secrets: inherit
