@@ -75,3 +75,50 @@ def test_paddle_instance_norm(
         bias=offset[0],
         epsilon=eps,
     )
+
+
+# testing local_response_norm
+@st.composite
+def _local_response_norm_helper(draw):
+    dtype_and_param = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
+
+    dtype_and_indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
+    dtype, param = dtype_and_param
+    dtype, indices = dtype_and_indices
+    return dtype, param, indices
+
+
+@handle_frontend_test(
+    fn_tree="paddle.local_response_norm",
+    dtype_param_and_indices=_local_response_norm_helper(),
+)
+def test_paddle_local_response_norm(
+    *,
+    dtype_param_and_indices,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, param, indices = dtype_param_and_indices
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        param=param[0],
+        indices=indices[0],
+    )
