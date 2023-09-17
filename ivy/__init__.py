@@ -83,6 +83,10 @@ class CPTensor:
     pass
 
 
+class TTTensor:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -439,7 +443,7 @@ class Shape(Sequence):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
         if kwargs:
-            raise TypeError("Unknown argument: %s" % kwargs)
+            raise TypeError(f"Unknown argument: {kwargs}")
         if rank is None:
             return Shape(None)
         else:
@@ -758,7 +762,7 @@ from .data_classes.container import (
     add_ivy_container_instance_methods,
 )
 from .data_classes.nested_array import NestedArray
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor
+from .data_classes.factorized_tensor import TuckerTensor, CPTensor, TTTensor
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,

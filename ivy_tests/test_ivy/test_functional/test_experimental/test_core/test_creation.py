@@ -28,6 +28,18 @@ def _random_cp_data(draw):
 
 
 @st.composite
+def _random_tt_data(draw):
+    shape = draw(
+        st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
+    )
+    rank = draw(helpers.ints(min_value=1, max_value=len(shape)))
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    full = draw(st.booleans())
+    seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
+    return shape, rank, dtype[0], full, seed
+
+
+@st.composite
 def _random_tucker_data(draw):
     shape = draw(
         st.lists(helpers.ints(min_value=1, max_value=5), min_size=2, max_size=4)
@@ -419,6 +431,55 @@ def test_random_cp(
             assert len(w) == rank
             assert len(w_gt) == rank
 
+        for f, f_gt in zip(factors, factors_gt):
+            assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.random_tt",
+    data=_random_tt_data(),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_random_tt(
+    *,
+    data,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    shape, rank, dtype, full, seed = data
+    results = helpers.test_function(
+        input_dtypes=[],
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_name=fn_name,
+        shape=shape,
+        rank=rank,
+        dtype=dtype,
+        full=full,
+        seed=seed,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    if full:
+        reconstructed_tensor = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+        reconstructed_tensor_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+        )
+        for x, x_gt in zip(reconstructed_tensor, reconstructed_tensor_gt):
+            assert np.prod(shape) == np.prod(x.shape)
+            assert np.prod(shape) == np.prod(x_gt.shape)
+
+    else:
+        factors = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+        factors_gt = helpers.flatten_and_to_np(
+            ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+        )
         for f, f_gt in zip(factors, factors_gt):
             assert np.prod(f.shape) == np.prod(f_gt.shape)
 
