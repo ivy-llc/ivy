@@ -25,8 +25,82 @@ from .elementwise import _cast_for_unary_op
 def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    """
+    Compute the Cholesky decomposition of the x matrix.
+
+    Parameters
+    ----------
+    x : torch.Tensor
+        Input tensor having shape (..., M, M) and whose innermost two dimensions form
+        square symmetric positive-definite matrices. Should have a floating-point data
+        type.
+    upper : bool, optional
+        If True, the result must be the upper-triangular Cholesky factor U. If False,
+        the result must be the lower-triangular Cholesky factor L. Default: False.
+    out : torch.Tensor, optional
+        Optional output tensor, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    torch.Tensor
+        A tensor containing the Cholesky factors for each square matrix. If upper is
+        False, the returned tensor must contain lower-triangular matrices; otherwise, the
+        returned tensor must contain upper-triangular matrices. The returned tensor must
+        have a floating-point data type and the same shape as x.
+
+    Examples
+    --------
+    With torch.Tensor input:
+
+    >>> x = torch.tensor([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                   [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                   [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                   [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                   [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> l = cholesky(x, upper=False)
+    >>> print(l)
+    torch.Tensor([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+                  [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+                  [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+                  [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+                  [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = torch.tensor([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                   [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                   [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                   [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                   [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> y = torch.zeros([5, 5])
+    >>> cholesky(x, upper=False, out=y)
+    >>> print(y)
+    torch.Tensor([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+                  [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+                  [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+                  [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+                  [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = torch.tensor([[4.0, 1.0, 2.0, 0.5, 2.0],
+    ...                   [1.0, 0.5, 0.0, 0.0, 0.0],
+    ...                   [2.0, 0.0, 3.0, 0.0, 0.0],
+    ...                   [0.5, 0.0, 0.0, 0.625, 0.0],
+    ...                   [2.0, 0.0, 0.0, 0.0, 16.0]])
+    >>> cholesky(x, upper=False, out=x)
+    >>> print(x)
+    torch.Tensor([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
+                  [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
+                  [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],
+                  [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
+                  [ 0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
+
+    >>> x = torch.tensor([[1., -2.], [2., 5.]])
+    >>> u = cholesky(x, upper=False)
+    >>> print(u)
+    torch.Tensor([[ 1., -2.],
+                  [ 0.,  1.]])
+    """
     if not upper:
-        return torch.linalg.cholesky(x, out=out)
+        ret = torch.linalg.cholesky(x, out=out)
     else:
         ret = torch.transpose(
             torch.linalg.cholesky(
@@ -35,9 +109,10 @@ def cholesky(
             dim0=len(x.shape) - 1,
             dim1=len(x.shape) - 2,
         )
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
+        if out is not None:
+            out.copy_(ret)
+            return out
+    return ret
 
 
 cholesky.support_native_out = True
