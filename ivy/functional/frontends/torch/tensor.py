@@ -711,6 +711,20 @@ class Tensor:
     ):
         return torch_frontend.dsplit(self, indices_or_sections)
 
+    @with_supported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
+    )
+    def eig(self, *, out=None):
+        return ivy.eig(self.ivy_array)
+
     def dim(self):
         return self.ivy_array.ndim
 
