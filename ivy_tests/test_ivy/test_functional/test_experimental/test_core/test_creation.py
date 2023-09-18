@@ -44,6 +44,7 @@ def _random_parafac2_data(draw):
     normalise_factors = draw(st.booleans())
     return shapes, rank, dtype[0], full, seed, normalise_factors
 
+
 @st.composite
 def _random_tt_data(draw):
     shape = draw(
@@ -54,7 +55,6 @@ def _random_tt_data(draw):
     full = draw(st.booleans())
     seed = draw(st.one_of((st.just(None), helpers.ints(min_value=0, max_value=2000))))
     return shape, rank, dtype[0], full, seed
-
 
 
 @st.composite
@@ -454,7 +454,7 @@ def test_random_cp(
 
 
 # **Uncomment when Tensorly validation issue is resolved.**
-#https://github.com/tensorly/tensorly/issues/528
+# https://github.com/tensorly/tensorly/issues/528
 # @handle_test(
 #     fn_tree="functional.ivy.experimental.random_parafac2",
 #     data=_random_parafac2_data(),

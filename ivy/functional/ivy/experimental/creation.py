@@ -889,7 +889,7 @@ def random_parafac2(
      seed
         seed for generating random numbers
     Returns
-    -------   
+    -------
       ivy.Parafac2Tensor
     """
     if not all(shape[1] == shapes[0][1] for shape in shapes):
@@ -915,8 +915,9 @@ def random_parafac2(
     if full:
         return ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor)
     else:
-        return parafac2_tensor 
-      
+        return parafac2_tensor
+
+
 @handle_exceptions
 @handle_nestable
 @infer_dtype
