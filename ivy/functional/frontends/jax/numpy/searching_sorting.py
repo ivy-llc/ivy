@@ -132,9 +132,7 @@ def searchsorted(a, v, side="left", sorter=None, *, method="scan"):
 
 
 @to_ivy_arrays_and_back
-def where(condition, x=None, y=None, *, size=None, fill_value=0):
-    if x is None and y is None:
-        return nonzero(condition, size=size, fill_value=fill_value)
+def where(condition, x=None, y=None, size=None, fill_value=0):
     if x is not None and y is not None:
         return ivy.where(condition, x, y)
     else:

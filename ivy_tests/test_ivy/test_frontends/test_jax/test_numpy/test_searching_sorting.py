@@ -8,9 +8,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
-from ...test_numpy.test_sorting_searching_counting.test_searching import (
-    _broadcastable_trio as _where_helper,
-)
 
 
 # argmax
@@ -423,37 +420,39 @@ def test_jax_searchsorted(
 # where
 @handle_frontend_test(
     fn_tree="jax.numpy.where",
-    broadcastables=_where_helper(),
-    only_cond=st.booleans(),
-    size=st.integers(min_value=1, max_value=20),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
+    test_with_out=st.just(False),
 )
 def test_jax_where(
     *,
-    broadcastables,
-    only_cond,
-    size,
+    dtype_and_x,
     frontend,
     backend_fw,
     fn_tree,
     on_device,
     test_flags,
 ):
-    cond, x1, x2, dtype = broadcastables
-    if only_cond:
-        x1, x2 = None, None
-    else:
-        size = None
+    input_dtype, x = dtype_and_x
+    x = x[0]
+    condition = x > 0.5
+    x1 = x * 2
+    x2 = x * -2
+
+    # Convert input_dtype from list to string
+    input_dtype = input_dtype[0]
+
     helpers.test_frontend_function(
-        input_dtypes=["bool", dtype],
+        input_dtypes=["bool", input_dtype, input_dtype],
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
         frontend=frontend,
         backend_to_test=backend_fw,
-        condition=cond,
+        condition=condition,
         x=x1,
         y=x2,
-        size=size,
     )
 
 
