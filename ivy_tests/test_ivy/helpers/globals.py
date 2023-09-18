@@ -78,7 +78,6 @@ def setup_frontend_test(frontend: str, backend: str, device: str, test_data: Tes
     _set_frontend(frontend)
     _set_backend(backend)
     _set_device(device)
-    _set_ground_truth_backend(frontend)
 
 
 def teardown_frontend_test():
@@ -86,7 +85,6 @@ def teardown_frontend_test():
     _unset_frontend()
     _unset_backend()
     _unset_device()
-    _unset_ground_truth_backend()
 
 
 def _set_test_data(test_data: TestData):
