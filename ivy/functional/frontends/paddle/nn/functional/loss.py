@@ -44,6 +44,17 @@ def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
 # ------------ #
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def binary_cross_entropy(input, label, weight=None, reduction="mean", name=None):
+    reduction = _get_reduction_func(reduction)
+    result = ivy.binary_cross_entropy(label, input, epsilon=0.0)
+    if weight is not None:
+        result = ivy.multiply(weight, result)
+    result = reduction(result)
+    return result
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32",)},
     "paddle",
@@ -264,6 +275,24 @@ def mse_loss(input, label, reduction="mean", name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def multi_label_soft_margin_loss(
+    input, label, weight=None, reduction="mean", name=None
+):
+    reduction = _get_reduction_func(reduction)
+    loss = -(
+        label * ivy.log(ivy.sigmoid(input))
+        + (1 - label) * ivy.log(1 - ivy.sigmoid(input))
+    )
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+    loss = ivy.mean(loss, axis=-1)
+    ret = reduction(loss).astype(input.dtype)
+    return ret
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def nll_loss(
     input,
     label,
@@ -472,21 +501,3 @@ def triplet_margin_loss(
 
     loss = reduction(loss).astype(input.dtype)
     return loss
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def multi_label_soft_margin_loss(
-    input, label, weight=None, reduction="mean", name=None
-):
-    reduction = _get_reduction_func(reduction)
-    loss = -(
-        label * ivy.log(ivy.sigmoid(input))
-        + (1 - label) * ivy.log(1 - ivy.sigmoid(input))
-    )
-
-    if weight is not None:
-        loss = ivy.multiply(weight, loss)
-    loss = ivy.mean(loss, axis=-1)
-    ret = reduction(loss).astype(input.dtype)
-    return ret

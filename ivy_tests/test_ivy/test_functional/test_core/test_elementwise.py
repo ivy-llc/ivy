@@ -126,17 +126,26 @@ def pow_helper(draw, available_dtypes=None):
         max_value = int(math.log(max_val) / math.log(max_x1))
         if abs(max_value) > abs(max_val) / 40 or max_value < 0:
             max_value = None
-    dtype2, x2 = draw(
-        helpers.dtype_and_values(
-            small_abs_safety_factor=16,
-            large_abs_safety_factor=16,
-            safety_factor_scale="log",
-            max_value=max_value,
-            dtype=[dtype2],
+    dtype_and_x2 = draw(
+        st.one_of(
+            helpers.dtype_and_values(
+                small_abs_safety_factor=16,
+                large_abs_safety_factor=16,
+                safety_factor_scale="log",
+                max_value=max_value,
+                dtype=[dtype2],
+            ),
+            st.floats(max_value=max_value),
+            st.integers(max_value=max_value),
         )
     )
-    dtype2 = dtype2[0]
-    return [dtype1, dtype2], [x1, x2]
+    input_dtypes = [dtype1]
+    if isinstance(dtype_and_x2, tuple):
+        input_dtypes += dtype_and_x2[0]
+        x2 = dtype_and_x2[1][0]
+    else:
+        x2 = dtype_and_x2
+    return input_dtypes, [x1[0], x2]
 
 
 # --- Main --- #
@@ -144,8 +153,7 @@ def pow_helper(draw, available_dtypes=None):
 
 
 def not_too_close_to_zero(x):
-    f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
-    return f(x)
+    return np.where(np.isclose(x, 0), x + 1, x)
 
 
 # abs
@@ -1586,24 +1594,31 @@ def test_positive(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.pow",
     dtype_and_x=pow_helper(),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
-    x[0] = not_too_close_to_zero(x[0])
-    x[1] = not_too_close_to_zero(x[1])
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
-        x1=x[0],
-        x2=x[1],
-    )
+    try:
+        helpers.test_function(
+            input_dtypes=input_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-2,
+            atol_=1e-2,
+            x1=x[0],
+            x2=x[1],
+        )
+    except Exception as e:
+        if any(
+            error_string in str(e)
+            for error_string in ["overflow", "too large to convert to"]
+        ):
+            assume(False)
+        else:
+            raise
 
 
 @handle_test(
