@@ -1416,11 +1416,11 @@ extra_promotion_table = {
 }
 
 # TODO: change when it's not the default mode anymore
-promotion_table = (
-    array_api_promotion_table
-    | common_extra_promotion_table
-    | precise_extra_promotion_table
-)
+promotion_table = {
+    **array_api_promotion_table,
+    **common_extra_promotion_table,
+    **precise_extra_promotion_table,
+}
 
 
 # global parameter properties
