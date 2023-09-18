@@ -458,6 +458,28 @@ def rsqrt(x, name=None):
     return 1 / ivy.sqrt(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def scale(x, scale=1.0, bias=0.0, bias_after_scale=True, act=None, name=None):
+    if bias_after_scale:
+        return scale * x + bias
+    else:
+        return scale * (x + bias)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def sgn(x, name=None):
