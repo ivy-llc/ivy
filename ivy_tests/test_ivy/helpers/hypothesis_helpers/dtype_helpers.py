@@ -7,7 +7,7 @@ from typing import Optional
 
 # local
 import ivy
-from ..pipeline_helper import BackendHandler, get_frontend_config, WithBackendContext
+from ..pipeline_helper import BackendHandler, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -50,13 +50,10 @@ def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
 def _get_type_dict_helper(framework, kind, is_frontend_test):
     if is_frontend_test:
         framework_module = get_frontend_config(framework).supported_dtypes
-        return _retrieve_requested_dtypes(framework_module, kind)
     else:
-        with WithBackendContext(framework) as ivy_backend:
-            return _retrieve_requested_dtypes(ivy_backend, kind)
+        with BackendHandler.update_backend(framework) as ivy_backend:
+            framework_module = ivy_backend
 
-
-def _retrieve_requested_dtypes(framework_module, kind):
     if kind == "valid":
         return framework_module.valid_dtypes
     if kind == "numeric":
