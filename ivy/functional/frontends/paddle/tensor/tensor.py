@@ -6,6 +6,9 @@ from ivy.func_wrapper import (
     with_unsupported_dtypes,
 )
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
+from typing import (
+    Union,
+)
 
 
 class Tensor:
@@ -739,3 +742,8 @@ class Tensor:
 
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
+
+    def fill_diagonal_tensor(
+        self, x: Union[ivy.Array, ivy.NativeArray], y, dim1=0, dim2=1, name=None
+    ):
+        return ivy.fill_diagonal(self._ivy_array, x, y)
