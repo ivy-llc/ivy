@@ -2342,6 +2342,8 @@ def _get_num_padded_values(i, p, n, k, s):
     )
 
 
+# TODO add paddle backend implementation back,
+#  once paddle.argsort uses a stable algorithm
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
