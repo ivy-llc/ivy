@@ -1022,6 +1022,12 @@ def test_tensorflow_floormod(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    if ivy.current_backend_str == "paddle":
+        # Since we use ivy.remainder to emulate floormod,
+        # and Paddle's remainder doesn't support `bfloat16`,
+        # we use assume to skip cases where the dtype is `bfloat16`.
+        assume("bfloat16" not in input_dtype)
+
     assume(not np.any(np.isclose(x[0], 0)))
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_function(
