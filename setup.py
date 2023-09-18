@@ -79,12 +79,12 @@ for tag in all_tags:
         except request.HTTPError:
             break
 
-for path in paths:
+for i, path in enumerate(paths):
     if not os.path.exists(path):
-        print(
-            f"Could not download {path}. Check out the unifyai/binaries README for"
-            " the supported configurations!"
-        )
+        if i == 0:
+            config_str = "\n".join(available_configs)
+            print(f"Following are the supported configurations\n{config_str}")
+        print(f"Could not download {path}.")
 
 
 this_directory = Path(__file__).parent
