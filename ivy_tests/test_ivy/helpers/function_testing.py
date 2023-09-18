@@ -215,7 +215,7 @@ def test_function_backend_computation(
         assert ivy_backend.nested_map(
             lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
             ret_from_target,
-        ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
+        ), f"Ivy function returned non-ivy arrays: {ret_from_target}"
 
         # Assert indices of return if the indices of the out array provided
         if test_flags.with_out and not test_flags.test_compile:
@@ -317,7 +317,7 @@ def test_function_ground_truth_computation(
         assert gt_backend.nested_map(
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
             ret_from_gt,
-        ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
+        ), f"Ground-truth function returned non-ivy arrays: {ret_from_gt}"
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
                 ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
@@ -974,7 +974,7 @@ def test_frontend_function(
             frontend_fn,
             frontend_fw_fn,
             frontend,
-            fn_name=gt_frontend_submods + "." + gt_fn_name,
+            fn_name=f"{gt_frontend_submods}.{gt_fn_name}",
             frontend_fw_args=args_frontend,
             frontend_fw_kwargs=kwargs_frontend,
         )
@@ -1243,13 +1243,9 @@ def gradient_test(
             ret_grad_idxs,
         )
 
-    assert len(grads_np_flat) == len(
-        grads_np_from_gt_flat
-    ), "result length mismatch: {} ({}) != {} ({})".format(
-        grads_np_flat,
-        len(grads_np_flat),
-        grads_np_from_gt_flat,
-        len(grads_np_from_gt_flat),
+    assert len(grads_np_flat) == len(grads_np_from_gt_flat), (
+        f"result length mismatch: {grads_np_flat} ({len(grads_np_flat)}) !="
+        f" {grads_np_from_gt_flat} ({len(grads_np_from_gt_flat)})"
     )
 
     value_test(
@@ -1512,7 +1508,7 @@ def test_method_ground_truth_computation(
         assert gt_backend.nested_map(
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
             ret_from_gt,
-        ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
+        ), f"Ground-truth method returned non-ivy arrays: {ret_from_gt}"
 
         fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
         # for k, v in fw_list2.items():

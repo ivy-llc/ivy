@@ -278,10 +278,10 @@ def lists(
             if size_bounds
             else number_helpers.ints()
         )
-        if not isinstance(min_size, int):
-            min_size = draw(st.shared(integers, key=min_size))
-        if not isinstance(max_size, int):
-            max_size = draw(st.shared(integers, key=max_size))
+    if not isinstance(min_size, int):
+        min_size = draw(st.shared(integers, key=min_size))
+    if not isinstance(max_size, int):
+        max_size = draw(st.shared(integers, key=max_size))
 
     return draw(st.lists(x, min_size=min_size, max_size=max_size))
 
@@ -1335,7 +1335,7 @@ def arrays_and_axes(
     ([array([-6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05],
         dtype=float16)], 0)
     """
-    shapes = list()
+    shapes = []
     for _ in range(num):
         shape = draw(
             gh.get_shape(
@@ -1353,7 +1353,7 @@ def arrays_and_axes(
     dtype = draw(
         dtype_helpers.array_dtypes(num_arrays=num, available_dtypes=available_dtypes)
     )
-    arrays = list()
+    arrays = []
     for shape in shapes:
         arrays.append(
             draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
@@ -1367,7 +1367,7 @@ def arrays_and_axes(
         else:
             axes = draw(st.integers(0, len(shape) - 1))
     else:
-        all_axes_ranges = list()
+        all_axes_ranges = []
         for shape in shapes:
             if None in all_axes_ranges:
                 all_axes_ranges.append(st.integers(0, len(shape) - 1))
@@ -2226,7 +2226,7 @@ def create_concatenable_arrays_dtypes(
         for i in range(num_arrays):
             array_shapes[i][concat_dim] = unique_dims[i]
 
-    xs = list()
+    xs = []
 
     for sh, dt in zip(array_shapes, input_dtypes):
         x = draw(
