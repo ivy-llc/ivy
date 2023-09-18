@@ -93,23 +93,16 @@
 
 ------------------------------------------------------------------------
 
-Ivy is an open-source machine learning framework and transpiler that 
+Ivy is an open-source machine learning framework that 
 enables you to: 
 
-- 💥 **Accelerate your development**: this will allow you to make your 
-machine learning model 3x faster than the one you have.
-- 🔄 **Convert your code into any framework**: you can benefit from all 
-the machine learning ecosystems with different and save time from 
-reproducing the same algorithms with ivy. You can connect machine 
-learning frameworks together. 
 - 🔥 **Autotune and optimize your model**: you can compress your model, 
 get the best cost, and more with Ivy. 
-- ⚒️ **Write framework-free code**: when you use Ivy as a framework, 
-you can set your favorite machine learning framework as a backend and 
-get its benefits. 
-- 💻 **Deploy your model**: you can deploy the model on the cloud or 
-have your own containerized machine learning to run on any machine 
-you want without any issues.
+- 💥 **Accelerate your development**: speed up your machine learning models by up to 3x.
+- 🔄 **Convert your code into any framework**: Use and build of top of any model, library, infrastructure or device by converting any code between frameworks.
+- ⚒️ **Write framework-agnostic code**: when you use Ivy as a framework, 
+you can set your favorite machine learning framework as a backend to as the backend to leverage all its benefits and tools
+
 
 Join our growing community 🌍 to interact with people using Ivy. 
  
