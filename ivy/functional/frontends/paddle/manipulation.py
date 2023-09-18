@@ -125,6 +125,21 @@ def rot90(x, k=1, axes=(0, 1), name=None):
     return ivy.rot90(x, k=k, axes=axes)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def scatter(x, index, updates, overwrite=True, name=None):
+    if len(index.shape) == 0:
+        x[index] = updates
+        return x
+    x[index] = 0
+    return ivy.scatter_flat(
+        index, updates, reduction="replace" if overwrite else "sum", out=x
+    )
+
+
 @with_unsupported_dtypes(
     {"2.5.1 and below": ("int16", "complex64", "complex128")},
     "paddle",

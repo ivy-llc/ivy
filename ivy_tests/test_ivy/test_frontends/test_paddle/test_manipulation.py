@@ -161,6 +161,60 @@ def _gather_helper(draw):
     return dtype, param, indices
 
 
+# scatter
+@st.composite
+def _scatter_helper(draw):
+    dtype_x, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=1,
+            max_num_dims=6,
+            ret_shape=True,
+        )
+    )
+    index_dim = draw(st.integers(min_value=1, max_value=1))
+    if index_dim == 1:
+        # 1-D Tensor
+        dtype_updates, updates, updates_shape = draw(
+            helpers.dtype_and_values(
+                available_dtypes=dtype_x, shape=x_shape, ret_shape=True
+            )
+        )
+        dtype_index, index, index_shape = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("integer"),
+                min_num_dims=index_dim,
+                max_num_dims=index_dim,
+                min_dim_size=1,
+                max_dim_size=updates_shape[0],
+                min_value=0,
+                max_value=x_shape[0] - 1,
+                ret_shape=True,
+            )
+        )
+    else:
+        # 0-D Tensor
+        dtype_updates, updates, updates_shape = draw(
+            helpers.dtype_and_values(
+                available_dtypes=dtype_x, shape=x_shape[1:], ret_shape=True
+            )
+        )
+        dtype_index, index, index_shape = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("integer"),
+                min_num_dims=index_dim,
+                max_num_dims=index_dim,
+                min_value=0,
+                max_value=x_shape[0] - 1,
+                ret_shape=True,
+            )
+        )
+    overwrite = draw(st.booleans())
+    dtype_overwrite = draw(helpers.get_dtypes("bool"))
+    input_dtypes = [dtype_x[0], dtype_index[0], dtype_updates[0], dtype_overwrite[0]]
+    return input_dtypes, x, index, updates, overwrite
+
+
 # split
 @st.composite
 def _split_helper(draw):
@@ -569,6 +623,36 @@ def test_paddle_rot90(
         x=m,
         k=k,
         axes=tuple(axes),
+    )
+
+
+# scatter
+@handle_frontend_test(
+    fn_tree="paddle.scatter",
+    input_dtypes_x_index_updates_overwrite=_scatter_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_scatter(
+    *,
+    input_dtypes_x_index_updates_overwrite,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, x, index, updates, overwrite = input_dtypes_x_index_updates_overwrite
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        index=index[0],
+        updates=updates[0],
+        overwrite=overwrite,
     )
 
 
