@@ -73,6 +73,40 @@ def _image_shape_helper(draw, data_format):
 # ------------ #
 
 
+# one_hot
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.one_hot",  # Update the function path
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int64"],
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=5,
+    ),
+    num_class=helpers.ints(min_value=1),  # Correct the parameter name to num_class
+)
+def test_one_hot(
+    *,
+    dtype_and_x,
+    num_class,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        num_classes=num_class,
+        backend_to_test=backend_fw,
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.affine_grid",
     dtype_and_input_and_other=_affine_grid_helper(),
