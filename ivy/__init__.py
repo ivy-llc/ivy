@@ -99,7 +99,7 @@ class Device(str):
                 # ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
-                    message="{} must be numeric".format(dev_str[4:]),
+                    message=f"{dev_str[4:]} must be numeric",
                 )
         return str.__new__(cls, dev_str)
 
@@ -248,7 +248,7 @@ class Shape(Sequence):
         pattern = r"\d+(?:,\s*\d+)*"
         shape_repr = re.findall(pattern, self._shape.__str__())
         shape_repr = ", ".join([str(i) for i in shape_repr])
-        shape_repr = shape_repr + "," if len(shape_repr) == 1 else shape_repr
+        shape_repr = f"{shape_repr}," if len(shape_repr) == 1 else shape_repr
         return (
             f"ivy.Shape({shape_repr})" if self._shape is not None else "ivy.Shape(None)"
         )
@@ -437,11 +437,11 @@ class Shape(Sequence):
     def assert_same_rank(self, other):
         other = Shape(other)
         if self.rank != other.rank:
-            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+            raise ValueError(f"Shapes {self} and {other} must have the same rank")
 
     def assert_has_rank(self, rank):
         if self.rank not in (None, rank):
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
@@ -457,17 +457,17 @@ class Shape(Sequence):
         try:
             return self.merge_with(unknown_shape(rank=rank))
         except ValueError:
-            raise ValueError("Shape %s must have rank %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank {rank}")
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
-            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at least {rank}")
         else:
             return self
 
     def with_rank_at_most(self, rank):
         if self.rank is not None and self.rank > rank:
-            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+            raise ValueError(f"Shape {self} must have rank at most {rank}")
         else:
             return self
 
@@ -503,14 +503,14 @@ class Shape(Sequence):
     @property
     def assert_is_fully_defined(self):
         if not self.is_fully_defined():
-            raise ValueError("Shape %s is not fully defined" % self)
+            raise ValueError(f"Shape {self} is not fully defined")
 
     def as_list(self):
         if self._shape is None:
             raise ivy.utils.exceptions.IvyException(
                 "Cannot convert a partially known Shape to a list"
             )
-        return [dim for dim in self._shape]
+        return list(self._shape)
 
 
 class IntDtype(Dtype):
@@ -598,11 +598,11 @@ class Node(str):
     pass
 
 
-array_significant_figures_stack = list()
-array_decimal_values_stack = list()
-warning_level_stack = list()
-nan_policy_stack = list()
-dynamic_backend_stack = list()
+array_significant_figures_stack = []
+array_decimal_values_stack = []
+warning_level_stack = []
+nan_policy_stack = []
+dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -1416,11 +1416,11 @@ extra_promotion_table = {
 }
 
 # TODO: change when it's not the default mode anymore
-promotion_table = {
-    **array_api_promotion_table,
-    **common_extra_promotion_table,
-    **precise_extra_promotion_table,
-}
+promotion_table = (
+    array_api_promotion_table
+    | common_extra_promotion_table
+    | precise_extra_promotion_table
+)
 
 
 # global parameter properties
@@ -1507,8 +1507,8 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         internal = internal and _is_from_internal(filename)
         if not internal and name in GLOBAL_PROPS:
             raise ivy.utils.exceptions.IvyException(
-                "Property: {} is read only! Please use the setter: set_{}() for setting"
-                " its value!".format(name, name)
+                f"Property: {name} is read only! Please use the setter: set_{name}()"
+                " for setting its value!"
             )
         self.__dict__[name] = value
 
