@@ -122,6 +122,26 @@ Here is a good starting point for you:
 
 ------------------------------------------------------------------------
 
+
+## 📚 Documentation
+
+You can find our extensive documentation from this [Ivy Docs page](https://unify.ai/docs/ivy/)  which includes: 
+- [Docs](https://unify.ai/docs/ivy/): the full extensive documentation 
+    - [Design](https://unify.ai/docs/ivy/overview/design.html): the design decision, architecture, and building blocks (layers and nodes)  of Ivy. 
+    - [Deep
+dive](https://unify.ai/docs/ivy/overview/deep_dive.html)explains our code base and how to contribute to a specific field. 
+    - [Background](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve through
+        - the current [ML
+Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion),, 
+        - explaining both why is important [to solve this
+problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify) and 
+        - how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
+    - [Related
+Work](https://unify.ai/docs/ivy/overview/related_work.html)   which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
+
+------------------------------------------------------------------------
+
+
 ## Examples
 
 The [Examples page](https://unify.ai/demos/) features a wide range of
@@ -996,8 +1016,10 @@ out = np_loss(p, t)
 </blockquote>
 </details>
 
-<h3>I'm using Ivy&ensp;<img height="25px" width="25px" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/logos/ivy_logo_only.svg"></h3>
-
+<details>
+<summary>
+<b>I'm using Ivy&ensp;<img height="25px" width="25px" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/logos/ivy_logo_only.svg"></b>
+</summary>
 Or you can use Ivy as a framework, breaking yourself (and your code)
 free from deciding which community to support, allowing anyone to run
 your code in their framework of choice!
@@ -1201,6 +1223,7 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
 train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
 ```
 
+</details>
 </details>
 
 ## Contributing
