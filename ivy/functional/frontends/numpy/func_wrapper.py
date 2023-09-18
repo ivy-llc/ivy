@@ -413,14 +413,6 @@ def handle_numpy_out(fn: Callable) -> Callable:
                 **kwargs,
             }
             args = args[:out_pos]
-        if "out" in kwargs:
-            out = kwargs["out"]
-            if ivy.exists(out) and not ivy.nested_any(
-                out, lambda x: isinstance(x, np_frontend.ndarray)
-            ):
-                raise ivy.utils.exceptions.IvyException(
-                    "Out argument must be an ivy.frontends.numpy.ndarray object"
-                )
         return fn(*args, **kwargs)
 
     _handle_numpy_out.handle_numpy_out = True
