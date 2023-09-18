@@ -3,7 +3,7 @@ from typing import Optional, Tuple, Sequence, Union, Any
 import numpy as np
 
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
@@ -114,14 +114,13 @@ def matrix_exp(
     return exp_mat.astype(x.dtype)
 
 
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
 def eig(
     x: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray]:
-    if ivy.dtype(x) == ivy.float16:
-        x = x.astype(np.float32)
+) -> Tuple[np.ndarray, np.ndarray]:
     e, v = np.linalg.eig(x)
     return e.astype(complex), v.astype(complex)
 
@@ -129,9 +128,8 @@ def eig(
 eig.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, backend_version)
 def eigvals(x: np.ndarray, /) -> np.ndarray:
-    if ivy.dtype(x) == ivy.float16:
-        x = x.astype(np.float32)
     e = np.linalg.eigvals(x)
     return e.astype(complex)
 

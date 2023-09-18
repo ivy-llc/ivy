@@ -672,6 +672,42 @@ def test_torch_nanmean(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.nansum",
+    dtype_and_x=_get_castable_dtype(
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_nansum(
+    *,
+    dtype_and_x,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis, castable_dtype = dtype_and_x
+    if test_flags.as_variable:
+        castable_dtype = input_dtype
+    input_dtype = [input_dtype]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+        dtype=castable_dtype,
+    )
+
+
 # norm
 @handle_frontend_test(
     fn_tree="torch.norm",
