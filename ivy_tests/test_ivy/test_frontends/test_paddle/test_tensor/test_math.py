@@ -1,6 +1,39 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from hypothesis import strategies as st
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _get_clip_inputs_(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=0,
+            max_value=50,
+        )
+    )
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=0, max_value=25)
+    )
+    max = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=26, max_value=50)
+    )
+    return x_dtype, x, min, max
+
+
+# --- Main --- #
+# ------------ #
 
 
 # ceil_
@@ -28,6 +61,41 @@ def test_paddle_ceil_(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# clip_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.clip_",
+    input_and_ranges=_get_clip_inputs_(),
+)
+def test_paddle_clip_(
+    *,
+    input_and_ranges,
+    frontend,
+    fn_tree,
+    test_flags,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, min_val, max_val = input_and_ranges
+    if min_val > max_val:
+        max_value = min_val
+        min_value = max_val
+    else:
+        max_value = max_val
+        min_value = min_val
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        min=min_value,
+        max=max_value,
     )
 
 

@@ -15,6 +15,26 @@ def ceil_(x, name=None):
     return ivy.ceil(x, out=x)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def clip_(x, min=None, max=None, name=None):
+    ivy.utils.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    if min is None:
+        min = ivy.min(x)
+    if max is None:
+        max = ivy.max(x)
+    return ivy.clip(x, min, max)
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def exp_(x, name=None):
