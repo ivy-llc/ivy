@@ -96,6 +96,7 @@ def handle_jax_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=dtype, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
+    _handle_jax_dtype.handle_jax_dtype = True
     return _handle_jax_dtype
 
 
@@ -121,6 +122,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
+    _inputs_to_ivy_arrays_jax.inputs_to_ivy_arrays_jax = True
     return _inputs_to_ivy_arrays_jax
 
 
@@ -159,6 +161,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             ret, nested=True, include_derived={"tuple": True}
         )
 
+    _outputs_to_frontend_arrays_jax.outputs_to_frontend_arrays_jax = True
     return _outputs_to_frontend_arrays_jax
 
 

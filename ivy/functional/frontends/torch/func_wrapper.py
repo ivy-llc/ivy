@@ -145,6 +145,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*new_args, **new_kwargs)
 
+    _inputs_to_ivy_arrays_torch.inputs_to_ivy_arrays_torch = True
     return _inputs_to_ivy_arrays_torch
 
 
@@ -159,6 +160,7 @@ def numpy_to_torch_style_args(func):  # noqa
         }
         return func(*args, **new_kwargs)
 
+    wrapper.numpy_to_torch_style_args = True
     return wrapper
 
 
@@ -244,6 +246,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
         return ret
 
+    outputs_to_frontend_arrays_torch.outputs_to_frontend_arrays_torch = True
     return outputs_to_frontend_arrays_torch
 
 
@@ -255,6 +258,7 @@ def outputs_to_native_arrays(fn: Callable):
             ret = ret.ivy_array.data
         return ret
 
+    outputs_to_native_arrays_torch.outputs_to_native_arrays_torch = True
     return outputs_to_native_arrays_torch
 
 
@@ -298,4 +302,5 @@ def to_ivy_shape(fn: Callable) -> Callable:
         )
         return fn(*new_args, **new_kwargs)
 
+    to_ivy_shape_torch.to_ivy_shape_torch = True
     return to_ivy_shape_torch

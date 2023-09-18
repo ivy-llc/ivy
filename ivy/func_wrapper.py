@@ -1309,14 +1309,14 @@ def _dtype_device_wrapper_creator(attrib, t):
                         # applied to the function, but they are not same
                         # and aren't in conflicting dict either
                         setattr(func, attrib, val)
-                        setattr(func, "dictionary_info", version_dict)
+                        setattr(func, "dictionary_info", (version_dict, version))
                     elif hasattr(func, "exclusive"):
                         if attrib == attribs:
                             # we see a higher decorator with exclusivity applied
                             # we use this decorator's dict information
                             # and previous decorator's dict information
                             # to update this
-                            old_version_dict = getattr(func, "dictionary_info")
+                            old_version_dict = getattr(func, "dictionary_info")[0]
                             old_version_dict.update(version_dict)
                             val = _versioned_attribute_factory(
                                 lambda: _dtype_from_version(
@@ -1330,7 +1330,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                             pass
             else:
                 setattr(func, attrib, val)
-                setattr(func, "dictionary_info", version_dict)
+                setattr(func, "dictionary_info", (version_dict, version))
             if "frontends" in func.__module__:
                 # it's a frontend func, no casting modes for this
                 return func
