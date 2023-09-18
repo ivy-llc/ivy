@@ -243,7 +243,7 @@ def current_backend(*args, **kwargs):
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
-def _modify_module_symbols(
+def _set_module_backend(
     original_dict, target, backend, invalid_dtypes=None, backend_str=None
 ):
     invalid_dtypes = (
@@ -266,7 +266,7 @@ def _modify_module_symbols(
             and "ivy.functional." in v.__name__
             and os.path.join("{}", "__init__.py").format(backend_str) not in v.__file__
         ):
-            _modify_module_symbols(
+            _set_module_backend(
                 v.__dict__,
                 target.__dict__[k],
                 backend.__dict__[k],
@@ -461,7 +461,7 @@ def set_backend(backend: str, dynamic: bool = False):
             ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
-        _modify_module_symbols(ivy_original_dict, ivy, backend)
+        _set_module_backend(ivy_original_dict, ivy, backend)
         # following snippet is required to update the ivy.functional namespace with
         # backend-specific functions
         for key, _ in ivy.__dict__.items():
@@ -648,7 +648,7 @@ def with_backend(backend: str, cached: bool = True):
         set_backend_to_specific_version(backend_module)
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
-        ivy_pack.utils.backend.handler._modify_module_symbols(
+        ivy_pack.utils.backend.handler._set_module_backend(
             ivy_pack.__dict__.copy(), ivy_pack, backend_module
         )
         # TODO use a refactored code from ivy.set_backend
