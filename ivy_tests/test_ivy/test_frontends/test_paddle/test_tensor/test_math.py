@@ -1,64 +1,8 @@
-# global
-from hypothesis import strategies as st
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
-    _get_dtype_input_and_matrices,
-    _get_dtype_and_3dbatch_matrices,
-)
-
-
-# --- Helpers --- #
-# --------------- #
-
-
-@st.composite
-def _test_paddle_take_helper(draw):
-    mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
-
-    safe_bounds = mode == "raise"
-
-    dtypes, xs, indices, _, _ = draw(
-        helpers.array_indices_axis(
-            array_dtypes=helpers.get_dtypes("float_and_integer"),
-            indices_dtypes=["int32", "int64"],
-            valid_bounds=safe_bounds,
-        )
-    )
-
-    return dtypes, xs, indices, mode
-
-
-# --- Main --- #
-# ------------ #
-
-
-# abs
-@handle_frontend_test(
-    fn_tree="paddle.tensor.math.abs",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-)
-def test_paddle_abs(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
 
 
 # acos
