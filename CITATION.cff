@@ -1,0 +1,31 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Ivy: Templated deep learning for inter-framework
+  portability
+message: >-
+  If you are going to use this, please cite it by using this
+  message, and we really appreciate your support.
+type: software
+authors:
+  - given-names: 'Daniel '
+    family-names: Lenton
+  - given-names: Fabio
+    family-names: Pardo
+  - given-names: Fabian
+    family-names: Falck
+  - given-names: 'Stephen '
+    family-names: James
+  - given-names: Ronald
+    family-names: Clark
+identifiers:
+  - type: doi
+    value: 10.48550/arXiv.2102.02886
+    description: 'arXiv preprint '
+repository-code: 'https://github.com/unifyai/ivy'
+url: 'https://unify.ai/'
+repository: 'https://github.com/unifyai/'
+abstract: ' Ivy, a templated Deep Learning (DL) framework which abstracts existing DL frameworks. Ivy unifies the core functions of these frameworks to exhibit consistent call signatures, syntax and input-output behaviour. '
+license: Apache-2.0
