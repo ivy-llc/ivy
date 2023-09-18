@@ -202,7 +202,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
         data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+    if data_format in ["NHWC", "NWC", "NDHWC"]:
         x_shape = [batch_size] + x_dim + [input_channels]
     else:
         x_shape = [batch_size] + [input_channels] + x_dim
@@ -581,7 +581,7 @@ def test_conv1d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -719,7 +719,7 @@ def test_conv2d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -786,7 +786,7 @@ def test_conv3d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -859,7 +859,7 @@ def test_conv3d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -968,7 +968,7 @@ def test_depthwise_conv2d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and dilations > 1 and strides > 1))
+    assume(backend_fw != "tensorflow" or dilations <= 1 or strides <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,

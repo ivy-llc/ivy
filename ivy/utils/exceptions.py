@@ -179,9 +179,7 @@ def _configure_stack_trace(traceback):
     frontend_path = os.path.join("ivy", "functional", "frontends")
     wrapper_path = os.path.join("ivy", "func_wrapper.py")
 
-    while 1:
-        if not tb.tb_next:
-            break
+    while 1 and tb.tb_next:
         frame = tb.tb_next.tb_frame
         file_path = frame.f_code.co_filename
         if trace_mode == "ivy":
@@ -196,14 +194,13 @@ def _configure_stack_trace(traceback):
                 tb = tb.tb_next
             else:
                 tb.tb_next = tb.tb_next.tb_next
-        else:
-            if not show_wrappers:
-                if _check_if_path_found(wrapper_path, file_path):
-                    tb.tb_next = tb.tb_next.tb_next
-                else:
-                    tb = tb.tb_next
+        elif not show_wrappers:
+            if _check_if_path_found(wrapper_path, file_path):
+                tb.tb_next = tb.tb_next.tb_next
             else:
                 tb = tb.tb_next
+        else:
+            tb = tb.tb_next
 
 
 def _add_native_error(default):
