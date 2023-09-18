@@ -22,7 +22,6 @@ from pip._vendor.packaging import tags
 from urllib import request
 import os
 import json
-import itertools
 import re
 
 
@@ -48,16 +47,20 @@ all_tags = list(tags.sys_tags())
 binaries = json.load(open("binaries.json"))
 paths = _get_paths(binaries)
 terminate = False
-spinner = itertools.cycle(["-", "\\", "|", "/"])
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
-print_str = "Locating and downloading binaries"
-print(f"{print_str} {next(spinner)} ", end="")
+configs_response = request.urlopen(
+    "https://github.com/unifyai/binaries/raw/main/configs.txt",
+    timeout=40,
+)
+available_configs = repr(f"{configs_response.read()}").strip(r"\"b\'").split(r"\\n")
+
 
 for tag in all_tags:
     if terminate:
         break
+    if tag not in available_configs:
+        continue
     for i, path in enumerate(paths):
-        print(f"\r{print_str} {next(spinner)} ", end="")
         if os.path.exists(path):
             continue
         folders = path.split(os.sep)
