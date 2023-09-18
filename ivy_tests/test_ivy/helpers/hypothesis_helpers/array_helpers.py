@@ -7,6 +7,7 @@ from functools import reduce as _reduce
 from operator import mul
 import sys
 import string
+import ml_dtypes  # noqa
 
 # local
 import ivy_tests.test_ivy.helpers.globals as test_globals
@@ -15,6 +16,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
+from ...conftest import mod_backend
 
 
 @st.composite
@@ -276,10 +278,10 @@ def lists(
             if size_bounds
             else number_helpers.ints()
         )
-        if not isinstance(min_size, int):
-            min_size = draw(st.shared(integers, key=min_size))
-        if not isinstance(max_size, int):
-            max_size = draw(st.shared(integers, key=max_size))
+    if not isinstance(min_size, int):
+        min_size = draw(st.shared(integers, key=min_size))
+    if not isinstance(max_size, int):
+        max_size = draw(st.shared(integers, key=max_size))
 
     return draw(st.lists(x, min_size=min_size, max_size=max_size))
 
@@ -667,13 +669,13 @@ def dtype_values_axis(
     Examples
     --------
     >>> dtype_values_axis()
-    (['int16'], [array(29788, dtype=int16)])
+    (['int16'], [array(29788, dtype=int16)], 0)
 
     >>> dtype_values_axis()
-    (['complex128'], [array(1.62222885e+156-2.68281172e-257j)])
+    (['complex128'], [array(1.62222885e+156-2.68281172e-257j)], -1)
 
     >>> dtype_values_axis()
-    (['float64'], [array(-1.40129846e-45)])
+    (['float64'], [array(-1.40129846e-45)], 3)
 
     >>> dtype_values_axis(
     ...     available_dtypes=get_dtypes("numeric"),
@@ -1333,7 +1335,7 @@ def arrays_and_axes(
     ([array([-6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05],
         dtype=float16)], 0)
     """
-    shapes = list()
+    shapes = []
     for _ in range(num):
         shape = draw(
             gh.get_shape(
@@ -1351,7 +1353,7 @@ def arrays_and_axes(
     dtype = draw(
         dtype_helpers.array_dtypes(num_arrays=num, available_dtypes=available_dtypes)
     )
-    arrays = list()
+    arrays = []
     for shape in shapes:
         arrays.append(
             draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
@@ -1365,7 +1367,7 @@ def arrays_and_axes(
         else:
             axes = draw(st.integers(0, len(shape) - 1))
     else:
-        all_axes_ranges = list()
+        all_axes_ranges = []
         for shape in shapes:
             if None in all_axes_ranges:
                 all_axes_ranges.append(st.integers(0, len(shape) - 1))
@@ -1380,10 +1382,11 @@ def arrays_and_axes(
 
 
 def _clamp_value(x, dtype_info):
-    if x > dtype_info.max:
-        return dtype_info.max
-    if x < dtype_info.min:
-        return dtype_info.min
+    # 0th index is max, 1st index is min
+    if x > dtype_info[0]:
+        return dtype_info[0]
+    if x < dtype_info[1]:
+        return dtype_info[1]
     return x
 
 
@@ -1500,12 +1503,28 @@ def array_values(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
-            dtype_info = ivy_backend.finfo(dtype)
+        if mod_backend[test_globals.CURRENT_BACKEND]:
+            proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
+            input_queue.put(
+                ("dtype_info_helper", test_globals.CURRENT_BACKEND, kind_dtype, dtype)
+            )
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = array_helpers_dtype_info_helper(
+                backend=test_globals.CURRENT_BACKEND, kind_dtype=kind_dtype, dtype=dtype
+            )
     elif "int" in dtype:
         kind_dtype = "int"
-        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
-            dtype_info = ivy_backend.iinfo(dtype)
+        if mod_backend[test_globals.CURRENT_BACKEND]:
+            proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
+            input_queue.put(
+                ("dtype_info_helper", test_globals.CURRENT_BACKEND, kind_dtype, dtype)
+            )
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = array_helpers_dtype_info_helper(
+                backend=test_globals.CURRENT_BACKEND, kind_dtype=kind_dtype, dtype=dtype
+            )
     elif "bool" in dtype:
         kind_dtype = "bool"
     else:
@@ -1608,6 +1627,22 @@ def array_values(
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
     return np.asarray(array)
+
+
+def array_helpers_dtype_info_helper(backend, kind_dtype, dtype):
+    with WithBackendContext(backend) as ivy_backend:
+        if kind_dtype == "float":
+            return (
+                ivy_backend.finfo(dtype).max,
+                ivy_backend.finfo(dtype).min,
+                getattr(ivy_backend.finfo(dtype), "smallest_normal", None),
+            )
+        elif kind_dtype == "int":
+            return (
+                ivy_backend.iinfo(dtype).max,
+                ivy_backend.iinfo(dtype).min,
+                getattr(ivy_backend.iinfo(dtype), "smallest_normal", None),
+            )
 
 
 #      From array-api repo     #
@@ -1881,6 +1916,7 @@ def dtype_array_query(
                     min_value=-s + 1,
                     max_value=s - 1,
                     dtype=["int64"],
+                    max_num_dims=4,
                 )
             )
             new_index = new_index[0]
@@ -2126,3 +2162,78 @@ def einsum_helper(draw):
     eq = "".join(eq_1) + "," + "".join(eq_2) + "->" + output_eq
 
     return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]
+
+
+@st.composite
+def create_concatenable_arrays_dtypes(
+    draw,
+    min_num_dims,
+    max_num_dims,
+    min_num_arrays,
+    max_num_arrays,
+    concat_dim,
+    dtypes,
+    common_shape=None,
+):
+    """
+    Draws a random number of arrays with concatenable or stackable dimensions. Arrays
+    have same number of dimensions, but their shape can differ along a specified
+    dimension (concat_dim). If concat_dim is None, arrays have the same shape. Dtypes of
+    arrays can differ.
+
+    Parameters
+    ----------
+    min_num_dims
+        minimum number of dimensions
+    max_num_dims
+        maximum number of dimensions
+    min_num_arrays
+        minimum number of arrays
+    max_num_arrays
+        maximum number of arrays
+    concat_dim
+        dimension along which the shape of arrays can differ,
+        if None all the arrays will have the same shape
+    dtypes
+        list of dtypes from which array dtypes will be draws,
+        each array can have different dtype
+    given_common_shape
+        if not None, specifies the shape of the arrays
+        (dimension concat_dim can still be modified)
+    """
+    num_arrays = draw(helpers.ints(min_value=min_num_arrays, max_value=max_num_arrays))
+    if common_shape is None:
+        num_dims = draw(helpers.ints(min_value=min_num_dims, max_value=max_num_dims))
+        common_shape = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=num_dims,
+            )
+        )
+    else:
+        num_dims = len(common_shape)
+    input_dtypes = draw(
+        helpers.array_dtypes(num_arrays=num_arrays, available_dtypes=dtypes)
+    )
+    array_shapes = [common_shape.copy() for i in range(num_arrays)]
+    if num_dims > 0 and concat_dim is not None:
+        unique_dims = draw(
+            helpers.list_of_size(
+                x=helpers.ints(min_value=1, max_value=5),
+                size=num_arrays,
+            )
+        )
+        for i in range(num_arrays):
+            array_shapes[i][concat_dim] = unique_dims[i]
+
+    xs = []
+
+    for sh, dt in zip(array_shapes, input_dtypes):
+        x = draw(
+            helpers.array_values(
+                shape=sh,
+                dtype=dt,
+            )
+        )
+        xs.append(x)
+    return xs, input_dtypes
