@@ -127,3 +127,9 @@ RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
     rm -rf requirements.txt && \
     rm -rf optional_gpu.txt && \
     rm -rf test_dependencies.py
+
+# Post installation steps
+COPY .devcontainer/post_create_commands.sh .
+RUN chmod +x post_create_commands.sh && \
+    bash post_create_commands.sh && \
+    rm -rf post_create_commands.sh
