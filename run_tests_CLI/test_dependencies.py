@@ -34,8 +34,8 @@ def test_imports(fname, assert_version, update_versions):
     global WARN
     global WARN_MSG
     global PRINT_MSG
-    versions_to_update = dict()
-    msg = "\nasserting imports work for: {}\n\n".format(fname)
+    versions_to_update = {}
+    msg = f"\nasserting imports work for: {fname}\n\n"
     PRINT_MSG += msg
     ERROR_MSG += msg
     WARN_MSG += msg
@@ -48,7 +48,7 @@ def test_imports(fname, assert_version, update_versions):
             mod = importlib.import_module(mod_name)
         except Exception as e:
             ERROR = True
-            msg = "{} could not be imported: {}\n".format(mod_name, e)
+            msg = f"{mod_name} could not be imported: {e}\n"
             ERROR_MSG += msg
             PRINT_MSG += msg
             continue
@@ -65,13 +65,11 @@ def test_imports(fname, assert_version, update_versions):
             detected_version = None
         if detected_version and expected_version:
             if detected_version == expected_version:
-                msg = "{} detected correct version: {}\n".format(
-                    mod_name, detected_version
-                )
+                msg = f"{mod_name} detected correct version: {detected_version}\n"
             else:
                 msg = (
-                    "expected version {} for module {}, but detected version "
-                    "{}\n".format(expected_version, mod_name, detected_version)
+                    f"expected version {expected_version} for module {mod_name}, but"
+                    f" detected version {detected_version}\n"
                 )
                 versions_to_update[line_num] = {
                     "expected": expected_version,
@@ -87,17 +85,18 @@ def test_imports(fname, assert_version, update_versions):
         else:
             if detected_version:
                 msg = (
-                    "{} detected version: {}, but no expected version "
-                    "provided\n".format(mod_name, detected_version)
+                    f"{mod_name} detected version: {detected_version}, but no expected"
+                    " version provided\n"
                 )
             elif expected_version:
-                msg = "{} expected version: {}, but unable to detect version\n".format(
-                    mod_name, expected_version
+                msg = (
+                    f"{mod_name} expected version: {expected_version}, but unable to"
+                    " detect version\n"
                 )
             else:
                 msg = (
-                    "no expected version provided, and unable to detect "
-                    "version for {}\n".format(mod_name)
+                    "no expected version provided, and unable to detect version for"
+                    f" {mod_name}\n"
                 )
             WARN = True
             PRINT_MSG += msg

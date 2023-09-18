@@ -122,6 +122,7 @@ class DefaultDevice:
         Examples
         --------
         A "gpu" as device:
+
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -131,7 +132,6 @@ class DefaultDevice:
         ivy.unset_default_device()
         ivy.unset_soft_device_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -157,12 +157,12 @@ def _shift_native_arrays_on_default_device(*args, **kwargs):
     with ivy.ArrayMode(False):
         default_device = ivy.default_device(as_native=True)
         args, kwargs = ivy.nested_map(
-            [args, kwargs],
             lambda x: (
                 ivy.to_device(x, default_device)
                 if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
                 else x
             ),
+            [args, kwargs],
         )
     return args, kwargs, default_device
 
@@ -830,7 +830,7 @@ def default_device(
             return ivy.dev(item, as_native=as_native)
     global default_device_stack
     if not default_device_stack:
-        ret = "gpu:0" if ivy.gpu_is_available() else "cpu"
+        ret = "cpu"
     else:
         ret = default_device_stack[-1]
     if as_native:

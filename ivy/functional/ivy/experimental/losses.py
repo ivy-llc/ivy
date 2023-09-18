@@ -66,7 +66,7 @@ def log_poisson_loss(
     --------
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-    >>> print(ivy.log_poisson_loss(x, z))
+    >>> print(ivy.log_poisson_loss(x, y))
     ivy.array([1.28402555, 1.28402555, 1.03402555, 1.28402555])
 
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
@@ -312,8 +312,7 @@ def smooth_l1_loss(
     }
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.0, 2.0, 3.0])
@@ -409,3 +408,72 @@ def soft_margin_loss(
         return ivy.mean(loss, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
+def kl_div(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the Kullback-Leibler divergence loss between two input tensors
+    (conventionally, probability distributions).
+
+    Parameters
+    ----------
+    input : array_like
+        Input probability distribution (first tensor).
+    target : array_like
+        Target probability distribution (second tensor).
+    reduction : {'mean', 'sum', 'batchmean', 'none'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The Kullback-Leibler divergence loss between the two input tensors.
+
+    Examples
+    --------
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target)
+    ivy.array(0.0916)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='sum')
+    ivy.array(0.1832)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='batchmean')
+    ivy.array(0.0916)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='none')
+    ivy.array([0.0378], [0.1453])
+    """
+    size = ivy.shape(input)
+
+    loss = ivy.sum(input * ivy.log(input / target), axis=-1)
+
+    if reduction == "sum":
+        loss = ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        loss = ivy.mean(loss, out=out)
+    elif reduction == "batchmean":
+        loss = ivy.sum(loss, out=out) / size[0]
+
+    return ivy.inplace_update(out, loss) if out is not None else loss

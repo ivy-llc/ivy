@@ -496,8 +496,8 @@ def rot90(
     m
         Input array of two or more dimensions.
     copy
-        boolean indicating whether or not to copy the input array. 
-        If True, the function must always copy. 
+        boolean indicating whether or not to copy the input array.
+        If True, the function must always copy.
         If False, the function must never copy.
         In case copy is False we avoid copying by returning a view of the input array.
     k
@@ -2177,14 +2177,13 @@ def unique_consecutive(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_function
 def fill_diagonal(
     a: Union[ivy.Array, ivy.NativeArray],
-    v: Union[int, float],
+    v: Union[int, float, ivy.Array, ivy.NativeArray],
     /,
     *,
     wrap: bool = False,
@@ -2197,16 +2196,50 @@ def fill_diagonal(
     a
         Array at least 2D.
     v
-        The value to write on the diagonal.
+        Value(s) to write on the diagonal. If val is scalar, the
+        value is written along the diagonal. If array-like, the
+        flattened val is written along the diagonal, repeating if
+        necessary to fill all diagonal entries.
+
     wrap
-        The diagonal ‘wrapped’ after N columns for tall matrices.
+        The diagonal 'wrapped' after N columns for tall matrices.
 
     Returns
     -------
     ret
         Array with the diagonal filled.
     """
-    return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+    shape = a.shape
+    max_end = ivy.prod(ivy.array(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = int(1 + (ivy.cumprod(ivy.array(shape[:-1]), axis=0)).sum())
+    end = int(max_end if end > max_end else end)
+    a = ivy.reshape(a, (-1,))
+    steps = ivy.arange(0, end, step)
+    if isinstance(v, ivy.Array) or isinstance(v, ivy.NativeArray):
+        v = ivy.reshape(v, (-1,)).astype(a.dtype)
+        v = ivy.tile(v, int(ivy.ceil(len(steps) / v.shape[0])))[: len(steps)]
+    else:
+        v = ivy.repeat(v, len(steps))
+    ivy.scatter_flat(steps, v, size=a.shape[0], reduction="replace", out=a)
+    a = ivy.reshape(a, shape)
+    return a
+
+
+fill_diagonal.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_nestable
@@ -2632,3 +2665,70 @@ def choose(
     ivy.array([20, 1, 12, 3])
     """
     return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+
+
+@handle_array_function
+@inputs_to_ivy_arrays
+@handle_nestable
+@handle_exceptions
+@handle_device_shifting
+def column_stack(
+    arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Create a new array by horizontally stacking the arrays in arrays.
+
+    Equivalent to `ivy.hstack(arrays)`, except each zero or one dimensional
+    array `x` in arrays is first reshaped into a `(x.size(), 1)` column
+    before being stacked horizontally.
+
+    Parameters
+    ----------
+    arrays
+        Arrays to be stacked.
+    out
+        Output array.
+
+    Returns
+    -------
+    ret
+        Stacked input.
+
+    Examples
+    --------
+    Arrays of different dtypes up to dimension 2.
+    >>> a0 = ivy.array(True)
+    >>> a1 = ivy.array([7])
+    >>> a2 = ivy.array([[11.3, 13.7]])
+    >>> ivy.column_stack((a0, a1, a2))
+    ivy.array([[ 1.        ,  7.        , 11.30000019, 13.69999981]])
+
+    Arrays of dimension 3.
+    >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> b = ivy.array([[[11, 12]], [[13, 14]]])
+    >>> ivy.column_stack((a, b))
+    ivy.array([[[ 1,  2],
+                [ 3,  4],
+                [11, 12]],
+
+               [[ 5,  6],
+                [ 7,  8],
+                [13, 14]]])
+    """
+    arrays = [ivy.reshape(x, shape=(-1, 1)) if x.ndim < 2 else x for x in arrays]
+
+    return ivy.hstack(arrays, out=out)
+
+
+column_stack.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_out_argument",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}

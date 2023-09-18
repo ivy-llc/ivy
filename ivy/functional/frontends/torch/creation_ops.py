@@ -5,6 +5,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_shape,
 )
 from ivy.func_wrapper import with_unsupported_dtypes
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -46,6 +47,16 @@ def as_tensor(
     dtype=None,
     device=None,
 ):
+    if dtype is None:
+        if isinstance(data, int):
+            dtype = ivy.int64
+        elif isinstance(data, float):
+            dtype = torch_frontend.get_default_dtype()
+        elif isinstance(data, (list, tuple)):
+            if all(isinstance(d, int) for d in data):
+                dtype = ivy.int64
+            else:
+                dtype = torch_frontend.get_default_dtype()
     return ivy.asarray(data, dtype=dtype, device=device)
 
 
