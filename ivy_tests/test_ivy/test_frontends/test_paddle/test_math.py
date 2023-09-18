@@ -14,6 +14,20 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
 # --------------- #
 
 
+# scale
+@st.composite
+def _scale_helper(draw, **kwargs):
+    dtypes, x = draw(helpers.dtype_and_values(**kwargs))
+    scale = draw(st.floats(min_value=0.0, allow_nan=False, allow_infinity=False))
+    bias = draw(
+        st.floats(
+            min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False
+        )
+    )
+    bias_after_scale = draw(st.booleans())
+    return dtypes, x, scale, bias, bias_after_scale
+
+
 @st.composite
 def _test_paddle_take_helper(draw):
     mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
@@ -1995,6 +2009,36 @@ def test_paddle_rsqrt(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.scale",
+    dtypes_and_params=_scale_helper(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_scale(
+    *,
+    dtypes_and_params,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, scale, bias, bias_after_scale = dtypes_and_params
+    helpers.test_frontend_function(
+        fn_tree=fn_tree,
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        x=x[0],
+        scale=scale,
+        bias=bias,
+        bias_after_scale=bias_after_scale,
+        test_flags=test_flags,
+        on_device=on_device,
     )
 
 
