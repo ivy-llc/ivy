@@ -675,6 +675,7 @@ def test_tensorflow_avg_pool1d(
         padding=padding,
     )
 
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool2d",
     x_k_s_p_df=helpers.arrays_for_pooling(
