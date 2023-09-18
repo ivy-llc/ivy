@@ -399,7 +399,15 @@ def lcm(
     return tf.experimental.numpy.lcm(x1, x2)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bool",
+            "complex",
+        )
+    },
+    backend_version,
+)
 def less(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
