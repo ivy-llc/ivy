@@ -38,3 +38,8 @@ def svd(x, /, *, full_matrices=True, compute_uv=True):
     if not compute_uv:
         return ivy.svdvals(x)
     return ivy.svd(x, full_matrices=full_matrices)
+
+
+@to_ivy_arrays_and_back
+def triangular_solve(a, b, *, left_side=False, lower=False, transpose_a=False, conjugate_a=False, unit_diagonal=False):
+    return ivy.solve(a, b)

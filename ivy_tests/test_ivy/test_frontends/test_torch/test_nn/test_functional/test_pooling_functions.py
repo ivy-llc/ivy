@@ -479,3 +479,25 @@ def test_torch_max_pool2d(
         dilation=dilation,
         ceil_mode=ceil_mode,
     )
+def test_torch_adaptive_max_pool3d(
+    *,
+    dtype_and_x,
+    output_size,
+    on_device,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        output_size=output_size,
+        atol=1e-2,
+    )
