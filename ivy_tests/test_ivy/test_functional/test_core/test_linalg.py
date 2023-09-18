@@ -18,6 +18,12 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 # --------------- #
 
 
+def _avoid_torch_unsupported_cases(x1, x2, dtype):
+    if "64" not in dtype[0]:
+        if x1.ndim == 1 or x2.ndim == 1:
+            dtype[0] = "float64" if "float" in dtype[0] else "int64"
+
+
 @st.composite
 def _det_helper(draw):
     square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])))
@@ -1032,7 +1038,8 @@ def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_devi
         x2,
         axis,
     ) = dtype_x1_x2_axis
-
+    if backend_fw == "torch":
+        _avoid_torch_unsupported_cases(x1, x2, dtype)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
