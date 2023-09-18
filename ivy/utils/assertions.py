@@ -1,4 +1,3 @@
-import numpy as np
 import ivy
 
 
@@ -188,30 +187,6 @@ def check_same_dtype(x1, x2, message=""):
 
 # Creation #
 # -------- #
-
-
-def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
-    if ivy.is_array(fill_value) and len(fill_value.shape) == 0:
-        fill_value = ivy.to_scalar(fill_value)
-    if (
-        not (
-            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and (isinstance(fill_value, int) or ivy.isinf(fill_value))
-        )
-        and not (
-            ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
-        )
-        and not (
-            ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, (float, np.float32))
-            or isinstance(fill_value, bool)
-        )
-    ):
-        raise ivy.utils.exceptions.IvyException(
-            "the fill_value: {} and data type: {} are not compatible".format(
-                fill_value, dtype
-            )
-        )
 
 
 def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):

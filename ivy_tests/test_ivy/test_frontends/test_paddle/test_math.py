@@ -586,6 +586,38 @@ def test_paddle_cosh(
     )
 
 
+# count_nonzero
+@handle_frontend_test(
+    fn_tree="paddle.count_nonzero",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes(kind="integer"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_paddle_count_nonzero(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        frontend=frontend,
+        x=x[0],
+        axis=axis,
+    )
+
+
 # cumprod
 @handle_frontend_test(
     fn_tree="paddle.cumprod",
@@ -1619,6 +1651,37 @@ def test_paddle_multiply(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nanmean",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+        allow_nan=True,
+    ),
+)
+def test_paddle_nanmean(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        rtol=1e-04,
+        atol=1e-04,
     )
 
 

@@ -41,6 +41,39 @@ def _as_strided_helper(draw):
     return x_dtype, x, size, stride, offset
 
 
+@st.composite
+def _as_tensor_helper(draw):
+    dtype_and_x = draw(
+        st.one_of(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+            ),
+            st.floats(),
+            st.integers(),
+            st.lists(st.one_of(st.floats(), st.integers()), min_size=1),
+        )
+    )
+    if isinstance(dtype_and_x, tuple):
+        input_dtype = dtype_and_x[0]
+        x = dtype_and_x[1][0]
+    else:
+        input_dtype = []
+        x = dtype_and_x
+    dtype = draw(
+        st.one_of(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("valid")),
+                dtype=draw(helpers.get_dtypes("valid", full=False))[0],
+                x=x,
+            ),
+            st.none(),
+        )
+    )
+    if isinstance(dtype, tuple):
+        dtype = dtype[0]
+    return input_dtype, x, dtype
+
+
 # Helper functions
 
 
@@ -185,39 +218,6 @@ def test_torch_as_strided(
             raise e
 
 
-@st.composite
-def _as_tensor_helper(draw):
-    dtype_and_x = draw(
-        st.one_of(
-            helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("valid"),
-            ),
-            st.floats(),
-            st.integers(),
-            st.lists(st.one_of(st.floats(), st.integers()), min_size=1),
-        )
-    )
-    if isinstance(dtype_and_x, tuple):
-        input_dtype = dtype_and_x[0]
-        x = dtype_and_x[1][0]
-    else:
-        input_dtype = []
-        x = dtype_and_x
-    dtype = draw(
-        st.one_of(
-            helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("valid")),
-                dtype=draw(helpers.get_dtypes("valid", full=False))[0],
-                x=x,
-            ),
-            st.none(),
-        )
-    )
-    if isinstance(dtype, tuple):
-        dtype = dtype[0]
-    return input_dtype, x, dtype
-
-
 # as_tensor
 @handle_frontend_test(
     fn_tree="torch.as_tensor",
@@ -247,7 +247,10 @@ def test_torch_as_tensor(
             device=on_device,
         )
     except Exception as e:
-        if any(error_string in str(e) for error_string in ["overflow", "too large to convert to"]):
+        if any(
+            error_string in str(e)
+            for error_string in ["overflow", "too large to convert to"]
+        ):
             assume(False)
         else:
             raise
