@@ -96,7 +96,7 @@ def _get_type_dict_helper(framework, kind, is_frontend_test):
             )
         )
 
-    raise RuntimeError("{} is an unknown kind!".format(kind))
+    raise RuntimeError(f"{kind} is an unknown kind!")
 
 
 @st.composite
@@ -432,4 +432,9 @@ def cast_filter_helper(d, dtype, x, current_backend):
             max_x <= max_val
             and min_x >= min_val
             and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+            and (
+                ivy_backend.is_complex_dtype(d)
+                or not ivy_backend.is_complex_dtype(dtype)
+            )
+            and (min_x > 0 or not ivy_backend.is_uint_dtype(dtype))
         )

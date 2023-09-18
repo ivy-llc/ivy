@@ -1334,3 +1334,39 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             thresholded tensor on which the operator has been applied
         """
         return ivy.soft_thresholding(self._data, threshold, out=out)
+
+    def column_stack(
+        self: ivy.Array,
+        arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.column_stack.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.column_stack also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            Array that will be stacked at the begining of the provided array iterable.
+        arrays
+            Arrays to be stacked.
+        out
+            Output array.
+
+        Returns
+        -------
+        ret
+            Stacked input.
+        """
+        if not isinstance(arrays, (list, tuple)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.column_stack(x, out=out)

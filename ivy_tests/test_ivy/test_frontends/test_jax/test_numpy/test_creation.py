@@ -772,6 +772,34 @@ def test_jax_ndim(
     )
 
 
+# from_dlpack
+@handle_frontend_test(
+    fn_tree="jax.numpy.from_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_jax_numpy_from_dlpack(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        x=x[0],
+        backend_to_test=backend_fw,
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.frombuffer",
     dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),

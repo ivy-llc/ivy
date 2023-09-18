@@ -11,7 +11,7 @@ path_hooks = []
 # If they do, the behavior of ivy.with_backend is undefined and may not function as
 # expected. Import these modules along with Ivy initialization, as the import logic
 # assumes they exist in sys.modules.
-MODULES_TO_SKIP = ["ivy.compiler"]
+MODULES_TO_SKIP = ["ivy.compiler", "ivy.engines"]
 
 IS_COMPILING_WITH_BACKEND = False
 
