@@ -38,3 +38,8 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
         x = symmetrize(x)
 
     return ivy.eigh(x, UPLO=UPLO)
+
+
+@to_ivy_arrays_and_back
+def qr(x, /, *, full_matrices=True):
+    return ivy.qr(x)

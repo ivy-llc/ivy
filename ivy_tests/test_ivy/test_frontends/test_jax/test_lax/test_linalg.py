@@ -193,3 +193,61 @@ def test_jax_eigh(
         backend=backend_fw,
         ground_truth_backend=frontend,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.linalg.qr",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    full_matrices=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_qr(
+    *,
+    dtype_and_x,
+    full_matrices,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    # make symmetric positive-definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        full_matrices=full_matrices,
+        test_values=False,
+    )
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    q, r = ret
+    frontend_q, frontend_r = frontend_ret
+
+    assert_all_close(
+        ret_np=q @ r,
+        ret_from_gt_np=frontend_q @ frontend_r,
+        rtol=1e-2,
+        atol=1e-2,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
+    )
