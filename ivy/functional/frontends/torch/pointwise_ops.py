@@ -362,14 +362,7 @@ def logical_xor(input, other, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def logit(input, eps=None, *, out=None):
-    if eps is None:
-        eps = -1.0
-    lo = eps
-    hi = 1 - eps
-
-    input = ivy.clip(input, lo, hi, out=out)
-
-    return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+    return ivy.logit(input, eps=eps, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
