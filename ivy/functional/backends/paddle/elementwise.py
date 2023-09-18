@@ -182,15 +182,7 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.floor(x)
 
 
-@with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-            "float32",
-            "float64",
-        )
-    },
-    backend_version,
-)
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64",)}, backend_version,)
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.asin(x)
 
@@ -1184,7 +1176,7 @@ def gcd(
     return paddle.gcd(x1, x2)
 
 
-@with_supported_dtypes({"2.5.1 and below": "complex"}, backend_version)
+@with_supported_dtypes({"2.5.1 and below": ("complex",)}, backend_version)
 def imag(
     val: paddle.Tensor,
     /,
