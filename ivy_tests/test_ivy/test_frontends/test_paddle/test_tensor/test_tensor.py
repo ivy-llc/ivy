@@ -2758,6 +2758,7 @@ def test_paddle_tensor_prod(
         method_all_as_kwargs_np={
             "axis": axis,
             "keepdim": keep_dims,
+            "dtype": x[0].dtype,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
