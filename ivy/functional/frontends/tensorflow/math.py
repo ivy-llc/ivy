@@ -434,6 +434,7 @@ def minimum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
 def mod(x, y, name=None):
     return ivy.remainder(x, y)
 
