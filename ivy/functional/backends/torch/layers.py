@@ -108,18 +108,25 @@ multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: \
     ivy.exists(kwargs['out_proj_weights']) and \
     (not kwargs['is_causal'] or ivy.exists(kwargs['attention_mask'])) and \
     (not kwargs['is_causal'] or not kwargs['return_attention_weights']) and \
-    _get_embed_dim(
+    (
+        ivy.exists(kwargs['in_proj_weights']) or
+        all([ivy.exists(x) for x in [
+            kwargs['q_proj_weights'],
+            kwargs['k_proj_weights'],
+            kwargs['v_proj_weights']
+        ]])
+    ) and \
+    len(set(_get_embed_dim(
         kwargs['in_proj_weights'],
         kwargs['q_proj_weights'],
         kwargs['k_proj_weights'],
         kwargs['v_proj_weights'],
         args[0],
-        check=True,
-    )
+    ))) == 1
 
 
 def _get_embed_dim(
-    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query, check=False,
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query
 ):
     pre_embed_dim = query.shape[-1]
     if ivy.exists(in_proj_weights):
@@ -127,11 +134,8 @@ def _get_embed_dim(
     elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
         embed_dim = q_proj_weights.shape[0]
     else:
-        return False
-    if check:
-        return pre_embed_dim == embed_dim
-    else:
-        return pre_embed_dim, embed_dim
+        embed_dim = None
+    return pre_embed_dim, embed_dim
 
 
 @with_unsupported_dtypes(
