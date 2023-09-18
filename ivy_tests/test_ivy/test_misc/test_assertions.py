@@ -96,7 +96,7 @@ def test_check_all_or_any_fn(args, fn, type, limit):
     with open(filename) as f:
         lines += f.read()
 
-    if type == "all" or type == "any":
+    if type in ["all", "any"]:
         if "e" in local_vars.keys():
             assert "args must exist according to" in lines.strip()
         else:
