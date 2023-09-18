@@ -13,4 +13,4 @@ jobs:
   check-formatting:
     name: Check formatting
     uses: unifyai/workflows/.github/workflows/lint.yml@main
-    
+    secrets: inherit
