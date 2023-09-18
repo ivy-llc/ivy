@@ -1085,6 +1085,52 @@ def test_numpy_uniform(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.vonmises",
+    input_dtypes=helpers.get_dtypes("float"),
+    mu=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1,
+        exclude_min=True,
+    ),
+    kappa=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=10,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_vonmises(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    mu,
+    kappa,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mu=mu,
+        kappa=kappa,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.wald",
     input_dtypes=helpers.get_dtypes("float"),
     mean=st.floats(
