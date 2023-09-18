@@ -86,7 +86,7 @@ class CPTensor:
 class Parafac2Tensor:
     pass
 
-  
+
 class TTTensor:
     pass
 
