@@ -417,13 +417,13 @@ class MultiHeadAttention(Module):
                 self.v.in_proj_weights if self._qkv_same_embed_dim else None
             ),
             q_proj_weights=(
-                self.v.q_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.q_proj_weights
             ),
             k_proj_weights=(
-                self.v.k_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.k_proj_weights
             ),
             v_proj_weights=(
-                self.v.v_proj_weights if not self._qkv_same_embed_dim else None
+                None if self._qkv_same_embed_dim else self.v.v_proj_weights
             ),
             out_proj_weights=self.v.out_proj_weights,
             in_proj_bias=self.v.in_proj_bias if self._use_proj_bias else None,
@@ -1473,7 +1473,7 @@ class LSTM(Module):
         """
         input_weights = dict(
             zip(
-                ["layer_" + str(i) for i in range(self._num_layers)],
+                [f"layer_{str(i)}" for i in range(self._num_layers)],
                 [
                     {
                         "w": self._w_init.create_variables(
@@ -1497,7 +1497,7 @@ class LSTM(Module):
         )
         recurrent_weights = dict(
             zip(
-                ["layer_" + str(i) for i in range(self._num_layers)],
+                [f"layer_{str(i)}" for i in range(self._num_layers)],
                 [
                     {
                         "w": self._w_init.create_variables(
@@ -1538,8 +1538,8 @@ class LSTM(Module):
             initial_state = self.get_initial_state(
                 inputs.shape[:-2], dtype=inputs.dtype
             )
-        h_n_list = list()
-        c_n_list = list()
+        h_n_list = []
+        c_n_list = []
         h_t = inputs
         for h_0, c_0, (_, lstm_input_var), (_, lstm_recurrent_var) in zip(
             initial_state[0],
