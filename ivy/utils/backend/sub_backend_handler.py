@@ -9,9 +9,9 @@ from ivy.utils.exceptions import IvyException
 
 
 _backends_subpackage_path = "ivy.functional.backends"
-_sub_backend_dict: dict[str, str] = dict()
-_backend_to_sub_backends_dict: dict[str, list] = dict()
-_available_sub_backends_implementations_dict: dict[str, dict[str, list]] = dict()
+_sub_backend_dict: dict[str, str] = {}
+_backend_to_sub_backends_dict: dict[str, list] = {}
+_available_sub_backends_implementations_dict: dict[str, dict[str, list]] = {}
 
 
 def _detect_sub_backends_dynamically():

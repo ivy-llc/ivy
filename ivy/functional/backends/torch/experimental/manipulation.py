@@ -18,8 +18,11 @@ import torch
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 import ivy
-from ...paddle.experimental.manipulation import _check_paddle_pad, _to_paddle_padding
-from ...tensorflow.experimental.manipulation import _to_tf_padding
+from ivy.functional.ivy.experimental.manipulation import (
+    _to_tf_padding,
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
 
 
 def moveaxis(
@@ -110,8 +113,10 @@ def pad(
         ).squeeze(0)
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_torch_pad(
-    mode, reflect_type, args[1], args[0].shape, constant_values
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_torch_pad(mode, reflect_type, args[1], args[0].shape, constant_values)
+    )
 )
 
 
@@ -428,32 +433,7 @@ def unique_consecutive(
     )
 
 
-def fill_diagonal(
-    a: torch.Tensor,
-    v: Union[int, float],
-    /,
-    *,
-    wrap: bool = False,
+def column_stack(
+    arrays: Sequence[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    shape = a.shape
-    max_end = torch.prod(torch.tensor(shape))
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + (torch.cumprod(torch.tensor(shape[:-1]), 0)).sum()
-
-    end = max_end if end > max_end else end
-    a = torch.reshape(a, (-1,))
-    w = torch.zeros(a.shape, dtype=bool).to(a.device)
-    ins = torch.arange(0, max_end).to(a.device)
-    steps = torch.arange(0, end, step).to(a.device)
-
-    for i in steps:
-        i = ins == i
-        w = torch.logical_or(w, i)
-    a = torch.where(w, v, a)
-    a = torch.reshape(a, shape)
-    return a
+    return torch.column_stack(arrays)

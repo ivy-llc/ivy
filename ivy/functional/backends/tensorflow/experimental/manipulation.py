@@ -18,6 +18,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
+from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
 
 
 def moveaxis(
@@ -294,8 +295,10 @@ def pad(
     )
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_tf_pad(
-    args[0].shape, args[1], mode, constant_values, reflect_type
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_tf_pad(args[0].shape, args[1], mode, constant_values, reflect_type)
+    )
 )
 
 
@@ -323,14 +326,6 @@ def _check_tf_pad(input_shape, pad_width, mode, constant_values, reflect_type):
             )
         )
     )
-
-
-def _to_tf_padding(pad_width, ndim):
-    if isinstance(pad_width, Number):
-        pad_width = [[pad_width] * 2] * ndim
-    elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
-        pad_width = pad_width * ndim
-    return pad_width
 
 
 def expand(
@@ -424,28 +419,3 @@ def unique_consecutive(
         tf.cast(inverse_indices, tf.int64),
         tf.cast(counts, tf.int64),
     )
-
-
-def fill_diagonal(
-    a: tf.Tensor,
-    v: Union[int, float],
-    /,
-    *,
-    wrap: bool = False,
-):
-    shape = tf.shape(a)
-    max_end = tf.math.reduce_prod(shape)
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + tf.reduce_sum(tf.math.cumprod(shape[:-1]))
-    a = tf.reshape(a, (-1,))
-    end = min(end, max_end)
-    indices = [[i] for i in range(0, end, step)]
-    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
-    a = tf.tensor_scatter_nd_update(a, indices, ups)
-    a = tf.reshape(a, shape)
-    return a

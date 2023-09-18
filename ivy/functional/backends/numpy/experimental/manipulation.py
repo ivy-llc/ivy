@@ -470,10 +470,16 @@ def unique_consecutive(
 
 def fill_diagonal(
     a: np.ndarray,
-    v: Union[int, float],
+    v: Union[int, float, np.ndarray],
     /,
     *,
     wrap: bool = False,
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def column_stack(
+    arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.column_stack(arrays)

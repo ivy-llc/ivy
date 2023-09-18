@@ -19,7 +19,10 @@ import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_supported_device_and_dtypes
-from ...tensorflow.experimental.manipulation import _to_tf_padding
+from ivy.functional.ivy.experimental.manipulation import (
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
 
 # Code from cephes for i0
 
@@ -148,42 +151,13 @@ def pad(
     )
 
 
-pad.partial_mixed_handler = lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: _check_paddle_pad(
-    mode, reflect_type, args[1], args[0].shape, constant_values, 3
-)
-
-
-def _check_paddle_pad(
-    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
-):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
-    return isinstance(constant_values, Number) and (
-        mode == "constant"
-        or (
-            (
-                (
-                    mode == "reflect"
-                    and reflect_type == "even"
-                    and all(
-                        pad_width[i][0] < s and pad_width[i][1] < s
-                        for i, s in enumerate(input_shape)
-                    )
-                )
-                or mode in ["edge", "wrap"]
-            )
-            and len(input_shape) <= ndim_limit
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_paddle_pad(
+            mode, reflect_type, args[1], args[0].shape, constant_values, 3
         )
     )
-
-
-def _to_paddle_padding(pad_width, ndim):
-    if isinstance(pad_width, Number):
-        pad_width = [pad_width] * (2 * ndim)
-    else:
-        if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
-            pad_width = pad_width * ndim
-        pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
-    return pad_width
+)
 
 
 @with_unsupported_device_and_dtypes(
@@ -241,6 +215,10 @@ def vstack(
             return ivy.stack(arrays, axis=0)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int16", "bfloat16")}},
+    backend_version,
+)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -700,37 +678,3 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
-)
-def fill_diagonal(
-    a: paddle.Tensor,
-    v: Union[int, float],
-    /,
-    *,
-    wrap: bool = False,
-) -> paddle.Tensor:
-    shape = a.shape
-    max_end = paddle.prod(paddle.to_tensor(shape))
-    end = max_end
-    if len(shape) == 2:
-        step = shape[1] + 1
-        if not wrap:
-            end = shape[1] * shape[1]
-    else:
-        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
-    end = max_end if end > max_end else end
-    a = paddle.reshape(a, (-1,))
-    w = paddle.zeros(a.shape, dtype=bool)
-    ins = paddle.arange(0, max_end)
-    steps = paddle.arange(0, end, step)
-
-    for i in steps:
-        i = ins == i
-        w = paddle.logical_or(w, i)
-    v = paddle.to_tensor(v, dtype=a.dtype)
-    a = paddle.where(w, v, a)
-    a = paddle.reshape(a, shape)
-    return a

@@ -185,6 +185,42 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanprod(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+    initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+    where: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
+    a = a.type(dtype)
+    a = torch.nan_to_num(a, nan=1.0)
+    if a.dtype == torch.float16:
+        a = a.type(torch.float32)
+    if axis == ():
+        return a.type(dtype)
+    if axis is None:
+        return torch.prod(input=a, out=out).type(dtype) * initial
+    if isinstance(axis, tuple) or isinstance(axis, list):
+        for i in axis:
+            a = torch.prod(a, dim=i, keepdim=keepdims, out=out).type(dtype)
+            if a.dtype == torch.float16:
+                a = a.type(torch.float32)
+        return a.type(dtype) * initial
+    return torch.prod(a, dim=axis, keepdim=keepdims, out=out).type(dtype) * initial
+
+
+nanprod.support_native_out = True
+
+
 def _validate_quantile(q):
     if isinstance(q, float):
         q = torch.as_tensor(q)
@@ -531,7 +567,7 @@ cov.support_native_out = False
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "bfloat16", "float16")},
+    {"2.0.1 and below": ("float16",)},
     backend_version,
 )
 def cummax(
@@ -544,11 +580,7 @@ def cummax(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    if x.dtype in (torch.bool, torch.float16):
-        x = x.to(dtype=torch.float64)
-    elif x.dtype in (torch.int16, torch.int8, torch.uint8):
-        x = x.to(dtype=torch.int64)
-    elif x.dtype in (torch.complex64, torch.complex128):
+    if x.dtype in (torch.complex64, torch.complex128):
         x = x.real.to(dtype=torch.float64)
 
     if exclusive or reverse:

@@ -19,7 +19,7 @@ compiled_backends = {}
 _compiled_backends_ids = {}
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
-ivy_original_fn_dict = dict()
+ivy_original_fn_dict = {}
 
 
 class ContextManager:
@@ -34,8 +34,8 @@ class ContextManager:
 
 
 _backends_subpackage_path = "ivy.functional.backends"
-_backend_dict = dict()
-_backend_reverse_dict = dict()
+_backend_dict = {}
+_backend_reverse_dict = {}
 
 for backend in os.listdir(
     os.path.join(
@@ -136,7 +136,7 @@ def fn_name_from_version_specific_fn_name(name, version):
     """
     # TODO: add tests
     version = str(version)
-    if version.find("+") != -1:
+    if "+" in version:
         version = tuple(map(int, version[: version.index("+")].split(".")))
     else:
         version = tuple(map(int, version.split(".")))
@@ -229,7 +229,7 @@ def current_backend(*args, **kwargs):
     if backend_stack:
         f = backend_stack[-1]
         if verbosity.level > 0:
-            verbosity.cprint("Using backend from stack: {}".format(f))
+            verbosity.cprint(f"Using backend from stack: {f}")
         return f
 
     # if no global backend exists, we try to infer
@@ -237,7 +237,7 @@ def current_backend(*args, **kwargs):
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is not None:
         if verbosity.level > 0:
-            verbosity.cprint("Using backend from type: {}".format(f))
+            verbosity.cprint(f"Using backend from type: {f}")
         implicit_backend = f.current_backend_str()
         return f
     return importlib.import_module(_backend_dict[implicit_backend])
@@ -343,7 +343,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
         if arr.__dict__ and arr.backend == ivy.current_backend_str()
     ]
     arr_ids = [id(item.data) for item in array_list]
-    new_objs = {k: v for k, v in zip(arr_ids, array_list)}
+    new_objs = dict(zip(arr_ids, array_list))
     new_objs = list(new_objs.values())
 
     # now convert all ivy.Array and ivy.Container instances
@@ -380,8 +380,8 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
         # check if object was originally a variable
         if id(obj) in variable_ids:
             native_arr = ivy.nested_map(
-                np_arr,
                 lambda x: current_backend().asarray(x, device=device),
+                np_arr,
                 include_derived=True,
                 shallow=False,
             )
@@ -389,8 +389,8 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
 
         else:
             new_data = ivy.nested_map(
-                np_arr,
                 lambda x: current_backend().asarray(x, device=device),
+                np_arr,
                 include_derived=True,
                 shallow=False,
             )
@@ -428,7 +428,7 @@ def set_backend(backend: str, dynamic: bool = False):
     """  # noqa
     ivy.utils.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
-        "backend must be one from {}".format(list(_backend_dict.keys())),
+        f"backend must be one from {list(_backend_dict.keys())}",
     )
 
     variable_ids = set()  # create an empty set to store variable object ids
@@ -449,7 +449,7 @@ def set_backend(backend: str, dynamic: bool = False):
 
         _clear_current_sub_backends()
         if isinstance(backend, str):
-            temp_stack = list()
+            temp_stack = []
             while backend_stack:
                 temp_stack.append(previous_backend())
             backend = importlib.import_module(_backend_dict[backend])
@@ -472,7 +472,7 @@ def set_backend(backend: str, dynamic: bool = False):
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
 
         if verbosity.level > 0:
-            verbosity.cprint("backend stack: {}".format(backend_stack))
+            verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
     return ivy
 
@@ -594,7 +594,7 @@ def previous_backend():
             if k in ivy.functional.__dict__ and not k.startswith("__"):
                 ivy.functional.__dict__[k] = v
     if verbosity.level > 0:
-        verbosity.cprint("backend stack: {}".format(backend_stack))
+        verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
     return backend
 
@@ -607,7 +607,7 @@ def unset_backend():
 
 @prevent_access_locally
 def choose_random_backend(excluded=None):
-    excluded = list() if excluded is None else excluded
+    excluded = [] if excluded is None else excluded
     while True:
         ivy.utils.assertions.check_equal(
             len(excluded),
@@ -624,7 +624,7 @@ def choose_random_backend(excluded=None):
             excluded.append(f)
             continue
         else:
-            print("\nselected backend: {}\n".format(f))
+            print(f"\nselected backend: {f}\n")
             return f
 
 
@@ -634,8 +634,6 @@ def with_backend(backend: str, cached: bool = True):
     # Use already compiled object
     if cached and backend in compiled_backends.keys():
         cached_backend = compiled_backends[backend][-1]
-        if not cached_backend.native_inplace_support:
-            _handle_inplace_mode()
         return cached_backend
     with _importlib.LocalIvyImporter():
         ivy_pack = _importlib._import_module("ivy")
@@ -665,5 +663,7 @@ def with_backend(backend: str, cached: bool = True):
         compiled_backends[backend].append(ivy_pack)
     except KeyError:
         compiled_backends[backend] = [ivy_pack]
-    _handle_inplace_mode()
+    if ivy.backend != backend:
+        # to avoid warning users when not using set_backend with ivy.Array.__repr__
+        _handle_inplace_mode(ivy_pack=ivy_pack)
     return ivy_pack

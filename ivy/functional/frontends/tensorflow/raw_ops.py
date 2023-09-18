@@ -49,6 +49,7 @@ Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 Cosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cosh))
 Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
 Cumsum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumsum))
+Digamma = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.digamma))
 Div = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.divide))
 Einsum = to_ivy_arrays_and_back(
     with_supported_dtypes(
@@ -545,6 +546,11 @@ def Expm1(*, x, name="Expm1"):
 @to_ivy_arrays_and_back
 def FFT(*, input, name="FFT"):
     return ivy.astype(ivy.fft(input, -1), input.dtype)
+
+
+@to_ivy_arrays_and_back
+def FFT2D(*, input, name="FFT2D"):
+    return ivy.astype(ivy.fft2(input, dim=(-2, -1)), input.dtype)
 
 
 @to_ivy_arrays_and_back
