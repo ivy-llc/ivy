@@ -433,6 +433,56 @@ def softmax_with_cross_entropy(
 def square_error_cost(input, label):
     return ivy.square(ivy.subtract(input, label))
 
+@with_supported_dtypes({"2.5.1 and below": ("float32",)}, "paddle")
+@to_ivy_arrays_and_back
+def edit_loss(input,
+    label,
+    normalized=True,
+    ignored_tokens=None,
+    input_length=None,
+    label_length=None,):
+    helper = LayerHelper("edit_distance", **locals()) 
+    if ignored_tokens is not None and len(ignored_tokens) > 0:
+        erased_input = helper.create_variable_for_type_inference(dtype="int64")
+        erased_label = helper.create_variable_for_type_inference(dtype="int64")
+
+        helper.append_op(
+            type="sequence_erase",
+            inputs={"X": [input]},
+            outputs={"Out": [erased_input]},
+            attrs={"tokens": ignored_tokens},
+        )
+        input = erased_input
+
+        helper.append_op(
+            type="sequence_erase",
+            inputs={"X": [label]},
+            outputs={"Out": [erased_label]},
+            attrs={"tokens": ignored_tokens},
+        )
+        label = erased_label
+        if in_dynamic_mode():
+            return _C_ops.edit_distance(
+            input, label, input_length, label_length, normalized
+        )
+check_variable_and_dtype(input, 'input', ['int64'], 'edit_distance')
+check_variable_and_dtype(label, 'label', ['int64'], 'edit_distance')
+this_inputs = {"Hyps": [input], "Refs": [label]}
+if input_length is not None and label_length is not None:
+    this_inputs['HypsLength'] = [input_length]
+    this_inputs['RefsLength'] = [label_length]
+
+    # edit distance op
+    edit_distance_out = helper.create_variable_for_type_inference(dtype="int64")
+    sequence_num = helper.create_variable_for_type_inference(dtype="int64")
+    helper.append_op(
+        type="edit_distance",
+        inputs=this_inputs,
+        outputs={"Out": [edit_distance_out], "SequenceNum": [sequence_num]},
+        attrs={"normalized": normalized},
+    )
+
+    return edit_distance_out, sequence_num
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
