@@ -359,4 +359,17 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 
 @to_ivy_arrays_and_back
 def real_if_close(a, tol=100):
-    return ivy.array(a)  # ivy doesn't yet support complex numbers
+    a = ivy.array(a, dtype=a.dtype)
+    dtype_ = a.dtype
+
+    if not ivy.is_complex_dtype(dtype_):
+        return a
+
+    if tol > 1:
+        f = ivy.finfo(dtype_)
+        tol = f.eps * tol
+
+    if ivy.all(ivy.abs(ivy.imag(a)) < tol):
+        a = ivy.real(a)
+
+    return a
