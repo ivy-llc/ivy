@@ -1110,6 +1110,10 @@ class Tensor:
         self.ivy_array = self.atan2(other).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def fmax(self, other):
+        return torch_frontend.fmax(self, other)
+
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
@@ -2035,6 +2039,18 @@ class Tensor:
     )
     def unique(self, sorted=True, return_inverse=False, return_counts=False, dim=None):
         return torch_frontend.unique(self, sorted, return_inverse, return_counts, dim)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def xlogy(self, *, other, out=None):
+        return torch_frontend.xlogy(self, other, out=out)
 
 
 class Size(tuple):
