@@ -498,6 +498,7 @@ def test_paddle_broadcast_shape(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        y=x[1],
     )
 
 
