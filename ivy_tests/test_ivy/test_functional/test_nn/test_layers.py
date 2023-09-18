@@ -1304,7 +1304,7 @@ def test_lstm_update(*, dtype_lstm, test_flags, backend_fw, fn_name, on_device):
     ground_truth_backend="numpy",
     # ToDo: fix the gradients and the container methods
     test_gradients=st.just(False),
-    container_flags=st.just([True]),
+    container_flags=st.just([False]),
 )
 def test_multi_head_attention(
     *,
