@@ -19,6 +19,7 @@ def fft2(a, s=None, axes=(-2, -1), norm=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def fftfreq(n, d=1.0, *, dtype=None):
     if not isinstance(
         n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
@@ -30,7 +31,7 @@ def fftfreq(n, d=1.0, *, dtype=None):
     N = (n - 1) // 2 + 1
     val = 1.0 / (n * d)
 
-    results = ivy.empty(tuple([n]), dtype=dtype)
+    results = ivy.zeros(tuple([n]), dtype=dtype)
     results[:N] = ivy.arange(0, N, dtype=dtype)
     results[N:] = ivy.arange(-(n // 2), 0, dtype=dtype)
 

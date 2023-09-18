@@ -104,7 +104,7 @@ def test_jax_numpy_fft2(
     fn_tree="jax.numpy.fft.fftfreq",
     n=st.integers(min_value=10, max_value=100),
     sample_rate=st.integers(min_value=1, max_value=10),
-    dtype=st.one_of(helpers.get_dtypes("float"), st.none()),
+    dtype=st.one_of(helpers.get_dtypes("float", full=False), st.none()),
 )
 def test_jax_numpy_fftfreq(
     n, sample_rate, dtype, backend_fw, frontend, test_flags, fn_tree, on_device
