@@ -458,7 +458,6 @@ def test_paddle__diff(
         on_device=on_device,
     )
 
-    
 # acosh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
