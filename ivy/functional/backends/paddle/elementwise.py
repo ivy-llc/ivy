@@ -182,7 +182,15 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.floor(x)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64",)}, backend_version,)
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.asin(x)
 
@@ -216,8 +224,7 @@ def sign(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
+    {"2.5.1 and below": ("float32", "float64", "complex")}, backend_version
 )
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     """Calculate the square root with type handling."""
@@ -244,8 +251,7 @@ def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
+    {"2.5.1 and below": ("float32", "float64", "complex")}, backend_version
 )
 def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -356,10 +362,7 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("uint", "float16")},
-    backend_version,
-)
+@with_unsupported_dtypes({"2.5.1 and below": ("uint", "float16")}, backend_version)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -700,8 +703,7 @@ def pow(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
+    {"2.5.1 and below": ("float32", "float64", "complex")}, backend_version
 )
 def round(
     x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
@@ -739,8 +741,7 @@ def round(
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "complex")},
-    backend_version,
+    {"2.5.1 and below": ("float32", "float64", "complex")}, backend_version
 )
 def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if paddle.is_complex(x):
@@ -748,10 +749,7 @@ def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.trunc(x)
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32")},
-    backend_version,
-)
+@with_supported_dtypes({"2.5.1 and below": ("float64", "float32")}, backend_version)
 def trapz(
     y: paddle.Tensor,
     /,
@@ -1012,10 +1010,7 @@ def bitwise_left_shift(
 # ------#
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
-    backend_version,
-)
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
 def erf(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.erf(x)
 
@@ -1147,7 +1142,7 @@ def lcm(
             "float32",
             "float64",
             "complex",
-        ),
+        )
     },
     backend_version,
 )
