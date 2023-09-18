@@ -470,7 +470,7 @@ def unique_consecutive(
 
 def fill_diagonal(
     a: np.ndarray,
-    v: Union[int, float],
+    v: Union[int, float, np.ndarray],
     /,
     *,
     wrap: bool = False,

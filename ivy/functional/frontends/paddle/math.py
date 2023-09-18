@@ -135,6 +135,15 @@ def cosh(x, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float16", "float32", "float64", "bool")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def count_nonzero(x, axis=None, keepdim=False, name=None):
+    return ivy.astype(ivy.count_nonzero(x, axis=axis, keepdims=keepdim), ivy.int64)
+
+
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "int32",
@@ -501,6 +510,25 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
     return ivy.subtract(x, y)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float64",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sum(x, axis=None, dtype=None, keepdim=False, name=None):
+    return ivy.sum(
+        x,
+        axis=axis,
+        keepdims=keepdim,
+        dtype=dtype,
+    )
 
 
 @with_supported_dtypes(

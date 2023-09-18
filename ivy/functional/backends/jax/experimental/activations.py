@@ -23,7 +23,9 @@ def logit(
     return jnp.log(x / (1 - x))
 
 
-def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def relu6(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     relu6_func = jax.nn.relu6
 
     # sets gradient at 0 and 6 to 0 instead of 0.5
