@@ -57,14 +57,14 @@ For a more general case, the :code:`IvyError` class can be used.
         def __init__(self, *messages, include_backend=False):
             super().__init__(*messages, include_backend=include_backend)
 
-More Custom Exception classes were created to unify sub-categories of errors. We try our best to ensure that the same type of 
+More Custom Exception classes were created to unify sub-categories of errors. We try our best to ensure that the same type of
 Exception is raised for the same type of Error regardless of the backend.
 This will ensure that the exceptions are truly unified for all the different types of errors.
 The implementations of these custom classes are exactly the same as :code:`IvyError` class.
 Currently there are 5 custom exception classes in ivy.
 
 1. :code:`IvyIndexError`: This Error is raised for anything Indexing related. For Instance, providing out of bound axis in any function.
-2. :code:`IvyValueError`: This is for anything related to providing wrong values. For instance, passing :code:`high` value 
+2. :code:`IvyValueError`: This is for anything related to providing wrong values. For instance, passing :code:`high` value
                           smaller than :code:`low` value in :code:`ivy.random_uniform`.
 3. :code:`IvyAttributeError`: This is raised when an undefined attribute is referenced.
 4. :code:`IvyBroadcastShapeError`: This is raised whenever 2 shapes are expected to be broadcastable but are not.
@@ -75,12 +75,12 @@ The correct type of Exception class should be used for the corresponding type of
 Configurable Mode for Stack Trace
 ---------------------------------
 
-Ivy's transpilation nature allows users to write code in their preferred frontend 
-framework and then execute it with a different backend framework. For example, a 
-user who is comfortable with NumPy can use Ivy's NumPy frontend to run their code 
-with a JAX backend. However, since they may have no prior experience with JAX or 
-other backend frameworks, they may not want to encounter stack traces that traverse 
-Ivy and JAX functions. In such cases, it may be preferable for the user to avoid 
+Ivy's transpilation nature allows users to write code in their preferred frontend
+framework and then execute it with a different backend framework. For example, a
+user who is comfortable with NumPy can use Ivy's NumPy frontend to run their code
+with a JAX backend. However, since they may have no prior experience with JAX or
+other backend frameworks, they may not want to encounter stack traces that traverse
+Ivy and JAX functions. In such cases, it may be preferable for the user to avoid
 encountering stack traces that extend through Ivy and JAX functions.
 
 Therefore, options are made available for the stack traces to either truncate
@@ -400,7 +400,7 @@ Let's look at the comparison of before and after adding the decorator.
 In NumPy,
 
 .. code-block:: none
-    
+
     >>> x = ivy.array([0,0,1])
     >>> ivy.all(x, axis=2)
     <error_stack>
@@ -449,7 +449,7 @@ and for Numpy, :code:`AxisError` is raised. To unify the behaviour, we raise :co
 In Numpy,
 
 .. code-block:: python
-    
+
     # in ivy/functional/backends/numpy/utility.py
     def all(
         x: np.ndarray,
