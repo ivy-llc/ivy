@@ -60,9 +60,9 @@ def multi_head_attention(
     else:
         num_batches = 1
     if static_k is not None:
-        static_k = static_k.reshape(num_batches*num_heads, key.shape[0], emb_dim//num_heads)
+        static_k = static_k.reshape(num_batches*num_heads, key.shape[0], int(emb_dim//num_heads))
     if static_v is not None:
-        static_v = static_v.reshape(num_batches*num_heads, value.shape[0], emb_dim//num_heads)
+        static_v = static_v.reshape(num_batches*num_heads, value.shape[0], int(emb_dim//num_heads))
     ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,
