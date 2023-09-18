@@ -48,3 +48,21 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     if norm is None:
         norm = "backward"
     return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
+
+
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def rfft(a, n=None, axis=-1, norm=None):
+    if norm is None:
+        norm = "backward"
+    if n is None:
+        n = len(a)
+    if ivy.current_backend_str() == "tensorflow":
+        if a.dtype in ["uint64", "int64", "float64"]:
+            a_new = ivy.astype(a, "complex128")
+        else:
+            a_new = ivy.astype(a, "complex64")
+    else:
+        a_new = a
+    fft_fun = ivy.fft
+    return fft_fun(a_new, axis, norm=norm, n=n)[: n // 2 + 1]
