@@ -217,7 +217,8 @@ def test_numpy_slogdet(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.trace",
+    fn_tree="numpy.linalg.trace",
+    gt_fn_tree="numpy.trace",
     dtype_and_x_axes=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         valid_axis=True,
