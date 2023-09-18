@@ -270,14 +270,79 @@ def multi_head_attention_forward(
     assert (
         embed_dim == embed_dim_to_check
     ), f"was expecting embedding dimension of {embed_dim_to_check}, but got {embed_dim}"
+    if query.ndim == 3:
+        num_batches = query.shape[0]
+        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+    else:
+        num_batches = 1
+    if static_k is not None:
+        static_k = static_k.reshape((num_batches, key.shape[0], embed_dim))
+    if static_v is not None:
+        static_v = static_v.reshape((num_batches, value.shape[0], embed_dim))
+    in_proj_weight = in_proj_weight if not use_separate_proj_weight else None
+    scale = ivy.sqrt(float(query.shape[-1] // num_heads))
+    if is_causal and need_weights:
+        attn_output = ivy.multi_head_attention(
+            query,
+            key=key,
+            value=value,
+            num_heads=num_heads,
+            scale=scale,
+            attention_mask=attn_mask,
+            in_proj_weights=in_proj_weight,
+            q_proj_weights=q_proj_weight,
+            k_proj_weights=k_proj_weight,
+            v_proj_weights=v_proj_weight,
+            out_proj_weights=out_proj_weight,
+            in_proj_bias=in_proj_bias,
+            out_proj_bias=out_proj_bias,
+            is_causal=is_causal,
+            key_padding_mask=key_padding_mask,
+            bias_k=bias_k,
+            bias_v=bias_v,
+            static_k=static_k,
+            static_v=static_v,
+            add_zero_attn=add_zero_attn,
+            return_attention_weights=False,
+            average_attention_weights=average_attn_weights,
+            dropout=dropout_p,
+            training=training,
+        )
+        attn_weights = ivy.multi_head_attention(
+            query,
+            key=key,
+            value=value,
+            num_heads=num_heads,
+            scale=scale,
+            attention_mask=attn_mask,
+            in_proj_weights=in_proj_weight,
+            q_proj_weights=q_proj_weight,
+            k_proj_weights=k_proj_weight,
+            v_proj_weights=v_proj_weight,
+            out_proj_weights=out_proj_weight,
+            in_proj_bias=in_proj_bias,
+            out_proj_bias=out_proj_bias,
+            is_causal=False,
+            key_padding_mask=key_padding_mask,
+            bias_k=bias_k,
+            bias_v=bias_v,
+            static_k=static_k,
+            static_v=static_v,
+            add_zero_attn=add_zero_attn,
+            return_attention_weights=need_weights,
+            average_attention_weights=average_attn_weights,
+            dropout=dropout_p,
+            training=training,
+        )
+        return attn_output, attn_weights
     return ivy.multi_head_attention(
         query,
         key=key,
         value=value,
         num_heads=num_heads,
-        scale=ivy.sqrt(query.shape[-1] // num_heads),
+        scale=scale,
         attention_mask=attn_mask,
-        in_proj_weights=in_proj_weight if not use_separate_proj_weight else None,
+        in_proj_weights=in_proj_weight,
         q_proj_weights=q_proj_weight,
         k_proj_weights=k_proj_weight,
         v_proj_weights=v_proj_weight,

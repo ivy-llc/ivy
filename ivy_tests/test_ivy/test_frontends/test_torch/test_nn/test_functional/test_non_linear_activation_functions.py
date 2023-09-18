@@ -5,6 +5,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.backends.torch.layers import _get_embed_dim
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import _mha_helper
 
@@ -689,7 +690,12 @@ def test_torch_mish(
 # multi_head_attention_forward
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
-    dtype_mha_args=_mha_helper(same_pre_embed_dim=True),
+    dtype_mha_args=_mha_helper(same_pre_embed_dim=True).filter(
+        lambda args:
+        args[10] is not None and
+        (not args[22] or args[5] is not None) and
+        len(set(_get_embed_dim(*args[6:10], args[1]))) == 1
+    ),
     test_with_out=st.just(False),
 )
 def test_torch_multi_head_attention_forward(
@@ -728,14 +734,30 @@ def test_torch_multi_head_attention_forward(
         need_weights,
         average_attn_weights,
     ) = dtype_mha_args
+    # bringing the arguments from ivy to torch format
     if k is None and v is None:
         k = v = q
-    q, k, v = [
-        np.expand_dims(x, 0) if len(x.shape) == 2 else np.swapaxes(x, 0, 1)
-        for x in [q, k, v]
+    if attn_mask is not None and not any(dtype in str(attn_mask.dtype) for dtype in ['float', 'uint8', 'bool']):
+        attn_mask = attn_mask.astype(bool)
+    if key_padding_mask is not None and key_padding_mask.dtype != bool:
+        key_padding_mask = key_padding_mask.astype(bool)
+    emb_dim = q.shape[-1]
+    if q.ndim == 3:
+        num_batches = q.shape[0]
+        q, k, v = [np.swapaxes(x, 0, 1) for x in [q, k, v]]
+    else:
+        num_batches = 1
+    if static_k is not None:
+        static_k = static_k.reshape(num_batches*heads, k.shape[0], int(emb_dim//heads))
+    if static_v is not None:
+        static_v = static_v.reshape(num_batches*heads, v.shape[0], int(emb_dim//heads))
+    # re-order the dtypes to match the order of the frontend arguments, not the order
+    # of ivy.multi_head_attention's arguments given by _mha_helper
+    dtype = [
+        dtype[i] for i in (0, 1, 2, 3, 5, 10, 13, 14, 9, 11, 12, 4, 6, 7, 8, 15, 16)
     ]
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[d for d in dtype if d is not None],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -745,7 +767,7 @@ def test_torch_multi_head_attention_forward(
         query=q,
         key=k,
         value=v,
-        embed_dim_to_check=q.shape[-1],
+        embed_dim_to_check=emb_dim,
         num_heads=heads,
         in_proj_weight=in_proj_weight,
         in_proj_bias=in_proj_bias,

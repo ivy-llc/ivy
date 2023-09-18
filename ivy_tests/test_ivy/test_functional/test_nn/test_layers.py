@@ -331,7 +331,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         return_attention_weights,
         average_attention_weights,
     )
-    ret_dtypes = [str(r.dtype) for r in ret if ivy.is_array(r)]
+    ret_dtypes = [str(r.dtype) if ivy.is_array(r) else None for r in ret]
     return ret_dtypes, *ret
 
 
@@ -1342,7 +1342,7 @@ def test_multi_head_attention(
         average_attention_weights,
     ) = dtype_mha
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=[d for d in dtype if d is not None],
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
