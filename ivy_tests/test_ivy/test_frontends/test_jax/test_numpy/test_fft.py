@@ -163,4 +163,3 @@ def test_jax_numpy_ifft(
         atol=1e-02,
         rtol=1e-02,
     )
-
