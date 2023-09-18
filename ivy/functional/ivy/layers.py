@@ -590,8 +590,10 @@ def scaled_dot_product_attention(
     ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
     >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
     ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> mask = ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
-    ...               b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]]))
+    >>> mask = ivy.Container(
+    ...     a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
+    ...     b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]])
+    ... )
     >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,mask=mask)
     >>> print(result)
     {
@@ -708,11 +710,11 @@ def scaled_dot_product_attention(
 @handle_array_function
 def multi_head_attention(
     query: Union[ivy.Array, ivy.NativeArray],
-    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     /,
     *,
-    num_heads: Optional[int] = 8,
+    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    num_heads: int = 8,
     scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -722,12 +724,12 @@ def multi_head_attention(
     out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    is_causal: Optional[bool] = False,
-    return_attention_weights: Optional[bool] = False,
-    average_attention_weights: Optional[bool] = True,
-    dropout: Optional[float] = 0.0,
-    training: Optional[bool] = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    is_causal: bool = False,
+    return_attention_weights: bool = False,
+    average_attention_weights: bool = True,
+    dropout: float = 0.0,
+    training: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Apply multi-head attention to inputs x. This is an implementation of multi-headed
@@ -805,10 +807,8 @@ def multi_head_attention(
     num_dims = query.ndim
     ivy.assertions.check_all(
         num_dims > 1 and num_dims < 4,
-        (
-            "Number of dimensions should be 2 (for unbatched input) or 3 (for batched"
-            f" input), got {num_dims}"
-        ),
+        "Number of dimensions should be 2 (for unbatched input) or 3 (for batched"
+        f" input), got {num_dims}",
     )
     if key is None and value is None:
         key = value = query
@@ -1546,7 +1546,6 @@ def depthwise_conv2d(
                        [[0.],
                         [-6.]]]])
     }
-
     """
     return current_backend(x).depthwise_conv2d(
         x,
@@ -2053,7 +2052,6 @@ def conv(
         The result of the transpose or dilated convolution operation.
     """
     if transpose:
-        assert x_dilations == 1, "x_dilations must be 1 for transpose convolutions."
         return conv_general_transpose(
             x,
             filters,

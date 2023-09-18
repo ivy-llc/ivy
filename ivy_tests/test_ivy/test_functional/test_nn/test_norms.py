@@ -8,6 +8,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _generate_data_layer_norm(
     draw,
@@ -82,6 +86,10 @@ def _generate_data_layer_norm(
     _, bias_values = results_bias
 
     return dtype, values, normalized_idxs, weight_values, bias_values
+
+
+# --- Main --- #
+# ------------ #
 
 
 @handle_test(

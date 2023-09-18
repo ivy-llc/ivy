@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Tuple, Union, List, Sequence, Dict
+from typing import Optional, Tuple, Union, List, Sequence
 
 # local
 import ivy
@@ -329,7 +329,8 @@ class _ArrayWithLayers(abc.ABC):
         dropout_p
             Specifies the dropout probablity, if greater than 0.0, dropout is applied
         is_causal
-            If true, assumes causal attention masking and errors if both `mask` and `is_causal` are set.
+            If true, assumes causal attention masking and errors if both `mask` and
+            `is_causal` are set.
         training
             If True, dropout is used, otherwise dropout is not activated.
         out
@@ -351,10 +352,12 @@ class _ArrayWithLayers(abc.ABC):
         >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
         >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
-        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True)
+        >>> result = ivy.scaled_dot_product_attention(q, k, v, scale=1, dropout_p=0.1,
+        ...                                           is_causal=True, training=True)
         >>> print(result)
-
-        ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
+        ivy.array([[[0.40000001, 1.29999995],
+                    [2.19994521, 3.09994531],
+                    [4.30000019, 5.30000019]]])
 
         >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -362,16 +365,20 @@ class _ArrayWithLayers(abc.ABC):
         >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
         >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1, mask=mask)
         >>> print(result)
-        ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
+        ivy.array([[[0.40000001, 1.29999995],
+                    [2.19994521, 3.09994531],
+                    [4.30000019, 5.30000019]]])
 
         >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
         >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
         >>> out = ivy.zeros(shape=(1, 3, 2))
-        >>> ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True,out=out)
+        >>> ivy.scaled_dot_product_attention(q, k, v, scale=1, dropout_p=0.1,
+        ...                                  is_causal=True, training=True, out=out)
         >>> print(out)
-
-        ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
+        ivy.array([[[0.40000001, 1.29999995],
+                    [2.19994521, 3.09994531],
+                    [4.30000019, 5.30000019]]])
         """
         return ivy.scaled_dot_product_attention(
             self._data,
@@ -386,12 +393,12 @@ class _ArrayWithLayers(abc.ABC):
         )
 
     def multi_head_attention(
-        self: Union[ivy.Array, ivy.NativeArray],
-        key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        self: ivy.Array,
         /,
         *,
-        num_heads: Optional[int] = 8,
+        key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        num_heads: int = 8,
         scale: Optional[float] = None,
         attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -401,21 +408,17 @@ class _ArrayWithLayers(abc.ABC):
         out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        is_causal: Optional[bool] = False,
-        return_attention_weights: Optional[bool] = False,
-        average_attention_weights: Optional[bool] = True,
-        dropout: Optional[float] = 0.0,
-        training: Optional[bool] = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        is_causal: bool = False,
+        return_attention_weights: bool = False,
+        average_attention_weights: bool = True,
+        dropout: float = 0.0,
+        training: bool = False,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.multi_head_attention(
             self._data,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=num_heads,
             scale=scale,
             attention_mask=attention_mask,

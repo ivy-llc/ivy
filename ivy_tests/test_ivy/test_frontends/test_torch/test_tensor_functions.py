@@ -5,39 +5,15 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
-    fn_tree="torch.is_tensor",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-)
-def test_torch_is_tensor(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        obj=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="torch.numel",
+    fn_tree="torch.is_complex",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
     ),
 )
-def test_torch_numel(
-    *,
+def test_torch_is_complex(
     dtype_and_x,
     on_device,
     fn_tree,
@@ -117,15 +93,39 @@ def test_torch_is_nonzero(
 
 
 @handle_frontend_test(
-    fn_tree="torch.is_complex",
+    fn_tree="torch.is_tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_is_tensor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        obj=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.numel",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=1,
     ),
 )
-def test_torch_is_complex(
+def test_torch_numel(
+    *,
     dtype_and_x,
     on_device,
     fn_tree,

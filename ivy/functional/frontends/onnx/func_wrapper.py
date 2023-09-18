@@ -5,10 +5,14 @@ import ivy
 import ivy.functional.frontends.onnx as onnx_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _from_ivy_array_to_onnx_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
-            x, _from_ivy_array_to_onnx_frontend_tensor, include_derived, shallow=False
+            _from_ivy_array_to_onnx_frontend_tensor, x, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = onnx_frontend.Tensor(x)
@@ -22,20 +26,24 @@ def _ivy_array_to_onnx(x):
     return x
 
 
-def _onnx_frontend_array_to_ivy(x):
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    return x
-
-
 def _native_to_ivy_array(x):
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
 
+def _onnx_frontend_array_to_ivy(x):
+    if hasattr(x, "ivy_array"):
+        return x.ivy_array
+    return x
+
+
 def _to_ivy_array(x):
     return _onnx_frontend_array_to_ivy(_native_to_ivy_array(x))
+
+
+# --- Main --- #
+# ------------ #
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -50,10 +58,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # convert all arrays in the inputs to ivy.Array instances
         new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
+            _to_ivy_array, args, include_derived={"tuple": True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
+            _to_ivy_array, kwargs, include_derived={"tuple": True}, shallow=False
         )
         return fn(*new_args, **new_kwargs)
 
@@ -74,7 +82,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
         # convert all arrays in the return to `frontend.onnx.Tensor` instances
         return _from_ivy_array_to_onnx_frontend_tensor(
-            ret, nested=True, include_derived={tuple: True}
+            ret, nested=True, include_derived={"tuple": True}
         )
 
     return _outputs_to_frontend_arrays_onnx

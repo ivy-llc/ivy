@@ -4,7 +4,10 @@ from typing import Optional, Tuple, Union, Any
 
 # local
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
@@ -106,6 +109,22 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "float16",
+                "float32",
+                "float64",
+            ),
+        }
+    },
+    backend_version,
+)
 def dot(
     a: paddle.Tensor,
     b: paddle.Tensor,
@@ -113,7 +132,38 @@ def dot(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.dot(a, b, out=out)
+    if len(a.shape) == 0 or len(b.shape) == 0:
+        return paddle.multiply(a, b)
+    if (
+        len(a.shape) in [1, 2]
+        and len(b.shape) in [1, 2]
+        or (len(a.shape) >= 1 and len(b.shape) == 1)
+    ):
+        return paddle.matmul(a, b)
+
+    return paddle.tensordot(a, b, axes=[[-1], [-2]])
 
 
-dot.support_native_out = True
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "float16",
+                "float32",
+                "float64",
+            ),
+        }
+    },
+    backend_version,
+)
+def multi_dot(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.linalg.multi_dot(x)

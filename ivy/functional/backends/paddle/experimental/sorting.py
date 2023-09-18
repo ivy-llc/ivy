@@ -2,12 +2,16 @@
 import paddle
 from typing import Optional, Union
 
+# local
+import ivy
+
 
 # invert_permutation
 def invert_permutation(
     x: Union[paddle.Tensor, list, tuple],
     /,
 ) -> paddle.Tensor:
+    x = paddle.to_tensor(x) if not ivy.is_array(x) else x
     sorted_indices = paddle.argsort(x)
     inverse = paddle.zeros_like(sorted_indices)
     inverse[sorted_indices] = paddle.arange(len(x))
