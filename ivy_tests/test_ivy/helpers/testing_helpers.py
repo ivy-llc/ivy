@@ -81,9 +81,7 @@ def num_positional_args_method(draw, *, method):
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1
-        elif param.kind == param.KEYWORD_ONLY:
-            num_keyword_only += 1
-        elif param.kind == param.VAR_KEYWORD:
+        elif param.kind in [param.KEYWORD_ONLY, param.VAR_KEYWORD]:
             num_keyword_only += 1
     return draw(
         nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
@@ -150,11 +148,8 @@ def num_positional_args_helper(fn_name, backend):
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1
-        elif param.kind == param.KEYWORD_ONLY:
+        elif param.kind in [param.KEYWORD_ONLY, param.VAR_KEYWORD]:
             num_keyword_only += 1
-        elif param.kind == param.VAR_KEYWORD:
-            num_keyword_only += 1
-
     return num_positional_only, total, num_keyword_only
 
 
@@ -179,7 +174,17 @@ def _import_fn(fn_tree: str):
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
     mod = importlib.import_module(module_to_import)
-    callable_fn = mod.__dict__[fn_name]
+    try:
+        callable_fn = mod.__dict__[fn_name]
+    except KeyError:
+        raise ImportError(
+            f"Error: The function '{fn_name}' could not be found within the module"
+            f" '{module_to_import}'.\nPlease double-check the function name and its"
+            " associated path.\nIf this function is a new feature you'd like to see,"
+            " we'd love to hear from you! You can contribute to our project. For more"
+            " details, please"
+            " visit:\nhttps://lets-unify.ai/ivy/contributing/open_tasks.html\n"
+        )
     return callable_fn, fn_name, module_to_import
 
 
@@ -295,7 +300,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     if fn_module == "ivy.functional.frontends.numpy":
         fn_module_ = np_frontend
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
-            fn_name = "_" + fn_name
+            fn_name = f"_{fn_name}"
 
     for backend_str in available_frameworks:
         if mod_backend[backend_str]:
@@ -388,7 +393,7 @@ def handle_test(
     """
     is_fn_tree_provided = fn_tree is not None
     if is_fn_tree_provided:
-        fn_tree = "ivy." + fn_tree
+        fn_tree = f"ivy.{fn_tree}"
     is_hypothesis_test = len(_given_kwargs) != 0
 
     possible_arguments = {}
@@ -518,10 +523,10 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
     """
-    fn_tree = "ivy.functional.frontends." + fn_tree
+    fn_tree = f"ivy.functional.frontends.{fn_tree}"
     if aliases is not None:
         for i in range(len(aliases)):
-            aliases[i] = "ivy.functional.frontends." + aliases[i]
+            aliases[i] = f"ivy.functional.frontends.{aliases[i]}"
     is_hypothesis_test = len(_given_kwargs) != 0
 
     if is_hypothesis_test:
@@ -636,7 +641,7 @@ def handle_method(
     # need to fill up the docstring
     is_method_tree_provided = method_tree is not None
     if is_method_tree_provided:
-        method_tree = "ivy." + method_tree
+        method_tree = f"ivy.{method_tree}"
     is_hypothesis_test = len(_given_kwargs) != 0
     possible_arguments = {
         "ground_truth_backend": st.just(ground_truth_backend),
@@ -735,6 +740,7 @@ def handle_frontend_method(
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
+    generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
     """
@@ -786,12 +792,10 @@ def handle_frontend_method(
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            init_flags = pf.frontend_method_flags(
+            init_flags = pf.frontend_init_flags(
                 num_positional_args=init_num_positional_args,
                 as_variable=_get_runtime_flag_value(init_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(init_native_arrays),
-                test_compile=_get_runtime_flag_value(test_compile),
-                precision_mode=_get_runtime_flag_value(precision_mode),
             )
 
             method_flags = pf.frontend_method_flags(
@@ -800,6 +804,9 @@ def handle_frontend_method(
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
                 test_compile=_get_runtime_flag_value(test_compile),
                 precision_mode=_get_runtime_flag_value(precision_mode),
+                generate_frontend_arrays=_get_runtime_flag_value(
+                    generate_frontend_arrays
+                ),
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)
