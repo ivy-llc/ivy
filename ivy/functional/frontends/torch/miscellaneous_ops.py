@@ -175,8 +175,8 @@ def diagflat(x, offset=0, name=None):
     return arr
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("uint16", "uint32", "uint64")}, "torch")
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
 
