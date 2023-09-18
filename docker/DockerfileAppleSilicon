@@ -1,17 +1,17 @@
-FROM arm64v8/debian:buster
+FROM python:3.8-slim
 WORKDIR /ivy
 ARG CLI
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED 1
 
 # to fix protobuf conflicts
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
 
-# Install Python 3.9 and its dependencies
+# Install Python and its dependencies
 RUN apt-get update && \
+    apt-get install sudo -y build-essential && \
     apt-get install -y python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
-    apt-get install -y python-opengl && \
     apt-get install -y git && \
     apt-get install -y rsync && \
     apt-get install -y libusb-1.0-0 && \
@@ -67,4 +67,5 @@ RUN python3 test_dependencies.py -fp requirements.txt && \
     rm -rf optional_apple_silicon_1.txt && \
     rm -rf optional_apple_silicon_2.txt && \
     rm -rf tmp.txt && \
-    rm -rf test_dependencies.py
+    rm -rf test_dependencies.py && \
+    rm -rf requirement_mappings_apple_silicon.json
