@@ -813,7 +813,7 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     if num_dims == 2:
-        query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+        query, key, value = (ivy.expand_dims(x, axis=0) for x in [query, key, value])
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
     elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):

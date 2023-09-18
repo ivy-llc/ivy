@@ -188,7 +188,7 @@ def jac(func: Callable):
         include_derived=True,
     )
     callback_fn = lambda x_in: ivy.to_ivy(
-        torch.func.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
+        torch.func.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
         nested=True,
         include_derived=True,
     )
