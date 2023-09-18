@@ -524,11 +524,11 @@ Special Case
 
 However, the major difference between the attributes and the decorators is that the attributes are set and assigned in the ivy function itself :mod:`ivy/functional/ivy/<ivy_functional_API>` ,
 while the decorators are used within the frontend :mod:`ivy/functional/frontends/<some_frontend>` and backend :mod:`ivy/functional/backends/<some_backend>` to identify the supported or unsupported data types, depending on the use case.
-The attributes are set for functions that don't have a specific backend implementation for each backend, where we provide the backend as one of the arguments to the attribute of the framework agnostic function (because all ivy functions are framework agnosgtic), which allows it to identify the supported or unsupported dtpes for each backend.
+The attributes are set for functions that don't have a specific backend implementation for each backend, where we provide the backend as one of the arguments to the attribute of the framework agnostic function (because all ivy functions are framework agnostic), which allows it to identify the supported or unsupported dtypes for each backend.
 
 An example of an ivy function which does not have a specific backend implementation for each backend is the :attr:`einops_reduce` function. `This function <https://github.com/unifyai/ivy/blob/8516d3f12a8dfc4ec5f819789937d196c7e28566/ivy/functional/ivy/general.py#L1964>`_ , makes use of a third-party library :attr:`einops` which has its own backend-agnostic implementations.
 
-The :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes takes two arguments, a dictionary with the unsupported dtypes mapped to the corresponding backend framework. Based on that, the specific unsupported dtypes are set for the given function everytime the function is called.
+The :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding backend framework. Based on that, the specific unsupported dtypes are set for the given function everytime the function is called.
 For example, we use the :attr:`unsupported_dtypes` attribute for the :attr:`einops_reduce` function within the ivy functional API as shown below:
 
 .. code-block:: python
