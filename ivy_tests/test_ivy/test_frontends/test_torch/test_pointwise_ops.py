@@ -2323,7 +2323,7 @@ def test_torch_pow(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    if 'int' in input_dtype[0] and isinstance(x[1], int) and x[1] < 0:
+    if "int" in input_dtype[0] and isinstance(x[1], int) and x[1] < 0:
         x[1] = -x[1]
     try:
         helpers.test_frontend_function(
