@@ -266,6 +266,43 @@ def test_paddle_irfft(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.fft.irfftn",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+)
+def test_paddle_irfftn(
+    dtype_x_axis,
+    norm,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        s=None,
+        axes=None,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.fft.rfftfreq",
     n=st.integers(min_value=1, max_value=1000),
     sample_rate=st.integers(min_value=1, max_value=20),
