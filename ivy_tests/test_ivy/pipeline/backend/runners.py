@@ -1,3 +1,4 @@
+from ivy_tests.test_ivy.pipeline.base.argument_searcher import TestArgumentsSearchResult
 import numpy as np
 import inspect
 import copy
@@ -5,7 +6,6 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
     TestCaseSubRunner,
     TestCaseSubRunnerResult,
-    TestArgumentsSearchResult,
 )
 
 

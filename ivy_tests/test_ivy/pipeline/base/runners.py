@@ -4,13 +4,6 @@ import numpy as np  # for type hint only
 
 
 @dataclass
-class TestArgumentsSearchResult:
-    original: np.array
-    values: np.array
-    indices: list
-
-
-@dataclass
 class TestCaseSubRunnerResult:
     flatten_elements_np: np.ndarray
     shape: tuple

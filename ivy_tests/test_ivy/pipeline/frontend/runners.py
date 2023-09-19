@@ -1,9 +1,9 @@
+from ivy_tests.test_ivy.pipeline.base.argument_searcher import TestArgumentsSearchResult
 import numpy as np
 from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
     TestCaseSubRunner,
     TestCaseSubRunnerResult,
-    TestArgumentsSearchResult,
 )
 
 
