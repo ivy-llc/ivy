@@ -903,7 +903,6 @@ def cummin(
 @infer_device
 @infer_dtype
 @handle_array_function
-@ivy.handle_exceptions
 @ivy.handle_out_argument
 @ivy.to_native_arrays_and_back
 @ivy.handle_device_shifting
