@@ -51,7 +51,8 @@ def _get_type_dict_helper(framework, kind, is_frontend_test):
     if is_frontend_test:
         framework_module = get_frontend_config(framework).supported_dtypes
     else:
-        framework_module = ivy
+        with BackendHandler.update_backend(framework) as ivy_backend:
+            framework_module = ivy_backend
 
     if kind == "valid":
         return framework_module.valid_dtypes
@@ -138,7 +139,7 @@ def get_dtypes(
         function as the keyword argument with the given name.
     prune_function
         if True, the function will prune the data types to only include the ones that
-        are supported by the current backend. If False, the function will return all
+        are supported by the current function. If False, the function will return all
         the data types supported by the current backend.
 
     Returns
@@ -225,6 +226,11 @@ def get_dtypes(
     # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
 
     # If being called from a frontend test
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+        frontend_dtypes = _get_type_dict_helper(
+            test_globals.CURRENT_FRONTEND, kind, True
+        )
+        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
