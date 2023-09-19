@@ -233,7 +233,10 @@ def test_jax_numpy_ifft2(
         valid_axis=True,
         force_int_axis=True,
     ),
-    n=st.just(None),
+    n=st.one_of(
+        st.integers(min_value=2, max_value=10),
+        st.just(None),
+    ),
     norm=st.sampled_from(["backward", "ortho", "forward", None]),
 )
 def test_jax_numpy_rfft(
