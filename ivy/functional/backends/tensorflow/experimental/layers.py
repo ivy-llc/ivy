@@ -705,6 +705,7 @@ def fft(
     return ret
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def dropout(
     x: Union[tf.Tensor, tf.Variable],
     prob: float,
