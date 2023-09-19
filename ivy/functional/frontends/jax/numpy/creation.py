@@ -304,6 +304,8 @@ def zeros(shape, dtype=None):
     return Array(ivy.zeros(shape, dtype=dtype))
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 def zeros_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
