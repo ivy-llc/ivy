@@ -11,7 +11,6 @@ from ivy.utils.exceptions import IvyException
 _backends_subpackage_path = "ivy.functional.backends"
 _sub_backend_dict: dict[str, str] = {}
 _backend_to_sub_backends_dict: dict[str, list] = {}
-_available_sub_backends_implementations_dict: dict[str, dict[str, list]] = {}
 
 
 def _detect_sub_backends_dynamically():
@@ -211,23 +210,9 @@ def find_available_sub_backends(sub_backends_loc):
     return available_sub_backends
 
 
-def _find_available_sub_backend_implementations(sub_backends):
-    result = dict()
-    for sub in sub_backends:
-        try:
-            sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
-        except ModuleNotFoundError:
-            continue
-        for k, v in sub_backend.__dict__.items():
-            if callable(v) and not k.startswith("_"):
-                result[k] = result.get(k, []) + [sub]
-
-    return result
-
-
-def available_sub_backend_implementations(fn_name: str) -> list:
+def available_sub_backend_implementations_for(fn_name: str) -> list:
     """
-    Return whether a sub-backend implementation is available for `obj`.
+    Return whether a sub-backend implementation is available for `fn_name`.
 
     Parameters
     ----------
@@ -237,39 +222,25 @@ def available_sub_backend_implementations(fn_name: str) -> list:
     Returns
     -------
     ret : list
-        a list of sub-backend implementations available for `obj`.
+        a list of sub-backend implementations available for `fn_name`.
 
     Examples
     --------
     >>> import ivy
     >>> ivy.set_backend('torch')
-    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
+    >>> ivy.available_sub_backend_implementations_for("scaled_dot_product_attention")
     ['xformers']
     >>> ivy.set_backend('numpy')
-    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
+    >>> ivy.available_sub_backend_implementations_for("scaled_dot_product_attention")
     []
     """
     sub_backends = ivy.current_backend().available_sub_backends()
-    if not sub_backends:
-        return []
-    if not _sub_backends_implementations_already_verified():
-        _verify_sub_backends_implementations(sub_backends)
-    return _available_implementations_for(fn_name)
-
-
-def _sub_backends_implementations_already_verified():
-    return (
-        ivy.current_backend_str() in _available_sub_backends_implementations_dict.keys()
-    )
-
-
-def _verify_sub_backends_implementations(sub_backends):
-    _available_sub_backends_implementations_dict[ivy.current_backend_str()] = (
-        _find_available_sub_backend_implementations(sub_backends)
-    )
-
-
-def _available_implementations_for(fn_name):
-    return _available_sub_backends_implementations_dict[ivy.current_backend_str()].get(
-        fn_name, []
-    )
+    implementations = []
+    for sub in sub_backends:
+        try:
+            sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
+        except ModuleNotFoundError:
+            continue
+        if fn_name in sub_backend.__dict__:
+            implementations.append(sub)
+    return implementations

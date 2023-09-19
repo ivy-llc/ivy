@@ -277,7 +277,7 @@ def _set_module_backend(
 
 def _wrap_if_got_efficient_implementations(v):
     if callable(v):
-        if ivy.available_sub_backend_implementations(v.__name__):
+        if ivy.available_sub_backend_implementations_for(v.__name__):
             return _handle_efficient_implementation_available(v)
     return v
 

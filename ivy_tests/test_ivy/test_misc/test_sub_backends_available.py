@@ -1,29 +1,6 @@
 import pytest
 
 import ivy
-from ivy.utils.backend.sub_backend_handler import (
-    _find_available_sub_backend_implementations,
-)
-
-
-@pytest.fixture
-def setup(monkeypatch):
-    def _fn(_):
-        return {"scaled_dot_product_attention": ["xformers"]}
-
-    monkeypatch.setattr(
-        "ivy.utils.backend.sub_backend_handler."
-        "_find_available_sub_backend_implementations",
-        _fn,
-    )
-
-
-def test_find_available_sub_backend_implementations():
-    ivy.set_backend("torch")
-    result = _find_available_sub_backend_implementations(["xformers"])
-    assert isinstance(result, dict)
-    assert all(isinstance(key, str) for key in result.keys())
-    assert all(isinstance(value, list) for value in result.values())
 
 
 def test_no_warning_when_no_sub_backend_implementation_available():
@@ -38,9 +15,8 @@ def test_no_warning_when_no_sub_backend_implementation_available():
     assert len(record) == 0
 
 
-def test_sub_backend_implementation_available(setup):
-    ivy.set_backend("torch")
-    sub_backends = ivy.available_sub_backend_implementations(
+def test_sub_backend_implementation_available():
+    sub_backends = ivy.available_sub_backend_implementations_for(
         "scaled_dot_product_attention"
     )
     assert "xformers" in sub_backends
@@ -48,14 +24,13 @@ def test_sub_backend_implementation_available(setup):
 
 def test_sub_backend_implementation_not_available():
     ivy.set_backend("numpy")
-    sub_backends = ivy.available_sub_backend_implementations(
+    sub_backends = ivy.available_sub_backend_implementations_for(
         "scaled_dot_product_attention"
     )
     assert not sub_backends
 
 
-def test_throw_warning_when_sub_backend_implementation_available_but_not_used(setup):
-    ivy.set_backend("torch")
+def test_throw_warning_when_sub_backend_implementation_available_but_not_used():
     q = ivy.array([[[0.2, 1.0], [2.2, 3.0], [4.4, 5.6]]])
     k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
     v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])

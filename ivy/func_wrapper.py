@@ -1617,7 +1617,7 @@ def _handle_efficient_implementation_available(fn: Callable) -> Callable:
         ivy.warn(
             f"An efficient implementation of {fn.__name__} is available "
             "in these sub backends: "
-            f"{ivy.available_sub_backend_implementations(fn.__name__)}.\n"
+            f"{ivy.available_sub_backend_implementations_for(fn.__name__)}.\n"
             "use ivy.set_sub_backend('<sub_backend_name>') to use it."
         )
         return fn(*args, **kwargs)
