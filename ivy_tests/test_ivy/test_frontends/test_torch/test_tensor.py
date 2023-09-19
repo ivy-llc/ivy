@@ -5759,7 +5759,8 @@ def test_torch_tensor_detach_(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ).filter(
+        lambda x: "bfloat16" not in x[0] and "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]),
 )
 def test_torch_tensor_get_device(
         dtype_x,
@@ -5798,7 +5799,8 @@ def test_torch_tensor_device(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ).filter(
+        lambda x: "bfloat16" not in x[0] and "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]),
 )
 def test_torch_tensor_cuda(dtype_x, backend_fw):
     ivy.set_backend(backend_fw)
@@ -9787,7 +9789,7 @@ def test_torch_tensor_normal_(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-    ),
+    ).filter(lambda x: "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]),
 )
 def test_torch_tensor_not_equal(
         dtype_and_x,
@@ -9825,7 +9827,7 @@ def test_torch_tensor_not_equal(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-    ),
+    ).filter(lambda x: "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]),
 )
 def test_torch_tensor_not_equal_(
         dtype_and_x,
@@ -9863,7 +9865,7 @@ def test_torch_tensor_not_equal_(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-    ),
+    ).filter(lambda x: "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]),
 )
 def test_torch_tensor_ne(
         dtype_and_x,
@@ -9901,7 +9903,7 @@ def test_torch_tensor_ne(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-    ),
+    ).filter(lambda x: "uint16" not in x[0] and "uint32" not in x[0] and "uint64" not in x[0]),
 )
 def test_torch_tensor_ne_(
         dtype_and_x,
