@@ -167,6 +167,31 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanprod(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(
+        np.nanprod(
+            a=a, axis=axis, dtype=dtype, keepdims=keepdims, out=out, initial=initial
+        )
+    )
+
+
+nanprod.support_native_out = True
+
+
 def _validate_quantile(q):
     if isinstance(q, float):
         q = np.asarray(q)
@@ -403,13 +428,6 @@ def cummax(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    if x.dtype in (np.bool_, np.float16):
-        x = x.astype(np.float64)
-    elif x.dtype in (np.int16, np.int8, np.uint8):
-        x = x.astype(np.int64)
-    elif x.dtype in (np.complex128, np.complex64):
-        x = np.real(x).astype(np.float64)
-
     if exclusive or reverse:
         if exclusive and reverse:
             indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)
@@ -502,10 +520,7 @@ def cummin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if not (reverse):
         return np.minimum.accumulate(x, axis, dtype=dtype, out=out)
     elif reverse:
