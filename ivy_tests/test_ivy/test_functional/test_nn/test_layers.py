@@ -71,6 +71,7 @@ def _dropout_helper(draw):
 def _mha_helper(draw, same_pre_embed_dim=False):
     _qkv_same_dim = draw(st.booleans())
     _self_attention = draw(st.booleans())
+    _same_pre_embed_dim = _self_attention or same_pre_embed_dim or draw(st.booleans())
     num_heads = draw(helpers.ints(min_value=1, max_value=3))
     _embed_dim = draw(helpers.ints(min_value=4, max_value=16)) * num_heads
     _batch_dim = draw(st.sampled_from([(), (1,)]))
@@ -83,35 +84,11 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     k_proj_weights = None
     v_proj_weights = None
 
-    _out_dim = draw(helpers.ints(min_value=4, max_value=16))
-    out_proj_weights = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(_out_dim, _embed_dim),
-                min_value=-5,
-                max_value=5,
-            ),
-            st.none(),
-        )
-    )
-    out_proj_bias = draw(
-        st.one_of(
-            helpers.array_values(
-                dtype=dtype[0],
-                shape=(_out_dim,),
-                min_value=-10,
-                max_value=10,
-            ),
-            st.none(),
-        )
-    )
-
     if _qkv_same_dim:
-        if not _self_attention and not same_pre_embed_dim:
-            _pre_embed_dim = draw(helpers.ints(min_value=4, max_value=16))
-        else:
+        if _same_pre_embed_dim:
             _pre_embed_dim = _embed_dim
+        else:
+            _pre_embed_dim = draw(helpers.ints(min_value=4, max_value=16))
         q = draw(
             helpers.array_values(
                 shape=(*_batch_dim, _num_queries, _pre_embed_dim),
@@ -150,7 +127,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
                 min_value=-10,
                 max_value=10,
             )
-            if (_pre_embed_dim != _embed_dim and out_proj_weights is None) or draw(st.booleans())
+            if not _same_pre_embed_dim or draw(st.booleans())
             else st.none()
         )
     else:
@@ -216,6 +193,30 @@ def _mha_helper(draw, same_pre_embed_dim=False):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(3 * _embed_dim,),
+                min_value=-10,
+                max_value=10,
+            ),
+            st.none(),
+        )
+    )
+
+    _out_dim = draw(helpers.ints(min_value=4, max_value=16))
+    out_proj_weights = draw(
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_out_dim, _embed_dim),
+                min_value=-5,
+                max_value=5,
+            ),
+            st.none(),
+        )
+    )
+    out_proj_bias = draw(
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_out_dim,),
                 min_value=-10,
                 max_value=10,
             ),
