@@ -126,3 +126,21 @@ def kl_div(
         reduction=reduction,
     )
     return loss
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("unit8", "int8", "int16", "int32", "int64", "bool")},
+    backend_version,
+)
+def binary_cross_entropy(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> torch.Tensor:
+    return torch.nn.functional.binary_cross_entropy(
+        input,
+        target,
+        reduction=reduction,
+    )

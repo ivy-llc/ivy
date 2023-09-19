@@ -76,3 +76,18 @@ def kl_div(
         loss = jnp.divide(jnp.sum(loss), size[0])
 
     return loss
+
+def binary_cross_entropy(
+    input: JaxArray,
+    target: JaxArray,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> JaxArray:
+    loss = -1 * (input * jnp.log(target) + (1-input)*jnp.log(1-target))
+
+    if reduction == "mean":
+        loss = jnp.mean(loss)
+    elif reduction == "sum":
+        loss = jnp.sum(loss)
+    return loss

@@ -295,3 +295,45 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array(0.0916)
         """
         return ivy.kl_div(self._data, target, reduction=reduction, out=out)
+
+    def binary_cross_entropy(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        reduction: Optional[str] = "mean",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lbinary_cross_entropy. This method simply wraps the
+        function, and so the docstring for ivy.binary_cross_entropy also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing true labels.
+        target
+            input array containing targeted labels.
+        reduction
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed.
+            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The Binary Cross Entropy loss between the input array and the targeticted values.
+
+        Examples
+        --------
+        >>> input = ivy.array([1.0, 0.0, 1.0])
+        >>> target = ivy.array([0.7, 0.6, 0.6])
+        >>> output= x.binary_cross_entropy(y)
+        >>> print(z)
+        ivy.array(0.5946)
+        """
+        return ivy.binary_cross_entropy(self._data, target, reduction=reduction, out=out)

@@ -126,7 +126,7 @@ def soft_margin_loss(
     {
         "2.5.1 and below": {
             "cpu": (
-                "bfloat16",
+                "bfloat16"
                 "float16",
                 "int8",
                 "int16",
@@ -146,3 +146,31 @@ def kl_div(
 ) -> paddle.Tensor:
     loss = F.kl_div(input, target, reduction=reduction)
     return loss
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": (
+                "bfloat16",
+                "float16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
+def binary_cross_entropy(
+    input: paddle.Tensor,
+    target: paddle.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> paddle.Tensor:
+    return F.binary_cross_entropy(input, target, reduction=reduction)

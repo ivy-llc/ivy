@@ -477,3 +477,62 @@ def kl_div(
         loss = ivy.sum(loss, out=out) / size[0]
 
     return ivy.inplace_update(out, loss) if out is not None else loss
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def binary_cross_entropy(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the binary cross entropy loss between predicted scores and true binary labels.
+
+    Parameters
+    ----------
+    input : array_like
+        True binary labels, of shape (batch_size,).
+    target : array_like
+        Predicted scores, of shape (batch_size,).
+    reduction : {'mean', 'sum', 'none'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The binary cross entropy loss between the predicted scores
+        and true binary labels.
+
+    Examples
+    --------
+    >>> input = ivy.array([1, 0, 1, 0])
+    >>> target = ivy.array([0.8, 0.2, 0.6, 0.4])
+    >>> ivy.binary_cross_entropy(input, target)
+    ivy.array(0.3670)
+
+    >>> input = ivy.array([1, 1, 0, 0])
+    >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> ivy.soft_margin_loss(input, target, reduction='sum')
+    ivy.array(0.9083)
+
+    >>> input = ivy.array([1, 1, 0, 0])
+    >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> ivy.soft_margin_loss(input, target, reduction='none')
+    ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
+    """
+    loss = -1 * (input * ivy.log(target) + (1-input) * ivy.log(1-target))
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss

@@ -298,3 +298,46 @@ def test_soft_margin_loss(
         target=target[0],
         reduction=reduction,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.binary_cross_entropy",
+    dtype_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+    ),
+    dtype_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True
+    ),
+    reduction=st.sampled_from(["sum", "mean", "none"]),
+)
+def test_binary_cross_entropy(
+    *,
+    dtype_input,
+    dtype_target,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype_input, input = dtype_input
+    dtype_target, target = dtype_target
+
+    helpers.test_function(
+        input_dtypes=dtype_input + dtype_target,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-02,
+        input=input[0],
+        target=target[0],
+        reduction=reduction,
+    )
