@@ -1079,3 +1079,51 @@ def mel_weight_matrix(
         lower_edge_hertz,
         upper_edge_hertz,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_mean(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the mean of elements along segments of an array. Segments are defined by an
+    integer array of segment IDs.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented mean operation.
+        For each segment, it computes the mean of values in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    # Calculate the sum along segments
+    segment_sum = ivy.current_backend().unsorted_segment_sum(
+        data, segment_ids, num_segments
+    )
+
+    # Count the number of elements in each segment
+    segment_count = ivy.current_backend().unsorted_segment_sum(
+        ivy.ones_like(data), segment_ids, num_segments
+    )
+
+    # Compute the mean
+    segment_mean = segment_sum / segment_count
+
+    return segment_mean
