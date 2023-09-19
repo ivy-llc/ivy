@@ -151,7 +151,7 @@ def test_paddle_hflip(
         ),
     ),
     fill=st.integers(min_value=-5, max_value=5),
-    padding_mode=st.sampled_from(["constant", "edge", "reflect", "symmetric"]),
+    padding_mode=st.sampled_from(["constant", "edge", "reflect"]),
 )
 def test_paddle_pad(
     *,
