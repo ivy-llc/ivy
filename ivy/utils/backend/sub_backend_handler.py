@@ -51,11 +51,11 @@ original_backend_dict = None
 
 def set_sub_backend(sub_backend_str: str):
     if ivy.backend == "":
-        logging.warn("You must set a backend first")
+        logging.warning("You must set a backend first")
         return
 
     if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
-        logging.warn(
+        logging.warning(
             f"backend {ivy.current_backend_str()} does not have any"
             " supported sub_backends"
         )
@@ -68,7 +68,7 @@ def set_sub_backend(sub_backend_str: str):
         )
 
     if sub_backend_str not in _backend_to_sub_backends_dict[ivy.current_backend_str()]:
-        logging.warn(
+        logging.warning(
             f"{ivy.current_backend_str()} does not support"
             f" {sub_backend_str} as a sub_backend"
         )
