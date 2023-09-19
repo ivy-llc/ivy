@@ -60,7 +60,8 @@ def imag(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if val.dtype not in (torch.complex64, torch.complex128):
-        return torch.zeros_like(val, dtype=val.dtype)
+        ret = torch.imag(val.to(torch.complex64))
+        return ret.to(val.dtype)
     return torch.imag(val)
 
 
