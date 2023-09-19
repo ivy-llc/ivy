@@ -185,26 +185,28 @@ def _get_tridiagonal_dtype_matrix_format(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    diagonals_format = draw(st.sampled_from(["compact", "sequence", "matrix", None]))
-    matrix = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
-            min_value=2,
-            max_value=5,
-        ).filter(tridiagonal_matrix_filter)
-    )
-    if diagonals_format in ["compact", "sequence", None]:
-        m = matrix.shape[0]
-        dummy_idx = [0, 0]
-        indices = [
-            [[i, i + 1] for i in range(m - 1)] + [dummy_idx],
-            [[i, i] for i in range(m)],
-            [dummy_idx] + [[i + 1, i] for i in range(m - 1)],
-        ]
-        matrix = ivy.gather_nd(matrix, indices)
+    diagonals_format = draw(st.sampled_from(["compact", "sequence", "matrix"]))
+    if diagonals_format == "matrix":
+        matrix = draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=tuple([shared_size, shared_size]),
+                min_value=2,
+                max_value=5,
+            ).filter(tridiagonal_matrix_filter)
+        )
+    elif diagonals_format in ["compact", "sequence"]:
+        matrix = draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=tuple([3, shared_size]),
+                min_value=2,
+                max_value=5,
+            ).filter(tridiagonal_compact_filter)
+        )
         if diagonals_format == "sequence":
             matrix = list(matrix)
+
     return input_dtype, matrix, diagonals_format
 
 
@@ -1316,3 +1318,21 @@ def tridiagonal_matrix_filter(x):
                 if cell != 0:
                     return False
     return True
+
+
+def tridiagonal_compact_filter(x):
+    diagonals = ivy.array(x)
+    dim = diagonals[0].shape[0]
+    diagonals[[0, -1], [-1, 0]] = 0
+    dummy_idx = [0, 0]
+    indices = ivy.array(
+        [
+            [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
+            [(i, i) for i in range(dim)],
+            [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
+        ]
+    )
+    matrix = ivy.scatter_nd(
+        indices, diagonals, shape=ivy.array([dim, dim])
+    )
+    return tridiagonal_matrix_filter(matrix)
