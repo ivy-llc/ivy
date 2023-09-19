@@ -895,12 +895,13 @@ def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eig(dtype_x, test_flags, backend_fw, fn_name):
+def test_eig(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -1002,12 +1003,13 @@ def test_eigh_tridiagonal(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eigvals(dtype_x, test_flags, backend_fw, fn_name):
+def test_eigvals(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],

@@ -1064,3 +1064,35 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         [90, 91, 92, 93, 94, 95, 96, 97, 98, 99]])
         """
         return ivy.sparsify_tensor(self._data, card, out=out)
+
+    def erfc(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.erfc. This method simply wraps the
+        function, and so the docstring for ivy.erfc also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array with real or complex valued argument.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            Values of the complementary error function.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, -1., 10.])
+        >>> x.erfc()
+        ivy.array([1.00000000e+00, 1.84270084e+00, 2.80259693e-45])
+        """
+        return ivy.erfc(self._data, out=out)

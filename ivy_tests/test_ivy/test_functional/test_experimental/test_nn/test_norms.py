@@ -267,8 +267,6 @@ def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
         input_dtypes=x_dtype,
         x=x,
         axis=axis,
