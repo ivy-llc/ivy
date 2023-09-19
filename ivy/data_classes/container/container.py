@@ -44,6 +44,7 @@ from ivy.data_classes.container.experimental import (
     _ContainerWithSortingExperimental,
     _ContainerWithStatisticalExperimental,
     _ContainerWithUtilityExperimental,
+    _ContainerWithLossesExperimental,
 )
 
 
@@ -87,6 +88,7 @@ class Container(
     _ContainerWithSortingExperimental,
     _ContainerWithStatisticalExperimental,
     _ContainerWithUtilityExperimental,
+    _ContainerWithLossesExperimental,
 ):
     def __init__(
         self,
@@ -141,8 +143,7 @@ class Container(
     def __pow__(self, power):
         """
         ivy.Container special method for the power operator, calling
-        :code:`operator.pow` for each of the corresponding leaves of
-        the two containers.
+        :code:`operator.pow` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -195,9 +196,9 @@ class Container(
         return self.cont_map(lambda x, _: operator.ipow(x, power), map_sequences=True)
 
     def __add__(self, other):
-        """ivy.Container special method for the add operator, calling
-        :code:`operator.add` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the add operator, calling :code:`operator.add`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -453,8 +454,8 @@ class Container(
     def __truediv__(self, other):
         """
         ivy.Container special method for the divide operator, calling
-        :code:`operator.truediv` for each of the corresponding leaves of
-        the two containers.
+        :code:`operator.truediv` for each of the corresponding leaves of the two
+        containers.
 
         Parameters
         ----------
@@ -495,7 +496,6 @@ class Container(
             a: ivy.array([0.25, 0.40000001, 0.5]),
             b: ivy.array([0.66666669, 0.60000002, 0.5])
         }
-
         """
         return ivy.Container.cont_multi_map(
             lambda xs, _: operator.truediv(xs[0], xs[1]), [self, other], map_nests=True
@@ -569,9 +569,8 @@ class Container(
 
     def __abs__(self):
         """
-        ivy.Container special method for the abs operator, calling
-        :code:`operator.abs` for each of the corresponding leaves of the
-        two containers.
+        ivy.Container special method for the abs operator, calling :code:`operator.abs`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -595,14 +594,13 @@ class Container(
             a: ivy.array([1, 2, 3]),
             b: ivy.array([1, 0, 5])
         }
-
         """
         return self.cont_map(lambda x, kc: operator.abs(x), map_sequences=True)
 
     def __lt__(self, other):
         """
-        ivy.Container special method for the less operator, calling
-        :code:`operator.lt` for each of the corresponding leaves of the two containers.
+        ivy.Container special method for the less operator, calling :code:`operator.lt`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -677,8 +675,8 @@ class Container(
 
     def __eq__(self, other):
         """
-        ivy.Container special method for the equal operator, calling
-        :code:`operator.eq` for each of the corresponding leaves of the two containers.
+        ivy.Container special method for the equal operator, calling :code:`operator.eq`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -912,9 +910,8 @@ class Container(
 
     def __xor__(self, other):
         """
-        ivy.Container special method for the ge operator, calling
-        :code:`operator.ge` for each of the corresponding leaves of
-        the two containers.
+        ivy.Container special method for the ge operator, calling :code:`operator.ge`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -989,8 +986,8 @@ class Container(
     def __rshift__(self, other):
         """
         ivy.Container special method for the right shift operator, calling
-        :code:`operator.rshift` for each of the corresponding leaves of the
-        two containers.
+        :code:`operator.rshift` for each of the corresponding leaves of the two
+        containers.
 
         Parameters
         ----------

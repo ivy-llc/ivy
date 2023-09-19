@@ -144,6 +144,10 @@ class Array(
             self._data = data
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
+        elif ivy.is_ivy_sparse_array(data):
+            self._data = data._data
+        elif ivy.is_native_sparse_array(data):
+            self._data = data._data
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
@@ -403,7 +407,7 @@ class Array(
         else:
             # Requirerd in the case that backend is different
             # from the currently set backend
-            backend = ivy.with_backend(self.backend, cached=True)
+            backend = ivy.with_backend(self.backend)
         arr_np = backend.to_numpy(self._data)
         rep = (
             np.array(ivy.vec_sig_fig(arr_np, sig_fig))

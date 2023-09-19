@@ -16,6 +16,38 @@ else:
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
+# wrap __array_ufunc__ method of ivy.Array to prioritize Ivy array methods when using numpu backend
+
+
+def wrap__array_ufunc__(func):
+    def rep_method(self, ufunc, method, *inputs, **kwargs):
+        methods = {
+            "not_equal": "not_equal",
+            "greater": "greater",
+            "less": "less",
+            "greater_equal": "greater_equal",
+            "less_equal": "less_equal",
+            "multiply": "multiply",
+            "divide": "divide",
+            "remainder": "remainder",
+            "equal": "equal",
+            "bitwise_and": "bitwise_and",
+            "matmul": "matmul",
+            "power": "pow",
+            "divide": "divide",
+            "subtract": "subtract",
+            "add": "add",
+            "not_equal": "not_equal",
+        }
+        if ufunc.__name__ in methods.keys():
+            return eval("ivy." + methods[ufunc.__name__] + "(*inputs, **kwargs)")
+        return func(self, ufunc, method, *inputs, **kwargs)
+
+    return rep_method
+
+
+ivy.Array.__array_ufunc__ = wrap__array_ufunc__(ivy.Array.__array_ufunc__)
+
 NativeArray = np.ndarray
 NativeDevice = str
 NativeDtype = np.dtype
@@ -130,7 +162,7 @@ invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes, backend_version)
 invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_version)
 
 
-native_inplace_support = False
+native_inplace_support = True
 
 supports_gradients = False
 

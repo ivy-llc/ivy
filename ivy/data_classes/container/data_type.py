@@ -22,8 +22,9 @@ class _ContainerWithDataTypes(ContainerBase):
         copy: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copy an array to a specified data type irrespective of
-        :ref:`type-promotion` rules.
+        """
+        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        rules.
 
         .. note::
         Casting floating-point ``NaN`` and ``infinity`` values to integral data types
@@ -92,8 +93,9 @@ class _ContainerWithDataTypes(ContainerBase):
         copy: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copy an array to a specified data type irrespective of
-        :ref:`type-promotion` rules.
+        """
+        Copy an array to a specified data type irrespective of :ref:`type-promotion`
+        rules.
 
         .. note::
         Casting floating-point ``NaN`` and ``infinity`` values to integral data types
@@ -140,7 +142,6 @@ class _ContainerWithDataTypes(ContainerBase):
             a: ivy.array([0, 1, 1]),
             b: ivy.array([3, 2, 1])
         }
-
         """
         return self._static_astype(
             self,
