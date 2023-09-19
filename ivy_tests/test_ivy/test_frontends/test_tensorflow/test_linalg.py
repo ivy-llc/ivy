@@ -1304,22 +1304,6 @@ def test_tensorflow_tridiagonal_solve(
     )
 
 
-def tridiagonal_matrix_filter(x):
-    dim = x.shape[0]
-    if ivy.abs(ivy.det(x)) < 1e-3:
-        return False
-    for i in range(dim):
-        for j in range(dim):
-            cell = x[i][j]
-            if i == j or i == j - 1 or i == j + 1:
-                if cell == 0:
-                    return False
-            else:
-                if cell != 0:
-                    return False
-    return True
-
-
 def tridiagonal_compact_filter(x):
     diagonals = ivy.array(x)
     dim = diagonals[0].shape[0]
@@ -1336,3 +1320,21 @@ def tridiagonal_compact_filter(x):
         indices, diagonals, shape=ivy.array([dim, dim])
     )
     return tridiagonal_matrix_filter(matrix)
+
+
+def tridiagonal_matrix_filter(x):
+    dim = x.shape[0]
+    if ivy.abs(ivy.det(x)) < 1e-3:
+        return False
+    for i in range(dim):
+        for j in range(dim):
+            cell = x[i][j]
+            if i == j or i == j - 1 or i == j + 1:
+                if cell == 0:
+                    return False
+            else:
+                if cell != 0:
+                    return False
+    return True
+
+
