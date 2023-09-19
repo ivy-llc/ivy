@@ -123,7 +123,13 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.prelu(self._data, slope, out=out)
 
-    def relu6(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def relu6(
+        self,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         Apply the rectified linear unit 6 function element-wise.
 
@@ -131,6 +137,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             input array
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -156,7 +165,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(y)
         ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
         """
-        return ivy.relu6(self._data, out=out)
+        return ivy.relu6(self._data, complex_mode=complex_mode, out=out)
 
     def logsigmoid(
         self: ivy.Array,
