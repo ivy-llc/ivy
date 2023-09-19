@@ -88,7 +88,7 @@ def hfft2(x, s=None, axis=(-2, -1), norm="backward"):
 
     return ivy.real(fft_result)  # Return the real part of the result
 
-    
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
@@ -189,4 +189,3 @@ def rfftfreq(n, d=1.0, dtype=None, name=None):
     pos_max = n // 2 + 1
     indices = ivy.arange(0, pos_max, dtype=dtype)
     return indices * val
-    
