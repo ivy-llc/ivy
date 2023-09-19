@@ -185,12 +185,13 @@ def noncentral_chisquare(df, nonc, size=None):
     if ivy.any(df <= 0):
         raise ValueError("Degree of freedom must be greater than 0")
     if ivy.any(nonc == 0):
-        return chisquare(df)
-    if 1 < df:
-        n = standard_normal() + ivy.sqrt()
+        return chisquare(df, size=size)
+    if ivy.any(df < 1):
+        n = standard_normal() + ivy.sqrt(nonc)
         return chisquare(df - 1, size=size) + n * n
     else:
-        return chisquare(df + 2 * poisson(nonc / 2, size=size), size=size)
+        i = poisson(nonc / 2.0, size=size)
+        return chisquare(df + 2 * i, size=size)
 
 
 @to_ivy_arrays_and_back
