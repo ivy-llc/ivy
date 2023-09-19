@@ -232,8 +232,8 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             target_fn = self._ivy.__dict__[self.fn_name]
 
         # Make copy of arguments for functions that might use inplace update by default
-        copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
+        copy_kwargs = copy.deepcopy(kwargs)
 
         ret_from_target, ret_np_flat_from_target = self._get_ret_and_flattened_np_array(
             target_fn,
