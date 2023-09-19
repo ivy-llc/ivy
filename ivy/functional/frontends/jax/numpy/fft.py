@@ -57,12 +57,9 @@ def rfft(a, n=None, axis=-1, norm=None):
         norm = "backward"
     if n is None:
         n = len(a)
-    if ivy.current_backend_str() == "tensorflow":
-        if a.dtype in ["uint64", "int64", "float64"]:
-            a_new = ivy.astype(a, "complex128")
-        else:
-            a_new = ivy.astype(a, "complex64")
+    if a.dtype in ["uint64", "int64", "float64"]:
+        a_complex = ivy.astype(a, "complex128")
     else:
-        a_new = a
+        a_complex = ivy.astype(a, "complex64")
     fft_fun = ivy.fft
-    return fft_fun(a_new, axis, norm=norm, n=n)[: n // 2 + 1]
+    return fft_fun(a_complex, axis, norm=norm, n=n)[: n // 2 + 1]
