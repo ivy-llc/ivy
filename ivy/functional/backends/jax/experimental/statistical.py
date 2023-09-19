@@ -303,7 +303,7 @@ def cummax(
     out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     if x.dtype in (jnp.complex128, jnp.complex64):
-        x = jnp.real(x).astype(jnp.float64)
+        x = jnp.real(x)
 
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
