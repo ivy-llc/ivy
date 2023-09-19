@@ -330,14 +330,13 @@ def multi_head_attention_forward(
             average_attention_weights=average_attn_weights,
             dropout=dropout_p,
             training=training,
-        )
+        )[1]
         return attn_output, attn_weights
     return ivy.multi_head_attention(
         query,
         key=key,
         value=value,
         num_heads=num_heads,
-        scale=scale,
         attention_mask=attn_mask,
         in_proj_weights=in_proj_weight,
         q_proj_weights=q_proj_weight,
