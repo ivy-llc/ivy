@@ -106,6 +106,9 @@ class Array:
             keepdims=keepdims,
         )
 
+    def squeeze(self, axis=None):
+        return jax_frontend.numpy.squeeze(self, axis=axis)
+
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
 
