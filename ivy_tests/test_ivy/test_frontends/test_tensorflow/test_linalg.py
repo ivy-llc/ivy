@@ -1316,7 +1316,7 @@ def tridiagonal_compact_filter(x):
             [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
         ]
     )
-    matrix = ivy.scatter_nd(indices, diagonals, shape=ivy.array([dim, dim]))
+    matrix = ivy.scatter_nd(indices, diagonals, ivy.array([dim, dim]), reduction="replace")
     return tridiagonal_matrix_filter(matrix)
 
 
