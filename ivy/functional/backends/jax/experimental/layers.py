@@ -212,6 +212,7 @@ def max_pool2d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dims = 2
+    odtype = x.dtype
     kernel, strides, padding, dilation = _validate_max_pool_params(
         kernel, strides, padding, dilation, ceil_mode, dims=dims
     )
@@ -239,7 +240,7 @@ def max_pool2d(
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
 
-    return res
+    return res.astype(odtype)
 
 
 def max_pool3d(
