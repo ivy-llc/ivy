@@ -903,20 +903,33 @@ def cummin(
 @infer_device
 @infer_dtype
 @handle_array_function
-def nanmax(a, axis=None, keepdims=False):
+@ivy.handle_exceptions
+@ivy.handle_out_argument
+@ivy.to_native_arrays_and_back
+@ivy.handle_device_shifting
+def nanmax(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+) -> ivy.Array:
     """
     Compute the maximum value of an array while ignoring NaN values.
 
     Parameters
     ----------
-    - a (array-like): Input array.
-    - axis (int, optional): Axis or axes along which to operate. Default is None.
-    - keepdims (bool, optional): If True, retains reduced \
-    dimensions with size 1. Default is False.
+    a
+        Input array.
+    axis
+        Axis or axes along which to operate. Default is None.
+    keepdims
+        If True, retains reduced dimensions with size 1. Default is False.
 
     Returns
     -------
-    - Maximum value of the elements in x, ignoring NaN values.
+    ret
+        The maximum value of the elements in `a`, ignoring NaN values.
 
     Example:
     >>> import ivy
@@ -931,4 +944,5 @@ def nanmax(a, axis=None, keepdims=False):
     masked_a = ivy.where(mask, -ivy.inf, a)
 
     # Compute the maximum value of the masked array
-    return ivy.max(masked_a, axis=axis, keepdims=keepdims)
+    backend = ivy.current_backend(a)
+    return backend.max(masked_a, axis=axis, keepdims=keepdims)
