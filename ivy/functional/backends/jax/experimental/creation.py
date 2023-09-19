@@ -162,3 +162,23 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = jnp.maximum(zero, jnp.minimum(lower_slopes, upper_slopes))
     return jnp.pad(mel_weights, [[1, 0], [0, 0]])
+
+def unsorted_segment_mean(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    # added this check to keep the same behaviour as tensorflow
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+    # Calculate the sum along segments
+    segment_sum = jax.ops.segment_sum(data, segment_ids, num_segments)
+
+    # Count the number of elements in each segment
+    segment_count = jax.ops.segment_sum(jnp.ones_like(data), segment_ids, num_segments)
+
+    # Compute the mean
+    segment_mean = segment_sum / segment_count
+
+    return segment_mean

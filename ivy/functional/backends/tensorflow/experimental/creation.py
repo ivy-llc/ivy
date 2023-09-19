@@ -154,3 +154,20 @@ def mel_weight_matrix(
         lower_edge_hertz=lower_edge_hertz,
         upper_edge_hertz=upper_edge_hertz,
     )
+
+
+def unsorted_segment_mean(
+        data: tf.Tensor,
+        segment_ids: tf.Tensor,
+        num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    # Calculate the sum along segments
+    segment_sum = tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
+
+    # Calculate the count of elements in each segment
+    segment_count = tf.math.unsorted_segment_max(tf.ones_like(data), segment_ids, num_segments)
+
+    # Calculate the mean
+    segment_mean = segment_sum / segment_count
+
+    return segment_mean

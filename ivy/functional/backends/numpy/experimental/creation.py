@@ -204,3 +204,31 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))
     return np.pad(mel_weights, [[1, 0], [0, 0]])
+
+
+def unsorted_segment_mean(
+        data: np.ndarray,
+        segment_ids: np.ndarray,
+        num_segments: int,
+) -> np.ndarray:
+    # Check if the parameters are valid
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    # Initialize an array to store the sum of elements for each segment
+    res = np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
+
+    # Initialize an array to keep track of the number of elements in each segment
+    counts = np.zeros(num_segments, dtype=np.int64)
+
+    # Loop through each element in segment_ids
+    for i in range(len(segment_ids)):
+        seg_id = segment_ids[i]
+        # Accumulate the sum for the corresponding segment
+        res[seg_id] += data[i]
+        # Increment the count for the corresponding segment
+        counts[seg_id] += 1
+
+    # Compute the mean for each segment by dividing the sum by the count
+    return res / counts[:, np.newaxis]

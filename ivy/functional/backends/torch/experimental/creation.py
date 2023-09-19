@@ -245,3 +245,31 @@ def mel_weight_matrix(
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = torch.maximum(zero, torch.minimum(lower_slopes, upper_slopes))
     return torch.nn.functional.pad(mel_weights, (0, 0, 1, 0))
+
+
+def unsorted_segment_mean(
+        data: torch.Tensor,
+        segment_ids: torch.Tensor,
+        num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    # Check if the parameters are valid
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    # Initialize an array to store the sum of elements for each segment
+    segment_sum = torch.zeros((num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device)
+
+    # Initialize an array to keep track of the number of elements in each segment
+    counts = torch.zeros(num_segments, dtype=torch.int64, device=data.device)
+
+    # Loop through each element in segment_ids
+    for i in range(len(segment_ids)):
+        seg_id = segment_ids[i]
+        # Accumulate the sum for the corresponding segment
+        segment_sum[seg_id] += data[i]
+        # Increment the count for the corresponding segment
+        counts[seg_id] += 1
+
+    # Compute the mean for each segment by dividing the sum by the count
+    return segment_sum / counts[:, None]
