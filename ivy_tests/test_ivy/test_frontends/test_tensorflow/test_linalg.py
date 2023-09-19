@@ -1336,5 +1336,3 @@ def tridiagonal_matrix_filter(x):
                 if cell != 0:
                     return False
     return True
-
-
