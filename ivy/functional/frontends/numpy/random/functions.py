@@ -30,7 +30,6 @@ def binomial(n, p, size=None):
     return ivy.poisson(lambda_, shape=size)
 
 
-@to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def chisquare(df, size=None):
     df = ivy.array(df)  # scalar ints and floats are also array_like
