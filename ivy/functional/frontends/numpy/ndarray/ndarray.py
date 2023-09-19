@@ -124,6 +124,24 @@ class ndarray:
             keepdims=keepdims,
         )
 
+    def choose(self, a, choices, out=None, mode="raise"):
+        choices = _to_ivy_array(choices)
+        broadcast_shape = np_frontend.broadcast(a, *choices).shape
+        if mode == "raise":
+            if np_frontend.any((a < 0) | (a >= len(choices))):
+                raise ValueError("Invalid index found in 'a'")
+            elif mode == "wrap":
+                a = np_frontend.mod(a, len(choices))
+            elif mode == "clip":
+                a = np_frontend.clip(a, 0, len(choices) - 1)
+            else:
+                raise ValueError("Invalid mode")
+        result = choices[a, np_frontend.arange(broadcast_shape[0])]
+        if out is not None:
+            out[:] = result
+            return out
+        return result
+
     def reshape(self, newshape, /, *, order="C"):
         ivy.utils.assertions.check_elem_in_list(
             order,
