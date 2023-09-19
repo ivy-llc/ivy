@@ -54,7 +54,9 @@ def gelu(
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def sigmoid(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if not ivy.is_array(x):
         x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
@@ -154,6 +156,10 @@ def mish(
     backend_version,
 )
 def hardswish(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.hardswish(x)

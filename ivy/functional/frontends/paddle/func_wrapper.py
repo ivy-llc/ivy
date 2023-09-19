@@ -13,7 +13,7 @@ import ivy.functional.frontends.paddle as paddle_frontend
 def _from_ivy_array_to_paddle_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
-            x, _from_ivy_array_to_paddle_frontend_tensor, include_derived, shallow=False
+            _from_ivy_array_to_paddle_frontend_tensor, x, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = paddle_frontend.Tensor(x)
@@ -50,10 +50,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, args, include_derived={"tuple": True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={"tuple": True}, shallow=False
+            _to_ivy_array, kwargs, include_derived={"tuple": True}, shallow=False
         )
 
         return fn(*new_args, **new_kwargs)
