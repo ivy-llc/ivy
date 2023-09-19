@@ -2696,7 +2696,7 @@ def test_jax_repeat(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     indices_or_sections=_get_splits(
-        min_num_dims=1, allow_none=False, is_mod_split=True
+        allow_none=False, min_num_dims=1, allow_array_indices=False
     ),
     axis=st.shared(
         helpers.get_axis(
@@ -2705,32 +2705,36 @@ def test_jax_repeat(
         ),
         key="target_axis",
     ),
-    test_with_out=st.just(False),
 )
 def test_jax_split(
     *,
     dtype_value,
     indices_or_sections,
     axis,
-    on_device,
-    frontend,
-    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
+    frontend,
+    on_device,
+    backend_fw,
 ):
-    input_dtype, value = dtype_value
+    input_dtype, x = dtype_value
     helpers.test_frontend_method(
-        input_dtypes=input_dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        frontend=frontend,
-        indices_or_sections=indices_or_sections,
-        on_device=on_device,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "indices_or_sections": indices_or_sections,
+            "axis": axis,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        ary=value[0],
-        axis=axis,
+        frontend=frontend,
+        on_device=on_device,
     )
 
 

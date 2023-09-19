@@ -184,9 +184,9 @@ class Array:
             order=order,
         )
 
-    def split(self, ary, indices_or_sections, axis=0):
+    def split(self, indices_or_sections, axis=0):
         return jax_frontend.numpy.split(
-            self, ary=ary, indices_or_sections=indices_or_sections, axis=axis
+            self, indices_or_sections=indices_or_sections, axis=axis
         )
 
     def sum(
