@@ -62,7 +62,7 @@ class Tensor:
     # -------------------#
 
     def __getitem__(self, item):
-        ivy_args = ivy.nested_map([self, item], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
         return paddle_frontend.Tensor(ret)
 
@@ -140,6 +140,10 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sinh(self, name=None):
         return paddle_frontend.Tensor(ivy.sinh(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def lerp(self, y, weight, name=None):
+        return paddle_frontend.lerp(self, y, weight)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def lerp_(self, y, weight, name=None):
@@ -596,6 +600,13 @@ class Tensor:
     def deg2rad(self, name=None):
         return paddle_frontend.Tensor(ivy.deg2rad(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def digamma(self, name=None):
+        digamma_fun = ivy.digamma
+        return paddle_frontend.Tensor(
+            ivy.astype(digamma_fun(self._ivy_array), self.dtype)
+        )
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64", "bool")}, "paddle"
     )
@@ -725,6 +736,14 @@ class Tensor:
         return paddle_frontend.stanh(self, scale_a=scale_a, scale_b=scale_b)
 
     @with_supported_dtypes(
+        {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+    )
+    def trace(self, offset=0, axis1=0, axis2=1, name=None):
+        return paddle_frontend.Tensor(
+            ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2)
+        )
+
+    @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
         "paddle",
     )
@@ -732,6 +751,13 @@ class Tensor:
         return paddle_frontend.argmin(
             self._ivy_array, axis=axis, keepdim=keepdim, dtype=dtype
         )
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def topk(self, k, axis=None, largest=True, sorted=True, name=None):
+        return ivy.top_k(self._ivy_array, k, axis=axis, largest=largest, sorted=sorted)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):

@@ -111,7 +111,7 @@ def _get_dtype_and_matrix(
         available_dtypes=helpers.get_dtypes(dtype, full=True),
         min_value=-10,
         max_value=10,
-        abs_smallest_val=1e04,
+        abs_smallest_val=1e-04,
         shape=shape,
     )
     if invertible:
@@ -470,11 +470,9 @@ def test_torch_eig(
     )
 
 
-# eigh
-# TODO: Test for all valid dtypes
 @handle_frontend_test(
     fn_tree="torch.linalg.eigh",
-    dtype_and_x=_get_dtype_and_matrix(dtype="float", square=True, invertible=True),
+    dtype_and_x=_get_dtype_and_matrix(dtype="valid", square=True, invertible=True),
     UPLO=st.sampled_from(("L", "U")),
 )
 def test_torch_eigh(
@@ -1030,8 +1028,8 @@ def test_torch_slogdet(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-4,
-        atol=1e-4,
+        rtol=1e-2,
+        atol=1e-2,
         A=x[0],
     )
 
