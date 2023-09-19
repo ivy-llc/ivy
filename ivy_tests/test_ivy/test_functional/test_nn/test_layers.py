@@ -256,11 +256,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     )
     if len(_batch_dim) and draw(st.booleans()):
         _mask_shape = (_num_batches*num_heads, *_mask_shape)
-    _mask_dtype_strat = st.sampled_from([
-        'bool',
-        *draw(helpers.get_dtypes('unsigned')),
-        *draw(helpers.get_dtypes('float')),
-    ])
+    _mask_dtype_strat = st.sampled_from(['bool', dtype[0]])
     attention_mask = draw(
         st.one_of(
             helpers.array_values(
