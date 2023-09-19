@@ -331,32 +331,39 @@ def multi_head_attention_forward(
             dropout=dropout_p,
             training=training,
         )[1]
-        return attn_output, attn_weights
-    return ivy.multi_head_attention(
-        query,
-        key=key,
-        value=value,
-        num_heads=num_heads,
-        attention_mask=attn_mask,
-        in_proj_weights=in_proj_weight,
-        q_proj_weights=q_proj_weight,
-        k_proj_weights=k_proj_weight,
-        v_proj_weights=v_proj_weight,
-        out_proj_weights=out_proj_weight,
-        in_proj_bias=in_proj_bias,
-        out_proj_bias=out_proj_bias,
-        is_causal=is_causal,
-        key_padding_mask=key_padding_mask,
-        bias_k=bias_k,
-        bias_v=bias_v,
-        static_k=static_k,
-        static_v=static_v,
-        add_zero_attn=add_zero_attn,
-        return_attention_weights=need_weights,
-        average_attention_weights=average_attn_weights,
-        dropout=dropout_p,
-        training=training,
-    )
+        ret = attn_output, attn_weights
+    else:
+        ret = ivy.multi_head_attention(
+            query,
+            key=key,
+            value=value,
+            num_heads=num_heads,
+            attention_mask=attn_mask,
+            in_proj_weights=in_proj_weight,
+            q_proj_weights=q_proj_weight,
+            k_proj_weights=k_proj_weight,
+            v_proj_weights=v_proj_weight,
+            out_proj_weights=out_proj_weight,
+            in_proj_bias=in_proj_bias,
+            out_proj_bias=out_proj_bias,
+            is_causal=is_causal,
+            key_padding_mask=key_padding_mask,
+            bias_k=bias_k,
+            bias_v=bias_v,
+            static_k=static_k,
+            static_v=static_v,
+            add_zero_attn=add_zero_attn,
+            return_attention_weights=need_weights,
+            average_attention_weights=average_attn_weights,
+            dropout=dropout_p,
+            training=training,
+        )
+    ret = list(ret)
+    if len(query.shape) == 3:
+        ret[0] = ret[0].swapaxes(0, 1)
+    if need_weights:
+        return tuple(ret)
+    return ret[0]
 
 
 @to_ivy_arrays_and_back
