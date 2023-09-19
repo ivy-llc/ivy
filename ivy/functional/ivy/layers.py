@@ -917,7 +917,7 @@ def multi_head_attention(
     # apply key_padding_mask
     if key_padding_mask is not None:
         if not ivy.is_bool_dtype(key_padding_mask):
-            key_padding_mask = key_padding_mask.astype(ivy.bool)
+            key_padding_mask = ivy.logical_not(key_padding_mask.astype(ivy.bool))
         if num_dims == 2:
             key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
         if add_zero_attn:
