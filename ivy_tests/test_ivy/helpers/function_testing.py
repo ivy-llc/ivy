@@ -986,13 +986,6 @@ def test_frontend_function(
             frontend_fw_kwargs=kwargs_frontend,
         )
 
-    # assuming value test will be handled manually in the test function
-    if not test_values:
-        return (
-            ret,
-            frontend_ret,
-        )
-
     if frontend_config.isscalar(frontend_ret):
         frontend_ret_np_flat = [frontend_config.to_numpy(frontend_ret)]
     else:
@@ -1004,6 +997,16 @@ def test_frontend_function(
         )
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
         frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return (
+            ret,
+            frontend_ret,
+        )
 
     if isinstance(rtol, dict):
         rtol = _get_framework_rtol(rtol, t_globals.CURRENT_BACKEND)
