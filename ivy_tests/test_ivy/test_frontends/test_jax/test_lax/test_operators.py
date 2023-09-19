@@ -2066,7 +2066,7 @@ def test_jax_log1p(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.add",
+    fn_tree="jax.lax.lt",
     dtypes_and_xs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
