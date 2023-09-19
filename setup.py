@@ -58,7 +58,7 @@ available_configs = repr(f"{configs_response.read()}").strip(r"\"b\'").split(r"\
 for tag in all_tags:
     if terminate:
         break
-    if tag not in available_configs:
+    if str(tag) not in available_configs:
         continue
     for i, path in enumerate(paths):
         if os.path.exists(path):
