@@ -585,8 +585,6 @@ def test_paddle_cos(
         on_device=on_device,
         x=x[0],
     )
-
-
 # cosh
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cosh",
@@ -2361,6 +2359,7 @@ def test_paddle_stanh(
         shared_dtype=True,
     ),
 )
+
 def test_paddle_subtract(
     *,
     dtype_and_x,
@@ -2381,6 +2380,7 @@ def test_paddle_subtract(
         x=x[0],
         y=x[1],
     )
+
 
 
 # take
@@ -2447,6 +2447,7 @@ def test_paddle_tan(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
+
 def test_paddle_tanh(
     *,
     dtype_and_x,
@@ -2467,6 +2468,7 @@ def test_paddle_tanh(
         atol=1e-2,
         x=x[0],
     )
+
 
 
 # trunc
@@ -2495,3 +2497,4 @@ def test_paddle_trunc(
         on_device=on_device,
         x=x[0],
     )
+
