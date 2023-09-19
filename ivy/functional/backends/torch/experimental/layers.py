@@ -712,6 +712,7 @@ def fft(
         "2.0.1 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
