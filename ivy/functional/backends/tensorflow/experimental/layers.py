@@ -1493,3 +1493,62 @@ def stft(
 
     else:
         return result
+
+
+def _to_4d(x):
+    t = x  # Start with the original tensor
+    while len(t.shape) < 4:  # Continue expanding dimensions until 4D
+        t = tf.expand_dims(t, axis=0)
+    return t
+
+
+def sliding_window(
+    input: Union[tf.Tensor, tf.Variable],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
+) -> Union[tf.Tensor, tf.Variable]:
+    if len(input.shape) != 4:
+        input = _to_4d(input)
+
+    input = tf.transpose(input, (0, 2, 3, 1))
+
+    kernel_size = (
+        [1]
+        + ([kernel_size] * 2 if isinstance(kernel_size, int) else list(kernel_size))
+        + [1]
+    )
+    if len(kernel_size) < 4:
+        kernel_size.append(1)
+
+    stride = [1] + ([stride] * 2 if isinstance(stride, int) else list(stride)) + [1]
+    if len(stride) < 4:
+        stride.append(1)
+
+    dilation = (
+        [1] + ([dilation] * 2 if isinstance(dilation, int) else list(dilation)) + [1]
+    )
+    if len(dilation) < 4:
+        dilation.append(1)
+
+    padding = [padding] * 2 if isinstance(padding, int) else padding
+
+    if isinstance(padding, str) and padding.upper() in ["VALID", "SAME"]:
+        padding = padding
+
+    else:
+        if padding[0] == padding[1] == 0:
+            padding = "VALID"
+        elif padding[0] == padding[1] != 0:
+            padding = "SAME"
+        else:
+            raise ivy.utils.exceptions.IvyError(
+                f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
+            )
+
+    return tf.image.extract_patches(
+        images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding
+    )

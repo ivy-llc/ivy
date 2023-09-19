@@ -2406,3 +2406,163 @@ class _ContainerWithLayersExperimental(ContainerBase):
             name=name,
             out=out,
         )
+
+    @staticmethod
+    def _static_sliding_window(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        window_size: Union[int, Tuple[int, int], Tuple[int, int, int], ivy.Container],
+        /,
+        *,
+        stride: Union[int, Tuple[int, int], ivy.Container] = 1,
+        dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sliding_window. This method simply
+        wraps the function, and so the docstring for ivy.sliding_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            An array representing the base area on which the window is going to
+            slide over.
+        window_size
+            Size of the sliding window for each dimension of the input.
+        stride
+            The stride of the sliding window for each dimension of input
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’
+            (no padding), or a sequence of n (low, high) integer pairs that give the
+            padding to apply before and after each spatial dimension.
+        dilation
+            The stride between elements within a sliding window, must be > 0.
+
+        Returns
+        -------
+        ret
+            The result of the sliding window operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.array([[1, 2, 3, 4],
+        ...                  [5, 6, 7, 8],
+        ...                  [9, 10, 11, 12]]),
+        ...     b=ivy.array([[13, 14, 15, 16],
+        ...                  [17, 18, 19, 20],
+        ...                  [21, 22, 23, 24]])
+        ... )
+        >>> result = ivy.Container._static_sliding_window(x, (2, 2))
+        >>> print(result)
+        {
+            a: ivy.array([[[ 1,  2,  5,  6],
+                           [ 2,  3,  6,  7],
+                           [ 3,  4,  7,  8]],
+
+                           [[ 5,  6,  9, 10],
+                           [ 6,  7, 10, 11],
+                           [ 7,  8, 11, 12]]]),
+            b: ivy.array([[[13, 14, 17, 18],
+                            [14, 15, 18, 19],
+                            [15, 16, 19, 20]],
+
+                            [[17, 18, 21, 22],
+                            [18, 19, 22, 23],
+                            [19, 20, 23, 24]]])
+
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "sliding_window",
+            input,
+            window_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def sliding_window(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        window_size: Union[int, Tuple[int, int], Tuple[int, int, int], ivy.Container],
+        /,
+        *,
+        stride: Union[int, Tuple[int, int], ivy.Container] = 1,
+        dilation: Union[int, Tuple[int, int], ivy.Container] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]], ivy.Container] = "VALID",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sliding_window. This method simply
+        wraps the function, and so the docstring for ivy.sliding_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            An array representing the base area on which the window is going to
+            slide over.
+        window_size
+            Size of the sliding window for each dimension of the input.
+        stride
+            The stride of the sliding window for each dimension of input
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’
+            (no padding), or a sequence of n (low, high) integer pairs that give the
+            padding to apply before and after each spatial dimension.
+        dilation
+            The stride between elements within a sliding window, must be > 0.
+
+        Returns
+        -------
+        ret
+            The result of the sliding window operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.array([[1, 2, 3, 4],
+        ...                  [5, 6, 7, 8],
+        ...                  [9, 10, 11, 12]]),
+        ...     b=ivy.array([[13, 14, 15, 16],
+        ...                  [17, 18, 19, 20],
+        ...                  [21, 22, 23, 24]])
+        ... )
+        >>> x.sliding_window((2, 2))
+        {
+            a: ivy.array([[[ 1,  2,  5,  6],
+                           [ 2,  3,  6,  7],
+                           [ 3,  4,  7,  8]],
+                           [[ 5,  6,  9, 10],
+                           [ 6,  7, 10, 11],
+                           [ 7,  8, 11, 12]]]),
+            b: ivy.array([[[13, 14, 17, 18],
+                            [14, 15, 18, 19],
+                            [15, 16, 19, 20]],
+                            [[17, 18, 21, 22],
+                            [18, 19, 22, 23],
+                            [19, 20, 23, 24]]])
+        }
+        """
+        return self._static_sliding_window(
+            self,
+            window_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

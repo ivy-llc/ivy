@@ -2,6 +2,7 @@
 from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 import paddle
 from ivy.functional.ivy.layers import (
+    _handle_padding,
     _depth_max_pooling_helper,
     _validate_max_pool_params,
 )
@@ -611,3 +612,52 @@ def stft(
     to_return = stft_helper(signals, frame_length, frame_step, fft_length)
     result = paddle.to_tensor(to_return)
     return result.astype(dtype)
+
+
+def sliding_window(
+    input: paddle.Tensor,
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = 0,
+) -> paddle.Tensor:
+    if input.ndim != 4:
+        # convert input to 4D tensor as unfold only accepts 4D data
+        input_shape = input.shape
+        extend_dims = max(0, 4 - len(input_shape))
+        new_shape = (1,) * extend_dims + tuple(input_shape)
+        input = input.reshape(new_shape).astype("float32")
+
+    stride = [stride] * 2 if isinstance(stride, int) else list(stride)
+    dilation = [dilation] * 2 if isinstance(dilation, int) else list(dilation)
+
+    kernel_size = (
+        [kernel_size] * 2 if isinstance(kernel_size, int) else list(kernel_size)
+    )
+    if len(kernel_size) < 2:
+        kernel_size = list((kernel_size) * 2)
+
+    # check padding and convert to right format
+    if isinstance(padding, str):
+        # convert padding from str to seq
+        if padding.upper() == "SAME":
+            pad_vals = []
+            for dim in input.shape:
+                pad_val = _handle_padding(
+                    dim,
+                    stride[0] if isinstance(stride, tuple) else stride,
+                    kernel_size[0],
+                    padding,
+                )
+                pad_vals.append(pad_val)
+            padding = pad_vals[:2]
+        else:
+            padding = 0
+    else:
+        padding = (padding,) * 2 if isinstance(padding, int) else padding
+
+    return paddle.nn.functional.unfold(
+        input, kernel_size, strides=stride, paddings=padding, dilations=dilation
+    )

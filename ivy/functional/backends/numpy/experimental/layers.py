@@ -13,7 +13,9 @@ from ivy.functional.ivy.layers import (
     _depth_max_pooling_helper,
 )
 from ivy.functional.backends.numpy.layers import _add_dilations
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.experimental.layers import (
+    _padding_ceil_mode,
+)
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version

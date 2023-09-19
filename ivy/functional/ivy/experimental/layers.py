@@ -823,12 +823,12 @@ def idct(
     >>> y = ivy.idct(x, type=3, n=None, norm='ortho')
     >>> print(y)
     {
-        a: ivy.array([1.01823380e+02, -5.15385818e+01, 1.36371466e-06,
-                      -5.38763905e+00, 0.00000000e+00, -1.60722279e+00,
-                      -8.80319249e-08, -4.05617893e-01]),
-        b: ivy.array([1.27279224e+01, -6.44232273e+00, 1.70464332e-07,
-                      -6.73454881e-01, 0.00000000e+00, -2.00902849e-01,
-                      -1.10039906e-08, -5.07022366e-02])
+        a: ivy.array([1.01823380e+02, -5.15385818e+01, 1.36371466e-06, -5.38763905e+00,
+                      0.00000000e+00, -1.60722279e+00, -8.80319249e-08,
+                      -4.05617893e-01]),
+        b: ivy.array([1.27279224e+01, -6.44232273e+00, 1.70464332e-07, -6.73454881e-01,
+                      0.00000000e+00, -2.00902849e-01, -1.10039906e-08,
+                      -5.07022366e-02])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -2477,6 +2477,136 @@ avg_pool2d.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+def sliding_window(
+    input: Union[ivy.Array, ivy.NativeArray],
+    kernel_size: Union[int, Sequence[int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
+) -> ivy.Array:
+    """
+    Slide a window of specified dimension over all elements of an array.
+
+    Parameters
+    ----------
+    input
+        An array representing the base area on which the window is going to slide over.
+    window_size
+        Size of the sliding window for each dimension of the input.
+    stride
+        The stride of the sliding window for each dimension of input
+    padding
+        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
+    dilation
+        The stride between elements within a sliding window, must be > 0.
+
+    Returns
+    -------
+    ret
+        The result of the sliding window operation.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 2, 3, 4],
+    >>>                [5, 6, 7, 8],
+    >>>                [9, 10, 11, 12]])
+    >>> ivy.sliding_window(x, (2, 2))
+    ivy.array([[[ 1,  2,  5,  6],
+                [ 2,  3,  6,  7],
+                [ 3,  4,  7,  8]],
+
+                [[ 5,  6,  9, 10],
+                [ 6,  7, 10, 11],
+                [ 7,  8, 11, 12]]])
+    """
+    if ivy.current_backend_str() == "torch":
+        return ivy.current_backend(input).sliding_window(
+            input,
+            kernel_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
+    if ivy.current_backend_str == "tensorflow":
+        return ivy.current_backend(input).sliding_window(
+            input,
+            kernel_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
+    if ivy.current_backend_str == "paddle":
+        return ivy.current_backend(input).sliding_window(
+            input,
+            kernel_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
+    # convert to 2D
+    n = len(input.shape)
+    if n > 2:
+        input = ivy.reshape(input, (input.shape[n - 2 :]))
+
+    k_size, stride, padding, dilation = map(
+        lambda x: tuple([x] * len(input.shape)) if isinstance(x, int) else x,
+        [kernel_size, stride, padding, dilation],
+    )
+
+    k_size = list(k_size)
+    if len(input.shape) != len(k_size):
+        while len(k_size) < len(input.shape):
+            k_size.append(k_size[-1])
+    k_size = tuple(k_size)
+
+    stride = list(stride)
+    if len(input.shape) != len(stride):
+        while len(stride) < len(input.shape):
+            stride.append(stride[-1])
+    stride = tuple(stride)
+
+    if not isinstance(padding, str):
+        if padding[0] == 0 and padding[-1] == 0:
+            padding = "VALID"
+        else:
+            padding = "SAME"
+
+    pads = _padtype_to_pads(input.shape, k_size, stride, padding)
+
+    input = input.reshape((1, 1) + input.shape)
+    if dilation:
+        identity = ivy.array(0)
+        input = _dilate(input, dilation, identity)
+
+    view = _conv_view(input, [1, 1] + list(k_size), stride, pads, identity)[0]
+    view = ivy.reshape(view, (*view.shape[1 : 1 + len(k_size)], -1))
+
+    return view
+
+
+sliding_window.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def reduce_window(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -2529,22 +2659,15 @@ def reduce_window(
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op = operand
-    dims, strides, padding, base_dilation, window_dilation = map(
-        lambda x: tuple([x] * len(op.shape)) if isinstance(x, int) else x,
-        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
-    )
     init_value = _cast_init(init_value, op.dtype)
-    identity = _get_identity(computation, operand.dtype, init_value)
-    if isinstance(padding, str):
-        pads = _padtype_to_pads(op.shape, dims, strides, padding)
-    else:
-        pads = padding
-    op = op.reshape((1, 1) + op.shape)
-    if base_dilation:
-        op = _dilate(op, base_dilation, identity)
-    view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
-    view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
-    ret = ivy.reduce(view, init_value, computation, axes=-1)
+    slid_wind_vals = ivy.sliding_window(
+        operand,
+        window_dimensions,
+        stride=window_strides,
+        dilation=base_dilation,
+        padding=padding,
+    )
+    ret = ivy.reduce(slid_wind_vals, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
 
 
