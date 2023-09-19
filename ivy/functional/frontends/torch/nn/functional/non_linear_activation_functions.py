@@ -276,9 +276,9 @@ def multi_head_attention_forward(
     else:
         num_batches = 1
     if static_k is not None:
-        static_k = static_k.reshape((num_batches, key.shape[1], embed_dim))
+        static_k = static_k.reshape((num_batches, key.shape[0], embed_dim))
     if static_v is not None:
-        static_v = static_v.reshape((num_batches, value.shape[1], embed_dim))
+        static_v = static_v.reshape((num_batches, value.shape[0], embed_dim))
     in_proj_weight = in_proj_weight if not use_separate_proj_weight else None
     if is_causal and need_weights:
         attn_output = ivy.multi_head_attention(
