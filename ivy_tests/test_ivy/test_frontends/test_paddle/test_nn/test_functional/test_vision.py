@@ -174,3 +174,47 @@ def test_paddle_pixel_shuffle(
         data_format=data_format,
         backend_to_test=backend_fw,
     )
+
+
+# pixel_unshuffle
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.pixel_unshuffle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_value=0,
+        min_num_dims=4,
+        max_num_dims=4,
+        min_dim_size=3,
+    ),
+    factor=helpers.ints(min_value=1),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
+)
+def test_paddle_pixel_unshuffle(
+    *,
+    dtype_and_x,
+    factor,
+    data_format,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    if data_format == "NCHW":
+        assume(ivy.shape(x[0])[2] % factor == 0)
+        assume(ivy.shape(x[0])[3] % factor == 0)
+    else:
+        assume(ivy.shape(x[0])[1] % factor == 0)
+        assume(ivy.shape(x[0])[2] % factor == 0)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        downscale_factor=factor,
+        data_format=data_format,
+        backend_to_test=backend_fw,
+    )

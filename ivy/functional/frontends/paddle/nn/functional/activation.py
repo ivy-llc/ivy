@@ -40,6 +40,17 @@ def gelu(x, approximate=False, name=None):
     return ivy.gelu(x, approximate=approximate)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def glu(x, axis=-1, name=None):
+    size = x.shape[axis]
+    ivy.utils.assertions.check_equal(
+        size % 2, 0, message="axis size must be divisible by 2", as_array=False
+    )
+    a, b = ivy.split(x, num_or_size_splits=2, axis=axis)
+    return ivy.multiply(a, ivy.sigmoid(b))
+
+
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def gumbel_softmax(x, temperature=1.0, hard=False, axis=-1, name=None):
@@ -122,6 +133,12 @@ def mish(x, name=None):
 @to_ivy_arrays_and_back
 def prelu(x, weight, data_format="NCHW", name=None):
     return ivy.add(ivy.maximum(0, x), ivy.multiply(weight, ivy.minimum(0, x)))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def relu(x, name=None):
+    return ivy.relu(x)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
@@ -237,6 +254,12 @@ def softsign(
     name=None,
 ):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def swish(x, name=None):
+    return ivy.multiply(x, ivy.sigmoid(x))
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")

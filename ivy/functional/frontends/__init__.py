@@ -91,3 +91,5 @@ def set_frontend_to_specific_version(frontend):
             orig_name = fn_name_from_version_specific_fn_name(i, f_version)
             if orig_name:
                 frontend.__dict__[orig_name] = frontend.__dict__[i]
+
+    return f_version

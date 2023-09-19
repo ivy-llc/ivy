@@ -1889,3 +1889,135 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_dot(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.Array, ivy.Container]:
+        """
+        Compute the dot product between two arrays `a` and `b` using the current
+        backend's implementation. The dot product is defined as the sum of the element-
+        wise product of the input arrays.
+
+        Parameters
+        ----------
+        a
+            First input array.
+        b
+            Second input array.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        ret
+            The dot product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = ivy.dot(a, b)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> b = ivy.array([[5, 6], [7, 8]])
+        >>> c = ivy.empty_like(a)
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[19, 22],
+            [43, 50]])
+
+        >>> a = ivy.array([[1.1, 2.3, -3.6]])
+        >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+        >>> c = ivy.zeros((1, 1))
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[-15.28]])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "dot",
+            a,
+            b,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def dot(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.Array, ivy.Container]:
+        """
+        Compute the dot product between two arrays `a` and `b` using the current
+        backend's implementation. The dot product is defined as the sum of the element-
+        wise product of the input arrays.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        b
+            Second input array.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        ret
+            The dot product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = ivy.dot(a, b)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> b = ivy.array([[5, 6], [7, 8]])
+        >>> c = ivy.empty_like(a)
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[19, 22],
+            [43, 50]])
+
+        >>> a = ivy.array([[1.1, 2.3, -3.6]])
+        >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+        >>> c = ivy.zeros((1, 1))
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[-15.28]])
+        """
+        return self.static_dot(
+            self,
+            b,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

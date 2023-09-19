@@ -1,3 +1,6 @@
+# local
+from ..linalg import *  # noqa: F401
+
 # global
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
