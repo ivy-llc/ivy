@@ -3685,7 +3685,7 @@ def test_numpy_ndarray_view(
         max_value=2**31 - 1,
     ),
 )
-def test_numpy_instance_lshift__(
+def test_numpy_instance_ilshift__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
