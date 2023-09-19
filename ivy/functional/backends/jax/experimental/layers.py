@@ -238,7 +238,7 @@ def max_pool2d(
     )
 
     if data_format == "NCHW":
-        return jnp.transpose(res, (0, 3, 1, 2))
+        res = jnp.transpose(res, (0, 3, 1, 2))
 
     return res.astype(odtype)
 
