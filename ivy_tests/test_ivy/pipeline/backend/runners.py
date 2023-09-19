@@ -29,6 +29,37 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def _ivy(self):
         return self.__ivy
 
+    def _find_instance_in_args(self, args, array_indices, mask):
+        """
+        Find the first element in the arguments that is considered to be an instance of
+        Array or Container class.
+
+        Parameters
+        ----------
+        args
+            Arguments to iterate over
+        array_indices
+            Indices of arrays that exists in the args
+        mask
+            Boolean mask for whether the corrseponding element in (args) has a
+            generated test_flags.native_array as False or test_flags.container as
+            true
+
+        Returns
+        -------
+            First found instance in the arguments and the updates arguments not
+            including the instance
+        """
+        i = 0
+        for i, a in enumerate(mask):
+            if a:
+                break
+        instance_idx = array_indices[i]
+        instance = self._ivy.index_nest(args, instance_idx)
+        new_args = self._ivy.copy_nest(args, to_mutable=False)
+        self._ivy.prune_nest_at_index(new_args, instance_idx)
+        return instance, new_args
+
     def _search_args(self, test_arguments):
         # split the arguments into their positional and keyword components
         args_np, kwargs_np = self._split_args_to_args_and_kwargs(
@@ -135,12 +166,12 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             ]
 
             if any(args_instance_mask):
-                instance, args = _find_instance_in_args(
-                    self.backend, args, arrays_args_indices, args_instance_mask
+                instance, args = self._find_instance_in_args(
+                    args, arrays_args_indices, args_instance_mask
                 )
             else:
-                instance, kwargs = _find_instance_in_args(
-                    self.backend, kwargs, arrays_kwargs_indices, kwargs_instance_mask
+                instance, kwargs = self._find_instance_in_args(
+                    kwargs, arrays_kwargs_indices, kwargs_instance_mask
                 )
 
             if self.test_flags.test_compile:
