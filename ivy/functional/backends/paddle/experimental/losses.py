@@ -126,7 +126,7 @@ def soft_margin_loss(
     {
         "2.5.1 and below": {
             "cpu": (
-                "bfloat16"
+                "bfloat16",
                 "float16",
                 "int8",
                 "int16",
