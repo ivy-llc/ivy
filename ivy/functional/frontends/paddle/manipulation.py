@@ -17,6 +17,16 @@ def abs(x, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and above": ("bool", "float16", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def broadcast_tensors(input):
+    output = ivy.broadcast_arrays(input)
+    return output
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
