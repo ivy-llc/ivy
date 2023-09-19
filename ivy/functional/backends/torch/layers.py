@@ -103,26 +103,16 @@ def multi_head_attention(
     return ret[0]
 
 
-multi_head_attention.partial_mixed_handler = lambda *args, **kwargs: \
-    not ivy.exists(kwargs['scale']) and \
-    ivy.exists(kwargs['out_proj_weights']) and \
-    (not kwargs['is_causal'] or ivy.exists(kwargs['attention_mask'])) and \
-    (not kwargs['is_causal'] or not kwargs['return_attention_weights']) and \
+multi_head_attention.partial_mixed_handler = lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: \
+    not ivy.exists(scale) and \
+    ivy.exists(out_proj_weights) and \
+    (not is_causal or ivy.exists(attention_mask)) and \
+    (not is_causal or not return_attention_weights) and \
     (
-        ivy.exists(kwargs['in_proj_weights']) or
-        all([ivy.exists(x) for x in [
-            kwargs['q_proj_weights'],
-            kwargs['k_proj_weights'],
-            kwargs['v_proj_weights']
-        ]])
+        ivy.exists(in_proj_weights) or
+        all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]])
     ) and \
-    len(set(_get_embed_dim(
-        kwargs['in_proj_weights'],
-        kwargs['q_proj_weights'],
-        kwargs['k_proj_weights'],
-        kwargs['v_proj_weights'],
-        args[0],
-    ))) == 1
+    len(set(_get_embed_dim(in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, args[0]))) == 1
 
 
 def _get_embed_dim(
