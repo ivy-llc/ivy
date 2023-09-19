@@ -195,6 +195,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def _call_function(self, args, kwargs):
         instance = None
         if self.test_flags.instance_method:
+            # TODO all this argument handling should be moved to _preprocess_args
             array_or_container_mask = [
                 (not native_flag) or container_flag
                 for native_flag, container_flag in zip(
