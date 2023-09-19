@@ -1263,6 +1263,28 @@ def test_rfftn(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.sliding_window",
+    all_args=helpers.arrays_for_pooling(3, 3, 1, 2, return_dilation=True),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
+    dtypes, input, k, stride, padding, dilation = all_args
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=input,
+        window_size=k,
+        stride=stride[0],
+        dilation=dilation[0],
+        padding=padding,
+    )
+
+
 # test_stft
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
