@@ -636,6 +636,30 @@ def _partial_tucker_data(draw):
     )
 
 
+# tensor train
+@st.composite
+def _tensor_train_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    dims = len(shape)
+    rank = [1]
+    for i in range(dims - 1):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    rank.append(1)
+
+    return x_dtype, x[0], rank
+
+
 # truncated svd
 @st.composite
 def _truncated_svd_data(draw):
@@ -1524,6 +1548,39 @@ def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_d
         V=input[1],
         u_based_decision=u_based_decision,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tensor_train",
+    data=_tensor_train_data(),
+    # TODO: add support for more modes
+    svd=st.just("truncated_svd"),
+    test_with_out=st.just(False),
+)
+def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, rank = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        input_tensor=x,
+        rank=rank,
+        svd=svd,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    print(ret_np, ret_from_gt_np)
+    # factors = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    # factors_gt = helpers.flatten_and_to_np(
+    #     ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+    # )
+
+    # for f, f_gt in zip(factors, factors_gt):
+    #     assert np.prod(f.shape) == np.prod(f_gt.shape)
 
 
 @handle_test(

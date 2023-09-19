@@ -1153,7 +1153,20 @@ def truncated_svd(
         return S[:n_eigenvecs]
 
 
-def tensor_train(input_tensor, rank, svd="truncated_svd", verbose=False):
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def tensor_train(
+    input_tensor: Union[ivy.Array, ivy.NativeArray],
+    rank: Union[int, Sequence[int]],
+    /,
+    *,
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    verbose: Optional[bool] = False,
+):
     """
     TT decomposition via recursive SVD.
 
@@ -1178,7 +1191,8 @@ def tensor_train(input_tensor, rank, svd="truncated_svd", verbose=False):
     factors
         order-3 tensors of the TT decomposition
 
-    [1]: Ivan V. Oseledets. "Tensor-train decomposition", 33(5):2295–2317, 2011.
+    [1]: Ivan V. Oseledets. "Tensor-train decomposition",
+    SIAM J. Scientific Computing, 33(5):2295–2317, 2011.
     """
     rank = ivy.TTTensor.validate_tt_rank(ivy.shape(input_tensor), rank=rank)
     tensor_size = input_tensor.shape
