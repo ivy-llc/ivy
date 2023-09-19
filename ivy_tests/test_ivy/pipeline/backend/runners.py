@@ -301,18 +301,12 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             if self._ivy.is_array(ret_from_target)
             else None
         )
-        return (
-            ret_from_target,
-            ret_np_flat_from_target,
-            ret_device,
-            args_np,
-            arg_np_arrays,
-            arrays_args_indices,
-            kwargs_np,
-            arrays_kwargs_indices,
-            kwarg_np_arrays,
-            test_flags,
-            input_dtypes,
+        return TestCaseSubRunnerResult(
+            flatten_elements_np=ret_np_flat_from_target,
+            shape=self._ivy.shape(ret_from_target),
+            device=ret_device,
+            dtype=self._ivy.dtype(ret_from_target),
+            type=ret_from_target.__class__.name,
         )
 
     def get_results(self, test_arguments):
