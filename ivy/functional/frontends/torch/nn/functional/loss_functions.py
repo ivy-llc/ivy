@@ -542,10 +542,7 @@ def soft_margin_loss(
     reduce=None,
     reduction="mean",
 ):
-    loss = ivy.log1p(ivy.exp(-input * target))
-    reduction = _get_reduction(reduction, size_average, reduce)
-    ret = reduction(loss)
-    return ret
+    return ivy.soft_margin_loss(input, target, reduction=reduction)
 
 
 @to_ivy_arrays_and_back
