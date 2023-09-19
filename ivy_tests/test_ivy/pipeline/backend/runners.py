@@ -384,7 +384,17 @@ class BackendTestCaseRunner(TestCaseRunner):
         return results
 
     def _run_ground_truth(self, input_dtypes, test_arguments, test_flags):
-        pass
+        sub_runner_target = FunctionTestCaseSubRunner(
+            self.fn_name,
+            self.backend_handler,
+            self.grond_truth_backend,
+            self.on_device,
+            input_dtypes,
+            test_flags,
+        )
+        results = sub_runner_target.get_results(test_arguments)
+        sub_runner_target.exit()
+        return results
 
     def run(self, input_dtypes, test_arguments, test_flags):
         target_results: TestCaseSubRunnerResult = self._run_target(
