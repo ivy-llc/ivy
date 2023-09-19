@@ -19,7 +19,7 @@ class BackendPipeline(Pipeline):
         backend_to_test: str,
         test_flags: FunctionTestFlags,
         input_dtypes,
-        rtol_: float = None,
+        rtol_: float = 1e-05,
         atol_: float = 1e-06,
         xs_grad_idxs=None,
         ret_grad_idxs=None,
