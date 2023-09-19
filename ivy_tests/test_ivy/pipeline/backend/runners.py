@@ -379,8 +379,9 @@ class BackendTestCaseRunner(TestCaseRunner):
             input_dtypes,
             test_flags,
         )
-        sub_runner_target.get_results(test_arguments)
+        results = sub_runner_target.get_results(test_arguments)
         sub_runner_target.exit()
+        return results
 
     def _run_ground_truth(self, input_dtypes, test_arguments, test_flags):
         pass
