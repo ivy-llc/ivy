@@ -115,6 +115,52 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
         return self.test_flags
 
+    def _compile_if_required(self, fn, args=None, kwargs=None):
+        if self.test_flags.test_compile:
+            fn = self._ivy.compile(fn, args=args, kwargs=kwargs)
+        return fn
+
+    def _flatten(self, *, ret):
+        """Return a flattened numpy version of the arrays in ret."""
+        if not isinstance(ret, tuple):
+            ret = (ret,)
+        ret_idxs = self._ivy.nested_argwhere(ret, self._ivy.is_ivy_array)
+        # no ivy array in the returned values, which means it returned scalar
+        if len(ret_idxs) == 0:
+            ret_idxs = self._ivy.nested_argwhere(ret, self._ivy.isscalar)
+            ret_flat = self._ivy.multi_index_nest(ret, ret_idxs)
+            ret_flat = [
+                self._ivy.asarray(x, dtype=self._ivy.Dtype(str(np.asarray(x).dtype)))
+                for x in ret_flat
+            ]
+        else:
+            ret_flat = self._ivy.multi_index_nest(ret, ret_idxs)
+        return ret_flat
+
+    def _flatten_and_to_np(self, *, backend: str, ret):
+        ret_flat = self._flatten(backend=backend, ret=ret)
+        ret = [self._ivy.to_numpy(x) for x in ret_flat]
+        return ret
+
+    def _get_ret_and_flattened_np_array(self, fn, *args, **kwargs):
+        """
+        Run func with args and kwargs.
+
+        Return the result along with its flattened version.
+        """
+        fn = self._compile_if_required(fn, args=args, kwargs=kwargs)
+
+        with self._ivy.PreciseMode(self.test_flags.precision_mode):
+            ret = fn(*args, **kwargs)
+
+        def map_fn(x):
+            if self._ivy.is_native_array(x) or isinstance(x, np.ndarray):
+                return self._ivy.to_ivy(x)
+            return x
+
+        ret = self._ivy.nested_map(ret, map_fn, include_derived={"tuple": True})
+        return ret, self._flatten_and_to_np(ret=ret)
+
     def _preprocess_args(
         self,
         args_result: TestArgumentsSearchResult,
@@ -188,11 +234,9 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
 
-        ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
-            self.backend,
+        ret_from_target, ret_np_flat_from_target = self._get_ret_and_flattened_np_array(
             target_fn,
             *copy_args,
-            test_compile=self.test_flags.test_compile,
             **copy_kwargs,
         )
 
@@ -215,8 +259,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             )
             if self.test_flags.instance_method:
                 ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        self.backend,
+                    self._get_ret_and_flattened_np_array(
                         instance.__getattribute__(self.fn_name),
                         *args,
                         **kwargs,
@@ -225,8 +268,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 )
             else:
                 ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        self.backend,
+                    self._get_ret_and_flattened_np_array(
                         self._ivy.__dict__[self.fn_name],
                         *args,
                         **kwargs,
