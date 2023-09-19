@@ -3,13 +3,13 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 import numbers
-from _array_api import get_namespace, _asarray_with_order
+from ._array_api import get_namespace, _asarray_with_order
 from contextlib import suppress
 import warnings
 import scipy.sparse as sp
-from _isfinite import cy_isfinite, FiniteStatus
+from ._isfinite import cy_isfinite, FiniteStatus
 from .._config import get_config as _get_config
-from fixes import _object_dtype_isnan
+from .fixes import _object_dtype_isnan
 from numpy.core.numeric import ComplexWarning
 from inspect import isclass
 
