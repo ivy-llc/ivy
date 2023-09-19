@@ -351,7 +351,7 @@ def flatten(
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if x.ndim == 0:
-        return x
+        return x.reshape((-1,))
 
     def _flatten(x, start_dim, end_dim):
         if x.dtype in [
