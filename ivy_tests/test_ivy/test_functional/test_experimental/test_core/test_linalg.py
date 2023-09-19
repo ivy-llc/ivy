@@ -1573,14 +1573,11 @@ def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
 
     ret_np, ret_from_gt_np = results
 
-    print(ret_np, ret_from_gt_np)
-    # factors = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    # factors_gt = helpers.flatten_and_to_np(
-    #     ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
-    # )
+    factors = ret_np.factors
+    factors_gt = ret_from_gt_np.factors
 
-    # for f, f_gt in zip(factors, factors_gt):
-    #     assert np.prod(f.shape) == np.prod(f_gt.shape)
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
 
 
 @handle_test(
