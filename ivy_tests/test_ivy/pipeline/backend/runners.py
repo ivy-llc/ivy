@@ -137,8 +137,8 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             ret_flat = self._ivy.multi_index_nest(ret, ret_idxs)
         return ret_flat
 
-    def _flatten_and_to_np(self, *, backend: str, ret):
-        ret_flat = self._flatten(backend=backend, ret=ret)
+    def _flatten_and_to_np(self, *, ret):
+        ret_flat = self._flatten(ret=ret)
         ret = [self._ivy.to_numpy(x) for x in ret_flat]
         return ret
 
@@ -306,7 +306,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             shape=self._ivy.shape(ret_from_target),
             device=ret_device,
             dtype=self._ivy.dtype(ret_from_target),
-            type=ret_from_target.__class__.name,
+            type=ret_from_target.__class__.__name__,
         )
 
     def get_results(self, test_arguments):
