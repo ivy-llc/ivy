@@ -367,3 +367,14 @@ def where(condition, input=None, other=None):
     if not ivy.exists(input) and not ivy.exists(other):
         return nonzero(condition, as_tuple=True)
     return ivy.where(condition, input, other)
+
+@to_ivy_arrays_and_back
+def column_stack(tensors, *, out=None):
+    reshaped_tensors = []
+    for t in tensors:
+        if t.dim() <= 1:
+            reshaped_tensor = ivy.reshape(t, (-1,1))
+        else:
+            reshaped_tensor = t
+        reshaped_tensors.append(reshaped_tensor)
+    return ivy.hstack(reshaped_tensors, out=out)
