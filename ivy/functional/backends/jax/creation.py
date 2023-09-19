@@ -127,9 +127,6 @@ def to_dlpack(x, /, *, out: Optional[JaxArray] = None):
 
 
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    # Right now, we can't support array because paddle and tf
-    # don't support dlpack dunders
-    # capsule = jax.dlpack.to_dlpack(x)
     return jax.dlpack.from_dlpack(x)
 
 

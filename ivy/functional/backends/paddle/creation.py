@@ -198,9 +198,6 @@ def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    # Right now, we can't support array because paddle and tf
-    # don't support dlpack dunders
-    # x_d = paddle.utils.dlpack.to_dlpack(x)
     return paddle.utils.dlpack.from_dlpack(x)
 
 
