@@ -770,6 +770,6 @@ class Tensor:
         return paddle_frontend.is_floating_point(self._ivy_array)
 
     def fill_diagonal_tensor(
-        self, x: Union[ivy.Array, ivy.NativeArray], y, dim9=0, dim2=1, name=None
+        self, x: Union[ivy.Array, ivy.NativeArray], y, dim1=0, dim2=1, name=None
     ):
         return ivy.fill_diagonal(self._ivy_array, x, y)
