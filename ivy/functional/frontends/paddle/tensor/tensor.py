@@ -765,3 +765,11 @@ class Tensor:
 
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("bool", "float16", "float32",
+                             "float64", "int32", "int64")},
+        "paddle",
+    )
+    def chunk(self, chunks, axis = 0, name=None):
+        return paddle_frontend.split(self._ivy_array, num_or_sections=chunks, axis=axis)
