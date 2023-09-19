@@ -358,7 +358,7 @@ def multi_head_attention_forward(
             dropout=dropout_p,
             training=training,
         )
-    ret = list(ret)
+    ret = list(ret) if isinstance(ret, tuple) else [ret]
     if len(query.shape) == 3:
         ret[0] = ret[0].swapaxes(0, 1)
     if need_weights:

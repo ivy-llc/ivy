@@ -90,7 +90,7 @@ def multi_head_attention(
         average_attn_weights=average_attention_weights,
         is_causal=is_causal,
     )
-    ret = list(ret)
+    ret = list(ret) if isinstance(ret, tuple) else [ret]
     if num_dims == 3:
         ret[0] = ret[0].swapaxes(0, 1)
     if return_attention_weights:
