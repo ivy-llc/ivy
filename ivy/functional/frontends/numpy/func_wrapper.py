@@ -445,7 +445,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*ivy_args, **ivy_kwargs)
 
-    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays = True
+    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays_numpy = True
     return _inputs_to_ivy_arrays_np
 
 
@@ -511,7 +511,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
+    _outputs_to_frontend_arrays.outputs_to_frontend_arrays_numpy = True
     return _outputs_to_frontend_arrays
 
 
