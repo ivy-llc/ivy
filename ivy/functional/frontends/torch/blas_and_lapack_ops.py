@@ -97,6 +97,8 @@ def cholesky(input, upper=False, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
+    # this implementation is based on scipy.integrate.cumulative_trapezoid
+    # https://github.com/scipy/scipy/blob/v1.11.2/scipy/integrate/_quadrature.py#L393-L483
     def tupleset(t, i, value):
         list_ = list(t)
         list_[i] = value
