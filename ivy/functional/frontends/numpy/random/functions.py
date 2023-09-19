@@ -176,7 +176,7 @@ def negative_binomial(n, p, size=None):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")},
+    {"1.25.2 and below": ("float16", "float32", "float64")},
     "numpy",
 )
 @to_ivy_arrays_and_back
@@ -184,6 +184,8 @@ def negative_binomial(n, p, size=None):
 def noncentral_chisquare(df, nonc, size=None):
     if ivy.any(df <= 0):
         raise ValueError("Degree of freedom must be greater than 0")
+    if ivy.has_nans(nonc):
+        return ivy.nan
     if ivy.any(nonc == 0):
         return chisquare(df, size=size)
     if ivy.any(df < 1):
