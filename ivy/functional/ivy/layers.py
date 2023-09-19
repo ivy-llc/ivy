@@ -2344,12 +2344,12 @@ def _get_num_padded_values(i, p, n, k, s):
 
 # TODO add paddle backend implementation back,
 #  once paddle.argsort uses a stable algorithm
+#  https://github.com/PaddlePaddle/Paddle/issues/57508
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
 def nms(
     boxes,
     scores=None,
@@ -2412,3 +2412,14 @@ def nms(
         ret = ivy.array(nonzero[ret], dtype=ivy.int64).flatten()
 
     return ret.flatten()[:max_output_size]
+
+
+nms.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
