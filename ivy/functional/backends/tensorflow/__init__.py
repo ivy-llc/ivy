@@ -7,7 +7,7 @@ for device in tf.config.experimental.list_physical_devices("GPU"):
     try:
         tf.config.experimental.set_memory_growth(device, True)
     except RuntimeError as e:
-        logging.warn(f"can not set {device} to dynamically allocate memory. {e}")
+        logging.warning(f"can not set {device} to dynamically allocate memory. {e}")
 
 
 from tensorflow.python.framework.dtypes import DType
