@@ -60,30 +60,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         self._ivy.prune_nest_at_index(new_args, instance_idx)
         return instance, new_args
 
-    def _search_args(self, test_arguments):
-        # split the arguments into their positional and keyword components
-        args_np, kwargs_np = self._split_args_to_args_and_kwargs(
-            num_positional_args=self.test_flags.num_positional_args,
-            test_arguments=test_arguments,
-        )
-
-        # Extract all arrays from the arguments and keyword arguments
-        arg_np_arrays, arrays_args_indices, n_args_arrays = self._get_nested_np_arrays(
-            args_np
-        )
-        kwarg_np_arrays, arrays_kwargs_indices, n_kwargs_arrays = (
-            self._get_nested_np_arrays(kwargs_np)
-        )
-
-        total_num_arrays = n_args_arrays + n_kwargs_arrays
-        args_result = TestArgumentsSearchResult(
-            args_np, arg_np_arrays, arrays_args_indices
-        )
-        kwargs_result = TestArgumentsSearchResult(
-            kwargs_np, kwarg_np_arrays, arrays_kwargs_indices
-        )
-        return args_result, kwargs_result, total_num_arrays
-
     def _preprocess_flags(self, total_num_arrays):
         # Make all array-specific test flags and dtypes equal in length
         if len(self.input_dtypes) < total_num_arrays:

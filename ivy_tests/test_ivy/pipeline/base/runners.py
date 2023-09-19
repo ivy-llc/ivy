@@ -43,37 +43,6 @@ class TestCaseRunner(ABC):
 
 
 class TestCaseSubRunner(ABC):
-    def _split_args_to_args_and_kwargs(self, num_positional_args, test_arguments):
-        """
-        Split the kwargs into args and kwargs.
-
-        The first num_positional_args ported to args.
-        """
-        args = [v for v in list(test_arguments.values())[:num_positional_args]]
-        kwargs = {
-            k: test_arguments[k]
-            for k in list(test_arguments.keys())[num_positional_args:]
-        }
-        return args, kwargs
-
-    def _get_nested_np_arrays(self, nest):
-        """
-        Search for a NumPy arrays in a nest.
-
-        Parameters
-        ----------
-        nest
-            nest to search in.
-
-        Returns
-        -------
-            Items found, indices, and total number of arrays found
-        """
-        indices = self._ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
-
-        ret = self._ivy.multi_index_nest(nest, indices)
-        return ret, indices, len(ret)
-
     def exit(self):
         self._backend_handler.unset_backend()
 
