@@ -542,7 +542,7 @@ def test_function(
         test_flags.test_gradients
         and not test_flags.instance_method
         and "bool" not in input_dtypes
-        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
+        and not any(d in ["complex64", "complex128"] for d in input_dtypes)
     ):
         if backend_to_test not in fw_list or not ivy.nested_argwhere(
             all_as_kwargs_np,
