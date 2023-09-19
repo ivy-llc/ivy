@@ -30,7 +30,7 @@ def _asarray_helper(draw):
         )
     )
     with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        x_list = ivy_backend.nested_map(x, lambda x: x.tolist(), shallow=False)
+        x_list = ivy_backend.nested_map(lambda x: x.tolist(), x, shallow=False)
         sh = draw(helpers.get_shape(min_num_dims=1))
         sh = ivy_backend.Shape(sh)
     # np_array = x[0]

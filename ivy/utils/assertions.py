@@ -10,8 +10,8 @@ def _broadcast_inputs(x1, x2):
     iterables = (list, tuple, ivy.Shape)
     if not isinstance(x1_, iterables):
         x1_, x2_ = x2, x1
-        if not isinstance(x1_, iterables):
-            return [x1], [x2]
+    if not isinstance(x1_, iterables):
+        return [x1], [x2]
     if not isinstance(x2_, iterables):
         x1 = [x1] * len(x2)
     return x1, x2
@@ -35,7 +35,6 @@ def check_less(x1, x2, allow_equal=False, message="", as_array=True):
         raise ivy.utils.exceptions.IvyException(
             f"{x1} must be lesser than or equal to {x2}" if message == "" else message
         )
-    # less
     elif not allow_equal and gt_eq:
         raise ivy.utils.exceptions.IvyException(
             f"{x1} must be lesser than {x2}" if message == "" else message
@@ -56,7 +55,6 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
         raise ivy.utils.exceptions.IvyException(
             f"{x1} must be greater than or equal to {x2}" if message == "" else message
         )
-    # greater
     elif not allow_equal and lt_eq:
         raise ivy.utils.exceptions.IvyException(
             f"{x1} must be greater than {x2}" if message == "" else message
@@ -75,7 +73,6 @@ def check_equal(x1, x2, inverse=False, message="", as_array=True):
         raise ivy.utils.exceptions.IvyException(
             f"{x1} must not be equal to {x2}" if message == "" else message
         )
-    # equal
     elif not inverse and eq:
         raise ivy.utils.exceptions.IvyException(
             f"{x1} must be equal to {x2}" if message == "" else message
@@ -159,8 +156,9 @@ def check_shape(x1, x2, message=""):
     message = (
         message
         if message != ""
-        else "{} and {} must have the same shape ({} vs {})".format(
-            x1, x2, ivy.shape(x1), ivy.shape(x2)
+        else (
+            f"{x1} and {x2} must have the same shape ({ivy.shape(x1)} vs"
+            f" {ivy.shape(x2)})"
         )
     )
     if ivy.shape(x1)[:] != ivy.shape(x2)[:]:
@@ -172,8 +170,9 @@ def check_same_dtype(x1, x2, message=""):
         message = (
             message
             if message != ""
-            else "{} and {} must have the same dtype ({} vs {})".format(
-                x1, x2, ivy.dtype(x1), ivy.dtype(x2)
+            else (
+                f"{x1} and {x2} must have the same dtype ({ivy.dtype(x1)} vs"
+                f" {ivy.dtype(x2)})"
             )
         )
         raise ivy.utils.exceptions.IvyException(message)
@@ -238,35 +237,31 @@ def check_gather_input_valid(params, indices, axis, batch_dims):
         )
     if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
         raise ivy.utils.exceptions.IvyException(
-            "batch dimensions must match in `params` and `indices`;"
-            + f" saw {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
+            "batch dimensions must match in `params` and `indices`; saw"
+            f" {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
         )
 
 
 def check_gather_nd_input_valid(params, indices, batch_dims):
     if batch_dims >= len(params.shape):
         raise ivy.utils.exceptions.IvyException(
-            "batch_dims = {} must be less than rank(`params`) = {}.".format(
-                batch_dims, len(params.shape)
-            )
+            f"batch_dims = {batch_dims} must be less than rank(`params`) ="
+            f" {len(params.shape)}."
         )
     if batch_dims >= len(indices.shape):
         raise ivy.utils.exceptions.IvyException(
-            "batch_dims = {}  must be less than rank(`indices`) = {}.".format(
-                batch_dims, len(indices.shape)
-            )
+            f"batch_dims = {batch_dims}  must be less than rank(`indices`) ="
+            f" {len(indices.shape)}."
         )
     if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
         raise ivy.utils.exceptions.IvyException(
-            "batch dimensions must match in `params` and `indices`;"
-            + f" saw {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
+            "batch dimensions must match in `params` and `indices`; saw"
+            f" {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
         )
     if indices.shape[-1] > (len(params.shape[batch_dims:])):
         raise ivy.utils.exceptions.IvyException(
-            "index innermost dimension length must be <= "
-            + "rank(`params[batch_dims:]`); saw: {} vs. {} .".format(
-                indices.shape[-1], len(params.shape[batch_dims:])
-            )
+            "index innermost dimension length must be <= rank(`params[batch_dims:]`);"
+            f" saw: {indices.shape[-1]} vs. {len(params.shape[batch_dims:])} ."
         )
 
 
@@ -284,9 +279,8 @@ def check_one_way_broadcastable(x1, x2):
 def check_inplace_sizes_valid(var, data):
     if not check_one_way_broadcastable(data.shape, var.shape):
         raise ivy.utils.exceptions.IvyException(
-            "Could not output values of shape {} into array with shape {}.".format(
-                var.shape, data.shape
-            )
+            f"Could not output values of shape {var.shape} into array with shape"
+            f" {data.shape}."
         )
 
 
@@ -300,8 +294,8 @@ def check_shapes_broadcastable(var, data):
 def check_dimensions(x):
     if len(x.shape) <= 1:
         raise ivy.utils.exceptions.IvyException(
-            "input must have greater than one dimension; "
-            + f" {x} has {len(x.shape)} dimensions"
+            f"input must have greater than one dimension;  {x} has"
+            f" {len(x.shape)} dimensions"
         )
 
 
@@ -312,10 +306,8 @@ def check_kernel_padding_size(kernel_size, padding_size):
             or padding_size[i][1] > kernel_size[i] // 2
         ):
             raise ValueError(
-                "Padding size should be less than or equal to half of the kernel size. "
-                "Got kernel_size: {} and padding_size: {}".format(
-                    kernel_size, padding_size
-                )
+                "Padding size should be less than or equal to half of the kernel size."
+                f" Got kernel_size: {kernel_size} and padding_size: {padding_size}"
             )
 
 

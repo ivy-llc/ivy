@@ -19,7 +19,7 @@ compiled_backends = {}
 _compiled_backends_ids = {}
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
-ivy_original_fn_dict = dict()
+ivy_original_fn_dict = {}
 
 
 class ContextManager:
@@ -34,8 +34,8 @@ class ContextManager:
 
 
 _backends_subpackage_path = "ivy.functional.backends"
-_backend_dict = dict()
-_backend_reverse_dict = dict()
+_backend_dict = {}
+_backend_reverse_dict = {}
 
 for backend in os.listdir(
     os.path.join(
@@ -136,7 +136,7 @@ def fn_name_from_version_specific_fn_name(name, version):
     """
     # TODO: add tests
     version = str(version)
-    if version.find("+") != -1:
+    if "+" in version:
         version = tuple(map(int, version[: version.index("+")].split(".")))
     else:
         version = tuple(map(int, version.split(".")))
@@ -335,7 +335,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
         if arr.__dict__ and arr.backend == ivy.current_backend_str()
     ]
     arr_ids = [id(item.data) for item in array_list]
-    new_objs = {k: v for k, v in zip(arr_ids, array_list)}
+    new_objs = dict(zip(arr_ids, array_list))
     new_objs = list(new_objs.values())
 
     # now convert all ivy.Array and ivy.Container instances
@@ -372,8 +372,8 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
         # check if object was originally a variable
         if id(obj) in variable_ids:
             native_arr = ivy.nested_map(
-                np_arr,
                 lambda x: current_backend().asarray(x, device=device),
+                np_arr,
                 include_derived=True,
                 shallow=False,
             )
@@ -381,8 +381,8 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
 
         else:
             new_data = ivy.nested_map(
-                np_arr,
                 lambda x: current_backend().asarray(x, device=device),
+                np_arr,
                 include_derived=True,
                 shallow=False,
             )
@@ -441,7 +441,7 @@ def set_backend(backend: str, dynamic: bool = False):
 
         _clear_current_sub_backends()
         if isinstance(backend, str):
-            temp_stack = list()
+            temp_stack = []
             while backend_stack:
                 temp_stack.append(previous_backend())
             backend = importlib.import_module(_backend_dict[backend])
@@ -599,7 +599,7 @@ def unset_backend():
 
 @prevent_access_locally
 def choose_random_backend(excluded=None):
-    excluded = list() if excluded is None else excluded
+    excluded = [] if excluded is None else excluded
     while True:
         ivy.utils.assertions.check_equal(
             len(excluded),

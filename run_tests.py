@@ -148,10 +148,12 @@ if __name__ == "__main__":
             print(f"\n{'*' * 100}")
             print(f"{line[:-1]}")
             print(f"{'*' * 100}\n")
+            backend_version = "latest-stable"
             sys.stdout.flush()
             if version_flag == "true":
-                backends = [backend]
-                other_backends = [fw for fw in BACKENDS if fw != backend.split("/")[0]]
+                backends = [backend.strip()]
+                [backend_name, backend_version] = backend.split("/")
+                other_backends = [fw for fw in BACKENDS if fw != backend_name]
                 for backend in other_backends:
                     backends.append(backend + "/" + get_latest_package_version(backend))
                 print("Backends:", backends)
@@ -159,8 +161,9 @@ if __name__ == "__main__":
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    f" python docker/multiversion_framework_directory.py {backends};"
-                    f"python -m pytest --tb=short {test} --backend={backend}"
+                    ' /bin/bash -c "python docker/multiversion_framework_directory.py'
+                    f" {' '.join(backends)};pytest --tb=short"
+                    f' {test} --backend={backend}"'
                 )
             else:
                 if with_gpu:
@@ -176,8 +179,8 @@ if __name__ == "__main__":
                     ret = os.system(
                         f"docker run --rm --env REDIS_URL={redis_url} --env"
                         f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
-                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
-                        f" pytest --tb=short {test} --backend {backend}"
+                        ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3'
+                        f" -m pytest --tb=short {test} --backend {backend}"
                         # noqa
                     )
             if ret != 0:
@@ -202,9 +205,6 @@ if __name__ == "__main__":
                     "gpu" if with_gpu else "cpu",
                 )
             else:
-                backend_version = (
-                    backend.split("/")[1] if version_flag == "true" else "latest-stable"
-                )
                 print(backend_version)
                 update_individual_test_results(
                     db[coll[0]],

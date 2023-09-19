@@ -517,7 +517,7 @@ def x_and_filters(
         filter_shape = filter_shape + (input_channels, output_channels)
     else:
         filter_shape = filter_shape + (input_channels,)
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+    if data_format in ["NHWC", "NWC", "NDHWC"]:
         x_shape = (batch_size,) + x_dim + (input_channels,)
     else:
         x_shape = (batch_size, input_channels) + x_dim
