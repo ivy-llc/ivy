@@ -796,7 +796,12 @@ class Array(
         return self._data.__bool__()
 
     def __dlpack__(self, stream=None):
-        return self._data.__dlpack__()
+        # Not completely supported yet as paddle and tf
+        # doesn't support __dlpack__ and __dlpack_device__ dunders right now
+        # created issues
+        # paddle https://github.com/PaddlePaddle/Paddle/issues/56891
+        # tf https://github.com/tensorflow/tensorflow/issues/61769
+        return ivy.to_dlpack(self)
 
     def __dlpack_device__(self):
         return self._data.__dlpack_device__()
