@@ -163,7 +163,7 @@ def unique(
     bools = [return_index, return_inverse, return_counts]
     # indexing each element whose condition is True except for the values
     uniques = [uniques[0]] + [uni for idx, uni in enumerate(uniques[1:]) if bools[idx]]
-    return uniques
+    return uniques[0] if len(uniques) == 1 else uniques
 
 
 @to_ivy_arrays_and_back
