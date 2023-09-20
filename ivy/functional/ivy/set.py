@@ -145,6 +145,16 @@ def unique_all(
                                    [ 2,  7,  4, 12]]),
        counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
     """
+    arr = []
+
+    def body_fn(k, args):
+        if k not in arr:
+            arr.append(k)
+        return args
+
+    ivy.for_loop(x, body_fn, ())
+    ivy.Array(arr.sort())
+
     return ivy.current_backend(x).unique_all(x, axis=axis, by_value=by_value)
 
 
