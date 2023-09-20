@@ -98,6 +98,15 @@ def eye(
     raise IvyNotImplementedException()
 
 
+def to_dlpack(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+):
+    raise IvyNotImplementedException()
+
+
 def from_dlpack(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

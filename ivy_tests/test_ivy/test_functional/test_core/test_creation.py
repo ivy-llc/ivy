@@ -3,6 +3,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import ivy
 
 
 # local
@@ -350,11 +351,16 @@ def test_eye(
     )
 
 
-# from_dlpack
+def is_capsule(o):
+    t = type(o)
+    return t.__module__ == "builtins" and t.__name__ == "PyCapsule"
+
+
+# to_dlpack
 @handle_test(
-    fn_tree="functional.ivy.from_dlpack",
+    fn_tree="functional.ivy.to_dlpack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -362,16 +368,35 @@ def test_eye(
     ),
     test_gradients=st.just(False),
 )
-def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_to_dlpack(*, dtype_and_x, backend_fw):
+    ivy.set_backend(backend_fw)
     input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
+    native_array = ivy.native_array(x[0])
+    cap = ivy.to_dlpack(native_array)
+    assert is_capsule(cap)
+
+
+# from_dlpack
+@handle_test(
+    fn_tree="functional.ivy.from_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    test_gradients=st.just(False),
+)
+def test_from_dlpack(*, dtype_and_x, backend_fw):
+    if backend_fw == "numpy":
+        return
+    ivy.set_backend(backend_fw)
+    input_dtype, x = dtype_and_x
+    native_array = ivy.native_array(x[0])
+    cap = ivy.to_dlpack(native_array)
+    array = ivy.from_dlpack(cap)
+    assert ivy.is_native_array(array)
 
 
 @handle_test(
