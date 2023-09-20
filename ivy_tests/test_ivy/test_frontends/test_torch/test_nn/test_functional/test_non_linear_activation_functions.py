@@ -751,11 +751,35 @@ def test_torch_multi_head_attention_forward(
         static_v = static_v.reshape(num_batches*heads, num_keys, int(emb_dim//heads))
     # re-order the dtypes to match the order of the frontend arguments, not the order
     # of ivy.multi_head_attention's arguments given by _mha_helper
-    dtype = [
-        dtype[i] for i in (0, 1, 2, 3, 5, 10, 13, 14, 9, 11, 12, 4, 6, 7, 8, 15, 16)
-    ]
+    kwargs = {
+        'query': q,
+        'key': k,
+        'value': v,
+        'embed_dim_to_check': emb_dim,
+        'num_heads': heads,
+        'in_proj_weight': in_proj_weight,
+        'in_proj_bias': in_proj_bias,
+        'bias_k': bias_k,
+        'bias_v': bias_v,
+        'add_zero_attn': add_zero_attn,
+        'dropout_p': dropout_p,
+        'out_proj_weight': out_proj_weight,
+        'out_proj_bias': out_proj_bias,
+        'training': training,
+        'key_padding_mask': key_padding_mask,
+        'need_weights': need_weights,
+        'attn_mask': attn_mask,
+        'use_separate_proj_weight': in_proj_weight is None,
+        'q_proj_weight': q_proj_weight,
+        'k_proj_weight': k_proj_weight,
+        'v_proj_weight': v_proj_weight,
+        'static_k': static_k,
+        'static_v': static_v,
+        'average_attn_weights': average_attn_weights,
+        'is_causal': is_causal,
+    }
     helpers.test_frontend_function(
-        input_dtypes=[d for d in dtype if d is not None],
+        input_dtypes=[str(r.dtype) for r in kwargs.values() if ivy.is_array(r)],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -763,31 +787,7 @@ def test_torch_multi_head_attention_forward(
         atol=1e-03,
         on_device=on_device,
         test_values=not training or dropout_p == 0.0,
-        query=q,
-        key=k,
-        value=v,
-        embed_dim_to_check=emb_dim,
-        num_heads=heads,
-        in_proj_weight=in_proj_weight,
-        in_proj_bias=in_proj_bias,
-        bias_k=bias_k,
-        bias_v=bias_v,
-        add_zero_attn=add_zero_attn,
-        dropout_p=dropout_p,
-        out_proj_weight=out_proj_weight,
-        out_proj_bias=out_proj_bias,
-        training=training,
-        key_padding_mask=key_padding_mask,
-        need_weights=need_weights,
-        attn_mask=attn_mask,
-        use_separate_proj_weight=in_proj_weight is None,
-        q_proj_weight=q_proj_weight,
-        k_proj_weight=k_proj_weight,
-        v_proj_weight=v_proj_weight,
-        static_k=static_k,
-        static_v=static_v,
-        average_attn_weights=average_attn_weights,
-        is_causal=is_causal,
+        **kwargs,
     )
 
 
