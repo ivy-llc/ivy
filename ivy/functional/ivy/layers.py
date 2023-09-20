@@ -902,8 +902,11 @@ def multi_head_attention(
     if is_causal:
         attention_mask = ivy.where(
             ivy.tril(ivy.ones((num_queries, num_keys))) == 0.0, 1, 0
-        )
+        ).astype(ivy.bool)
     if ivy.exists(attention_mask):
+        assert (
+            attention_mask.dtype in [query.dtype, ivy.bool]
+        ), f"was expecting attention_mask of type bool or the same as the input's, but got {attention_mask.dtype}"
         if not ivy.is_bool_dtype(attention_mask):
             attention_mask = attention_mask.astype(ivy.bool)
         if attention_mask.ndim == 2:
@@ -916,8 +919,9 @@ def multi_head_attention(
 
     # apply key_padding_mask
     if key_padding_mask is not None:
-        if not ivy.is_bool_dtype(key_padding_mask):
-            key_padding_mask = ivy.logical_not(key_padding_mask.astype(ivy.bool))
+        assert (
+            ivy.is_bool_dtype(key_padding_mask)
+        ), f"was expecting key_padding_mask of type bool, but got {key_padding_mask.dtype}"
         if num_dims == 2:
             key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
         if add_zero_attn:

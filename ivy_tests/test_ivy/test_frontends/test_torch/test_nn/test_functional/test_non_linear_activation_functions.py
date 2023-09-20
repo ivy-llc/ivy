@@ -737,10 +737,6 @@ def test_torch_multi_head_attention_forward(
     # bringing the arguments from ivy to torch format
     if k is None and v is None:
         k = v = q
-    if attn_mask is not None and not any(dtype in str(attn_mask.dtype) for dtype in ['float', 'uint8', 'bool']):
-        attn_mask = attn_mask.astype(bool)
-    if key_padding_mask is not None and key_padding_mask.dtype != bool:
-        key_padding_mask = key_padding_mask.astype(bool)
     emb_dim = q.shape[-1]
     if q.ndim == 3:
         num_batches = q.shape[0]

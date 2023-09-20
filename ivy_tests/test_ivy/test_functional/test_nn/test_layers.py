@@ -256,11 +256,10 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     )
     if len(_batch_dim) and draw(st.booleans()):
         _mask_shape = (_num_batches*num_heads, *_mask_shape)
-    _mask_dtype_strat = st.sampled_from(['bool', dtype[0]])
     attention_mask = draw(
         st.one_of(
             helpers.array_values(
-                dtype=draw(_mask_dtype_strat),
+                dtype=draw(st.sampled_from(['bool', dtype[0]])),
                 allow_inf=True,
                 shape=_mask_shape,
             ),
@@ -271,7 +270,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     key_padding_mask = draw(
         st.one_of(
             helpers.array_values(
-                dtype=draw(_mask_dtype_strat),
+                dtype='bool',
                 shape=(*_batch_dim, _mask_shape[-1]),
             ),
             st.none(),
