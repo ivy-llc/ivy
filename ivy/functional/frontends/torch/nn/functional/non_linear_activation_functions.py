@@ -273,12 +273,14 @@ def multi_head_attention_forward(
     if query.ndim == 3:
         query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
         num_batches = query.shape[0]
+        num_keys = key.shape[1]
     else:
         num_batches = 1
+        num_keys = key.shape[0]
     if static_k is not None:
-        static_k = static_k.reshape((num_batches, key.shape[1], embed_dim))
+        static_k = static_k.reshape((num_batches, num_keys, embed_dim))
     if static_v is not None:
-        static_v = static_v.reshape((num_batches, value.shape[1], embed_dim))
+        static_v = static_v.reshape((num_batches, num_keys, embed_dim))
     in_proj_weight = in_proj_weight if not use_separate_proj_weight else None
     if is_causal and need_weights:
         attn_output = ivy.multi_head_attention(
