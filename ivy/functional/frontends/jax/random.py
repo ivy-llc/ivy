@@ -248,7 +248,6 @@ def gumbel(key, shape=(), dtype="float64"):
 
 
 # loggamma
-@to_ivy_arrays_and_back
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
@@ -429,6 +428,8 @@ def shuffle(key, x, axis=0):
     return ivy.shuffle(x, seed=seed)
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 def t(key, df, shape=(), dtype="float64"):
     seed = _get_seed(key)
     n = ivy.random_normal(shape=shape, dtype=dtype, seed=seed)
@@ -445,6 +446,8 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
     )
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
     seed = _get_seed(key)
     uniform_x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
