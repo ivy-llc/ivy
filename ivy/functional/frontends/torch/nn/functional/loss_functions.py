@@ -341,9 +341,9 @@ def l1_loss(
     reduce=None,
     reduction="mean",
 ):
-    loss = ivy.abs(input - target)
-    reduction = _get_reduction(reduction, size_average, reduce)
-    ret = reduction(loss)
+    if size_average is not None or reduce is not None:
+        reduction = _legacy_get_string(size_average, reduce)
+    ret = ivy.l1_loss(input, target, reduction=reduction)
     return ret
 
 
