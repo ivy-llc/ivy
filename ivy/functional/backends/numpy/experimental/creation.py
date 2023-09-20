@@ -216,6 +216,10 @@ def unsorted_segment_mean(
         data, segment_ids, num_segments
     )
 
+    if len(segment_ids) == 0:
+        # If segment_ids is empty, return an empty array of the correct shape
+        return np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
+
     # Initialize an array to store the sum of elements for each segment
     res = np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
 
@@ -223,12 +227,15 @@ def unsorted_segment_mean(
     counts = np.zeros(num_segments, dtype=np.int64)
 
     # Loop through each element in segment_ids
+    # Loop through each element in segment_ids
     for i in range(len(segment_ids)):
         seg_id = segment_ids[i]
-        # Accumulate the sum for the corresponding segment
-        res[seg_id] += data[i]
-        # Increment the count for the corresponding segment
-        counts[seg_id] += 1
+        print(f"seg_id: {seg_id}, num_segments: {num_segments}")
+        if seg_id < num_segments:
+            # Accumulate the sum for the corresponding segment
+            res[seg_id] += data[i]
+            # Increment the count for the corresponding segment
+            counts[seg_id] += 1
 
     # Compute the mean for each segment by dividing the sum by the count
     return res / counts[:, np.newaxis]
