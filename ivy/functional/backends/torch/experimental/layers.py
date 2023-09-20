@@ -976,7 +976,6 @@ def ifftn(
     return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16")}, backend_version)
 def stft(
     signal: Union[torch.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
