@@ -85,8 +85,11 @@ for idx, path in enumerate(binaries_paths):
     if not os.path.exists(path):
         if idx == 0:
             config_str = "\n".join(available_configs)
-            print(f"Following are the supported configurations\n{config_str}")
-        print(f"Could not download {path}.")
+            print(f"Following are the supported configurations :\n{config_str}\n")
+        print(
+            f"Could not download {path}.",
+            end={"\n" if idx == len(binaries_paths) else ""},
+        )
 
 
 this_directory = Path(__file__).parent
