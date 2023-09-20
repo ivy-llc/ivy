@@ -740,13 +740,15 @@ def test_torch_multi_head_attention_forward(
     emb_dim = q.shape[-1]
     if q.ndim == 3:
         num_batches = q.shape[0]
+        num_keys = k.shape[1]
         q, k, v = [np.swapaxes(x, 0, 1) for x in [q, k, v]]
     else:
         num_batches = 1
+        num_keys = k.shape[0]
     if static_k is not None:
-        static_k = static_k.reshape(num_batches*heads, k.shape[0], int(emb_dim//heads))
+        static_k = static_k.reshape(num_batches*heads, num_keys, int(emb_dim//heads))
     if static_v is not None:
-        static_v = static_v.reshape(num_batches*heads, v.shape[0], int(emb_dim//heads))
+        static_v = static_v.reshape(num_batches*heads, num_keys, int(emb_dim//heads))
     # re-order the dtypes to match the order of the frontend arguments, not the order
     # of ivy.multi_head_attention's arguments given by _mha_helper
     dtype = [
