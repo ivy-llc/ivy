@@ -6,7 +6,6 @@ from typing import Optional, Tuple, Union, Sequence
 import paddle
 import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
-
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.layers import (
     _handle_padding,
