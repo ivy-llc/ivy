@@ -11,7 +11,10 @@ from ivy.utils import _importlib, verbosity
 
 # local
 from ivy.func_wrapper import _wrap_function
-from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
+from ivy.utils.backend.sub_backend_handler import (
+    _clear_current_sub_backends,
+    fn_name_from_version_specific_fn_name,
+)
 from ivy.utils.exceptions import _handle_inplace_mode
 
 backend_stack = []
@@ -117,52 +120,6 @@ def _determine_backend_from_args(args):
         # check if the class module of the arg is in _array_types
         return _get_backend_for_arg(args.__class__.__module__)
 
-
-def fn_name_from_version_specific_fn_name(name, version):
-    """
-    Parameters
-    ----------
-    name
-        the version specific name of the function for which the version support
-        is to be provided.
-    version
-        the version of the current framework for which the support is to be
-        provided, the version is inferred by importing the framework
-    Returns
-    -------
-        the name of the original function which will then point to the version
-        specific function
-
-    """
-    # TODO: add tests
-    version = str(version)
-    if "+" in version:
-        version = tuple(map(int, version[: version.index("+")].split(".")))
-    else:
-        version = tuple(map(int, version.split(".")))
-    if "_to_" in name:
-        i = name.index("_v_")
-        e = name.index("_to_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        version_end = name[e + 4 :]
-        version_end = tuple(map(int, version_end.split("p")))
-        if version_start <= version <= version_end:
-            return name[0:i]
-    elif "_and_above" in name:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version >= version_start:
-            return name[0:i]
-    else:
-        i = name.index("_v_")
-        e = name.index("_and_")
-        version_start = name[i + 3 : e]
-        version_start = tuple(map(int, version_start.split("p")))
-        if version <= version_start:
-            return name[0:i]
 
 
 def set_backend_to_specific_version(backend):
