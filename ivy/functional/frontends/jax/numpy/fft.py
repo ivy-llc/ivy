@@ -44,6 +44,13 @@ def ifft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
+def ifft2(a, s=None, axes=(-2, -1), norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
+
+
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "0.4.15 and below": (

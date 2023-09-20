@@ -36,7 +36,6 @@ jobs:
     name: Welcome
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: semantics
     if: github.event.action == 'opened'
     steps:
       - uses: actions/first-interaction@v1
@@ -53,4 +52,4 @@ jobs:
 
             Please make sure they are passing. 💪
 
-            Keep in mind that we will assign an engineer for this task and they will look at it based on the workload that they have, so be patient.
+            Keep in mind that we will assign an engineer for this task and they will look at it based on the workload that they have, kindly be patient 😄.
