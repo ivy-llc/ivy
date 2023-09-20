@@ -52,10 +52,3 @@ RUN python3 multiversion_framework_directory.py  $fw && \
 
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
-
-# Post installation steps
-COPY .devcontainer/post_create_commands.sh .
-RUN chmod +x post_create_commands.sh && \
-    bash post_create_commands.sh && \
-    rm -rf post_create_commands.sh
-
