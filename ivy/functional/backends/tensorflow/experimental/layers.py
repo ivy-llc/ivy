@@ -1346,24 +1346,30 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if window is not None and isinstance(window, str):
-        if window == 'hann':
-            if isinstance(n_fft, int):
-                window = tf.signal.hann_window(n_fft, dtype=signal.dtype)
-            else:
-                window = tf.signal.hann_window(n_fft[0], dtype=signal.dtype)
-        else:
-            raise ValueError(f"Unsupported window type: {window}")
-        
+    if isinstance(n_fft, tuple):
+        n_fft = n_fft[0]
+
+    if hop_length <= 0:
+        hop_length = 1
+    
+    if window is None:
+        window = tf.signal.hann_window(
+            win_length,
+            periodic=True,
+            dtype=tf.dtypes.float32,
+        )
+    window_fn = lambda *args: window(*args)
+
     return tf.signal.stft(
         signal,
         n_fft,
         hop_length,
-        window,
+        window_fn,
         win_length,
         pad_mode,
     )
-    
+
+
 """
 RFFTN Function
 """
