@@ -193,6 +193,16 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
+    {"2.0.1 and below": ("float", "int")},
+    "torch",
+)
+def nansum(input, dim=None, keepdim=False, *, dtype=None):
+    input = ivy.where(ivy.isnan(input), ivy.zeros_like(input), input)
+    return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=None)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
     {"2.0.1 and below": ("float", "complex")},
     "torch",
 )
