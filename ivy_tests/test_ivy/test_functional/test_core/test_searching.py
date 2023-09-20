@@ -15,11 +15,8 @@ from ivy_tests.test_ivy.helpers import handle_test
 @st.composite
 def _broadcastable_trio(draw):
     shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
-    dtype = draw(st.one_of(st.just(["bool"]), helpers.get_dtypes("valid", full=False)))[
-        0
-    ]
-    cond = draw(helpers.array_values(dtype=dtype, shape=shape))
-    print(dtype)
+    dtype = draw(st.one_of(st.just(["bool"]), helpers.get_dtypes("valid", full=False)))
+    cond = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     dtypes, xs = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
