@@ -749,62 +749,66 @@ def multi_head_attention(
     value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
     softmaxed to obtain attention probabilities. The value tensors are then interpolated
     by these probabilities, then concatenated back to a single tensor. Finally, the
-    result tensor with the last dimension as value_dim can take an linear projection and
+    result tensor with the last dimension as value_dim can take a linear projection and
     return.
 
     Parameters
     ----------
     query
-        query embeddings *[batch_shape,num_queries,query_dim]*.
+        The query embeddings. Shape: `(L, Q)` or `(N, L, Q)`, where L is the number of
+        queries, N is the batch size, Q is the query embedding dimension.
     key
-        key embeddings *[batch_shape,num_queries,key_dim]*.
+        The key embeddings. Shape: `(S, K)` or `(N, S, K)`, where S is the number of
+        keys, N is the batch size, K is the key embedding dimension.
     value
-        value embeddings *[batch_shape,num_queries,value_dim]*.
+        The value embeddings. Shape `(S, V)` or `(N, S, V)`, where S is the number of
+        keys, N is the batch size, V is the value embedding dimension.
     num_heads
         The number of attention heads to use.
     scale
         The value by which to scale the query-key similarity measure before softmax.
     attention_mask
-        The mask to apply to the query-key values. Default is ``None``.
-        *[batch_shape,num_queries,num_keys]*.
+        The mask to apply to the query-key values. Shape: `(L, S)` or
+        `(N*num_heads, L, S)`.
     in_proj_weights
-        The weights used to project query, key and value *[3*E, query/key/value_dim].
+        The weights used to project query, key and value. Shape: `(3*E, E')`,  where E
+        is the new embedding dimension and E' is the input embedding dimension, i.e.
+        `E' = Q = K = V`.
     q_proj_weights
-        The weights used to project query if in_proj_weights is None *[E, query_dim].
+        The weights used to project query if `in_proj_weights` is None. Shape: `(E, Q)`.
     k_proj_weights
-        The weights used to project key if in_proj_weights is None *[E, key_dim].
+        The weights used to project key if `in_proj_weights` is None. Shape: `(E, K)`.
     v_proj_weights
-        The weights used to project value if in_proj_weights is None *[E, value_dim].
+        The weights used to project value if `in_proj_weights` is None. Shape: `(E, V)`.
     out_proj_weights
-        The weights used to project the output.
+        The weights used to project the attention output. Shape: `(O, E)`, where O is
+        the output embedding dimension.
     in_proj_bias
-        The bias used when projecting with query, key and value.
+        The bias used when projecting query, key and value. Shape: `(3*E,)`.
     out_proj_bias
-        The bias used when projecting the output.
+        The bias used when projecting the output. Shape: `(O,)`.
     is_causal
-        If True, Uses a causal attention mask and ignores provided attention_mask.
+        If True, use a causal attention mask and ignore the provided `attention_mask`.
     key_padding_mask
-        A binary mask to apply to the key sequence.
+        A binary mask to apply to the key sequence. Shape: `(S,)` or `(N, S)`.
     bias_k
-        An additional bias added to the key sequence.
+        An additional bias added to the key sequence. Shape: `(E,)`.
     bias_v
-        An additional bias added to the value sequence.
+        An additional bias added to the value sequence. Shape: `(E,)`.
     static_k
-        A static key to be used in the attention operators.
+        A static key to be used in the attention operators. Shape: same as `key`.
     static_v
-        A static value to be used in the attention operators.
+        A static value to be used in the attention operators. Shape: same as `value`.
     add_zero_attn
         A boolean flag indicating whether to add a batch of zeros to key and value.
     return_attention_weights
-        If True, returns attention_weights alongside the output as a tuple
-        (output, attenion_weights). Defaults to `False`.
+        If True, return the attention weights alongside the attention output.
     average_attention_weights
-        If true, indicates that the returned ``attention_weights`` should be averaged
-        across heads. Otherwise, ``attention_weights`` are provided separately per head.
-        Note that this flag only has an effect when ``return_attention_weights=True``.
-        Default: ``True`` (i.e. average weights across heads)
+        If True, the returned attention weights will be averaged across heads.
+        Otherwise, the attention weights will be provided separately per head.
+        Note that this flag only has an effect when `return_attention_weights=True`.
     dropout
-        Specifies the dropout probablity, dropout is applied to attention_weights.
+        Specifies the dropout probability. Dropout is applied on the attention weights.
     training
         If True, dropout is used, otherwise dropout is not activated.
     out
@@ -814,9 +818,10 @@ def multi_head_attention(
     Returns
     -------
     ret
-        The output following application of multi-head attention.
-        *[batch_shape,num_queries,out_feat_dim]* if input is batched
-        otherwise *[num_queries, out_feat_dim]
+        The output following the application of multi-head attention. Either `output`
+        or `(output, attention_weights)`, where `output` is the attention output, of
+        shape `(L, E)` or `(N, L, E)`, and `attention_weights` are the attention
+        weights, of shape `(L, S)` or `(N, L, S)`.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
