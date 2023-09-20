@@ -215,7 +215,8 @@ def test_torch_scatter_add(
 @handle_frontend_test(
     fn_tree="torch.scatter_reduce",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["sum", "prod"]),
+    # ToDo: test for "mean" as soon as ivy.put_along_axis supports it
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_reduce(

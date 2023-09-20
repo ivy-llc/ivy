@@ -1728,7 +1728,7 @@ def test_torch_instance_scatter_add_(
     init_tree="torch.tensor",
     method_name="scatter_reduce",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["sum", "prod"]),
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
 )
 def test_torch_instance_scatter_reduce(
     args,
@@ -1768,7 +1768,7 @@ def test_torch_instance_scatter_reduce(
     init_tree="torch.tensor",
     method_name="scatter_reduce_",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["sum", "prod"]),
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
 )
 def test_torch_instance_scatter_reduce_(
     args,
