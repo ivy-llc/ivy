@@ -877,7 +877,7 @@ def stft(
     if hop_length <= win_length:
         noverlap = win_length - hop_length
 
-    return jax.scipy.signal.stft(
+    stft_result = jax.scipy.signal.stft(
         signal,
         fs,
         window,
@@ -890,6 +890,7 @@ def stft(
         pad_mode,
         axis,
     )
+    return stft_result[2]
 
 
 @with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
