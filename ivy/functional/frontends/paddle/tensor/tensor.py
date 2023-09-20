@@ -1,6 +1,9 @@
 # local
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
+    array as np_frontend_array,
+)
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
@@ -765,3 +768,7 @@ class Tensor:
 
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("complex", "bool", "uint")}, "paddle")
+    def numpy(self):
+        return np_frontend_array(self.ivy_array)

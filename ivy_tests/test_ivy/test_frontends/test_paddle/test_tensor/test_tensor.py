@@ -3730,3 +3730,52 @@ def test_paddle_tensor_zero_(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+# numpy
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="numpy",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+)
+def test_paddle_tensor_numpy(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    ret, frontend_ret = helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        test_values=False,
+    )
+    print('ret', ret)
+    print('ret_np_flat', helpers.flatten_and_to_np(backend="torch", ret=ret))
+    print('frontend_ret', frontend_ret[0])
+    print()
+    # manual testing required as function return is numpy frontend
+    helpers.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(backend="torch", ret=ret)[0],
+        ret_np_from_gt_flat=frontend_ret[0],
+        ground_truth_backend="paddle",
+        backend="paddle",
+    )
