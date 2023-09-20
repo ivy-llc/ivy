@@ -318,6 +318,54 @@ def test_paddle_instance_atan(
     )
 
 
+# prod
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="prod",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        min_value=-10,
+        max_value=10,
+        force_int_axis=False,
+        allow_nan=False,
+    ),
+    keepdim=st.booleans(),
+    dtype=st.one_of(helpers.get_dtypes("valid")),
+)
+def test_paddle_instance_prod(
+    dtype_x_and_axis,
+    frontend_method_data,
+    dtype,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+    keepdim,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    if dtype is None:
+        dtype = input_dtype
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        backend_to_test=backend_fw,
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"axis": axis, "keepdim": keepdim, "dtype": dtype},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # var
 @handle_frontend_method(
     class_tree=CLASS_TREE,
