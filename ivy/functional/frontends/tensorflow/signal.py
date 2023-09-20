@@ -53,16 +53,3 @@ kaiser_bessel_derived_window.supported_dtypes = (
     "float16",
     "bfloat16",
 )
-
-@to_ivy_arrays_and_back
-def hamming_window(window_length, periodic=True, dtype=ivy.float32, name=None):
-    if window_length % 2 == 1 and periodic and window_length != 1:
-        ret = ivy.hamming_window(
-            window_length - 1, periodic=True, dtype=dtype, out=name
-        )
-        append = ivy.array([ret[0]])
-        return ivy.concat([ret, append])
-    return ivy.hamming_window(window_length, periodic=periodic, dtype=dtype, out=None)
-
-
-hamming_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
