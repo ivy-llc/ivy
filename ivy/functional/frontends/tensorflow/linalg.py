@@ -105,6 +105,21 @@ def eigh(tensor, name=None):
     return ivy.eigh(tensor)
 
 
+# eigh_tridiagonal
+@to_ivy_arrays_and_back
+def eigh_tridiagonal(
+    alpha, beta, eigvals_only=True, select="a", select_range=None, tol=0.0
+):
+    return ivy.eigh_tridiagonal(
+        alpha,
+        beta,
+        eigvals_only=eigvals_only,
+        select=select,
+        select_range=select_range,
+        tol=tol,
+    )
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},

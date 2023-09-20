@@ -20,6 +20,53 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_ran
 # --------------- #
 
 
+@st.composite
+def _generate_eigh_tridiagonal_args(draw):
+    dtype, alpha = draw(
+        helpers.dtype_and_values(
+            min_dim_size=2,
+            min_num_dims=1,
+            max_num_dims=1,
+            min_value=2.0,
+            max_value=5,
+            available_dtypes=helpers.get_dtypes("float"),
+        )
+    )
+    beta_shape = len(alpha[0]) - 1
+    dtype, beta = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype,
+            shape=(beta_shape,),
+            min_value=2.0,
+            max_value=5,
+        )
+    )
+
+    select = draw(st.sampled_from(("a", "i", "v")))
+    if select == "a":
+        select_range = None
+    elif select == "i":
+        range_slice = draw(
+            st.slices(beta_shape).filter(
+                lambda x: x.start
+                and x.stop
+                and x.step
+                and x.start >= 0
+                and x.stop >= 0
+                and x.step >= 0
+                and x.start < x.stop
+            )
+        )
+
+        select_range = [range_slice.start, range_slice.stop]
+    else:
+        select_range = [-100, 100]
+
+    eigvals_only = draw(st.booleans())
+    tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
+    return dtype, alpha, beta, eigvals_only, select, select_range, tol
+
+
 # cholesky_solve
 @st.composite
 def _get_cholesky_matrix(draw):
@@ -401,6 +448,39 @@ def test_tensorflow_eigh(
         fn_tree=fn_tree,
         on_device=on_device,
         tensor=x[0],
+    )
+
+
+# eigh_tridiagonal
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.eigh_tridiagonal",
+    all_args=_generate_eigh_tridiagonal_args(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_eigh_tridiagonal(
+    all_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, alpha, beta, eigvals_only, select, select_range, tol = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        alpha=alpha[0],
+        beta=beta[0],
+        eigvals_only=eigvals_only,
+        select=select,
+        select_range=select_range,
+        tol=tol,
+        atol=1e-5,
+        rtol=1e-5,
     )
 
 
