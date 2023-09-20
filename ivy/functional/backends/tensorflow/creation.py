@@ -171,17 +171,28 @@ def eye(
         return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
+    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
+    return dlcapsule
+
+
 # noinspection PyShadowingNames
 def from_dlpack(
-    x: Union[tf.Tensor, tf.Variable],
+    x,
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(x, tf.Variable):
         x = x.read_value()
-    dlcapsule = tf.experimental.dlpack.to_dlpack(x)
-    return tf.experimental.dlpack.from_dlpack(dlcapsule)
+    return tf.experimental.dlpack.from_dlpack(x)
 
 
 def full(
@@ -193,11 +204,7 @@ def full(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    return tf.fill(
-        shape,
-        tf.constant(fill_value, dtype=dtype),
-    )
+    return tf.experimental.numpy.full(shape, fill_value, dtype=dtype)
 
 
 def full_like(
@@ -209,7 +216,6 @@ def full_like(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 

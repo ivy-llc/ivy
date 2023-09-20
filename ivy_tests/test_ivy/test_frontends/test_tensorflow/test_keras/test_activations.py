@@ -278,7 +278,7 @@ def test_tensorflow_linear(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.keras.activations.elu",
+    fn_tree="tensorflow.keras.activations.relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
