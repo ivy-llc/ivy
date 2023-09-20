@@ -34,8 +34,3 @@ def copy(a, order="K", subok=False):
 @handle_numpy_dtype
 def frombuffer(buffer, dtype=float, count=-1, offset=0, *, like=None):
     return ivy.frombuffer(buffer)
-
-
-@to_ivy_arrays_and_back
-def choose(arr, choices, mode=None):
-    return ivy.choose(arr=arr, choices=choices, mode=mode)
