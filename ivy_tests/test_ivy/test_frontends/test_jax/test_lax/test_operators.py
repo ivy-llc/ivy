@@ -481,7 +481,9 @@ def _x_and_filters(draw, dim=2, transpose=False, general=False):
         dimension_numbers = (
             ("NCH", "OIH", "NCH")
             if dim == 1
-            else ("NCHW", "OIHW", "NCHW") if dim == 2 else ("NCDHW", "OIDHW", "NCDHW")
+            else ("NCHW", "OIHW", "NCHW")
+            if dim == 2
+            else ("NCDHW", "OIDHW", "NCDHW")
         )
     dim_nums = _dimension_numbers(dimension_numbers, dim + 2, transp=transpose)
     if not transpose:

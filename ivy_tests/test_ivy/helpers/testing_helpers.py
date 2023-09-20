@@ -231,10 +231,10 @@ def _get_method_supported_devices_dtypes(
             )
             supported_device_dtypes[backend_str] = output_queue.get()
         else:
-            supported_device_dtypes[backend_str] = (
-                _get_method_supported_devices_dtypes_helper(
-                    method_name, class_module, class_name, backend_str
-                )
+            supported_device_dtypes[
+                backend_str
+            ] = _get_method_supported_devices_dtypes_helper(
+                method_name, class_module, class_name, backend_str
             )
     return supported_device_dtypes
 

@@ -97,6 +97,7 @@ def unsorted_segment_min(
 ) -> tf.Tensor:
     return tf.math.unsorted_segment_min(data, segment_ids, num_segments)
 
+
 def unsorted_segment_max(
     data: tf.Tensor,
     segment_ids: tf.Tensor,

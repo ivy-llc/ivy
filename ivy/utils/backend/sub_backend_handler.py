@@ -31,9 +31,9 @@ for backend in os.listdir(
     for sub_backend in os.listdir(sub_backends_dir):
         if not sub_backend[0].isalpha():
             continue
-        _sub_backend_dict[sub_backend] = (
-            f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
-        )
+        _sub_backend_dict[
+            sub_backend
+        ] = f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
         try:
             _backend_to_sub_backends_dict[backend].append(sub_backend)
         except KeyError:

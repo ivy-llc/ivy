@@ -41,9 +41,7 @@ def assert_all_close(
     """
     ret_dtype = str(ret_np.dtype)
     ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
-    assert (
-        ret_dtype == ret_from_gt_dtype
-    ), (
+    assert ret_dtype == ret_from_gt_dtype, (
         "the ground truth framework {} returned a {} datatype while "
         "the backend {} returned a {} datatype".format(
             ground_truth_backend,
@@ -124,9 +122,7 @@ def value_test(
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:  # noqa: E721
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
-    assert len(
-        ret_np_flat
-    ) == len(ret_np_from_gt_flat), (
+    assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
         "The length of results from backend {} and ground truth "
         "framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"

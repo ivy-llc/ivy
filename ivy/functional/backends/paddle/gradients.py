@@ -110,9 +110,13 @@ def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=[[0]], ret_grad_idxs=[[0]]
 ):
     # Conversion of required arrays to float variables and duplicate index chains
-    xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
-        _get_required_float_variables(xs, xs_grad_idxs)
-    )
+    (
+        xs,
+        xs_grad_idxs,
+        xs1,
+        required_duplicate_index_chains,
+        _,
+    ) = _get_required_float_variables(xs, xs_grad_idxs)
     func_ret = func(xs)
     xs = xs1
     if isinstance(xs, ivy.Container):

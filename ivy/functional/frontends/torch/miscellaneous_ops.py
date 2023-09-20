@@ -60,9 +60,9 @@ def block_diag(*tensors):
     ret_dim_1 = 0
     for idx, t_shape in enumerate(shapes_list):
         dim_0, dim_1 = t_shape
-        ret[ret_dim_0 : ret_dim_0 + dim_0, ret_dim_1 : ret_dim_1 + dim_1] = (
-            ivy.copy_array(tensors_2d[idx])
-        )
+        ret[
+            ret_dim_0 : ret_dim_0 + dim_0, ret_dim_1 : ret_dim_1 + dim_1
+        ] = ivy.copy_array(tensors_2d[idx])
         ret_dim_0 += dim_0
         ret_dim_1 += dim_1
 

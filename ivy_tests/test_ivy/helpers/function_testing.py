@@ -217,16 +217,18 @@ def test_function_backend_computation(
                 test_ret, ivy_backend.zeros_like, to_mutable=True, include_derived=True
             )
             if instance_method:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
-                    )
+                (
+                    ret_from_target,
+                    ret_np_flat_from_target,
+                ) = get_ret_and_flattened_np_array(
+                    fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
                 )
             else:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
-                    )
+                (
+                    ret_from_target,
+                    ret_np_flat_from_target,
+                ) = get_ret_and_flattened_np_array(
+                    fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
@@ -522,24 +524,32 @@ def test_function(
                 fn_name,
             )
         )
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list = (
-            output_queue.get()
-        )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            test_flags,
+            fw_list,
+        ) = output_queue.get()
     else:
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, test_flags, fw_list = (
-            test_function_ground_truth_computation(
-                ground_truth_backend,
-                on_device,
-                args_np,
-                arg_np_arrays,
-                arrays_args_indices,
-                kwargs_np,
-                arrays_kwargs_indices,
-                kwarg_np_arrays,
-                input_dtypes,
-                test_flags,
-                fn_name,
-            )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            test_flags,
+            fw_list,
+        ) = test_function_ground_truth_computation(
+            ground_truth_backend,
+            on_device,
+            args_np,
+            arg_np_arrays,
+            arrays_args_indices,
+            kwargs_np,
+            arrays_kwargs_indices,
+            kwarg_np_arrays,
+            input_dtypes,
+            test_flags,
+            fn_name,
         )
 
     # Gradient test
@@ -705,9 +715,12 @@ def test_frontend_function(
                 "jax_enable_x64", True
             )
 
-        frontend_submods, fn_name, gt_frontend_submods, gt_fn_name = (
-            _get_frontend_submodules(fn_tree, gt_fn_tree)
-        )
+        (
+            frontend_submods,
+            fn_name,
+            gt_frontend_submods,
+            gt_fn_name,
+        ) = _get_frontend_submodules(fn_tree, gt_fn_tree)
         function_module = local_importer.import_module(frontend_submods)
         frontend_fn = getattr(function_module, fn_name)
 
@@ -1713,28 +1726,34 @@ def test_method(
                 v_np,
             )
         )
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = (
-            output_queue.get()
-        )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            fw_list2,
+        ) = output_queue.get()
     else:
-        ret_from_gt, ret_np_from_gt_flat, ret_from_gt_device, fw_list2 = (
-            test_method_ground_truth_computation(
-                ground_truth_backend,
-                on_device,
-                org_con_data,
-                args_np_method,
-                met_arg_np_vals,
-                met_args_idxs,
-                kwargs_np_method,
-                met_kwarg_np_vals,
-                met_kwargs_idxs,
-                method_input_dtypes,
-                method_flags,
-                class_name,
-                method_name,
-                test_compile,
-                v_np,
-            )
+        (
+            ret_from_gt,
+            ret_np_from_gt_flat,
+            ret_from_gt_device,
+            fw_list2,
+        ) = test_method_ground_truth_computation(
+            ground_truth_backend,
+            on_device,
+            org_con_data,
+            args_np_method,
+            met_arg_np_vals,
+            met_args_idxs,
+            kwargs_np_method,
+            met_kwarg_np_vals,
+            met_kwargs_idxs,
+            method_input_dtypes,
+            method_flags,
+            class_name,
+            method_name,
+            test_compile,
+            v_np,
         )
 
     for k, v in fw_list2.items():

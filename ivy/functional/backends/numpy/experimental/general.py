@@ -20,7 +20,9 @@ def reduce(
     axes = (
         (axes,)
         if isinstance(axes, int)
-        else tuple(axes) if isinstance(axes, list) else axes
+        else tuple(axes)
+        if isinstance(axes, list)
+        else axes
     )
     reduced_func = np.frompyfunc(computation, 2, 1).reduce
     op_dtype = operand.dtype

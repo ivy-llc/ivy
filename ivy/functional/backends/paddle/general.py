@@ -40,7 +40,9 @@ def _check_query(query):
         else (
             all(ivy.is_array(query) and i.ndim <= 1 for i in query)
             if isinstance(query, tuple)
-            else False if isinstance(query, int) else True
+            else False
+            if isinstance(query, int)
+            else True
         )
     )
 

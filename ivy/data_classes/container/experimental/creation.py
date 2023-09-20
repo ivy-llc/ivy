@@ -864,7 +864,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
             segment_ids,
             num_segments,
         )
-    
 
     @staticmethod
     def static_unsorted_segment_sum(

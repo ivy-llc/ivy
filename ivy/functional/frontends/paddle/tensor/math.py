@@ -519,8 +519,9 @@ def take(
 ):
     if mode not in ["raise", "wrap", "clip"]:
         raise ValueError(
-            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}."
-            .format(mode)
+            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}.".format(
+                mode
+            )
         )
     x = ivy.reshape(x, (-1,))
     if mode == "clip":

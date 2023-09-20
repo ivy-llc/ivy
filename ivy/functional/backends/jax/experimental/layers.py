@@ -702,7 +702,9 @@ def interpolate(
     mode = (
         "nearest"
         if mode == "nearest-exact"
-        else "bicubic" if mode == "bicubic_tensorflow" else mode
+        else "bicubic"
+        if mode == "bicubic_tensorflow"
+        else mode
     )
 
     size = [x.shape[0], *size, x.shape[1]]

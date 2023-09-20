@@ -151,6 +151,7 @@ def unsorted_segment_min(
 
     return res
 
+
 def unsorted_segment_max(
     data: torch.Tensor,
     segment_ids: torch.Tensor,
@@ -175,6 +176,7 @@ def unsorted_segment_max(
             res[i] = torch.max(data[mask_index], 0)[0]
 
     return res
+
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def blackman_window(

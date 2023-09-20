@@ -88,6 +88,7 @@ def unsorted_segment_min(
     )
     return jax.ops.segment_min(data, segment_ids, num_segments)
 
+
 def unsorted_segment_max(
     data: JaxArray,
     segment_ids: JaxArray,

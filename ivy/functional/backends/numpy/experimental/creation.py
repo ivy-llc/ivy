@@ -112,6 +112,7 @@ def unsorted_segment_min(
 
     return res
 
+
 def unsorted_segment_max(
     data: np.ndarray,
     segment_ids: np.ndarray,

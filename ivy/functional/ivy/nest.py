@@ -1514,7 +1514,9 @@ def nested_multi_map(
                     (
                         nest[index]
                         if isinstance(nest, (tuple, list))
-                        else nest[val] if isinstance(nest, dict) else nest
+                        else nest[val]
+                        if isinstance(nest, dict)
+                        else nest
                     )
                     for nest in nests
                 ]
@@ -1523,7 +1525,9 @@ def nested_multi_map(
                     (
                         nest[index]
                         if isinstance(nest, (tuple, list))
-                        else nest[list(nest)[index]] if isinstance(nest, dict) else nest
+                        else nest[list(nest)[index]]
+                        if isinstance(nest, dict)
+                        else nest
                     )
                     for nest in nests
                 ]
@@ -1607,7 +1611,9 @@ def nested_multi_map(
     return (
         tuple(return_nest)
         if isinstance(nest0, tuple)
-        else ivy.Container(return_nest) if ivy.is_ivy_container(nest0) else return_nest
+        else ivy.Container(return_nest)
+        if ivy.is_ivy_container(nest0)
+        else return_nest
     )
 
 

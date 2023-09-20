@@ -133,6 +133,7 @@ def unsorted_segment_min(
 
     return res
 
+
 def unsorted_segment_max(
     data: paddle.Tensor,
     segment_ids: paddle.Tensor,

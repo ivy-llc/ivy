@@ -2073,9 +2073,9 @@ class ContainerBase(dict, abc.ABC):
                 space_left = max_bs - starting_index
                 amount_to_write = min(this_batch_size, space_left)
                 for i in range(amount_to_write):
-                    h5_obj[key][starting_index + i : starting_index + i + 1] = (
-                        value_as_np[i : i + 1]
-                    )
+                    h5_obj[key][
+                        starting_index + i : starting_index + i + 1
+                    ] = value_as_np[i : i + 1]
 
     def cont_to_disk_as_pickled(self, pickle_filepath):
         """

@@ -829,7 +829,9 @@ def handle_device_shifting(fn: Callable) -> Callable:
             dst_dev = (
                 dev
                 if dev is not None
-                else None if len(unique_devices) == 0 else next(iter(unique_devices))
+                else None
+                if len(unique_devices) == 0
+                else next(iter(unique_devices))
             )
             return ivy.handle_soft_device_variable(
                 *args, fn=fn, device_shifting_dev=dst_dev, **kwargs

@@ -651,6 +651,7 @@ def unsorted_segment_min(
     """
     return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
 
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
