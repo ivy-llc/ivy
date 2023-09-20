@@ -48,7 +48,6 @@ numpy_promotion_table = {
     (_bool, _float64): _float64,
     (_bool, _complex64): _complex64,
     (_bool, _complex128): _complex128,
-    (_bool, _bool): _bool,
     (_int8, _bool): _int8,
     (_int8, _int8): _int8,
     (_int8, _int16): _int16,
@@ -737,4 +736,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)
