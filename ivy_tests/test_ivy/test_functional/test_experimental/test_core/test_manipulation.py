@@ -1242,7 +1242,8 @@ def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_devi
 @handle_test(
     fn_tree="functional.ivy.experimental.put_along_axis",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["sum", "mul", "replace"]),
+    # ToDo: test for "mean" when support has been added
+    mode=st.sampled_from(["sum", "min", "max", "mul", "replace"]),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     ground_truth_backend="torch",
