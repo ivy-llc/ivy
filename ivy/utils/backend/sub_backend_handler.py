@@ -14,6 +14,51 @@ _sub_backend_dict: dict[str, str] = {}
 _backend_to_sub_backends_dict: dict[str, list] = {}
 
 
+def _detect_sub_backends_dynamically():
+    for backend in os.listdir(
+        os.path.join(
+            ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
+            _backends_subpackage_path.replace(".", os.path.sep),
+        )
+    ):
+        if not backend[0].isalpha():
+            continue
+
+        sub_backends_dir = os.path.join(
+            ivy.__path__[0].rpartition(os.path.sep)[0],
+            _backends_subpackage_path.replace(".", os.path.sep),
+            backend,
+            "sub_backends",
+        )
+        for sub_backend in os.listdir(sub_backends_dir):
+            if not sub_backend[0].isalpha():
+                continue
+            _sub_backend_dict[sub_backend] = (
+                f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
+            )
+            try:
+                _backend_to_sub_backends_dict[backend].append(sub_backend)
+            except KeyError:
+                _backend_to_sub_backends_dict[backend] = [sub_backend]
+
+
+_detect_sub_backends_dynamically()
+
+
+def _get_all_sub_backends():
+    sub_backends = []
+    for v in _backend_to_sub_backends_dict.values():
+        sub_backends.extend(v)
+    return sub_backends
+
+
+_all_sub_backends = _get_all_sub_backends()
+
+
+original_backend_dict = None
+
+
+# version specific sub-backend setting
 def set_sub_backend_to_specific_version(sub_backend):
     f = str(sub_backend.__name__)
     f_sub = f[f.index("sub_backends") + 13 :]
@@ -33,7 +78,6 @@ def set_sub_backend_to_specific_version(sub_backend):
                 sub_backend.__dict__[orig_name].__name__ = orig_name
 
 
-# version specific sub-backend setting
 def fn_name_from_version_specific_fn_name(name, version):
     """
     Parameters
@@ -120,50 +164,6 @@ def fn_name_from_version_specific_fn_name_sub_backend(
     ret_2 = fn_name_from_version_specific_fn_name(fn_name_2, backend_version)
     if ret_1 == ret_2:
         return name[: v_occurences[0]]
-
-
-def _detect_sub_backends_dynamically():
-    for backend in os.listdir(
-        os.path.join(
-            ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
-            _backends_subpackage_path.replace(".", os.path.sep),
-        )
-    ):
-        if not backend[0].isalpha():
-            continue
-
-        sub_backends_dir = os.path.join(
-            ivy.__path__[0].rpartition(os.path.sep)[0],
-            _backends_subpackage_path.replace(".", os.path.sep),
-            backend,
-            "sub_backends",
-        )
-        for sub_backend in os.listdir(sub_backends_dir):
-            if not sub_backend[0].isalpha():
-                continue
-            _sub_backend_dict[sub_backend] = (
-                f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
-            )
-            try:
-                _backend_to_sub_backends_dict[backend].append(sub_backend)
-            except KeyError:
-                _backend_to_sub_backends_dict[backend] = [sub_backend]
-
-
-_detect_sub_backends_dynamically()
-
-
-def _get_all_sub_backends():
-    sub_backends = []
-    for v in _backend_to_sub_backends_dict.values():
-        sub_backends.extend(v)
-    return sub_backends
-
-
-_all_sub_backends = _get_all_sub_backends()
-
-
-original_backend_dict = None
 
 
 def set_sub_backend(sub_backend_str: str):
