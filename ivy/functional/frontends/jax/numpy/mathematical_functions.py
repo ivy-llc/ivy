@@ -585,6 +585,41 @@ def power(x1, x2, /):
     return ivy.pow(x1, x2)
 
 
+@with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
+@to_ivy_arrays_and_back
+def prod(
+    a,
+    *,
+    axis=None,
+    dtype=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+    out=None,
+):
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
+
+    dtype or a.dtype
+
+    if dtype is None and promote_integers:
+        if ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
+
+    if initial is not None:
+        if axis is not None:
+            s = ivy.to_list(ivy.shape(a, as_array=True))
+            s[axis] = 1
+            header = ivy.full(ivy.Shape(tuple(s)), initial)
+            a = ivy.concat([header, a], axis=axis)
+        else:
+            a[0] *= initial
+    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
 @to_ivy_arrays_and_back
 def product(
     a,
