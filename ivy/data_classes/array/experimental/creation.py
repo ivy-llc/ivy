@@ -264,3 +264,31 @@ class _ArrayWithCreationExperimental(abc.ABC):
             lower_edge_hertz,
             upper_edge_hertz,
         )
+
+    def unsorted_segment_mean(
+            self: ivy.Array,
+            segment_ids: ivy.Array,
+            num_segments: Union[int, ivy.Array],
+    ) -> ivy.Array:
+        r"""
+        ivy.Array instance method variant of ivy.unsorted_segment_mean. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_mean
+        also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self
+            The array from which to gather values.
+        segment_ids
+            Must be in the same size with the first dimension of `self`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `self`.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
+        Returns
+        -------
+        ret
+            The output array, representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in `self` where
+            `segment_ids` equals to segment ID.
+        """
+        return ivy.unsorted_segment_mean(self._data, segment_ids, num_segments)
