@@ -121,7 +121,6 @@ def _determine_backend_from_args(args):
         return _get_backend_for_arg(args.__class__.__module__)
 
 
-
 def set_backend_to_specific_version(backend):
     """
     Update the backend dict to make the original function name point to the version
