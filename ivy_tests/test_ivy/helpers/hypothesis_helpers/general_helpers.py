@@ -9,7 +9,7 @@ import ivy
 from . import array_helpers, number_helpers, dtype_helpers
 from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
-from ...conftest import mod_backend
+from ..globals import mod_backend
 
 
 def matrix_is_stable(x, cond_limit=30):
