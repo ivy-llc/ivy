@@ -198,10 +198,6 @@ def flipud(
     return paddle.flip(m, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
-    backend_version,
-)
 def vstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -209,10 +205,8 @@ def vstack(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        if arrays[0].ndim >= 2:
-            return ivy.concat(arrays, axis=0)
-        else:
-            return ivy.stack(arrays, axis=0)
+        arrays = [ivy.reshape(x, shape=(1, -1)) if x.ndim < 2 else x for x in arrays]
+        return ivy.concat(arrays, axis=0)
 
 
 @with_unsupported_device_and_dtypes(
