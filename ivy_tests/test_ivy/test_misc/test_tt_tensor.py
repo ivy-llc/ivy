@@ -99,11 +99,9 @@ def test_validate_tt_rank(coef):
     tensor_shape = tuple(ivy.random.randint(5, 10, shape=(4,)))
     n_param_tensor = ivy.prod(tensor_shape)
 
-    # TODO: This test fails even for the native implementation
-    # https://github.com/tensorly/tensorly/issues/529
-    # rank = ivy.TTTensor.validate_tt_rank(tensor_shape, coef, rounding="floor")
-    # n_param = ivy.TTTensor._tt_n_param(tensor_shape, rank)
-    # np.testing.assert_(n_param >= n_param_tensor * coef)
+    rank = ivy.TTTensor.validate_tt_rank(tensor_shape, coef, rounding="floor")
+    n_param = ivy.TTTensor._tt_n_param(tensor_shape, rank)
+    np.testing.assert_(n_param <= n_param_tensor * coef)
 
     rank = ivy.TTTensor.validate_tt_rank(tensor_shape, coef, rounding="ceil")
     n_param = ivy.TTTensor._tt_n_param(tensor_shape, rank)

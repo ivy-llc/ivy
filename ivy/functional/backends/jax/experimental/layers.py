@@ -16,7 +16,10 @@ from ivy.functional.ivy.layers import (
     _validate_max_pool_params,
     _depth_max_pooling_helper,
 )
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from ivy.functional.ivy.experimental.layers import (
+    _padding_ceil_mode,
+    _get_size,
+)
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
