@@ -1004,7 +1004,9 @@ def stft(
     if  hop_length <= 0:
         hop_length = 1
 
-    return torch.stft(
+    return_complex = True    
+        
+    stft_result = torch.stft(
         signal,
         n_fft,
         hop_length,
@@ -1016,6 +1018,9 @@ def stft(
         onesided,
         return_complex,
     )
+    if return_complex is False:
+        stft_result = stft_result.real
+    return stft_result
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
