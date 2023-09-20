@@ -721,13 +721,6 @@ def test_frontend_function(
             on_device=on_device,
         )
 
-        # strip the decorator to get an Ivy array
-        # ToDo, fix testing for jax frontend for x32
-        if frontend == "jax":
-            importlib.import_module("ivy.functional.frontends.jax").config.update(
-                "jax_enable_x64", True
-            )
-
         # Make copy for arguments for functions that might use
         # inplace update by default
         copy_kwargs = copy.deepcopy(kwargs)
@@ -746,7 +739,8 @@ def test_frontend_function(
                 **kwargs,
             )
         else:
-            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
+            args_for_test = copy.deepcopy(args)
+            kwargs_for_test = copy.deepcopy(kwargs)
 
         ret = get_frontend_ret(
             backend_to_test,
@@ -912,24 +906,6 @@ def test_frontend_function(
                 _frontend_array_to_ivy, ret, include_derived={"tuple": True}
             )
 
-        def arrays_to_numpy(x):
-            if test_flags.generate_frontend_arrays:
-                return ivy_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
-            return (
-                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
-            )
-
-        gt_args_np = ivy.nested_map(
-            arrays_to_numpy,
-            args_for_test,
-            shallow=False,
-        )
-        gt_kwargs_np = ivy.nested_map(
-            arrays_to_numpy,
-            kwargs_for_test,
-            shallow=False,
-        )
-
     # create frontend framework args
     frontend_config = get_frontend_config(frontend)
     args_frontend = ivy.nested_map(
@@ -942,12 +918,12 @@ def test_frontend_function(
                 else x
             )
         ),
-        gt_args_np,
+        args_np,
         shallow=False,
     )
     kwargs_frontend = ivy.nested_map(
         lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
-        gt_kwargs_np,
+        kwargs_np,
         shallow=False,
     )
 
