@@ -36,7 +36,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-from ivy_tests.test_ivy.conftest import mod_backend
+from .globals import mod_backend
 
 cmd_line_args = (
     "with_out",
