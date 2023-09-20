@@ -20,6 +20,24 @@ available_frameworks = [
     "scipy",
 ]
 
+mod_frontend = {
+    "tensorflow": None,
+    "numpy": None,
+    "jax": None,
+    "torch": None,
+    "mindspore": None,
+    "scipy": None,
+    "paddle": None,
+}  # multiversion
+mod_backend = {
+    "numpy": None,
+    "jax": None,
+    "tensorflow": None,
+    "torch": None,
+    "paddle": None,
+    "mxnet": None,
+}  # multiversion
+
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval

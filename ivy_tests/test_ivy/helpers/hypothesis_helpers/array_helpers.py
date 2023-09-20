@@ -16,7 +16,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
-from ...conftest import mod_backend
+from ..globals import mod_backend
 
 
 @st.composite
