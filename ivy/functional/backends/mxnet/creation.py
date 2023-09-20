@@ -2,7 +2,7 @@
 import mxnet as mx
 import numpy as np
 from numbers import Number
-from typing import Union, List, Optional, Sequence, Tuple
+from typing import Union, List, Optional, Sequence, Tuple, Dict, Callable
 
 # lcoal
 import ivy
@@ -251,6 +251,20 @@ def frombuffer(
     dtype: Optional[None] = float,
     count: Optional[int] = (-1),
     offset: Optional[int] = 0,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def loadtxt(
+    fname: str,
+    dtype: Optional[np.dtype] = float,
+    comments: str = "#",
+    delimiter: Optional[str] = None,
+    converters: Optional[Dict[int, Callable]] = None,
+    skiprows: int = 0,
+    usecols: Optional[Union[int, Sequence[int]]] = None,
+    unpack: bool = False,
+    ndmin: int = 0,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
