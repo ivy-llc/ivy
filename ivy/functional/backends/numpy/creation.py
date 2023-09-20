@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence, Tuple
+from typing import Union, Optional, List, Sequence, Tuple, Dict, Callable, Type
 
 import numpy as np
 
@@ -287,4 +287,34 @@ def triu_indices(
 ) -> Tuple[np.ndarray]:
     return tuple(
         _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
+    )
+
+
+def loadtxt(
+    fname: Union[str, np.ndarray, np.generic],
+    dtype: Optional[np.dtype] = np.float64,
+    comments: str = "#",
+    delimiter: Optional[Union[str, List[str]]] = None,
+    converters: Optional[Dict[int, Union[Type, Callable]]] = None,
+    skiprows: int = 0,
+    usecols: Optional[Union[int, Sequence[int]]] = None,
+    unpack: bool = False,
+    ndmin: int = 0,
+    encoding: Optional[str] = "bytes",
+    max_rows: Optional[int] = None,
+    *,
+    device: str,
+) -> np.ndarray:
+    return np.loadtxt(
+        fname,
+        dtype=dtype,
+        comments=comments,
+        delimiter=delimiter,
+        converters=converters,
+        skiprows=skiprows,
+        usecols=usecols,
+        unpack=unpack,
+        ndmin=ndmin,
+        encoding=encoding,
+        max_rows=max_rows,
     )
