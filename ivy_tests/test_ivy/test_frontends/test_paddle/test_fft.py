@@ -279,8 +279,6 @@ def test_paddle_irfft(
         force_int_axis=True,
     ),
 )
-
-
 @given(st.data())
 def test_paddle_irfft2(
     data,
@@ -321,7 +319,6 @@ def test_paddle_irfft2(
 # Use the custom strategy for s and axes
 axes_strategy = sequence_of_two_integers()
 s_strategy = sequence_of_two_integers()
-    )
 
 
 @handle_frontend_test(
