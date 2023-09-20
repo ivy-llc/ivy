@@ -9,7 +9,7 @@ import inspect
 from collections import OrderedDict
 
 
-from ivy_tests.test_ivy.conftest import mod_backend
+from .globals import mod_backend
 
 try:
     import tensorflow as tf
