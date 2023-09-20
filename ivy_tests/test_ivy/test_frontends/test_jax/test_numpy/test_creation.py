@@ -865,6 +865,90 @@ def test_jax_numpy_in1d(
     )
 
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.in1d",
+    dtype_and_a=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
+    dtype_and_b=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
+    assume_unique=st.booleans(),
+    invert=st.booleans(),
+)
+def test_jax_numpy_in1d(
+    *,
+    dtype_and_a,
+    dtype_and_b,
+    assume_unique,
+    invert,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype_a, a = dtype_and_a
+    input_dtype_b, b = dtype_and_b
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype_a + input_dtype_b,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar1=a[0],
+        ar2=b[0],
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.setdiff1d",
+    dtype_and_a=helpers.dtype_and_values(
+        min_num_dims=1,
+        max_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    dtype_and_b=helpers.dtype_and_values(
+        min_num_dims=1,
+        max_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    use_size=st.booleans(),
+    size=st.integers(min_value=1, max_value=100),
+    assume_unique=st.booleans(),
+)
+def test_jax_numpy_setdiff1d(
+    *,
+    dtype_and_a,
+    dtype_and_b,
+    use_size,
+    size,
+    assume_unique,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype_a, a = dtype_and_a
+    input_dtype_b, b = dtype_and_b
+    if not use_size:
+        size = None
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype_a + input_dtype_b,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar1=a[0],
+        ar2=b[0],
+        assume_unique=assume_unique,
+        size=size,
+    )
+
+
 # ones
 @handle_frontend_test(
     fn_tree="jax.numpy.ones",
