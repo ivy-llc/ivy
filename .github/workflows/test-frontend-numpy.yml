@@ -6,7 +6,7 @@ on:
 
 jobs:
   run-nightly-tests:
-    if: contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') ||contains(github.event.pull_request.labels.*.name, 'NumPy Frontend')
+    if: contains('github.event.pull_request.labels.*.name', 'Exhaustive CI') || contains('github.event.pull_request.labels.*.name', 'NumPy Frontend')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
