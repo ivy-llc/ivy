@@ -3621,6 +3621,5 @@ def test_paddle_tensor_logcumsumexp(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_check=backend_fw,
         on_device=on_device,
     )
