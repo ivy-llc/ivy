@@ -4,38 +4,70 @@ import numpy as np
 import pytest
 
 
-# These tests have been adapted from TensorLy
-# https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_tucker_tensor.py
-@pytest.mark.parametrize("true_shape, true_rank", [((3, 4, 5), (3, 2, 4))])
-def test_validate_tucker_tensor(true_shape, true_rank):
-    core, factors = ivy.random_tucker(true_shape, true_rank)
-
-    # Check shape and rank returned
-    shape, rank = ivy.TuckerTensor.validate_tucker_tensor((core, factors))
-    np.testing.assert_equal(
-        shape,
-        true_shape,
-        err_msg=f"Returned incorrect shape (got {shape}, expected {true_shape})",
+@pytest.mark.parametrize("shape, rank", [((5, 4, 6), (3, 2, 3))])
+def test_n_param_tucker(shape, rank):
+    tucker_tensor = ivy.random_tucker(shape, rank)
+    true_n_param = ivy.prod(ivy.shape(tucker_tensor[0])) + ivy.sum(
+        [ivy.prod(ivy.shape(f)) for f in tucker_tensor[1]]
     )
-    np.testing.assert_equal(
-        rank,
-        true_rank,
-        err_msg=f"Returned incorrect rank (got {rank}, expected {true_rank})",
+    n_param = tucker_tensor.n_param
+    assert np.allclose(n_param, true_n_param)
+
+
+@pytest.mark.parametrize("shape, rank", [((3, 4, 5), 4)])
+def test_tucker_copy(shape, rank):
+    tucker_tensor = ivy.random_tucker(shape, rank)
+    core, factors = tucker_tensor
+    core_normalized, factors_normalized = ivy.TuckerTensor.tucker_normalize(
+        tucker_tensor.tucker_copy()
+    )
+    # Check that modifying copy tensor doesn't change the original tensor
+    assert np.allclose(
+        ivy.TuckerTensor.tucker_to_tensor((core, factors)),
+        ivy.TuckerTensor.tucker_to_tensor(tucker_tensor),
     )
 
-    # One of the factors has the wrong rank
-    factors[0], copy = ivy.random_uniform(shape=((4, 4))), factors[0]
-    with np.testing.assert_raises(ValueError):
-        ivy.TuckerTensor.validate_tucker_tensor((core, factors))
 
-    # Not enough factors to match core
-    factors[0] = copy
-    with np.testing.assert_raises(ValueError):
-        ivy.TuckerTensor.validate_tucker_tensor((core, factors[1:]))
+@pytest.mark.parametrize("shape, ranks", [((5, 4, 6), (3, 2, 3))])
+def test_tucker_mode_dot(shape, ranks):
+    tucker_ten = ivy.random_tucker(shape, ranks, full=False)
+    full_tensor = ivy.TuckerTensor.tucker_to_tensor(tucker_ten)
+    # matrix for mode 1
+    matrix = ivy.random_uniform(shape=(7, shape[1]))
+    # vec for mode 2
+    vec = ivy.random_uniform(shape=(shape[2]))
 
-    # Not enough factors
-    with np.testing.assert_raises(ValueError):
-        ivy.TuckerTensor.validate_tucker_tensor((core, factors[:1]))
+    # Test tucker_mode_dot with matrix
+    res = ivy.TuckerTensor.tucker_mode_dot(tucker_ten, matrix, mode=1, copy=True)
+    # Note that if copy=True is not respected, factors will be changes
+    # And the next test will fail
+    res = ivy.TuckerTensor.tucker_to_tensor(res)
+    true_res = ivy.mode_dot(full_tensor, matrix, mode=1)
+    assert np.allclose(true_res, res)
+
+    # Check that the data was indeed copied
+    rec = ivy.TuckerTensor.tucker_to_tensor(tucker_ten)
+    assert np.allclose(full_tensor, rec)
+
+    # Test tucker_mode_dot with vec
+    res = ivy.TuckerTensor.tucker_mode_dot(tucker_ten, vec, mode=2, copy=True)
+    res = ivy.TuckerTensor.tucker_to_tensor(res)
+    true_res = ivy.mode_dot(full_tensor, vec, mode=2)
+    assert np.allclose(res.shape, true_res.shape)
+    assert np.allclose(true_res, res)
+
+
+@pytest.mark.parametrize("shape, rank", [((3, 4, 5), (3, 2, 4))])
+def test_tucker_normalize(shape, rank):
+    tucker_ten = ivy.random_tucker(shape, rank)
+    core, factors = ivy.TuckerTensor.tucker_normalize(tucker_ten)
+    for i in range(len(factors)):
+        norm = ivy.sqrt(ivy.sum(ivy.abs(factors[i]) ** 2, axis=0))
+        assert np.allclose(norm, ivy.ones(rank[i]))
+    assert np.allclose(
+        ivy.TuckerTensor.tucker_to_tensor((core, factors)),
+        ivy.TuckerTensor.tucker_to_tensor(tucker_ten),
+    )
 
 
 @pytest.mark.parametrize(
@@ -107,45 +139,6 @@ def test_tucker_to_vec(shape, ranks):
     )
 
 
-@pytest.mark.parametrize("shape, ranks", [((5, 4, 6), (3, 2, 3))])
-def test_tucker_mode_dot(shape, ranks):
-    tucker_ten = ivy.random_tucker(shape, ranks, full=False)
-    full_tensor = ivy.TuckerTensor.tucker_to_tensor(tucker_ten)
-    # matrix for mode 1
-    matrix = ivy.random_uniform(shape=(7, shape[1]))
-    # vec for mode 2
-    vec = ivy.random_uniform(shape=(shape[2]))
-
-    # Test tucker_mode_dot with matrix
-    res = ivy.TuckerTensor.tucker_mode_dot(tucker_ten, matrix, mode=1, copy=True)
-    # Note that if copy=True is not respected, factors will be changes
-    # And the next test will fail
-    res = ivy.TuckerTensor.tucker_to_tensor(res)
-    true_res = ivy.mode_dot(full_tensor, matrix, mode=1)
-    assert np.allclose(true_res, res)
-
-    # Check that the data was indeed copied
-    rec = ivy.TuckerTensor.tucker_to_tensor(tucker_ten)
-    assert np.allclose(full_tensor, rec)
-
-    # Test tucker_mode_dot with vec
-    res = ivy.TuckerTensor.tucker_mode_dot(tucker_ten, vec, mode=2, copy=True)
-    res = ivy.TuckerTensor.tucker_to_tensor(res)
-    true_res = ivy.mode_dot(full_tensor, vec, mode=2)
-    assert np.allclose(res.shape, true_res.shape)
-    assert np.allclose(true_res, res)
-
-
-@pytest.mark.parametrize("shape, rank", [((5, 4, 6), (3, 2, 3))])
-def test_n_param_tucker(shape, rank):
-    tucker_tensor = ivy.random_tucker(shape, rank)
-    true_n_param = ivy.prod(ivy.shape(tucker_tensor[0])) + ivy.sum(
-        [ivy.prod(ivy.shape(f)) for f in tucker_tensor[1]]
-    )
-    n_param = tucker_tensor.n_param
-    assert np.allclose(n_param, true_n_param)
-
-
 @pytest.mark.parametrize("tol", [(0.01)])
 def test_validate_tucker_rank(tol):
     tensor_shape = tuple(ivy.randint(1, 100, shape=(5,)))
@@ -196,28 +189,35 @@ def test_validate_tucker_rank(tol):
     assert n_param >= n_param_tensor * 0.5 * (1 - tol)
 
 
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5), (3, 2, 4))])
-def test_tucker_normalize(shape, rank):
-    tucker_ten = ivy.random_tucker(shape, rank)
-    core, factors = ivy.TuckerTensor.tucker_normalize(tucker_ten)
-    for i in range(len(factors)):
-        norm = ivy.sqrt(ivy.sum(ivy.abs(factors[i]) ** 2, axis=0))
-        assert np.allclose(norm, ivy.ones(rank[i]))
-    assert np.allclose(
-        ivy.TuckerTensor.tucker_to_tensor((core, factors)),
-        ivy.TuckerTensor.tucker_to_tensor(tucker_ten),
+# These tests have been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_tucker_tensor.py
+@pytest.mark.parametrize("true_shape, true_rank", [((3, 4, 5), (3, 2, 4))])
+def test_validate_tucker_tensor(true_shape, true_rank):
+    core, factors = ivy.random_tucker(true_shape, true_rank)
+
+    # Check shape and rank returned
+    shape, rank = ivy.TuckerTensor.validate_tucker_tensor((core, factors))
+    np.testing.assert_equal(
+        shape,
+        true_shape,
+        err_msg=f"Returned incorrect shape (got {shape}, expected {true_shape})",
+    )
+    np.testing.assert_equal(
+        rank,
+        true_rank,
+        err_msg=f"Returned incorrect rank (got {rank}, expected {true_rank})",
     )
 
+    # One of the factors has the wrong rank
+    factors[0], copy = ivy.random_uniform(shape=((4, 4))), factors[0]
+    with np.testing.assert_raises(ValueError):
+        ivy.TuckerTensor.validate_tucker_tensor((core, factors))
 
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5), 4)])
-def test_tucker_copy(shape, rank):
-    tucker_tensor = ivy.random_tucker(shape, rank)
-    core, factors = tucker_tensor
-    core_normalized, factors_normalized = ivy.TuckerTensor.tucker_normalize(
-        tucker_tensor.tucker_copy()
-    )
-    # Check that modifying copy tensor doesn't change the original tensor
-    assert np.allclose(
-        ivy.TuckerTensor.tucker_to_tensor((core, factors)),
-        ivy.TuckerTensor.tucker_to_tensor(tucker_tensor),
-    )
+    # Not enough factors to match core
+    factors[0] = copy
+    with np.testing.assert_raises(ValueError):
+        ivy.TuckerTensor.validate_tucker_tensor((core, factors[1:]))
+
+    # Not enough factors
+    with np.testing.assert_raises(ValueError):
+        ivy.TuckerTensor.validate_tucker_tensor((core, factors[:1]))

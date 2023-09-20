@@ -3,31 +3,6 @@ import ivy
 import numpy as np
 import pytest
 
-# These tests have been adapetd from Tensorly
-# https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_cp_tensor.py
-
-
-@pytest.mark.parametrize(
-    "shape, rank",
-    [
-        (
-            (3, 4, 5),
-            4,
-        )
-    ],
-)
-def test_cp_normalize(shape, rank):
-    cp_tensor = ivy.random_cp(shape, rank)
-    weights, factors = ivy.CPTensor.cp_normalize(cp_tensor)
-    expected_norm = ivy.ones((rank,))
-    for f in factors:
-        norm = ivy.sqrt(ivy.sum(ivy.square(f), axis=0))
-        assert np.allclose(norm, expected_norm)
-    assert np.allclose(
-        ivy.CPTensor.cp_to_tensor((weights, factors)),
-        ivy.CPTensor.cp_to_tensor(cp_tensor),
-    )
-
 
 @pytest.mark.parametrize(
     "shape, rank",
@@ -53,45 +28,120 @@ def test_cp_flip_sign(shape, rank):
 
 
 @pytest.mark.parametrize(
-    "true_shape, true_rank",
+    "shape, rank",
     [
         (
-            (3, 4, 5),
+            (8, 5, 6, 4),
+            25,
+        )
+    ],
+)
+def test_cp_lstsq_grad(shape, rank):
+    """Validate the gradient calculation between a CP and dense tensor."""
+    cp_tensor = ivy.random_cp(shape, rank, normalise_factors=False)
+
+    # If we're taking the gradient of comparison with self it should be 0
+    cp_grad = ivy.CPTensor.cp_lstsq_grad(
+        cp_tensor, ivy.CPTensor.cp_to_tensor(cp_tensor)
+    )
+    assert ivy.CPTensor.cp_norm(cp_grad) <= 10e-5
+
+    # Check that we can solve for a direction of descent
+    dense = ivy.random_cp(shape, rank, full=True, normalise_factors=False)
+    cost_before = ivy.sqrt(
+        ivy.sum(ivy.square(ivy.CPTensor.cp_to_tensor(cp_tensor) - dense))
+    )
+
+    cp_grad = ivy.CPTensor.cp_lstsq_grad(cp_tensor, dense)
+    cp_new = ivy.CPTensor(cp_tensor)
+    for ii in range(len(shape)):
+        cp_new.factors[ii] = cp_tensor.factors[ii] - 1e-3 * cp_grad.factors[ii]
+
+    cost_after = ivy.sqrt(
+        ivy.sum(ivy.square(ivy.CPTensor.cp_to_tensor(cp_new) - dense))
+    )
+    assert cost_before > cost_after
+
+
+@pytest.mark.parametrize(
+    "shape, rank",
+    [
+        (
+            (5, 4, 6),
             3,
         )
     ],
 )
-def test_validate_cp_tensor(true_shape, true_rank):
-    cp_tensor = ivy.random_cp(true_shape, true_rank)
-    (weights, factors) = ivy.CPTensor.cp_normalize(cp_tensor)
+def test_cp_mode_dot(shape, rank):
+    cp_ten = ivy.random_cp(shape, rank, orthogonal=True, full=False)
+    full_tensor = ivy.CPTensor.cp_to_tensor(cp_ten)
+    # matrix for mode 1
+    matrix = ivy.random_uniform(shape=(7, shape[1]))
+    # vec for mode 2
+    vec = ivy.random_uniform(shape=(shape[2]))
 
-    # Check correct rank and shapes are returned
-    shape, rank = ivy.CPTensor.validate_cp_tensor((weights, factors))
-    np.testing.assert_equal(
-        true_shape,
-        shape,
-        err_msg=f"Returned incorrect shape (got {shape}, expected {true_shape})",
+    # Test cp_mode_dot with matrix
+    res = ivy.CPTensor.cp_mode_dot(cp_ten, matrix, mode=1, copy=True)
+    # Note that if copy=True is not respected, factors will be changes
+    # And the next test will fail
+    res = ivy.CPTensor.cp_to_tensor(res)
+    true_res = ivy.mode_dot(full_tensor, matrix, mode=1)
+    assert np.allclose(true_res, res, atol=1e-3, rtol=1e-3)
+
+    # Check that the data was indeed copied
+    rec = ivy.CPTensor.cp_to_tensor(cp_ten)
+    assert np.allclose(full_tensor, rec)
+
+    # Test cp_mode_dot with vec
+    res = ivy.CPTensor.cp_mode_dot(cp_ten, vec, mode=2, copy=True)
+    res = ivy.CPTensor.cp_to_tensor(res)
+    true_res = ivy.mode_dot(full_tensor, vec, mode=2)
+    assert res.shape == true_res.shape
+    assert np.allclose(true_res, res)
+
+
+@pytest.mark.parametrize(
+    "shape, rank, tol",
+    [
+        (
+            (8, 5, 6, 4),
+            25,
+            10e-5,
+        )
+    ],
+)
+def test_cp_norm(shape, rank, tol):
+    cp_tensor = ivy.random_cp(shape, rank, full=False, normalise_factors=True)
+    rec = ivy.CPTensor.cp_to_tensor(cp_tensor)
+    true_res = ivy.sqrt(ivy.sum(ivy.square(rec)))
+    res = ivy.CPTensor.cp_norm(cp_tensor)
+    assert ivy.abs(true_res - res) <= tol
+
+
+# These tests have been adapetd from Tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_cp_tensor.py
+
+
+@pytest.mark.parametrize(
+    "shape, rank",
+    [
+        (
+            (3, 4, 5),
+            4,
+        )
+    ],
+)
+def test_cp_normalize(shape, rank):
+    cp_tensor = ivy.random_cp(shape, rank)
+    weights, factors = ivy.CPTensor.cp_normalize(cp_tensor)
+    expected_norm = ivy.ones((rank,))
+    for f in factors:
+        norm = ivy.sqrt(ivy.sum(ivy.square(f), axis=0))
+        assert np.allclose(norm, expected_norm)
+    assert np.allclose(
+        ivy.CPTensor.cp_to_tensor((weights, factors)),
+        ivy.CPTensor.cp_to_tensor(cp_tensor),
     )
-    np.testing.assert_equal(
-        rank,
-        true_rank,
-        err_msg=f"Returned incorrect rank (got {rank}, expected {true_rank})",
-    )
-
-    # One of the factors has the wrong rank
-    factors[0], copy = ivy.random_uniform(shape=(4, 4)), factors[0]
-    with np.testing.assert_raises(ValueError):
-        ivy.CPTensor.validate_cp_tensor((weights, factors))
-
-    # Not the correct amount of weights
-    factors[0] = copy
-    wrong_weights = weights[1:]
-    with np.testing.assert_raises(ValueError):
-        ivy.CPTensor.validate_cp_tensor((wrong_weights, factors))
-
-    # Not enough factors
-    with np.testing.assert_raises(ValueError):
-        ivy.CPTensor.validate_cp_tensor((weights[:1], factors[:1]))
 
 
 @pytest.mark.parametrize(
@@ -220,55 +270,24 @@ def test_cp_to_vec(shapeU1, shapeU2, shapeU3, shapeU4):
     "shape, rank",
     [
         (
-            (5, 4, 6),
-            3,
+            (10, 10, 10, 4),
+            5,
         )
     ],
 )
-def test_cp_mode_dot(shape, rank):
-    cp_ten = ivy.random_cp(shape, rank, orthogonal=True, full=False)
-    full_tensor = ivy.CPTensor.cp_to_tensor(cp_ten)
-    # matrix for mode 1
-    matrix = ivy.random_uniform(shape=(7, shape[1]))
-    # vec for mode 2
-    vec = ivy.random_uniform(shape=(shape[2]))
+def test_unfolding_dot_khatri_rao(shape, rank):
+    tensor = ivy.random_uniform(shape=shape)
+    weights, factors = ivy.random_cp(shape, rank, full=False, normalise_factors=True)
 
-    # Test cp_mode_dot with matrix
-    res = ivy.CPTensor.cp_mode_dot(cp_ten, matrix, mode=1, copy=True)
-    # Note that if copy=True is not respected, factors will be changes
-    # And the next test will fail
-    res = ivy.CPTensor.cp_to_tensor(res)
-    true_res = ivy.mode_dot(full_tensor, matrix, mode=1)
-    assert np.allclose(true_res, res, atol=1e-3, rtol=1e-3)
+    for mode in range(4):
+        # Version forming explicitely the khatri-rao product
+        unfolded = ivy.unfold(tensor, mode)
+        kr_factors = ivy.khatri_rao(factors, weights=weights, skip_matrix=mode)
+        true_res = ivy.matmul(unfolded, kr_factors)
 
-    # Check that the data was indeed copied
-    rec = ivy.CPTensor.cp_to_tensor(cp_ten)
-    assert np.allclose(full_tensor, rec)
-
-    # Test cp_mode_dot with vec
-    res = ivy.CPTensor.cp_mode_dot(cp_ten, vec, mode=2, copy=True)
-    res = ivy.CPTensor.cp_to_tensor(res)
-    true_res = ivy.mode_dot(full_tensor, vec, mode=2)
-    assert res.shape == true_res.shape
-    assert np.allclose(true_res, res)
-
-
-@pytest.mark.parametrize(
-    "shape, rank, tol",
-    [
-        (
-            (8, 5, 6, 4),
-            25,
-            10e-5,
-        )
-    ],
-)
-def test_cp_norm(shape, rank, tol):
-    cp_tensor = ivy.random_cp(shape, rank, full=False, normalise_factors=True)
-    rec = ivy.CPTensor.cp_to_tensor(cp_tensor)
-    true_res = ivy.sqrt(ivy.sum(ivy.square(rec)))
-    res = ivy.CPTensor.cp_norm(cp_tensor)
-    assert ivy.abs(true_res - res) <= tol
+        # Efficient sparse-safe version
+        res = ivy.CPTensor.unfolding_dot_khatri_rao(tensor, (weights, factors), mode)
+        assert np.allclose(true_res, res)
 
 
 @pytest.mark.parametrize("size", [4])
@@ -288,60 +307,42 @@ def test_validate_cp_rank(size):
 
 
 @pytest.mark.parametrize(
-    "shape, rank",
+    "true_shape, true_rank",
     [
         (
-            (8, 5, 6, 4),
-            25,
+            (3, 4, 5),
+            3,
         )
     ],
 )
-def test_cp_lstsq_grad(shape, rank):
-    """Validate the gradient calculation between a CP and dense tensor."""
-    cp_tensor = ivy.random_cp(shape, rank, normalise_factors=False)
+def test_validate_cp_tensor(true_shape, true_rank):
+    cp_tensor = ivy.random_cp(true_shape, true_rank)
+    (weights, factors) = ivy.CPTensor.cp_normalize(cp_tensor)
 
-    # If we're taking the gradient of comparison with self it should be 0
-    cp_grad = ivy.CPTensor.cp_lstsq_grad(
-        cp_tensor, ivy.CPTensor.cp_to_tensor(cp_tensor)
+    # Check correct rank and shapes are returned
+    shape, rank = ivy.CPTensor.validate_cp_tensor((weights, factors))
+    np.testing.assert_equal(
+        true_shape,
+        shape,
+        err_msg=f"Returned incorrect shape (got {shape}, expected {true_shape})",
     )
-    assert ivy.CPTensor.cp_norm(cp_grad) <= 10e-5
-
-    # Check that we can solve for a direction of descent
-    dense = ivy.random_cp(shape, rank, full=True, normalise_factors=False)
-    cost_before = ivy.sqrt(
-        ivy.sum(ivy.square(ivy.CPTensor.cp_to_tensor(cp_tensor) - dense))
+    np.testing.assert_equal(
+        rank,
+        true_rank,
+        err_msg=f"Returned incorrect rank (got {rank}, expected {true_rank})",
     )
 
-    cp_grad = ivy.CPTensor.cp_lstsq_grad(cp_tensor, dense)
-    cp_new = ivy.CPTensor(cp_tensor)
-    for ii in range(len(shape)):
-        cp_new.factors[ii] = cp_tensor.factors[ii] - 1e-3 * cp_grad.factors[ii]
+    # One of the factors has the wrong rank
+    factors[0], copy = ivy.random_uniform(shape=(4, 4)), factors[0]
+    with np.testing.assert_raises(ValueError):
+        ivy.CPTensor.validate_cp_tensor((weights, factors))
 
-    cost_after = ivy.sqrt(
-        ivy.sum(ivy.square(ivy.CPTensor.cp_to_tensor(cp_new) - dense))
-    )
-    assert cost_before > cost_after
+    # Not the correct amount of weights
+    factors[0] = copy
+    wrong_weights = weights[1:]
+    with np.testing.assert_raises(ValueError):
+        ivy.CPTensor.validate_cp_tensor((wrong_weights, factors))
 
-
-@pytest.mark.parametrize(
-    "shape, rank",
-    [
-        (
-            (10, 10, 10, 4),
-            5,
-        )
-    ],
-)
-def test_unfolding_dot_khatri_rao(shape, rank):
-    tensor = ivy.random_uniform(shape=shape)
-    weights, factors = ivy.random_cp(shape, rank, full=False, normalise_factors=True)
-
-    for mode in range(4):
-        # Version forming explicitely the khatri-rao product
-        unfolded = ivy.unfold(tensor, mode)
-        kr_factors = ivy.khatri_rao(factors, weights=weights, skip_matrix=mode)
-        true_res = ivy.matmul(unfolded, kr_factors)
-
-        # Efficient sparse-safe version
-        res = ivy.CPTensor.unfolding_dot_khatri_rao(tensor, (weights, factors), mode)
-        assert np.allclose(true_res, res)
+    # Not enough factors
+    with np.testing.assert_raises(ValueError):
+        ivy.CPTensor.validate_cp_tensor((weights[:1], factors[:1]))

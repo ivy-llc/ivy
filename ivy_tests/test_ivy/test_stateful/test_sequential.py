@@ -10,6 +10,27 @@ import ivy
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_method
 
 
+class TrainableModule(ivy.Module):
+    def __init__(self, in_size, hidden_size, out_size):
+        self._linear0 = ivy.Linear(in_size, hidden_size)
+        self._linear1 = ivy.Linear(hidden_size, out_size)
+        ivy.Module.__init__(self)
+
+    def _forward(self, x):
+        x = self._linear0(x)
+        return self._linear1(x)
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _copy_weights(v1, v2):
+    # copy weights from layer1 to layer2
+    v2.w = ivy.copy_array(v1.w)
+    v2.b = ivy.copy_array(v1.b)
+
+
 # Helpers #
 ###########
 def _train(module, input_arr):
@@ -31,10 +52,8 @@ def _train(module, input_arr):
     return losses
 
 
-def _copy_weights(v1, v2):
-    # copy weights from layer1 to layer2
-    v2.w = ivy.copy_array(v1.w)
-    v2.b = ivy.copy_array(v1.b)
+# --- Main --- #
+# ------------ #
 
 
 @handle_method(
@@ -67,17 +86,6 @@ def test_sequential_construction_and_value(
 
     if "numpy" not in backend_fw.__name__:
         _train(module, input_array)
-
-
-class TrainableModule(ivy.Module):
-    def __init__(self, in_size, hidden_size, out_size):
-        self._linear0 = ivy.Linear(in_size, hidden_size)
-        self._linear1 = ivy.Linear(hidden_size, out_size)
-        ivy.Module.__init__(self)
-
-    def _forward(self, x):
-        x = self._linear0(x)
-        return self._linear1(x)
 
 
 @handle_method(

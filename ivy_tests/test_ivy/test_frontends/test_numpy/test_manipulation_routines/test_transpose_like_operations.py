@@ -7,36 +7,40 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
-# transpose
+# rollaxis
 @handle_frontend_test(
-    fn_tree="numpy.transpose",
-    array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
-        min_num_dims=0,
-        max_num_dims=5,
-        min_dim_size=0,
-        max_dim_size=10,
+    fn_tree="numpy.rollaxis",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=3,
+        min_dim_size=2,
     ),
+    axis=helpers.ints(min_value=-2, max_value=2),
+    start=helpers.ints(min_value=-2, max_value=2),
     test_with_out=st.just(False),
 )
-def test_numpy_transpose(
+def test_numpy_rollaxis(
     *,
-    array_and_axes,
+    dtype_and_a,
+    axis,
+    start,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    array, dtype, axes = array_and_axes
+    input_dtype, a = dtype_and_a
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        array=array,
-        axes=axes,
+        a=a[0],
+        axis=axis,
+        start=start,
     )
 
 
@@ -81,38 +85,34 @@ def test_numpy_swapaxes(
     )
 
 
-# rollaxis
+# transpose
 @handle_frontend_test(
-    fn_tree="numpy.rollaxis",
-    dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=3,
-        min_dim_size=2,
+    fn_tree="numpy.transpose",
+    array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=0,
+        max_dim_size=10,
     ),
-    axis=helpers.ints(min_value=-2, max_value=2),
-    start=helpers.ints(min_value=-2, max_value=2),
     test_with_out=st.just(False),
 )
-def test_numpy_rollaxis(
+def test_numpy_transpose(
     *,
-    dtype_and_a,
-    axis,
-    start,
+    array_and_axes,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, a = dtype_and_a
+    array, dtype, axes = array_and_axes
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=a[0],
-        axis=axis,
-        start=start,
+        array=array,
+        axes=axes,
     )

@@ -37,8 +37,6 @@ def get_item(
     *,
     copy: bool = None,
 ) -> np.ndarray:
-    if copy:
-        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
@@ -435,7 +433,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

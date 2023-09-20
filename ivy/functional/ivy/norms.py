@@ -120,15 +120,14 @@ def layer_norm(
         b: ivy.array([[-1.84, 0., 1.84],
                       [-1.84, 0., 1.84]])
     }
-    # Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    # Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
     """
     mean = ivy.mean(x, axis=normalized_idxs, keepdims=True)
     var = ivy.var(x, axis=normalized_idxs, keepdims=True)
-    x = ivy.divide(
-        ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, min_base=eps)
-    )
+
+    x = (x - mean) / (var + eps) ** 0.5
 
     if scale is not None:
         if offset is not None:
