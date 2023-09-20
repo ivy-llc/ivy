@@ -52,3 +52,8 @@ RUN python3 multiversion_framework_directory.py  $fw && \
 
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
+
+
+
+
+
