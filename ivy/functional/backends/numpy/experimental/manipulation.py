@@ -502,8 +502,8 @@ def put_along_axis(
     mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
     out: Optional[np.ndarray] = None,
 ):
-    np.put_along_axis(arr, indices, values, axis)
-    return ivy.inplace_update(out, arr) if ivy.exists(out) else arr
+    ret = np.put_along_axis(arr.copy(), indices, values, axis)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
 
 put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
