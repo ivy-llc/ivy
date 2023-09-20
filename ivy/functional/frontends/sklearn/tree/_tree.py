@@ -847,7 +847,7 @@ class DepthFirstTreeBuilder(TreeBuilder):
                 n_constant_features=0,
             )
         )
-
+        
         while len(builder_stack) > 0:
             stack_record = builder_stack.pop()
 

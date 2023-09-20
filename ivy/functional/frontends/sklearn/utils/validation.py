@@ -1,6 +1,8 @@
 import numpy as np
 import ivy
 import numbers
+
+from ivy.func_wrapper import to_ivy_arrays_and_back
 from ._array_api import get_namespace, _asarray_with_order
 from contextlib import suppress
 import warnings
@@ -16,6 +18,7 @@ from inspect import isclass
 # --------------- #
 
 
+@to_ivy_arrays_and_back
 def _assert_all_finite(
     X, allow_nan=False, msg_dtype=None, estimator_name=None, input_name=""
 ):
@@ -84,12 +87,13 @@ def _assert_all_finite(
         raise ValueError(msg_err)
 
 
+@to_ivy_arrays_and_back
 def _assert_all_finite_element_wise(
     X, *, xp, allow_nan, msg_dtype=None, estimator_name=None, input_name=""
 ):
     # Cython implementation doesn't support FP16 or complex numbers
     use_cython = (
-        xp is np and X.data.contiguous and X.dtype.type in {np.float32, np.float64}
+        xp is np and X.data.contiguous and X.dtype.type in {ivy.float32, ivy.float64}
     )
     if use_cython:
         out = cy_isfinite(X.reshape(-1), allow_nan=allow_nan)
@@ -126,6 +130,7 @@ def _assert_all_finite_element_wise(
         raise ValueError(msg_err)
 
 
+@to_ivy_arrays_and_back
 def _check_estimator_name(estimator):
     if estimator is not None:
         if isinstance(estimator, str):
@@ -135,6 +140,7 @@ def _check_estimator_name(estimator):
     return None
 
 
+@to_ivy_arrays_and_back
 def _check_large_sparse(X, accept_large_sparse=False):
     """Raise a ValueError if X has 64bit indices and accept_large_sparse=False."""
     if not accept_large_sparse:
@@ -154,6 +160,7 @@ def _check_large_sparse(X, accept_large_sparse=False):
                 )
 
 
+@to_ivy_arrays_and_back
 def _check_sample_weight(
     sample_weight, X, dtype=None, copy=False, only_non_negative=False
 ):
@@ -230,6 +237,7 @@ def _check_sample_weight(
     return sample_weight
 
 
+@to_ivy_arrays_and_back
 def _check_y(y, multi_output=False, y_numeric=False, estimator=None):
     """Isolated part of check_X_y dedicated to y validation."""
     if multi_output:
@@ -248,11 +256,12 @@ def _check_y(y, multi_output=False, y_numeric=False, estimator=None):
         _assert_all_finite(y, input_name="y", estimator_name=estimator_name)
         _ensure_no_complex_data(y)
     if y_numeric and y.dtype.kind == "O":
-        y = y.astype(np.float64)
+        y = y.astype(ivy.float64)
 
     return y
 
 
+@to_ivy_arrays_and_back
 def _ensure_no_complex_data(array):
     if (
         hasattr(array, "dtype")
@@ -263,6 +272,7 @@ def _ensure_no_complex_data(array):
         raise ValueError("Complex data not supported\n{}\n".format(array))
 
 
+@to_ivy_arrays_and_back
 def _ensure_sparse_format(
     spmatrix,
     accept_sparse,
@@ -388,6 +398,7 @@ def _ensure_sparse_format(
     return spmatrix
 
 
+@to_ivy_arrays_and_back
 def _get_feature_names(X):
     """
     Get feature names from X.
@@ -436,16 +447,19 @@ def _get_feature_names(X):
         return feature_names
 
 
+@to_ivy_arrays_and_back
 def _is_arraylike(x):
     """Returns whether the input is array-like."""
     return hasattr(x, "__len__") or hasattr(x, "shape") or hasattr(x, "__array__")
 
 
+@to_ivy_arrays_and_back
 def _is_arraylike_not_scalar(array):
     """Return True if array is array-like and not a scalar."""
     return _is_arraylike(array) and not ivy.isscalar(array)
 
 
+@to_ivy_arrays_and_back
 def _is_fitted(estimator, attributes=None, all_or_any=all):
     """
     Determine if an estimator is fitted.
@@ -485,6 +499,7 @@ def _is_fitted(estimator, attributes=None, all_or_any=all):
     return len(fitted_attrs) > 0
 
 
+@to_ivy_arrays_and_back
 def _num_features(X):
     """
     Return the number of features in an array-like X.
@@ -515,7 +530,7 @@ def _num_features(X):
             raise TypeError(message)
         # Only convert X to a numpy array if there is no cheaper, heuristic
         # option.
-        X = np.asarray(X)
+        X = ivy.asarray(X)
 
     if hasattr(X, "shape"):
         if not hasattr(X.shape, "__len__") or len(X.shape) <= 1:
@@ -539,6 +554,7 @@ def _num_features(X):
         raise TypeError(message) from err
 
 
+@to_ivy_arrays_and_back
 def _num_samples(x):
     """Return number of samples in array-like x."""
     message = "Expected sequence or array-like, got %s" % type(x)
@@ -568,6 +584,7 @@ def _num_samples(x):
         raise TypeError(message) from type_error
 
 
+@to_ivy_arrays_and_back
 def _pandas_dtype_needs_early_conversion(pd_dtype):
     """Return True if pandas extension pd_dtype need to be converted early."""
     # Check these early for pandas versions without extension dtypes
@@ -611,6 +628,7 @@ def _pandas_dtype_needs_early_conversion(pd_dtype):
 # ------------ #
 
 
+@to_ivy_arrays_and_back
 def as_float_array(X, *, copy=True, force_all_finite=True):
     if X.dtype in [ivy.float32, ivy.float64]:
         return X.copy_array() if copy else X
@@ -623,6 +641,7 @@ def as_float_array(X, *, copy=True, force_all_finite=True):
     return ivy.asarray(X, dtype=return_dtype)
 
 
+@to_ivy_arrays_and_back
 def assert_all_finite(
     X,
     *,
@@ -658,6 +677,7 @@ def assert_all_finite(
     )
 
 
+@to_ivy_arrays_and_back
 def check_X_y(
     X,
     y,
@@ -682,7 +702,7 @@ def check_X_y(
     Checks X and y for consistent length, enforces X to be 2D and y 1D. By
     default, X is checked to be non-empty and containing only finite values.
     Standard input checks are also applied to y, such as checking that y
-    does not have np.nan or np.inf targets. For multi-label y, set
+    does not have ivy.nan or ivy.inf targets. For multi-label y, set
     multi_output=True to allow 2D and sparse y. If the dtype of X is
     object, attempt converting to float, raising on failure.
 
@@ -722,20 +742,20 @@ def check_X_y(
         be triggered by a conversion.
 
     force_all_finite : bool or 'allow-nan', default=True
-        Whether to raise an error on np.inf, np.nan, pd.NA in X. This parameter
-        does not influence whether y can have np.inf, np.nan, pd.NA values.
+        Whether to raise an error on ivy.inf, ivy.nan, pd.NA in X. This parameter
+        does not influence whether y can have ivy.inf, ivy.nan, pd.NA values.
         The possibilities are:
 
         - True: Force all values of X to be finite.
-        - False: accepts np.inf, np.nan, pd.NA in X.
-        - 'allow-nan': accepts only np.nan or pd.NA values in X. Values cannot
+        - False: accepts ivy.inf, ivy.nan, pd.NA in X.
+        - 'allow-nan': accepts only ivy.nan or pd.NA values in X. Values cannot
           be infinite.
 
         .. versionadded:: 0.20
            ``force_all_finite`` accepts the string ``'allow-nan'``.
 
         .. versionchanged:: 0.23
-           Accepts `pd.NA` and converts it into `np.nan`
+           Accepts `pd.NA` and converts it into `ivy.nan`
 
     ensure_2d : bool, default=True
         Whether to raise a value error if X is not 2D.
@@ -745,7 +765,7 @@ def check_X_y(
 
     multi_output : bool, default=False
         Whether to allow 2D y (array or sparse matrix). If false, y will be
-        validated as a vector. y cannot have np.nan or np.inf values if
+        validated as a vector. y cannot have ivy.nan or ivy.inf values if
         multi_output=True.
 
     ensure_min_samples : int, default=1
@@ -807,6 +827,7 @@ def check_X_y(
     return X, y
 
 
+@to_ivy_arrays_and_back
 def check_array(
     array,
     accept_sparse=False,
@@ -1133,6 +1154,7 @@ def check_array(
     return array
 
 
+@to_ivy_arrays_and_back
 def check_consistent_length(*arrays):
     """
     Check that all arrays have consistent first dimensions.
@@ -1154,6 +1176,7 @@ def check_consistent_length(*arrays):
         )
 
 
+@to_ivy_arrays_and_back
 def check_is_fitted(estimator, attributes=None, *, msg=None, all_or_any=all):
     """
     Perform is_fitted validation for estimator.
@@ -1226,6 +1249,7 @@ def check_is_fitted(estimator, attributes=None, *, msg=None, all_or_any=all):
         raise Exception(msg % {"name": type(estimator).__name__})
 
 
+@to_ivy_arrays_and_back
 def check_non_negative(X, whom):
     """
     Check if there is any negative value in an array.
@@ -1254,6 +1278,7 @@ def check_non_negative(X, whom):
         raise ValueError("Negative values in data passed to %s" % whom)
 
 
+@to_ivy_arrays_and_back
 def check_random_state(seed):
     """
     Turn seed into a np.random.RandomState instance.
@@ -1282,6 +1307,7 @@ def check_random_state(seed):
     )
 
 
+@to_ivy_arrays_and_back
 def column_or_1d(y, *, warn=False):
     shape = y.shape
     if len(shape) == 2 and shape[1] == 1:

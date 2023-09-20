@@ -1,6 +1,8 @@
 import ivy
+from ivy.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def check_classification_targets(y):
     """
     Ensure that target y is of a non-regression type.
@@ -30,6 +32,7 @@ def check_classification_targets(y):
 
 
 # reapeated utility function
+@to_ivy_arrays_and_back
 def type_of_target(y, input_name="y"):
     # purely utility function
     unique_vals = len(ivy.unique_values(y))

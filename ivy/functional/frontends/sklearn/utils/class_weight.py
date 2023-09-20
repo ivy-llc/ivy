@@ -1,7 +1,10 @@
 import ivy
 from scipy import sparse
 
+from ivy.func_wrapper import to_ivy_arrays_and_back
 
+
+@to_ivy_arrays_and_back
 def compute_class_weight(class_weight, *, classes, y):
     """
     Estimate class weights for unbalanced datasets.
@@ -74,6 +77,7 @@ def compute_class_weight(class_weight, *, classes, y):
     return weight
 
 
+@to_ivy_arrays_and_back
 def compute_sample_weight(class_weight, y, *, indices=None):
     """
     Estimate sample weights by class for unbalanced datasets.

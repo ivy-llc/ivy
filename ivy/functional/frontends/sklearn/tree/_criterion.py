@@ -314,10 +314,8 @@ class ClassificationCriterion(Criterion):
 
         for k in range(self.n_outputs):
             self.sum_total[k, 0 : int(self.n_classes[k]) * 8] = 0
-
-        end = 10
+        
         for p in range(start, end):
-            # print(f"{p=}")
             i = sample_indices[p]
 
             # w is originally set to be 1.0, meaning that if no sample weights

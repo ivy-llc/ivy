@@ -1,4 +1,5 @@
-import math
+import ivy
+from ivy.func_wrapper import to_ivy_arrays_and_back
 
 
 class FiniteStatus:
@@ -11,18 +12,20 @@ class FiniteStatus:
 # --------------- #
 
 
+@to_ivy_arrays_and_back
 def _isfinite_allow_nan(a):
     for v in a:
-        if math.isinf(v):
+        if ivy.isinf(v):
             return FiniteStatus.has_infinite
     return FiniteStatus.all_finite
 
 
+@to_ivy_arrays_and_back
 def _isfinite_disable_nan(a):
     for v in a:
-        if math.isnan(v):
+        if ivy.isnan(v):
             return FiniteStatus.has_nan
-        elif math.isinf(v):
+        elif ivy.isinf(v):
             return FiniteStatus.has_infinite
     return FiniteStatus.all_finite
 
@@ -31,6 +34,7 @@ def _isfinite_disable_nan(a):
 # ------------ #
 
 
+@to_ivy_arrays_and_back
 def cy_isfinite(a, allow_nan=False):
     result = FiniteStatus.all_finite
     if allow_nan:

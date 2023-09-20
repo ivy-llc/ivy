@@ -16,7 +16,7 @@ X, y = data.data, data.target
 
 
 # Create a larger dataset by repeating the original data
-n_repeats = 1000  # Increase this value to make the dataset larger
+n_repeats = 2  # Increase this value to make the dataset larger
 X = np.tile(X, (n_repeats, 1))
 y = np.tile(y, n_repeats)
 
@@ -26,7 +26,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Train a scikit-learn DecisionTreeClassifier
-clf = DecisionTreeClassifier(max_depth=3)
+clf = DecisionTreeClassifier()
 clf.fit(X_train, y_train)
 
 # Measure inference time without Hummingbird

@@ -1,4 +1,4 @@
-import numpy as np
+import ivy
 
 _DEFAULT_TAGS = {
     "non_deterministic": False,
@@ -16,7 +16,7 @@ _DEFAULT_TAGS = {
     "multioutput_only": False,
     "binary_only": False,
     "requires_fit": True,
-    "preserves_dtype": [np.float64],
+    "preserves_dtype": [ivy.float64],
     "requires_y": False,
     "pairwise": False,
 }
