@@ -1266,7 +1266,7 @@ def test_rfftn(
 # stft
 @st.composite
 def stft_arguments(draw):
-    dtype = draw(helpers.get_dtypes("float", full=False))
+    dtype = draw(helpers.get_dtypes("float"))
     n_fft_type = draw(st.sampled_from(["int", "tuple"]))
     
     if n_fft_type == "int":
@@ -1280,7 +1280,14 @@ def stft_arguments(draw):
     axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
     fs = 1.0
-    window = draw(helpers.get_dtypes("float", full=False)))
+    window = draw(
+        helpers.array_values(
+            dtype=helpers.get_dtypes('float'),
+            shape=helpers.get_shape(
+                min_num_dims=1, max_num_dims=2
+            ),
+        )
+    )
     win_length = (
         draw(st.integers(min_value=1, max_value=n_fft))
         if isinstance(n_fft, int)
@@ -1310,10 +1317,13 @@ def stft_arguments(draw):
         boundary,
     )
 
+
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes('float'),
+        min_num_dims=1,
+        max_num_dims=2,
     ),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
@@ -1351,7 +1361,7 @@ def test_stft(
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        signal=x,
+        signal=x[0],
         n_fft=n_fft,
         hop_length=hop_length,
         axis=axis,
@@ -1365,6 +1375,7 @@ def test_stft(
         detrend=detrend,
         return_complex=return_complex,
         boundary=boundary,
+    )
 
       
 # test_stft
