@@ -19,8 +19,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     test_with_out=st.just(False),
 )
 def test_torch_hann_window(
-    *, dtype_and_x, test_flags, backend_fw, fn_tree, on_device, frontend, periodic
-):
+    *, dtype_and_x, test_flags, backend_fw, fn_tree, on_device, frontend, periodic):
+        
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
