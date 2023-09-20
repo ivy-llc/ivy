@@ -143,6 +143,7 @@ class Splitter:
             At least one missing values is in X.
         """
         # self.random_r_state = self.random_state.randint(0, 2147483647)
+
         n_samples = X.shape[0]
 
         # Create a new array which will be used to store nonzero
@@ -288,6 +289,7 @@ def node_split_best(
 
     best_split = SplitRecord()
     current_split = SplitRecord()
+
     current_proxy_improvement = -INFINITY
     best_proxy_improvement = -INFINITY
 
@@ -600,6 +602,7 @@ def sift_down(feature_values, samples, start, end):
         else:
             swap(feature_values, samples, root, maxind)
             root = maxind
+
 
 
 def heapsort(feature_values, samples, n):
@@ -1283,7 +1286,6 @@ def extract_nnz_binary_search(
     if not is_samples_sorted[0]:
         n_samples = end - start
         sorted_samples[start : n_samples * 4] = samples[start : n_samples * 4]
-
         sorted_samples.sort()
         is_samples_sorted[0] = 1
 

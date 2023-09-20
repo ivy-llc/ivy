@@ -18,7 +18,6 @@ from inspect import isclass
 # --------------- #
 
 
-@to_ivy_arrays_and_back
 def _assert_all_finite(
     X, allow_nan=False, msg_dtype=None, estimator_name=None, input_name=""
 ):
@@ -85,6 +84,7 @@ def _assert_all_finite(
                 "#estimators-that-handle-nan-values"
             )
         raise ValueError(msg_err)
+
 
 
 @to_ivy_arrays_and_back
@@ -237,7 +237,6 @@ def _check_sample_weight(
     return sample_weight
 
 
-@to_ivy_arrays_and_back
 def _check_y(y, multi_output=False, y_numeric=False, estimator=None):
     """Isolated part of check_X_y dedicated to y validation."""
     if multi_output:
@@ -554,7 +553,6 @@ def _num_features(X):
         raise TypeError(message) from err
 
 
-@to_ivy_arrays_and_back
 def _num_samples(x):
     """Return number of samples in array-like x."""
     message = "Expected sequence or array-like, got %s" % type(x)
@@ -584,7 +582,6 @@ def _num_samples(x):
         raise TypeError(message) from type_error
 
 
-@to_ivy_arrays_and_back
 def _pandas_dtype_needs_early_conversion(pd_dtype):
     """Return True if pandas extension pd_dtype need to be converted early."""
     # Check these early for pandas versions without extension dtypes
