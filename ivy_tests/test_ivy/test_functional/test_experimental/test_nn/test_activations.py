@@ -8,7 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # celu
 @handle_test(
-    fn_tree="functional.ivy.celu",
+    fn_tree="functional.ivy.experimental.celu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
