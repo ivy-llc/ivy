@@ -1560,7 +1560,22 @@ class Tensor:
     def bitwise_right_shift(self, other, *, out=None):
         return torch_frontend.bitwise_right_shift(self._ivy_array, other)
 
-    @with_unsupported_dtypes({"2.0.1 and below": rshift_dtypes}, "torch")
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "float32",
+                "float64",
+                "bool",
+                "complex",
+                "uint16",
+                "uint64",
+                "uint32",
+            )
+        },
+        "torch",
+    )
     def bitwise_right_shift_(self, other, *, out=None):
         self.ivy_array = self.bitwise_right_shift(other, out=out).ivy_array
         return self
