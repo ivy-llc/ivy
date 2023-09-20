@@ -1,7 +1,7 @@
 # global
 import copy
 from numbers import Number
-from typing import Union, List, Optional, Sequence, Tuple
+from typing import Union, List, Optional, Sequence, Tuple, Dict, Callable
 import numpy as np
 import torch
 from torch import Tensor
@@ -588,6 +588,53 @@ def frombuffer(
     dtype = ivy.as_native_dtype(dtype)
 
     return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+
+
+def torch_loadtxt(
+    fname: str,
+    dtype: torch.dtype = torch.float32,
+    comments: str = "#",
+    delimiter: Optional[str] = None,
+    converters: Optional[Dict[int, Callable]] = None,
+    skiprows: int = 0,
+    usecols: Optional[Union[int, Sequence[int]]] = None,
+    unpack: bool = False,
+    ndmin: int = 0,
+):
+    data = []
+    with open(fname, "r") as file:
+        for _ in range(skiprows):
+            next(file)
+
+        for line in file:
+            if comments and line.startswith(comments):
+                continue
+
+            row = line.strip().split(delimiter)
+            if usecols is not None:
+                if isinstance(usecols, int):
+                    row = [row[usecols]]
+                else:
+                    row = [row[i] for i in usecols]
+
+            if converters is not None:
+                for col, converter in converters.items():
+                    row[col] = converter(row[col])
+
+            row = [dtype(x) for x in row]
+            data.append(row)
+
+    data = torch.tensor(data, dtype=dtype)
+
+    if ndmin > 0:
+        data = data.unsqueeze(dim=0)
+        while data.dim() < ndmin:
+            data = data.unsqueeze(dim=0)
+
+    if unpack:
+        return data.t()
+    else:
+        return data
 
 
 def triu_indices(
