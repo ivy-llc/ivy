@@ -1665,3 +1665,129 @@ class _ContainerWithCreation(ContainerBase):
             device=device,
             out=out,
         )
+
+    @staticmethod
+    def _static_loadtxt(
+        filename: Union[str, ivy.Container],
+        delimiter: Optional[str] = " ",
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = float,
+        skiprows: Optional[Union[int, ivy.Container]] = 0,
+        usecols: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        max_rows: Optional[Union[int, ivy.Container]] = None,
+        comments: Optional[str] = "#",
+        encoding: Optional[str] = "utf-8",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container static method variant of ivy.loadtxt. This method simply wraps the
+        function, and so the docstring for ivy.loadtxt also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        filename
+            File, filename, or generator to read. If the filename extension
+            is gz or bz2,
+            the file is first decompressed.
+        delimiter
+            The string used to separate values. By default, this is any whitespace.
+        dtype
+            Data-type of the resulting array; default: float.
+        skiprows
+            Skip the first skiprows lines; default: 0.
+        usecols
+            Which columns to read, with 0 being the first.
+            For example, usecols = (1, 4, 5)
+            will extract the 2nd, 5th, and 6th columns.
+            The default, None, results in all
+            columns being read.
+        max_rows
+            The maximum number of rows to read. The default, None, means all rows.
+        comments
+            The character used to indicate the start of a comment. Default is '#'.
+        encoding
+            The encoding used to decode the input file. Default is 'utf-8'.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        out
+            2-dimensional container with data read from the file.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(
+        ...     a='1 2 3\n4 5 6\n',
+        ...     b='0.1 0.2 0.3\n0.4 0.5 0.6\n'
+        ... )
+        >>> y = ivy.Container.static_loadtxt(x, dtype=ivy.float64, delimiter=' ')
+        >>> print(y)
+        {
+            a: ivy.array([[1., 2., 3.],
+                        [4., 5., 6.]]),
+            b: ivy.array([[0.1, 0.2, 0.3],
+                        [0.4, 0.5, 0.6]])
+        }
+        """
+        # Implement the loadtxt logic here and return the result as a Container.
+        return ContainerBase.cont_multi_map_in_function(
+            "loadtxt",
+            filename,
+            delimiter=delimiter,
+            dtype=dtype,
+            skiprows=skiprows,
+            usecols=usecols,
+            max_rows=max_rows,
+            comments=comments,
+            encoding=encoding,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def loadtxt(
+        self: ivy.Container,
+        filename: Union[str, ivy.Container],
+        delimiter: Optional[str] = " ",
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = float,
+        skiprows: Optional[Union[int, ivy.Container]] = 0,
+        usecols: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        max_rows: Optional[Union[int, ivy.Container]] = None,
+        comments: Optional[str] = "#",
+        encoding: Optional[str] = "utf-8",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        return self._static_loadtxt(
+            self,
+            filename,
+            delimiter=delimiter,
+            dtype=dtype,
+            skiprows=skiprows,
+            usecols=usecols,
+            max_rows=max_rows,
+            comments=comments,
+            encoding=encoding,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
