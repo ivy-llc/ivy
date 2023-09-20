@@ -43,7 +43,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return self._ivy_array.shape
+        return list(self.ivy_array.shape.shape)
 
     @property
     def ndim(self):

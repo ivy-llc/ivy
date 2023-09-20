@@ -45,7 +45,7 @@ class EagerTensor:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     # Instance Methods #
     # ---------------- #
