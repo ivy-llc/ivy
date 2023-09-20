@@ -239,9 +239,9 @@ def _mha_helper(draw):
 
 @st.composite
 def _nms_helper(draw):
-    img_width = draw(st.integers(250, 500))
-    img_height = draw(st.integers(250, 500))
-    num_boxes = draw(st.integers(5, 25))
+    img_width = draw(st.integers(250, 1250))
+    img_height = draw(st.integers(250, 1250))
+    num_boxes = draw(st.integers(5, 50))
     bbox = {}
     for _ in range(num_boxes):
         x1 = draw(st.integers(0, img_width - 20))
