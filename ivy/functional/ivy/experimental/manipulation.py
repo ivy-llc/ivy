@@ -1763,7 +1763,7 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-# ToDo: add 'mean' and 'mul' modes to scatter_nd and then to put_along_axis
+# ToDo: add 'mean' modes to scatter_nd and then to put_along_axis
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_partial_mixed_function
