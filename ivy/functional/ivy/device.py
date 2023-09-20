@@ -157,12 +157,12 @@ def _shift_native_arrays_on_default_device(*args, **kwargs):
     with ivy.ArrayMode(False):
         default_device = ivy.default_device(as_native=True)
         args, kwargs = ivy.nested_map(
-            [args, kwargs],
             lambda x: (
                 ivy.to_device(x, default_device)
                 if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
                 else x
             ),
+            [args, kwargs],
         )
     return args, kwargs, default_device
 
