@@ -1,4 +1,5 @@
 import os
+import re
 from types import ModuleType, FunctionType
 import logging
 import importlib
@@ -11,6 +12,115 @@ from ivy.utils.exceptions import IvyException
 _backends_subpackage_path = "ivy.functional.backends"
 _sub_backend_dict = {}
 _backend_to_sub_backends_dict = {}
+
+
+# version specific sub-backend setting
+def set_sub_backend_to_specific_version(sub_backend):
+    f = str(sub_backend.__name__)
+    f_sub = f[f.index("sub_backends") + 13 :]
+    f_back = f[f.index("backends") + 9 : f.index(".sub_backends")]
+    f_sub = importlib.import_module(f_sub)
+    f_back = importlib.import_module(f_back)
+    f_sub_version = f_sub.__version__
+    f_back_version = f_back.__version__
+
+    for key in list(sub_backend.__dict__):
+        if "_v_" in key:
+            orig_name = fn_name_from_version_specific_fn_name_sub_backend(
+                key, f_sub_version, f_back_version
+            )
+            if orig_name:
+                sub_backend.__dict__[orig_name] = sub_backend.__dict__[key]
+                sub_backend.__dict__[orig_name].__name__ = orig_name
+
+
+def fn_name_from_version_specific_fn_name(name, version):
+    """
+    Parameters
+    ----------
+    name
+        the version specific name of the function for which the version support
+        is to be provided.
+    version
+        the version of the current framework for which the support is to be
+        provided, the version is inferred by importing the framework
+    Returns
+    -------
+        the name of the original function which will then point to the version
+        specific function
+
+    """
+    # TODO: add tests
+    version = str(version)
+    if version.find("+") != -1:
+        version = tuple(map(int, version[: version.index("+")].split(".")))
+    else:
+        version = tuple(map(int, version.split(".")))
+    if "_to_" in name:
+        i = name.index("_v_")
+        e = name.index("_to_")
+        version_start = name[i + 3 : e]
+        version_start = tuple(map(int, version_start.split("p")))
+        version_end = name[e + 4 :]
+        version_end = tuple(map(int, version_end.split("p")))
+        if version_start <= version <= version_end:
+            return name[0:i]
+    elif "_and_above" in name:
+        i = name.index("_v_")
+        e = name.index("_and_")
+        version_start = name[i + 3 : e]
+        version_start = tuple(map(int, version_start.split("p")))
+        if version >= version_start:
+            return name[0:i]
+    else:
+        i = name.index("_v_")
+        e = name.index("_and_")
+        version_start = name[i + 3 : e]
+        version_start = tuple(map(int, version_start.split("p")))
+        if version <= version_start:
+            return name[0:i]
+
+
+def fn_name_from_version_specific_fn_name_sub_backend(
+    name, sub_backend_version, backend_version
+):
+    """
+    Parameters
+    ----------
+    name
+        the version specific name of the function for which the version support
+        is to be provided.
+    version
+        the version of the current framework for which the support is to be
+        provided, the version is inferred by importing the framework
+    Returns
+    -------
+        the name of the original function which will then point to the version
+        specific function
+
+    """
+    # TODO: add tests
+    sub_version = str(sub_backend_version)
+    back_version = str(backend_version)
+    if sub_version.find("+") != -1:
+        sub_version = tuple(map(int, sub_version[: sub_version.index("+")].split(".")))
+    else:
+        sub_version = tuple(map(int, sub_version.split(".")))
+
+    if back_version.find("+") != -1:
+        back_version = tuple(
+            map(int, back_version[: back_version.index("+")].split("."))
+        )
+    else:
+        back_version = tuple(map(int, back_version.split(".")))
+    v_occurences = [m.start() for m in re.finditer("_v_", name)]
+    fn_name_1 = name[: v_occurences[1] + 3]
+    fn_name_2 = name[: v_occurences[0]] + name[v_occurences[1] :]
+    ret_1 = fn_name_from_version_specific_fn_name(fn_name_1, sub_backend_version)
+    ret_2 = fn_name_from_version_specific_fn_name(fn_name_2, backend_version)
+    if ret_1 == ret_2:
+        return name[: v_occurences[0]]
+
 
 # dynamic sub_backend detection
 for backend in os.listdir(
@@ -83,6 +193,7 @@ def set_sub_backend(sub_backend_str: str):
     sub_backend = ivy.utils.dynamic_import.import_module(
         _sub_backend_dict[sub_backend_str]
     )
+    set_sub_backend_to_specific_version(sub_backend)
     _set_sub_backend_as_ivy(ivy.__dict__.copy(), ivy, sub_backend)
     ivy.current_backend().sub_backends._current_sub_backends.append(sub_backend_str)
 
