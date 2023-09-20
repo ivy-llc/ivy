@@ -53,7 +53,7 @@ def relu6(
 relu6.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
 def logsigmoid(
     input: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
