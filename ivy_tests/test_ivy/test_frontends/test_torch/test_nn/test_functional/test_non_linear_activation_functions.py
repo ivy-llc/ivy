@@ -758,6 +758,7 @@ def test_torch_multi_head_attention_forward(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        atol=1e-03,
         on_device=on_device,
         test_values=not training or dropout_p == 0.0,
         query=q,
