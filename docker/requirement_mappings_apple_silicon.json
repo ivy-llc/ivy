@@ -4,4 +4,3 @@
     "torch": ["torch-scatter", "functorch"],
     "mxnet": ["mxnet"]
   }
-  
