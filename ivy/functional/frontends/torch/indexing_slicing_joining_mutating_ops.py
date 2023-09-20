@@ -50,7 +50,8 @@ def chunk(input, chunks, dim=0):
 def column_stack(tensors, *, out=None):
     reshaped_tensors = []
     for t in tensors:
-        if t.dim() <= 1:
+        dim_num = ivy.get_num_dims(t, as_array=False)
+        if dim_num <= 1:
             reshaped_tensor = ivy.reshape(t, (-1,1))
         else:
             reshaped_tensor = t
