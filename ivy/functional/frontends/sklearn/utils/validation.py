@@ -1,7 +1,5 @@
 import numpy as np
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
 import numbers
 from ._array_api import get_namespace, _asarray_with_order
 from contextlib import suppress
@@ -18,7 +16,6 @@ from inspect import isclass
 # --------------- #
 
 
-@to_ivy_arrays_and_back
 def _assert_all_finite(
     X, allow_nan=False, msg_dtype=None, estimator_name=None, input_name=""
 ):
@@ -32,7 +29,7 @@ def _assert_all_finite(
     X = xp.asarray(X)
 
     # for object dtype data, we only check for NaNs (GH-13254)
-    if X.dtype == ivy.dtype("object") and not allow_nan:
+    if X.dtype == np.dtype("object") and not allow_nan:
         if _object_dtype_isnan(X).any():
             raise ValueError("Input contains NaN")
 
@@ -87,7 +84,48 @@ def _assert_all_finite(
         raise ValueError(msg_err)
 
 
-@to_ivy_arrays_and_back
+def _assert_all_finite_element_wise(
+    X, *, xp, allow_nan, msg_dtype=None, estimator_name=None, input_name=""
+):
+    # Cython implementation doesn't support FP16 or complex numbers
+    use_cython = (
+        xp is np and X.data.contiguous and X.dtype.type in {np.float32, np.float64}
+    )
+    if use_cython:
+        out = cy_isfinite(X.reshape(-1), allow_nan=allow_nan)
+        has_nan_error = False if allow_nan else out == FiniteStatus.has_nan
+        has_inf = out == FiniteStatus.has_infinite
+    else:
+        has_inf = xp.any(xp.isinf(X))
+        has_nan_error = False if allow_nan else xp.any(xp.isnan(X))
+    if has_inf or has_nan_error:
+        if has_nan_error:
+            type_err = "NaN"
+        else:
+            msg_dtype = msg_dtype if msg_dtype is not None else X.dtype
+            type_err = f"infinity or a value too large for {msg_dtype!r}"
+        padded_input_name = input_name + " " if input_name else ""
+        msg_err = f"Input {padded_input_name}contains {type_err}."
+        if estimator_name and input_name == "X" and has_nan_error:
+            # Improve the error message on how to handle missing values in
+            # scikit-learn.
+            msg_err += (
+                f"\n{estimator_name} does not accept missing values"
+                " encoded as NaN natively. For supervised learning, you might want"
+                " to consider sklearn.ensemble.HistGradientBoostingClassifier and"
+                " Regressor which accept missing values encoded as NaNs natively."
+                " Alternatively, it is possible to preprocess the data, for"
+                " instance by using an imputer transformer in a pipeline or drop"
+                " samples with missing values. See"
+                " https://scikit-learn.org/stable/modules/impute.html"
+                " You can find a list of all estimators that handle NaN values"
+                " at the following page:"
+                " https://scikit-learn.org/stable/modules/impute.html"
+                "#estimators-that-handle-nan-values"
+            )
+        raise ValueError(msg_err)
+
+
 def _check_estimator_name(estimator):
     if estimator is not None:
         if isinstance(estimator, str):
@@ -97,7 +135,6 @@ def _check_estimator_name(estimator):
     return None
 
 
-@to_ivy_arrays_and_back
 def _check_large_sparse(X, accept_large_sparse=False):
     """Raise a ValueError if X has 64bit indices and accept_large_sparse=False."""
     if not accept_large_sparse:
@@ -117,7 +154,6 @@ def _check_large_sparse(X, accept_large_sparse=False):
                 )
 
 
-@to_ivy_arrays_and_back
 def _check_sample_weight(
     sample_weight, X, dtype=None, copy=False, only_non_negative=False
 ):
@@ -194,7 +230,6 @@ def _check_sample_weight(
     return sample_weight
 
 
-@to_ivy_arrays_and_back
 def _check_y(y, multi_output=False, y_numeric=False, estimator=None):
     """Isolated part of check_X_y dedicated to y validation."""
     if multi_output:
@@ -218,7 +253,6 @@ def _check_y(y, multi_output=False, y_numeric=False, estimator=None):
     return y
 
 
-@to_ivy_arrays_and_back
 def _ensure_no_complex_data(array):
     if (
         hasattr(array, "dtype")
@@ -229,7 +263,6 @@ def _ensure_no_complex_data(array):
         raise ValueError("Complex data not supported\n{}\n".format(array))
 
 
-@to_ivy_arrays_and_back
 def _ensure_sparse_format(
     spmatrix,
     accept_sparse,
@@ -355,7 +388,6 @@ def _ensure_sparse_format(
     return spmatrix
 
 
-@to_ivy_arrays_and_back
 def _get_feature_names(X):
     """
     Get feature names from X.
@@ -414,7 +446,45 @@ def _is_arraylike_not_scalar(array):
     return _is_arraylike(array) and not ivy.isscalar(array)
 
 
-@to_ivy_arrays_and_back
+def _is_fitted(estimator, attributes=None, all_or_any=all):
+    """
+    Determine if an estimator is fitted.
+
+    Parameters
+    ----------
+    estimator : estimator instance
+        Estimator instance for which the check is performed.
+
+    attributes : str, list or tuple of str, default=None
+        Attribute name(s) given as string or a list/tuple of strings
+        Eg.: ``["coef_", "estimator_", ...], "coef_"``
+
+        If `None`, `estimator` is considered fitted if there exist an
+        attribute that ends with a underscore and does not start with double
+        underscore.
+
+    all_or_any : callable, {all, any}, default=all
+        Specify whether all or any of the given attributes must exist.
+
+    Returns
+    -------
+    fitted : bool
+        Whether the estimator is fitted.
+    """
+    if attributes is not None:
+        if not isinstance(attributes, (list, tuple)):
+            attributes = [attributes]
+        return all_or_any([hasattr(estimator, attr) for attr in attributes])
+
+    if hasattr(estimator, "__sklearn_is_fitted__"):
+        return estimator.__sklearn_is_fitted__()
+
+    fitted_attrs = [
+        v for v in vars(estimator) if v.endswith("_") and not v.startswith("__")
+    ]
+    return len(fitted_attrs) > 0
+
+
 def _num_features(X):
     """
     Return the number of features in an array-like X.
@@ -469,7 +539,6 @@ def _num_features(X):
         raise TypeError(message) from err
 
 
-@to_ivy_arrays_and_back
 def _num_samples(x):
     """Return number of samples in array-like x."""
     message = "Expected sequence or array-like, got %s" % type(x)
@@ -499,7 +568,6 @@ def _num_samples(x):
         raise TypeError(message) from type_error
 
 
-@to_ivy_arrays_and_back
 def _pandas_dtype_needs_early_conversion(pd_dtype):
     """Return True if pandas extension pd_dtype need to be converted early."""
     # Check these early for pandas versions without extension dtypes
@@ -543,7 +611,6 @@ def _pandas_dtype_needs_early_conversion(pd_dtype):
 # ------------ #
 
 
-@to_ivy_arrays_and_back
 def as_float_array(X, *, copy=True, force_all_finite=True):
     if X.dtype in [ivy.float32, ivy.float64]:
         return X.copy_array() if copy else X
@@ -556,7 +623,6 @@ def as_float_array(X, *, copy=True, force_all_finite=True):
     return ivy.asarray(X, dtype=return_dtype)
 
 
-@to_ivy_arrays_and_back
 def assert_all_finite(
     X,
     *,
@@ -592,7 +658,6 @@ def assert_all_finite(
     )
 
 
-@to_ivy_arrays_and_back
 def check_X_y(
     X,
     y,
@@ -742,7 +807,6 @@ def check_X_y(
     return X, y
 
 
-@to_ivy_arrays_and_back
 def check_array(
     array,
     accept_sparse=False,
@@ -971,7 +1035,7 @@ def check_array(
         with warnings.catch_warnings():
             try:
                 warnings.simplefilter("error", ComplexWarning)
-                if dtype is not None and ivy.dtype(dtype).kind in "iu":
+                if dtype is not None and np.dtype(dtype).kind in "iu":
                     # Conversion float -> int should not contain NaN or
                     # inf (numpy#14412). We cannot use casting='safe' because
                     # then conversion float -> int would be disallowed.
@@ -1069,7 +1133,6 @@ def check_array(
     return array
 
 
-@to_ivy_arrays_and_back
 def check_consistent_length(*arrays):
     """
     Check that all arrays have consistent first dimensions.
@@ -1163,7 +1226,6 @@ def check_is_fitted(estimator, attributes=None, *, msg=None, all_or_any=all):
         raise Exception(msg % {"name": type(estimator).__name__})
 
 
-@to_ivy_arrays_and_back
 def check_non_negative(X, whom):
     """
     Check if there is any negative value in an array.
@@ -1220,8 +1282,6 @@ def check_random_state(seed):
     )
 
 
-@with_unsupported_dtypes({"1.3.0 and below": ("complex",)}, "sklearn")
-@to_ivy_arrays_and_back
 def column_or_1d(y, *, warn=False):
     shape = y.shape
     if len(shape) == 2 and shape[1] == 1:

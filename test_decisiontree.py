@@ -7,6 +7,8 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from ivy.functional.frontends.sklearn.tree import DecisionTreeClassifier
 
+# from sklearn.tree import DecisionTreeClassifier
+
 # import ivy
 # Load the Iris dataset
 data = load_iris()
@@ -52,4 +54,4 @@ print(f"Scikit-learn Inference Time: {sklearn_inference_time} seconds")
 # print(f"Hummingbird Inference Time: {hb_inference_time} seconds")
 
 print(f"Scikit-learn Accuracy: {accuracy_sklearn}")
-# print(f"Hummingbird Accuracy: {accuracy_hb}")
+# # print(f"Hummingbird Accuracy: {accuracy_hb}")
