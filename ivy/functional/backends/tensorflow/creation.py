@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from numbers import Number
-from typing import Union, List, Optional, Sequence, Tuple
+from typing import Union, List, Optional, Sequence, Tuple, Dict, Callable
 
 import tensorflow as tf
 
@@ -383,6 +383,52 @@ def frombuffer(
         ret = ret[offset:]
 
     return ret
+
+
+def loadtxt(
+    fname: str,
+    dtype: tf.dtypes.DType = tf.float32,
+    comments: str = "#",
+    delimiter: Optional[str] = None,
+    converters: Optional[Dict[int, Callable]] = None,
+    skiprows: int = 0,
+    usecols: Optional[Union[int, Sequence[int]]] = None,
+    unpack: bool = False,
+    ndmin: int = 0,
+) -> tf.Tensor:
+    lines = tf.io.read_file(fname)
+
+    lines = tf.strings.split(lines, "\n")
+    lines = [line for line in lines if not line.startswith(comments)]
+
+    lines = lines[skiprows:]
+
+    if delimiter is None:
+        split_lines = tf.strings.split(lines)
+    else:
+        split_lines = tf.strings.split(lines, delimiter)
+
+    data = tf.strings.to_number(split_lines, out_type=dtype)
+
+    if converters:
+        for i, conv in converters.items():
+            data = tf.tensor_scatter_nd_update(
+                data, indices=tf.constant([[i]]), updates=[conv(data[:, i])]
+            )
+
+    if usecols is not None:
+        if isinstance(usecols, int):
+            data = data[:, usecols]
+        else:
+            data = tf.gather(data, usecols, axis=1)
+
+    if unpack:
+        data = tf.transpose(data)
+
+    while len(data.shape) < ndmin:
+        data = tf.expand_dims(data, axis=-1)
+
+    return data
 
 
 def triu_indices(
