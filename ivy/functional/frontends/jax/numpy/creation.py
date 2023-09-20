@@ -196,6 +196,37 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
     return ret
 
 
+@to_ivy_arrays_and_back
+def loadtxt(
+    fname,
+    dtype=float,
+    comments="#",
+    delimiter=None,
+    converters=None,
+    skiprows=0,
+    usecols=None,
+    unpack=False,
+    ndmin=0,
+    encoding="bytes",
+    max_rows=None,
+    *,
+    like=None
+):
+    return ivy.loadtxt(
+        fname,
+        dtype=dtype,
+        comments=comments,
+        delimiter=delimiter,
+        converters=converters,
+        skiprows=skiprows,
+        usecols=usecols,
+        unpack=unpack,
+        ndmin=ndmin,
+        encoding=encoding,
+        max_rows=max_rows,
+    )
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
