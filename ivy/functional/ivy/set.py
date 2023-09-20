@@ -13,7 +13,7 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
-
+import collections
 
 # Array API Standard #
 # -------------------#
@@ -29,8 +29,8 @@ from ivy.utils.exceptions import handle_exceptions
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     axis: Optional[int] = None,
+    *,
     by_value: bool = True,
 ) -> Tuple[
     Union[ivy.Array, ivy.NativeArray],
@@ -145,17 +145,21 @@ def unique_all(
                                    [ 2,  7,  4, 12]]),
        counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
     """
-    arr = []
+    values = ivy.unique_values(x)
+    indices = []
+    for i in values:
+        index = 0
+        for j in x:
+            if i == j:
+                indices.append(index)
+                break
+            index = index + 1
 
-    def body_fn(k, args):
-        if k not in arr:
-            arr.append(k)
-        return args
-
-    ivy.for_loop(x, body_fn, ())
-    ivy.Array(arr.sort())
-
-    return ivy.current_backend(x).unique_all(x, axis=axis, by_value=by_value)
+    tempCount = ivy.unique_counts(x)
+    counts = tempCount[1]
+    tempInv = ivy.unique_inverse(x)
+    inverse_indices = tempInv[1]
+    return collections.namedtuple(values, indices, inverse_indices, counts)
 
 
 @handle_exceptions
