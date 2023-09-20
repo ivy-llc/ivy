@@ -1,7 +1,7 @@
 # global
 from numbers import Number
 import numpy as np
-from typing import Union, Optional, List, Sequence, Tuple
+from typing import Union, Optional, List, Sequence, Tuple, Dict, Callable
 
 import jax.dlpack
 import jax.numpy as jnp
@@ -345,6 +345,30 @@ def frombuffer(
     offset: Optional[int] = 0,
 ) -> JaxArray:
     return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+
+def loadtxt(
+    fname: str,
+    dtype: Optional[np.dtype] = float,
+    comments: str = "#",
+    delimiter: Optional[str] = None,
+    converters: Optional[Dict[int, Callable]] = None,
+    skiprows: int = 0,
+    usecols: Optional[Union[int, Sequence[int]]] = None,
+    unpack: bool = False,
+    ndmin: int = 0,
+) -> JaxArray:
+    return jnp.loadtxt(
+        fname,
+        dtype0=dtype,
+        comments=comments,
+        delimiter=delimiter,
+        converters=converters,
+        skiprows=skiprows,
+        usecols=usecols,
+        unpack=unpack,
+        ndmin=ndmin,
+    )
 
 
 def triu_indices(
