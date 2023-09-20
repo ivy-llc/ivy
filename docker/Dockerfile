@@ -78,9 +78,3 @@ RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf optional.txt && \
     rm -rf tmp.txt && \
     rm -rf test_dependencies.py
-
-# Post installation steps
-COPY .devcontainer/post_create_commands.sh .
-RUN chmod +x post_create_commands.sh && \
-    bash post_create_commands.sh && \
-    rm -rf post_create_commands.sh
