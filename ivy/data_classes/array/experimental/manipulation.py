@@ -173,6 +173,11 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             ivy.array([[1, 2],
                        [5, 6],
                        [7, 8]])
+
+                    x = ivy.array([1, 2])
+                    y = [ivy.array([[5, 6]]), ivy.array([[7, 8]])]
+                    ivy.vstack((x, y))
+                    ivy.vstack((x, y, x, y))
         """
         if not isinstance(arrays, (list, tuple)):
             arrays = [arrays]
