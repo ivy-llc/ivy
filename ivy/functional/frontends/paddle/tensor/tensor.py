@@ -21,9 +21,8 @@ class Tensor:
 
     def __repr__(self):
         return (
-            str(self._ivy_array.__repr__())
-            .replace("ivy.array", "ivy.frontends.paddle.Tensor")
-            .replace("dev", "place")
+            f"ivy.frontends.paddle.Tensor(shape={self.shape}, dtype={self.dtype}, " +
+            str(self.ivy_array.__repr__()).replace("ivy.array(", "")
         )
 
     # Properties #
@@ -43,7 +42,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return self._ivy_array.shape
+        return list(self.ivy_array.shape.shape)
 
     @property
     def ndim(self):
