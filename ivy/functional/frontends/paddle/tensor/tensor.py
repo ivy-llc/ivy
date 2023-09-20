@@ -767,8 +767,16 @@ class Tensor:
         return paddle_frontend.is_floating_point(self._ivy_array)
 
     @with_supported_dtypes(
-        {"2.5.1 and below": ("bool", "float16", "float32",
-                             "float64", "int32", "int64")},
+        {
+            "2.5.1 and below": (
+                    "bool",
+                    "float16",
+                    "float32",
+                    "float64",
+                    "int32",
+                    "int64",
+            )
+        },
         "paddle",
     )
     def chunk(self, chunks, axis = 0, name=None):
