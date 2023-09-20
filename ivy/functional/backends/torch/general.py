@@ -136,6 +136,9 @@ def to_numpy(
                 try:
                     return x.detach().cpu().numpy().astype("bfloat16")
                 except TypeError:
+                    # although ml_dtypes would enable bfloat16
+                    # behaviour in numpy, but torch is restricting
+                    # it here, so we need to do this
                     default_dtype = ivy.default_float_dtype(as_native=True)
                     if default_dtype is torch.bfloat16:
                         x = x.to(torch.float32)
