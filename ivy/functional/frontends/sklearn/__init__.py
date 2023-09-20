@@ -19,3 +19,5 @@ _complex128 = ivy.ComplexDtype("complex128")
 _bool = ivy.Dtype("bool")
 
 _frontend_array = array
+
+from .tree import *

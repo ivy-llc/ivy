@@ -1,5 +1,5 @@
 import ivy
-from _utils import WeightedMedianCalculator
+from ._utils import WeightedMedianCalculator
 import numpy as np
 
 
@@ -313,10 +313,11 @@ class ClassificationCriterion(Criterion):
         w = 1.0
 
         for k in range(self.n_outputs):
-            for i in range(self.n_classes[k]):
-                self.sum_total[k][i] = 0.0
+            self.sum_total[k, 0 : int(self.n_classes[k]) * 8] = 0
 
+        end = 10
         for p in range(start, end):
+            # print(f"{p=}")
             i = sample_indices[p]
 
             # w is originally set to be 1.0, meaning that if no sample weights
@@ -358,7 +359,7 @@ class ClassificationCriterion(Criterion):
         if n_missing == 0:
             return
 
-        self.sum_missing[:, :] = 0.0
+        self.sum_missing[0, 0 : self.max_n_classes * self.n_outputs * 8] = 0
         self.weighted_n_missing = 0.0
 
         # The missing samples are assumed to be in self.sample_indices[-n_missing:]
@@ -381,7 +382,7 @@ class ClassificationCriterion(Criterion):
         MemoryError) or 0 otherwise.
         """
         self.pos = self.start
-        _move_sums_classification(
+        self.weighted_n_left, self.weighted_n_right = _move_sums_classification(
             self,
             self.sum_left,
             self.sum_right,
@@ -498,7 +499,7 @@ class ClassificationCriterion(Criterion):
             The memory address which we will save the node value into.
         """
         for k in range(self.n_outputs):
-            dest[:] = self.sum_total[k, :]
+            dest[: self.n_classes[k] * 8] = self.sum_total[k, 0 : self.n_classes[k] * 8]
             dest += self.max_n_classes
 
 
@@ -511,7 +512,7 @@ class RegressionCriterion(Criterion):
     right of the split point.
     """
 
-    def __init__(self, n_outputs, n_samples):
+    def __init__(self, n_outputs: int, n_samples: int):
         """
         Initialize parameters for this criterion.
 
@@ -526,6 +527,7 @@ class RegressionCriterion(Criterion):
         self.start = 0
         self.pos = 0
         self.end = 0
+
         self.n_outputs = n_outputs
         self.n_samples = n_samples
         self.n_node_samples = 0
@@ -533,12 +535,25 @@ class RegressionCriterion(Criterion):
         self.weighted_n_left = 0.0
         self.weighted_n_right = 0.0
         self.weighted_n_missing = 0.0
+
         self.sq_sum_total = 0.0
+
         self.sum_total = ivy.zeros(n_outputs, dtype=ivy.float64)
         self.sum_left = ivy.zeros(n_outputs, dtype=ivy.float64)
         self.sum_right = ivy.zeros(n_outputs, dtype=ivy.float64)
 
-    def init(self, y, sample_weight, weighted_n_samples, sample_indices, start, end):
+    def __reduce__(self):
+        return (type(self), (self.n_outputs, self.n_samples), self.__getstate__())
+
+    def init(
+        self,
+        y,
+        sample_weight,
+        weighted_n_samples: float,
+        sample_indices: int,
+        start: int,
+        end: int,
+    ):
         """
         Initialize the criterion.
 
@@ -546,6 +561,7 @@ class RegressionCriterion(Criterion):
         and children sample_indices[start:start] and
         sample_indices[start:end].
         """
+        # Initialize fields
         self.y = y
         self.sample_weight = sample_weight
         self.sample_indices = sample_indices
@@ -554,12 +570,23 @@ class RegressionCriterion(Criterion):
         self.n_node_samples = end - start
         self.weighted_n_samples = weighted_n_samples
         self.weighted_n_node_samples = 0.0
+
+        i = 0
+        p = 0
+        k = 0
+        y_ik = 0.0
+        w_y_ik = 0.0
+        w = 1.0
         self.sq_sum_total = 0.0
-        self.sum_total.fill(0.0)
+
+        self.sum_total[0 : self.n_outputs * 8] = 0.0
 
         for p in range(start, end):
             i = sample_indices[p]
-            w = sample_weight[i] if sample_weight is not None else 1.0
+
+            if sample_weight is not None:
+                w = sample_weight[i]
+
             for k in range(self.n_outputs):
                 y_ik = self.y[i, k]
                 w_y_ik = w * y_ik
@@ -568,6 +595,7 @@ class RegressionCriterion(Criterion):
 
             self.weighted_n_node_samples += w
 
+        # Reset to pos=start
         self.reset()
         return 0
 
@@ -575,15 +603,29 @@ class RegressionCriterion(Criterion):
         """Initialize sum_missing to hold sums for missing values."""
         self.sum_missing = ivy.zeros(self.n_outputs, dtype=ivy.float64)
 
-    def init_missing(self, n_missing):
-        """Initialize sum_missing if there are missing values."""
+    def init_missing(self, n_missing: int):
+        """
+        Initialize sum_missing if there are missing values.
+
+        This method assumes that caller placed the missing samples in
+        self.sample_indices[-n_missing:]
+        """
+        i = 0
+        p = 0
+        k = 0
+        y_ik = 0.0
+        w_y_ik = 0.0
+        w = 1.0
+
         self.n_missing = n_missing
         if n_missing == 0:
             return
 
-        self.sum_missing.fill(0.0)
+        self.sum_missing[0 : self.n_outputs * 8] = 0.0
+
         self.weighted_n_missing = 0.0
 
+        # The missing samples are assumed to be in self.sample_indices[-n_missing:]
         for p in range(self.end - n_missing, self.end):
             i = self.sample_indices[p]
             w = self.sample_weight[i] if self.sample_weight is not None else 1.0
@@ -619,33 +661,57 @@ class RegressionCriterion(Criterion):
         )
         return 0
 
-    def update(self, new_pos):
+    def update(self, new_pos: int):
         """Update statistics by moving sample_indices[pos:new_pos] to the left."""
         sample_weight = self.sample_weight
         sample_indices = self.sample_indices
+
         pos = self.pos
 
+        # The missing samples are assumed to be in
+        # self.sample_indices[-self.n_missing:] that is
+        # self.sample_indices[end_non_missing:self.end].
         end_non_missing = self.end - self.n_missing
+        i = 0
+        p = 0
+        k = 0
+        w = 1.0
 
         for k in range(self.n_outputs):
             self.sum_left[k] = 0.0
 
         w = 1.0
 
+        # Update statistics up to new_pos
+        #
+        # Given that
+        #           sum_left[x] +  sum_right[x] = sum_total[x]
+        # and that sum_total is known, we are going to update
+        # sum_left from the direction that require the least amount
+        # of computations, i.e. from pos to new_pos or from end to new_pos.
         if (new_pos - pos) <= (end_non_missing - new_pos):
             for p in range(pos, new_pos):
                 i = sample_indices[p]
-                w = sample_weight[i] if sample_weight is not None else 1.0
+
+                if sample_weight is not None:
+                    w = sample_weight[i]
+
                 for k in range(self.n_outputs):
                     self.sum_left[k] += w * self.y[i, k]
+
                 self.weighted_n_left += w
         else:
             self.reverse_reset()
+
             for p in range(end_non_missing - 1, new_pos - 1, -1):
                 i = sample_indices[p]
-                w = sample_weight[i] if sample_weight is not None else 1.0
+
+                if sample_weight is not None:
+                    w = sample_weight[i]
+
                 for k in range(self.n_outputs):
                     self.sum_left[k] -= w * self.y[i, k]
+
                 self.weighted_n_left -= w
 
         self.weighted_n_right = self.weighted_n_node_samples - self.weighted_n_left
@@ -662,37 +728,9 @@ class RegressionCriterion(Criterion):
     def children_impurity(self):
         pass
 
-    def node_value(self, dest):
+    def node_value(self, dest: float):
         for k in range(self.n_outputs):
             dest[k] = self.sum_total[k] / self.weighted_n_node_samples
-
-    def _move_sums_regression(
-        self, sum_1, sum_2, weighted_n_1, weighted_n_2, put_missing_in_1
-    ):
-        """
-        Distribute sum_total and sum_missing into sum_1 and sum_2.
-
-        If there are missing values and:
-        - put_missing_in_1 is True, then missing values go to sum_1.
-        - put_missing_in_1 is False, then missing values go to sum_2.
-        """
-        has_missing = self.n_missing != 0
-
-        if has_missing and put_missing_in_1:
-            for k in range(self.n_outputs):
-                sum_1[k] = self.sum_missing[k]
-
-            weighted_n_1[0] = self.weighted_n_missing
-            weighted_n_2[0] = self.weighted_n_node_samples - self.weighted_n_missing
-        else:
-            for k in range(self.n_outputs):
-                sum_1[k] = 0.0
-
-            weighted_n_1[0] = 0.0
-            weighted_n_2[0] = self.weighted_n_node_samples
-
-        for k in range(self.n_outputs):
-            sum_2[k] = self.sum_total[k] - sum_1[k]
 
 
 class Entropy(ClassificationCriterion):
@@ -804,7 +842,7 @@ class Gini(ClassificationCriterion):
         for k in range(self.n_outputs):
             sq_count = 0.0
 
-            for c in range(self.n_classes[k]):
+            for c in range(int(self.n_classes[k])):
                 count_k = self.sum_total[k, c]
                 sq_count += count_k * count_k
 
@@ -1384,19 +1422,29 @@ def _move_sums_classification(
         sum_1 = 0
         sum_2 = sum_total
     """
-    for k in range(criterion.n_outputs):
-        if criterion.n_missing != 0 and put_missing_in_1:
-            sum_1[k, :] = criterion.sum_missing[k, :]
-            sum_2[k, :] = criterion.sum_total[k, :] - criterion.sum_missing[k, :]
-            weighted_n_1[0] = criterion.weighted_n_missing
-            weighted_n_2[0] = (
-                criterion.weighted_n_node_samples - criterion.weighted_n_missing
-            )
-        else:
-            sum_1[k, :] = 0.0  # Set all elements in sum_1 to 0
-            sum_2[k, :] = criterion.sum_total[k, :]
-            weighted_n_1[0] = 0.0
-            weighted_n_2[0] = criterion.weighted_n_node_samples
+    # if criterion.n_missing != 0 and put_missing_in_1:
+    if put_missing_in_1:
+        for k in range(criterion.n_outputs):
+            n_bytes = criterion.n_classes[k] * 8
+            sum_1[k, 0:n_bytes] = criterion.sum_missing[k, 0:n_bytes]
+
+        for k in range(criterion.n_outputs):
+            for c in range(criterion.n_classes[k]):
+                sum_2[k, c] = criterion.sum_total[k, c] - criterion.sum_missing[k, c]
+
+        weighted_n_1 = criterion.weighted_n_missing
+        weighted_n_2 = criterion.weighted_n_node_samples - criterion.weighted_n_missing
+    else:
+        # Assigning sum_2 = sum_total for all outputs.
+        for k in range(criterion.n_outputs):
+            n_bytes = int(criterion.n_classes[k]) * 8
+            sum_1[k, 0:n_bytes] = 0
+            sum_2[k, 0:n_bytes] = criterion.sum_total[k, 0:n_bytes]
+
+        weighted_n_1 = 0.0
+        weighted_n_2 = criterion.weighted_n_node_samples
+
+    return weighted_n_1, weighted_n_2
 
 
 def _move_sums_regression(
@@ -1414,15 +1462,21 @@ def _move_sums_regression(
         sum_1 = 0
         sum_2 = sum_total
     """
-    if criterion.n_missing != 0 and put_missing_in_1:
-        sum_1[:] = criterion.sum_missing[:]
-        sum_2[:] = criterion.sum_total[:] - criterion.sum_missing[:]
+    i = 0
+    n_bytes = criterion.n_outputs * 8
+    has_missing = criterion.n_missing != 0
+
+    if has_missing and put_missing_in_1:
+        sum_1[0:n_bytes] = criterion.sum_missing[0:n_bytes]
+        for i in range(criterion.n_outputs):
+            sum_2[i] = criterion.sum_total[i] - criterion.sum_missing[i]
         weighted_n_1[0] = criterion.weighted_n_missing
         weighted_n_2[0] = (
             criterion.weighted_n_node_samples - criterion.weighted_n_missing
         )
     else:
-        sum_1[:] = 0.0  # Set all elements in sum_1 to 0
-        sum_2[:] = criterion.sum_total[:]
+        sum_1[0:n_bytes] = 0
+        # Assigning sum_2 = sum_total for all outputs.
+        sum_2[0:n_bytes] = criterion.sum_total[0:n_bytes]
         weighted_n_1[0] = 0.0
         weighted_n_2[0] = criterion.weighted_n_node_samples
