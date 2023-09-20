@@ -18,11 +18,78 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
+from pip._vendor.packaging import tags
+from urllib import request
+import os
+import json
 import re
+
+
+def _get_paths_from_binaries(binaries, root_dir=""):
+    """Get all the paths from the binaries.json into a list."""
+    paths = []
+    if isinstance(binaries, str):
+        return [os.path.join(root_dir, binaries)]
+    elif isinstance(binaries, dict):
+        for k, v in binaries.items():
+            paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
+    else:
+        for i in binaries:
+            paths += _get_paths_from_binaries(i, root_dir)
+    return paths
 
 
 def _strip(line):
     return line.split(" ")[0].split("#")[0].split(",")[0]
+
+
+# Download all relevant binaries in binaries.json
+all_tags = list(tags.sys_tags())
+binaries_dict = json.load(open("binaries.json"))
+binaries_paths = _get_paths_from_binaries(binaries_dict)
+terminate = False
+version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
+configs_response = request.urlopen(
+    "https://github.com/unifyai/binaries/raw/main/configs.txt",
+    timeout=40,
+)
+available_configs = repr(f"{configs_response.read()}").strip(r"\"b\'").split(r"\\n")
+
+# download binaries for the tag with highest precedence
+for tag in all_tags:
+    if terminate:
+        break
+    if str(tag) not in available_configs:
+        continue
+    for path in binaries_paths:
+        if os.path.exists(path):
+            continue
+        folders = path.split(os.sep)
+        folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
+        file_name = f"{file_path[:-3]}_{tag}.so"
+        search_path = f"compiler/{file_name}"
+        try:
+            response = request.urlopen(
+                f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
+                timeout=40,
+            )
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "wb") as f:
+                f.write(response.read())
+            terminate = path == binaries_paths[-1]
+        except request.HTTPError:
+            break
+
+# verify if all binaries are available
+for idx, path in enumerate(binaries_paths):
+    if not os.path.exists(path):
+        if idx == 0:
+            config_str = "\n".join(available_configs)
+            print(f"\nFollowing are the supported configurations :\n{config_str}\n")
+        print(
+            f"Could not download {path}.",
+            end="\n\n" if idx == len(binaries_paths) - 1 else "\n",
+        )
 
 
 this_directory = Path(__file__).parent

@@ -1,0 +1,32 @@
+{
+    "ivy": {
+        "compiler": [
+            "_compiler.so",
+            {
+                "utils": [
+                    "III.so",
+                    "IIII.so",
+                    "IIV.so",
+                    "IIX.so",
+                    "IVI.so",
+                    "IVV.so",
+                    "IXI.so",
+                    "IXV.so",
+                    "IXX.so",
+                    "VII.so",
+                    "VIV.so",
+                    "VIX.so",
+                    "VVI.so",
+                    "VVV.so",
+                    "VVX.so",
+                    "VXI.so",
+                    "XII.so",
+                    "XIX.so",
+                    "XVV.so",
+                    "XVX.so",
+                    "XXI.so"
+                ]
+            }
+        ]
+    }
+}
