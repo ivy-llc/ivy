@@ -800,11 +800,6 @@ class Array(
         return ivy.to_dlpack(self)
 
     def __dlpack_device__(self):
-        # Not completely supported yet as paddle and tf
-        # doesn't support __dlpack__ and __dlpack_device__ dunders right now
-        # created issues
-        # paddle https://github.com/PaddlePaddle/Paddle/issues/56891
-        # tf https://github.com/tensorflow/tensorflow/issues/61769
         return self._data.__dlpack_device__()
 
     def __lt__(self, other):
