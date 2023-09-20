@@ -924,6 +924,3 @@ def validate_params(parameter_constraints, *, prefer_skip_nested_validation):
         return wrapper
 
     return decorator
-
-
-RealNotInt.register(float)

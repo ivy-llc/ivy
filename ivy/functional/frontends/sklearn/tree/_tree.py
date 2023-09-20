@@ -5,6 +5,7 @@ from scipy.sparse import csr_matrix
 from scipy.sparse import isspmatrix_csr
 
 from ._splitter import SplitRecord, Splitter
+import numpy as np
 
 EPSILON = ivy.finfo(ivy.double).eps
 INFINITY = ivy.inf
@@ -96,16 +97,16 @@ class Tree:
         self.value = None
         self.value_stride = None
 
-        size_t_dtype = "float32"
+        size_t_dtype = "int32"
 
         n_classes = _check_n_classes(n_classes, size_t_dtype)
 
         # Input/Output layout
         self.n_features = n_features
         self.n_outputs = n_outputs
-        self.n_classes = ivy.zeros(n_outputs, dtype=size_t_dtype)
+        self.n_classes = ivy.zeros(n_outputs, dtype=ivy.int32)
 
-        self.max_n_classes = ivy.max(n_classes)
+        self.max_n_classes = np.max(n_classes)
         self.value_stride = n_outputs * self.max_n_classes
 
         for k in range(n_outputs):
@@ -144,10 +145,47 @@ class Tree:
         raise NotImplementedError
 
     def _resize(self, capacity):
-        raise NotImplementedError
+        """
+        Resize all inner arrays to `capacity`, if `capacity` == -1, then double the size
+        of the inner arrays.
+
+        Returns -1 in case of failure to allocate memory (and raise
+        MemoryError) or 0 otherwise.
+        """
+        if self._resize_c(capacity) != 0:
+            # Acquire gil only if we need to raise
+            raise MemoryError()
 
     def _resize_c(self, capacity=float("inf")):
-        raise NotImplementedError
+        """
+        Guts of _resize.
+
+        Returns -1 in case of failure to allocate memory (and raise
+        MemoryError) or 0 otherwise.
+        """
+        if capacity == self.capacity and self.nodes is None:
+            return 0
+
+        if capacity == INTPTR_MAX:
+            if self.capacity == 0:
+                capacity = 3
+            else:
+                capacity = 2 * self.capacity
+
+        self.nodes = np.zeros(capacity, dtype="int32")
+        self.value = np.zeros(capacity * self.value_stride, dtype="int32")
+
+        # value memory is initialised to 0 to enable classifier argmax
+        if capacity > self.capacity:
+            self.value[
+                self.capacity * self.value_stride : capacity * self.value_stride
+            ] = 0
+
+        if capacity < self.node_count:
+            self.node_count = capacity
+
+        self.capacity = capacity
+        return 0
 
     def _add_node(
         self,
@@ -600,26 +638,26 @@ class TreeBuilder:
             X.sort_indices()  # This is done to ensure that the indices of non-zero elements within the matrix are sorted in ascending order.
 
             if X.data.dtype != "float32":
-                X.data = ivy.np.ascontiguousarray(X.data, dtype=ivy.float32)
+                X.data = np.ascontiguousarray(X.data, dtype=ivy.float32)
 
             if X.indices.dtype != "int32" or X.indptr.dtype != "int32":
                 raise ValueError("No support for np.int64 index-based sparse matrices")
 
         elif X.dtype != "float32":
             # since we have to copy, we will make it Fortran for efficiency
-            X = ivy.np.asfortranarray(X, dtype="float32")
+            X = np.asfortranarray(X, dtype="float32")
 
         # TODO: This check for y seems to be redundant, as it is also
         #  present in the BaseDecisionTree's fit method, and therefore
         #  can be removed.
-        if y.base.dtype != "float32" or not y.base.flags.contiguous:
-            y = ivy.np.ascontiguousarray(y, dtype="float32")
+        if y.dtype != "float32" or not y.flags.contiguous:
+            y = np.ascontiguousarray(y, dtype="float32")
 
         if sample_weight is not None and (
             sample_weight.base.dtype != "float64"
             or not sample_weight.base.flags.contiguous
         ):
-            sample_weight = ivy.np.asarray(sample_weight, dtype="float32", order="C")
+            sample_weight = ivy.asarray(sample_weight, dtype="float32", order="C")
 
         return X, y, sample_weight
 
@@ -783,7 +821,8 @@ class DepthFirstTreeBuilder(TreeBuilder):
         is_left = 0
         n_node_samples = splitter.n_samples
         weighted_n_node_samples = 0.0
-        split = SplitRecord()
+        # split = SplitRecord()
+        split = None
         node_id = 0
 
         impurity = INFINITY
@@ -794,7 +833,7 @@ class DepthFirstTreeBuilder(TreeBuilder):
         rc = 0
 
         builder_stack: list[StackRecord] = []
-        stack_record = StackRecord()
+        # stack_record = StackRecord()
 
         # Push root node onto stack
         builder_stack.append(
@@ -821,7 +860,9 @@ class DepthFirstTreeBuilder(TreeBuilder):
             n_constant_features = stack_record.n_constant_features
 
             n_node_samples = end - start
-            splitter.node_reset(start, end, weighted_n_node_samples)
+            _, weighted_n_node_samples = splitter.node_reset(
+                start, end, weighted_n_node_samples
+            )
 
             is_leaf = (
                 depth >= max_depth
@@ -1592,6 +1633,8 @@ def ccp_pruning_path(
         "ccp_alphas": ivy.asarray(ccp_alphas),
         "impurities": ivy.asarray(impurities),
     }
+
+
 # Define constants
 INTPTR_MAX = ivy.iinfo(ivy.int32).max
 TREE_UNDEFINED = -2
