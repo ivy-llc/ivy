@@ -173,3 +173,14 @@ def unstack(x, axis=0, name=None):
 
 
 absolute = abs
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def logcumsumexp(x, axis=None, dtype=None, name=None):
+    if dtype:
+        x = ivy.array(x, dtype=dtype)
+    if axis is None:
+        x = ivy.flatten(x)
+        return ivy.log(ivy.cumsum(ivy.exp(x)))
+    return ivy.log(ivy.cumsum(ivy.exp(x), axis=axis))

@@ -755,4 +755,4 @@ class Tensor:
     )
     @to_ivy_arrays_and_back
     def logcumsumexp(self, axis=None, dtype=None, name=None):
-        return paddle_frontend.Tensor.logcumsumexp(self._ivy_array, axis=axis, dtype=dtype, name=name)
+        return paddle_frontend.logcumsumexp(self._ivy_array, axis=axis, dtype=dtype, name=name)
