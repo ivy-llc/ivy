@@ -189,14 +189,14 @@ def set_nest_at_index(
         b: ivy.array([3., 4.])
     }
     """
-    is_tuple = isinstance(nest, tuple)
-    nest_type = type(nest) if is_tuple else lambda x: x
+    is_iterable = isinstance(nest, tuple)
+    nest_type = type(nest) if is_iterable else lambda x: x
     if _result is None:
         if shallow:
             _result = nest_type(nest)
         else:
             _result = copy_nest(nest, include_derived=True)
-    _result = list(_result) if is_tuple else _result
+    _result = list(_result) if is_iterable else _result
     if len(index) == 1:
         if shallow:
             try:
@@ -336,14 +336,14 @@ def map_nest_at_index(
         b: ivy.array([3., 4.])
     }
     """
-    is_tuple = isinstance(nest, tuple)
-    nest_type = type(nest) if is_tuple else lambda x: x
+    is_iterable = isinstance(nest, tuple)
+    nest_type = type(nest) if is_iterable else lambda x: x
     if _result is None:
         if shallow:
             _result = nest_type(nest)
         else:
             _result = copy_nest(nest, include_derived=True)
-    _result = list(_result) if is_tuple else _result
+    _result = list(_result) if is_iterable else _result
     if len(index) == 1:
         ret = fn(nest[index[0]])
         if shallow:
@@ -471,9 +471,9 @@ def set_nest_at_indices(
     nest
         The nested object to update.
     indices
-        A tuple of tuples of indices for the indices at which to update.
+        An iterable of iterables of indices for the indices at which to update.
     values
-        The new values for updating.
+        An iterable containing the new values for updating
     shallow
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
@@ -521,15 +521,17 @@ def set_nest_at_indices(
     >>> print(nest)
     ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
-    is_tuple = isinstance(nest, tuple)
-    nest_type = type(nest) if is_tuple else lambda x: x
+
+    is_iterable = isinstance(nest, tuple)
+    nest_type = type(nest) if is_iterable else lambda x: x
     if shallow:
         result = nest_type(nest)
     else:
         result = copy_nest(nest, include_derived=True)
-    result = list(result) if is_tuple else result
-    if not isinstance(values, (list, tuple)):
-        values = [values] * len(indices)
+    result = list(result) if is_iterable else result
+
+    assert len(indices) == len(values), " 'indices' and 'values' must be of the same length"
+
     for index, value in zip(indices, values):
         result = set_nest_at_index(nest, index, value, _result=result, shallow=shallow)
     try:
@@ -537,6 +539,7 @@ def set_nest_at_indices(
     except TypeError:
         result = nest_type(*result)
     return result
+
 
 
 @handle_exceptions
@@ -629,13 +632,13 @@ def map_nest_at_indices(
     ivy.array([[ -9.,  64., -17.],
            [ 11.,   9.,  25.]])
     """
-    is_tuple = isinstance(nest, tuple)
-    nest_type = type(nest) if is_tuple else lambda x: x
+    is_iterable = isinstance(nest, tuple)
+    nest_type = type(nest) if is_iterable else lambda x: x
     if shallow:
         result = nest_type(nest)
     else:
         result = copy_nest(nest, include_derived=True)
-    result = list(result) if is_tuple else result
+    result = list(result) if is_iterable else result
     for i, index in enumerate(indices):
         result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
     try:
