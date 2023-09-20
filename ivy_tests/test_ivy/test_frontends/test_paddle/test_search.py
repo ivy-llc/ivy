@@ -346,3 +346,35 @@ def test_paddle_where(
         x=xs[0],
         y=xs[1],
     )
+
+# mode
+@handle_frontend_test(
+    fn_tree="paddle.mode",
+    dtype_input=helpers.get_dtypes("valid"),
+    axis=st.none() | st.integers(min_value=0),
+    keepdim=st.booleans(),
+)
+def test_paddle_mode(
+    *,
+    dtype_input,
+    axis,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    x = dtype_input[0]
+    helpers.test_frontend_function(
+        input_dtypes=dtype_input,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x,
+        axis=axis,
+        keepdim=keepdim,
+    )
+
