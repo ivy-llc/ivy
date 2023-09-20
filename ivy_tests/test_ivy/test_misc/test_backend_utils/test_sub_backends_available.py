@@ -19,7 +19,7 @@ def test_no_warning_when_no_sub_backend_implementation_available():
 @pytest.mark.skipif(find_spec("xformers") is None, reason="xformers is not installed")
 def test_sub_backend_implementation_available():
     ivy.set_backend("torch")
-    sub_backends = ivy.available_sub_backend_implementations_for(
+    sub_backends = ivy.available_sub_backend_implementations(
         "scaled_dot_product_attention"
     )
     assert "xformers" in sub_backends
@@ -27,7 +27,7 @@ def test_sub_backend_implementation_available():
 
 def test_sub_backend_implementation_not_available():
     ivy.set_backend("numpy")
-    sub_backends = ivy.available_sub_backend_implementations_for(
+    sub_backends = ivy.available_sub_backend_implementations(
         "scaled_dot_product_attention"
     )
     assert not sub_backends

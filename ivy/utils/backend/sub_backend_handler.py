@@ -210,7 +210,7 @@ def find_available_sub_backends(sub_backends_loc):
     return available_sub_backends
 
 
-def available_sub_backend_implementations_for(fn_name: str) -> list:
+def available_sub_backend_implementations(fn_name: str) -> list:
     """
     Return whether a sub-backend implementation is available for `fn_name`.
 
@@ -228,10 +228,10 @@ def available_sub_backend_implementations_for(fn_name: str) -> list:
     --------
     >>> import ivy
     >>> ivy.set_backend('torch')
-    >>> ivy.available_sub_backend_implementations_for("scaled_dot_product_attention")
+    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
     ['xformers']
     >>> ivy.set_backend('numpy')
-    >>> ivy.available_sub_backend_implementations_for("scaled_dot_product_attention")
+    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
     []
     """
     sub_backends = ivy.current_backend().available_sub_backends()
