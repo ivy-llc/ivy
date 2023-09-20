@@ -955,88 +955,39 @@ def stft(
     name: Optional[str] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(frame_length, int):
-        raise ivy.utils.exceptions.IvyError(
-            f"Expecting <class 'int'> instead of {type(frame_length)}"
-        )
+    if axis is None:
+        axis = -1
 
-    if frame_length < 1:
-        raise ivy.utils.exceptions.IvyError(
-            f"Invalid data points {frame_length}, expecting frame_length larger than or"
-            " equal to 1"
-        )
+    if window is None:
+        window = jnp.array(jnp.hanning(n_fft), dtype=signal.dtype)
 
-    if not isinstance(frame_step, int):
-        raise ivy.utils.exceptions.IvyError(
-            f"Expecting <class 'int'> instead of {type(frame_step)}"
-        )
+    if hop_length is None:
+        hop_length = n_fft // 4
 
-    if frame_step < 1:
-        raise ivy.utils.exceptions.IvyError(
-            f"Invalid data points {frame_length}, expecting frame_length larger than or"
-            " equal to 1"
-        )
+    if not isinstance(hop_length, int):
+        raise TypeError("hop_length must be an int.")
 
-    if fft_length is not None:
-        if not isinstance(fft_length, int):
-            raise ivy.utils.exceptions.IvyError(
-                f"Expecting <class 'int'> instead of {type(fft_length)}"
-            )
+    if not isinstance(n_fft, int):
+        raise TypeError("n_fft must be an int.")
 
-        if fft_length < 1:
-            raise ivy.utils.exceptions.IvyError(
-                f"Invalid data points {frame_length}, expecting frame_length larger"
-                " than or equal to 1"
-            )
+    if hop_length <= win_length:
+        noverlap = win_length - hop_length
 
-    input_dtype = signals.dtype
-    if input_dtype == jnp.float32:
-        dtype = jnp.complex64
-    elif input_dtype == jnp.float64:
-        dtype = jnp.complex128
+    return jax.scipy.signal.stft(
+        signal,
+        fs,
+        window,
+        win_length,
+        noverlap,
+        n_fft,
+        detrend,
+        onesided,
+        boundary,
+        pad_mode,
+        axis,
+    )
 
-    def stft_1D(signals, frame_length, frame_step, fft_length, pad_end):
-        if fft_length is None:
-            fft_length = 1
-            while fft_length < frame_length:
-                fft_length *= 2
-
-        num_samples = signals.shape[-1]
-
-        if pad_end:
-            num_samples = signals.shape[-1]
-            num_frames = -(-num_samples // frame_step)
-            pad_length = max(
-                0, frame_length + frame_step * (num_frames - 1) - num_samples
-            )
-
-            signals = jnp.pad(signals, [(0, pad_length)])
-        else:
-            num_frames = 1 + (num_samples - frame_length) // frame_step
-
-        stft_result = []
-
-        if window_fn is None:
-            window = 1
-        else:
-            window = window_fn(frame_length)
-
-        for i in range(num_frames):
-            start = i * frame_step
-            end = start + frame_length
-            frame = signals[..., start:end]
-            windowed_frame = frame * window
-            pad_length = fft_length - frame_length
-            windowed_frame = jnp.pad(windowed_frame, [(0, pad_length)])
-            windowed_frame = jnp.asarray(windowed_frame, dtype=dtype)
-
-            fft_frame = jnp.fft.fft(windowed_frame, axis=-1)
-            slit = int((fft_length // 2 + 1))
-            stft_result.append(fft_frame[..., 0:slit])
-
-        stft = jnp.stack(stft_result, axis=0)
-        return stft
-
+    
     def stft_helper(nested_list, frame_length, frame_step, fft_length):
         nested_list = nested_list
         if len(jnp.shape(nested_list)) > 1:
