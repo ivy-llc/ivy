@@ -88,7 +88,7 @@ for idx, path in enumerate(binaries_paths):
             print(f"Following are the supported configurations :\n{config_str}\n")
         print(
             f"Could not download {path}.",
-            end={"\n" if idx == len(binaries_paths) else ""},
+            end="\n" if idx == len(binaries_paths) else "",
         )
 
 
