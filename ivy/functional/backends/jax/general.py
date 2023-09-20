@@ -122,6 +122,8 @@ def to_list(x: JaxArray, /) -> list:
 
 # ivy/utils/assertions.py
 
+# ivy/utils/assertions.py
+
 def get_positive_axis_for_gather(axis, ndims):
     if not isinstance(axis, int):
         raise TypeError(f"{axis} must be an int; got {type(axis).__name__}")
@@ -137,6 +139,39 @@ def get_positive_axis_for_gather(axis, ndims):
         raise ValueError(f"{axis} may only be negative "
                          f"if {ndims} is statically known.")
     return axis
+
+# ivy/functional/backends/jax/general.py
+
+def gather(
+    params: JaxArray,
+    indices: JaxArray,
+    /,
+    *,
+    axis: int = -1,
+    batch_dims: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = get_positive_axis_for_gather(axis, params.ndim)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    result = []
+    if batch_dims == 0:
+        result = jnp.take(params, indices, axis)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = jnp.take(p, i, axis - batch_dims)
+            result.append(r)
+        result = jnp.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return result
 
 # ivy/functional/backends/jax/general.py
 
