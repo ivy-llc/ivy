@@ -181,7 +181,7 @@ def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
         result /= ivy.sqrt(n)
     return result
 
-@with_supported_dytpes(
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "complex64",
