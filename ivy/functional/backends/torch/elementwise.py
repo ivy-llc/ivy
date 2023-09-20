@@ -59,10 +59,12 @@ def imag(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if val.dtype not in (torch.complex64, torch.complex128):
+    if val.dtype in (torch.complex64, torch.complex128):
+        return torch.imag(val)
+    else:
         ret = torch.imag(val.to(torch.complex64))
         return ret.to(val.dtype)
-    return torch.imag(val)
+    
 
 
 imag.support_native_out = False
