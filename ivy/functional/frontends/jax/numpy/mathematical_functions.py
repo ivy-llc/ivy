@@ -601,8 +601,6 @@ def prod(
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
 
-    dtype or a.dtype
-
     if dtype is None and promote_integers:
         if ivy.is_uint_dtype(a.dtype):
             dtype = "uint64"
