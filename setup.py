@@ -25,16 +25,17 @@ import json
 import re
 
 
-def _get_paths(binaries, root_dir=""):
+def _get_paths_from_binaries(binaries, root_dir=""):
+    """Get all the paths from the binaries.json into a list."""
     paths = []
     if isinstance(binaries, str):
         return [os.path.join(root_dir, binaries)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
-            paths += _get_paths(v, os.path.join(root_dir, k))
+            paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
     else:
         for i in binaries:
-            paths += _get_paths(i, root_dir)
+            paths += _get_paths_from_binaries(i, root_dir)
     return paths
 
 
@@ -44,8 +45,8 @@ def _strip(line):
 
 # Download all relevant binaries in binaries.json
 all_tags = list(tags.sys_tags())
-binaries = json.load(open("binaries.json"))
-paths = _get_paths(binaries)
+binaries_dict = json.load(open("binaries.json"))
+binaries_paths = _get_paths_from_binaries(binaries_dict)
 terminate = False
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 configs_response = request.urlopen(
@@ -54,13 +55,13 @@ configs_response = request.urlopen(
 )
 available_configs = repr(f"{configs_response.read()}").strip(r"\"b\'").split(r"\\n")
 
-
+# download binaries for the tag with highest precedence
 for tag in all_tags:
     if terminate:
         break
     if str(tag) not in available_configs:
         continue
-    for i, path in enumerate(paths):
+    for path in binaries_paths:
         if os.path.exists(path):
             continue
         folders = path.split(os.sep)
@@ -75,13 +76,14 @@ for tag in all_tags:
             os.makedirs(os.path.dirname(path), exist_ok=True)
             with open(path, "wb") as f:
                 f.write(response.read())
-            terminate = path == paths[-1]
+            terminate = path == binaries_paths[-1]
         except request.HTTPError:
             break
 
-for i, path in enumerate(paths):
+# verify if all binaries are available
+for idx, path in enumerate(binaries_paths):
     if not os.path.exists(path):
-        if i == 0:
+        if idx == 0:
             config_str = "\n".join(available_configs)
             print(f"Following are the supported configurations\n{config_str}")
         print(f"Could not download {path}.")
