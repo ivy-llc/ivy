@@ -544,3 +544,18 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
+
+
+def scaled_dot_product_attention_v_2p0p0_and_above(
+    q,
+    k,
+    v,
+    scale: float,
+    /,
+    *,
+    mask=None,
+    out=None,
+):
+    if isinstance(mask, torch.Tensor):
+        mask = torch.where(mask == 0, -torch.inf, 0)
+    return torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=mask)
