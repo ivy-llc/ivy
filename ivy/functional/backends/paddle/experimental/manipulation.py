@@ -712,3 +712,33 @@ def fill_diagonal(
     a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: paddle.Tensor,
+    indices: paddle.Tensor,
+    values: Union[int, paddle.Tensor],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    mode_mappings = {
+        "sum": "add",
+        "mul": "mul",
+        "replace": "assign",
+    }
+    mode = mode_mappings.get(mode, mode)
+    ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
+    "replace",
+    "sum",
+    "mul",
+]

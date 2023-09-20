@@ -1,13 +1,13 @@
 # global
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable, Literal
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
 import math
 import paddle
 
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # noinspection PyProtectedMember
 from . import backend_version
@@ -501,33 +501,3 @@ def unstack(
     if keepdims:
         return [paddle_backend.expand_dims(r, axis=axis) for r in ret]
     return ret
-
-
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
-)
-def put_along_axis(
-    arr: paddle.Tensor,
-    indices: paddle.Tensor,
-    values: Union[int, paddle.Tensor],
-    axis: int,
-    /,
-    *,
-    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    mode_mappings = {
-        "sum": "add",
-        "mul": "mul",
-        "replace": "assign",
-    }
-    mode = mode_mappings.get(mode, mode)
-    ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
-    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
-
-
-put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
-    "replace",
-    "sum",
-    "mul",
-]

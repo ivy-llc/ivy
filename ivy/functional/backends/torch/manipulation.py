@@ -1,13 +1,13 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable, Literal
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
 import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
@@ -362,39 +362,3 @@ def unstack(
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
-
-
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
-def put_along_axis(
-    arr: torch.Tensor,
-    indices: torch.Tensor,
-    values: Union[int, torch.Tensor],
-    axis: int,
-    /,
-    *,
-    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    mode_mappings = {
-        "sum": "sum",
-        "min": "amin",
-        "max": "amax",
-        "mul": "prod",
-        "replace": "replace",
-    }
-    mode = mode_mappings.get(mode, mode)
-    indices = indices.to(torch.int64)
-    if mode == "replace":
-        return torch.scatter(arr, axis, indices, values, out=out)
-    else:
-        return torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
-
-
-put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
-    "replace",
-    "sum",
-    "mul",
-    "mean",
-    "max",
-    "min",
-]
