@@ -210,7 +210,7 @@ def nonzero(input, *, out=None, as_tuple=False):
 
 @to_ivy_arrays_and_back
 def permute(input, dims):
-    return ivy.permute_dims(input, axes=dims)
+    return ivy.permute_dims(input, axes=dims, copy=False)
 
 
 @to_ivy_shape
