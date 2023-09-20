@@ -1,7 +1,7 @@
 # global
 import struct
 from numbers import Number
-from typing import Union, List, Optional, Sequence, Tuple
+from typing import Union, List, Optional, Sequence, Tuple, Dict, Callable
 
 import numpy as np
 import paddle
@@ -633,6 +633,43 @@ def frombuffer(
     ret = paddle.to_tensor(ret, dtype=dtype)
 
     return ret
+
+
+def loadtxt(
+    fname: str,
+    dtype: Optional[paddle.dtype] = paddle.float32,
+    comments: str = "#",
+    delimiter: Optional[str] = None,
+    converters: Optional[Dict[int, Callable]] = None,
+    skiprows: int = 0,
+    usecols: Optional[Union[int, Sequence[int]]] = None,
+    unpack: bool = False,
+    ndmin: int = 0,
+) -> paddle.Tensor:
+    data = []
+    with open(fname, "r") as f:
+        lines = f.readlines()[skiprows:]
+        for line in lines:
+            if comments in line:
+                line = line[: line.index(comments)]
+            row = line.split(delimiter)
+            if converters is not None:
+                for i, conv in converters.items():
+                    row[i] = conv(row[i])
+            row = [float(num) for num in row]
+            if usecols is not None:
+                if isinstance(usecols, int):
+                    row = [row[usecols]]
+                else:
+                    row = [row[i] for i in usecols]
+            data.append(row)
+    tensor = paddle.to_tensor(data, dtype=dtype)
+    if unpack:
+        tensor = paddle.transpose(tensor)
+    if tensor.ndim < ndmin:
+        for _ in range(ndmin - tensor.ndim):
+            tensor = paddle.unsqueeze(tensor, 0)
+    return tensor
 
 
 def triu_indices(
