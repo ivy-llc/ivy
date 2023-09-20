@@ -12,6 +12,7 @@ from typing import (
     Protocol,
     TypeVar,
     Iterable,
+    Dict,
 )
 import numpy as np
 
@@ -2296,3 +2297,75 @@ def triu_indices(
     (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))
     """
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
+
+
+@handle_nestable
+@outputs_to_ivy_arrays
+def loadtxt(
+    fname: str,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    comments: str = "#",
+    delimiter: Optional[str] = None,
+    converters: Optional[Dict[int, Callable]] = None,
+    skiprows: int = 0,
+    usecols: Optional[Union[int, Sequence[int]]] = None,
+    unpack: bool = False,
+    ndmin: int = 0,
+) -> ivy.Array:
+    r"""
+    Load data from a text file.
+
+    Parameters
+    ----------
+    fname
+        File, filename, or generator to read.
+    dtype
+        Data-type of the resulting array; default: float.
+    comments
+        The character used to indicate the start of a comment.
+    delimiter
+        The string used to separate values.
+    converters
+        A dictionary mapping column number to a function that will
+        parse the column string,into the desired value.
+    skiprows
+        Skip the first `skiprows` lines.
+    usecols
+        Which columns to read, with 0 being the first.
+    unpack
+        If True, the returned array is transposed.
+    ndmin
+        The returned array will have at least `ndmin` dimensions.
+
+    Returns
+    -------
+    out
+        Data read from the text file.
+
+    Examples
+    --------
+    With :class:`str` inputs:
+
+    >>> x = '1 2\n3 4'
+    >>> y = ivy.loadtxt(x, dtype=ivy.float32)
+    >>> print(y)
+    ivy.array([[1., 2.],
+               [3., 4.]])
+
+    >>> x = '1,2,3\n4,5,6'
+    >>> y = ivy.loadtxt(x, dtype='int', delimiter=',')
+    >>> print(y)
+    ivy.array([[1, 2, 3],
+               [4, 5, 6]])
+    """
+    return current_backend().loadtxt(
+        fname,
+        dtype=dtype,
+        comments=comments,
+        delimiter=delimiter,
+        converters=converters,
+        skiprows=skiprows,
+        usecols=usecols,
+        unpack=unpack,
+        ndmin=ndmin,
+    )
