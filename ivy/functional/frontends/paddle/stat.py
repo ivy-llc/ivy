@@ -36,7 +36,10 @@ def nanmedian(x, axis=None, keepdim=True, name=None):
     return ivy.nanmedian(x, axis=axis, keepdims=keepdim)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def numel(x, name=None):
     prod = ivy.prod(x.size, dtype=ivy.int64)
