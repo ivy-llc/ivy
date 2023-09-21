@@ -468,6 +468,77 @@ def adjoint(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_device_shifting
+def solve_triangular(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    upper: bool = True,
+    left: bool = True,
+    unit_diagonal: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the unique solution to the system of linear equations AX = B if `left` is
+    `True`, or XA = B if `left` is `False`.
+
+    Parameters
+    ----------
+    x1
+        Triangular coefficient array A of shape (..., N, N), with no zeros on diagonal.
+    x2
+        Right-hand side array B of shape (..., N, K) if `left` is `True`, or
+        (..., K, N) if `left` if `False`.
+    upper
+        Whether A is an upper triangular matrix.
+    left
+        Whether we are solving for AX = B.
+    unit_diagonal
+        Whether the diagonal elements of A are guaranteed to be all equal to `1`.
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns
+    -------
+    ret
+        The solution X, which has the same shape as B.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs: ##### TODO
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> result = ivy.dot(a, b)
+    >>> print(result)
+    ivy.array(32)
+
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> b = ivy.array([[5, 6], [7, 8]])
+    >>> c = ivy.empty_like(a)
+    >>> ivy.dot(a, b, out=c)
+    >>> print(c)
+    ivy.array([[19, 22],
+           [43, 50]])
+
+    >>> a = ivy.array([[1.1, 2.3, -3.6]])
+    >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+    >>> c = ivy.zeros((1, 1))
+    >>> ivy.dot(a, b, out=c)
+    >>> print(c)
+    ivy.array([[-15.28]])
+    """
+    return current_backend(x1, x2).solve_triangular(
+        x1, x2, upper=upper, left=left, unit_diagonal=unit_diagonal, out=out
+    )
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 def multi_dot(
