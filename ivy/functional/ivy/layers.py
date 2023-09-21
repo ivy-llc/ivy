@@ -841,7 +841,7 @@ def multi_head_attention(
     # project query, key and value
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
-        emb_dim = in_proj_weights.shape[0] / 3
+        emb_dim = int(in_proj_weights.shape[0] / 3)
     elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
         if ivy.exists(in_proj_bias):
             b_q, b_k, b_v = ivy.split(in_proj_bias, num_or_size_splits=3)
