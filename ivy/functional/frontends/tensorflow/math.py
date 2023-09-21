@@ -280,7 +280,7 @@ def floordiv(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def floormod(x, y, name=None):
-    return ivy.remainder(x, y)
+    return tensorflow.math.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
