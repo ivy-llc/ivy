@@ -1,1 +1,2 @@
-from . import hierarchy, vq
+from . import vq
+from . import hierarchy

@@ -1,5 +1,4 @@
-from typing import Optional, Tuple, Union
-
+from typing import Union, Optional, Tuple
 import mxnet as mx
 import numpy as np
 

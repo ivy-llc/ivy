@@ -3,7 +3,6 @@ from typing import Optional, Union
 
 # local
 import ivy
-
 from .base import NestedArrayBase
 
 

@@ -1,6 +1,7 @@
 # import paddle
 from ivy_tests.test_ivy.test_frontends import NativeClass
 
+
 paddle_classes_to_ivy_classes = {}
 
 

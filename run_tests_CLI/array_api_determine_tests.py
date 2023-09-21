@@ -1,9 +1,8 @@
-import bz2
-import os  # noqa
 import pickle  # noqa
-
-import _pickle as cPickle
 from pydriller import Repository
+import os  # noqa
+import bz2
+import _pickle as cPickle
 
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 

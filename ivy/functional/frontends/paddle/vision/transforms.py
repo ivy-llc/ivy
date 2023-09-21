@@ -1,12 +1,17 @@
 import ivy
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
-from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
-
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
 from ..tensor.tensor import Tensor
+from ivy.functional.frontends.paddle.func_wrapper import (
+    to_ivy_arrays_and_back,
+)
 
 
 # --- Helpers --- #
 # --------------- #
+
 
 def _blend_images(img1, img2, ratio):
     # TODO: ivy.check_float(img1) returns False for ivy array

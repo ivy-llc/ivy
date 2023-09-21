@@ -1,22 +1,20 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import multiprocessing as _multiprocessing
-from functools import reduce as _reduce
-from numbers import Number
-from operator import mul
-from typing import Callable, Optional, Sequence, Tuple, Union
-
+from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
+from operator import mul
+from functools import reduce as _reduce
+import multiprocessing as _multiprocessing
+from numbers import Number
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-
-from ...ivy.general import _broadcast_to
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ...ivy.general import _broadcast_to
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:

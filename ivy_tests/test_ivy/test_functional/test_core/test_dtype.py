@@ -1,15 +1,15 @@
 """Collection of tests for unified dtype functions."""
 
 # global
-import typing
-
 import numpy as np
 from hypothesis import strategies as st
+import typing
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import BackendHandler, handle_test
+from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+
 
 # for data generation in multiple tests
 dtype_shared = helpers.get_dtypes("valid", full=False, key="dtype")

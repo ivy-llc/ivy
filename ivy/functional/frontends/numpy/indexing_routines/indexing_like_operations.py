@@ -1,8 +1,8 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
-    handle_numpy_out,
-    inputs_to_ivy_arrays,
     to_ivy_arrays_and_back,
+    inputs_to_ivy_arrays,
+    handle_numpy_out,
 )
 
 

@@ -1,8 +1,8 @@
-from numbers import Number
-from typing import Iterable, Tuple, Union
-
 import ivy
 from ivy.utils.exceptions import handle_exceptions
+from numbers import Number
+from typing import Union, Tuple, Iterable
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -163,8 +163,13 @@ def promote_types_of_mxnet_inputs(
     return x1, x2
 
 
-from . import creation, linalg, mathematical_functions, ndarray, random, symbol
-from .creation import *
+from . import random
+from . import ndarray
+from . import linalg
 from .linalg import *
+from . import mathematical_functions
 from .mathematical_functions import *
+from . import creation
+from .creation import *
+from . import symbol
 from .symbol import *

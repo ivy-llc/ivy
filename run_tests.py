@@ -1,11 +1,10 @@
 # Run Tests
 import os
 import sys
-
-import requests
 from pymongo import MongoClient
-
+import requests
 from run_tests_CLI.get_all_tests import BACKENDS
+
 
 submodules = (
     "test_paddle",

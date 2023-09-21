@@ -1,10 +1,9 @@
 # global
 from typing import Dict, List, Optional, Union
 
-import ivy
-
 # local
 from ivy.data_classes.container.base import ContainerBase
+import ivy
 
 
 class _ContainerWithSet(ContainerBase):

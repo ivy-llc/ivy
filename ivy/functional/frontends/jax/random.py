@@ -3,15 +3,16 @@ import operator
 
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
-    handle_jax_dtype,
     to_ivy_arrays_and_back,
+    handle_jax_dtype,
 )
 
 
 # --- Helpers --- #
 # --------------- #
+
 
 def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])

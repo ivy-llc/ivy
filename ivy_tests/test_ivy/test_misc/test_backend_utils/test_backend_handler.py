@@ -1,10 +1,9 @@
 # global
+from packaging import version
+import pytest
 import importlib
 import types
-
 import numpy as np
-import pytest
-from packaging import version
 
 # local
 import ivy
@@ -12,6 +11,7 @@ from ivy.utils.backend.handler import _backend_dict
 
 # TODO fix due to refactor
 from ivy_tests.test_ivy.helpers.available_frameworks import _available_frameworks
+
 
 try:
     import tensorflow as tf
@@ -24,8 +24,8 @@ except ImportError:
     torch = types.SimpleNamespace()
     torch.tensor = lambda x: x
 try:
-    import jax
     import jax.numpy as jnp
+    import jax
 except ImportError:
     jnp = types.SimpleNamespace()
     jnp.array = lambda x: x

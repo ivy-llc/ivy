@@ -1,6 +1,7 @@
 # import jax
 from ivy_tests.test_ivy.test_frontends import NativeClass
 
+
 jax_classes_to_ivy_classes = {}
 
 

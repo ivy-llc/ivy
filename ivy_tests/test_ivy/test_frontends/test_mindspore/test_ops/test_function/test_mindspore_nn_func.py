@@ -1,10 +1,7 @@
 # global
-import math
-
-import pytest
 from hypothesis import strategies as st
-
-import ivy
+import pytest
+import math
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -12,10 +9,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
+import ivy
 
 
 # --- Helpers --- #
 # --------------- #
+
 
 def _calculate_same_padding(kernel_size, stride, shape):
     padding = tuple(

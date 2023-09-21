@@ -5,23 +5,20 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.
 """
 
+# global
+from typing import Optional, Union, Sequence, Callable, Tuple
+import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
-
-# global
-from typing import Callable, Optional, Sequence, Tuple, Union
-
-import numpy as np
 import tensorflow as tf
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.gradients import _is_variable
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.utils.exceptions import _check_inplace_update_support
-
-from ...ivy.general import _broadcast_to
 from . import backend_version
+from ...ivy.general import _broadcast_to
 
 _round = round
 

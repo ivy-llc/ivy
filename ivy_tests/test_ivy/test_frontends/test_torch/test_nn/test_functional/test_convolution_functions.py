@@ -1,8 +1,6 @@
 # global
 import math
-
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
@@ -15,6 +13,7 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 
 # --- Helpers --- #
 # --------------- #
+
 
 @st.composite
 def _fold_helper(draw, dim=2):

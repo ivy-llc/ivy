@@ -1,6 +1,5 @@
 # global
-from typing import List, Optional, Sequence, Union
-
+from typing import Optional, Union, Sequence, List
 import numpy as np
 import torch
 
@@ -8,7 +7,6 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-
 from . import backend_version
 
 ivy_dtype_dict = {

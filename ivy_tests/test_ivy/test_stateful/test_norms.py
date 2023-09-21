@@ -12,6 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_method
 # --- Helpers --- #
 # --------------- #
 
+
 @st.composite
 def _generate_batchnorm_data(draw):
     batch_size = draw(st.integers(min_value=2, max_value=5))

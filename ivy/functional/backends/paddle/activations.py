@@ -4,19 +4,18 @@ Paddle activation functions.
 Collection of Paddle activation functions, wrapped to fit Ivy syntax and
 signature.
 """
-from typing import Literal, Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import paddle
 import paddle.nn.functional as F
 
-import ivy
-
 # local
 import ivy.functional.backends.paddle as paddle_backend
+import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
-
 from . import backend_version
+
 
 unsupported_dtypes = [
     paddle.int8,

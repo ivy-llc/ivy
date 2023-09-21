@@ -1,14 +1,14 @@
 # global
 import functools
-from typing import Callable, Sequence, Union
+from typing import Callable, Union, Sequence
 
 # local
 import ivy
 from ivy import (
-    handle_array_function,
-    handle_array_like_without_promotion,
-    handle_nestable,
     inputs_to_ivy_arrays,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
 

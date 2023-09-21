@@ -1,11 +1,10 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
-import multiprocessing as _multiprocessing
 from numbers import Number
-from typing import Callable, List, Optional, Sequence, Tuple, Union
-
-import numpy as np
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
+import numpy as np
+import multiprocessing as _multiprocessing
 
 # local
 import ivy

@@ -1,5 +1,4 @@
 import sys
-
 from get_all_tests import get_all_tests
 
 run_iter = int(sys.argv[1])

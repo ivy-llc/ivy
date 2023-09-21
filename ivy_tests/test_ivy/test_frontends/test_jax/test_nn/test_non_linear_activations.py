@@ -8,6 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
+
 # one_hot
 @st.composite
 def _dtype_indices_classes_axis(draw):

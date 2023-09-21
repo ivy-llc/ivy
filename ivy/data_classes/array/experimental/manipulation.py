@@ -1,17 +1,17 @@
 # global
 import abc
-from numbers import Number
 from typing import (
-    Any,
-    Callable,
-    Iterable,
-    List,
-    Literal,
     Optional,
+    Union,
     Sequence,
     Tuple,
-    Union,
+    List,
+    Iterable,
+    Callable,
+    Literal,
+    Any,
 )
+from numbers import Number
 
 # local
 import ivy

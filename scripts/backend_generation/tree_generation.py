@@ -1,11 +1,10 @@
+import astunparse
 import ast
 import json
-import logging
-import os
-import subprocess
 import sys
-
-import astunparse
+import subprocess
+import os
+import logging
 from shared import BackendNativeObject
 
 _backend_reference = "tensorflow"

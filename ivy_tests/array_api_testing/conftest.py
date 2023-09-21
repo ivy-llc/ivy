@@ -1,6 +1,6 @@
+from pytest import mark
 from pathlib import Path
 
-from pytest import mark
 
 skip_ids = []
 skips_path = Path(__file__).parent / "skips.txt"

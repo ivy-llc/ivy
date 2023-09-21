@@ -2,7 +2,11 @@
 import ivy
 
 # local
-from ivy.functional.frontends.numpy import any, argmax, ndarray
+from ivy.functional.frontends.numpy import (
+    argmax,
+    any,
+    ndarray,
+)
 
 
 class matrix:

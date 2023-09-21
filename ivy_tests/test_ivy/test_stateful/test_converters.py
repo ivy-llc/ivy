@@ -1,10 +1,10 @@
 """Collection of tests for module converters."""
 
 # global
+import pytest
 from types import SimpleNamespace
 from typing import Sequence
 
-import pytest
 
 # local
 import ivy
@@ -23,10 +23,10 @@ except ImportError:
     nn.L1Loss = SimpleNamespace
 
 try:
-    import haiku as hk
     import jax
-    import jax.numpy as jnp
     from jax import value_and_grad
+    import haiku as hk
+    import jax.numpy as jnp
 except ImportError:
     jax = SimpleNamespace()
     value_and_grad = SimpleNamespace

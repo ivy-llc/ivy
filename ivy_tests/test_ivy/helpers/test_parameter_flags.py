@@ -1,11 +1,10 @@
 import abc
-from dataclasses import dataclass
-
 from hypothesis import strategies as st
-from hypothesis.strategies import SearchStrategy
-
 from . import globals as test_globals
 from .pipeline_helper import BackendHandler
+
+from dataclasses import dataclass
+from hypothesis.strategies import SearchStrategy
 
 
 @dataclass

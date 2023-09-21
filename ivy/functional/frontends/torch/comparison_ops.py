@@ -1,15 +1,16 @@
 # global
-# local
-from collections import namedtuple
-
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
+# local
+from collections import namedtuple
+
 
 # --- Helpers --- #
 # --------------- #
+
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)

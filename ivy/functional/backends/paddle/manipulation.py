@@ -1,8 +1,7 @@
 # global
-import math
 from numbers import Number
-from typing import Iterable, List, Optional, Sequence, Tuple, Union
-
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
+import math
 import paddle
 
 # local
@@ -10,10 +9,10 @@ import ivy
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
-from ...ivy.manipulation import _calculate_out_shape
-
 # noinspection PyProtectedMember
 from . import backend_version
+from ...ivy.manipulation import _calculate_out_shape
+
 
 # Array API Standard #
 # -------------------#

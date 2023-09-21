@@ -1,13 +1,12 @@
 # global
-import math
-from typing import Optional, Tuple, Type, Union
+from typing import Union, Optional, Tuple, Type
 
 import paddle
-
-import ivy
+import math
 import ivy.functional.backends.paddle as paddle_backend
+import ivy
 from ivy import promote_types_of_inputs
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 
 # local
 from . import backend_version

@@ -1,16 +1,16 @@
 """Collection of Ivy loss functions."""
 
 # local
-from typing import Optional, Union
-
 import ivy
+from typing import Optional, Union
 from ivy.func_wrapper import (
     handle_array_function,
-    handle_array_like_without_promotion,
     handle_nestable,
+    handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
+
 
 # Helpers #
 # ------- #

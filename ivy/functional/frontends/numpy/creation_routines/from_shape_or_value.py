@@ -1,8 +1,8 @@
 # local
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
-    handle_numpy_dtype,
     outputs_to_frontend_arrays,
+    handle_numpy_dtype,
 )
 
 

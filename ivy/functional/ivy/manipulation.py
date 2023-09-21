@@ -1,23 +1,22 @@
 # For Review
 # global
+from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
-from typing import Iterable, List, Optional, Sequence, Tuple, Union
-
 from numpy.core.numeric import normalize_axis_tuple
 
 # local
 import ivy
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
-    handle_array_like_without_promotion,
-    handle_backend_invalid,
-    handle_device_shifting,
-    handle_nestable,
-    handle_out_argument,
-    handle_view,
     to_native_arrays_and_back,
+    handle_out_argument,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_view,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
-from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 

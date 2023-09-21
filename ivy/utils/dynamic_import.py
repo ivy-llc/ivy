@@ -1,7 +1,6 @@
 # NOQA
-from importlib import import_module as builtin_import
-
 import ivy
+from importlib import import_module as builtin_import
 
 
 def import_module(name, package=None):

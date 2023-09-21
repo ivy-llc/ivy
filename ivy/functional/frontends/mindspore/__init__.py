@@ -1,1 +1,3 @@
-from . import nn, numpy, ops
+from . import nn
+from . import ops
+from . import numpy

@@ -1,32 +1,28 @@
 from collections import namedtuple
-from numbers import Number
 from typing import (
-    Any,
-    Callable,
-    List,
-    Literal,
-    NamedTuple,
     Optional,
+    Union,
     Sequence,
     Tuple,
-    Union,
+    NamedTuple,
+    List,
+    Any,
+    Literal,
+    Callable,
 )
+from numbers import Number
 
+
+from .. import backend_version
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 import paddle
-
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import (
-    with_supported_device_and_dtypes,
-    with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
-)
+from ivy.func_wrapper import with_supported_device_and_dtypes
 from ivy.functional.ivy.experimental.manipulation import (
     _check_paddle_pad,
     _to_paddle_padding,
 )
-
-from .. import backend_version
 
 # Code from cephes for i0
 
