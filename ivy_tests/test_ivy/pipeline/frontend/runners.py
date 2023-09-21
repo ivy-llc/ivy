@@ -424,7 +424,16 @@ class FrontendTestCaseRunner(TestCaseRunner):
         return ret
 
     def _run_ground_truth(self, input_dtypes, test_arguments, test_flags):
-        pass
+        # no need to exit since we're not setting any backend for this
+        sub_runner_gt = GTFunctionTestCaseSubRunner(
+            self.gt_fn_tree,
+            self.fn_tree,
+            self.frontend,
+            self.on_device,
+            input_dtypes,
+            test_flags,
+        )
+        return sub_runner_gt.get_results(test_arguments)
 
     def run(self, input_dtypes, test_arguments, test_flags):
         target_results: TestCaseSubRunnerResult = self._call_target(
