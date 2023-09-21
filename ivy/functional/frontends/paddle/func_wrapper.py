@@ -1,6 +1,5 @@
-from typing import Callable
 import functools
-
+from typing import Callable
 
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
@@ -8,7 +7,6 @@ import ivy.functional.frontends.paddle as paddle_frontend
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _from_ivy_array_to_paddle_frontend_tensor(x, nested=False, include_derived=None):
     if nested:

@@ -9,8 +9,9 @@ try:
 except ModuleNotFoundError:
     h5py = None
 
+from .container import Container, ContainerBase  # noqa
+
 # local
 from .wrapping import add_ivy_container_instance_methods  # noqa
-from .container import ContainerBase, Container  # noqa
 
 colorama.init(strip=False)

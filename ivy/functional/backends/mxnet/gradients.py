@@ -2,6 +2,7 @@
 
 # global
 from typing import Optional, Sequence, Union
+
 import mxnet as mx
 
 # local

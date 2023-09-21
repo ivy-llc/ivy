@@ -1,13 +1,13 @@
 # global
-from typing import Union, Optional
+from typing import Optional, Union
 
 # local
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
+    handle_array_like_without_promotion,
     handle_nestable,
     inputs_to_ivy_arrays,
-    handle_array_like_without_promotion,
-    handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
 

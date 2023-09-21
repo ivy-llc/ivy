@@ -2,7 +2,8 @@
 
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -12,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # --- Helpers --- #
 # --------------- #
-
 
 @st.composite
 def _arrays_idx_n_dtypes(draw):

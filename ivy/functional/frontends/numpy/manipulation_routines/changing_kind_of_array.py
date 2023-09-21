@@ -1,6 +1,6 @@
 # local
-import ivy.functional.frontends.numpy as np_frontend
 import ivy
+import ivy.functional.frontends.numpy as np_frontend
 
 
 def asmatrix(data, dtype=None):

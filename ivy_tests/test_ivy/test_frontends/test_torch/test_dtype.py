@@ -1,11 +1,12 @@
 # global
-from hypothesis import settings, strategies as st
+from hypothesis import settings
+from hypothesis import strategies as st
 
 # local
 import ivy
+import ivy.functional.frontends.torch as torch_frontend
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
-import ivy.functional.frontends.torch as torch_frontend
 
 
 # can_cast

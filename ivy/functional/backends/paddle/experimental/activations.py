@@ -1,11 +1,13 @@
 # global
-from typing import Optional, Union, Literal
+from typing import Literal, Optional, Union
+
 import paddle
 import paddle.nn.functional as F
 
 # local
 import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+
 from . import backend_version
 
 

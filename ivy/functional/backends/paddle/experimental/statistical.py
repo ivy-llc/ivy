@@ -1,13 +1,16 @@
 # global
-from typing import Optional, Union, Tuple, Sequence
-import paddle
-import ivy.functional.backends.paddle as paddle_backend
-import ivy
 from copy import deepcopy
+from typing import Optional, Sequence, Tuple, Union
+
+import paddle
+
+import ivy
+import ivy.functional.backends.paddle as paddle_backend
 
 # local
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
+
 from . import backend_version
 
 

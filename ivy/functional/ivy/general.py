@@ -7,42 +7,43 @@ import math
 from functools import wraps
 from numbers import Number
 from typing import (
-    Callable,
     Any,
-    Union,
-    List,
-    Tuple,
+    Callable,
     Dict,
     Iterable,
+    List,
+    Literal,
     Optional,
     Sequence,
-    Literal,
+    Tuple,
+    Union,
 )
+
 import einops
 import numpy as np
 
 # local
 import ivy
-from ivy.utils.backend import current_backend, backend_stack
-from ivy.functional.ivy.gradients import _is_variable
-from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_array_function,
+    handle_array_like_without_promotion,
+    handle_backend_invalid,
+    handle_device_shifting,
+    handle_nestable,
+    handle_out_argument,
+    handle_partial_mixed_function,
+    handle_view_indexing,
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
-    to_native_arrays_and_back,
     inputs_to_native_shapes,
-    outputs_to_ivy_shapes,
     outputs_to_ivy_arrays,
-    handle_out_argument,
-    handle_nestable,
-    handle_array_like_without_promotion,
-    handle_view_indexing,
-    handle_device_shifting,
-    handle_partial_mixed_function,
-    handle_backend_invalid,
+    outputs_to_ivy_shapes,
+    to_native_arrays_and_back,
 )
 from ivy.functional.ivy.device import dev
+from ivy.functional.ivy.gradients import _is_variable
+from ivy.utils.backend import backend_stack, current_backend
+from ivy.utils.exceptions import handle_exceptions
 
 FN_CACHE = dict()
 INF = float("inf")

@@ -1,20 +1,20 @@
 # global
 import numpy as np
-from hypothesis import assume, strategies as st, given
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.functional.frontends.numpy import ndarray
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import (
-    handle_frontend_method,
-    assert_all_close,
-    BackendHandler,
-)
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
-    _get_first_matrix_and_dtype,
-    _get_second_matrix_and_dtype,
+from ivy.functional.frontends.numpy import ndarray
+from ivy_tests.test_ivy.helpers import (
+    BackendHandler,
+    assert_all_close,
+    handle_frontend_method,
+)
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_manipulation_routines.test_changing_number_of_dimensions import (  # noqa
+    _squeeze_helper,
 )
 
 # from ivy.functional.frontends.numpy import ndarray
@@ -24,9 +24,9 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_sums_products_differences import (  # noqa
     _get_castable_dtypes_values,
 )
-
-from ivy_tests.test_ivy.test_frontends.test_numpy.test_manipulation_routines.test_changing_number_of_dimensions import (  # noqa
-    _squeeze_helper,
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_first_matrix_and_dtype,
+    _get_second_matrix_and_dtype,
 )
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"

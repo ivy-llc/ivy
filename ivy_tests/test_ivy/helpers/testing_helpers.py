@@ -1,42 +1,43 @@
 # general
-import json
-import os
-import pytest
+import functools
 import importlib
 import inspect
-import functools
+import json
+import os
 from typing import List
 
-from hypothesis import given, strategies as st
+import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy.functional.frontends.numpy as np_frontend
-from .hypothesis_helpers import number_helpers as nh
-from .globals import TestData
-from . import test_parameter_flags as pf
-from . import test_globals as t_globals
-from .pipeline_helper import BackendHandler
-from ivy_tests.test_ivy.helpers.test_parameter_flags import (
-    DynamicFlag,
-    BuiltInstanceStrategy,
-    BuiltAsVariableStrategy,
-    BuiltNativeArrayStrategy,
-    BuiltGradientStrategy,
-    BuiltContainerStrategy,
-    BuiltWithOutStrategy,
-    BuiltInplaceStrategy,
-    BuiltCompileStrategy,
-    BuiltFrontendArrayStrategy,
-    BuiltTranspileStrategy,
-    BuiltPrecisionModeStrategy,
-)
-from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-from .globals import mod_backend
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+from ivy_tests.test_ivy.helpers.test_parameter_flags import (
+    BuiltAsVariableStrategy,
+    BuiltCompileStrategy,
+    BuiltContainerStrategy,
+    BuiltFrontendArrayStrategy,
+    BuiltGradientStrategy,
+    BuiltInplaceStrategy,
+    BuiltInstanceStrategy,
+    BuiltNativeArrayStrategy,
+    BuiltPrecisionModeStrategy,
+    BuiltTranspileStrategy,
+    BuiltWithOutStrategy,
+    DynamicFlag,
+)
+
+from . import test_globals as t_globals
+from . import test_parameter_flags as pf
+from .globals import TestData, mod_backend
+from .hypothesis_helpers import number_helpers as nh
+from .pipeline_helper import BackendHandler
 
 cmd_line_args = (
     "with_out",

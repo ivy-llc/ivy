@@ -1,13 +1,15 @@
 import operator
-from typing import Union, Optional, Tuple, List
 from numbers import Number
+from typing import List, Optional, Tuple, Union
+
 import tensorflow as tf
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
 # local
 import ivy
 from ivy import promote_types_of_inputs
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+
 from .. import backend_version
 
 

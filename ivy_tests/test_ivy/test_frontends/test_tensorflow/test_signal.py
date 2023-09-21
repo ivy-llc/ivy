@@ -9,7 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
-
 @st.composite
 def _valid_idct(draw):
     dtype, x = draw(

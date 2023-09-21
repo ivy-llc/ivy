@@ -1,13 +1,15 @@
 # global
+from typing import Optional, Sequence, Union
+
 import tensorflow as tf
-from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.utils.einsum_parser import legalise_einsum_expr
+
+from . import backend_version
 
 # Array API Standard #
 # -------------------#
