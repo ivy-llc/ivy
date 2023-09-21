@@ -56,7 +56,7 @@ def beta(
     return jax.random.beta(rng_input, a, b, shape, dtype)
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, JaxArray],
     beta: Union[float, JaxArray],

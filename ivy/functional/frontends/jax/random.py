@@ -36,7 +36,7 @@ def PRNGKey(seed):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float32",
             "float64",
         )
@@ -68,7 +68,7 @@ def bernoulli(key, p=0.5, shape=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -83,7 +83,7 @@ def beta(key, a, b, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -132,7 +132,7 @@ def cauchy(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -148,7 +148,7 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": "uint32"},
+    {"0.4.16 and below": "uint32"},
     "jax",
 )
 def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
@@ -167,7 +167,7 @@ def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -193,7 +193,7 @@ def fold_in(key, data):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -209,7 +209,7 @@ def gamma(key, a, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -228,7 +228,7 @@ def generalized_normal(key, p, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -252,7 +252,7 @@ def gumbel(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -267,7 +267,7 @@ def loggamma(key, a, shape=None, dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("float16", "bfloat16")},
+    {"0.4.16 and below": ("float16", "bfloat16")},
     "jax",
 )
 def logistic(key, shape=(), dtype="float64"):
@@ -298,7 +298,7 @@ def maxwell(key, shape, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -353,7 +353,7 @@ def orthogonal(key, n, shape=(), dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -388,7 +388,7 @@ def permutation(key, x, axis=0, independent=False):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("unsigned", "int8", "int16")},
+    {"0.4.16 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def poisson(key, lam, shape=None, dtype=None):
@@ -399,7 +399,7 @@ def poisson(key, lam, shape=None, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("unsigned", "int8", "int16")},
+    {"0.4.16 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def rademacher(key, shape, dtype="int64"):
@@ -413,7 +413,7 @@ def rademacher(key, shape, dtype="int64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("unsigned", "int8", "int16")},
+    {"0.4.16 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def randint(key, shape, minval, maxval, dtype="int64"):
