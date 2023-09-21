@@ -39,14 +39,14 @@
                             "elementwise.so",
                             "general.so",
                             "layers.so",
-                            "linear_algebra",
-                            "manipulation",
+                            "linear_algebra.so",
+                            "manipulation.so",
                             "norms.so",
                             "stateful_activations.so",
                             "stateful_layers.so",
                             "stateful_norms.so",
                             "statistical.so",
-                            "xla_core"
+                            "xla_core.so"
                         ]
                     }
                 }
