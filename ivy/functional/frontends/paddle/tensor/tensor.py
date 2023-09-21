@@ -788,6 +788,12 @@ class Tensor:
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
 
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("complex", "uint8", "uint16")}, "paddle"
+    )
+    def numpy(self):
+        return self.ivy_array.to_numpy()
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def nonzero(self):
         return paddle_frontend.nonzero(self._ivy_array)
