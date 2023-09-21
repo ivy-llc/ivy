@@ -524,3 +524,18 @@ def erfc(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.erfc(x)
+    
+def amin(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    use_where: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+     x1, x2 = ivy.promots_types_of_inputs(x1,x2)
+     dtype = x1.dtype
+     x1 = tf.caset(x1, tf.float64)
+     x2 = tf.cast(x2, tf.float64)
+     return tf.cast((x1 + x2 - tf.mathabs(x1-x2)) / 2, dtype)
+
