@@ -393,3 +393,19 @@ def erfc(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.special.erfc(x)
+
+def amin(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    /,
+    *,
+    use_where: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    
+       return torch.amin(x1, x2, out=out)
+    
+
+minimum.support_native_out = True
+
