@@ -270,9 +270,10 @@ def mha_forward_args(draw, dtypes):
     fn_tree="torch.nn.functional.celu",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
     ),
     alpha=helpers.floats(min_value=0.1, max_value=1.0),
-    test_inplace=st.just(False),
+    test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_torch_celu(
@@ -306,6 +307,7 @@ def test_torch_celu(
     fn_tree="torch.nn.functional.celu_",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
     ),
     alpha=helpers.floats(min_value=0.1, max_value=1.0),
     test_inplace=st.just(True),
