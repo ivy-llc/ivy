@@ -3314,3 +3314,36 @@ def test_jax_vdot(
         a=x[0],
         b=x[1],
     )
+
+
+# transpose
+@handle_frontend_test(
+    fn_tree="jax.numpy.transpose",
+    array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=0,
+        max_dim_size=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_transpose(
+    *,
+    array_and_axes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    array, dtype, axes = array_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        array=array,
+        axes=axes,
+    )
