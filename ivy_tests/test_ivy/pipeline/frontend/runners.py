@@ -142,11 +142,9 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         return self.test_flags
 
     def _preprocess_args(self, args_result, kwargs_result):
-        # ToDO: conversion of args and kwargs to frontend arrays
         assert (
             not self.test_flags.with_out or not self.test_flags.inplace
         ), "only one of with_out or with_inplace can be set as True"
-        self._get_frontend_creation_fn()
         ret = []
         for result, start_index_of_arguments in zip(
             [args_result, kwargs_result], [0, len(args_result.values)]
@@ -165,6 +163,13 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             )
             ret.append(temp)
 
+        if self.test_flags.generate_frontend_arrays:
+            ret[0], ret[1] = self._args_to_frontend(
+                *ret[0],
+                frontend_array_fn=self._get_frontend_creation_fn(),
+                include_derived={"tuple": True},
+                **ret[1],
+            )
         return ret[0], ret[1]
 
     def _get_frontend_creation_fn(self):
@@ -208,7 +213,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 FunctionTestCaseSubRunner._frontend_array_to_ivy,
                 include_derived={"tuple": True},
             )
-        # TodO: check cls_type after you've created the asertion
+        # TodO: check cls_type after you've created the assertion
         cls_type = None
         if (
             self.test_flags.generate_frontend_arrays
