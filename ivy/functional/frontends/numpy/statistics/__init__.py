@@ -1,8 +1,5 @@
-from . import averages_and_variances
+from . import averages_and_variances, correlating, histograms, order_statistics
 from .averages_and_variances import *
-from . import order_statistics
-from .order_statistics import *
-from . import correlating
 from .correlating import *
-from . import histograms
 from .histograms import *
+from .order_statistics import *

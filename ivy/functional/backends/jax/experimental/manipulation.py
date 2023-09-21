@@ -1,19 +1,20 @@
 # local
+from collections import namedtuple
+from numbers import Number
 from typing import (
+    Any,
+    Callable,
+    List,
+    Literal,
+    NamedTuple,
     Optional,
-    Union,
     Sequence,
     Tuple,
-    NamedTuple,
-    Literal,
-    Callable,
-    Any,
-    List,
+    Union,
 )
-import jax.numpy as jnp
+
 import jax.lax as jlax
-from numbers import Number
-from collections import namedtuple
+import jax.numpy as jnp
 
 # local
 import ivy

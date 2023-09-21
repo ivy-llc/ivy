@@ -1,5 +1,6 @@
 # global
 import sys
+
 import numpy as np
 
 # local
@@ -179,45 +180,47 @@ backend = "numpy"
 
 
 # local sub-modules
-from . import activations
-from .activations import *
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import layers
-from .layers import *
+from . import (
+    activations,
+    control_flow_ops,
+    creation,
+    data_type,
+    device,
+    elementwise,
+    experimental,
+    general,
+    gradients,
+    layers,
+)
 from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
-from . import experimental
-from .experimental import *
-from . import control_flow_ops
+from . import (
+    manipulation,
+    random,
+    searching,
+    set,
+    sorting,
+    statistical,
+    sub_backends,
+    utility,
+)
+from .activations import *
 from .control_flow_ops import *
-
+from .creation import *
+from .data_type import *
+from .device import *
+from .elementwise import *
+from .experimental import *
+from .general import *
+from .gradients import *
+from .layers import *
+from .linear_algebra import *
+from .manipulation import *
+from .random import *
+from .searching import *
+from .set import *
+from .sorting import *
+from .statistical import *
+from .sub_backends import *
+from .utility import *
 
 # sub-backends
-
-from . import sub_backends
-from .sub_backends import *

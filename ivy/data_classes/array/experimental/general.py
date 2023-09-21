@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Callable, Sequence
+from typing import Callable, Sequence, Union
 
 # local
 import ivy

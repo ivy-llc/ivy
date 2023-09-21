@@ -1,6 +1,7 @@
+from importlib.util import find_spec
+
 import pytest
 
-from importlib.util import find_spec
 import ivy
 
 

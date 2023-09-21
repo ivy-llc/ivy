@@ -1,6 +1,7 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -10,7 +11,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _get_reduce_func(dtype):
     if dtype == "bool":

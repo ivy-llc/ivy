@@ -1,10 +1,11 @@
 # global
 import abc
-from typing import Optional, Union, Literal, List
+from typing import List, Literal, Optional, Union
+
+import ivy
 
 # local
 
-import ivy
 
 
 class _ArrayWithSorting(abc.ABC):

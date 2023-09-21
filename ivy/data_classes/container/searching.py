@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Optional, Union, List, Dict
+from typing import Dict, List, Optional, Union
 
 # local
 import ivy

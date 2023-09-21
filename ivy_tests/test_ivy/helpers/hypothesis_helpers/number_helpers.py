@@ -1,10 +1,11 @@
 from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 
-# local
-from . import general_helpers as gh, dtype_helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 
+# local
+from . import dtype_helpers
+from . import general_helpers as gh
 
 floats_info = {
     "float16": {"cast_type": "float16", "width": 16},

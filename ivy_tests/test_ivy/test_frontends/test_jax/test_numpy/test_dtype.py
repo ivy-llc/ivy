@@ -1,5 +1,6 @@
 # global
-from hypothesis import strategies as st, settings
+from hypothesis import settings
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

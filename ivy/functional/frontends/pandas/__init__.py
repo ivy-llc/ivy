@@ -1,10 +1,6 @@
-from . import func_wrapper
-from .func_wrapper import *
-from . import series
-from .series import *
-from . import index
-from .index import *
-from . import dataframe
+from . import dataframe, func_wrapper, generic, index, series
 from .dataframe import *
-from . import generic
+from .func_wrapper import *
 from .generic import *
+from .index import *
+from .series import *

@@ -1,17 +1,17 @@
 """Base Container Object."""
 
 # global
-import inspect
-from itertools import chain
-import re
 import abc
 import copy
-import termcolor
-import numpy as np
+import inspect
 import json
+import re
+from itertools import chain
+
+import numpy as np
+import termcolor
 
 from ivy.utils.exceptions import IvyBackendException, IvyException
-
 
 try:
     # noinspection PyPackageRequirements
@@ -20,14 +20,13 @@ except ModuleNotFoundError:
     h5py = None
 import pickle
 import random
-from operator import mul
-from functools import reduce as _reduce
-from typing import Union, Tuple
 from builtins import set
+from functools import reduce as _reduce
+from operator import mul
+from typing import Tuple, Union
 
 # local
 import ivy
-
 
 ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 

@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+
 import ivy
 
 # local
@@ -9,7 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # --- Helpers --- #
 # --------------- #
-
 
 # cosine embedding loss
 @st.composite

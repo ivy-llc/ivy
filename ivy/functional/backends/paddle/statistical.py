@@ -2,16 +2,17 @@
 
 torch_scatter = None
 
-from typing import Union, Optional, Sequence
+from typing import Optional, Sequence, Union
 
 import paddle
+
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
-    with_supported_device_and_dtypes,
-)
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
+    with_unsupported_device_and_dtypes,
+)
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 from . import backend_version

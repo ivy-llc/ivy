@@ -1,7 +1,8 @@
-from .generic import NDFrame
 import ivy
-from .series import Series
 from ivy.functional.frontends.pandas.index import Index
+
+from .generic import NDFrame
+from .series import Series
 
 
 class DataFrame(NDFrame):

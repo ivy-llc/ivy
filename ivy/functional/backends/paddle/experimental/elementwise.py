@@ -1,17 +1,16 @@
 # global
 import operator
-from typing import Optional, Union, Tuple, List
 from numbers import Number
+from typing import List, Optional, Tuple, Union
+
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import (
-    with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
-)
-import ivy.functional.backends.paddle as paddle_backend
+
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle.elementwise import _elementwise_helper
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 from .. import backend_version

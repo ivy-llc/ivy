@@ -1,11 +1,13 @@
-from typing import Optional, Union, Tuple, List
+from typing import List, Optional, Tuple, Union
+
 import numpy as np
 import numpy.typing as npt
 
 import ivy
 from ivy import promote_types_of_inputs
-from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+
 from . import backend_version
 
 

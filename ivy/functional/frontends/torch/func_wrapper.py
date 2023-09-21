@@ -6,7 +6,6 @@ from typing import Callable
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
-
 numpy_compatible_args = {
     "axis": "dim",
     "keepdims": "keepdim",

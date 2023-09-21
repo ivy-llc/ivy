@@ -1,8 +1,11 @@
 # global
-import tensorflow as tf
-from typing import Tuple, Union, Optional
 from collections import namedtuple
+from typing import Optional, Tuple, Union
+
+import tensorflow as tf
+
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 

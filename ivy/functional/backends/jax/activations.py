@@ -4,9 +4,10 @@
 # global
 
 
+from typing import Literal, Optional, Union
+
 import jax
 import jax.numpy as jnp
-from typing import Optional, Union, Literal
 
 # local
 from ivy.functional.backends.jax import JaxArray

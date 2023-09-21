@@ -1,7 +1,10 @@
 # global
-import ivy
-from hypothesis import assume, strategies as st
 import random
+
+from hypothesis import assume
+from hypothesis import strategies as st
+
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -10,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _filter_dtypes(input_dtype):
     assume(("bfloat16" not in input_dtype) and ("float16" not in input_dtype))

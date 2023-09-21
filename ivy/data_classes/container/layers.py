@@ -1,10 +1,10 @@
 # global
-from typing import Optional, Tuple, Union, List, Callable, Dict, Sequence
+from typing import Callable, Dict, List, Optional, Sequence, Tuple, Union
+
+import ivy
 
 # local
 from ivy.data_classes.container.base import ContainerBase
-import ivy
-
 
 # ToDo: implement all methods here as public instance methods
 

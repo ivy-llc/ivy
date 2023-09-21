@@ -1,22 +1,21 @@
 # global
 from numbers import Number
-from typing import Optional, Union, Literal
+from typing import Literal, Optional, Union
 
 # local
 import ivy
 from ivy.func_wrapper import (
     handle_array_function,
-    handle_out_argument,
-    to_native_arrays_and_back,
-    handle_nestable,
     handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
-    handle_device_shifting,
-    handle_complex_input,
     handle_backend_invalid,
+    handle_complex_input,
+    handle_device_shifting,
+    handle_nestable,
+    handle_out_argument,
+    inputs_to_ivy_arrays,
+    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
-
 
 # Array API Standard #
 # -------------------#
@@ -713,8 +712,8 @@ def atan(
     """
     Calculate an implementation-dependent approximation of the principal value of the
     inverse tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-π/2,
-    +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise result
-    is expressed in radians.
+    +π/2]``, for each element ``x_i`` of the input array ``x``. Each element-wise
+    result is expressed in radians.
 
     **Special cases**
 

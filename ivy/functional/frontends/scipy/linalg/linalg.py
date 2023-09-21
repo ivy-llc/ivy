@@ -6,7 +6,6 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 # --- Helpers --- #
 # --------------- #
 
-
 def _check_finite(a):
     if not ivy.all(ivy.isfinite(a)):
         raise ValueError("Array must not contain infs or NaNs")

@@ -2,7 +2,6 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
-
 _default_dtype = torch_frontend.float32
 
 

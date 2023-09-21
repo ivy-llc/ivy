@@ -10,7 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
-
 # resize
 @st.composite
 def dtype_and_resize(draw):

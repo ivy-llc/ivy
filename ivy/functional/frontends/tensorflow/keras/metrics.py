@@ -5,7 +5,6 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 # --- Helpers --- #
 # --------------- #
 
-
 def _binary_matches(y_true, y_pred, threshold=0.5):
     threshold = ivy.astype(ivy.array(threshold), y_pred.dtype)
     y_pred = ivy.astype(ivy.greater(y_pred, threshold), y_pred.dtype)

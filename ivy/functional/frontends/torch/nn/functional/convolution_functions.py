@@ -10,7 +10,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 # --- Helpers --- #
 # --------------- #
 
-
 def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     dims = len(input.shape) - 2
     _valid_shapes(input, weight, bias, stride, padding, groups)

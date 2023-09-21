@@ -1,6 +1,6 @@
 import hypothesis.extra.numpy as hnp
-from hypothesis import strategies as st
 import numpy as np
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -9,7 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # --- Helpers --- #
 # --------------- #
-
 
 @st.composite
 def _broadcastable_trio(draw):

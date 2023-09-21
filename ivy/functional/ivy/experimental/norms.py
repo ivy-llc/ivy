@@ -1,19 +1,19 @@
-from typing import Union, Optional, Tuple
+from typing import Optional, Tuple, Union
 
 # local
 import ivy
-from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
-    handle_partial_mixed_function,
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
-    handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
     handle_array_function,
-    handle_device_shifting,
+    handle_array_like_without_promotion,
     handle_backend_invalid,
+    handle_device_shifting,
+    handle_nestable,
+    handle_out_argument,
+    handle_partial_mixed_function,
+    inputs_to_ivy_arrays,
+    to_native_arrays_and_back,
 )
+from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 

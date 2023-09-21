@@ -1,10 +1,9 @@
 # global
-from ..random import *  # noqa: F401
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
-from ivy.functional.frontends.paddle.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
+
+from ..random import *  # noqa: F401
 
 # NOTE:
 # Only inplace functions are to be added in this file.

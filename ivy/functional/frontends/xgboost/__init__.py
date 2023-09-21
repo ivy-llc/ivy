@@ -1,6 +1,5 @@
-from . import compat
+from . import compat, core
 from .compat import *
-from . import core
 from .core import *
 
 _frontend_array = DMatrix

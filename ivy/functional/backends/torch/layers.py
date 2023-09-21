@@ -1,5 +1,5 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional, Sequence, Tuple, Union
 
 # global
 import torch
@@ -7,8 +7,9 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.layers import _deconv_length, _handle_padding
+
 from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
 @with_unsupported_dtypes(

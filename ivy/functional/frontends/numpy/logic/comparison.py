@@ -3,18 +3,17 @@ import ivy
 
 # local
 from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-    inputs_to_ivy_arrays,
+    from_zero_dim_arrays_to_scalar,
     handle_numpy_casting,
     handle_numpy_dtype,
-    from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
+    inputs_to_ivy_arrays,
+    to_ivy_arrays_and_back,
 )
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 @handle_numpy_out
 @to_ivy_arrays_and_back

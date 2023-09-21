@@ -1,7 +1,7 @@
 """Base class for deriving trainable modules."""
 
 # global
-from typing import Union, Optional
+from typing import Optional, Union
 
 # local
 import ivy

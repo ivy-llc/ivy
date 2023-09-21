@@ -2,13 +2,15 @@
 
 # global
 import os
-from hypothesis import given, strategies as st
+
 import numpy as np
+from hypothesis import given
+from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.functional.ivy.gradients import _variable
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.ivy.gradients import _variable
 
 
 class TrainableModule(ivy.Module):

@@ -1,3 +1,2 @@
-from . import nn
-from . import general_functions
+from . import general_functions, nn
 from .general_functions import *

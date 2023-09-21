@@ -1,6 +1,7 @@
 # global
-import torch
 from typing import Optional, Union
+
+import torch
 
 # local
 import ivy

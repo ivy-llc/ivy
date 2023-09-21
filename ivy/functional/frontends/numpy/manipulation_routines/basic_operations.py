@@ -1,9 +1,9 @@
 # local
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
-    inputs_to_ivy_arrays,
-    _assert_no_array,
     _assert_array,
+    _assert_no_array,
+    inputs_to_ivy_arrays,
 )
 
 

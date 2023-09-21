@@ -8,7 +8,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
-
 @st.composite
 def _dtype_x_bounded_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
