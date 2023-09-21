@@ -1353,20 +1353,16 @@ def stft(
     if hop_length <= 0:
         hop_length = 1
     
-    if window is None:
-        window = tf.signal.hann_window(
-            win_length,
-            periodic=True,
-            dtype=tf.dtypes.float32,
-        )
-    window_fn = lambda *args: window(*args)
+    if window is not None:
+        window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
+    window_fn = lambda *args, **kwargs: window    
 
     return tf.signal.stft(
         signal,
-        n_fft,
-        hop_length,
-        window_fn,
         win_length,
+        hop_length,
+        n_fft,
+        window_fn,
         pad_mode,
     )
 
