@@ -105,7 +105,7 @@ def atanh(x, name="atanh"):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("int32",)},
+    {"2.13.0 and below": ("int32","bfloat16")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -276,11 +276,19 @@ def floor(x, name=None):
 @to_ivy_arrays_and_back
 def floordiv(x, y, name=None):
     return ivy.floor_divide(x, y)
-
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    "tensorflow",
+)
 
 @to_ivy_arrays_and_back
 def floormod(x, y, name=None):
-    return tensorflow.math.remainder(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -310,7 +318,7 @@ def igamma(a, x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.13.0 and below": ("bfloat16","float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
