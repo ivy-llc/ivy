@@ -276,6 +276,7 @@ def floor(x, name=None):
 @to_ivy_arrays_and_back
 def floordiv(x, y, name=None):
     return ivy.floor_divide(x, y)
+
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {
@@ -285,10 +286,13 @@ def floordiv(x, y, name=None):
     },
     "tensorflow",
 )
-
 @to_ivy_arrays_and_back
 def floormod(x, y, name=None):
-    return ivy.remainder(x, y)
+    if ivy.dtype(x) == "bfloat16":
+        # Handle bfloat16 separately, as remainder is not supported
+        return ivy.floor(x) - ivy.floor(x / y) * y
+    else:
+        return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
