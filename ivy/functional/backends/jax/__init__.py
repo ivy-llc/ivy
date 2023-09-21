@@ -1,14 +1,14 @@
 # global
 import sys
-from packaging import version
-import jaxlib
-import jax
-import jax.numpy as jnp
 from typing import Union
 
+import jax
+import jax.numpy as jnp
+import jaxlib
+
 # make ivy.Container compatible with jax pytree traversal
-from jax.tree_util import register_pytree_node
-from jax.tree_util import tree_flatten, tree_unflatten
+from jax.tree_util import register_pytree_node, tree_flatten, tree_unflatten
+from packaging import version
 
 # local
 import ivy
@@ -92,7 +92,7 @@ native_bool = jnp.dtype("bool")
 
 # update these to add new dtypes
 valid_dtypes = {
-    "0.4.14 and below": (
+    "0.4.16 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -111,7 +111,7 @@ valid_dtypes = {
     )
 }
 valid_numeric_dtypes = {
-    "0.4.14 and below": (
+    "0.4.16 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -130,7 +130,7 @@ valid_numeric_dtypes = {
 }
 
 valid_int_dtypes = {
-    "0.4.14 and below": (
+    "0.4.16 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -143,12 +143,12 @@ valid_int_dtypes = {
 }
 
 valid_uint_dtypes = {
-    "0.4.14 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+    "0.4.16 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 }
 valid_float_dtypes = {
-    "0.4.14 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+    "0.4.16 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 }
-valid_complex_dtypes = {"0.4.14 and below": (ivy.complex64, ivy.complex128)}
+valid_complex_dtypes = {"0.4.16 and below": (ivy.complex64, ivy.complex128)}
 
 
 # leave these untouched
@@ -163,12 +163,12 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 # invalid data types
 
 # update these to add new dtypes
-invalid_dtypes = {"0.4.14 and below": ()}
-invalid_numeric_dtypes = {"0.4.14 and below": ()}
-invalid_int_dtypes = {"0.4.14 and below": ()}
-invalid_float_dtypes = {"0.4.14 and below": ()}
-invalid_uint_dtypes = {"0.4.14 and below": ()}
-invalid_complex_dtypes = {"0.4.14 and below": ()}
+invalid_dtypes = {"0.4.16 and below": ()}
+invalid_numeric_dtypes = {"0.4.16 and below": ()}
+invalid_int_dtypes = {"0.4.16 and below": ()}
+invalid_float_dtypes = {"0.4.16 and below": ()}
+invalid_uint_dtypes = {"0.4.16 and below": ()}
+invalid_complex_dtypes = {"0.4.16 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
@@ -194,45 +194,47 @@ def closest_valid_dtype(type=None, /, as_native=False):
 backend = "jax"
 
 
-# local sub-modules
-from . import activations
-from .activations import *
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import layers
-from .layers import *
-from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
-from . import experimental
-from .experimental import *
-from . import control_flow_ops
-from .control_flow_ops import *
-
-
 # sub-backends
-from . import sub_backends
+# local sub-modules
+from . import (
+    activations,
+    control_flow_ops,
+    creation,
+    data_type,
+    device,
+    elementwise,
+    experimental,
+    general,
+    gradients,
+    layers,
+)
+from . import linear_algebra as linalg
+from . import (
+    manipulation,
+    random,
+    searching,
+    set,
+    sorting,
+    statistical,
+    sub_backends,
+    utility,
+)
+from .activations import *
+from .control_flow_ops import *
+from .creation import *
+from .data_type import *
+from .device import *
+from .elementwise import *
+from .experimental import *
+from .general import *
+from .gradients import *
+from .layers import *
+from .linear_algebra import *
+from .manipulation import *
+from .random import *
+from .searching import *
+from .set import *
+from .sorting import *
+from .statistical import *
 from .sub_backends import *
+from .utility import *

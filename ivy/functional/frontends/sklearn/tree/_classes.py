@@ -1,9 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from ..base import (
-    BaseEstimator,
-    ClassifierMixin,
-    MultiOutputMixin,
-)
+
+from ..base import BaseEstimator, ClassifierMixin, MultiOutputMixin
 
 
 class BaseDecisionTree(MultiOutputMixin, BaseEstimator, metaclass=ABCMeta):

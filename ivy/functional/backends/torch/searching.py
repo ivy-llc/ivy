@@ -5,8 +5,8 @@ import torch
 import torch.nn.functional as tnf
 
 import ivy
-
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 # Array API Standard #
@@ -105,7 +105,7 @@ def where(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if condition.dtype is not torch.bool:
-        condition = condition == 1.0
+        condition = condition.to(bool)
     return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 

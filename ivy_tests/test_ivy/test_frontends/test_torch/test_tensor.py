@@ -1,8 +1,22 @@
 # global
-import pytest
 from types import SimpleNamespace
-import numpy as np
 
+import numpy as np
+import pytest
+from hypothesis import assume, given
+from hypothesis import strategies as st
+
+import ivy
+
+# local
+import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.torch import Tensor
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_frontend_method
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_and_3dbatch_matrices,
+    _get_dtype_input_and_mat_vec,
+    _get_dtype_input_and_matrices,
+)
 from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
     _topk_helper,
 )
@@ -12,39 +26,28 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_creation_ops import (
 from ivy_tests.test_ivy.test_frontends.test_torch.test_indexing_slicing_joining_mutating_ops import (  # noqa: E501
     _dtype_input_dim_start_length,
 )
-from ivy_tests.test_ivy.test_frontends.test_torch.test_reduction_ops import (
-    _get_axis_and_p,
-)
-
-import ivy
-from hypothesis import strategies as st, given, assume
-
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
-    _get_dtype_and_3dbatch_matrices,
-    _get_dtype_input_and_matrices,
-    _get_dtype_input_and_mat_vec,
-)
-from ivy.functional.frontends.torch import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
-from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
-    _broadcastable_trio,
-)
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
+from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
+    _get_dtype_and_matrix,
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (  # noqa
     dtype_value1_value2_axis,
 )
-from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
-    _get_dtype_and_matrix,
+from ivy_tests.test_ivy.test_frontends.test_torch.test_reduction_ops import (
+    _get_axis_and_p,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
+    _get_splits,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
+    _broadcastable_trio,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
     _statistical_dtype_values,
 )
-
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    put_along_axis_helper,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
     _quantile_helper,
 )
@@ -1560,6 +1563,237 @@ def test_torch_index_fill(
             "dim": axis,
             "index": indices,
             "value": value,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter",
+    args=put_along_axis_helper(),
+)
+def test_torch_instance_scatter(
+    args,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_",
+    args=put_along_axis_helper(),
+    reduce=st.sampled_from(["add", "multiply"]),
+)
+def test_torch_instance_scatter_(
+    args,
+    reduce,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+            "reduce": reduce,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_add
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_add",
+    args=put_along_axis_helper(),
+)
+def test_torch_instance_scatter_add(
+    args,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_add_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_add_",
+    args=put_along_axis_helper(),
+)
+def test_torch_instance_scatter_add_(
+    args,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_reduce
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_reduce",
+    args=put_along_axis_helper(),
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
+)
+def test_torch_instance_scatter_reduce(
+    args,
+    mode,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+            "reduce": mode,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_reduce_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_reduce_",
+    args=put_along_axis_helper(),
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
+)
+def test_torch_instance_scatter_reduce_(
+    args,
+    mode,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+            "reduce": mode,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,

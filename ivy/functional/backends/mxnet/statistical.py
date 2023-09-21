@@ -1,10 +1,12 @@
-from typing import Union, Optional, Sequence
-import mxnet as mx
 from numbers import Number
+from typing import Optional, Sequence, Union
+
+import mxnet as mx
+
+import ivy
 
 # local
 from ivy.utils.exceptions import IvyNotImplementedException
-import ivy
 
 
 def min(

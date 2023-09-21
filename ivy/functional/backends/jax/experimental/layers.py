@@ -1,29 +1,27 @@
 # global
-from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
+import math
+from typing import Callable, List, Literal, Optional, Sequence, Tuple, Union
+
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
-import math
 
 # local
 import ivy
 from ivy import output_to_native_arrays
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
+from ivy.functional.ivy.experimental.layers import _get_size, _padding_ceil_mode
 from ivy.functional.ivy.layers import (
+    _depth_max_pooling_helper,
     _handle_padding,
     _validate_max_pool_params,
-    _depth_max_pooling_helper,
 )
-from ivy.functional.ivy.experimental.layers import (
-    _padding_ceil_mode,
-    _get_size,
-)
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
-from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
@@ -441,7 +439,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.14 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.16 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -814,7 +812,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.16 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -840,7 +838,7 @@ def embedding(
     return embeddings
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
     s: Sequence[int] = None,

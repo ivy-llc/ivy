@@ -1,6 +1,7 @@
+import numpy as np
+
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
-import numpy as np
 
 masked_print_options = "--"
 nomask = False

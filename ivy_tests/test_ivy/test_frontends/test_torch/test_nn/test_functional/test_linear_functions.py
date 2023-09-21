@@ -9,7 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
-
 @st.composite
 def _x_and_linear(draw, dtypes):
     dtype = draw(dtypes)

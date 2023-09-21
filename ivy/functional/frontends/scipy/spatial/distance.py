@@ -1,12 +1,11 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 import ivy.functional.frontends.scipy as sc_frontend
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _validate_vector(u, dtype=None):
     u = ivy.asarray(u, dtype=dtype)

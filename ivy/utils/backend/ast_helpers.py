@@ -3,10 +3,9 @@ import os
 import sys
 import traceback
 from ast import parse
-from string import Template
-from importlib.util import spec_from_file_location
 from importlib.abc import Loader, MetaPathFinder
-
+from importlib.util import spec_from_file_location
+from string import Template
 
 # AST helpers ##################
 

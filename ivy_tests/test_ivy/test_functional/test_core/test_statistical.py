@@ -1,7 +1,8 @@
 """Collection of tests for statistical functions."""
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -10,7 +11,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # --- Helpers --- #
 # --------------- #
-
 
 @st.composite
 def _get_castable_dtype(draw, min_value=None, max_value=None):

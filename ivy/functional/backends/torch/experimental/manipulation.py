@@ -1,28 +1,31 @@
 # global
+from collections import namedtuple
+from numbers import Number
 from typing import (
-    Optional,
-    Union,
-    Sequence,
-    Tuple,
-    NamedTuple,
+    Any,
+    Callable,
     List,
     Literal,
-    Callable,
-    Any,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
 )
-from numbers import Number
-from collections import namedtuple
+
 import torch
 
-# local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from .. import backend_version
 import ivy
+
+# local
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.experimental.manipulation import (
-    _to_tf_padding,
     _check_paddle_pad,
     _to_paddle_padding,
+    _to_tf_padding,
 )
+
+from .. import backend_version
 
 
 def moveaxis(
@@ -437,3 +440,39 @@ def column_stack(
     arrays: Sequence[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.column_stack(arrays)
+
+
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
+def put_along_axis(
+    arr: torch.Tensor,
+    indices: torch.Tensor,
+    values: Union[int, torch.Tensor],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    mode_mappings = {
+        "sum": "sum",
+        "min": "amin",
+        "max": "amax",
+        "mul": "prod",
+        "replace": "replace",
+    }
+    mode = mode_mappings.get(mode, mode)
+    indices = indices.to(torch.int64)
+    if mode == "replace":
+        return torch.scatter(arr, axis, indices, values, out=out)
+    else:
+        return torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+    "sum",
+    "mul",
+    "mean",
+    "max",
+    "min",
+]

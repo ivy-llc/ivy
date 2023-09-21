@@ -1,26 +1,26 @@
 # global
 import math
 import sys
+
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import assert_all_close
-from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
-    dtype_value1_value2_axis,
-)
+from ivy_tests.test_ivy.helpers import assert_all_close, handle_frontend_test
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
+)
+from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
+    dtype_value1_value2_axis,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
@@ -246,7 +246,7 @@ def _vander_helper(draw):
     # generate input matrix of shape (*, n) and where '*' is one or more
     # batch dimensions
     N = draw(helpers.ints(min_value=2, max_value=5))
-    if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
+    if draw(st.floats(min_value=0, max_value=1.0)) < 0.5:
         N = None
 
     shape = draw(

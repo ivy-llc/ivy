@@ -1,12 +1,14 @@
 # global
-import os
-import pytest
-from typing import Dict
-import sys
 import multiprocessing as mp
+import os
+import sys
+from typing import Dict
+
+import pytest
 
 # for enabling numpy's bfloat16 behavior
 from packaging import version
+
 from .helpers.globals import mod_backend, mod_frontend
 
 multiprocessing_flag = False  # multiversion

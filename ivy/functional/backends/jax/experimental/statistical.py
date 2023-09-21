@@ -1,16 +1,18 @@
-import jax.numpy as jnp
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Sequence, Tuple, Union
 
-from ivy.functional.backends.jax import JaxArray
 import jax.lax as jlax
+import jax.numpy as jnp
+
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+from ivy.functional.backends.jax import JaxArray
+
 from ..statistical import _infer_dtype
+from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16",)},
+    {"0.4.16 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -121,7 +123,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("complex64", "complex128")}, backend_version
+    {"0.4.16 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,
@@ -291,6 +293,7 @@ def cov(
     )
 
 
+@with_unsupported_dtypes({"0.4.14 and below": ("bool",)}, backend_version)
 def cummax(
     x: JaxArray,
     /,
@@ -301,12 +304,8 @@ def cummax(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
-    if x.dtype in (jnp.bool_, jnp.float16):
-        x = x.astype(jnp.float64)
-    elif x.dtype in (jnp.int16, jnp.int8, jnp.uint8):
-        x = x.astype(jnp.int64)
-    elif x.dtype in (jnp.complex128, jnp.complex64):
-        x = jnp.real(x).astype(jnp.float64)
+    if x.dtype in (jnp.complex128, jnp.complex64):
+        x = x.real
 
     if exclusive or (reverse and exclusive):
         if exclusive and reverse:
@@ -390,7 +389,15 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "0.4.16 and below": (
+            "bfloat16",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def cummin(
     x: JaxArray,
     /,
@@ -405,10 +412,7 @@ def cummin(
         axis = axis + len(x.shape)
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        if dtype is jnp.bool_:
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = _infer_dtype(x.dtype)
     return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
 
 

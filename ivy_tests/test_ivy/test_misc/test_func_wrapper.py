@@ -1,15 +1,15 @@
+from typing import List, Sequence, Tuple, Union
+from unittest.mock import patch
+
 import numpy as np
+import pytest
 
 import ivy
-import pytest
-from unittest.mock import patch
 from ivy.func_wrapper import handle_array_like_without_promotion
-from typing import Union, Tuple, List, Sequence
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _fn1(x: Union[ivy.Array, Tuple[int, int]]):
     return x
@@ -209,3 +209,9 @@ def test_views(array_to_update, backend_fw):
     assert np.allclose(d, d_copy + 1)
     assert np.allclose(e[0], e_copy + 1)
     ivy.previous_backend()
+
+
+def test_warn_efficient_implementations():
+    to_test = ivy.func_wrapper._handle_efficient_implementation_available(ivy.array)
+    with pytest.warns(UserWarning):
+        to_test(1)

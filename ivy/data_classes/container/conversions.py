@@ -6,7 +6,7 @@ ivy.Array instances.
 """
 
 # global
-from typing import Union, Dict, Optional, List
+from typing import Dict, List, Optional, Union
 
 # local
 import ivy

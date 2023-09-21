@@ -7,6 +7,7 @@ Should not be used inside any of the test functions.
 
 
 from dataclasses import dataclass
+
 from .pipeline_helper import get_frontend_config
 
 # needed for multiversion

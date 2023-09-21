@@ -1,12 +1,12 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-    inputs_to_ivy_arrays,
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
+    inputs_to_ivy_arrays,
+    to_ivy_arrays_and_back,
 )
-from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
 
 @inputs_to_ivy_arrays

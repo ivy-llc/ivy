@@ -1,10 +1,7 @@
 # local
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
-from ivy.func_wrapper import (
-    with_supported_dtypes,
-    with_unsupported_dtypes,
-)
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
 
@@ -59,6 +56,13 @@ class Tensor:
 
     # Special Methods #
     # -------------------#
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __add__(self, y, /, name=None):
+        return paddle_frontend.add(self, y)
 
     def __getitem__(self, item):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
@@ -730,6 +734,16 @@ class Tensor:
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("complex64", "complex128")}, "paddle")
+    def as_real(self, name=None):
+        if not ivy.is_complex_dtype(self._ivy_array):
+            raise ivy.exceptions.IvyError(
+                "as_real is only supported for complex tensors"
+            )
+        re_part = ivy.real(self._ivy_array)
+        im_part = ivy.imag(self._ivy_array)
+        return ivy.stack((re_part, im_part), axis=-1)
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def stanh(self, scale_a=0.67, scale_b=1.7159, name=None):
         return paddle_frontend.stanh(self, scale_a=scale_a, scale_b=scale_b)
@@ -764,3 +778,7 @@ class Tensor:
 
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def nonzero(self):
+        return paddle_frontend.nonzero(self._ivy_array)

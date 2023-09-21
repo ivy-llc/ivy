@@ -1,23 +1,21 @@
 # global
-from hypothesis import strategies as st
 import math
 
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
-    _broadcastable_trio,
-)
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
     _get_splits,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
+    _broadcastable_trio,
 )
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 # noinspection DuplicatedCode
 @st.composite
@@ -910,7 +908,7 @@ def test_torch_nonzero(
 @handle_frontend_test(
     fn_tree="torch.permute",
     dtype_values_axis=_array_idxes_n_dtype(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_permute(

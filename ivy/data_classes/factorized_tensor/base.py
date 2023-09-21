@@ -1,6 +1,7 @@
-import ivy
-from collections.abc import Mapping
 from abc import ABCMeta
+from collections.abc import Mapping
+
+import ivy
 
 
 class FactorizedTensor(Mapping, metaclass=ABCMeta):

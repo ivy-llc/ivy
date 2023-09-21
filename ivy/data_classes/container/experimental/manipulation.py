@@ -1,17 +1,17 @@
 # global
+from numbers import Number
 from typing import (
-    Optional,
-    Union,
-    List,
-    Dict,
-    Sequence,
-    Tuple,
-    Literal,
     Any,
     Callable,
+    Dict,
     Iterable,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
 )
-from numbers import Number
 
 # local
 import ivy
@@ -3779,6 +3779,80 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         new_xs.insert(0, self.cont_copy())
         return self.static_column_stack(
             new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_put_along_axis(
+        arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        values: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: Union[int, ivy.Container],
+        /,
+        *,
+        mode: Optional[
+            Union[Literal["sum", "min", "max", "mul", "mean", "replace"], ivy.Container]
+        ] = "replace",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "put_along_axis",
+            arr,
+            indices,
+            values,
+            axis,
+            mode=mode,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def put_along_axis(
+        self: ivy.Container,
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        values: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: Union[int, ivy.Container],
+        /,
+        *,
+        mode: Optional[
+            Union[Literal["sum", "min", "max", "mul", "mean", "replace"], ivy.Container]
+        ] = "replace",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return self._static_put_along_axis(
+            self,
+            indices,
+            values,
+            axis,
+            mode=mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

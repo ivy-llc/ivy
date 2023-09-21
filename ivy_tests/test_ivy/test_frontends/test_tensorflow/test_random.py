@@ -8,7 +8,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
-
 # stateless_poisson
 @st.composite
 def _shape_lam_dtype(draw):

@@ -1,7 +1,8 @@
 # global
-import ivy
-from hypothesis import given
 import pytest
+from hypothesis import given
+
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

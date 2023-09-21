@@ -1,24 +1,25 @@
 """Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-import jax
-import numpy as np
-import jax.numpy as jnp
+import importlib
+import multiprocessing as _multiprocessing
+from functools import reduce as _reduce
 from numbers import Number
 from operator import mul
-from functools import reduce as _reduce
-from typing import Optional, Union, Sequence, Callable, Tuple
-import multiprocessing as _multiprocessing
-import importlib
+from typing import Callable, Optional, Sequence, Tuple, Union
 
+import jax
+import jax.numpy as jnp
+import numpy as np
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax import JaxArray, NativeArray
 from ivy.functional.backends.jax.device import _to_array, _to_device
 from ivy.functional.ivy.general import _broadcast_to
-from ivy.functional.backends.jax import JaxArray, NativeArray
 from ivy.utils.exceptions import _check_inplace_update_support
+
 from . import backend_version
 
 
@@ -101,7 +102,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -382,10 +383,12 @@ def scatter_nd(
         target = target.at[indices_tuple].min(updates)
     elif reduction == "max":
         target = target.at[indices_tuple].max(updates)
+    elif reduction == "mul":
+        target = target.at[indices_tuple].mul(updates)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            '"sum", "min", "max", "mul" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, target)
@@ -418,7 +421,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,

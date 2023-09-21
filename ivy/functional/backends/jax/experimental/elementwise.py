@@ -1,19 +1,15 @@
 import operator
-from typing import Optional, Union, Tuple, List
 from numbers import Number
+from typing import List, Optional, Tuple, Union
 
-from ivy import (
-    promote_types_of_inputs,
-    default_float_dtype,
-    is_float_dtype,
-)
-from ivy.func_wrapper import (
-    with_supported_dtypes,
-)
-from ivy.functional.backends.jax import JaxArray
+import jax.lax as jlax
 import jax.numpy as jnp
 import jax.scipy as js
-import jax.lax as jlax
+
+from ivy import default_float_dtype, is_float_dtype, promote_types_of_inputs
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.functional.backends.jax import JaxArray
+
 from .. import backend_version
 
 jax_ArrayLike = Union[JaxArray, Number]
@@ -24,7 +20,7 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 @with_supported_dtypes(
-    {"0.4.14 and below": ("float16", "float32", "float64")}, backend_version
+    {"0.4.16 and below": ("float16", "float32", "float64")}, backend_version
 )
 def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jlax.lgamma(x)

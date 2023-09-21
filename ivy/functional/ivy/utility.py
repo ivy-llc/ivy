@@ -1,18 +1,17 @@
 # global
-from typing import Union, Optional, Sequence
+from typing import Optional, Sequence, Union
 
 # local
 import ivy
 from ivy.func_wrapper import (
     handle_array_function,
-    to_native_arrays_and_back,
-    handle_out_argument,
-    handle_nestable,
     handle_array_like_without_promotion,
     handle_backend_invalid,
+    handle_nestable,
+    handle_out_argument,
+    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
-
 
 # Array API Standard #
 # -------------------#

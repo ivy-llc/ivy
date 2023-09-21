@@ -1,8 +1,8 @@
 # local
 import ivy
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.jax import Array
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.linalg import lstsq as numpy_lstsq
 
@@ -88,7 +88,7 @@ def multi_dot(arrays, *, precision=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"0.4.14 and below": ("float32", "float64")},
+    {"0.4.16 and below": ("float32", "float64")},
     "jax",
 )
 def norm(x, ord=None, axis=None, keepdims=False):
@@ -127,7 +127,7 @@ def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, "jax")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1

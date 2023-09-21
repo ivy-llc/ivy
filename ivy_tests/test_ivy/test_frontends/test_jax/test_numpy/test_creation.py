@@ -1,20 +1,18 @@
 from hypothesis import strategies as st
-from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
-    _input_fill_and_dtype,
-)
-
-from ivy_tests.test_ivy.test_functional.test_core.test_creation import (
-    _get_dtype_buffer_count_offset,
-)
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
+    _input_fill_and_dtype,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_creation import (
+    _get_dtype_buffer_count_offset,
+)
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 @st.composite
 def _get_dtype_and_range(draw):
@@ -826,42 +824,6 @@ def test_jax_numpy_frombuffer(
         dtype=input_dtype[0],
         count=count,
         offset=offset,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.in1d",
-    dtype_and_a=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
-    dtype_and_b=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
-    assume_unique=st.booleans(),
-    invert=st.booleans(),
-)
-def test_jax_numpy_in1d(
-    *,
-    dtype_and_a,
-    dtype_and_b,
-    assume_unique,
-    invert,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype_a, a = dtype_and_a
-    input_dtype_b, b = dtype_and_b
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype_a + input_dtype_b,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        ar1=a[0],
-        ar2=b[0],
-        assume_unique=assume_unique,
-        invert=invert,
     )
 
 

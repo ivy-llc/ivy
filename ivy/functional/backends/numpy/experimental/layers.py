@@ -1,23 +1,22 @@
 # global
 
 import math
+from typing import Callable, List, Literal, Optional, Sequence, Tuple, Union
+
 import numpy as np
-from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 
 # local
 import ivy
-from ivy.functional.ivy.layers import (
-    _handle_padding,
-    _get_num_padded_values,
-    _validate_max_pool_params,
-    _depth_max_pooling_helper,
-)
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.backends.numpy.layers import _add_dilations
-from ivy.functional.ivy.experimental.layers import (
-    _padding_ceil_mode,
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.layers import (
+    _depth_max_pooling_helper,
+    _get_num_padded_values,
+    _handle_padding,
+    _validate_max_pool_params,
 )
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 
