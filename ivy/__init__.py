@@ -91,6 +91,10 @@ class TTTensor:
     pass
 
 
+class TTMatrix:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
