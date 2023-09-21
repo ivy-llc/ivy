@@ -96,26 +96,24 @@
 Ivy is an open-source machine learning framework that 
 enables you to: 
 
-- 🔥 **Autotune and optimize your model**: you can compress your model, 
-get the best cost, and more with Ivy. 
-- 💥 **Accelerate your development**: speed up your machine learning models by up to 3x.
-- 🔄 **Convert your code into any framework**: Use and build of top of any model, library, infrastructure or device by converting any code between frameworks.
-- ⚒️ **Write framework-agnostic code**: when you use Ivy as a framework, 
-you can set your favorite machine learning framework as a backend to as the backend to leverage all its benefits and tools
+- 🔥 **Autotunes your model**: for optimal framework, compiler, and hardware selection. 
+- 💥 **Boosts model speed**:  by up to 3x.
+- 🔄 **Converts code code into any framework**: to use and build of top of any model, library, infrastructure or device by converting any code between frameworks.
+- ⚒️ **Write framework-agnostic code**: by letting you choose your preferred ML framework as a backend. to leverage all its benefits and tools
 
 
-Join our growing community 🌍 to interact with people using Ivy. 
+[Join our growing community](https://discord.com/invite/sXyFF8tDtm) 🌍 to interact with people using Ivy. 
  
-Let's unify.ai together 🦾
-
 ------------------------------------------------------------------------
 
 # Getting started: 
 
-You can start by reading tutorials and explore our demos, 
-Here is a good starting point for you:
-- [How to Convert your code?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html) 
-- [How to write a framework-free code?](https://unify.ai/docs/ivy/demos/learn_the_basics/02_unify_code.html) 
+You can start by reading [our basicss](https://unify.ai/docs/ivy/demos/learn_the_basics.html) and [demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html). 
+
+here is a good starting point for you:
+
+- [How to Convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html) 
+- [How to write a framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html) 
 - Accelerate your development (WIP)
 - Autotune and optimize models (WIP) 
 
@@ -125,19 +123,19 @@ Here is a good starting point for you:
 
 ## 📚 Documentation
 
-You can find our extensive documentation from this [Ivy Docs page](https://unify.ai/docs/ivy/)  which includes: 
-- [Docs](https://unify.ai/docs/ivy/): the full extensive documentation 
-    - [Design](https://unify.ai/docs/ivy/overview/design.html): the design decision, architecture, and building blocks (layers and nodes)  of Ivy. 
-    - [Deep
-dive](https://unify.ai/docs/ivy/overview/deep_dive.html)explains our code base and how to contribute to a specific field. 
-    - [Background](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve through
-        - the current [ML
-Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion),, 
-        - explaining both why is important [to solve this
+You can find our documentation from this [Ivy Docs page](https://unify.ai/docs/ivy/), which includes: 
+- [Motiviation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve through
+    - the current [ML
+Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion),
+    - explaining both why is important [to solve this
 problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify) and 
-        - how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
-    - [Related
-Work](https://unify.ai/docs/ivy/overview/related_work.html)   which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
+    - how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
+- [Related
+Work](https://unify.ai/docs/ivy/overview/related_work.html)   which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
+- [Design](https://unify.ai/docs/ivy/overview/design.html): the design decision, architecture, and building blocks (layers and nodes)  of Ivy. 
+- [Deep
+dive](https://unify.ai/docs/ivy/overview/deep_dive.html)explains our code base and how to contribute to a specific field. 
+
 
 ------------------------------------------------------------------------
 
