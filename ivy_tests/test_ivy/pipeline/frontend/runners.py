@@ -369,6 +369,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
         gt_fn_tree,
         frontend,
         on_device,
+        tolerance_dict,
         rtol,
         atol,
     ):
@@ -378,6 +379,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
         self.gt_fn_tree = gt_fn_tree
         self.frontend = frontend
         self.on_device = on_device
+        self.tolerance_dict = tolerance_dict
         self.rtol = rtol
         self.atol = atol
 
@@ -418,6 +420,9 @@ class FrontendTestCaseRunner(TestCaseRunner):
         assertion_checker = AssertionChecker(
             target_results,
             ground_truth_results,
+            self.backend_to_test,
+            self.frontend,
+            self.tolerance_dict,
             self.rtol,
             self.atol,
         )

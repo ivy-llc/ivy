@@ -23,7 +23,7 @@ class FrontendPipeline(Pipeline):
         gt_fn_tree: str = None,
         rtol_: float = None,
         atol_: float = 1e-06,
-        return_flat_np_arrays: bool = False,
+        tolerance_dict: dict = None,
         test_values: bool = True,
         **all_as_kwargs_np,
     ):
@@ -34,6 +34,7 @@ class FrontendPipeline(Pipeline):
             gt_fn_tree=gt_fn_tree,
             frontend=frontend,
             on_device=on_device,
+            tolerance_dict=tolerance_dict,
             rtol=rtol_,
             atol=atol_,
         )
