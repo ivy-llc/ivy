@@ -196,7 +196,7 @@ def erf(x, name=None):
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def erfinv(x, name=None):
-    return  ivy.erfinv
+    return  ivy.erfinv(x)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
