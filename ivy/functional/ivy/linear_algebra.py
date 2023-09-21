@@ -2004,6 +2004,7 @@ def solve(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    adjoint: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -2022,6 +2023,8 @@ def solve(
         each column k defines a set of ordinate values for which to compute a solution,
         and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
         Should have a floating-point data type.
+    adjoint
+        specifies whether the system should be solved for x1 or adjoint(x1)
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2029,10 +2032,10 @@ def solve(
     Returns
     -------
     ret
-        an array containing the solution to the system AX = B for each square matrix.
-        The returned array must have the same shape as x2 (i.e., the array corresponding
-        to B) and must have a floating-point data type determined by Type Promotion
-        Rules.
+        an array containing the solution to the system AX = B (or adjoint(A)X = B)
+        for each square matrix. The returned array must have the same shape as x2
+        (i.e., the array corresponding to B) and must have a floating-point data
+        type determined by Type Promotion Rules.
 
 
     This function conforms to the `Array API Standard
@@ -2061,7 +2064,7 @@ def solve(
     >>> ivy.solve(x1, x2, out=z)
     ivy.array([-4. ,  4.5])
     """
-    return current_backend(x1, x2).solve(x1, x2, out=out)
+    return current_backend(x1, x2).solve(x1, x2, adjoint=adjoint, out=out)
 
 
 @handle_exceptions

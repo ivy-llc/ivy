@@ -490,7 +490,7 @@ def solve(
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
             x2 = paddle.unsqueeze(x2, axis=1)
-    for i in range(len(x1.shape) - 2):
+    for i in range(len(x1.shape) - len(x2.shape)):
         x2 = paddle.unsqueeze(x2, axis=0)
     ret = paddle.linalg.solve(x1, x2)
     if expanded_last:
