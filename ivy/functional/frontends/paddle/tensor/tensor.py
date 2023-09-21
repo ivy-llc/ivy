@@ -786,23 +786,11 @@ class Tensor:
         {
             "2.5.1 and below": (
                 "bool",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "float32",
-                "float64",
-            )
-        },
-        "paddle",
-    )
-    @with_supported_dtypes(
-        {
-            "2.5.1 and below": (
-                "bool",
                 "float16",
                 "float32",
                 "float64",
+                "int8",
+                "int16",
                 "int32",
                 "int64",
             )
