@@ -3753,7 +3753,7 @@ def test_paddle_tensor_numpy(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    ret, frontend_ret = helpers.test_frontend_method(
+    helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
@@ -3766,16 +3766,4 @@ def test_paddle_tensor_numpy(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-        test_values=False,
-    )
-    print('ret', ret)
-    print('ret_np_flat', helpers.flatten_and_to_np(backend="torch", ret=ret))
-    print('frontend_ret', frontend_ret[0])
-    print()
-    # manual testing required as function return is numpy frontend
-    helpers.value_test(
-        ret_np_flat=helpers.flatten_and_to_np(backend="torch", ret=ret)[0],
-        ret_np_from_gt_flat=frontend_ret[0],
-        ground_truth_backend="paddle",
-        backend="paddle",
     )
