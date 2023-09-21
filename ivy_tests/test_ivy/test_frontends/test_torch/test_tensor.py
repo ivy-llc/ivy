@@ -1577,20 +1577,6 @@ def test_torch_index_fill(
     method_name="scatter",
     args=put_along_axis_helper(),
 )
- input_dtype, x = dtype_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-
     input_dtypes, x, indices, values, axis = args
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
