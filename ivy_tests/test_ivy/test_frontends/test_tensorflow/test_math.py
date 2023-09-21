@@ -2552,6 +2552,39 @@ def test_tensorflow_scalar_mul(
     )
 
 
+# segment max
+@handle_frontend_test(
+    fn_tree="tensorflow.math.segment_max",
+    data=helpers.array_values(dtype=ivy.float32, shape=(10,), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(10,), min_value=0, max_value=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_segment_max(
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    num_segments = np.max(segment_ids) + 1
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.float32, ivy.int32],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
+
+
 # sigmoid
 @handle_frontend_test(
     fn_tree="tensorflow.math.sigmoid",
