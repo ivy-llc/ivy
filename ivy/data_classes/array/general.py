@@ -11,6 +11,7 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
+
 class _ArrayWithGeneral(abc.ABC):
     def is_native_array(
         self: ivy.Array,
