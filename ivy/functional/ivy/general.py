@@ -2487,13 +2487,42 @@ ivy.queue_timeout = queue_timeout_stack[-1] if queue_timeout_stack else 15.0
 
 
 @handle_exceptions
+def get_queue_timeout() -> float:
+    """
+    Get the timeout value (in seconds) for the global queue. The default value is 15.0
+    seconds.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    ret
+       The global queue timeout value (in seconds).
+
+    Examples
+    --------
+    >>> x = ivy.get_queue_timeout()
+    >>> print(x)
+    15.0
+
+    >>> ivy.set_queue_timeout(30)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
+    30
+    """
+    return ivy.queue_timeout
+
+
+@handle_exceptions
 @handle_array_function
 def set_queue_timeout(timeout: float):
     """
     Set a timeout value (in seconds) for the global queue.
 
     Set the global queue timeout value (in seconds) Default value without this function
-    being called is 15 seconds.
+    being called is 15.0 seconds.
 
     Parameters
     ----------
@@ -2504,12 +2533,12 @@ def set_queue_timeout(timeout: float):
     Examples
     --------
     >>> x = ivy.set_queue_timeout(10)
-    >>> x = ivy.queue_timeout
+    >>> x = ivy.get_queue_timeout()
     >>> print(x)
     10.0
 
     >>> ivy.set_queue_timeout(30)
-    >>> y = ivy.queue_timeout
+    >>> y = ivy.get_queue_timeout()
     >>> print(y)
     30
     """
@@ -2527,12 +2556,12 @@ def unset_queue_timeout() -> None:
     Examples
     --------
     >>> ivy.set_queue_timeout(10.0)
-    >>> y = ivy.queue_timeout
+    >>> y = ivy.get_queue_timeout()
     >>> print(y)
     10.0
 
     >>> ivy.unset_queue_timeout()
-    >>> ivy.queue_timeout
+    >>> ivy.get_queue_timeout()
     15.0
     """
     global queue_timeout_stack

@@ -1137,7 +1137,7 @@ def test_get_num_dims(
 )
 def test_get_queue_timeout(x):
     ivy.set_queue_timeout(x)
-    ret = ivy.queue_timeout
+    ret = ivy.get_queue_timeout()
     assert ret == x
 
 
@@ -1683,7 +1683,7 @@ def test_set_min_denominator(x):
 )
 def test_set_queue_timeout(x):
     ivy.set_queue_timeout(x)
-    ret = ivy.queue_timeout
+    ret = ivy.get_queue_timeout()
     assert ret == x
 
 
