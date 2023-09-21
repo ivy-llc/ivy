@@ -1,10 +1,12 @@
-from . import matrix_and_vector_products
-from .matrix_and_vector_products import *
-from . import norms_and_other_numbers
-from .norms_and_other_numbers import *
-from . import decompositions
+from . import (
+    decompositions,
+    matrix_and_vector_products,
+    matrix_eigenvalues,
+    norms_and_other_numbers,
+    solving_equations_and_inverting_matrices,
+)
 from .decompositions import *
-from . import matrix_eigenvalues
+from .matrix_and_vector_products import *
 from .matrix_eigenvalues import *
-from . import solving_equations_and_inverting_matrices
+from .norms_and_other_numbers import *
 from .solving_equations_and_inverting_matrices import *

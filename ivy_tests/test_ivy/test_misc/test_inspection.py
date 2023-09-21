@@ -1,6 +1,7 @@
 # global
+from typing import Dict, List, Optional, Tuple, Union
+
 import pytest
-from typing import List, Tuple, Dict, Optional, Union
 
 # local
 import ivy
@@ -8,7 +9,6 @@ import ivy
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _fn0(xs: Optional[List[ivy.Array]] = None):
     return xs

@@ -1,11 +1,13 @@
 # Global
-import pytest
 import itertools
-from hypothesis import strategies as st, given, settings, HealthCheck
+
+import numpy as np
+import pytest
+from hypothesis import HealthCheck, given, settings
+from hypothesis import strategies as st
 
 # Local
 import ivy
-import numpy as np
 from ivy.utils.backend.handler import _backend_dict
 
 

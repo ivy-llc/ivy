@@ -1,16 +1,17 @@
 # global
-import os
-import queue
-import pytest
-import random
-import numpy as np
 import multiprocessing
+import os
 import pickle
+import queue
+import random
+
+import numpy as np
+import pytest
 
 # local
 import ivy
-from ivy.functional.ivy.gradients import _variable
 from ivy.data_classes.container import Container
+from ivy.functional.ivy.gradients import _variable
 from ivy.utils.exceptions import IvyException
 
 

@@ -3,11 +3,10 @@
 
 # global
 import abc
-from typing import Union, Optional, Callable
+from typing import Callable, Optional, Union
 
 # local
 import ivy
-
 
 # Base #
 # -----#

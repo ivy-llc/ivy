@@ -12,7 +12,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 # --- Helpers --- #
 # --------------- #
 
-
 @st.composite
 def dtypes_x_reshape_(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))

@@ -1,8 +1,12 @@
-import sys
-import os
 import contextlib
+import os
+import sys
+
 import pytest
+
+import ivy
 from ivy.utils.assertions import (
+    _check_jax_x64_flag,
     check_all,
     check_all_or_any_fn,
     check_any,
@@ -25,8 +29,6 @@ from ivy.utils.assertions import (
     check_true,
     check_unsorted_segment_min_valid_params,
 )
-from ivy.utils.assertions import _check_jax_x64_flag
-import ivy
 
 
 @pytest.mark.parametrize(

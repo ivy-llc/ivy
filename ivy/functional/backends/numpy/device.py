@@ -3,8 +3,9 @@
 # global
 import os
 import time
+from typing import Any, Optional, Union
+
 import numpy as np
-from typing import Union, Optional, Any
 
 # local
 import ivy

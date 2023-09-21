@@ -6,12 +6,11 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_test
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 @st.composite
 def _gen_randint_data(draw):

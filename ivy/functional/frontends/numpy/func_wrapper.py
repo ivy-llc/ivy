@@ -1,8 +1,8 @@
 # global
 import functools
-from typing import Callable, Any
 import inspect
 import platform
+from typing import Any, Callable
 
 # local
 import ivy
@@ -11,7 +11,6 @@ import ivy.functional.frontends.numpy as np_frontend
 
 # --- Helpers --- #
 # --------------- #
-
 
 # general casting
 def _assert_array(args, dtype, scalar_check=False, casting="safe"):

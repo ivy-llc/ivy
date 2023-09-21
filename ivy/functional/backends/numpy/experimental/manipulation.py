@@ -1,23 +1,24 @@
 # global
+from collections import namedtuple
+from numbers import Number
 from typing import (
+    Any,
+    Callable,
+    List,
+    Literal,
+    NamedTuple,
     Optional,
-    Union,
     Sequence,
     Tuple,
-    NamedTuple,
-    Literal,
-    Callable,
-    Any,
-    List,
+    Union,
 )
-from numbers import Number
-from collections import namedtuple
+
 import numpy as np
 
 # local
 import ivy
-from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 # noinspection PyProtectedMember
 from . import backend_version

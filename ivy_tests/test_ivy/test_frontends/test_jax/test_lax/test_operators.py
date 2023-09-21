@@ -1,32 +1,33 @@
 # global
-import numpy as np
-import ivy.functional.frontends.jax.lax as jlax
-import ivy.functional.frontends.jax.numpy as jnp
-from hypothesis import assume, strategies as st
 import random
+
+import numpy as np
+from hypothesis import assume
+from hypothesis import strategies as st
 from jax.lax import ConvDimensionNumbers
 
 # local
 import ivy
+import ivy.functional.frontends.jax.lax as jlax
+import ivy.functional.frontends.jax.numpy as jnp
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
+from ivy.functional.frontends.jax.lax.operators import (
+    _argsort_tuple,
+    _dimension_numbers,
+)
+from ivy.functional.frontends.jax.numpy import can_cast
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     _reduce_window_helper,
 )
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
-from ivy.functional.frontends.jax.numpy import can_cast
-from ivy.functional.frontends.jax.lax.operators import (
-    _dimension_numbers,
-    _argsort_tuple,
-)
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 # noinspection DuplicatedCode
 @st.composite

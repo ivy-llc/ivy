@@ -1,10 +1,12 @@
-from . import from_shape_or_value
-from .from_shape_or_value import *
-from . import from_existing_data
-from .from_existing_data import *
-from . import numerical_ranges
-from .numerical_ranges import *
-from . import building_matrices
+from . import (
+    building_matrices,
+    from_existing_data,
+    from_shape_or_value,
+    matrix_class,
+    numerical_ranges,
+)
 from .building_matrices import *
-from . import matrix_class
+from .from_existing_data import *
+from .from_shape_or_value import *
 from .matrix_class import *
+from .numerical_ranges import *

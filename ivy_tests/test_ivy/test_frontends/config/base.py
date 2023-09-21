@@ -1,6 +1,7 @@
-from abc import ABC, abstractproperty, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
 from typing import List
+
 import ivy
 
 

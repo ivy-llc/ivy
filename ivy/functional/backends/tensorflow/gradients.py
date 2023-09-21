@@ -5,19 +5,20 @@ Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax
 and signature.
 """
 
+from typing import Callable, Optional, Sequence, Union
+
 # global
 import tensorflow as tf
-from typing import Sequence, Union, Optional, Callable
 
 # local
 import ivy
-from ivy.func_wrapper import outputs_to_ivy_arrays, inputs_to_native_arrays
+from ivy.func_wrapper import inputs_to_native_arrays, outputs_to_ivy_arrays
 from ivy.functional.ivy.gradients import (
+    _get_native_y,
     _get_required_float_variables,
     _get_y_and_ret_idxs,
-    _get_native_y,
-    _set_duplicates,
     _process_func_ret_and_grads,
+    _set_duplicates,
 )
 
 

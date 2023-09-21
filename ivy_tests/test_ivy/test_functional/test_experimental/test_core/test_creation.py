@@ -1,6 +1,6 @@
+import numpy as np
 import pytest
 from hypothesis import strategies as st
-import numpy as np
 
 # local
 import ivy
@@ -10,7 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # --- Helpers --- #
 # --------------- #
-
 
 @st.composite
 def _random_cp_data(draw):
