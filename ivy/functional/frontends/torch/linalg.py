@@ -68,12 +68,12 @@ def eig(input, *, out=None):
     return ivy.eig(input, out=out)
 
 
-@to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64", "complex128")},
+    "torch",
 )
-def eigh(a, /, UPLO="L", out=None):
-    return ivy.eigh(a, UPLO=UPLO, out=out)
+def eigh(A, UPLO="L", *, out=None):
+    return ivy.eigh(A, UPLO=UPLO, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -183,6 +183,26 @@ def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
 )
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
+)
+def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
+    if dim is None and (ord is not None):
+        if input.ndim == 1:
+            ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+        else:
+            ret = ivy.matrix_norm(input, keepdims=keepdim, ord=ord)
+    elif dim is None and ord is None:
+        input = ivy.flatten(input)
+        ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2)
+    if isinstance(dim, int):
+        ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+    elif isinstance(dim, tuple):
+        ret = ivy.matrix_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+    return ret
 
 
 @to_ivy_arrays_and_back
