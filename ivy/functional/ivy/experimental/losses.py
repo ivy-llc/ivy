@@ -521,12 +521,12 @@ def binary_cross_entropy(
 
     >>> input = ivy.array([1, 1, 0, 0])
     >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
-    >>> ivy.soft_margin_loss(input, target, reduction='sum')
+    >>> ivy.binary_cross_entropy(input, target, reduction='sum')
     ivy.array(0.9083)
 
     >>> input = ivy.array([1, 1, 0, 0])
     >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
-    >>> ivy.soft_margin_loss(input, target, reduction='none')
+    >>> ivy.binary_cross_entropy(input, target, reduction='none')
     ivy.array([0.2231, 0.3567, 0.2231, 0.1054])
     """
     loss = -1 * (input * ivy.log(target) + (1-input) * ivy.log(1-target))

@@ -1007,17 +1007,17 @@ class _ContainerWithLossesExperimental(ContainerBase):
         Returns
         -------
         ret
-            The L1 loss between the input array and the targeticted values.
+            The binary cross entropy loss between the input array and the targeticted values.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
-        >>> y = ivy.Container(a=ivy.array([2, 2, 2]), b=ivy.array([5, 5, 5]))
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1]), b=ivy.array([1, 1, 1]))
+        >>> y = ivy.Container(a=ivy.array([0.8,0.3,0.9]), b=ivy.array([0.6, 0.7, 0.9]))
         >>> z = x.binary_cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array(1.),
-            b: ivy.array(0.)
+            a: ivy.array(0.2284),
+            b: ivy.array(0.3243)
         }
         """
         return self._static_binary_cross_entropy(

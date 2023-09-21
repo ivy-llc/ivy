@@ -84,3 +84,21 @@ def kl_div(
         loss = tf.math.reduce_sum(loss) / tf.cast(size[0], dtype=tf.float32)
 
     return loss
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("bool", "bfloat16")}, backend_version)
+def binary_cross_entropy(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> tf.Tensor:
+
+    loss = -1 * (input * tf.math.log(target) + (1 - input) * tf.math.log(1-target))
+
+    if reduction == "mean":
+        loss = tf.math.reduce_mean(loss)
+    elif reduction == "sum":
+        loss = tf.math.reduce_sum(loss)
+    return loss

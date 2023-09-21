@@ -173,4 +173,4 @@ def binary_cross_entropy(
     *,
     reduction: Optional[str] = "mean",
 ) -> paddle.Tensor:
-    return F.binary_cross_entropy(input, target, reduction=reduction)
+    return F.binary_cross_entropy(input,target,reduction=reduction)

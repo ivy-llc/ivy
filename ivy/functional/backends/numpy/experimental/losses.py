@@ -93,3 +93,22 @@ def kl_div(
         loss = np.divide(np.sum(loss), size[0])
 
     return loss
+
+@with_unsupported_dtypes({"1.25.2 and below": ("bool", "bfloat16")}, backend_version)
+@_scalar_output_to_0d_array
+def binary_cross_entropy(
+    input: np.ndarray,
+    target: np.ndarray,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> np.ndarray:
+
+    loss = -1 * (input * np.log(target) + (1-input)*np.log(1-target))
+
+    if reduction == "mean":
+        loss = np.mean(loss)
+    elif reduction == "sum":
+        loss = np.sum(loss)
+
+    return loss
