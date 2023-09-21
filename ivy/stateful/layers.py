@@ -116,6 +116,11 @@ class Linear(Module):
         """
         return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
 
+    def extra_repr(self) -> str:
+        return "in_features={}, out_features={}, with_bias={}".format(
+            self._input_channels, self._output_channels, self._with_bias is not None
+        )
+
 
 # Dropout #
 # --------#

@@ -18,6 +18,19 @@ from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
 
 
+# helpers
+def _addindent(s_, numSpaces):
+    s = s_.split("\n")
+    # don't do anything for single-line stuff
+    if len(s) == 1:
+        return s_
+    first = s.pop(0)
+    s = [(numSpaces * " ") + line for line in s]
+    s = "\n".join(s)
+    s = first + "\n" + s
+    return s
+
+
 # Base #
 # -----#
 
@@ -848,7 +861,41 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 ivy.to_device(obj, device=device, obj=obj)
 
     def __repr__(self):
-        return object.__repr__(self)
+        extra_lines = []
+        extra_repr = self.extra_repr()
+        if extra_repr:
+            extra_lines = extra_repr.split("\n")
+        child_lines = []
+        for key, module in self.v.items():
+            if isinstance(getattr(self, key, None), Module):
+                mod_str = repr(getattr(self, key))
+                mod_str = _addindent(mod_str, 2)
+                child_lines.append("(" + key + "): " + mod_str)
+        lines = extra_lines + child_lines
+
+        main_str = self._get_name() + "("
+        if lines:
+            # simple one-liner info, which most builtin Modules will use
+            if len(extra_lines) == 1 and not child_lines:
+                main_str += extra_lines[0]
+            else:
+                main_str += "\n  " + "\n  ".join(lines) + "\n"
+
+        main_str += ")"
+        return main_str
+
+    def extra_repr(self) -> str:
+        r"""
+        Set the extra representation of the module.
+
+        To print customized extra information, you should re-implement
+        this method in your own modules. Both single-line and multi-line
+        strings are acceptable.
+        """
+        return ""
+
+    def _get_name(self):
+        return self.__class__.__name__
 
     # Properties #
     # -----------#
