@@ -1698,7 +1698,6 @@ class Tensor:
         self.ivy_array = self.floor().ivy_array
         return self
 
-    @numpy_to_torch_style_args
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
