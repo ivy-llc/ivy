@@ -115,38 +115,38 @@ def selu(x):
     {"2.13.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
-def serialize(func, custom_objects=None):
+def serialize(activation, use_legacy_format=False):
     # If the activation function is None, return None
-    if func is None:
+    if activation is None:
         return None
 
     # If the activation function is already a string, return it
-    elif isinstance(func, str):
-        return func
+    elif isinstance(activation, str):
+        return activation
 
     # If the activation function is callable (a function), get its name
-    elif callable(func):
+    elif callable(activation):
         # Check if the function is in the custom_objects dictionary
         if custom_objects:
             for name, custom_func in custom_objects.items():
-                if custom_func == func:
+                if custom_func == activation:
                     return name
 
         # Check if the function is in the ACTIVATION_FUNCTIONS list
-        if func.__name__ in ACTIVATION_FUNCTIONS:
-            return func.__name__
+        if activation.__name__ in ACTIVATION_FUNCTIONS:
+            return activation.__name__
 
-        # Check if the function is in the tensorflow frontend activations
-        elif func in tf_frontend.keras.activations.__dict__.values():
+        # Check if the function is in the TensorFlow frontend activations
+        elif activation in tf_frontend.keras.activations.__dict__.values():
             for name, tf_func in tf_frontend.keras.activations.__dict__.items():
-                if tf_func == func:
+                if tf_func == activation:
                     return name
 
         else:
-            raise ValueError(f"Unknown activation function: {func}.")
+            raise ValueError(f"Unknown activation function: {activation}.")
 
     else:
-        raise ValueError(f"Could not interpret activation function: {func}")
+        raise ValueError(f"Could not interpret activation function: {activation}")
 
 
 @to_ivy_arrays_and_back
