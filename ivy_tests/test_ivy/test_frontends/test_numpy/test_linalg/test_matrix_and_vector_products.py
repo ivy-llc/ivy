@@ -84,7 +84,8 @@ def dtype_value1_value2_axis(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.cross",
+    fn_tree="numpy.linalg.cross",
+    gt_fn_tree="numpy.cross",
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -104,6 +105,7 @@ def test_numpy_cross(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -114,6 +116,7 @@ def test_numpy_cross(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         rtol=1e-3,
         atol=1e-3,

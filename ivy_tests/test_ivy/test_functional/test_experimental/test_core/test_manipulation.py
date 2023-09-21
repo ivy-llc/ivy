@@ -1408,23 +1408,16 @@ def test_vsplit(
 # vstack
 @handle_test(
     fn_tree="functional.ivy.experimental.vstack",
-    dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=helpers.get_shape(
-            min_num_dims=1,
-        ),
-        shared_dtype=True,
-        num_arrays=helpers.ints(min_value=2, max_value=10),
-    ),
+    arrays_dtypes=_st_col_row_stack_arrays(stack_dim=0),
     test_gradients=st.just(False),
 )
-def test_vstack(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, m = dtype_and_m
+def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
+    arrays, dtypes = arrays_dtypes
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        arrays=m,
+        arrays=arrays,
     )
