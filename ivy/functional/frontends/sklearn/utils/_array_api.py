@@ -117,6 +117,10 @@ def _asarray_with_order(array, dtype=None, order=None, copy=None, xp=None):
         return xp.asarray(array, dtype=dtype, copy=copy)
 
 
+def _check_array_api_dispatch(array_api_dispatch):
+    pass
+
+
 def _convert_to_numpy(array, xp):
     """
     Convert X into a NumPy ndarray.
