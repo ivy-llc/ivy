@@ -7,7 +7,6 @@ import ivy
 # local
 
 
-
 class _ArrayWithSorting(abc.ABC):
     def argsort(
         self: ivy.Array,
