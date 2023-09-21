@@ -910,7 +910,7 @@ def test_torch_nonzero(
 @handle_frontend_test(
     fn_tree="torch.permute",
     dtype_values_axis=_array_idxes_n_dtype(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_permute(
