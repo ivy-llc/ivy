@@ -293,7 +293,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         if _extra_bias else st.none()
     )
 
-    scale = draw(st.one_of(st.floats(), st.none()))
+    scale = draw(st.one_of(st.floats(min_value=0.001), st.none()))
     add_zero_attn = draw(st.booleans())
     dropout = draw(st.floats(min_value=0, max_value=0.99))
     training = draw(st.booleans())
