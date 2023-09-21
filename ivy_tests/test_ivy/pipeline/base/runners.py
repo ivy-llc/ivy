@@ -1,15 +1,17 @@
 from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
+from typing import List, Tuple
+
 import numpy as np  # for type hint only
 
 
 @dataclass
 class TestCaseSubRunnerResult:
-    flatten_elements_np: np.ndarray
-    shape: tuple
-    device: str
-    dtype: str
-    type: str
+    flatten_elements_np: List[np.ndarray]
+    shape: List[Tuple]
+    device: List[str]
+    dtype: List[str]
+    type: List[str]
 
 
 class TestCaseRunner(ABC):

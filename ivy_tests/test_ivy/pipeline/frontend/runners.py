@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseSubRunner,
     TestCaseSubRunnerResult,
 )
+from ivy_tests.test_ivy.pipeline.base.assertion_checker import AssertionChecker
 import ivy
 
 
@@ -243,21 +244,12 @@ class GTFunctionTestCaseSubRunner(TestCaseSubRunner):
         gt_fn_tree,
         fn_tree,
         frontend,
-        backend_handler,
-        backend,
         device,
-        input_dtypes,
-        test_flags,
     ):
         self.gt_fn_tree = gt_fn_tree
         self.fn_tree = fn_tree
         self.frontend = frontend
-        self.test_flags = test_flags
-        self.input_dtypes = input_dtypes
         self.on_device = device
-        self.backend = backend
-        self._backend_handler = backend_handler
-        self.__ivy = self._backend_handler.set_backend(backend)
         self.frontend_config = self._get_frontend_config()
 
     def _get_frontend_config(self):
@@ -384,31 +376,6 @@ class FrontendTestCaseRunner(TestCaseRunner):
         self.rtol = rtol
         self.atol = atol
 
-    def _assert_type(self, target_type, ground_truth_type):
-        assert target_type == ground_truth_type
-
-    def _assert_dtype(self, target_dtype, ground_truth_dtype):
-        assert target_dtype == ground_truth_dtype
-
-    def _assert_device(self, target_device, ground_truth_device):
-        assert target_device == ground_truth_device, (
-            f"ground truth backend ({self.ground_truth_backend}) returned array on"
-            f" device {ground_truth_device} but target backend ({self.backend_to_test})"
-            f" returned array on device {target_device}"
-        )
-
-    def _assert_equal_elements(self, target_elements, ground_truth_elements):
-        assert np.allclose(
-            np.nan_to_num(target_elements),
-            np.nan_to_num(ground_truth_elements),
-            rtol=self.rtol,
-            atol=self.atol,
-        ), (
-            f" the results from backend {self.backend_to_test} "
-            f"and ground truth framework {self.ground_truth_backend} "
-            f"do not match\n {target_elements}!={ground_truth_elements} \n\n"
-        )
-
     def _run_target(self, input_dtypes, test_arguments, test_flags):
         sub_runner_target = FunctionTestCaseSubRunner(
             self.fn_tree,
@@ -430,12 +397,11 @@ class FrontendTestCaseRunner(TestCaseRunner):
             self.fn_tree,
             self.frontend,
             self.on_device,
-            input_dtypes,
-            test_flags,
         )
         return sub_runner_gt.get_results(test_arguments)
 
     def run(self, input_dtypes, test_arguments, test_flags):
+        # getting results from target and ground truth
         target_results: TestCaseSubRunnerResult = self._call_target(
             input_dtypes, test_arguments, test_flags
         )
@@ -443,9 +409,11 @@ class FrontendTestCaseRunner(TestCaseRunner):
             input_dtypes, test_arguments, test_flags
         )
 
-        self._assert_dtype(target_results.dtype, ground_truth_results.dtype)
-        self._assert_type(target_results.type, ground_truth_results.type)
-        self._assert_device(target_results.device, ground_truth_results.device)
-        self._assert_equal_elements(
-            target_results.flatten_elements_np, ground_truth_results.flatten_elements_np
+        # checking assertions
+        assertion_checker = AssertionChecker(
+            target_results,
+            ground_truth_results,
+            self.rtol,
+            self.atol,
         )
+        assertion_checker.check_assertions()
