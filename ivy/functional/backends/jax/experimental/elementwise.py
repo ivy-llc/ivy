@@ -473,3 +473,20 @@ def erfc(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return js.special.erfc(x)
+
+def amin(
+       X1: JaxArray,
+       x2: JaxArray,
+       /, 
+       *
+        ,
+       
+       out: Optional[JaxArray] = None,
+)  -> JaxArray:
+      x1, x2 = ivy.promote_types_of_inputs(x1,x2)
+      return jnp.amin(x1,x2)
+
+
+
+
+
