@@ -7,6 +7,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # local
 
 
+
 @handle_frontend_test(
     fn_tree="paddle.normal",
     input_dtypes=st.sampled_from([["float32"], ["float64"]]),

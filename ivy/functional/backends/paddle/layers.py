@@ -20,6 +20,7 @@ from . import backend_version
 # local
 
 
+
 def _is_list_or_tuple(inp):
     return isinstance(inp, (list, tuple))
 
