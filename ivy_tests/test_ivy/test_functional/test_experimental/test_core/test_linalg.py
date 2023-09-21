@@ -233,6 +233,25 @@ def _generate_eigh_tridiagonal_args(draw):
     return dtype, alpha, beta, eigvals_only, select, select_range, tol
 
 
+@st.composite
+def _generate_general_inner_product_args(draw):
+    dim = draw(st.integers(min_value=1, max_value=3))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=(dim, dim),
+            min_value=1,
+            max_value=10.0,
+            num_arrays=2,
+            shared_dtype=True,
+            allow_nan=False,
+        )
+    )
+    max_value = dim - 1 if dim > 1 else dim
+    n_modes = draw(st.integers(min_value=1, max_value=max_value) | st.just(None))
+    return x_dtype, x, n_modes
+
+
 # multi_dot
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
@@ -876,12 +895,13 @@ def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eig(dtype_x, test_flags, backend_fw, fn_name):
+def test_eig(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -983,15 +1003,36 @@ def test_eigh_tridiagonal(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eigvals(dtype_x, test_flags, backend_fw, fn_name):
+def test_eigvals(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.general_inner_product",
+    data=_generate_general_inner_product_args(),
+)
+def test_general_inner_product(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, n_modes = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        a=x[0],
+        b=x[1],
+        n_modes=n_modes,
     )
 
 

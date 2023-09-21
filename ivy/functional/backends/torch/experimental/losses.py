@@ -97,3 +97,32 @@ def soft_margin_loss(
         target,
         reduction=reduction,
     )
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    backend_version,
+)
+def kl_div(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> torch.Tensor:
+    loss = torch.nn.functional.kl_div(
+        input,
+        target,
+        reduction=reduction,
+    )
+    return loss

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import torch
@@ -16,6 +16,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.logit(x, eps=eps, out=out)
@@ -33,14 +34,18 @@ def thresholded_relu(
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def relu6(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def relu6(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.nn.functional.relu6(x)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def logsigmoid(
-    input: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    input: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    if torch.is_complex(input):
+        return torch.log(torch.sigmoid(input))
     return torch.nn.functional.logsigmoid(input)
 
 
