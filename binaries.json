@@ -27,6 +27,30 @@
                     "XXI.so"
                 ]
             }
+        ],
+        "engines": [
+            "ivy2xla.so",
+            {
+                "XLA": {
+                    "rust_api": {
+                        "python_frontend": [
+                            "activations.so",
+                            "creation.so",
+                            "elementwise.so",
+                            "general.so",
+                            "layers.so",
+                            "linear_algebra",
+                            "manipulation",
+                            "norms.so",
+                            "stateful_activations.so",
+                            "stateful_layers.so",
+                            "stateful_norms.so",
+                            "statistical.so",
+                            "xla_core"
+                        ]
+                    }
+                }
+            }
         ]
     }
 }
