@@ -552,7 +552,7 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     ret = paddle.tensordot(x1, x2, axes=axes)
     return ret.squeeze() if x1.ndim == axes else ret
 
