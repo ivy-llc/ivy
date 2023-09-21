@@ -831,22 +831,15 @@ def handle_frontend_method(
             param_names = inspect.signature(test_fn).parameters.keys()
             init_flags = pf.frontend_init_flags(
                 num_positional_args=init_num_positional_args,
-                as_variable=init_as_variable_flags,
-                native_arrays=init_native_arrays,
                 test_compile=test_compile,
                 precision_mode=precision_mode,
-                inplace=test_inplace,
                 as_variable=_get_runtime_flag_value(init_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(init_native_arrays),
             )
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
-                as_variable=method_as_variable_flags,
-                native_arrays=method_native_arrays,
-                test_compile=test_compile,
-                precision_mode=precision_mode,
-                inplace=test_inplace,
+                inplace=_get_runtime_flag_value(test_inplace),
                 as_variable=_get_runtime_flag_value(method_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
                 test_compile=_get_runtime_flag_value(test_compile),
