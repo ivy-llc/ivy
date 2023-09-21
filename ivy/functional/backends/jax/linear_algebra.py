@@ -1,5 +1,4 @@
 # global
-import math
 from collections import namedtuple
 from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple, List
 
@@ -8,17 +7,11 @@ import jax.numpy as jnp
 # local
 import ivy
 from ivy import inf
+from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from ivy.utils.tensordot_contraction_modes import (
-    _get_valid_contraction_modes_for_batches,
-    _get_valid_contraction_modes_for_axes,
-    _final_modes,
-)
-
+from ivy.utils.tensordot_contraction_modes import _batched_modes_is_none
 from . import backend_version
-
-from ivy import promote_types_of_inputs
 
 
 # Array API Standard #
@@ -390,43 +383,10 @@ def tensordot(
     batched_modes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    axes = _get_valid_contraction_modes_for_axes(x1.shape, x2.shape, axes)
-    if batched_modes is not None:
-        batched_modes = _get_valid_contraction_modes_for_batches(
-            x1.shape, x2.shape, batched_modes
-        )
-        return _tensordot_with_batched_modes(x1, x2, axes, batched_modes)
     return jnp.tensordot(x1, x2, axes)
 
 
-def _tensordot_with_batched_modes(x1, x2, axes, batched_modes):
-    modes1, modes2 = axes
-    batch_modes1, batch_modes2 = batched_modes
-    contraction_shape = [s for (i, s) in enumerate(x1.shape) if i in modes1]
-    contraction_dim = math.prod(contraction_shape)
-    batch_shape = [s for (i, s) in enumerate(x1.shape) if i in batch_modes1]
-
-    # We will reorganize x1 to (batch_modes, new_modes1, contraction_modes)
-    new_modes1 = [i for i in range(x1.ndim) if i not in batch_modes1 + modes1]
-    new_shape1 = [x1.shape[i] for i in new_modes1]
-    x1 = jnp.transpose(x1, batch_modes1 + new_modes1 + modes1)
-    x1 = jnp.reshape(x1, (*batch_shape, -1, contraction_dim))
-
-    # x2 will be (batch_modes, contraction_modes, new_modes2)
-    new_modes2 = [i for i in range(x2.ndim) if i not in batch_modes2 + modes2]
-    new_shape2 = [x2.shape[i] for i in new_modes2]
-    x2 = jnp.transpose(x2, batch_modes2 + modes2 + new_modes2)
-    x2 = jnp.reshape(x2, (*batch_shape, contraction_dim, -1))
-
-    res = jnp.matmul(x1, x2)
-    res = jnp.reshape(res, (*batch_shape, *new_shape1, *new_shape2))
-
-    final_modes = _final_modes(x1, modes1, batch_modes1)
-    final_modes += [i for i in range(res.ndim) if i not in final_modes]
-    if final_modes:
-        res = jnp.transpose(res, final_modes)
-
-    return res
+tensordot.partial_mixed_handler = _batched_modes_is_none
 
 
 @with_unsupported_dtypes(

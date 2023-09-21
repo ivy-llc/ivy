@@ -1,4 +1,5 @@
 # global
+import math
 from typing import Union, Optional, Tuple, Literal, List, Sequence
 
 # local
@@ -12,8 +13,14 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_backend_invalid,
+    handle_partial_mixed_function,
 )
 from ivy.utils.exceptions import handle_exceptions
+from ivy.utils.tensordot_contraction_modes import (
+    _get_valid_contraction_modes_for_axes,
+    _get_valid_contraction_modes_for_batches,
+    _final_modes,
+)
 
 inf = float("inf")
 
@@ -2332,6 +2339,7 @@ def svdvals(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_partial_mixed_function
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
@@ -2428,9 +2436,54 @@ def tensordot(
         b: ivy.array(76.)
     }
     """
+    if batched_modes is not None:
+        axes = _get_valid_contraction_modes_for_axes(x1.shape, x2.shape, axes)
+        batched_modes = _get_valid_contraction_modes_for_batches(
+            x1.shape, x2.shape, batched_modes
+        )
+        return _tensordot_with_batched_modes(x1, x2, axes, batched_modes)
     return current_backend(x1, x2).tensordot(
         x1, x2, axes=axes, batched_modes=batched_modes, out=out
     )
+
+
+tensordot.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_out_argument",
+        "to_native_arrays_and_back",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
+def _tensordot_with_batched_modes(x1, x2, axes, batched_modes):
+    modes1, modes2 = axes
+    batch_modes1, batch_modes2 = batched_modes
+    contraction_shape = [s for (i, s) in enumerate(x1.shape) if i in modes1]
+    contraction_dim = math.prod(contraction_shape)
+    batch_shape = [s for (i, s) in enumerate(x1.shape) if i in batch_modes1]
+
+    # We will reorganize x1 to (batch_modes, new_modes1, contraction_modes)
+    new_modes1 = [i for i in range(x1.ndim) if i not in batch_modes1 + modes1]
+    new_shape1 = [x1.shape[i] for i in new_modes1]
+    x1 = ivy.permute_dims(x1, axes=batch_modes1 + new_modes1 + modes1)
+    x1 = ivy.reshape(x1, shape=(*batch_shape, -1, contraction_dim))
+
+    # x2 will be (batch_modes, contraction_modes, new_modes2)
+    new_modes2 = [i for i in range(x2.ndim) if i not in batch_modes2 + modes2]
+    new_shape2 = [x2.shape[i] for i in new_modes2]
+    x2 = ivy.permute_dims(x2, axes=batch_modes2 + modes2 + new_modes2)
+    x2 = ivy.reshape(x2, shape=(*batch_shape, contraction_dim, -1))
+
+    res = ivy.matmul(x1, x2)
+    res = ivy.reshape(res, shape=(*batch_shape, *new_shape1, *new_shape2))
+
+    final_modes = _final_modes(x1, modes1, batch_modes1)
+    final_modes += [i for i in range(res.ndim) if i not in final_modes]
+    if final_modes:
+        res = ivy.permute_dims(res, axes=final_modes)
+    return res
 
 
 @handle_exceptions
