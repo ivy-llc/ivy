@@ -161,7 +161,7 @@ if __name__ == "__main__":
                     f"docker run --rm --env REDIS_URL={redis_url} --env"
                     f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
                     ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest'
-                    ' /bin/bash -c "cd docker;python docker/multiversion_framework_directory.py'
+                    ' /bin/bash -c "cd docker;python multiversion_framework_directory.py'
                     f" {' '.join(backends)};cd ..;pytest --tb=short"
                     f' {test} --backend={backend}"'
                 )
