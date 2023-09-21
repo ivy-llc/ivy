@@ -64,7 +64,7 @@ class Tensor:
         {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
-    def __add__(self, y, name=None):
+    def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
 
     def __getitem__(self, item):
@@ -781,6 +781,12 @@ class Tensor:
 
     def is_floating_point(self):
         return paddle_frontend.is_floating_point(self._ivy_array)
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("complex", "uint8", "uint16")}, "paddle"
+    )
+    def numpy(self):
+        return self.ivy_array.to_numpy()
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def nonzero(self):
