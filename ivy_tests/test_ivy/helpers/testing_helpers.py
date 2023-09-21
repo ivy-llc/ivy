@@ -863,16 +863,13 @@ def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
 
 
-def _create_transpile_report(data: dict, file_name: str, path: str = "root"):
+def _create_transpile_report(data: dict, file_name: str):
     json_object = json.dumps(data, indent=6)
-    if path == "root":
-        path = "../../../../"
-    full_path = os.path.join(path, file_name)
-    if os.path.isfile(full_path):
-        with open(full_path, "r") as outfile:
+    if os.path.isfile(file_name):
+        with open(file_name, "r") as outfile:
             # Load the file's existing data
             data = json.load(outfile)
             if data["backend_nodes"] > data["backend_nodes"]:
                 return
-    with open(full_path, "w") as outfile:
+    with open(file_name, "w") as outfile:
         outfile.write(json_object)
