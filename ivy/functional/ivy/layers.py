@@ -912,15 +912,16 @@ def multi_head_attention(
         assert (
             attention_mask.dtype in [query.dtype, ivy.bool]
         ), f"was expecting attention_mask of type bool or the same as the input's, but got {attention_mask.dtype}"
-        if not ivy.is_bool_dtype(attention_mask):
-            attention_mask = attention_mask.astype(ivy.bool)
         if attention_mask.ndim == 2:
             attention_mask = ivy.tile(attention_mask, (batch_dim * num_heads, 1, 1))
         if bias_k is not None and bias_v is not None:
             attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
         if add_zero_attn:
             attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
-        attn_scores = ivy.where(attention_mask, float("-inf"), attn_scores)
+        if ivy.is_bool_dtype(attention_mask):
+            attn_scores = ivy.where(attention_mask, float("-inf"), attn_scores)
+        else:
+            attn_scores += attention_mask
 
     # apply key_padding_mask
     if key_padding_mask is not None:
