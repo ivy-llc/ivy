@@ -111,6 +111,33 @@ def selu(x):
     return ivy.selu(x)
 
 
+# New serialize function
+def serialize(activation_function):
+    if activation_function is None:
+        return None
+
+    if callable(activation_function):
+        # Check if the activation function's name is in the ACTIVATION_FUNCTIONS list
+        if activation_function.__name__ in ACTIVATION_FUNCTIONS:
+            return activation_function.__name__
+        else:
+            raise ValueError(
+                f"Unknown activation function: {activation_function.__name__}"
+            )
+
+    elif isinstance(activation_function, str):
+        # If the input is already a string, assume it's a valid activation function name
+        if activation_function in ACTIVATION_FUNCTIONS:
+            return activation_function
+        else:
+            raise ValueError(f"Unknown activation function: {activation_function}")
+
+    else:
+        raise ValueError(
+            f"Could not serialize activation function: {activation_function}"
+        )
+
+
 @to_ivy_arrays_and_back
 def sigmoid(x):
     return ivy.sigmoid(x)
