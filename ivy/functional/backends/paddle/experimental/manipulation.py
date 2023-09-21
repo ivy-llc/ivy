@@ -672,3 +672,67 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+)
+def fill_diagonal(
+    a: paddle.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> paddle.Tensor:
+    shape = a.shape
+    max_end = paddle.prod(paddle.to_tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
+    end = max_end if end > max_end else end
+    a = paddle.reshape(a, (-1,))
+    w = paddle.zeros(a.shape, dtype=bool)
+    ins = paddle.arange(0, max_end)
+    steps = paddle.arange(0, end, step)
+
+    for i in steps:
+        i = ins == i
+        w = paddle.logical_or(w, i)
+    v = paddle.to_tensor(v, dtype=a.dtype)
+    a = paddle.where(w, v, a)
+    a = paddle.reshape(a, shape)
+    return a
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: paddle.Tensor,
+    indices: paddle.Tensor,
+    values: Union[int, paddle.Tensor],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    mode_mappings = {
+        "sum": "add",
+        "mul": "mul",
+        "replace": "assign",
+    }
+    mode = mode_mappings.get(mode, mode)
+    ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
+    "replace",
+    "sum",
+    "mul",
+]

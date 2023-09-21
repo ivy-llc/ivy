@@ -443,6 +443,48 @@ def _st_tuples_or_int(n_pairs, min_val=0):
     )
 
 
+@st.composite
+def put_along_axis_helper(draw):
+    input_dtype, x, axis, shape = draw(
+        helpers.dtype_values_axis(
+            # does not work for bool yet because scatter_nd doesn't
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=2,
+            max_num_dims=3,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=-1e2,
+            max_value=1e2,
+            valid_axis=True,
+            force_int_axis=True,
+            ret_shape=True,
+        )
+    )
+
+    idx_shape = list(shape)
+    idx_shape[axis] = 1
+
+    ind_dtype, indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int64"],
+            shape=idx_shape,
+            min_value=0,
+            max_value=len(idx_shape) - 2,
+        )
+    )
+
+    _, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=input_dtype,
+            shape=idx_shape,
+            min_value=0,
+            max_value=100,
+        )
+    )
+
+    return input_dtype + ind_dtype + input_dtype, x[0], indices[0], values[0], axis
+
+
 # --- Main --- #
 # ------------ #
 
@@ -1200,6 +1242,40 @@ def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_devi
         input=input[0],
         shape=shape,
         skip_begin=skip_begin,
+    )
+
+
+# put_along_axis
+@handle_test(
+    fn_tree="functional.ivy.experimental.put_along_axis",
+    args=put_along_axis_helper(),
+    # ToDo: test for "mean" when support has been added
+    mode=st.sampled_from(["sum", "min", "max", "mul", "replace"]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_put_along_axis(
+    *,
+    args,
+    mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, x, indices, values, axis = args
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        arr=x,
+        indices=indices,
+        values=values,
+        axis=axis,
+        mode=mode,
     )
 
 
