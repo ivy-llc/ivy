@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
+import ivy.functional.frontends.numpy.manipulation_routines as mp_routines
 
 
 @to_ivy_arrays_and_back
@@ -710,7 +711,7 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 
 @to_ivy_arrays_and_back
 def transpose(a, axes=None):
-    return ivy.transpose(a, axes=axes)
+    return mp_routines.transpose_like_operations.transpose(a, axes=axes)
 
 
 @to_ivy_arrays_and_back
