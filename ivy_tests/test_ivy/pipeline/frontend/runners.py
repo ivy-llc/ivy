@@ -5,12 +5,12 @@ import numpy as np
 # local
 
 from ivy_tests.test_ivy.pipeline.base.argument_searcher import ArgumentsSearcher
+from .assertion_checker import FrontendAssertionChecker
 from ivy_tests.test_ivy.pipeline.base.runners import (
     TestCaseRunner,
     TestCaseSubRunner,
     TestCaseSubRunnerResult,
 )
-from ivy_tests.test_ivy.pipeline.base.assertion_checker import AssertionChecker
 import ivy
 
 
@@ -194,8 +194,8 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         # determine the target frontend_fn
         frontend_fn = self._get_frontend_function(args, kwargs)
 
-        as_ivy_arrays = not self.test_flags.generate_frontend_arrays
-        if not as_ivy_arrays and self.test_flags.test_compile:
+        # as_ivy_arrays = not self.test_flags.generate_frontend_arrays
+        if self.test_flags.generate_frontend_arrays and self.test_flags.test_compile:
             args, kwargs = self._ivy.nested_map(
                 (args, kwargs),
                 FunctionTestCaseSubRunner._frontend_array_to_ivy,
@@ -208,18 +208,21 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 ret, self._ivy.asarray, include_derived={"tuple": True}
             )
         else:
+            # asserting the returned arrays are frontend arrays
+            assert self._ivy.nested_map(
+                lambda x: (
+                    FunctionTestCaseSubRunner._is_frontend_array(x)
+                    if self._ivy.is_array(x)
+                    else True
+                ),
+                ret,
+            ), "Frontend function returned non-frontend arrays: {}".format(ret)
+
             ret = self._ivy.nested_map(
                 ret,
                 FunctionTestCaseSubRunner._frontend_array_to_ivy,
                 include_derived={"tuple": True},
             )
-        # TodO: check cls_type after you've created the assertion
-        cls_type = None
-        if (
-            self.test_flags.generate_frontend_arrays
-            and not self.test_flags.test_compile
-        ):
-            cls_type = ret.__class__.__name__
 
         ret_device = self._ivy.dev(ret) if self._ivy.is_array(ret) else None
         # got the ret as ivy array
@@ -230,7 +233,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             shape=self._ivy.shape(ret),
             device=ret_device,
             dtype=self._ivy.dtype(ret),
-            type=cls_type,
         )
 
     def get_results(self, test_arguments):
@@ -417,7 +419,7 @@ class FrontendTestCaseRunner(TestCaseRunner):
         )
 
         # checking assertions
-        assertion_checker = AssertionChecker(
+        assertion_checker = FrontendAssertionChecker(
             target_results,
             ground_truth_results,
             self.backend_to_test,
