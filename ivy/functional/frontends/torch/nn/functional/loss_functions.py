@@ -334,6 +334,9 @@ def kl_div(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "bool", "uint8")}, "torch"
+)
 def l1_loss(
     input,
     target,
