@@ -11,8 +11,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # local
 
 
-
-
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="onnx.Abs",
