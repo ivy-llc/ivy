@@ -228,6 +228,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         # got the ret as ivy array
         # flattening it to numpy array
         ret_np_flat = self._flatten_and_to_np(ret=ret)
+        # Todo: making all of these a list
         return TestCaseSubRunnerResult(
             flatten_elements_np=ret_np_flat,
             shape=self._ivy.shape(ret),
