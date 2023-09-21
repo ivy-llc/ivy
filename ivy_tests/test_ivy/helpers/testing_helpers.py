@@ -17,6 +17,7 @@ from . import test_parameter_flags as pf
 from . import test_globals as t_globals
 from .pipeline_helper import BackendHandler
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
+    DynamicFlag,
     BuiltInstanceStrategy,
     BuiltAsVariableStrategy,
     BuiltNativeArrayStrategy,
@@ -35,7 +36,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-from ivy_tests.test_ivy.conftest import mod_backend
+from .globals import mod_backend
 
 cmd_line_args = (
     "with_out",
@@ -49,6 +50,10 @@ cmd_line_args_lists = (
     "native_array",
     "container",
 )
+
+
+def _get_runtime_flag_value(flag):
+    return flag.strategy if isinstance(flag, DynamicFlag) else flag
 
 
 @st.composite
@@ -76,9 +81,7 @@ def num_positional_args_method(draw, *, method):
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1
-        elif param.kind == param.KEYWORD_ONLY:
-            num_keyword_only += 1
-        elif param.kind == param.VAR_KEYWORD:
+        elif param.kind in [param.KEYWORD_ONLY, param.VAR_KEYWORD]:
             num_keyword_only += 1
     return draw(
         nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
@@ -145,11 +148,8 @@ def num_positional_args_helper(fn_name, backend):
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1
-        elif param.kind == param.KEYWORD_ONLY:
+        elif param.kind in [param.KEYWORD_ONLY, param.VAR_KEYWORD]:
             num_keyword_only += 1
-        elif param.kind == param.VAR_KEYWORD:
-            num_keyword_only += 1
-
     return num_positional_only, total, num_keyword_only
 
 
@@ -174,7 +174,17 @@ def _import_fn(fn_tree: str):
     fn_name = fn_tree[split_index + 1 :]
     module_to_import = fn_tree[:split_index]
     mod = importlib.import_module(module_to_import)
-    callable_fn = mod.__dict__[fn_name]
+    try:
+        callable_fn = mod.__dict__[fn_name]
+    except KeyError:
+        raise ImportError(
+            f"Error: The function '{fn_name}' could not be found within the module"
+            f" '{module_to_import}'.\nPlease double-check the function name and its"
+            " associated path.\nIf this function is a new feature you'd like to see,"
+            " we'd love to hear from you! You can contribute to our project. For more"
+            " details, please"
+            " visit:\nhttps://lets-unify.ai/ivy/contributing/open_tasks.html\n"
+        )
     return callable_fn, fn_name, module_to_import
 
 
@@ -290,7 +300,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     if fn_module == "ivy.functional.frontends.numpy":
         fn_module_ = np_frontend
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
-            fn_name = "_" + fn_name
+            fn_name = f"_{fn_name}"
 
     for backend_str in available_frameworks:
         if mod_backend[backend_str]:
@@ -383,7 +393,7 @@ def handle_test(
     """
     is_fn_tree_provided = fn_tree is not None
     if is_fn_tree_provided:
-        fn_tree = "ivy." + fn_tree
+        fn_tree = f"ivy.{fn_tree}"
     is_hypothesis_test = len(_given_kwargs) != 0
 
     possible_arguments = {}
@@ -395,14 +405,14 @@ def handle_test(
         possible_arguments["test_flags"] = pf.function_flags(
             ground_truth_backend=st.just(ground_truth_backend),
             num_positional_args=number_positional_args,
-            instance_method=test_instance_method,
-            with_out=test_with_out,
-            test_gradients=test_gradients,
-            test_compile=test_compile,
-            as_variable=as_variable_flags,
-            native_arrays=native_array_flags,
-            container_flags=container_flags,
-            precision_mode=precision_mode,
+            instance_method=_get_runtime_flag_value(test_instance_method),
+            with_out=_get_runtime_flag_value(test_with_out),
+            test_gradients=_get_runtime_flag_value(test_gradients),
+            test_compile=_get_runtime_flag_value(test_compile),
+            as_variable=_get_runtime_flag_value(as_variable_flags),
+            native_arrays=_get_runtime_flag_value(native_array_flags),
+            container_flags=_get_runtime_flag_value(container_flags),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
     def test_wrapper(test_fn):
@@ -513,10 +523,10 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
     """
-    fn_tree = "ivy.functional.frontends." + fn_tree
+    fn_tree = f"ivy.functional.frontends.{fn_tree}"
     if aliases is not None:
         for i in range(len(aliases)):
-            aliases[i] = "ivy.functional.frontends." + aliases[i]
+            aliases[i] = f"ivy.functional.frontends.{aliases[i]}"
     is_hypothesis_test = len(_given_kwargs) != 0
 
     if is_hypothesis_test:
@@ -526,14 +536,14 @@ def handle_frontend_test(
         # Generate the test flags strategy
         test_flags = pf.frontend_function_flags(
             num_positional_args=number_positional_args,
-            with_out=test_with_out,
-            inplace=test_inplace,
-            as_variable=as_variable_flags,
-            native_arrays=native_array_flags,
-            test_compile=test_compile,
-            generate_frontend_arrays=generate_frontend_arrays,
-            transpile=transpile,
-            precision_mode=precision_mode,
+            with_out=_get_runtime_flag_value(test_with_out),
+            inplace=_get_runtime_flag_value(test_inplace),
+            as_variable=_get_runtime_flag_value(as_variable_flags),
+            native_arrays=_get_runtime_flag_value(native_array_flags),
+            test_compile=_get_runtime_flag_value(test_compile),
+            generate_frontend_arrays=_get_runtime_flag_value(generate_frontend_arrays),
+            transpile=_get_runtime_flag_value(transpile),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
     def test_wrapper(test_fn):
@@ -631,13 +641,13 @@ def handle_method(
     # need to fill up the docstring
     is_method_tree_provided = method_tree is not None
     if is_method_tree_provided:
-        method_tree = "ivy." + method_tree
+        method_tree = f"ivy.{method_tree}"
     is_hypothesis_test = len(_given_kwargs) != 0
     possible_arguments = {
         "ground_truth_backend": st.just(ground_truth_backend),
-        "test_gradients": test_gradients,
-        "test_compile": test_compile,
-        "precision_mode": precision_mode,
+        "test_gradients": _get_runtime_flag_value(test_gradients),
+        "test_compile": _get_runtime_flag_value(test_compile),
+        "precision_mode": _get_runtime_flag_value(precision_mode),
     }
 
     if is_hypothesis_test and is_method_tree_provided:
@@ -650,9 +660,9 @@ def handle_method(
 
         possible_arguments["init_flags"] = pf.init_method_flags(
             num_positional_args=init_num_positional_args,
-            as_variable=init_as_variable_flags,
-            native_arrays=init_native_arrays,
-            precision_mode=precision_mode,
+            as_variable=_get_runtime_flag_value(init_as_variable_flags),
+            native_arrays=_get_runtime_flag_value(init_native_arrays),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
         if method_num_positional_args is None:
@@ -662,10 +672,10 @@ def handle_method(
 
         possible_arguments["method_flags"] = pf.method_flags(
             num_positional_args=method_num_positional_args,
-            as_variable=method_as_variable_flags,
-            native_arrays=method_native_arrays,
-            container_flags=method_container_flags,
-            precision_mode=precision_mode,
+            as_variable=_get_runtime_flag_value(method_as_variable_flags),
+            native_arrays=_get_runtime_flag_value(method_native_arrays),
+            container_flags=_get_runtime_flag_value(method_container_flags),
+            precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
     def test_wrapper(test_fn):
@@ -731,6 +741,7 @@ def handle_frontend_method(
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
     test_inplace=BuiltInplaceStrategy,
+    generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
     """
@@ -818,13 +829,15 @@ def handle_frontend_method(
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-            init_flags = pf.frontend_method_flags(
+            init_flags = pf.frontend_init_flags(
                 num_positional_args=init_num_positional_args,
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
                 test_compile=test_compile,
                 precision_mode=precision_mode,
                 inplace=test_inplace,
+                as_variable=_get_runtime_flag_value(init_as_variable_flags),
+                native_arrays=_get_runtime_flag_value(init_native_arrays),
             )
 
             method_flags = pf.frontend_method_flags(
@@ -834,6 +847,13 @@ def handle_frontend_method(
                 test_compile=test_compile,
                 precision_mode=precision_mode,
                 inplace=test_inplace,
+                as_variable=_get_runtime_flag_value(method_as_variable_flags),
+                native_arrays=_get_runtime_flag_value(method_native_arrays),
+                test_compile=_get_runtime_flag_value(test_compile),
+                precision_mode=_get_runtime_flag_value(precision_mode),
+                generate_frontend_arrays=_get_runtime_flag_value(
+                    generate_frontend_arrays
+                ),
             )
             ivy_init_modules = str(ivy_init_module)
             framework_init_modules = str(framework_init_module)

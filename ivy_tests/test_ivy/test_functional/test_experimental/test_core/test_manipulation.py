@@ -746,20 +746,25 @@ def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_devic
 @handle_test(
     fn_tree="fill_diagonal",
     dt_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         max_num_dims=4,
         min_dim_size=3,
         max_dim_size=3,
+        num_arrays=2,
     ),
     v=st.sampled_from([1, 2, 3, 10]),
+    v_is_array_like=st.booleans(),
     wrap=st.booleans(),
     test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_fill_diagonal(
     *,
     dt_a,
     v,
+    v_is_array_like,
     wrap,
     test_flags,
     backend_fw,
@@ -767,6 +772,8 @@ def test_fill_diagonal(
     on_device,
 ):
     dt, a = dt_a
+    if v_is_array_like:
+        v = a[1]
     helpers.test_function(
         input_dtypes=dt,
         test_flags=test_flags,
@@ -1401,23 +1408,16 @@ def test_vsplit(
 # vstack
 @handle_test(
     fn_tree="functional.ivy.experimental.vstack",
-    dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=helpers.get_shape(
-            min_num_dims=1,
-        ),
-        shared_dtype=True,
-        num_arrays=helpers.ints(min_value=2, max_value=10),
-    ),
+    arrays_dtypes=_st_col_row_stack_arrays(stack_dim=0),
     test_gradients=st.just(False),
 )
-def test_vstack(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, m = dtype_and_m
+def test_vstack(*, arrays_dtypes, test_flags, backend_fw, fn_name, on_device):
+    arrays, dtypes = arrays_dtypes
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        arrays=m,
+        arrays=arrays,
     )

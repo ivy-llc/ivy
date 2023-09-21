@@ -375,6 +375,10 @@ class Tensor:
         self.ivy_array = self.log2().ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def logit(self):
+        return torch_frontend.logit(self)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     def copy_(self, other, non_blocking=False):
         ivy.utils.assertions.check_one_way_broadcastable(
@@ -1110,6 +1114,10 @@ class Tensor:
         self.ivy_array = self.atan2(other).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def fmax(self, other):
+        return torch_frontend.fmax(self, other)
+
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
@@ -1194,12 +1202,12 @@ class Tensor:
         return self.long()
 
     def __getitem__(self, query, /):
-        ivy_args = ivy.nested_map([self, query], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, query])
         ret = ivy.get_item(*ivy_args)
         return torch_frontend.Tensor(ret, _init_overload=True)
 
     def __setitem__(self, key, value, /):
-        key, value = ivy.nested_map([key, value], _to_ivy_array)
+        key, value = ivy.nested_map(_to_ivy_array, [key, value])
         self.ivy_array[key] = value
 
     def __iter__(self):
@@ -1836,6 +1844,27 @@ class Tensor:
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "float32",
+                "float64",
+                "complex",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "int8",
+            )
+        },
+        "torch",
+    )
+    def lcm_(self, other, *, out=None):
+        self.ivy_array = self.lcm(other, out=out).ivy_array
+        return self
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
                 "bfloat16",
                 "int8",
                 "uint8",
@@ -2014,6 +2043,18 @@ class Tensor:
     )
     def unique(self, sorted=True, return_inverse=False, return_counts=False, dim=None):
         return torch_frontend.unique(self, sorted, return_inverse, return_counts, dim)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def xlogy(self, *, other, out=None):
+        return torch_frontend.xlogy(self, other, out=out)
 
 
 class Size(tuple):
