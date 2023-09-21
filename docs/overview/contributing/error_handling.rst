@@ -109,4 +109,3 @@ This section is specifically targeted towards dealing with the Ivy Functional AP
 This should have hopefully given you an understanding of how to deal with common errors while working with the the functional API.
 
 If you have any questions, please feel free to reach out on `discord`_  in the `ivy tests channel`_, `pycharm channel`_, `docker channel`_, `pre-commit channel`_, `pip packages channel`_ depending on the question!
-
