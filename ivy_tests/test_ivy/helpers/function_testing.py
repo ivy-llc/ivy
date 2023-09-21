@@ -632,9 +632,6 @@ def test_frontend_function(
         FunctionTestFlags object that stores all testing flags, including:
         num_positional_args, with_out, instance_method, as_variable,
         native_arrays, container, gradient, precision_mode
-    all_aliases
-        a list of strings containing all aliases for that function
-        in the current frontend with their full namespaces.
     frontend
         current frontend (framework).
     fn_tree
