@@ -2330,6 +2330,10 @@ def unset_default_float_dtype():
     """
     Reset the current default float dtype to the previous state.
 
+    Parameters
+    ----------
+    None
+
     Examples
     --------
     >>> ivy.set_default_float_dtype(ivy.float32)
