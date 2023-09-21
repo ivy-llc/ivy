@@ -246,7 +246,7 @@ def _vander_helper(draw):
     # generate input matrix of shape (*, n) and where '*' is one or more
     # batch dimensions
     N = draw(helpers.ints(min_value=2, max_value=5))
-    if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
+    if draw(st.floats(min_value=0, max_value=1.0)) < 0.5:
         N = None
 
     shape = draw(
