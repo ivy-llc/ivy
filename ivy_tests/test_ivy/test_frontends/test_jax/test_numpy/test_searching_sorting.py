@@ -1,6 +1,6 @@
 # global
-import numpy as np
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -8,7 +8,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
 )
-
 from ...test_numpy.test_sorting_searching_counting.test_searching import (
     _broadcastable_trio as _where_helper,
 )
@@ -16,6 +15,7 @@ from ...test_numpy.test_sorting_searching_counting.test_searching import (
 
 # --- Helpers --- #
 # --------------- #
+
 
 # searchsorted
 @st.composite

@@ -1,14 +1,14 @@
 # global
 import ivy
 from ivy import (
-    with_supported_device_and_dtypes,
     with_supported_dtypes,
     with_unsupported_dtypes,
+    with_supported_device_and_dtypes,
 )
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
-    handle_tf_dtype,
     to_ivy_arrays_and_back,
+    handle_tf_dtype,
     to_ivy_dtype,
 )
 

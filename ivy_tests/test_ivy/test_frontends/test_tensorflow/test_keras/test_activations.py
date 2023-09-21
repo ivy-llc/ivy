@@ -1,7 +1,6 @@
-import sys
-from types import SimpleNamespace
-
 from hypothesis import strategies as st
+from types import SimpleNamespace
+import sys
 
 # local
 import ivy

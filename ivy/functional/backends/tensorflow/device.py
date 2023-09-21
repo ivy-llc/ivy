@@ -7,9 +7,8 @@ and signature.
 
 # global
 _round = round
-from typing import Optional, Union
-
 import tensorflow as tf
+from typing import Union, Optional
 
 # local
 import ivy

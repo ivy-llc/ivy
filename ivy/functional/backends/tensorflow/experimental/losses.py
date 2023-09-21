@@ -1,9 +1,6 @@
-from typing import Optional
-
 import tensorflow as tf
-
+from typing import Optional
 from ivy.func_wrapper import with_unsupported_dtypes
-
 from . import backend_version
 
 

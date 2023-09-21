@@ -1,7 +1,11 @@
 # Hypothesis strategies
-# Testing
-from . import assertions, function_testing, hypothesis_helpers, testing_helpers
-from .assertions import *
-from .function_testing import *
+from . import hypothesis_helpers
 from .hypothesis_helpers import *
+
+# Testing
+from . import assertions
+from .assertions import *
+from . import function_testing
+from .function_testing import *
+from . import testing_helpers
 from .testing_helpers import *

@@ -1,5 +1,4 @@
 import sys
-
 from run_tests_CLI.get_all_tests import BACKENDS
 
 

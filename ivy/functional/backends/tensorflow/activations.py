@@ -5,7 +5,7 @@ Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
 """
 
-from typing import Literal, Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import tensorflow as tf
@@ -13,10 +13,9 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-import ivy.functional.backends.tensorflow as tf_backend
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
+import ivy.functional.backends.tensorflow as tf_backend
 
 
 def gelu(

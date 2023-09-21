@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
 import torch
 
@@ -11,7 +11,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
-
 from . import backend_version
 
 

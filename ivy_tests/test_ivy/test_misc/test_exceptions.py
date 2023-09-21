@@ -1,9 +1,7 @@
-import contextlib
-import os
 import sys
-
+import os
+import contextlib
 import pytest
-
 import ivy
 
 

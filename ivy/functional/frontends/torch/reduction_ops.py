@@ -1,12 +1,11 @@
-from collections import namedtuple
-
 import ivy
-import ivy.functional.frontends.torch as torch_frontend
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
-    numpy_to_torch_style_args,
     to_ivy_arrays_and_back,
+    numpy_to_torch_style_args,
 )
+from collections import namedtuple
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @numpy_to_torch_style_args

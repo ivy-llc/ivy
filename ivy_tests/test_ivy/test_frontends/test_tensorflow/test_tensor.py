@@ -1,17 +1,16 @@
 # global
+from hypothesis import strategies as st, given, assume
 import numpy as np
 import tensorflow as tf
-from hypothesis import assume, given
-from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.frontends.tensorflow import EagerTensor
-from ivy_tests.test_ivy.helpers import BackendHandler, handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
 )
+from ivy.functional.frontends.tensorflow import EagerTensor
 
 CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 

@@ -1,8 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Iterable, List, Optional, Sequence, Tuple, Union
-
+from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
 import numpy as np
 
@@ -10,7 +9,6 @@ import numpy as np
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-
 from . import backend_version
 
 

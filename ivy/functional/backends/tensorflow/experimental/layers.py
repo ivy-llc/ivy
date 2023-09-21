@@ -1,26 +1,23 @@
 # global
 import math
-from typing import Callable, List, Literal, Optional, Sequence, Tuple, Union
-
+from typing import Union, Optional, Tuple, List, Literal, Sequence, Callable
 import tensorflow as tf
-
-import ivy
 
 # local
 from ivy.func_wrapper import (
-    with_supported_device_and_dtypes,
-    with_supported_dtypes,
     with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
 )
-from ivy.functional.ivy.experimental.layers import _get_size, _padding_ceil_mode
-from ivy.functional.ivy.layers import (
-    _depth_max_pooling_helper,
-    _get_num_padded_values,
-    _handle_padding,
-    _validate_max_pool_params,
-)
-
 from .. import backend_version
+import ivy
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _get_num_padded_values,
+    _validate_max_pool_params,
+    _depth_max_pooling_helper,
+)
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):

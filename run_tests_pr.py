@@ -1,7 +1,6 @@
 # Run Tests
 import os
 import sys
-
 import requests
 
 url = "https://ivy-dynamical-dashboards.onrender.com/api/test"
