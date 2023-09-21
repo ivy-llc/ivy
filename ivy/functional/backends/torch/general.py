@@ -4,6 +4,7 @@ from functools import reduce as _reduce
 from numbers import Number
 from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
+import ml_dtypes
 
 try:
     import functorch
@@ -133,20 +134,15 @@ def to_numpy(
         x = x.resolve_neg().resolve_conj()
         if copy:
             if x.dtype is torch.bfloat16:
-                try:
-                    return x.detach().cpu().numpy().astype("bfloat16")
-                except TypeError:
-                    # although ml_dtypes would enable bfloat16
-                    # behaviour in numpy, but torch is restricting
-                    # it here, so we need to do this
-                    default_dtype = ivy.default_float_dtype(as_native=True)
-                    if default_dtype is torch.bfloat16:
-                        x = x.to(torch.float32)
-                    else:
-                        x = x.to(default_dtype)
-                    from ml_dtypes import bfloat16
-
-                    return x.detach().cpu().numpy().astype(bfloat16)
+                # although ml_dtypes would enable bfloat16
+                # behaviour in numpy, but torch is restricting
+                # it here, so we need to do this
+                default_dtype = ivy.default_float_dtype(as_native=True)
+                if default_dtype is torch.bfloat16:
+                    x = x.to(torch.float32)
+                else:
+                    x = x.to(default_dtype)
+                return x.detach().cpu().numpy().astype(ml_dtypes.bfloat16)
             return x.detach().cpu().numpy()
         else:
             raise ivy.utils.exceptions.IvyException(
