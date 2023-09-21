@@ -727,7 +727,7 @@ def test_torch_index_reduce(
         source, input = xs
     else:
         input, source = xs
-    print("dummy to trigger test")
+
     helpers.test_frontend_function(
         input_dtypes=[input_dtypes[0], "int64", input_dtypes[1]],
         backend_to_test=backend_fw,
