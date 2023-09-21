@@ -46,10 +46,6 @@ def multi_head_attention(
 ) -> torch.Tensor:
     if key is None and value is None:
         key = value = query
-    if attention_mask is not None and attention_mask.dtype != torch.bool:
-        attention_mask = attention_mask.to(torch.bool)
-    if key_padding_mask is not None and key_padding_mask.dtype != torch.bool:
-        key_padding_mask = key_padding_mask.to(torch.bool)
     emb_dim = _get_embed_dim(
         in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query,
     )[1]
