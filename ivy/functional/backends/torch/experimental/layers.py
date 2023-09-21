@@ -563,8 +563,6 @@ def dct(
 ) -> torch.tensor:
     if norm not in (None, "ortho"):
         raise ValueError("Norm must be either None or 'ortho'")
-    if x.dtype not in [torch.float32, torch.float64]:
-        x = x.type(torch.float32)
     if axis < 0:
         axis = axis + len(x.shape)
     if n is not None:
@@ -714,6 +712,7 @@ def fft(
         "2.0.1 and below": (
             "float16",
             "bfloat16",
+            "complex",
         )
     },
     backend_version,
@@ -1136,3 +1135,50 @@ def stft(
     original_shape = (len(to_return), len(to_return[0]))
     result = result.view(original_shape + result.shape[1:])
     return result
+
+
+def sliding_window(
+    input: torch.Tensor,
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = 0,
+) -> torch.Tensor:
+    if input.ndim != 4:
+        # convert input to 4D tensor as unfold only accepts 4D data
+        input_shape = input.shape
+        extend_dims = max(0, 4 - len(input_shape))
+        new_shape = (1,) * extend_dims + input_shape
+        input = input.reshape(new_shape).float()
+
+    stride = (stride,) * 2 if isinstance(stride, int) else tuple(stride) * 2
+    dilation = (dilation,) * 2 if isinstance(dilation, int) else tuple(dilation) * 2
+
+    kernel_size = (kernel_size,) * 2 if isinstance(kernel_size, int) else kernel_size
+    if len(kernel_size) < 2:
+        kernel_size = (kernel_size) * 2
+
+    # check padding and convert to right format
+    if isinstance(padding, str):
+        # convert padding from str to seq
+        if padding.upper() == "SAME":
+            pad_vals = []
+            for dim in input.shape:
+                pad_val = _handle_padding(
+                    dim,
+                    stride[0] if isinstance(stride, tuple) else stride,
+                    kernel_size[0],
+                    padding,
+                )
+                pad_vals.append(pad_val)
+            padding = pad_vals[:2]
+        else:
+            padding = 0
+    else:
+        padding = (padding,) * 2 if isinstance(padding, int) else padding
+
+    return torch.nn.functional.unfold(
+        input, kernel_size, dilation=dilation, padding=padding, stride=stride
+    )

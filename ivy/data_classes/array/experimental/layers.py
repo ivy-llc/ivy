@@ -1173,3 +1173,58 @@ class _ArrayWithLayersExperimental(abc.ABC):
             name=name,
             out=out,
         )
+
+    def sliding_window(
+        self: ivy.Array,
+        window_size: Union[int, Tuple[int, int], Tuple[int, int, int]],
+        /,
+        *,
+        stride: Union[int, Tuple[int, int]] = 1,
+        dilation: Union[int, Tuple[int, int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+    ) -> ivy.Array:
+        """
+        Slide a window of specified dimension over all elements of an array.
+
+        Parameters
+        ----------
+        input
+            An array representing the base area on which the window is going to slide
+            over.
+        window_size
+            Size of the sliding window for each dimension of the input.
+        stride
+            The stride of the sliding window for each dimension of input
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’
+            (no padding), or a sequence of n (low, high) integer pairs that give the
+            padding to apply before and after each spatial dimension.
+        dilation
+            The stride between elements within a sliding window, must be > 0.
+
+        Returns
+        -------
+        ret
+            The result of the sliding window operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3, 4],
+        >>>                [5, 6, 7, 8],
+        >>>                [9, 10, 11, 12]])
+        >>> x.sliding_window((2, 2))
+        ivy.array([[[ 1,  2,  5,  6],
+                    [ 2,  3,  6,  7],
+                    [ 3,  4,  7,  8]],
+
+                    [[ 5,  6,  9, 10],
+                    [ 6,  7, 10, 11],
+                    [ 7,  8, 11, 12]]])
+        """
+        return ivy.sliding_window(
+            self._data,
+            window_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
