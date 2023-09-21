@@ -153,7 +153,7 @@ if __name__ == "__main__":
             if version_flag == "true":
                 backends = [backend.strip()]
                 [backend_name, backend_version] = backend.split("/")
-                other_backends = [fw for fw in BACKENDS if fw != backend_name]
+                other_backends = [fw for fw in BACKENDS if (fw != backend_name and fw != "paddle")]
                 for backend in other_backends:
                     backends.append(backend + "/" + get_latest_package_version(backend))
                 print("Backends:", backends)
