@@ -950,7 +950,11 @@ def test_frontend_function(
             frontend_fn,
             frontend_fw_fn,
             frontend,
+            backend_to_test,
             fn_name=f"{gt_frontend_submods}.{gt_fn_name}",
+            generate_frontend_arrays=test_flags.generate_frontend_arrays,
+            args_for_test=args_for_test,
+            kwargs_for_test=kwargs_for_test,
             frontend_fw_args=args_frontend,
             frontend_fw_kwargs=kwargs_frontend,
         )
@@ -2406,7 +2410,11 @@ def _get_transpiled_data_if_required(
     frontend_fn,
     frontend_fw_fn,
     frontend,
+    backend,
     fn_name,
+    generate_frontend_arrays,
+    args_for_test,
+    kwargs_for_test,
     frontend_fw_args,
     frontend_fw_kwargs,
 ):
@@ -2415,6 +2423,19 @@ def _get_transpiled_data_if_required(
     # to compile the frontend function on ivy arrays
     with BackendHandler.update_backend(frontend) as ivy_backend:
         args, kwargs = ivy_backend.args_to_ivy(*frontend_fw_args, **frontend_fw_kwargs)
+
+    # for backend transpilation
+    with BackendHandler.update_backend(backend) as ivy_backend:
+        if generate_frontend_arrays:
+            args_for_test, kwargs_for_test = ivy.nested_map(
+                _frontend_array_to_ivy,
+                (args_for_test, kwargs_for_test),
+                include_derived={"tuple": True},
+            )
+        else:
+            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(
+                *frontend_fw_args, **frontend_fw_kwargs
+            )
 
     compiled_fn = compiled_if_required(
         frontend,
