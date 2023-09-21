@@ -734,11 +734,6 @@ def test_frontend_function(
                 "jax_enable_x64", True
             )
 
-        # Make copy for arguments for functions that might use
-        # inplace update by default
-        copy_kwargs = copy.deepcopy(kwargs)
-        copy_args = copy.deepcopy(args)
-
         # Frontend array generation
         create_frontend_array = local_importer.import_module(
             f"ivy.functional.frontends.{frontend}"
@@ -753,6 +748,17 @@ def test_frontend_function(
             )
         else:
             args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
+
+        # used in value testing to compute the ground truth result.
+        # without these, inplace functions would be called on input
+        # arrays or containers twice, leading to test failing.
+        copy_args_for_gt_test = copy.deepcopy(args_for_test)
+        copy_kwargs_for_gt_test = copy.deepcopy(kwargs_for_test)
+
+        # Make copy for arguments for functions that might use
+        # inplace update by default
+        copy_kwargs = copy.deepcopy(kwargs_for_test)
+        copy_args = copy.deepcopy(args_for_test)
 
         ret = get_frontend_ret(
             backend_to_test,
@@ -870,34 +876,36 @@ def test_frontend_function(
                     *copy_args, array_fn=array_fn, **copy_kwargs
                 )
                 ret_ = get_frontend_ret(
-                    frontend_fn=frontend_fn,
-                    backend=backend_to_test,
+                    backend_to_test,
+                    frontend_fn,
+                    *copy_args,
                     precision_mode=test_flags.precision_mode,
                     test_compile=test_flags.test_compile,
                     frontend_array_function=(
                         create_frontend_array if test_flags.test_compile else None
                     ),
-                    *copy_args,
                     **copy_kwargs,
                 )
-                assert first_array is ret_
+                assert (
+                    first_array is ret_
+                ), f"Inplace operation failed {first_array} != {ret_}"
             else:
                 # the function provides inplace update by default
                 # check if returned reference is inputted reference
                 copy_kwargs["as_ivy_arrays"] = False
                 first_array = ivy_backend.func_wrapper._get_first_array(
-                    *args, array_fn=array_fn, **kwargs
+                    *copy_args, array_fn=array_fn, **copy_kwargs
                 )
                 ret_ = get_frontend_ret(
-                    frontend_fn=frontend_fn,
-                    backend=backend_to_test,
+                    backend_to_test,
+                    frontend_fn,
+                    *copy_args,
                     precision_mode=test_flags.precision_mode,
                     test_compile=test_flags.test_compile,
                     frontend_array_function=(
                         create_frontend_array if test_flags.test_compile else None
                     ),
-                    *args,
-                    **kwargs,
+                    **copy_kwargs,
                 )
                 assert (
                     first_array is ret_
@@ -926,12 +934,12 @@ def test_frontend_function(
             )
 
         gt_args_np = ivy.nested_map(
-            args_for_test,
+            copy_args_for_gt_test,
             arrays_to_numpy,
             shallow=False,
         )
         gt_kwargs_np = ivy.nested_map(
-            kwargs_for_test,
+            copy_kwargs_for_gt_test,
             arrays_to_numpy,
             shallow=False,
         )
