@@ -600,6 +600,20 @@ def embedding_helper(draw, mixed_fn_compos=True):
 
 @st.composite
 def get_add_arguments_dtypes(draw, available_dtypes=dtype_helpers.get_dtypes("valid")):
+    """
+    Obtain arguments for array __add__ method. First arguments is always an array,
+    second argument can be an array with mutually broadcastable shape or a scalar.
+    Outputs do not necessarily share dtypes.
+
+    Parameters
+    ----------
+    available_dtypes
+        dtypes to draw from
+
+    Returns
+    -------
+    A list of two arguments and a list of their dtypes.
+    """
     dtypes = draw(
         dtype_helpers.array_dtypes(num_arrays=2, available_dtypes=available_dtypes)
     )
