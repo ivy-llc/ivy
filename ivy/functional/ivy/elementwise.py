@@ -4265,7 +4265,7 @@ def log2(
     {
         a: ivy.array([-inf, nan]),
         b: ivy.array([-inf, nan, inf]),
-        c: ivy.array([3.15, 1.07, 0.])
+        c: ivy.array([3.17, 1.07, 0.])
     }
     """
     return ivy.current_backend(x).log2(x, out=out)
