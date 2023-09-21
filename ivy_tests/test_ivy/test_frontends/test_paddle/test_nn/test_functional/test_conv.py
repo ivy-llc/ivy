@@ -5,8 +5,8 @@ from hypothesis import assume
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_convolution_functions import (  # noqa: E501
-    _output_shape,
     _x_and_filters,
+    _output_shape,
 )
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,

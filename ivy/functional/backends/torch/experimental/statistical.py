@@ -1,16 +1,13 @@
 # global
-from copy import deepcopy
-from typing import Optional, Sequence, Tuple, Union
-
+from typing import Optional, Union, Tuple, Sequence
 import torch
-
-import ivy
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
-
-from ..statistical import _infer_dtype
 from . import backend_version
+import ivy
+from ..statistical import _infer_dtype
+from copy import deepcopy
 
 
 @with_unsupported_dtypes(

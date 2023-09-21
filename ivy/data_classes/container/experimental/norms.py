@@ -1,7 +1,6 @@
-from typing import Dict, List, Optional, Tuple, Union
-
-import ivy
 from ivy.data_classes.container.base import ContainerBase
+from typing import Union, List, Dict, Optional, Tuple
+import ivy
 
 
 class _ContainerWithNormsExperimental(ContainerBase):

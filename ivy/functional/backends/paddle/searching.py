@@ -2,11 +2,9 @@ from numbers import Number
 from typing import Optional, Tuple, Union
 
 import paddle
-
-import ivy
 import ivy.functional.backends.paddle as paddle_backend
+import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
-
 from . import backend_version
 from .elementwise import _elementwise_helper
 

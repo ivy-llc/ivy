@@ -3,9 +3,8 @@
 # global
 import copy
 import warnings
-
-import numpy as np
 import pytest
+import numpy as np
 
 # local
 import ivy
@@ -13,6 +12,7 @@ import ivy
 
 # --- Helpers --- #
 # --------------- #
+
 
 def _mnai(n, idx, fn):
     if len(idx) == 1:

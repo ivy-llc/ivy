@@ -2,24 +2,22 @@
 
 # global
 
-from itertools import chain
-from typing import Callable, Optional
-
+from typing import Optional, Callable
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
+from itertools import chain
 
 # local
 import ivy
-import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
 from ivy.functional.ivy.gradients import (
-    _get_native_y,
     _get_required_float_variables,
     _get_y_and_ret_idxs,
-    _process_func_ret_and_grads,
+    _get_native_y,
     _set_duplicates,
+    _process_func_ret_and_grads,
 )
-
-from . import backend_version
 
 
 def variable(x, /):

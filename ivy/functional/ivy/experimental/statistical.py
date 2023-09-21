@@ -1,15 +1,14 @@
-from typing import Optional, Sequence, Tuple, Union
-
+from typing import Optional, Union, Tuple, Sequence
 import ivy
 from ivy.func_wrapper import (
     handle_array_function,
-    handle_array_like_without_promotion,
-    handle_backend_invalid,
-    handle_device_shifting,
-    handle_nestable,
     handle_out_argument,
-    infer_dtype,
     to_native_arrays_and_back,
+    handle_array_like_without_promotion,
+    handle_nestable,
+    infer_dtype,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 

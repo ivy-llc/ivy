@@ -1,12 +1,11 @@
-import bz2
-import os  # noqa
 import pickle  # noqa
 import subprocess
-import sys
 
-import _pickle as cPickle
 from pydriller import Repository
-
+import os  # noqa
+import bz2
+import _pickle as cPickle
+import sys
 from run_tests_CLI.get_all_tests import get_all_tests
 
 MAX_TESTS = 10

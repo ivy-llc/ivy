@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
+
 @st.composite
 def _chw_image_shape_helper(draw):
     c = draw(st.sampled_from([1, 3]), label="channel")

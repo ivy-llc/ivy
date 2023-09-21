@@ -1,6 +1,5 @@
 # global
 from typing import Optional, Tuple
-
 import torch
 
 

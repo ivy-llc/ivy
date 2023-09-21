@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # --- Helpers --- #
 # --------------- #
 
+
 @st.composite
 def _generate_prelu_arrays(draw):
     arr_size = draw(helpers.ints(min_value=2, max_value=5))

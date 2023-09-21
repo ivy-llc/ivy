@@ -1,13 +1,12 @@
 # global
-import numbers
-
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
+import numbers
 from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
-    to_ivy_arrays_and_back,
 )
+import ivy.functional.frontends.numpy as np_frontend
 
 
 @handle_numpy_out

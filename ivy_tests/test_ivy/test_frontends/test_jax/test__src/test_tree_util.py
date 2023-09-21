@@ -1,14 +1,14 @@
 # local
-import hypothesis.strategies as st
-import jax
-
 import ivy
-from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
+import jax
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy.functional.frontends.jax._src.tree_util import tree_leaves, tree_map
+import hypothesis.strategies as st
 
 
 # --- Helpers --- #
 # --------------- #
+
 
 @st.composite
 def _tree_dict_strategy(draw):

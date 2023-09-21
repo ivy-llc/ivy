@@ -1,9 +1,9 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import (
-    handle_tf_dtype,
     to_ivy_arrays_and_back,
+    handle_tf_dtype,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
