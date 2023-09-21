@@ -142,6 +142,10 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.sinh(self._ivy_array))
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def lerp(self, y, weight, name=None):
+        return paddle_frontend.lerp(self, y, weight)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def lerp_(self, y, weight, name=None):
         self.ivy_array = paddle_frontend.lerp(self, y, weight).ivy_array
         return self
@@ -740,6 +744,13 @@ class Tensor:
         return paddle_frontend.argmin(
             self._ivy_array, axis=axis, keepdim=keepdim, dtype=dtype
         )
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def topk(self, k, axis=None, largest=True, sorted=True, name=None):
+        return ivy.top_k(self._ivy_array, k, axis=axis, largest=largest, sorted=sorted)
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):

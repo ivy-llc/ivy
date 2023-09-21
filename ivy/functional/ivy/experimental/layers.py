@@ -119,77 +119,6 @@ def max_pool1d(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
-def max_unpool1d(
-    x: ivy.Union[ivy.Array, ivy.NativeArray],
-    indices: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
-    /,
-    *,
-    data_format: str = "NWC",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
-
-    Parameters
-    ----------
-    x
-        Pooled input image *[batch_size, w, d_in]*.
-    indices
-        Indices obtained from the corresponding max pooling operation.
-    kernel
-        Size of the kernel i.e., the sliding window for each
-        dimension of input. *[w]*.
-    strides
-        The stride of the sliding window for each dimension of input.
-    padding
-        SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimension paddings.
-    data_format
-        NWC" or "NCW". Defaults to "NWC".
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        The result of the unpooling operation.
-
-    Both the description and the type hints above assume an array input
-    for simplicity, but this function is *nestable*, and therefore
-    also accepts :class:`ivy.Container` instances in place of any of
-    the arguments.
-
-    Examples
-    --------
-    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> pool_result = ivy.max_pool1d(x, 2, 2, 'SAME')
-    >>> print(pool_result)
-    ivy.array([[[ 4.,  5.,  6.,  7.],
-            [ 8.,  9., 10., 11.]],
-
-           [[16., 17., 18., 19.],
-            [20., 21., 22., 23.]]])
-    >>> unpool_result = ivy.max_unpool1d(pool_result, indices, 2, 2, 'SAME')
-    >>> print(unpool_result)
-    ivy.array([[[ 0.,  4.,  0.,  5.,  0.,  6.,  0.,  7.,  0.,  0.,  0.,  0.],
-            [ 0.,  0.,  0.,  0.,  8.,  0.,  9.,  0., 10.,  0., 11.,  0.]],
-
-           [[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 16.,  0., 17.,  0.],
-            [ 0., 18.,  0., 19.,  0.,  0.,  0.,  0., 20.,  0., 21.,  0.]]])
-    """
-    return ivy.current_backend(x).max_unpool1d(
-        x, indices, kernel, strides, padding, data_format=data_format, out=out
-    )
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -2874,3 +2803,71 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+# stft
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def stft(
+    signals: Union[ivy.Array, ivy.NativeArray],
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional = None,
+    pad_end: bool = False,
+    name: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    ivy.Container static method variant of ivy.stft.
+
+    This method simply wraps the function, and so the docstring for
+    ivy.stft also applies to this method with minimal changes.
+
+    Parameters
+    ----------
+    signals
+        Input Arrays.
+    frame_length
+       An integer scalar Tensor. The window length in samples.
+    frame_step
+        An integer scalar Tensor. The number of samples to step.
+    fft_length, optional
+        An integer scalar Tensor. The size of the FFT to apply.
+        If not provided, uses the smallest power of 2 enclosing frame_length.
+    window_fn, optional
+        A callable that takes a window length and a dtype
+        keyword argument and returns a [window_length] Tensor of samples
+        in the provided datatype. If set to None, no windowing is used.
+    pad_end, optional
+        Whether to pad the end of signals with zeros when the provided frame length
+        and step produces a frame that lies partially past its end.
+    name, optional
+        An optional name for the operation.
+    out, optional
+        Optional output array for writing the result.
+
+    Returns
+    -------
+    ret
+        A [..., frames, fft_unique_bins] Tensor of
+        complex64/complex128 STFT values where fft_unique_bins is
+        fft_length // 2 + 1 (the unique components of the FFT).
+    """
+    return ivy.current_backend(signals).stft(
+        signals,
+        frame_length,
+        frame_step,
+        fft_length=fft_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        name=name,
+        out=out,
+    )

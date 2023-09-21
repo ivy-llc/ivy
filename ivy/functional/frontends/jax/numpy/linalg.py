@@ -4,6 +4,7 @@ from ivy.functional.frontends.jax import Array
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.functional.frontends.numpy.linalg import lstsq as numpy_lstsq
 
 
 @to_ivy_arrays_and_back
@@ -51,6 +52,23 @@ def eigvalsh(a, UPLO="L"):
 @to_ivy_arrays_and_back
 def inv(a):
     return ivy.inv(a)
+
+
+# TODO: replace this with function from API
+# As the composition provides numerically unstable results
+@to_ivy_arrays_and_back
+def lstsq(a, b, rcond=None, *, numpy_resid=False):
+    if numpy_resid:
+        return numpy_lstsq(a, b, rcond=rcond)
+    least_squares_solution = ivy.matmul(
+        ivy.pinv(a, rtol=1e-15).astype(ivy.float64), b.astype(ivy.float64)
+    )
+    residuals = ivy.sum((b - ivy.matmul(a, least_squares_solution)) ** 2).astype(
+        ivy.float64
+    )
+    svd_values = ivy.svd(a, compute_uv=False)
+    rank = ivy.matrix_rank(a).astype(ivy.int32)
+    return (least_squares_solution, residuals, rank, svd_values[0])
 
 
 @to_ivy_arrays_and_back
