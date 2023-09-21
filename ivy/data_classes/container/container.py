@@ -3,29 +3,6 @@ import operator
 
 # local
 import ivy
-from ivy.data_classes.container.experimental import (
-    _ContainerWithActivationExperimental,
-    _ContainerWithConversionExperimental,
-    _ContainerWithCreationExperimental,
-    _ContainerWithData_typeExperimental,
-    _ContainerWithDeviceExperimental,
-    _ContainerWithElementWiseExperimental,
-    _ContainerWithGeneralExperimental,
-    _ContainerWithGradientsExperimental,
-    _ContainerWithImageExperimental,
-    _ContainerWithLayersExperimental,
-    _ContainerWithLinearAlgebraExperimental,
-    _ContainerWithLossesExperimental,
-    _ContainerWithManipulationExperimental,
-    _ContainerWithNormsExperimental,
-    _ContainerWithRandomExperimental,
-    _ContainerWithSearchingExperimental,
-    _ContainerWithSetExperimental,
-    _ContainerWithSortingExperimental,
-    _ContainerWithStatisticalExperimental,
-    _ContainerWithUtilityExperimental,
-)
-
 from .activations import _ContainerWithActivations
 from .base import ContainerBase
 from .conversions import _ContainerWithConversions
@@ -47,6 +24,28 @@ from .set import _ContainerWithSet
 from .sorting import _ContainerWithSorting
 from .statistical import _ContainerWithStatistical
 from .utility import _ContainerWithUtility
+from ivy.data_classes.container.experimental import (
+    _ContainerWithActivationExperimental,
+    _ContainerWithConversionExperimental,
+    _ContainerWithCreationExperimental,
+    _ContainerWithData_typeExperimental,
+    _ContainerWithDeviceExperimental,
+    _ContainerWithElementWiseExperimental,
+    _ContainerWithGeneralExperimental,
+    _ContainerWithGradientsExperimental,
+    _ContainerWithImageExperimental,
+    _ContainerWithLayersExperimental,
+    _ContainerWithLinearAlgebraExperimental,
+    _ContainerWithManipulationExperimental,
+    _ContainerWithNormsExperimental,
+    _ContainerWithRandomExperimental,
+    _ContainerWithSearchingExperimental,
+    _ContainerWithSetExperimental,
+    _ContainerWithSortingExperimental,
+    _ContainerWithStatisticalExperimental,
+    _ContainerWithUtilityExperimental,
+    _ContainerWithLossesExperimental,
+)
 
 
 class Container(

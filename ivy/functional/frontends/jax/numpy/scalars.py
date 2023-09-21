@@ -1,12 +1,12 @@
 from ivy.functional.frontends.jax.numpy import asarray
 from ivy.functional.frontends.numpy import (
-    complexfloating,
     dtype,
-    floating,
     generic,
-    inexact,
-    integer,
     number,
+    inexact,
+    complexfloating,
+    floating,
+    integer,
     signedinteger,
     unsignedinteger,
 )

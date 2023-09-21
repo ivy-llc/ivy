@@ -1,20 +1,18 @@
 # global
-from typing import Optional, Sequence, Union
-
+from typing import Union, Optional, Sequence
 import tensorflow as tf
 import tensorflow_probability as tfp
-from tensorflow.python.framework.dtypes import DType
 from tensorflow_probability import distributions as tfd
+from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
+from .. import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _check_shapes_broadcastable,
 )
-
-from .. import backend_version
 
 
 # dirichlet

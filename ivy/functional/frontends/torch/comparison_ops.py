@@ -1,15 +1,16 @@
 # global
-# local
-from collections import namedtuple
-
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
+# local
+from collections import namedtuple
+
 
 # --- Helpers --- #
 # --------------- #
+
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -213,7 +214,9 @@ def isreal(input):
     return ivy.isreal(input)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bfloat16", "float16", "bool", "complex")}, "torch"
+)
 @to_ivy_arrays_and_back
 def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     sorted_input = ivy.sort(input, axis=dim)

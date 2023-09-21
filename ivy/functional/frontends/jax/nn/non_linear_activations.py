@@ -1,10 +1,11 @@
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_supported_dtypes
 
 
 # --- Helpers --- #
 # --------------- #
+
 
 def _batch_promotion(*args, default_dtype="float64"):
     # Promote all types

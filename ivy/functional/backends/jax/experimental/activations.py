@@ -1,12 +1,11 @@
-from typing import Literal, Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import jax
 import jax.numpy as jnp
-from jax import lax
-
-import ivy
 from ivy.functional.backends.jax import JaxArray
+from jax import lax
+import ivy
 
 
 def logit(

@@ -1,6 +1,6 @@
 # global
-import numpy as np
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_nn import _x_and_fil
 
 # --- Helpers --- #
 # --------------- #
+
 
 @st.composite
 def _batch_norm_helper(draw):

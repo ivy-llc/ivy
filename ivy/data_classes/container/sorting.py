@@ -1,10 +1,9 @@
 # global
-from typing import Dict, List, Literal, Optional, Union
-
-import ivy
+from typing import Optional, List, Union, Dict, Literal
 
 # local
 from ivy.data_classes.container.base import ContainerBase
+import ivy
 
 # ToDo: implement all methods here as public instance methods
 

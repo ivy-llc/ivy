@@ -1,6 +1,5 @@
 # global
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -12,6 +11,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
 
 # --- Helpers --- #
 # --------------- #
+
 
 @st.composite
 def _extract_patches_helper(draw):

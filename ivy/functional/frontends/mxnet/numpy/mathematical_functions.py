@@ -1,8 +1,8 @@
 # local
 import ivy
 from ivy.functional.frontends.mxnet.func_wrapper import (
-    handle_mxnet_out,
     to_ivy_arrays_and_back,
+    handle_mxnet_out,
 )
 from ivy.functional.frontends.mxnet.numpy import promote_types_of_mxnet_inputs
 

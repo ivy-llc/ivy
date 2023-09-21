@@ -1,7 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -10,6 +9,7 @@ from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
 
 # --- Helpers --- #
 # --------------- #
+
 
 @st.composite
 def _topk_helper(draw):
@@ -555,7 +555,7 @@ def test_torch_isreal(
 @handle_frontend_test(
     fn_tree="torch.kthvalue",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,

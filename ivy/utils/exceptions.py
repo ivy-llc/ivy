@@ -1,13 +1,12 @@
-import ast
-import builtins
+import warnings
+import ivy
 import functools
+from typing import Callable
+import traceback as tb
 import inspect
 import os
-import traceback as tb
-import warnings
-from typing import Callable
-
-import ivy
+import ast
+import builtins
 
 # Helpers #
 # ------- #
@@ -58,8 +57,8 @@ def _remove_so_log(trace):
 
 
 def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno):
-    from ivy.compiler.utils.IIV import Graph
     from ivy.compiler.utils.VVX import trace_obj
+    from ivy.compiler.utils.IIV import Graph
 
     curr_obj = [None, None, "", ""]
     if transpile_frame:
@@ -98,7 +97,7 @@ def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno)
 
 
 def _get_traces(curr_obj, area, local_dict, target_name):
-    from ivy.compiler.utils.VVX import CallVistior, get_source_code, trace_obj
+    from ivy.compiler.utils.VVX import trace_obj, get_source_code, CallVistior
 
     traces_list = []
     func = local_dict[curr_obj[2]]

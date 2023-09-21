@@ -1,10 +1,9 @@
 # global
-from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
-
-import ivy
+from typing import Union, Optional, List, Dict, Tuple, Sequence, Literal
 
 # local
 from ivy.data_classes.container.base import ContainerBase
+import ivy
 
 
 class _ContainerWithLinearAlgebraExperimental(ContainerBase):
