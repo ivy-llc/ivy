@@ -438,9 +438,9 @@ def swapaxes(
 
 def clip(
     x: paddle.Tensor,
-    x_min: Union[Number, paddle.Tensor],
-    x_max: Union[Number, paddle.Tensor],
     /,
+    x_min: Optional[Union[Number, paddle.Tensor]] = None,
+    x_max: Optional[Union[Number, paddle.Tensor]] = None,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
