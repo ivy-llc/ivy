@@ -1223,6 +1223,7 @@ from ivy.utils.backend.sub_backend_handler import (
     unset_sub_backend,
     clear_sub_backends,
     available_sub_backends,
+    available_sub_backend_implementations,
 )
 
 

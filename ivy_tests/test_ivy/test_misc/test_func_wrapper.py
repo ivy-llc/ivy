@@ -209,3 +209,9 @@ def test_views(array_to_update, backend_fw):
     assert np.allclose(d, d_copy + 1)
     assert np.allclose(e[0], e_copy + 1)
     ivy.previous_backend()
+
+
+def test_warn_efficient_implementations():
+    to_test = ivy.func_wrapper._handle_efficient_implementation_available(ivy.array)
+    with pytest.warns(UserWarning):
+        to_test(1)
