@@ -864,6 +864,64 @@ def random_cp(
 @handle_exceptions
 @handle_nestable
 @infer_dtype
+def random_tr(
+    shape: Sequence[int],
+    rank: Sequence[int],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    seed: Optional[int] = None,
+) -> Union[ivy.TRTensor, ivy.Array]:
+    """
+    Generate a random TR tensor.
+
+    Parameters
+    ----------
+    shape : tuple
+        shape of the tensor to generate
+    rank : Sequence[int]
+        rank of the TR decomposition
+        must verify rank[0] == rank[-1] (boundary conditions)
+        and len(rank) == len(shape)+1
+    full : bool, optional, default is False
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    seed :
+        seed for generating random numbers
+    context : dict
+        context in which to create the tensor
+
+    Returns
+    -------
+    ivy.TRTensor or ivy.Array if full is True
+    """
+    rank = ivy.TRTensor.validate_tr_rank(shape, rank)
+    # Make sure it's not a tuple but a list
+    rank = list(rank)
+    _check_first_and_last_rank_elements_are_equal(rank)
+    factors = [
+        ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed)
+        for i, s in enumerate(shape)
+    ]
+    if full:
+        return ivy.TRTensor.tr_to_tensor(factors)
+    else:
+        return ivy.TRTensor(factors)
+
+
+def _check_first_and_last_rank_elements_are_equal(rank):
+    if rank[0] != rank[-1]:
+        message = (
+            f"Provided rank[0] == {rank[0]} and rank[-1] == {rank[-1]} "
+            "but boundary conditions dictate rank[0] == rank[-1]."
+        )
+        raise ValueError(message)
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
 def random_parafac2(
     shapes: Sequence[int],
     rank: int,
@@ -993,8 +1051,9 @@ def trilu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the upper or lower triangular part of a matrix (or a stack of matrices) ``x``
-    .. note::
+    Return the upper or lower triangular part of a matrix
+    (or a stack of matrices) ``x``.
+     note::
         The upper triangular part of the matrix is defined as the elements
         on and above the specified diagonal ``k``. The lower triangular part
         of the matrix is defined as the elements on and below the specified

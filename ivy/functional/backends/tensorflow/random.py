@@ -13,7 +13,7 @@ from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
@@ -26,6 +26,9 @@ from . import backend_version
 # ------#
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float", "int32", "int64")}, backend_version
+)
 def random_uniform(
     *,
     low: Union[float, tf.Tensor, tf.Variable] = 0.0,
