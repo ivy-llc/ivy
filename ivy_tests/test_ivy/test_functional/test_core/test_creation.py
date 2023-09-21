@@ -136,6 +136,11 @@ def _on_off_dtype(draw):
 # ------------ #
 
 
+def is_capsule(o):
+    t = type(o)
+    return t.__module__ == "builtins" and t.__name__ == "PyCapsule"
+
+
 # arange
 @handle_test(
     fn_tree="functional.ivy.arange",
@@ -349,31 +354,6 @@ def test_eye(
         dtype=dtype[0],
         device=on_device,
     )
-
-
-def is_capsule(o):
-    t = type(o)
-    return t.__module__ == "builtins" and t.__name__ == "PyCapsule"
-
-
-# to_dlpack
-@handle_test(
-    fn_tree="functional.ivy.to_dlpack",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    test_gradients=st.just(False),
-)
-def test_to_dlpack(*, dtype_and_x, backend_fw):
-    ivy.set_backend(backend_fw)
-    input_dtype, x = dtype_and_x
-    native_array = ivy.native_array(x[0])
-    cap = ivy.to_dlpack(native_array)
-    assert is_capsule(cap)
 
 
 # from_dlpack
@@ -729,6 +709,26 @@ def test_ones_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         dtype=dtype[0],
         device=on_device,
     )
+
+
+# to_dlpack
+@handle_test(
+    fn_tree="functional.ivy.to_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    test_gradients=st.just(False),
+)
+def test_to_dlpack(*, dtype_and_x, backend_fw):
+    ivy.set_backend(backend_fw)
+    input_dtype, x = dtype_and_x
+    native_array = ivy.native_array(x[0])
+    cap = ivy.to_dlpack(native_array)
+    assert is_capsule(cap)
 
 
 # tril
