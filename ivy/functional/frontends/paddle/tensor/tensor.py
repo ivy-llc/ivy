@@ -64,7 +64,7 @@ class Tensor:
         {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
-    def __add__(self, y, name=None):
+    def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
 
     def __getitem__(self, item):
