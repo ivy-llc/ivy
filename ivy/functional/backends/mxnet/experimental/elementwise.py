@@ -28,6 +28,16 @@ def sinc(
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
+def amin(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    use_where: bool = True,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
 
 def fmax(
     x1: Union[(None, mx.ndarray.NDArray)],
