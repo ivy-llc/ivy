@@ -55,7 +55,7 @@ def get_latest_package_version(package_name):
         response.raise_for_status()
         package_info = response.json()
         return package_info["info"]["version"]
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         print(f"Error: Failed to fetch package information for {package_name}.")
         return None
 

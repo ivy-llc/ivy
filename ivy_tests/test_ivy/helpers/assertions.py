@@ -141,7 +141,8 @@ def value_test(
     assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
         f"The length of results from backend {backend} and ground truth framework"
         f" {ground_truth_backend} does not match\n\nlen(ret_np_flat) !="
-        f" len(ret_np_from_gt_flat):\n\nret_np_flat:\n\n{ret_np_flat}\n\nret_np_from_gt_flat:\n\n{ret_np_from_gt_flat}"
+        f" len(ret_np_from_gt_flat):\n\nret_np_flat:\n\n{ret_np_flat}\n\n"
+        f"ret_np_from_gt_flat:\n\n{ret_np_from_gt_flat}"
     )
     # value tests, iterating through each array in the flattened returns
     if specific_tolerance_dict is not None:
