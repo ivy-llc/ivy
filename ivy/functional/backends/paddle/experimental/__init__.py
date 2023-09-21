@@ -23,26 +23,3 @@ from .sorting import *
 from .sparse_array import *
 from .statistical import *
 from .utility import *
-
-del (
-    activations,
-    converters,
-    creation,
-    data_type,
-    device,
-    elementwise,
-    general,
-    gradients,
-    layers,
-    linear_algebra,
-    losses,
-    manipulation,
-    norms,
-    random,
-    searching,
-    set,
-    sorting,
-    sparse_array,
-    statistical,
-    utility,
-)
