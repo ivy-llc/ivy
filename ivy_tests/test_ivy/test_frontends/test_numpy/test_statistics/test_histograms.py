@@ -84,4 +84,3 @@ def test_numpy_histogram(
         density=None,
         weights=None,
     )
-    
