@@ -859,21 +859,14 @@ def multi_head_attention(
             emb_dim = out_proj_weights.shape[-1]
         else:
             emb_dim = q.shape[-1]
-    if ivy.exists(static_k):
-        if len(static_k.shape) == 2:
-            static_k = ivy.expand_dims(static_k, axis=0)
-        k = static_k
-    if ivy.exists(static_v):
-        if len(static_v.shape) == 2:
-            static_v = ivy.expand_dims(static_v, axis=0)
-        v = static_v
+
     batch_dim, num_queries, pre_embed_dim = q.shape
-    num_keys = k.shape[1]
     ivy.assertions.check_true(
         emb_dim % num_heads == 0, "features must be divisible by number of heads"
     )
-    dims_per_head = pre_embed_dim // num_heads
+    head_dim = pre_embed_dim // num_heads
 
+    # apply extra bias
     if bias_k is not None and bias_v is not None:
         ivy.assertions.check_true(
             not (ivy.exists(static_k) or ivy.exists(static_v)),
@@ -882,25 +875,36 @@ def multi_head_attention(
         k = ivy.concat([k, ivy.tile(bias_k, (batch_dim, 1, 1))], axis=1)
         v = ivy.concat([v, ivy.tile(bias_v, (batch_dim, 1, 1))], axis=1)
 
-    # add extra batch of zeros to key and value
-    if add_zero_attn:
-        k = ivy.concat([k, ivy.zeros((batch_dim, 1, k.shape[-1]), dtype=k.dtype)], axis=1)
-        v = ivy.concat([v, ivy.zeros((batch_dim, 1, v.shape[-1]), dtype=v.dtype)], axis=1)
+    num_keys = k.shape[1]
 
-    # isolate heads
-    q = q.reshape((batch_dim, num_queries, num_heads, dims_per_head)).permute_dims(
-        (0, 2, 1, 3)
-    )
-    k = k.reshape((batch_dim, -1, num_heads, dims_per_head)).permute_dims(
-        (0, 2, 3, 1)
-    )
-    v = v.reshape((batch_dim, -1, num_heads, dims_per_head)).permute_dims(
-        (0, 2, 1, 3)
-    )
+    # reshape q, k, v for efficient matrix multiplication
+    q = ivy.swapaxes(q.reshape((num_queries, batch_dim * num_heads, head_dim)), 0, 1)
+    if static_k is None:
+        k = ivy.swapaxes(
+            k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
+        )
+    else:
+        k = ivy.swapaxes(
+            static_k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
+        )
+    if static_v is None:
+        v = ivy.swapaxes(
+            v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
+        )
+    else:
+        v = ivy.swapaxes(
+            static_v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
+        )
+
+    # add extra batch of zeros to k, v
+    if add_zero_attn:
+        zero_attn_shape = (batch_dim * num_heads, 1, head_dim)
+        k = ivy.concat([k, ivy.zeros(zero_attn_shape, dtype=k.dtype)], axis=1)
+        v = ivy.concat([v, ivy.zeros(zero_attn_shape, dtype=v.dtype)], axis=1)
 
     # get attention scores
-    attn_scores = ivy.matmul(q, k)
-    scale = 1 / (dims_per_head**0.5) if not scale else scale
+    attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
+    scale = 1 / (head_dim**0.5) if not scale else scale
     attn_scores *= scale
 
     # apply attention mask
@@ -943,8 +947,8 @@ def multi_head_attention(
 
     # get attention output
     attention_out = ivy.matmul(attn_weights, v)
-    attention_out = attention_out.permute_dims((0, 2, 1, 3)).reshape(
-        (batch_dim, num_queries, -1)
+    attention_out = ivy.swapaxes(attention_out, 0, 1).reshape(
+        (batch_dim, num_queries, emb_dim)
     )
     if ivy.exists(out_proj_weights):
         attention_out = ivy.linear(attention_out, out_proj_weights, bias=out_proj_bias)
@@ -954,6 +958,7 @@ def multi_head_attention(
         attention_out = attention_out.squeeze(axis=0)
 
     if return_attention_weights:
+        attn_weights = attn_weights.reshape((batch_dim, num_heads, num_queries, num_keys))
         if average_attention_weights:
             attn_weights = attn_weights.mean(axis=1)
         if num_dims == 2:
