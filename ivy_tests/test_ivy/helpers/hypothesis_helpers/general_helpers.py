@@ -596,3 +596,26 @@ def embedding_helper(draw, mixed_fn_compos=True):
     )
     padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
     return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx
+
+
+@st.composite
+def get_add_arguments_dtypes(draw, available_dtypes=dtype_helpers.get_dtypes("valid")):
+    dtypes = draw(
+        dtype_helpers.array_dtypes(num_arrays=2, available_dtypes=available_dtypes)
+    )
+    shape1, shape2 = draw(array_helpers.mutually_broadcastable_shapes(2))
+    x1 = draw(array_helpers.array_values(dtype=dtypes[0], shape=shape1))
+
+    @st.composite
+    def get_scalar(draw, dtype):
+        ret = draw(array_helpers.array_values(dtype=dtype, shape=(1,)))
+        return ret.item()
+
+    x2 = draw(
+        st.one_of(
+            get_scalar(dtypes[1]),
+            array_helpers.array_values(dtype=dtypes[1], shape=shape2),
+        )
+    )
+
+    return [x1, x2], dtypes

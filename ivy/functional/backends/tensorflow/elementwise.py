@@ -49,6 +49,15 @@ def add(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    is_bool1 = isinstance(x1, bool) or (tf.is_tensor(x1) and x1.dtype.is_bool)
+    is_bool2 = isinstance(x2, bool) or (tf.is_tensor(x2) and x2.dtype.is_bool)
+    if is_bool1 and is_bool2:
+        return tf.logical_or(x1, x2)
+    if is_bool1:
+        x1 = tf.cast(x1, dtype="int8")
+    if is_bool2:
+        x2 = tf.cast(x2, dtype="int8")
+
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
         with ivy.ArrayMode(False):

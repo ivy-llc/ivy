@@ -433,16 +433,10 @@ def dims_and_offset(draw, shape):
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__add__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-    ),
+    xs_and_dtypes=helpers.get_add_arguments_dtypes(),
 )
 def test_torch___add__(
-    dtype_and_x,
+    xs_and_dtypes,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -450,16 +444,16 @@ def test_torch___add__(
     on_device,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
+    xs, dtypes = xs_and_dtypes
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
+        init_input_dtypes=[dtypes[0]],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "data": xs[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=[dtypes[1]],
         method_all_as_kwargs_np={
-            "other": x[1],
+            "other": xs[1],
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

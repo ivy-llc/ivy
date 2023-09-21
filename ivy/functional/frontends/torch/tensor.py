@@ -1182,7 +1182,7 @@ class Tensor:
             "Use a.any() or a.all()"
         )
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    # @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __add__(self, other):
         return torch_frontend.add(self, other)
 
