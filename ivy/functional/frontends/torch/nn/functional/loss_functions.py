@@ -2,7 +2,7 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 # --- Helpers --- #
@@ -334,9 +334,7 @@ def kl_div(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("int8", "int16", "int32", "int64", "bool", "uint8")}, "torch"
-)
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def l1_loss(
     input,
     target,
