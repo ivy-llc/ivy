@@ -1,6 +1,7 @@
 ivy/ivy_tests/test_ivy/test_frontends/test_torch/test_nn/test_functional/test_linear_functions.py::test_torch_linear
 ivy/ivy_tests/test_ivy/test_frontends/test_torch/test_miscellaneous_ops.py::test_torch_view
 ivy/ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch___add__
+ivy/ivy_tests/test_ivy/test_frontends/test_torch/test_indexing_slicing_joining_mutating_ops.py::test_torch_permute
 ivy/ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_size
 ivy/ivy_tests/test_ivy/test_frontends/test_torch/test_nn/test_functional/test_dropout_functions.py::test_torch_dropout
 ivy/ivy_tests/test_ivy/test_frontends/test_torch/test_nn/test_functional/test_convolution_functions.py::test_torch_conv2d
