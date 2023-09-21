@@ -28,6 +28,7 @@ internal_automation_tools/
 .vscode/*
 .idea/*
 .ivy/*
+*.so
 .DS_Store*
 fn_path_cache
 
