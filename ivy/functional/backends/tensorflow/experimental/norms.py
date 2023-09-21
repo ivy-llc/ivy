@@ -1,9 +1,13 @@
+from typing import Optional, Tuple, Union
+
 import tensorflow as tf
-from typing import Union, Optional, Tuple
+
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 
+@with_unsupported_dtypes({"2.13.0 and below": "uint8"}, backend_version)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -57,8 +61,8 @@ def batch_norm(
     if data_format == "NCS":
         x = tf.transpose(x, perm=(0, *range(2, xdims), 1))
 
-    runningmean = mean
-    runningvariance = variance
+    runningmean = batchmean = mean
+    runningvariance = batchvariance = variance
     if training:
         n = (
             tf.size(x)
@@ -67,13 +71,15 @@ def batch_norm(
         )
         n = tf.cast(n, x.dtype)
         dims = (0, *range(1, xdims - 1))
-        mean = tf.math.reduce_mean(x, axis=dims)
-        variance = tf.math.reduce_variance(x, axis=dims)
-        runningmean = (1 - momentum) * runningmean + momentum * mean
-        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
-            n - 1
-        )
-    xnormalized = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
+        batchmean = tf.math.reduce_mean(x, axis=dims)
+        batchvariance = tf.math.reduce_variance(x, axis=dims)
+        runningmean = (1 - momentum) * runningmean + momentum * batchmean
+        runningvariance = (
+            1 - momentum
+        ) * runningvariance + momentum * batchvariance * n / (n - 1)
+    xnormalized = tf.nn.batch_normalization(
+        x, batchmean, batchvariance, offset, scale, eps
+    )
 
     if data_format == "NCS":
         xnormalized = tf.transpose(

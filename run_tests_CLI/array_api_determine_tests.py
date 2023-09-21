@@ -1,8 +1,9 @@
-import pickle  # noqa
-from pydriller import Repository
-import os  # noqa
 import bz2
+import os  # noqa
+import pickle  # noqa
+
 import _pickle as cPickle
+from pydriller import Repository
 
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
@@ -41,15 +42,15 @@ if __name__ == "__main__":
         modified_files = commit._parse_diff(diff_index)
         for file in modified_files:
             try:
-                file_name = file.new_path + ",cover"
+                file_name = f"{file.new_path},cover"
             except:  # noqa
                 continue
             if file_name not in tests.keys():
                 continue
             tests_file = tests[file_name]
             change = file.diff_parsed
-            added = set([x - 1 for (x, _) in change["added"]])
-            deleted = set([x - 1 for (x, _) in change["deleted"]])
+            added = {x - 1 for (x, _) in change["added"]}
+            deleted = {x - 1 for (x, _) in change["deleted"]}
             updated = added.intersection(deleted)
             added = added.difference(updated)
             deleted = deleted.difference(updated)

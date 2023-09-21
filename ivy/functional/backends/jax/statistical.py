@@ -1,12 +1,13 @@
 # global
-import jax.numpy as jnp
-from typing import Union, Optional, Sequence
+from typing import Optional, Sequence, Union
 
+import jax.numpy as jnp
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+
 from . import backend_version
 
 # Array API Standard #
@@ -37,6 +38,7 @@ def max(
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, backend_version)
 def mean(
     x: JaxArray,
     /,
@@ -139,7 +141,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: JaxArray,
     /,

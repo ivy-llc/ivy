@@ -7,18 +7,17 @@ from typing import Optional, Union
 import ivy
 from ivy.func_wrapper import (
     handle_array_function,
-    infer_dtype,
-    infer_device,
-    handle_out_argument,
-    to_native_arrays_and_back,
-    inputs_to_native_shapes,
-    handle_nestable,
-    handle_device_shifting,
     handle_backend_invalid,
+    handle_device_shifting,
+    handle_nestable,
+    handle_out_argument,
+    infer_device,
+    infer_dtype,
+    inputs_to_native_shapes,
+    to_native_arrays_and_back,
 )
 from ivy.utils.backend import backend_stack
 from ivy.utils.exceptions import handle_exceptions
-
 
 # Helpers #
 # ------- #
@@ -144,9 +143,8 @@ def random_uniform(
     ret
         Drawn samples from the parameterized uniform distribution.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> ivy.random_uniform()
     ivy.array(0.26431865)
 
@@ -258,9 +256,8 @@ def random_normal(
      ret
         Drawn samples from the parameterized normal distribution.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> ivy.random_normal()
     ivy.array(-0.22346112)
 

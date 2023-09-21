@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Sequence, List
+from typing import List, Optional, Sequence, Union
 
 import numpy as np
 
@@ -7,6 +7,7 @@ import numpy as np
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+
 from . import backend_version
 
 ivy_dtype_dict = {
@@ -133,7 +134,7 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
         raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("complex",)}, backend_version)
 def broadcast_to(
     x: np.ndarray,
     /,
@@ -216,7 +217,7 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> np.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)

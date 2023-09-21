@@ -1,5 +1,6 @@
 # global
 import sys
+
 import numpy as np
 
 # local
@@ -15,6 +16,38 @@ else:
     _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
+
+# wrap __array_ufunc__ method of ivy.Array to prioritize Ivy array methods when using numpu backend
+
+
+def wrap__array_ufunc__(func):
+    def rep_method(self, ufunc, method, *inputs, **kwargs):
+        methods = {
+            "not_equal": "not_equal",
+            "greater": "greater",
+            "less": "less",
+            "greater_equal": "greater_equal",
+            "less_equal": "less_equal",
+            "multiply": "multiply",
+            "divide": "divide",
+            "remainder": "remainder",
+            "equal": "equal",
+            "bitwise_and": "bitwise_and",
+            "matmul": "matmul",
+            "power": "pow",
+            "divide": "divide",
+            "subtract": "subtract",
+            "add": "add",
+            "not_equal": "not_equal",
+        }
+        if ufunc.__name__ in methods.keys():
+            return eval("ivy." + methods[ufunc.__name__] + "(*inputs, **kwargs)")
+        return func(self, ufunc, method, *inputs, **kwargs)
+
+    return rep_method
+
+
+ivy.Array.__array_ufunc__ = wrap__array_ufunc__(ivy.Array.__array_ufunc__)
 
 NativeArray = np.ndarray
 NativeDevice = str
@@ -51,7 +84,7 @@ native_bool = np.dtype("bool")
 
 # update these to add new dtypes
 valid_dtypes = {
-    "1.25.2 and below": (
+    "1.26.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -69,7 +102,7 @@ valid_dtypes = {
     )
 }
 valid_numeric_dtypes = {
-    "1.25.2 and below": (
+    "1.26.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -86,7 +119,7 @@ valid_numeric_dtypes = {
     )
 }
 valid_int_dtypes = {
-    "1.25.2 and below": (
+    "1.26.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -97,11 +130,11 @@ valid_int_dtypes = {
         ivy.uint64,
     )
 }
-valid_float_dtypes = {"1.25.2 and below": (ivy.float16, ivy.float32, ivy.float64)}
+valid_float_dtypes = {"1.26.0 and below": (ivy.float16, ivy.float32, ivy.float64)}
 valid_uint_dtypes = {
-    "1.25.2 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+    "1.26.0 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 }
-valid_complex_dtypes = {"1.25.2 and below": (ivy.complex64, ivy.complex128)}
+valid_complex_dtypes = {"1.26.0 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
@@ -113,12 +146,12 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 
 # invalid data types
 # update these to add new dtypes
-invalid_dtypes = {"1.25.2 and below": (ivy.bfloat16,)}
-invalid_numeric_dtypes = {"1.25.2 and below": (ivy.bfloat16,)}
-invalid_int_dtypes = {"1.25.2 and below": ()}
-invalid_float_dtypes = {"1.25.2 and below": (ivy.bfloat16,)}
-invalid_uint_dtypes = {"1.25.2 and below": ()}
-invalid_complex_dtypes = {"1.25.2 and below": ()}
+invalid_dtypes = {"1.26.0 and below": (ivy.bfloat16,)}
+invalid_numeric_dtypes = {"1.26.0 and below": (ivy.bfloat16,)}
+invalid_int_dtypes = {"1.26.0 and below": ()}
+invalid_float_dtypes = {"1.26.0 and below": (ivy.bfloat16,)}
+invalid_uint_dtypes = {"1.26.0 and below": ()}
+invalid_complex_dtypes = {"1.26.0 and below": ()}
 
 
 # leave these untouched
@@ -130,7 +163,7 @@ invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes, backend_version)
 invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_version)
 
 
-native_inplace_support = False
+native_inplace_support = True
 
 supports_gradients = False
 
@@ -147,45 +180,47 @@ backend = "numpy"
 
 
 # local sub-modules
-from . import activations
-from .activations import *
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import layers
-from .layers import *
+from . import (
+    activations,
+    control_flow_ops,
+    creation,
+    data_type,
+    device,
+    elementwise,
+    experimental,
+    general,
+    gradients,
+    layers,
+)
 from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
-from . import experimental
-from .experimental import *
-from . import control_flow_ops
+from . import (
+    manipulation,
+    random,
+    searching,
+    set,
+    sorting,
+    statistical,
+    sub_backends,
+    utility,
+)
+from .activations import *
 from .control_flow_ops import *
-
+from .creation import *
+from .data_type import *
+from .device import *
+from .elementwise import *
+from .experimental import *
+from .general import *
+from .gradients import *
+from .layers import *
+from .linear_algebra import *
+from .manipulation import *
+from .random import *
+from .searching import *
+from .set import *
+from .sorting import *
+from .statistical import *
+from .sub_backends import *
+from .utility import *
 
 # sub-backends
-
-from . import sub_backends
-from .sub_backends import *

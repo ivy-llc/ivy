@@ -1,27 +1,26 @@
 # global
 from numbers import Number
-import numpy as np
-from typing import Union, Optional, List, Sequence, Tuple
+from typing import List, Optional, Sequence, Tuple, Union
 
+import jax._src as _src
 import jax.dlpack
 import jax.numpy as jnp
-import jax._src as _src
 import jaxlib.xla_extension
+import numpy as np
 
 # local
 import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_infer_dtype,
-    asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_handle_nestable,
+    _asarray_infer_device,
+    _asarray_infer_dtype,
+    _asarray_inputs_to_native_shapes,
+    _asarray_to_native_arrays_and_back,
 )
-
 
 # Array API Standard #
 # ------------------ #
@@ -49,11 +48,11 @@ def arange(
     return res
 
 
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
-@asarray_infer_dtype
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         JaxArray,
@@ -122,9 +121,12 @@ def eye(
     return return_mat
 
 
+def to_dlpack(x, /, *, out: Optional[JaxArray] = None):
+    return jax.dlpack.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    capsule = jax.dlpack.to_dlpack(x)
-    return jax.dlpack.from_dlpack(capsule)
+    return jax.dlpack.from_dlpack(x)
 
 
 def full(
@@ -136,7 +138,6 @@ def full(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return jnp.full(shape, fill_value, dtype)
 
 
@@ -149,7 +150,6 @@ def full_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return jnp.full_like(x, fill_value, dtype=dtype)
 
 

@@ -4,14 +4,11 @@ from functools import reduce
 # local
 import ivy
 from ivy import with_unsupported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
@@ -271,6 +268,31 @@ def max_pool2d(
         stride,
         padding,
         data_format="NCHW",
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def max_pool3d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
+):
+    if stride is None:
+        stride = kernel_size
+
+    return ivy.max_pool3d(
+        input,
+        kernel_size,
+        stride,
+        padding,
+        data_format="NCDHW",
         dilation=dilation,
         ceil_mode=ceil_mode,
     )

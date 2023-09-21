@@ -5,19 +5,23 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.
 """
 
-# global
-from typing import Optional, Union, Sequence, Callable, Tuple
-import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
+
+# global
+from typing import Callable, Optional, Sequence, Tuple, Union
+
+import numpy as np
 import tensorflow as tf
 
 # local
 import ivy
-from ivy.functional.ivy.gradients import _is_variable
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+from ivy.functional.ivy.gradients import _is_variable
+from ivy.utils.exceptions import _check_inplace_update_support
+
 from ...ivy.general import _broadcast_to
+from . import backend_version
 
 _round = round
 
@@ -36,7 +40,7 @@ def array_equal(
     /,
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
-    return bool((tf.experimental.numpy.array_equal(x0, x1)))
+    return bool(tf.experimental.numpy.array_equal(x0, x1))
 
 
 def container_types():
@@ -157,7 +161,7 @@ def gather_nd(
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     try:
         return tf.gather_nd(params, indices, batch_dims=batch_dims)
-    except:  # fall back to compositional implementation # noqa: E722
+    except Exception:  # fall back to compositional implementation
         batch_dims = batch_dims % len(params.shape)
         result = []
         if batch_dims == 0:
@@ -241,10 +245,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend or ivy.is_native_array(x):
-            raise ivy.utils.exceptions.IvyException(
-                "TensorFlow does not support inplace updates of the tf.Tensor"
-            )
+        _check_inplace_update_support(x, ensure_in_backend)
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
@@ -396,12 +397,15 @@ def scatter_nd(
         res = tf.tensor_scatter_nd_min(target, indices, updates)
     elif reduction == "max":
         res = tf.tensor_scatter_nd_max(target, indices, updates)
+    elif reduction == "mul":
+        updates = ivy.multiply(ivy.gather_nd(target, indices), updates).data
+        res = tf.tensor_scatter_nd_update(target, indices, updates)
     elif reduction == "replace":
         res = tf.tensor_scatter_nd_update(target, indices, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            '"sum", "min", "max", "mul" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)

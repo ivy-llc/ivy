@@ -1,14 +1,17 @@
 # global
-from typing import Any
+import builtins
 import itertools
 import string
-import builtins
+from typing import Any
 
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import (
+    frontend_outputs_to_ivy_arrays,
+    with_supported_dtypes,
+    with_unsupported_dtypes,
+)
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes, frontend_outputs_to_ivy_arrays
 
 _slice = builtins.slice
 
@@ -161,7 +164,7 @@ def broadcast(operand, sizes):
 
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "float32",
             "float64",
@@ -308,7 +311,7 @@ def cosh(x):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
+    {"0.4.16 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -399,7 +402,7 @@ def erf(x):
 
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "float32",
             "float64",
@@ -459,7 +462,7 @@ def imag(x):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bool", "bfloat16")},
+    {"0.4.16 and below": ("bool", "bfloat16")},
     "jax",
 )
 @to_ivy_arrays_and_back

@@ -1,10 +1,14 @@
 # global
+from typing import Dict, List, Optional, Tuple, Union
+
 import pytest
-from typing import List, Tuple, Dict, Optional, Union
 
 # local
 import ivy
 
+
+# --- Helpers --- #
+# --------------- #
 
 def _fn0(xs: Optional[List[ivy.Array]] = None):
     return xs
@@ -25,6 +29,10 @@ def _fn2(
     cs: Dict[str, ivy.Array] = None,
 ):
     return a, bs, cs
+
+
+# --- Main --- #
+# ------------ #
 
 
 @pytest.mark.parametrize(

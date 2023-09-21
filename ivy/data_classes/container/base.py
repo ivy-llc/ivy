@@ -1,17 +1,17 @@
 """Base Container Object."""
 
 # global
-import inspect
-from itertools import chain
-import re
 import abc
 import copy
-import termcolor
-import numpy as np
+import inspect
 import json
+import re
+from itertools import chain
+
+import numpy as np
+import termcolor
 
 from ivy.utils.exceptions import IvyBackendException, IvyException
-
 
 try:
     # noinspection PyPackageRequirements
@@ -20,14 +20,13 @@ except ModuleNotFoundError:
     h5py = None
 import pickle
 import random
-from operator import mul
-from functools import reduce as _reduce
-from typing import Union, Tuple
 from builtins import set
+from functools import reduce as _reduce
+from operator import mul
+from typing import Tuple, Union
 
 # local
 import ivy
-
 
 ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 
@@ -3265,7 +3264,7 @@ class ContainerBase(dict, abc.ABC):
                     return_dict[key] = ret
             elif isinstance(value, (list, tuple)) and map_sequences:
                 ret = ivy.nested_map(
-                    value, lambda x: func(x, None), True, shallow=False
+                    lambda x: func(x, None), value, True, shallow=False
                 )
                 if prune_unapplied and not ret:
                     continue
@@ -4199,7 +4198,9 @@ class ContainerBase(dict, abc.ABC):
         state_dict["_config_in"] = config_in
         config = copy.copy(state_dict["_config"])
         config["ivyh"] = (
-            config["ivyh"].current_backend_str() if config["ivyh"] is not None else None
+            config["ivyh"].current_backend_str()
+            if getattr(config, "ivyh", None) is not None
+            else None
         )
         state_dict["_config"] = config
         return state_dict

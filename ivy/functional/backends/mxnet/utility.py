@@ -1,4 +1,5 @@
-from typing import Union, Optional, Sequence
+from typing import Optional, Sequence, Union
+
 import mxnet as mx
 
 from ivy.utils.exceptions import IvyNotImplementedException

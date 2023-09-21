@@ -1,8 +1,8 @@
 # local
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import (
-    to_ivy_arrays_and_back,
     numpy_to_torch_style_args,
+    to_ivy_arrays_and_back,
     to_ivy_shape,
 )
 
@@ -17,6 +17,7 @@ def argwhere(input):
     return ivy.argwhere(input)
 
 
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
@@ -209,7 +210,7 @@ def nonzero(input, *, out=None, as_tuple=False):
 
 @to_ivy_arrays_and_back
 def permute(input, dims):
-    return ivy.permute_dims(input, axes=dims)
+    return ivy.permute_dims(input, axes=dims, copy=False)
 
 
 @to_ivy_shape

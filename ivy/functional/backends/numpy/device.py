@@ -3,8 +3,9 @@
 # global
 import os
 import time
+from typing import Any, Optional, Union
+
 import numpy as np
-from typing import Union, Optional, Any
 
 # local
 import ivy
@@ -85,7 +86,7 @@ def to_device(
     return x
 
 
-def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
+def handle_soft_device_variable(*args, fn, **kwargs):
     return fn(*args, **kwargs)
 
 

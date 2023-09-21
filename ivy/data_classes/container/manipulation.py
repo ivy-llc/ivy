@@ -1,15 +1,7 @@
 # For Review
 # global
-from typing import (
-    Optional,
-    Union,
-    List,
-    Tuple,
-    Dict,
-    Iterable,
-    Sequence,
-)
 from numbers import Number
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 # local
 import ivy

@@ -1,13 +1,14 @@
 # global
-import sys
 import logging
+import sys
+
 import tensorflow as tf
 
 for device in tf.config.experimental.list_physical_devices("GPU"):
     try:
         tf.config.experimental.set_memory_growth(device, True)
     except RuntimeError as e:
-        logging.warn(f"can not set {device} to dynamically allocate memory. {e}")
+        logging.warning(f"can not set {device} to dynamically allocate memory. {e}")
 
 
 from tensorflow.python.framework.dtypes import DType
@@ -27,6 +28,69 @@ else:
     _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
+
+
+# wrap dunder methods of native tensors to return NotImplemented to prioritize Ivy array methods.
+def dunder_wrapper(func):
+    def rep_method(*args, **kwargs):
+        for arg in args:
+            if ivy.is_ivy_array(arg):
+                return NotImplemented
+        return func(*args, **kwargs)
+
+    return rep_method
+
+
+# check for previously imported tensorflow modules
+modules_to_patch = []
+tensors_to_patch = []
+tmp_globals = dict(globals())
+for name, value in tmp_globals.items():
+    if value == "tensorflow.python.framework.ops.Tensor":
+        tensors_to_patch.append(name)
+    try:
+        if value.__name__ == "tensorflow":
+            modules_to_patch.append(name)
+    except AttributeError:
+        pass
+
+methods_to_patch = [
+    "__add__",
+    "__sub__",
+    "__mul__",
+    "__div__",
+    "__truediv__",
+    "__floordiv__",
+    "__mod__",
+    "__lt__",
+    "__le__",
+    "__gt__",
+    "__ge__",
+    "__ne__",
+    "__eq__",
+    "__and__",
+    "__or__",
+    "__xor__",
+    "__pow__",
+    "__matmul__",
+]
+
+for module in modules_to_patch:
+    for method in methods_to_patch:
+        exec(
+            module
+            + ".Tensor."
+            + method
+            + " = dunder_wrapper("
+            + module
+            + ".Tensor."
+            + method
+            + ")"
+        )
+
+for tensor in tensors_to_patch:
+    for method in methods_to_patch:
+        exec(tensor + "." + method + " = dunder_wrapper(" + tensor + "." + method + ")")
 
 NativeArray = Tensor
 NativeDevice = str
@@ -160,45 +224,47 @@ def closest_valid_dtype(type=None, /, as_native=False):
 backend = "tensorflow"
 
 
-# local sub-modules
-from . import activations
-from .activations import *
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import general
-from .general import *
-from . import gradients
-from .gradients import *
-from . import layers
-from .layers import *
-from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
-from . import experimental
-from .experimental import *
-from . import control_flow_ops
-from .control_flow_ops import *
-
-
 # sub-backends
-from . import sub_backends
+# local sub-modules
+from . import (
+    activations,
+    control_flow_ops,
+    creation,
+    data_type,
+    device,
+    elementwise,
+    experimental,
+    general,
+    gradients,
+    layers,
+)
+from . import linear_algebra as linalg
+from . import (
+    manipulation,
+    random,
+    searching,
+    set,
+    sorting,
+    statistical,
+    sub_backends,
+    utility,
+)
+from .activations import *
+from .control_flow_ops import *
+from .creation import *
+from .data_type import *
+from .device import *
+from .elementwise import *
+from .experimental import *
+from .general import *
+from .gradients import *
+from .layers import *
+from .linear_algebra import *
+from .manipulation import *
+from .random import *
+from .searching import *
+from .set import *
+from .sorting import *
+from .statistical import *
 from .sub_backends import *
+from .utility import *

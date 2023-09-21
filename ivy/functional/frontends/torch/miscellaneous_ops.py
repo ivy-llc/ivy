@@ -1,8 +1,8 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.functional.frontends.torch import promote_types_of_torch_inputs
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
@@ -122,8 +122,25 @@ def cross(input, other, dim=None, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+        )
+    },
+    "torch",
+)
 def cummax(input, dim, *, out=None):
-    return ivy.cummax(input, axis=dim, out=out)
+    input_dtype = input.dtype
+    result_values, result_indices = ivy.cummax(input, axis=dim, out=out)
+    result_values = result_values.astype(input_dtype)
+    return result_values, result_indices
 
 
 @to_ivy_arrays_and_back
@@ -147,6 +164,15 @@ def cumsum(input, dim, *, dtype=None, out=None):
 @to_ivy_arrays_and_back
 def diag(input, diagonal=0, *, out=None):
     return ivy.diag(input, k=diagonal)
+
+
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+)
+@to_ivy_arrays_and_back
+def diagflat(x, offset=0, name=None):
+    arr = ivy.diagflat(x, offset=offset)
+    return arr
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")

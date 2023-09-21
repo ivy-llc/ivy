@@ -1,11 +1,12 @@
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 # global
 import jax
 import jax.numpy as jnp
-from ivy.functional.backends.jax import JaxArray
 from jax import lax
+
 import ivy
+from ivy.functional.backends.jax import JaxArray
 
 
 def logit(
@@ -13,6 +14,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[JaxArray] = None,
 ):
     if eps is None:
@@ -22,7 +24,9 @@ def logit(
     return jnp.log(x / (1 - x))
 
 
-def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def relu6(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     relu6_func = jax.nn.relu6
 
     # sets gradient at 0 and 6 to 0 instead of 0.5
@@ -48,7 +52,9 @@ def thresholded_relu(
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
-def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def logsigmoid(
+    input: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return jax.nn.log_sigmoid(input)
 
 

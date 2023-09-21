@@ -1,11 +1,10 @@
 # local
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-    from_zero_dim_arrays_to_scalar,
-)
-
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.numpy.func_wrapper import (
+    from_zero_dim_arrays_to_scalar,
+    to_ivy_arrays_and_back,
+)
 
 
 # det
@@ -23,11 +22,11 @@ def matrix_rank(A, tol=None, hermitian=False):
 
 
 # solve
-@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def norm(x, ord=None, axis=None, keepdims=False):
-    if axis is None and not (ord is None):
+    if axis is None and (ord is not None):
         if x.ndim not in (1, 2):
             raise ValueError("Improper number of dimensions to norm.")
         else:
@@ -46,7 +45,7 @@ def norm(x, ord=None, axis=None, keepdims=False):
 
 
 # slogdet
-@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.26.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def slogdet(a):

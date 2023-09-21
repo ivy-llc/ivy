@@ -1,17 +1,19 @@
 """Collection of Numpy random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
+from typing import Optional, Sequence, Union
+
 import numpy as np
-from typing import Optional, Union, Sequence
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
-    _randint_check_dtype_and_bound,
     _check_valid_scale,
+    _randint_check_dtype_and_bound,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 # Extra #
@@ -51,7 +53,7 @@ def random_normal(
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,

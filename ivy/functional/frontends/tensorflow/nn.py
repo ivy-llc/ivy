@@ -1,13 +1,12 @@
 # global
 import ivy
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _convolution_broadcast_helper(
     arg, num_spatial_dims, channel_index, name="dilations"
@@ -440,6 +439,7 @@ def relu(features, name=None):
     return ivy.relu(features)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu6(features, name=None):
     return ivy.relu6(features)
@@ -503,6 +503,23 @@ def silu(features, beta: float = 1.0):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
+
+
+# Softsign
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def softsign(x, name=None):
+    return ivy.softsign(x)
 
 
 # sufficient_statistics

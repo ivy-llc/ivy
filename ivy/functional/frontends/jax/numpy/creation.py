@@ -1,16 +1,13 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+import ivy.functional.frontends.jax.numpy as jnp_frontend
+from ivy.func_wrapper import handle_out_argument, with_unsupported_dtypes
 from ivy.functional.frontends.jax.array import Array
-
 from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
-    outputs_to_frontend_arrays,
     handle_jax_dtype,
     inputs_to_ivy_arrays,
+    outputs_to_frontend_arrays,
+    to_ivy_arrays_and_back,
 )
-
-from ivy.func_wrapper import handle_out_argument
-
 
 ndarray = Array
 
@@ -113,6 +110,11 @@ def eye(N, M=None, k=0, dtype=None):
 
 
 @to_ivy_arrays_and_back
+def from_dlpack(x):
+    return ivy.from_dlpack(x)
+
+
+@to_ivy_arrays_and_back
 def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
 
@@ -174,7 +176,7 @@ def iterable(y):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -195,7 +197,7 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -235,6 +237,33 @@ def ones_like(a, dtype=None, shape=None):
     if shape:
         return ivy.ones(shape, dtype=dtype)
     return ivy.ones_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
+    fill_value = ivy.array(0 if fill_value is None else fill_value, dtype=ar1.dtype)
+    if ar1.size == 0:
+        return ivy.full(size or 0, fill_value, dtype=ar1.dtype)
+    if not assume_unique:
+        val = (
+            ivy.to_scalar(ivy.all(ar1))
+            if ivy.is_bool_dtype(ar1.dtype)
+            else ivy.to_scalar(ivy.min(ar1))
+        )
+        ar1 = jnp_frontend.unique(ar1, size=size and ar1.size, fill_value=val).ivy_array
+    mask = in1d(ar1, ar2, invert=True).ivy_array
+    if size is None:
+        return ar1[mask]
+    else:
+        if not (assume_unique):
+            # Set mask to zero at locations corresponding to unique() padding.
+            n_unique = ar1.size + 1 - (ar1 == ar1[0]).sum(dtype=ivy.int64)
+            mask = ivy.where(ivy.arange(ar1.size) < n_unique, mask, False)
+        return ivy.where(
+            ivy.arange(size) < mask.sum(dtype=ivy.int64),
+            ar1[jnp_frontend.where(mask, size=size)[0].ivy_array],
+            fill_value,
+        )
 
 
 @to_ivy_arrays_and_back

@@ -1,20 +1,22 @@
 """Collection of Jax random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
+from typing import Optional, Sequence, Union
+
 import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
-from typing import Optional, Union, Sequence
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
-    _randint_check_dtype_and_bound,
     _check_valid_scale,
+    _randint_check_dtype_and_bound,
 )
-from ivy.functional.backends.jax import JaxArray
-from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 # Extra #
@@ -82,7 +84,7 @@ def random_normal(
     return jax.random.normal(rng_input, shape, dtype=dtype) * std + mean
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,

@@ -1,9 +1,9 @@
 # global
 from hypothesis import strategies as st
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -34,6 +34,38 @@ def test_numpy_angle(
         on_device=on_device,
         z=x[0],
         deg=deg,
+    )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="numpy.conj",
+    aliases=["numpy.conjugate"],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+    ),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="conj"
+    ),
+)
+def test_numpy_conj(
+    on_device,
+    frontend,
+    *,
+    dtype_and_x,
+    fn_tree,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 
@@ -86,36 +118,4 @@ def test_numpy_real(
         fn_tree=fn_tree,
         on_device=on_device,
         val=x[0],
-    )
-
-
-# conj
-@handle_frontend_test(
-    fn_tree="numpy.conj",
-    aliases=["numpy.conjugate"],
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
-    ),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="conj"
-    ),
-)
-def test_numpy_conj(
-    on_device,
-    frontend,
-    *,
-    dtype_and_x,
-    fn_tree,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
     )

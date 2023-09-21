@@ -1,13 +1,11 @@
 # global
 from numbers import Number
-from typing import Union, Tuple, Iterable
-
+from typing import Iterable, Tuple, Union
 
 # local
 import ivy
-from ivy.utils.exceptions import handle_exceptions
 import ivy.functional.frontends.jax as jax_frontend
-
+from ivy.utils.exceptions import handle_exceptions
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -456,23 +454,25 @@ def promote_types_of_jax_inputs(
     return x1, x2
 
 
-from . import fft
-from . import linalg
-from . import creation
+from . import (
+    creation,
+    fft,
+    indexing,
+    linalg,
+    logic,
+    manipulations,
+    mathematical_functions,
+    searching_sorting,
+    statistical,
+)
 from .creation import *
 from .dtype import *
-from .scalars import *
-from . import indexing
 from .indexing import *
-from . import logic
 from .logic import *
-from . import manipulations
 from .manipulations import *
-from . import mathematical_functions
 from .mathematical_functions import *
-from . import statistical
-from .statistical import *
-from . import searching_sorting
+from .scalars import *
 from .searching_sorting import *
+from .statistical import *
 
 _frontend_array = array

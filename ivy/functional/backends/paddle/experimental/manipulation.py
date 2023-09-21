@@ -1,14 +1,32 @@
 from collections import namedtuple
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
+from typing import (
+    Any,
+    Callable,
+    List,
+    Literal,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
-
-from .. import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
+
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_supported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
+    with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
+from ivy.functional.ivy.experimental.manipulation import (
+    _check_paddle_pad,
+    _to_paddle_padding,
+)
+
+from .. import backend_version
 
 # Code from cephes for i0
 
@@ -92,6 +110,60 @@ def moveaxis(
     return paddle.moveaxis(a, source, destination)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+    backend_version,
+)
+def pad(
+    input: paddle.Tensor,
+    pad_width: Union[Sequence[Sequence[int]], paddle.Tensor, int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "reflect",
+            "wrap",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[paddle.Tensor], int] = 1,
+    constant_values: Number = 0,
+    end_values: Number = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+) -> paddle.Tensor:
+    constant_values = (
+        float(constant_values)
+        if not isinstance(constant_values, float)
+        else constant_values
+    )
+    pad_width = _to_paddle_padding(pad_width, input.ndim)
+    mode = "replicate" if mode == "edge" else "circular" if mode == "wrap" else mode
+    data_format = "NCL" if input.ndim == 1 else "NCHW" if input.ndim == 2 else "NCDHW"
+    return (
+        paddle.nn.functional.pad(
+            input.unsqueeze(0).unsqueeze(0),
+            pad_width,
+            mode=mode,
+            value=constant_values,
+            data_format=data_format,
+        )
+        .squeeze(0)
+        .squeeze(0)
+    )
+
+
+pad.partial_mixed_handler = (
+    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
+        _check_paddle_pad(
+            mode, reflect_type, args[1], args[0].shape, constant_values, 3
+        )
+    )
+)
+
+
 @with_unsupported_device_and_dtypes(
     {
         "2.5.1 and below": {
@@ -130,10 +202,6 @@ def flipud(
     return paddle.flip(m, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
-    backend_version,
-)
 def vstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -141,12 +209,14 @@ def vstack(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        if arrays[0].ndim >= 2:
-            return ivy.concat(arrays, axis=0)
-        else:
-            return ivy.stack(arrays, axis=0)
+        arrays = [ivy.reshape(x, shape=(1, -1)) if x.ndim < 2 else x for x in arrays]
+        return ivy.concat(arrays, axis=0)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int16", "bfloat16")}},
+    backend_version,
+)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -279,7 +349,7 @@ def flatten(
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if x.ndim == 0:
-        return x
+        return x.reshape((-1,))
 
     def _flatten(x, start_dim, end_dim):
         if x.dtype in [
@@ -640,3 +710,33 @@ def fill_diagonal(
     a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: paddle.Tensor,
+    indices: paddle.Tensor,
+    values: Union[int, paddle.Tensor],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    mode_mappings = {
+        "sum": "add",
+        "mul": "mul",
+        "replace": "assign",
+    }
+    mode = mode_mappings.get(mode, mode)
+    ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
+    "replace",
+    "sum",
+    "mul",
+]

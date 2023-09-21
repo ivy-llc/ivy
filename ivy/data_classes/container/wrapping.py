@@ -1,9 +1,10 @@
 # local
-import ivy
+from types import ModuleType
 
 # global
-from typing import Callable, Type, List, Iterable, Optional, Union, Sequence, Dict
-from types import ModuleType
+from typing import Callable, Dict, Iterable, List, Optional, Sequence, Type, Union
+
+import ivy
 
 TO_IGNORE = ["is_ivy_array", "is_native_array", "is_array", "shape"]
 

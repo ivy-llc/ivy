@@ -1,12 +1,13 @@
 # global
 import ivy
+import ivy.functional.frontends.numpy as np_frontend
 
 # local
 from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-    handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_dtype,
     handle_numpy_out,
+    to_ivy_arrays_and_back,
 )
 
 
@@ -114,9 +115,10 @@ def prod(
     initial=None,
     where=True,
 ):
-    if ivy.is_array(where):
+    if where is not True:
         x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
     if initial is not None:
+        initial = np_frontend.array(initial, dtype=dtype).tolist()
         if axis is not None:
             s = ivy.to_list(ivy.shape(x, as_array=True))
             s[axis] = 1

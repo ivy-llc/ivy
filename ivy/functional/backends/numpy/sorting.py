@@ -1,10 +1,12 @@
 # global
+from typing import List, Literal, Optional, Union
+
 import numpy as np
-from typing import Optional, Literal, Union, List
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 
@@ -42,7 +44,7 @@ def sort(
 
 
 # msort
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

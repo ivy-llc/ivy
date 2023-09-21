@@ -2,16 +2,16 @@
 
 
 # local
-from typing import List, Union, Optional
+from typing import List, Optional, Union
+
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_array_like_without_promotion,
     handle_nestable,
-    handle_array_function,
     inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
-
 
 # Extra #
 # ------#
@@ -126,9 +126,8 @@ def layer_norm(
     """
     mean = ivy.mean(x, axis=normalized_idxs, keepdims=True)
     var = ivy.var(x, axis=normalized_idxs, keepdims=True)
-    x = ivy.divide(
-        ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, min_base=eps)
-    )
+
+    x = (x - mean) / (var + eps) ** 0.5
 
     if scale is not None:
         if offset is not None:

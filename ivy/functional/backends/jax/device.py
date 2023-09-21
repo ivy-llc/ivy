@@ -2,18 +2,16 @@
 
 # global
 import os
+from typing import Optional, Union
+
 import jax
-from typing import Union, Optional
 import jaxlib.xla_extension
 
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.ivy.device import (
-    _shift_native_arrays_on_default_device,
-    Profiler as BaseProfiler,
-)
-
+from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import _shift_native_arrays_on_default_device
 
 # Helpers #
 # --------#
@@ -99,9 +97,9 @@ def as_native_dev(device, /):
     return jax.devices(device)[idx]
 
 
-def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
+def handle_soft_device_variable(*args, fn, **kwargs):
     args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
-        *args, device_shifting_dev=device_shifting_dev, **kwargs
+        *args, **kwargs
     )
     with jax.default_device(device_shifting_dev):
         return fn(*args, **kwargs)

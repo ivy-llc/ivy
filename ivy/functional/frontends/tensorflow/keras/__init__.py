@@ -1,4 +1,1 @@
-from . import activations
-from . import layers
-from . import metrics
-from . import regularizers
+from . import activations, layers, metrics, regularizers

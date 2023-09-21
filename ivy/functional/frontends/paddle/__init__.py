@@ -1,13 +1,12 @@
 import sys
-import ivy
-from ivy.utils.exceptions import handle_exceptions
-from ivy.functional.frontends import set_frontend_to_specific_version
-
 
 # global
 from numbers import Number
-from typing import Union, Tuple, Iterable
+from typing import Iterable, Tuple, Union
 
+import ivy
+from ivy.functional.frontends import set_frontend_to_specific_version
+from ivy.utils.exceptions import handle_exceptions
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -215,26 +214,18 @@ def promote_types_of_paddle_inputs(
     return x1, x2
 
 
-from . import vision
-from . import nn
-from .nn.functional.activation import tanh
-from . import linalg
-from . import fft
-from . import signal
-
-from .tensor.attribute import *
-from .tensor.creation import *
-from .tensor.linalg import *
-from .tensor.logic import *
-from .tensor.manipulation import *
-from .tensor.math import *
-from .tensor.random import *
-from .tensor.search import *
-from .tensor.einsum import *
-from .tensor.stat import *
-
+from . import nn, tensor, vision
+from .attribute import *
+from .creation import *
+from .fft import *
+from .linalg import *
+from .logic import *
+from .manipulation import *
+from .math import *
+from .random import *
+from .search import *
+from .stat import *
 from .tensor.tensor import Tensor
-
 
 _frontend_array = Tensor
 
@@ -246,4 +237,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)

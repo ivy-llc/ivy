@@ -1,15 +1,16 @@
 # local
-from typing import Optional, Union, Sequence
+from typing import Optional, Sequence, Union
+
 import ivy
 from ivy.func_wrapper import (
-    handle_out_argument,
-    to_native_arrays_and_back,
-    inputs_to_native_shapes,
-    handle_nestable,
-    infer_dtype,
-    infer_device,
-    handle_device_shifting,
     handle_backend_invalid,
+    handle_device_shifting,
+    handle_nestable,
+    handle_out_argument,
+    infer_device,
+    infer_dtype,
+    inputs_to_native_shapes,
+    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -57,9 +58,8 @@ def dirichlet(
     ret
         The drawn samples, of shape (size, k).
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> alpha = [1.0, 2.0, 3.0]
     >>> ivy.dirichlet(alpha)
     ivy.array([0.10598304, 0.21537054, 0.67864642])
@@ -239,9 +239,8 @@ def poisson(
      ret
         Drawn samples from the poisson distribution
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     >>> lam = [1.0, 2.0, 3.0]
     >>> ivy.poisson(lam)
     ivy.array([1., 4., 4.])

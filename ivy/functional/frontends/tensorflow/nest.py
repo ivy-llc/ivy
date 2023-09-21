@@ -1,12 +1,11 @@
 # local
+import ivy
 import ivy.functional.frontends.tensorflow.ragged as ragged_tf
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-import ivy
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _flatten_composite_array(x, expand_composites=False):
     if isinstance(x, ragged_tf.RaggedTensor):

@@ -3,17 +3,16 @@ import ivy
 
 # local
 from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
+    from_zero_dim_arrays_to_scalar,
     handle_numpy_casting,
     handle_numpy_dtype,
-    from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
+    to_ivy_arrays_and_back,
 )
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 @handle_numpy_out
 @handle_numpy_dtype
@@ -98,6 +97,32 @@ def _arctan(
     subok=True,
 ):
     ret = ivy.atan(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+# arctan2
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _arctan2(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.atan2(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret

@@ -1,7 +1,5 @@
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
@@ -20,6 +18,11 @@ def indices(dimensions, dtype=int, sparse=False):
 @to_ivy_arrays_and_back
 def tril_indices(n, k=0, m=None):
     return ivy.tril_indices(n, m, k)
+
+
+@to_ivy_arrays_and_back
+def tril_indices_from(arr, k=0):
+    return ivy.tril_indices(arr.shape[0], arr.shape[1], k)
 
 
 # unravel_index

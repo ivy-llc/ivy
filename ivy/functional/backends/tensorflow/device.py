@@ -7,8 +7,9 @@ and signature.
 
 # global
 _round = round
+from typing import Optional, Union
+
 import tensorflow as tf
-from typing import Union, Optional
 
 # local
 import ivy
@@ -99,9 +100,8 @@ def tpu_is_available() -> bool:
         return False
 
 
-def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
-    default_device = ivy.default_device(device_shifting_dev, as_native=True)
-    with tf.device(default_device):
+def handle_soft_device_variable(*args, fn, **kwargs):
+    with tf.device(ivy.default_device(as_native=True)):
         return fn(*args, **kwargs)
 
 

@@ -23,7 +23,7 @@ def batch_norm(
     momentum=0.1,
     eps=1e-5,
 ):
-    normalized, mean, var = ivy.batch_norm(
+    normalized, _, _ = ivy.batch_norm(
         input,
         running_mean,
         running_var,
@@ -34,8 +34,6 @@ def batch_norm(
         momentum=momentum,
         data_format="NCS",
     )
-    ivy.inplace_update(running_mean, mean)
-    ivy.inplace_update(running_var, var)
     return normalized
 
 
@@ -75,7 +73,7 @@ def instance_norm(
     momentum=0.1,
     eps=1e-5,
 ):
-    normalized, mean, var = ivy.instance_norm(
+    normalized, _, _ = ivy.instance_norm(
         input,
         running_mean,
         running_var,
@@ -86,8 +84,6 @@ def instance_norm(
         momentum=momentum,
         data_format="NCS",
     )
-    ivy.inplace_update(running_mean, mean)
-    ivy.inplace_update(running_var, var)
     return normalized
 
 

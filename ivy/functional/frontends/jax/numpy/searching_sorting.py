@@ -3,19 +3,15 @@ import logging
 
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-)
 
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -163,7 +159,7 @@ def unique(
     bools = [return_index, return_inverse, return_counts]
     # indexing each element whose condition is True except for the values
     uniques = [uniques[0]] + [uni for idx, uni in enumerate(uniques[1:]) if bools[idx]]
-    return uniques
+    return uniques[0] if len(uniques) == 1 else uniques
 
 
 @to_ivy_arrays_and_back

@@ -1,13 +1,13 @@
-from typing import Union, Optional, Tuple, List, Sequence
-import tensorflow as tf
 from functools import reduce as _reduce
+from typing import List, Optional, Sequence, Tuple, Union
+
+import tensorflow as tf
 
 import ivy
-
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
-
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
+
 from .. import backend_version
 
 
@@ -203,6 +203,22 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def dot(
     a: tf.Tensor,
     b: tf.Tensor,
@@ -210,7 +226,5 @@ def dot(
     *,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-    return tf.tensordot(a, b, axes=1)
-
-
-dot.support_native_out = True
+    a, b = ivy.promote_types_of_inputs(a, b)
+    return tf.experimental.numpy.dot(a, b)

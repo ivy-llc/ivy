@@ -1,9 +1,12 @@
+from typing import Optional, Union
+
 import mxnet as mx
-from typing import Union, Optional
-from ivy.func_wrapper import with_supported_dtypes
-from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
+
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
+
+from . import backend_version
 
 
 def abs(
@@ -463,8 +466,8 @@ def positive(
 
 
 def pow(
-    x1: Union[(float, None, mx.ndarray.NDArray)],
-    x2: Union[(float, None, mx.ndarray.NDArray)],
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(int, float, None, mx.ndarray.NDArray)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
@@ -598,6 +601,7 @@ def tanh(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
+    complex_mode="jax",
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     return mx.nd.tanh(x)

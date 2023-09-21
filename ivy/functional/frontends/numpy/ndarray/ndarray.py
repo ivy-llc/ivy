@@ -7,7 +7,6 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
 
-
 # --- Classes ---#
 # ---------------#
 
@@ -53,7 +52,7 @@ class ndarray:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def size(self):
@@ -243,7 +242,7 @@ class ndarray:
             out=out,
         )
 
-    def conj(
+    def conjugate(
         self,
         /,
         out=None,
@@ -254,7 +253,7 @@ class ndarray:
         dtype=None,
         subok=True,
     ):
-        return np_frontend.conj(
+        return np_frontend.conjugate(
             self.ivy_array,
             out=out,
             where=where,
@@ -571,22 +570,19 @@ class ndarray:
 
     def __array__(self, dtype=None, /):
         if not dtype:
-            return self
-        return np_frontend.array(self, dtype=dtype)
+            return ivy.to_numpy(self.ivy_array)
+        return ivy.to_numpy(self.ivy_array).astype(dtype)
 
     def __array_wrap__(self, array, context=None, /):
-        if context is None:
-            return np_frontend.array(array)
-        else:
-            return np_frontend.asarray(self)
+        return np_frontend.array(array)
 
     def __getitem__(self, key, /):
-        ivy_args = ivy.nested_map([self, key], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, key])
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value, /):
-        key, value = ivy.nested_map([key, value], _to_ivy_array)
+        key, value = ivy.nested_map(_to_ivy_array, [key, value])
         self.ivy_array[key] = value
 
     def __iter__(self):
@@ -606,7 +602,7 @@ class ndarray:
     def item(self, *args):
         if len(args) == 0:
             return self[0].ivy_array.to_scalar()
-        elif len(args) == 1 and type(args[0]) == int:
+        elif len(args) == 1 and isinstance(args[0], int):
             index = args[0]
             return self.ivy_array.flatten()[index].to_scalar()
         else:

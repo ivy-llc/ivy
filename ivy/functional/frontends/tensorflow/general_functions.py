@@ -1,23 +1,23 @@
 # global
-from builtins import slice as py_slice, range as py_range
+import functools
+from builtins import range as py_range
+from builtins import slice as py_slice
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
-    to_ivy_arrays_and_back,
     handle_tf_dtype,
+    to_ivy_arrays_and_back,
     to_ivy_dtype,
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
-import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.functional.frontends.tensorflow import check_tensorflow_casting
-import functools
 
 
 # --- Helpers --- #
 # --------------- #
-
 
 def _num_to_bit_list(value, num_dims):
     return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
@@ -213,6 +213,42 @@ def foldl(
     return result
 
 
+@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def foldr(
+    fn,
+    elems,
+    initializer=None,
+    parallel_iterations=10,
+    back_prop=True,
+    swap_memory=False,
+    name=None,
+):
+    ivy.utils.assertions.check_isinstance(
+        elems, (list, ivy.Array), "elems must be an iterable object"
+    )
+    ivy.utils.assertions.check_true(
+        callable(fn), f"{fn.__name__} must be a callable function"
+    )
+    if len(ivy.shape(elems)) == 0 or ivy.get_num_dims(elems) == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "elems must be a non-empty iterable object with at least one dimension"
+        )
+
+    elems = ivy.flip(elems)
+
+    if initializer is not None:
+        result = functools.reduce(fn, elems, initializer)
+    elif initializer is None and ivy.shape(elems)[0] > 0:
+        result = functools.reduce(fn, elems[1:], elems[0])
+    else:
+        result = elems
+    if all(ivy.get_num_dims(e) == 0 for e in elems):
+        result = ivy.to_scalar(result)
+    result = ivy.flip(result)
+    return result
+
+
 @to_ivy_arrays_and_back
 def gather(params, indices, validate_indices=None, axis=None, batch_dims=0, name=None):
     if axis is None:
@@ -247,6 +283,16 @@ def is_tensor(x, name=None):
 @to_ivy_arrays_and_back
 def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    sparse = False
+    indexing = "xy"
+    if "indexing" in kwargs:
+        indexing = kwargs["indexing"]
+
+    return ivy.meshgrid(*args, sparse=sparse, indexing=indexing)
 
 
 @to_ivy_arrays_and_back
@@ -427,6 +473,11 @@ def squeeze(input, axis=None, name=None):
 @to_ivy_arrays_and_back
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def stop_gradient(input, name=None):
+    return ivy.stop_gradient(input)
 
 
 # ToDo: find a way around for negative indexing, which torch does not support

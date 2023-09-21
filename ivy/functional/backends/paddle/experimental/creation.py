@@ -1,18 +1,16 @@
 # global
-from typing import Optional, Tuple, Union
 import math
-import paddle
-import ivy.functional.backends.paddle as paddle_backend
-from paddle.device import core
-from ivy.functional.backends.paddle.device import to_device
-from ivy.func_wrapper import (
-    with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
-)
+from typing import Optional, Tuple, Union
 
+import paddle
+from paddle.device import core
 
 # local
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
+from ivy.functional.backends.paddle.device import to_device
+
 from .. import backend_version
 
 # noinspection PyProtectedMember
@@ -212,3 +210,21 @@ def trilu(
     if upper:
         return paddle.triu(x=x, diagonal=k)
     return paddle.tril(x=x, diagonal=k)
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    n_fft = (dft_length - 1) * 2
+    mel_mat = paddle.audio.functional.compute_fbank_matrix(
+        sample_rate,
+        n_fft,
+        num_mel_bins,
+        lower_edge_hertz,
+        upper_edge_hertz,
+    )
+    return paddle.transpose(mel_mat, (1, 0))

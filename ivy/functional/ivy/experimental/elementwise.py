@@ -1,18 +1,19 @@
 # local
-from typing import Optional, Union, Tuple, List
 from numbers import Number
+from typing import List, Optional, Tuple, Union
+
 import ivy
 from ivy.func_wrapper import (
-    handle_out_argument,
-    to_native_arrays_and_back,
-    handle_nestable,
-    handle_partial_mixed_function,
-    handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
     handle_array_function,
-    infer_dtype,
-    handle_device_shifting,
+    handle_array_like_without_promotion,
     handle_backend_invalid,
+    handle_device_shifting,
+    handle_nestable,
+    handle_out_argument,
+    handle_partial_mixed_function,
+    infer_dtype,
+    inputs_to_ivy_arrays,
+    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1388,3 +1389,40 @@ def sparsify_tensor(
     tensor = ivy.concat([ivy.zeros(len(x) - card, dtype=x.dtype), x[-card:]], axis=0)
 
     return ivy.reshape(tensor, _shape, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def erfc(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Complementary error function, 1 - erf(x)
+
+    Parameters
+    ----------
+    x
+        Input array of real or complex valued argument.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Values of the complementary error function.
+
+    Examples
+    --------
+    >>> x = ivy.array([2, -1., 0])
+    >>> ivy.erfc(x)
+    ivy.array([0.00467773, 1.84270084, 1.        ])
+    """
+    return ivy.current_backend(x).erfc(x, out=out)

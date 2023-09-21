@@ -1,7 +1,7 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -82,6 +82,11 @@ def bmm(input, mat2, *, out=None):
         raise RuntimeError("input must be 3D matrices")
     input, mat2 = torch_frontend.promote_types_of_torch_inputs(input, mat2)
     return ivy.matmul(input, mat2, out=out)
+
+
+@to_ivy_arrays_and_back
+def chain_matmul(*matrices, out=None):
+    return ivy.multi_dot(matrices, out=out)
 
 
 @to_ivy_arrays_and_back

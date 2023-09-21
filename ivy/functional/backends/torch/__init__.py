@@ -1,5 +1,6 @@
 # global
 import sys
+
 import torch as torch
 
 # local
@@ -8,6 +9,10 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": torch.__version__.split("+")[0]}
 
+# Registering ivy.Array as trackable submodule
+if hasattr(torch, "_dynamo"):
+    torch._dynamo.config.traceable_tensor_subclasses = (ivy.Array,)
+
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
@@ -15,6 +20,81 @@ else:
     _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
+
+
+# wrap dunder methods of native tensors to return NotImplemented to prioritize Ivy array methods.
+def dunder_wrapper(func):
+    def rep_method(*args, **kwargs):
+        for arg in args:
+            if ivy.is_ivy_array(arg):
+                return NotImplemented
+        return func(*args, **kwargs)
+
+    return rep_method
+
+
+# check for previously imported torch module
+modules_to_patch = []
+tensors_to_patch = []
+tmp_globals = dict(globals())
+for name, value in tmp_globals.items():
+    if value == "torch.Tensor":
+        tensors_to_patch.append(name)
+    try:
+        if value.__name__ == "torch":
+            modules_to_patch.append(name)
+    except AttributeError:
+        pass
+
+methods_to_patch = [
+    "__add__",
+    "__and__",
+    "__div__",
+    "__eq__",
+    "__floordiv__",
+    "__ge__",
+    "__gt__",
+    "__iadd__",
+    "__iand__",
+    "__idiv__",
+    "__ifloordiv__",
+    "__ilshift__",
+    "__imul__",
+    "__ior__",
+    "__ipow__",
+    "__irshift__",
+    "__isub__",
+    "__itruediv__",
+    "__ixor__",
+    "__le__",
+    "__lshift__",
+    "__lt__",
+    "__matmul__",
+    "__mul__",
+    "__or__",
+    "__pow__",
+    "__truediv__",
+    "__xor__",
+    "__ne__",
+    "__mod__",
+]
+
+for module in modules_to_patch:
+    for method in methods_to_patch:
+        exec(
+            module
+            + ".Tensor."
+            + method
+            + " = dunder_wrapper("
+            + module
+            + ".Tensor."
+            + method
+            + ")"
+        )
+
+for tensor in tensors_to_patch:
+    for method in methods_to_patch:
+        exec(tensor + "." + method + " = dunder_wrapper(" + tensor + "." + method + ")")
 
 NativeArray = torch.Tensor
 NativeDevice = torch.device
@@ -151,48 +231,48 @@ def globals_getter_func(x=None):
 ivy.func_wrapper.globals_getter_func = globals_getter_func
 # local sub-modules
 
-from . import activations
-from .activations import *
-
-
-from . import creation
-from .creation import *
-from . import data_type
-from .data_type import *
-from . import device
-from .device import *
-from . import elementwise
-from .elementwise import *
-from . import gradients
-from .gradients import *
-from . import general
-from .general import *
-from . import layers
-from .layers import *
-from . import linear_algebra as linalg
-from .linear_algebra import *
-from . import manipulation
-from .manipulation import *
-from . import random
-from .random import *
-from . import searching
-from .searching import *
-from . import set
-from .set import *
-from . import sorting
-from .sorting import *
-from . import statistical
-from .statistical import *
-from . import utility
-from .utility import *
-from . import experimental
-from .experimental import *
-from . import control_flow_ops
-from .control_flow_ops import *
-from . import norms
-from .norms import *
-
-
 # sub-backends
-from . import sub_backends
+from . import (
+    activations,
+    control_flow_ops,
+    creation,
+    data_type,
+    device,
+    elementwise,
+    experimental,
+    general,
+    gradients,
+    layers,
+)
+from . import linear_algebra as linalg
+from . import (
+    manipulation,
+    norms,
+    random,
+    searching,
+    set,
+    sorting,
+    statistical,
+    sub_backends,
+    utility,
+)
+from .activations import *
+from .control_flow_ops import *
+from .creation import *
+from .data_type import *
+from .device import *
+from .elementwise import *
+from .experimental import *
+from .general import *
+from .gradients import *
+from .layers import *
+from .linear_algebra import *
+from .manipulation import *
+from .norms import *
+from .random import *
+from .searching import *
+from .set import *
+from .sorting import *
+from .statistical import *
 from .sub_backends import *
+from .utility import *

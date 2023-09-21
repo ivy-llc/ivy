@@ -3,10 +3,9 @@ import os
 import sys
 import traceback
 from ast import parse
-from string import Template
-from importlib.util import spec_from_file_location
 from importlib.abc import Loader, MetaPathFinder
-
+from importlib.util import spec_from_file_location
+from string import Template
 
 # AST helpers ##################
 
@@ -28,13 +27,11 @@ def _retrive_local_modules():
     # Get Ivy package root
     wd = sys.modules["ivy"].__path__[0]
     for entry in os.scandir(wd):
-        if entry.is_file():
-            if entry.name.endswith(".py"):
-                ret.append(entry.name[:-3])
-                continue
-        if entry.is_dir():
-            if "__init__.py" in os.listdir(wd + "/" + entry.name):
-                ret.append(entry.name)
+        if entry.is_file() and entry.name.endswith(".py"):
+            ret.append(entry.name[:-3])
+            continue
+        if entry.is_dir() and "__init__.py" in os.listdir(f"{wd}/{entry.name}"):
+            ret.append(entry.name)
     return ret
 
 
@@ -244,7 +241,7 @@ class IvyPathFinder(MetaPathFinder):
                 filename = os.path.join(entry, name, "__init__.py")
                 submodule_locations = [os.path.join(entry, name)]
             else:
-                filename = os.path.join(entry, name + ".py")
+                filename = os.path.join(entry, f"{name}.py")
                 submodule_locations = None
             if not os.path.exists(filename):
                 continue

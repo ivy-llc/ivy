@@ -7,7 +7,6 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 # --- Helpers --- #
 # --------------- #
 
-
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
 
@@ -401,6 +400,52 @@ def kl_div(logits, labels, reduction="mean"):
 @to_ivy_arrays_and_back
 def log_softmax(input, axis=-1):
     return ivy.log_softmax(input)
+
+
+@with_supported_dtypes(
+    {
+        "2.0.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def max_pool3d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    dilation=1,
+    ceil_mode=False,
+    return_indices=False,
+):
+    # ToDo: Add return_indices once superset in implemented
+
+    if not stride:
+        stride = kernel_size
+
+    data_format = "NCDHW"
+
+    return ivy.max_pool3d(
+        input,
+        kernel_size,
+        stride,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+    )
 
 
 @with_supported_dtypes(

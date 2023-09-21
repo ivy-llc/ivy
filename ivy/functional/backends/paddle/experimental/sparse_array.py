@@ -1,14 +1,13 @@
+import paddle
+
 import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from ivy.functional.ivy.experimental.sparse_array import (
+    _is_data_not_indices_values_and_shape,
     _verify_coo_components,
     _verify_csr_components,
-    _is_data_not_indices_values_and_shape,
-)
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
-import paddle
 
 # local
 from .. import backend_version
@@ -19,7 +18,7 @@ def is_native_sparse_array(x: paddle.Tensor) -> bool:
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8",)}}, backend_version
 )
 def native_sparse_array(
     data=None,
@@ -63,9 +62,6 @@ def native_sparse_array(
             indices=coo_indices,
             values=values,
             shape=dense_shape,
-            dtype=dtype,
-            place=device,
-            stop_gradient=not requires_grad,
         )
     else:
         _verify_csr_components(
@@ -79,9 +75,6 @@ def native_sparse_array(
             cols=col_indices,
             values=values,
             shape=dense_shape,
-            dtype=dtype,
-            place=device,
-            stop_gradient=not requires_grad,
         )
 
 

@@ -1,29 +1,27 @@
 # global
 import copy
 from numbers import Number
-from typing import Union, List, Optional, Sequence, Tuple
+from typing import List, Optional, Sequence, Tuple, Union
+
 import numpy as np
 import torch
 from torch import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    with_unsupported_device_and_dtypes,
-)
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_infer_dtype,
-    asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_handle_nestable,
+    _asarray_infer_device,
+    _asarray_infer_dtype,
+    _asarray_inputs_to_native_shapes,
+    _asarray_to_native_arrays_and_back,
     _remove_np_bfloat16,
 )
-from . import backend_version
 
+from . import backend_version
 
 # noinspection PyProtectedMember
 
@@ -96,11 +94,11 @@ def _stack_tensors(x, dtype):
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
-@asarray_infer_dtype
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         torch.Tensor,
@@ -119,7 +117,7 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     if isinstance(obj, Sequence) and len(obj) != 0:
         contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
         # if `obj` is a list of specifically tensors or
@@ -228,9 +226,12 @@ def eye(
 eye.support_native_out = True
 
 
+def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+    return torch.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
-    x = x.detach() if x.requires_grad else x
-    return torch.utils.dlpack.from_dlpack(x)
+    return torch.from_dlpack(x)
 
 
 def full(
@@ -242,7 +243,6 @@ def full(
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     if isinstance(shape, int):
         shape = (shape,)
     return torch.full(
@@ -266,7 +266,6 @@ def full_like(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 

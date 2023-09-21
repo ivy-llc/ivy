@@ -1,9 +1,13 @@
 """Collection of tests for module converters."""
 
 # global
-import pytest
 from types import SimpleNamespace
 from typing import Sequence
+
+import pytest
+
+# local
+import ivy
 
 try:
     import torch
@@ -19,10 +23,10 @@ except ImportError:
     nn.L1Loss = SimpleNamespace
 
 try:
-    import jax
-    from jax import value_and_grad
     import haiku as hk
+    import jax
     import jax.numpy as jnp
+    from jax import value_and_grad
 except ImportError:
     jax = SimpleNamespace()
     value_and_grad = SimpleNamespace
@@ -81,9 +85,15 @@ except ImportError:
     paddle.optimizer.SGD = SimpleNamespace
     paddle.nn.L1Loss = SimpleNamespace
 
-
-# local
-import ivy
+FROM_CONVERTERS = {
+    "torch": ivy.Module.from_torch_module,
+    "jax": {
+        "haiku": ivy.Module.from_haiku_module,
+        "flax": ivy.Module.from_flax_module,
+    },
+    "tensorflow": ivy.Module.from_keras_module,
+    "paddle": ivy.Module.from_paddle_module,
+}
 
 
 class TensorflowLinear(tf.keras.Model):
@@ -207,27 +217,6 @@ class PaddleModule(paddle.nn.Layer):
         x = paddle.nn.functional.tanh(self._linear0(x))
         x = paddle.nn.functional.tanh(self._linear1(x))
         return paddle.nn.functional.tanh(self._linear2(x))[0]
-
-
-NATIVE_MODULES = {
-    "torch": TorchModule,
-    "jax": {
-        "haiku": HaikuModule,
-        "flax": FlaxModule,
-    },
-    "tensorflow": TensorflowModule,
-    "paddle": PaddleModule,
-}
-
-FROM_CONVERTERS = {
-    "torch": ivy.Module.from_torch_module,
-    "jax": {
-        "haiku": ivy.Module.from_haiku_module,
-        "flax": ivy.Module.from_flax_module,
-    },
-    "tensorflow": ivy.Module.from_keras_module,
-    "paddle": ivy.Module.from_paddle_module,
-}
 
 
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
@@ -358,3 +347,14 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type):
     assert loss.shape == ()
     # value test
     assert (abs(grads).max() > 0).cont_all_true()
+
+
+NATIVE_MODULES = {
+    "torch": TorchModule,
+    "jax": {
+        "haiku": HaikuModule,
+        "flax": FlaxModule,
+    },
+    "tensorflow": TensorflowModule,
+    "paddle": PaddleModule,
+}

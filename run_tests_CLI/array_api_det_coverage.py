@@ -1,9 +1,10 @@
+import bz2
 import os
 import subprocess
+
+import _pickle as cPickle
 from pydriller import Repository
 from tqdm import tqdm
-import bz2
-import _pickle as cPickle
 
 
 def main():
@@ -33,7 +34,7 @@ def main():
                         continue
                     if ("#" not in s) or (
                         "#" in s
-                        and not (framework in s.lower())
+                        and (framework not in s.lower())
                         and any(f in s.lower() for f in framework_tests_to_run)
                     ):
                         submod = f"ivy_tests/array_api_testing/test_array_api/array_api_tests/test_{fname.replace('.txt', '.py')}"  # noqa

@@ -1,23 +1,23 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional, Sequence, Tuple, Union
 
 # local
 import ivy
-from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
+    handle_array_like_without_promotion,
+    handle_backend_invalid,
+    handle_device_shifting,
+    handle_nestable,
+    handle_out_argument,
     handle_partial_mixed_function,
     inputs_to_ivy_arrays,
-    to_native_arrays_and_back,
     inputs_to_native_shapes,
-    handle_out_argument,
-    handle_nestable,
-    handle_array_like_without_promotion,
-    handle_device_shifting,
-    handle_backend_invalid,
+    to_native_arrays_and_back,
 )
+from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 # Extra #
@@ -710,11 +710,11 @@ def scaled_dot_product_attention(
 @handle_array_function
 def multi_head_attention(
     query: Union[ivy.Array, ivy.NativeArray],
-    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     /,
     *,
-    num_heads: Optional[int] = 8,
+    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    num_heads: int = 8,
     scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -724,12 +724,12 @@ def multi_head_attention(
     out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    is_causal: Optional[bool] = False,
-    return_attention_weights: Optional[bool] = False,
-    average_attention_weights: Optional[bool] = True,
-    dropout: Optional[float] = 0.0,
-    training: Optional[bool] = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    is_causal: bool = False,
+    return_attention_weights: bool = False,
+    average_attention_weights: bool = True,
+    dropout: float = 0.0,
+    training: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Apply multi-head attention to inputs x. This is an implementation of multi-headed

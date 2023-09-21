@@ -1,14 +1,14 @@
 # global
 import ivy
 from ivy import (
+    with_supported_device_and_dtypes,
     with_supported_dtypes,
     with_unsupported_dtypes,
-    with_supported_device_and_dtypes,
 )
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
-    to_ivy_arrays_and_back,
     handle_tf_dtype,
+    to_ivy_arrays_and_back,
     to_ivy_dtype,
 )
 
@@ -227,6 +227,11 @@ def cumsum(x, axis, exclusive=False, reverse=False, name=None):
 
 
 @to_ivy_arrays_and_back
+def digamma(x, name=None):
+    return ivy.digamma(x)
+
+
+@to_ivy_arrays_and_back
 def divide(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
@@ -395,6 +400,8 @@ def log_sigmoid(x, name=None):
 
 @to_ivy_arrays_and_back
 def log_softmax(logits, axis=None):
+    if axis is None:
+        axis = -1
     return ivy.log_softmax(logits, axis=axis)
 
 

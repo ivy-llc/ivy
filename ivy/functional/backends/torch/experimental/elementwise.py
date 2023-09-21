@@ -1,16 +1,15 @@
 # global
-from typing import Optional, Union, Tuple, List
 from numbers import Number
+from typing import List, Optional, Tuple, Union
+
 import torch
 
 # local
 import ivy
 from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    with_supported_dtypes,
-)
+
 from .. import backend_version
 
 
@@ -153,15 +152,15 @@ def diff(
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = x if type(x) == torch.Tensor else torch.tensor(x)
+    x = x if isinstance(x, torch.Tensor) else torch.tensor(x)
     prepend = (
         prepend
-        if type(prepend) == torch.Tensor or prepend is None
+        if isinstance(prepend, torch.Tensor) or prepend is None
         else torch.tensor(prepend)
     )
     append = (
         append
-        if type(append) == torch.Tensor or append is None
+        if isinstance(append, torch.Tensor) or append is None
         else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
@@ -259,9 +258,9 @@ def gradient(
 ) -> Union[torch.Tensor, List[torch.Tensor]]:
     if axis is None:
         axis = tuple(range(len(x.shape)))
-    if type(axis) == int:
+    if isinstance(axis, int):
         axis = (axis,)
-    if type(spacing) == int:
+    if isinstance(spacing, int):
         spacing = [spacing] * len(axis)
 
     grad = torch.gradient(x, spacing=spacing, dim=axis, edge_order=edge_order)
@@ -383,3 +382,13 @@ def digamma(
 
 
 digamma.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def erfc(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfc(x)

@@ -1,10 +1,7 @@
 # global
 import ivy
-from ivy.func_wrapper import (
-    with_unsupported_dtypes,
-    with_supported_dtypes,
-)
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -362,14 +359,7 @@ def logical_xor(input, other, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def logit(input, eps=None, *, out=None):
-    if eps is None:
-        eps = -1.0
-    lo = eps
-    hi = 1 - eps
-
-    input = ivy.clip(input, lo, hi, out=out)
-
-    return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+    return ivy.logit(input, eps=eps, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
@@ -382,6 +372,22 @@ def masked_fill(input, mask, value):
 def mul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.multiply(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def mvlgamma(input, p, *, out=None):
+    ivy.assertions.check_greater(
+        p, 1, allow_equal=True, message="p has to be greater than or equal to 1"
+    )
+    c = 0.25 * p * (p - 1) * ivy.log(ivy.pi, out=out)
+    b = 0.5 * ivy.arange((1 - p), 1, 1, dtype=input.dtype, device=input.device, out=out)
+    return (
+        ivy.sum(
+            ivy.lgamma(ivy.expand_dims(input, axis=-1) + b, out=out), axis=-1, out=out
+        )
+        + c
+    )
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
@@ -408,9 +414,25 @@ def positive(input, *, out=None):
     return ivy.positive(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
-    return ivy.pow(input, exponent, out=out)
+    if not ivy.is_array(exponent):
+        if (
+            any(dtype in str(input.dtype) for dtype in ["int8", "int16"])
+            and isinstance(exponent, int)
+        ) or ("float16" in str(input.dtype) and isinstance(exponent, float)):
+            exponent = ivy.array(exponent, dtype=input.dtype)
+        else:
+            exponent = torch_frontend.as_tensor(exponent).ivy_array
+    input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
+    ret_dtype = input.dtype
+    if not ivy.is_int_dtype(exponent) and ivy.is_int_dtype(ret_dtype):
+        ret_dtype = exponent.dtype
+    ret = ivy.pow(input, exponent)
+    if ivy.any(input == 0) and ivy.is_int_dtype(exponent):
+        ret = ivy.where(ivy.bitwise_and(input == 0, exponent < 0), 0, ret, out=out)
+    return ret.astype(ret_dtype)
 
 
 @to_ivy_arrays_and_back

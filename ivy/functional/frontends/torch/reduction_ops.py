@@ -1,11 +1,12 @@
-import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import (
-    to_ivy_arrays_and_back,
-    numpy_to_torch_style_args,
-)
 from collections import namedtuple
+
+import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.functional.frontends.torch.func_wrapper import (
+    numpy_to_torch_style_args,
+    to_ivy_arrays_and_back,
+)
 
 
 @numpy_to_torch_style_args
@@ -189,6 +190,16 @@ def moveaxis(input, source, destination):
 @to_ivy_arrays_and_back
 def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float", "int")},
+    "torch",
+)
+def nansum(input, dim=None, keepdim=False, *, dtype=None):
+    input = ivy.where(ivy.isnan(input), ivy.zeros_like(input), input)
+    return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=None)
 
 
 @to_ivy_arrays_and_back

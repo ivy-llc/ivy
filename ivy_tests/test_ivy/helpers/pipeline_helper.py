@@ -1,7 +1,9 @@
 # TODO rename file
-from enum import Enum
-import ivy
 import importlib
+from enum import Enum
+from typing import Callable
+
+import ivy
 
 
 class BackendHandlerMode(Enum):
@@ -20,6 +22,10 @@ class WithBackendContext:
         return
 
 
+update_backend: Callable = ivy.utils.backend.ContextManager
+
+
+# update_backend: Callable = WithBackendContext
 class BackendHandler:
     _context = WithBackendContext
     _ctx_flag = 0  # BackendHandlerMode configs

@@ -2,35 +2,22 @@
 # global
 import copy
 import functools
-import numpy as np
 from operator import mul
 from typing import Optional
 
+import numpy as np
+
 # local
 import ivy
-from .conversions import args_to_native, to_ivy
+from ivy.func_wrapper import handle_view_indexing
+
 from .activations import _ArrayWithActivations
+from .conversions import args_to_native, to_ivy
 from .creation import _ArrayWithCreation
 from .data_type import _ArrayWithDataTypes
 from .device import _ArrayWithDevice
 from .elementwise import _ArrayWithElementwise
-from .general import _ArrayWithGeneral
-from .gradients import _ArrayWithGradients
-from .image import _ArrayWithImage
-from .layers import _ArrayWithLayers
-from .linear_algebra import _ArrayWithLinearAlgebra
-from .losses import _ArrayWithLosses
-from .manipulation import _ArrayWithManipulation
-from .norms import _ArrayWithNorms
-from .random import _ArrayWithRandom
-from .searching import _ArrayWithSearching
-from .set import _ArrayWithSet
-from .sorting import _ArrayWithSorting
-from .statistical import _ArrayWithStatistical
-from .utility import _ArrayWithUtility
-from ivy.func_wrapper import handle_view_indexing
 from .experimental import (
-    _ArrayWithSearchingExperimental,
     _ArrayWithActivationsExperimental,
     _ArrayWithConversionsExperimental,
     _ArrayWithCreationExperimental,
@@ -46,11 +33,26 @@ from .experimental import (
     _ArrayWithManipulationExperimental,
     _ArrayWithNormsExperimental,
     _ArrayWithRandomExperimental,
+    _ArrayWithSearchingExperimental,
     _ArrayWithSetExperimental,
     _ArrayWithSortingExperimental,
     _ArrayWithStatisticalExperimental,
     _ArrayWithUtilityExperimental,
 )
+from .general import _ArrayWithGeneral
+from .gradients import _ArrayWithGradients
+from .image import _ArrayWithImage
+from .layers import _ArrayWithLayers
+from .linear_algebra import _ArrayWithLinearAlgebra
+from .losses import _ArrayWithLosses
+from .manipulation import _ArrayWithManipulation
+from .norms import _ArrayWithNorms
+from .random import _ArrayWithRandom
+from .searching import _ArrayWithSearching
+from .set import _ArrayWithSet
+from .sorting import _ArrayWithSorting
+from .statistical import _ArrayWithStatistical
+from .utility import _ArrayWithUtility
 
 
 class Array(
@@ -144,6 +146,10 @@ class Array(
             self._data = data
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
+        elif ivy.is_ivy_sparse_array(data):
+            self._data = data._data
+        elif ivy.is_native_sparse_array(data):
+            self._data = data._data
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be ivy array, native array or ndarray"
@@ -184,7 +190,7 @@ class Array(
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
+        from ivy.functional.ivy.gradients import _is_variable, _variable, _variable_data
         from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
@@ -792,7 +798,12 @@ class Array(
         return self._data.__bool__()
 
     def __dlpack__(self, stream=None):
-        return self._data.__dlpack__()
+        # Not completely supported yet as paddle and tf
+        # doesn't support __dlpack__ and __dlpack_device__ dunders right now
+        # created issues
+        # paddle https://github.com/PaddlePaddle/Paddle/issues/56891
+        # tf https://github.com/tensorflow/tensorflow/issues/61769
+        return ivy.to_dlpack(self)
 
     def __dlpack_device__(self):
         return self._data.__dlpack_device__()

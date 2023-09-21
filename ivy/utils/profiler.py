@@ -1,9 +1,9 @@
 import cProfile
+import logging
 import pstats
 import subprocess
-import logging
-from tempfile import NamedTemporaryFile
 from importlib.util import find_spec
+from tempfile import NamedTemporaryFile
 
 is_snakeviz = find_spec("snakeviz")
 
@@ -50,7 +50,7 @@ class Profiler(cProfile.Profile):
                         stats.dump_stats(filename=f.name)
                         subprocess.run(["snakeviz", f"{f.name}"])
                 else:
-                    logging.warn("snakeviz must be installed for visualization")
+                    logging.warning("snakeviz must be installed for visualization")
 
             if self.print_stats:
                 stats.print_stats()

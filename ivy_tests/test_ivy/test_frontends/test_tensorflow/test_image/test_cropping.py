@@ -1,5 +1,6 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -8,6 +9,9 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
     _interp_args,
 )
 
+
+# --- Helpers --- #
+# --------------- #
 
 @st.composite
 def _extract_patches_helper(draw):
@@ -46,6 +50,10 @@ def _extract_patches_helper(draw):
     ]
     padding = draw(st.sampled_from(["VALID", "SAME"]))
     return dtype_x, sizes, strides, rates, padding
+
+
+# --- Main --- #
+# ------------ #
 
 
 # extract_patches

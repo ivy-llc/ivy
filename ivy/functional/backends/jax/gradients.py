@@ -1,20 +1,20 @@
 """Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature."""
 
 # global
+from typing import Callable, Optional, Sequence, Tuple, Union
+
 import jax
 import jax.lax as jlax
-from ivy.functional.backends.jax import JaxArray, NativeArray
-from typing import Optional, Callable, Sequence, Union, Tuple
-
 
 # local
 import ivy
+from ivy.functional.backends.jax import JaxArray, NativeArray
 from ivy.functional.ivy.gradients import (
+    _get_native_variables_and_indices,
     _get_required_float_variables,
     _get_y_and_ret_idxs,
-    _get_native_variables_and_indices,
-    _set_duplicates,
     _process_func_ret_and_grads,
+    _set_duplicates,
 )
 
 
@@ -38,7 +38,7 @@ def _forward_fn(
 ):
     """Forward function for gradient calculation."""
     # Setting x(relevant variables) into xs(all variables)
-    x = ivy.nested_map(x, ivy.to_ivy, include_derived=True)
+    x = ivy.nested_map(ivy.to_ivy, x, include_derived=True)
     x_arr_idxs = ivy.nested_argwhere(x, ivy.is_array)
     x_arr_values = ivy.multi_index_nest(x, x_arr_idxs)
     if xs_grad_idxs is not None:
@@ -131,7 +131,7 @@ def value_and_grad(func):
     grad_fn = lambda xs: ivy.to_native(func(xs))
 
     def callback_fn(xs):
-        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+        xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
         value, grad = jax.value_and_grad(grad_fn)(xs)
         return ivy.to_ivy(value), ivy.to_ivy(grad)
 

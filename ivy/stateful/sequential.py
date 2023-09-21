@@ -1,7 +1,7 @@
 """Base class for deriving trainable modules."""
 
 # global
-from typing import Union, Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -34,7 +34,7 @@ class Sequential(Module):
         if v is not None:
             for i, submod in enumerate(sub_modules):
                 try:
-                    submod.v = v["submodules"]["v" + str(i)]
+                    submod.v = v["submodules"][f"v{str(i)}"]
                 except KeyError:
                     if submod.v:
                         raise ivy.utils.exceptions.IvyException(
@@ -65,7 +65,7 @@ class Sequential(Module):
         x = inputs
         for i, submod in enumerate(self._submodules):
             try:
-                x = submod(x, v=self.v.submodules["v" + str(i)])
+                x = submod(x, v=self.v.submodules[f"v{str(i)}"])
             except KeyError:
                 if submod.v:
                     raise ivy.utils.exceptions.IvyException(

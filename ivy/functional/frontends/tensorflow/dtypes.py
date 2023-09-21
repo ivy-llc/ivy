@@ -1,10 +1,10 @@
 # local
 import ivy
-import ivy.functional.frontends.tensorflow as tf_frontend
 import ivy.functional.frontends.numpy as np_frontend
+import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow.func_wrapper import (
-    to_ivy_arrays_and_back,
     handle_tf_dtype,
+    to_ivy_arrays_and_back,
 )
 
 
@@ -101,7 +101,7 @@ class DType:
         if other is None:
             return False
 
-        if type(other) != DType:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(other, DType):
             try:
                 other = as_dtype(other)
             except ivy.utils.exceptions.IvyException:

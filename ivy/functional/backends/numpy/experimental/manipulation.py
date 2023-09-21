@@ -1,22 +1,27 @@
 # global
+from collections import namedtuple
+from numbers import Number
 from typing import (
+    Any,
+    Callable,
+    List,
+    Literal,
+    NamedTuple,
     Optional,
-    Union,
     Sequence,
     Tuple,
-    NamedTuple,
-    Literal,
-    Callable,
-    Any,
-    List,
+    Union,
 )
-from numbers import Number
-from collections import namedtuple
+
 import numpy as np
 
 # local
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+
+# noinspection PyProtectedMember
+from . import backend_version
 
 
 def moveaxis(
@@ -164,7 +169,7 @@ def _interior_pad(operand, padding_value, padding_config):
         if interior > 0:
             new_shape = list(operand.shape)
             new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
-            new_array = np.full(new_shape, padding_value)
+            new_array = np.full(new_shape, padding_value, dtype=operand.dtype)
             src_indices = np.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
@@ -224,13 +229,7 @@ def pad(
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if mode == "dilated":
-        if ivy.as_ivy_dtype(type(constant_values)) != input.dtype:
-            padding_value = ivy.native_array(constant_values, dtype=input.dtype)
-        else:
-            padding_value = constant_values
-        padded = _interior_pad(input, padding_value, pad_width)
-        return ivy.native_array(padded)
-
+        return _interior_pad(input, constant_values, pad_width)
     if callable(mode):
         return np.pad(
             _flat_array_to_1_dim_array(input),
@@ -405,7 +404,7 @@ def expand(
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:
-            shape[i] = x.shape[i]
+            shape[i] = int(np.prod(x.shape) / np.prod([s for s in shape if s > 0]))
     return np.broadcast_to(x, tuple(shape))
 
 
@@ -476,10 +475,38 @@ def unique_consecutive(
 
 def fill_diagonal(
     a: np.ndarray,
-    v: Union[int, float],
+    v: Union[int, float, np.ndarray],
     /,
     *,
     wrap: bool = False,
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def column_stack(
+    arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.column_stack(arrays)
+
+
+@with_supported_dtypes(
+    {"1.25.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    values: Union[int, np.ndarray],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[np.ndarray] = None,
+):
+    ret = np.put_along_axis(arr.copy(), indices, values, axis)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "replace",
+]
