@@ -457,9 +457,9 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
 
 @handle_exceptions
 def set_nest_at_indices(
-    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
-    indices: Iterable[Iterable[int]],
-    values: Iterable[int],
+    nest: Sequence[Union[str, int]],
+    indices: Sequence[int],
+    values: Sequence[Union[str, int]],
     /,
     shallow: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple]:
@@ -471,9 +471,9 @@ def set_nest_at_indices(
     nest
         The nested object to update.
     indices
-        An iterable of iterables of indices for the indices at which to update.
+        A Sequence of the indices at which to update.
     values
-        An iterable containing the new values for updating
+        A Sequence containing the new values for updating
     shallow
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
@@ -522,14 +522,15 @@ def set_nest_at_indices(
     ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
 
-    is_iterable = isinstance(nest, tuple)
-    nest_type = type(nest) if is_iterable else lambda x: x
+    is_tuple = isinstance(nest, tuple)
+    nest_type = type(nest) if is_tuple else lambda x: x
     if shallow:
         result = nest_type(nest)
     else:
         result = copy_nest(nest, include_derived=True)
-    result = list(result) if is_iterable else result
+    result = list(result) if is_tuple else result
 
+    assert type(indices) != None and type(values) != None, TypeError(values, indices)
     assert len(indices) == len(values), " 'indices' and 'values' must be of the same length"
 
     for index, value in zip(indices, values):
