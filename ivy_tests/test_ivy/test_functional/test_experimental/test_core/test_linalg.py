@@ -15,6 +15,24 @@ import ivy
 # --------------- #
 
 
+# batched_outer
+@st.composite
+def _batched_outer_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=3))
+    tensors_num = draw(helpers.ints(min_value=1, max_value=5))
+    dtype, tensors = draw(
+        helpers.dtype_and_values(
+            num_arrays=tensors_num,
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, tensors
+
+
 @st.composite
 def _generate_diag_args(draw):
     x_shape = draw(
@@ -378,6 +396,23 @@ def _get_dtype_value1_value2_cov(
     )
 
     return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
+
+
+# higher_order_moment
+@st.composite
+def _higher_order_moment_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
+    order = draw(helpers.ints(min_value=0, max_value=5))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, x[0], order
 
 
 # intialize tucker
@@ -764,6 +799,47 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.batched_outer",
+    data=_batched_outer_data(),
+)
+def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, tensors = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        tensors = tensors[:2]
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        tensors=tensors,
+    )
+
+
+# test adapted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_outer_product.py#L22
+@pytest.mark.skip(
+    reason=(
+        "ivy.tensordot does not support batched_modes argument for the moment. "
+        "TODO please remove this when the functionality is added. "
+        "see https://github.com/unifyai/ivy/issues/21914"
+    )
+)
+def test_batched_outer_product():
+    batch_size = 3
+    X = ivy.random_uniform(shape=(batch_size, 4, 5, 6))
+    Y = ivy.random_uniform(shape=(batch_size, 3))
+    Z = ivy.random_uniform(shape=(batch_size, 2))
+    res = ivy.batched_outer([X, Y, Z])
+    true_res = ivy.tensordot(X, Y, (), batched_modes=0)
+    true_res = ivy.tensordot(true_res, Z, (), batched_modes=0)
+    np.testing.assert_array_almost_equal(res, true_res)
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.cond",
     dtype_x=helpers.cond_data_gen_helper(),
     test_with_out=st.just(False),
@@ -1033,6 +1109,28 @@ def test_general_inner_product(*, data, test_flags, backend_fw, fn_name, on_devi
         a=x[0],
         b=x[1],
         n_modes=n_modes,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.higher_order_moment",
+    data=_higher_order_moment_data(),
+)
+def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, order = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        order = min(order, 2)
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=x,
+        order=order,
     )
 
 

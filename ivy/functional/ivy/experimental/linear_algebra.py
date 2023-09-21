@@ -1753,3 +1753,142 @@ def general_inner_product(
         ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
     )
     return ivy.reshape(inner_product, output_shape, out=out)
+
+
+# This function has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/moments.py#L5
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def higher_order_moment(
+    x: Union[ivy.Array, ivy.NativeArray],
+    order: int,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the Higher-Order Moment.
+
+    Parameters
+    ----------
+    x
+        matrix of size (n_samples, n_features)
+        or tensor of size(n_samples, D1, ..., DN)
+
+    order
+        number of the higher-order moment to compute
+
+    Returns
+    -------
+    tensor
+        if tensor is a matrix of size (n_samples, n_features),
+        tensor of size (n_features, )*order
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> result = ivy.higher_order_moment(a, 3)
+    >>> print(result)
+    ivy.array([[
+        [14, 19],
+        [19, 26]],
+       [[19, 26],
+        [26, 36]
+    ]])
+    """
+    moment = ivy.copy_array(x)
+    for _ in range(order - 1):
+        moment = ivy.batched_outer([moment, x])
+    return ivy.mean(moment, axis=0, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def batched_outer(
+    tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return a generalized outer product of the tensors.
+
+    Parameters
+    ----------
+    tensors
+        list of tensors of shape (n_samples, J1, ..., JN) ,
+        (n_samples, K1, ..., KM) ...
+
+    Returns
+    -------
+    outer product of tensors
+        of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
+
+    Examples
+    --------
+    >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
+    >>> result = ivy.batched_outer([a, b])
+    >>> print(result)
+    ivy.array([[[[[0.1, 0.2],
+          [0.30000001, 0.40000001]],
+         [[0.2       , 0.40000001],
+          [0.60000002, 0.80000001]]],
+        [[[0.3       , 0.60000001],
+          [0.90000004, 1.20000002]],
+         [[0.40000001, 0.80000001],
+          [1.20000005, 1.60000002]]]],
+       [[[[2.5       , 3.00000012],
+          [3.49999994, 4.00000006]],
+         [[3.        , 3.60000014],
+          [4.19999993, 4.80000007]]],
+        [[[3.5       , 4.20000017],
+          [4.89999992, 5.60000008]],
+         [[4.        , 4.80000019],
+          [5.5999999 , 6.4000001 ]]]]])
+    """
+    result = None
+    result_size = None
+    result_shape = None
+    for i, tensor in enumerate(tensors):
+        if i:
+            current_shape = ivy.shape(tensor)
+            current_size = len(current_shape) - 1
+
+            n_samples = current_shape[0]
+
+            _check_same_batch_size(i, n_samples, result_shape)
+
+            shape_1 = result_shape + (1,) * current_size
+            shape_2 = (n_samples,) + (1,) * result_size + tuple(current_shape[1:])
+
+            result = ivy.reshape(result, shape_1) * ivy.reshape(tensor, shape_2)
+        else:
+            result = tensor
+
+        result_shape = ivy.shape(result)
+        result_size = len(result_shape) - 1
+
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
+
+    return result
+
+
+def _check_same_batch_size(i, n_samples, result_shape):
+    if n_samples != result_shape[0]:
+        raise ValueError(
+            f"Tensor {i} has a batch-size of {n_samples} but those before had a"
+            f" batch-size of {result_shape[0]}, all tensors should have the"
+            " same batch-size."
+        )

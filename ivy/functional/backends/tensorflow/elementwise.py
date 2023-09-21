@@ -563,6 +563,7 @@ def logical_xor(
     return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def multiply(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
