@@ -709,6 +709,11 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 
 
 @to_ivy_arrays_and_back
+def transpose(a, axes=None):
+    return ivy.transpose(a, axes=axes)
+
+
+@to_ivy_arrays_and_back
 def trapz(y, x=None, dx=1.0, axis=-1, out=None):
     return ivy.trapz(y, x=x, dx=dx, axis=axis, out=out)
 
