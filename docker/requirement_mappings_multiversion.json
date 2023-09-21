@@ -11,18 +11,22 @@
   "jax": [
     "dm-haiku",
     "flax",
+
     {
       "jaxlib": {
         "0.4.14": "0.4.14",
         "0.4.10": "0.4.10",
         "0.4.8": "0.4.7"
       }
+    },
+    {"ml_dtypes":{"0.4.10":"0.2.0"}
+
     }
   ],
   "numpy": [
     "numpy"
   ],
-  "paddle": [
+  "paddlepaddle": [
     "paddlepaddle"
   ],
   "mxnet": [
