@@ -15,10 +15,11 @@ from ivy_tests.test_ivy.helpers import handle_test
 @st.composite
 def _broadcastable_trio(draw):
     shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
-    cond = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtype = draw(st.one_of(st.just(["bool"]), helpers.get_dtypes("valid", full=False)))
+    cond = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     dtypes, xs = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             shape=shape,
             shared_dtype=True,
@@ -188,7 +189,7 @@ def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
     cond, xs, dtypes = broadcastables
 
     helpers.test_function(
-        input_dtypes=["bool"] + dtypes,
+        input_dtypes=[str(cond.dtype)] + dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
