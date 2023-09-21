@@ -50,24 +50,25 @@ binaries_paths = _get_paths_from_binaries(binaries_dict)
 terminate = False
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 configs_response = request.urlopen(
-    "https://github.com/unifyai/binaries/raw/main/configs.txt",
+    "https://github.com/unifyai/binaries/raw/configs/configs.json",
     timeout=40,
 )
-available_configs = repr(f"{configs_response.read()}").strip(r"\"b\'").split(r"\\n")
+available_configs = json.loads(
+    repr(f"{configs_response.read()}").strip(r"\"b\'").replace(r"\\n", "\n")
+)
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:
     if terminate:
         break
-    if str(tag) not in available_configs:
-        continue
     for path in binaries_paths:
-        if os.path.exists(path):
+        module = path.split(os.sep)[1]
+        if os.path.exists(path) or str(tag) not in available_configs[module]:
             continue
         folders = path.split(os.sep)
         folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
         file_name = f"{file_path[:-3]}_{tag}.so"
-        search_path = f"compiler/{file_name}"
+        search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(
                 f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
@@ -84,7 +85,12 @@ for tag in all_tags:
 for idx, path in enumerate(binaries_paths):
     if not os.path.exists(path):
         if idx == 0:
-            config_str = "\n".join(available_configs)
+            config_str = "\n".join(
+                [
+                    f"{module} : {', '.join(configs)}"
+                    for module, configs in available_configs.items()
+                ]
+            )
             print(f"\nFollowing are the supported configurations :\n{config_str}\n")
         print(
             f"Could not download {path}.",
