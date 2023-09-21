@@ -1,4 +1,5 @@
 # local
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -8,93 +9,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def random_sample(size=None):
-    return ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def dirichlet(alpha, size=None):
-    return ivy.dirichlet(alpha, size=size)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def uniform(low=0.0, high=1.0, size=None):
-    return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def geometric(p, size=None):
-    if p < 0 or p > 1:
-        raise ValueError("p must be in the interval [0, 1]")
-    oneMinusP = ivy.subtract(1, p)
-    sizeMinusOne = ivy.subtract(size, 1)
-
-    return ivy.multiply(ivy.pow(oneMinusP, sizeMinusOne), p)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def normal(loc=0.0, scale=1.0, size=None):
-    return ivy.random_normal(mean=loc, std=scale, shape=size, dtype="float64")
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def poisson(lam=1.0, size=None):
-    return ivy.poisson(lam=lam, shape=size)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def multinomial(n, pvals, size=None):
-    assert not ivy.exists(size) or (len(size) > 0 and len(size) < 3)
-    batch_size = 1
-    if ivy.exists(size):
-        if len(size) == 2:
-            batch_size = size[0]
-            num_samples = size[1]
-        else:
-            num_samples = size[0]
-    else:
-        num_samples = len(pvals)
-    return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=pvals)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def permutation(x, /):
-    if isinstance(x, int):
-        x = ivy.arange(x)
-    return ivy.shuffle(x)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
 def beta(a, b, size=None):
     return ivy.beta(a, b, shape=size)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def shuffle(x, axis=0, /):
-    if isinstance(x, int):
-        x = ivy.arange(x)
-    return ivy.shuffle(x, axis)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def standard_normal(size=None):
-    return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def standard_gamma(shape, size=None):
-    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
 
 
 @to_ivy_arrays_and_back
@@ -131,58 +47,27 @@ def chisquare(df, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def lognormal(mean=0.0, sigma=1.0, size=None):
-    ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
-    return ret
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def negative_binomial(n, p, size=None):
-    if p <= 0 or p >= 1:
-        raise ValueError("p must be in the interval (0, 1)")
-    if n <= 0:
-        raise ValueError("n must be strictly positive")
-    # numpy implementation uses scale = (1 - p) / p
-    scale = (1 - p) / p
-    # poisson requires shape to be a tuple
+def choice(a, size=None, replace=True, p=None):
+    sc_size = 1
     if isinstance(size, int):
-        size = (size,)
-    lambda_ = ivy.gamma(n, scale, shape=size)
-    return ivy.poisson(lam=lambda_, shape=size)
+        sc_size = size
+    elif size is not None:
+        #  If the given shape is, e.g., (m, n, k)
+        #  then m * n * k samples are drawn. As per numpy docs
+        sc_size = 1
+        for s in size:
+            if s is not None:
+                sc_size *= s
+    if isinstance(a, int):
+        a = ivy.arange(a)
+    index = ivy.multinomial(len(a), sc_size, replace=replace, probs=p)
+    return a[index]
 
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def weibull(a, size=None):
-    if a < 0:
-        return 0
-    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    return ivy.pow(-ivy.log(1 - u), 1 / a)
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def standard_cauchy(size=None):
-    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    return ivy.tan(ivy.pi * (u - 0.5))
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def rayleigh(scale, size=None):
-    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    log_u = ivy.log(u)
-    x = ivy.multiply(scale, ivy.sqrt(ivy.multiply(-2, log_u)))
-    return x
-
-
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-def gumbel(loc=0.0, scale=1.0, size=None):
-    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    x = loc - scale * ivy.log(-ivy.log(u))
-    return x
+def dirichlet(alpha, size=None):
+    return ivy.dirichlet(alpha, size=size)
 
 
 @to_ivy_arrays_and_back
@@ -204,10 +89,95 @@ def gamma(shape, scale=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def geometric(p, size=None):
+    if p < 0 or p > 1:
+        raise ValueError("p must be in the interval [0, 1]")
+    oneMinusP = ivy.subtract(1, p)
+    sizeMinusOne = ivy.subtract(size, 1)
+
+    return ivy.multiply(ivy.pow(oneMinusP, sizeMinusOne), p)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def gumbel(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    x = loc - scale * ivy.log(-ivy.log(u))
+    return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def laplace(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    u = loc - scale * ivy.sign(u - 0.5) * ivy.log(1 - 2 * ivy.abs(u - 0.5))
+    return u
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def logistic(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     x = loc + scale * ivy.log(u / (1 - u))
     return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def lognormal(mean=0.0, sigma=1.0, size=None):
+    ret = ivy.exp(ivy.random_normal(mean=mean, std=sigma, shape=size, dtype="float64"))
+    return ret
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logseries(p=0, size=None):
+    if p < 0 or p >= 1:
+        raise ValueError("p value must be in the open interval (0, 1)")
+    r = ivy.log(1 - p)
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size)
+    v = ivy.random_uniform(low=0.0, high=1.0, shape=size)
+    q = 1 - ivy.exp(r * u)
+    ret = 1 + ivy.log(v) / ivy.log(q)
+    return ret
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def multinomial(n, pvals, size=None):
+    assert not ivy.exists(size) or (len(size) > 0 and len(size) < 3)
+    batch_size = 1
+    if ivy.exists(size):
+        if len(size) == 2:
+            batch_size = size[0]
+            num_samples = size[1]
+        else:
+            num_samples = size[0]
+    else:
+        num_samples = len(pvals)
+    return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=pvals)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def negative_binomial(n, p, size=None):
+    if p <= 0 or p >= 1:
+        raise ValueError("p must be in the interval (0, 1)")
+    if n <= 0:
+        raise ValueError("n must be strictly positive")
+    # numpy implementation uses scale = (1 - p) / p
+    scale = (1 - p) / p
+    # poisson requires shape to be a tuple
+    if isinstance(size, int):
+        size = (size,)
+    lambda_ = ivy.gamma(n, scale, shape=size)
+    return ivy.poisson(lam=lambda_, shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def normal(loc=0.0, scale=1.0, size=None):
+    return ivy.random_normal(mean=loc, std=scale, shape=size, dtype="float64")
 
 
 @to_ivy_arrays_and_back
@@ -217,6 +187,70 @@ def pareto(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     return ivy.pow(1 / (1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def permutation(x, /):
+    if isinstance(x, int):
+        x = ivy.arange(x)
+    return ivy.shuffle(x)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def poisson(lam=1.0, size=None):
+    return ivy.poisson(lam=lam, shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def random_sample(size=None):
+    return ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def rayleigh(scale, size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    log_u = ivy.log(u)
+    x = ivy.multiply(scale, ivy.sqrt(ivy.multiply(-2, log_u)))
+    return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def shuffle(x, axis=0, /):
+    if isinstance(x, int):
+        x = ivy.arange(x)
+    return ivy.shuffle(x, axis)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_cauchy(size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.tan(ivy.pi * (u - 0.5))
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_normal(size=None):
+    return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_t(df, size=None):
+    numerator = ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
+    denominator = ivy.gamma(df / 2, 1.0, shape=size, dtype="float64")
+    return ivy.sqrt(df / 2) * ivy.divide(numerator, ivy.sqrt(denominator))
 
 
 @to_ivy_arrays_and_back
@@ -233,3 +267,46 @@ def triangular(left, mode, right, size=None):
         right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
     )
     return ivy.where(condition, values1, values2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def uniform(low=0.0, high=1.0, size=None):
+    return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def wald(mean, scale, size=None):
+    if size is None:
+        size = 1
+    mu_2l = mean / (2 * scale)
+    Y = ivy.random_normal(mean=0, std=1, shape=size, dtype="float64")
+    U = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+
+    Y = mean * ivy.square(Y)
+    X = mean + mu_2l * (Y - ivy.sqrt(((4 * scale) * Y) + ivy.square(Y)))
+
+    condition = U <= mean / (mean + X)
+    value1 = X
+    value2 = mean * mean / X
+
+    return ivy.where(condition, value1, value2)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def weibull(a, size=None):
+    if a < 0:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.pow(-ivy.log(1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def zipf(a, size=None):
+    if a <= 1:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.floor(ivy.pow(1 / (1 - u), 1 / a))

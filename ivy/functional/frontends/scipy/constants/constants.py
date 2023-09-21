@@ -1,56 +1,47 @@
 # global
 import ivy
 
+atto = ivy.atto
+centi = ivy.centi
+deci = ivy.deci
+deka = ivy.deka
+exa = ivy.exa
+exbi = ivy.exbi
+femto = ivy.femto
+gibi = ivy.gibi
+giga = ivy.giga
+golden = ivy.golden
+golden_ratio = ivy.golden_ratio
+hecto = ivy.hecto
+# Binary prefixes #
+# ------#
 
+kibi = ivy.kibi
+kilo = ivy.kilo
+mebi = ivy.mebi
+mega = ivy.mega
+micro = ivy.micro
+milli = ivy.milli
+nano = ivy.nano
+pebi = ivy.pebi
+peta = ivy.peta
 # Mathematical constants #
 # ------#
 
 pi = ivy.pi
-golden = ivy.golden
-golden_ratio = ivy.golden_ratio
-
-
+pico = ivy.pico
+quecto = ivy.quecto
 # SI prefixes #
 # ------#
 
 quetta = ivy.quetta
 ronna = ivy.ronna
-yotta = ivy.yotta
-zetta = ivy.zetta
-exa = ivy.exa
-peta = ivy.peta
-tera = ivy.tera
-giga = ivy.giga
-mega = ivy.mega
-kilo = ivy.kilo
-hecto = ivy.hecto
-deka = ivy.deka
-deci = ivy.deci
-centi = ivy.centi
-milli = ivy.milli
-micro = ivy.micro
-nano = ivy.nano
-pico = ivy.pico
-femto = ivy.femto
-atto = ivy.atto
-zepto = ivy.zepto
-yocto = ivy.yocto
 ronto = ivy.ronto
-quecto = ivy.quecto
-
-
-# Binary prefixes #
-# ------#
-
-kibi = ivy.kibi
-mebi = ivy.mebi
-gibi = ivy.gibi
 tebi = ivy.tebi
-pebi = ivy.pebi
-exbi = ivy.exbi
-zebi = ivy.zebi
+tera = ivy.tera
 yobi = ivy.yobi
-
-
-# Physical constants #
-# ------#
+yocto = ivy.yocto
+yotta = ivy.yotta
+zebi = ivy.zebi
+zepto = ivy.zepto
+zetta = ivy.zetta

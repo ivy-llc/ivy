@@ -41,39 +41,6 @@ def test_numpy_can_cast(
     )
 
 
-# promote_types
-@handle_frontend_test(
-    fn_tree="numpy.promote_types",
-    type1=helpers.get_dtypes("valid", full=False),
-    type2=helpers.get_dtypes("valid", full=False),
-    test_with_out=st.just(False),
-)
-# there are 100 combinations of dtypes, so run 200 examples to make sure all are tested
-@settings(max_examples=200)
-def test_numpy_promote_types(
-    *,
-    type1,
-    type2,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=[],
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        type1=type1[0],
-        type2=type2[0],
-        test_values=False,
-    )
-    assert ret._ivy_dtype == frontend_ret[0].name
-
-
 @handle_frontend_test(
     fn_tree="numpy.min_scalar_type",
     x=st.one_of(
@@ -102,6 +69,39 @@ def test_numpy_min_scalar_type(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x,
+        test_values=False,
+    )
+    assert ret._ivy_dtype == frontend_ret[0].name
+
+
+# promote_types
+@handle_frontend_test(
+    fn_tree="numpy.promote_types",
+    type1=helpers.get_dtypes("valid", full=False),
+    type2=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+# there are 100 combinations of dtypes, so run 200 examples to make sure all are tested
+@settings(max_examples=200)
+def test_numpy_promote_types(
+    *,
+    type1,
+    type2,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=[],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        type1=type1[0],
+        type2=type2[0],
         test_values=False,
     )
     assert ret._ivy_dtype == frontend_ret[0].name

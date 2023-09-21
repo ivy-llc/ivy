@@ -68,7 +68,6 @@ class _ArrayWithStatistical(abc.ABC):
         >>> x.min(out=y)
         >>> print(y)
         ivy.array(0.1)
-
         """
         return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 

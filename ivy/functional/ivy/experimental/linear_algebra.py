@@ -201,9 +201,8 @@ def diagflat(
     ret
         The 2-D output array.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1,2], [3,4]])
@@ -350,8 +349,8 @@ def eig(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w, v = ivy.eig(x)
@@ -404,8 +403,8 @@ def eigvals(
     w
         Not necessarily ordered array(..., N) of eigenvalues in complex type.
 
-    Functional Examples
-    ------------------
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1,2], [3,4]])
     >>> w = ivy.eigvals(x)
@@ -1618,10 +1617,11 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
+@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def dot(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -1676,8 +1676,8 @@ def dot(
     return current_backend(a, b).dot(a, b, out=out)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1768,7 +1768,9 @@ def initialize_cp(
                 # TODO: this is a hack but it
                 # seems to do the job for now
                 random_part = ivy.random_uniform(
-                    shape=(U.shape[0], rank - ivy.shape(x)[mode]), dtype=x.dtype
+                    shape=(U.shape[0], rank - ivy.shape(x)[mode]),
+                    dtype=x.dtype,
+                    seed=seed,
                 )
                 U = ivy.concat([U, random_part], axis=1)
 
@@ -1889,6 +1891,12 @@ def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=No
     return unnorml_rec_error, tensor, norm_tensor
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
 def parafac(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: int,
@@ -1997,7 +2005,6 @@ def parafac(
            Applications", PhD., University of Amsterdam, 1998
     """
     rank = ivy.CPTensor.validate_cp_rank(x.shape, rank=rank)
-
     if orthogonalise and not isinstance(orthogonalise, int):
         orthogonalise = n_iter_max
 
@@ -2018,7 +2025,6 @@ def parafac(
     )
 
     rec_errors = []
-    ndims = len(x.shape)
     norm_tensor = ivy.sqrt(ivy.sum(ivy.square(x)))
     if l2_reg:
         Id = ivy.eye(rank, dtype=x.dtype) * l2_reg
@@ -2030,17 +2036,17 @@ def parafac(
     else:
         fixed_modes = list(fixed_modes)
 
-    if fixed_modes == list(range(ndims)):  # Check If all modes are fixed
+    if fixed_modes == list(range(len(x.shape))):  # Check If all modes are fixed
         cp_tensor = ivy.CPTensor((weights, factors))
         return cp_tensor
 
-    if ndims - 1 in fixed_modes:
+    if len(x.shape) - 1 in fixed_modes:
         logging.warn(
             "You asked for fixing the last mode, which is not supported.\n The last"
             " mode will not be fixed. Consider using ivy.move_axis()"
         )
-        fixed_modes.remove(ndims - 1)
-    modes_list = [mode for mode in range(ndims) if mode not in fixed_modes]
+        fixed_modes.remove(len(x.shape) - 1)
+    modes_list = [mode for mode in range(len(x.shape)) if mode not in fixed_modes]
 
     if sparsity:
         sparse_component = ivy.zeros_like(x)
@@ -2051,11 +2057,11 @@ def parafac(
 
     if callback is not None:
         cp_tensor = ivy.CPTensor((weights, factors))
+
         unnorml_rec_error, _, norm_tensor = _error_calc(
             x, norm_tensor, weights, factors, sparsity, mask
         )
         callback_error = unnorml_rec_error / norm_tensor
-
         if sparsity:
             sparse_component = ivy.sparsify_tensor(
                 x - ivy.CPTensor.cp_to_tensor((weights, factors)), sparsity
@@ -2079,12 +2085,12 @@ def parafac(
             print("Starting iteration", iteration + 1)
         for mode in modes_list:
             if verbose:
-                print("Mode", mode, "of", ndims)
+                print("Mode", mode, "of", len(x.shape))
 
             pseudo_inverse = ivy.ones((rank, rank), dtype=x.dtype)
             for i, factor in enumerate(factors):
                 if i != mode:
-                    pseudo_inverse = pseudo_inverse * ivy.matmul(
+                    pseudo_inverse = pseudo_inverse * ivy.dot(
                         ivy.conj(ivy.permute_dims(factor, (1, 0))), factor
                     )
             pseudo_inverse += Id
@@ -2128,7 +2134,7 @@ def parafac(
             new_weights = weights_last + (weights - weights_last) * jump
             new_factors = [
                 factors_last[ii] + (factors[ii] - factors_last[ii]) * jump
-                for ii in range(ndims)
+                for ii in range(len(x.shape))
             ]
 
             new_rec_error, new_tensor, new_norm_tensor = _error_calc(
@@ -2212,7 +2218,7 @@ def parafac(
 
     if sparsity:
         sparse_component = ivy.sparsify_tensor(
-            tensor - ivy.CPTensor.cp_to_tensor((weights, factors)), sparsity
+            x - ivy.CPTensor.cp_to_tensor((weights, factors)), sparsity
         )
         cp_tensor = (cp_tensor, sparse_component)
 
@@ -2220,3 +2226,86 @@ def parafac(
         return cp_tensor, rec_errors
     else:
         return cp_tensor
+
+
+@handle_exceptions
+@handle_nestable
+def general_inner_product(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    n_modes: Optional[int] = None,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Generalised inner products between tensors.
+
+        Takes the inner product between the last (respectively first)
+        `n_modes` of `a` (respectively `b`)
+
+    Parameters
+    ----------
+    a
+        first input tensor.
+    b
+        second input tensor.
+    n_modes
+        int, default is None. If None, the traditional inner product is returned
+        (i.e. a float) otherwise, the product between the `n_modes` last modes of
+        `a` and the `n_modes` first modes of `b` is returned. The resulting tensor's
+        order is `len(a) - n_modes`.
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns
+    -------
+        The inner product of the input arrays.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> print(result)
+    ivy.array(32)
+
+    >>> a = ivy.array([1, 2])
+    >>> b = ivy.array([4, 5])
+    >>> result = ivy.general_inner_product(a, b)
+    >>> print(result)
+    ivy.array(14)
+
+    >>> a = ivy.array([[1, 1], [1, 1]])
+    >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
+    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> print(result)
+    ivy.array([[2, 3, 4, 5],
+       [2, 3, 4, 5]])
+    """
+    shape_a = a.shape
+    shape_b = b.shape
+    if n_modes is None:
+        if shape_a != shape_b:
+            raise ValueError(
+                "Taking a generalised product between two tensors without specifying"
+                " common modes is equivalent to taking inner product.This requires"
+                f" a.shape == b.shape.However, got shapes {a.shape} and {b.shape}"
+            )
+        return ivy.sum(ivy.multiply(a, b), out=out)
+
+    common_modes = shape_a[len(shape_a) - n_modes :]
+    if common_modes != shape_b[:n_modes]:
+        raise ValueError(
+            f"Incorrect shapes for inner product along {n_modes} common modes."
+            f"Shapes {shape_a.shape} and {shape_b.shape}"
+        )
+
+    common_size = int(ivy.prod(common_modes)) if len(common_modes) != 0 else 0
+    output_shape = shape_a[:-n_modes] + shape_b[n_modes:]
+    inner_product = ivy.dot(
+        ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
+    )
+    return ivy.reshape(inner_product, output_shape, out=out)

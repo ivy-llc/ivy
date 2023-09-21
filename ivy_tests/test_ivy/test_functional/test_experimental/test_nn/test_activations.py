@@ -6,43 +6,27 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-# logit
+# elu
 @handle_test(
-    fn_tree="functional.ivy.experimental.logit",
+    fn_tree="functional.ivy.experimental.elu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-)
-def test_logit(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# thresholded_relu
-@handle_test(
-    fn_tree="functional.ivy.experimental.thresholded_relu",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-    ),
-    threshold=st.one_of(
-        st.floats(min_value=-0.10, max_value=10.0),
+    alpha=st.one_of(
+        st.floats(min_value=0.10, max_value=1.0),
     ),
 )
-def test_thresholded_relu(
-    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
+def test_elu(
+    *,
+    dtype_and_x,
+    alpha,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -52,49 +36,21 @@ def test_thresholded_relu(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        threshold=threshold,
+        alpha=alpha,
     )
 
 
-# prelu
+# logit
 @handle_test(
-    fn_tree="prelu",
+    fn_tree="functional.ivy.experimental.logit",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(), key="prelu"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    slope=helpers.array_values(
-        dtype=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(), key="prelu"),
-    ),
 )
-def test_prelu(*, dtype_and_x, slope, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=x[0],
-        slope=slope,
-    )
-
-
-# relu6
-@handle_test(
-    fn_tree="functional.ivy.experimental.relu6",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-    ),
-)
-def test_relu6(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_logit(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -126,6 +82,60 @@ def test_logsigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         on_device=on_device,
         input=x[0],
+    )
+
+
+# prelu
+@handle_test(
+    fn_tree="prelu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="prelu"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    slope=helpers.array_values(
+        dtype=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="prelu"),
+    ),
+)
+def test_prelu(*, dtype_and_x, slope, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        slope=slope,
+    )
+
+
+# relu6
+@handle_test(
+    fn_tree="functional.ivy.experimental.relu6",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
+)
+def test_relu6(
+    *, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        complex_mode=complex_mode,
     )
 
 
@@ -177,27 +187,21 @@ def test_silu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# elu
+# thresholded_relu
 @handle_test(
-    fn_tree="functional.ivy.experimental.elu",
+    fn_tree="functional.ivy.experimental.thresholded_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    alpha=st.one_of(
-        st.floats(min_value=0.10, max_value=1.0),
+    threshold=st.one_of(
+        st.floats(min_value=-0.10, max_value=10.0),
     ),
 )
-def test_elu(
-    *,
-    dtype_and_x,
-    alpha,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
+def test_thresholded_relu(
+    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -207,5 +211,5 @@ def test_elu(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        alpha=alpha,
+        threshold=threshold,
     )

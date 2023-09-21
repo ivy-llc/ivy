@@ -8,6 +8,10 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": torch.__version__.split("+")[0]}
 
+# Registering ivy.Array as trackable submodule
+if hasattr(torch, "_dynamo"):
+    torch._dynamo.config.traceable_tensor_subclasses = (ivy.Array,)
+
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
@@ -15,6 +19,81 @@ else:
     _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
+
+
+# wrap dunder methods of native tensors to return NotImplemented to prioritize Ivy array methods.
+def dunder_wrapper(func):
+    def rep_method(*args, **kwargs):
+        for arg in args:
+            if ivy.is_ivy_array(arg):
+                return NotImplemented
+        return func(*args, **kwargs)
+
+    return rep_method
+
+
+# check for previously imported torch module
+modules_to_patch = []
+tensors_to_patch = []
+tmp_globals = dict(globals())
+for name, value in tmp_globals.items():
+    if value == "torch.Tensor":
+        tensors_to_patch.append(name)
+    try:
+        if value.__name__ == "torch":
+            modules_to_patch.append(name)
+    except AttributeError:
+        pass
+
+methods_to_patch = [
+    "__add__",
+    "__and__",
+    "__div__",
+    "__eq__",
+    "__floordiv__",
+    "__ge__",
+    "__gt__",
+    "__iadd__",
+    "__iand__",
+    "__idiv__",
+    "__ifloordiv__",
+    "__ilshift__",
+    "__imul__",
+    "__ior__",
+    "__ipow__",
+    "__irshift__",
+    "__isub__",
+    "__itruediv__",
+    "__ixor__",
+    "__le__",
+    "__lshift__",
+    "__lt__",
+    "__matmul__",
+    "__mul__",
+    "__or__",
+    "__pow__",
+    "__truediv__",
+    "__xor__",
+    "__ne__",
+    "__mod__",
+]
+
+for module in modules_to_patch:
+    for method in methods_to_patch:
+        exec(
+            module
+            + ".Tensor."
+            + method
+            + " = dunder_wrapper("
+            + module
+            + ".Tensor."
+            + method
+            + ")"
+        )
+
+for tensor in tensors_to_patch:
+    for method in methods_to_patch:
+        exec(tensor + "." + method + " = dunder_wrapper(" + tensor + "." + method + ")")
 
 NativeArray = torch.Tensor
 NativeDevice = torch.device

@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, List, Dict, Tuple, Sequence, Literal
+from typing import Union, Optional, List, Dict, Tuple, Sequence, Literal, Callable
 
 # local
 from ivy.data_classes.container.base import ContainerBase
@@ -1965,6 +1965,73 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             map_sequences=map_sequences,
         )
 
+    @staticmethod
+    def static_dot(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.Array, ivy.Container]:
+        """
+        Compute the dot product between two arrays `a` and `b` using the current
+        backend's implementation. The dot product is defined as the sum of the element-
+        wise product of the input arrays.
+
+        Parameters
+        ----------
+        a
+            First input array.
+        b
+            Second input array.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        ret
+            The dot product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = ivy.dot(a, b)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> b = ivy.array([[5, 6], [7, 8]])
+        >>> c = ivy.empty_like(a)
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[19, 22],
+            [43, 50]])
+
+        >>> a = ivy.array([[1.1, 2.3, -3.6]])
+        >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+        >>> c = ivy.zeros((1, 1))
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[-15.28]])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "dot",
+            a,
+            b,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
     def initialize_cp(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         rank: Union[Sequence[int], ivy.Container],
@@ -2032,6 +2099,355 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             non_negative=non_negative,
             mask=mask,
             svd_mask_repeats=svd_mask_repeats,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def dot(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.Array, ivy.Container]:
+        """
+        Compute the dot product between two arrays `a` and `b` using the current
+        backend's implementation. The dot product is defined as the sum of the element-
+        wise product of the input arrays.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        b
+            Second input array.
+        out
+            Optional output array. If provided, the output array to store the result.
+
+        Returns
+        -------
+        ret
+            The dot product of the input arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> result = ivy.dot(a, b)
+        >>> print(result)
+        ivy.array(32)
+
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> b = ivy.array([[5, 6], [7, 8]])
+        >>> c = ivy.empty_like(a)
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[19, 22],
+            [43, 50]])
+
+        >>> a = ivy.array([[1.1, 2.3, -3.6]])
+        >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+        >>> c = ivy.zeros((1, 1))
+        >>> ivy.dot(a, b, out=c)
+        >>> print(c)
+        ivy.array([[-15.28]])
+        """
+        return self.static_dot(
+            self,
+            b,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_parafac(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        orthogonalise: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity: Optional[Union[float, int, ivy.Container]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        linesearch: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List], ivy.Container]:
+        """
+        CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
+        rank-`rank` decomposition of `x` [1]_ such that:
+
+        ``x = [|weights; factors[0], ..., factors[-1] |]``.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            Number of components.
+        n_iter_max
+            Maximum number of iterations for the ALS algorithm.
+        init
+            Type of factor matrix initialization.
+            If a CPTensor is passed, this is directly used for initalization.
+        svd
+            function to use to compute the SVD
+        normalize_factors
+            if True, aggregate the weights of each factor in a 1D-tensor
+            of shape (rank, ), which will contain the norms of the factors
+        tol
+            (Default: 1e-6) Relative reconstruction error tolerance. The
+            algorithm is considered to have found the global minimum when the
+            reconstruction error is less than `tol`.
+        seed
+            seed to use for random number generation.
+        verbose
+            Level of verbosity
+        return_errors
+            Activate return of iteration errors
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True). Allows for missing values [2]_
+        cvg_criterion
+        Stopping criterion for ALS, works if `tol` is not None.
+        If 'rec_error',  ALS stops at current iteration if
+        ``(previous rec_error - current rec_error) < tol``.
+        If 'abs_rec_error', ALS terminates when
+            `|previous rec_error - current rec_error| < tol`.
+        sparsity
+            If `sparsity` is not None, we approximate tensor
+            as a sum of low_rank_component and sparse_component,
+            where low_rank_component = cp_to_tensor((weights, factors)).
+            `sparsity` denotes desired fraction or number of non-zero
+            elements in the sparse_component of the `tensor`.
+        fixed_modes
+            A list of modes for which the initial value is not modified.
+            The last mode cannot be fixed due to error computation.
+        svd_mask_repeats
+            If using a tensor with masked values,
+            this initializes using SVD multiple times to
+            remove the effect of these missing values on
+            the initialization.
+        linesearch
+            Whether to perform line search as proposed by Bro [3].
+
+        Returns
+        -------
+        CPTensor : (weight, factors)
+            * weights : 1D array of shape (rank, )
+
+            * all ones if normalize_factors is False (default)
+            * weights of the (normalized) factors otherwise
+
+            * factors : List of factors of the CP decomposition element
+            `i` is of shape ``(tensor.shape[i], rank)`` * sparse_component
+            ivy.array of shape x.shape. Returns only if `sparsity` is not None.
+
+        errors : list
+            A list of reconstruction errors at each iteration of the algorithms.
+
+        References
+        ----------
+        .. [1] T.G.Kolda and B.W.Bader, "Tensor Decompositions and Applications", SIAM
+            REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
+        .. [2] Tomasi, Giorgio, and Rasmus Bro. "PARAFAC and missing values."
+            Chemometrics and Intelligent Laboratory Systems 75.2 (2005): 163-180.
+        .. [3] R. Bro, "Multi-Way Analysis in the Food Industry: Models, Algorithms, and
+            Applications", PhD., University of Amsterdam, 1998
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "parafac",
+            x,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            orthogonalise=orthogonalise,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            sparsity=sparsity,
+            l2_reg=l2_reg,
+            mask=mask,
+            cvg_criterion=cvg_criterion,
+            fixed_modes=fixed_modes,
+            svd_mask_repeats=svd_mask_repeats,
+            linesearch=linesearch,
+            callback=callback,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def parafac(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        orthogonalise: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity: Optional[Union[float, int, ivy.Container]] = None,
+        l2_reg=0,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        linesearch: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.CPTensor, Tuple[ivy.CPTensor, List], ivy.Container]:
+        """
+        CANDECOMP/PARAFAC decomposition via alternating least squares (ALS) Computes a
+        rank-`rank` decomposition of `x` [1]_ such that:
+
+        ``x = [|weights; factors[0], ..., factors[-1] |]``.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            Number of components.
+        n_iter_max
+            Maximum number of iterations for the ALS algorithm.
+        init
+            Type of factor matrix initialization.
+            If a CPTensor is passed, this is directly used for initalization.
+        svd
+            function to use to compute the SVD
+        normalize_factors
+            if True, aggregate the weights of each factor in a 1D-tensor
+            of shape (rank, ), which will contain the norms of the factors
+        tol
+            (Default: 1e-6) Relative reconstruction error tolerance. The
+            algorithm is considered to have found the global minimum when the
+            reconstruction error is less than `tol`.
+        seed
+            seed to use for random number generation.
+        verbose
+            Level of verbosity
+        return_errors
+            Activate return of iteration errors
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True). Allows for missing values [2]_
+        cvg_criterion
+        Stopping criterion for ALS, works if `tol` is not None.
+        If 'rec_error',  ALS stops at current iteration if
+        ``(previous rec_error - current rec_error) < tol``.
+        If 'abs_rec_error', ALS terminates when
+            `|previous rec_error - current rec_error| < tol`.
+        sparsity
+            If `sparsity` is not None, we approximate tensor
+            as a sum of low_rank_component and sparse_component,
+            where low_rank_component = cp_to_tensor((weights, factors)).
+            `sparsity` denotes desired fraction or number of non-zero
+            elements in the sparse_component of the `tensor`.
+        fixed_modes
+            A list of modes for which the initial value is not modified.
+            The last mode cannot be fixed due to error computation.
+        svd_mask_repeats
+            If using a tensor with masked values,
+            this initializes using SVD multiple times to
+            remove the effect of these missing values on
+            the initialization.
+        linesearch
+            Whether to perform line search as proposed by Bro [3].
+
+        Returns
+        -------
+        CPTensor : (weight, factors)
+            * weights : 1D array of shape (rank, )
+
+            * all ones if normalize_factors is False (default)
+            * weights of the (normalized) factors otherwise
+
+            * factors : List of factors of the CP decomposition element
+            `i` is of shape ``(tensor.shape[i], rank)`` * sparse_component
+            ivy.array of shape x.shape. Returns only if `sparsity` is not None.
+
+        errors : list
+            A list of reconstruction errors at each iteration of the algorithms.
+
+        References
+        ----------
+        .. [1] T.G.Kolda and B.W.Bader, "Tensor Decompositions and Applications", SIAM
+            REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
+        .. [2] Tomasi, Giorgio, and Rasmus Bro. "PARAFAC and missing values."
+            Chemometrics and Intelligent Laboratory Systems 75.2 (2005): 163-180.
+        .. [3] R. Bro, "Multi-Way Analysis in the Food Industry: Models, Algorithms, and
+            Applications", PhD., University of Amsterdam, 1998
+        """
+        return self.static_parafac(
+            self,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            orthogonalise=orthogonalise,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            sparsity=sparsity,
+            l2_reg=l2_reg,
+            mask=mask,
+            cvg_criterion=cvg_criterion,
+            fixed_modes=fixed_modes,
+            svd_mask_repeats=svd_mask_repeats,
+            linesearch=linesearch,
+            callback=callback,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
