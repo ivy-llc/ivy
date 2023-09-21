@@ -864,8 +864,8 @@ def stack(
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    x_min: Union[Number, ivy.Array, ivy.NativeArray] = None,
-    x_max: Union[Number, ivy.Array, ivy.NativeArray] = None,
+    x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+    x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

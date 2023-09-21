@@ -319,8 +319,8 @@ def swapaxes(
 def clip(
     x: torch.Tensor,
     /,
-    x_min: Union[Number, torch.Tensor] = None,
-    x_max: Union[Number, torch.Tensor] = None,
+    x_min: Optional[Union[Number, torch.Tensor]] = None,
+    x_max: Optional[Union[Number, torch.Tensor]] = None,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

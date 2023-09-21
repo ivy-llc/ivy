@@ -332,8 +332,8 @@ def swapaxes(
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    x_min: Union[Number, tf.Tensor, tf.Variable] = None,
-    x_max: Union[Number, tf.Tensor, tf.Variable] = None,
+    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
