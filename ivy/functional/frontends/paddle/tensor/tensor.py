@@ -21,8 +21,8 @@ class Tensor:
 
     def __repr__(self):
         return (
-            f"ivy.frontends.paddle.Tensor(shape={self.shape}, dtype={self.dtype}, " +
-            str(self.ivy_array.__repr__()).replace("ivy.array(", "")
+            f"ivy.frontends.paddle.Tensor(shape={self.shape}, dtype={self.dtype}, "
+            + str(self.ivy_array.__repr__()).replace("ivy.array(", "")
         )
 
     # Properties #
