@@ -516,7 +516,6 @@ def digamma(
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.digamma(x)
 
-
 def erfc(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -524,7 +523,7 @@ def erfc(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.erfc(x)
-    
+
 def amin(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -538,4 +537,3 @@ def amin(
     x1 = tf.caset(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
     return tf.cast((x1 + x2 - tf.mathabs(x1 - x2)) / 2, dtype)
-
