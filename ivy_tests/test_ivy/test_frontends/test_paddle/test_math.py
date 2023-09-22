@@ -2004,8 +2004,8 @@ def test_paddle_rsqrt(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    scale=st.integers(min_value=1, max_value=100),
-    bias=st.integers(min_value=1, max_value=100),
+    scale=st.floats(min_value=1, max_value=100),
+    bias=st.floats(min_value=1, max_value=100),
     bias_after_scale=st.booleans(),
 )
 def test_paddle_scale(
