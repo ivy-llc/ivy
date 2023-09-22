@@ -6096,6 +6096,67 @@ def test_torch_tensor_diagonal(
     )
 
 
+# diff
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="diff",
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        min_value=-1e09,
+        max_value=1e09,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_torch_tensor_diff(
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "n": n,
+            "dim": axis,
+            "prepend": prepend[0],
+            "append": append[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # dim
 @handle_frontend_method(
     class_tree=CLASS_TREE,
