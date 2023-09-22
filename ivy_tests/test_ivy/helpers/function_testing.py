@@ -734,14 +734,7 @@ def test_frontend_function(
                 **kwargs,
             )
         else:
-            args_for_test = copy.deepcopy(args)
-            kwargs_for_test = copy.deepcopy(kwargs)
-
-        # used in value testing to compute the ground truth result.
-        # without these, inplace functions would be called on input
-        # arrays or containers twice, leading to test failing.
-        copy_args_for_gt_test = copy.deepcopy(args_for_test)
-        copy_kwargs_for_gt_test = copy.deepcopy(kwargs_for_test)
+            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
 
         # Make copy for arguments for functions that might use
         # inplace update by default
