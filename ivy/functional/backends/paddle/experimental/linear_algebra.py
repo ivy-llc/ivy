@@ -94,13 +94,10 @@ def solve_triangular(
     x2: paddle.Tensor,
     /,
     *,
-    upper: bool,
-    unit_diagonal: bool,
+    upper: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.linalg.triangular_solve(
-        x1, x2, upper=upper, transpose=False, unitriangular=unit_diagonal
-    )
+    return paddle.linalg.triangular_solve(x1, x2, upper=upper, transpose=False)
 
 
 def cond(

@@ -154,8 +154,7 @@ def solve_triangular(
     x2: np.ndarray,
     /,
     *,
-    upper: bool,
-    unit_diagonal: bool,
+    upper: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # NumPy does not expose an API for `trsm`

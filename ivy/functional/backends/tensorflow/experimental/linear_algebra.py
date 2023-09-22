@@ -124,13 +124,15 @@ def adjoint(
     return tf.linalg.adjoint(x)
 
 
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int", "float16", "bfloat16", "float64")}, backend_version
+)
 def solve_triangular(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    upper: bool,
-    unit_diagonal: bool,
+    upper: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.triangular_solve(x1, x2, lower=not upper, adjoint=False)

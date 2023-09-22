@@ -291,6 +291,43 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
 
 
+# solve_triangular
+@st.composite
+def _generate_solve_triangular_args(draw):
+    shape = draw(
+        st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=5)
+    )
+    shape_b = list(shape)
+    shape_a = list(shape)
+    shape_a[-1] = shape_a[-2]  # Make square
+
+    dtype_a, a = draw(
+        helpers.dtype_and_values(
+            shape=shape_a,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    dtype_b, b = draw(
+        helpers.dtype_and_values(
+            shape=shape_b,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    dtype_a = dtype_a[0]
+    dtype_b = dtype_b[0]
+    a = a[0]
+    b = b[0]
+    upper = draw(st.booleans())
+
+    return upper, [dtype_a, dtype_b], [a, b]
+
+
 @st.composite
 def _get_dtype_value1_value2_cov(
     draw,
@@ -1499,6 +1536,28 @@ def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
     np.allclose(core1, core2)
     for factor1, factor2 in zip(factors1, factors2):
         np.allclose(factor1, factor2)
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.solve_triangular",
+    ground_truth_backend="torch",
+    data=_generate_solve_triangular_args(),
+    test_instance_method=st.just(False),
+)
+def test_solve_triangular(*, data, test_flags, backend_fw, fn_name, on_device):
+    upper, dtype, x = data
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-3,
+        atol_=1e-3,
+        x1=x[0],
+        x2=x[1],
+        upper=upper,
+    )
 
 
 @handle_test(

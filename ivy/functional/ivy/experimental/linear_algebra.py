@@ -469,6 +469,7 @@ def adjoint(
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def solve_triangular(
@@ -477,7 +478,6 @@ def solve_triangular(
     /,
     *,
     upper: bool = True,
-    unit_diagonal: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -491,8 +491,6 @@ def solve_triangular(
         Right-hand side array B of shape (..., N, K).
     upper
         Whether A is upper triangular.
-    unit_diagonal
-        Whether the diagonal elements of A are guaranteed to be all equal to `1`.
     out
         Optional output array. If provided, the output array to store the result.
 
@@ -503,32 +501,24 @@ def solve_triangular(
 
     Examples
     --------
-    With :class:`ivy.Array` inputs: ##### TODO
+    With :class:`ivy.Array` inputs:
 
-    >>> a = ivy.array([1, 2, 3])
-    >>> b = ivy.array([4, 5, 6])
-    >>> result = ivy.dot(a, b)
-    >>> print(result)
-    ivy.array(32)
-
-    >>> a = ivy.array([[1, 2], [3, 4]])
-    >>> b = ivy.array([[5, 6], [7, 8]])
-    >>> c = ivy.empty_like(a)
-    >>> ivy.dot(a, b, out=c)
-    >>> print(c)
-    ivy.array([[19, 22],
-           [43, 50]])
-
-    >>> a = ivy.array([[1.1, 2.3, -3.6]])
-    >>> b = ivy.array([[-4.8], [5.2], [6.1]])
-    >>> c = ivy.zeros((1, 1))
-    >>> ivy.dot(a, b, out=c)
-    >>> print(c)
-    ivy.array([[-15.28]])
+    >>> a = ivy.array([[3, 0, 0, 0],
+                       [2, 1, 0, 0],
+                       [1, 0, 1, 0],
+                       [1, 1, 1, 1]], dtype=ivy.float32)
+    >>> b = ivy.array([[4],
+                       [2],
+                       [4],
+                       [2]], dtype=ivy.float32)
+    >>> x = ivy.solve_triangular(a, b, upper=False)
+    >>> print(ivy.matmul(a, x))
+    ivy.array([[4.],
+               [2.],
+               [4.],
+               [2.]])
     """
-    return current_backend(x1, x2).solve_triangular(
-        x1, x2, upper=upper, unit_diagonal=unit_diagonal, out=out
-    )
+    return current_backend(x1, x2).solve_triangular(x1, x2, upper=upper, out=out)
 
 
 @handle_exceptions

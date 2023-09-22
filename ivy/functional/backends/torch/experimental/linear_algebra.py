@@ -160,13 +160,10 @@ def solve_triangular(
     x2: torch.Tensor,
     /,
     *,
-    upper: bool,
-    unit_diagonal: bool,
+    upper: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.solve_triangular(
-        x1, x2, upper=upper, left=True, unitriangular=unit_diagonal, out=out
-    )
+    return torch.linalg.solve_triangular(x1, x2, upper=upper, left=True, out=out)
 
 
 solve_triangular.support_native_out = True
