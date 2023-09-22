@@ -212,12 +212,7 @@ def cross_entropy(
     reduction="mean",
     label_smoothing=0.0,
 ):
-    input = ivy.softmax(input)
-    ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
-    if weight is not None:
-        ret = ivy.multiply(weight, ret)
-    ret = _apply_reduction(reduction, size_average, reduce, ret)
-    return ret
+    return ivy.cross_entropy(target, input, epsilon=label_smoothing)
 
 
 @to_ivy_arrays_and_back
@@ -284,19 +279,7 @@ def huber_loss(
     reduction="mean",
     delta=1.0,
 ):
-    delta = ivy.array(delta)
-    _diff_abs = ivy.abs(ivy.subtract(input, target))
-
-    loss = ivy.where(
-        _diff_abs < delta,  # If |xᵢ - yᵢ| < δ
-        0.5 * _diff_abs**2,  # lᵢ = 0.5(xᵢ - yᵢ)²
-        delta * (_diff_abs - 0.5 * delta),
-    )  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
-
-    reduction = _get_reduction(reduction)
-    ret = reduction(loss)
-
-    return ivy.astype(ret, input.dtype)
+    return ivy.huber_loss(target, input, delta=delta, reduction=reduction)
 
 
 @to_ivy_arrays_and_back
