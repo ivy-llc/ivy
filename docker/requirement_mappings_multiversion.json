@@ -29,6 +29,6 @@
     "mxnet"
   ],
   "torch": [
-    "torch-scatter"
+    "torch-scatter", "torchvision"
   ]
 }
