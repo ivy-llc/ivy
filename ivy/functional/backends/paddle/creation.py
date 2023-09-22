@@ -13,13 +13,13 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
 )
 from ivy.functional.ivy.creation import (
-    asarray_to_native_arrays_and_back,
-    asarray_infer_device,
-    asarray_handle_nestable,
-    asarray_infer_dtype,
+    _asarray_to_native_arrays_and_back,
+    _asarray_infer_device,
+    _asarray_handle_nestable,
+    _asarray_infer_dtype,
     NestedSequence,
     SupportsBufferProtocol,
-    asarray_inputs_to_native_shapes,
+    _asarray_inputs_to_native_shapes,
     _remove_np_bfloat16,
 )
 from . import backend_version
@@ -64,11 +64,11 @@ def arange(
         return paddle.arange(start, stop, step).cast(dtype)
 
 
-@asarray_to_native_arrays_and_back
-@asarray_infer_device
-@asarray_handle_nestable
-@asarray_inputs_to_native_shapes
-@asarray_infer_dtype
+@_asarray_to_native_arrays_and_back
+@_asarray_infer_device
+@_asarray_handle_nestable
+@_asarray_inputs_to_native_shapes
+@_asarray_infer_dtype
 def asarray(
     obj: Union[
         paddle.Tensor,
@@ -104,7 +104,7 @@ def asarray(
         return paddle_backend.squeeze(
             paddle.to_tensor(obj, dtype=dtype, place=device), axis=0
         )
-    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     return paddle.to_tensor(obj, dtype=dtype, place=device)
 
 
@@ -193,9 +193,12 @@ def eye(
         return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
+    return paddle.utils.dlpack.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    x_d = paddle.utils.dlpack.to_dlpack(x)
-    return paddle.utils.dlpack.from_dlpack(x_d)
+    return paddle.utils.dlpack.from_dlpack(x)
 
 
 def full(

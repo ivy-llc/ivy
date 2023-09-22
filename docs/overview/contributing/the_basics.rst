@@ -70,7 +70,7 @@ d. Start working on the task, and open a PR as soon as you have a full or partia
 
    :code:`Close #Issue_number`
 
-   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the 
+   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the
    description of the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
    Also, remember to make the PR name well described and if there are some details that can support your changes add them to the description of the PR.
 
@@ -339,16 +339,16 @@ With Docker
 
 #. With PyCharm (With or without docker):
     1. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
-        
+
     .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
         :width: 420
-        
+
     2. Testing can be done for the entire project, individual submodules, individual files, and individual tests.
        This can be done by selecting the appropriate configuration from the top pane in PyCharm.
-        
+
     .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
         :width: 420
-        
+
 
 #. Through the command line (With docker):
     1. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
@@ -356,29 +356,29 @@ With Docker
     .. code-block:: none
 
         docker exec <container-name> rm -rf ivy
-        docker cp ivy <container-name>:/ 
+        docker cp ivy <container-name>:/
 
     2. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
 
     .. code-block:: none
 
-        docker exec -it ivy_container bash 
+        docker exec -it ivy_container bash
         cd ivy
 
     3. Run the test using the pytest command.
 
         1. Ivy Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             3. For all tests:
@@ -389,28 +389,28 @@ With Docker
 
         2.  Array API Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
-            
+
             3. For all tests:
 
             .. code-block:: none
 
                 pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
-        
+
         3. For the entire project:
 
         .. code-block:: none
-            
+
             pytest ivy_tests/ --no-header --no-summary -q
 
 #. Through the command line (Without docker):
@@ -434,16 +434,16 @@ With Docker
 
         1. Ivy Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             3. For all tests:
@@ -452,34 +452,34 @@ With Docker
 
                 python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
-        2.  Array API Tests 
+        2.  Array API Tests
 
-            1. For a single function: 
+            1. For a single function:
 
                 .. code-block:: none
-                
+
                     python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
-            
+
             3. For all tests:
 
             .. code-block:: none
 
                 python -m pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
-        
+
         3. For the entire project
 
         .. code-block:: none
-            
+
             python -m pytest ivy_tests/ --no-header --no-summary -q
 
 #. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
-    1. :code:`device`: 
+    1. :code:`device`:
         1. This flag enables the setting of the device where the tests would be run.
         2. Possible values being :code:`cpu` and :code:`gpu`.
         3. Default value is :code:`cpu`
@@ -541,7 +541,7 @@ with PyCharm
            :align: center
 
     3. Stepping through the code:
-        1. Step over: 
+        1. Step over:
             Steps over the current line of code and takes you to the next line even if the highlighted line has method calls in it.
 
             1. Click the Step Over button or press :code:`F8`
@@ -567,7 +567,7 @@ with PyCharm
 
                 2. Click the desired method.
 
-    4. Python Console: 
+    4. Python Console:
         1. Click the Console option on Debug Tool Window:
             This currently stores variables and their values upto which the code has been executed.
             You can print outputs and debug the code further on.

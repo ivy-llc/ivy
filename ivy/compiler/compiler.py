@@ -14,7 +14,7 @@ class LazyGraph:
     pass
 
 
-def trace(
+def compile(
     *objs: Callable,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -31,17 +31,15 @@ def trace(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    if python_version[1] == "8":
-        from ._compiler_38 import trace as _trace
-    else:
-        from ._compiler import trace as _trace
+    from ._compiler import compile as _compile
+
     """
-    Take `fn` and decomposes it into a more efficient composition of backend operations.
+    Take `fn` and compiles it into a more efficient composition of backend operations.
 
     Parameters
     ----------
     objs
-        callable(s) to trace and create a graph of
+        callable(s) to compile and create a graph of
     stateful
         list of instances to be considered stateful during the graph compilation
     arg_stateful_idxs
@@ -59,7 +57,7 @@ def trace(
     static_argnames
         for jax's jit compilation
     graph_caching
-        whether to cache the traced graph
+        whether to cache the compiled graph
     args
         positional arguments for `obj`
     kwargs
@@ -67,7 +65,7 @@ def trace(
 
     Returns
     -------
-    the traced `Graph` object.
+    the compiled `Graph` object.
 
     Examples
     --------
@@ -85,9 +83,9 @@ def trace(
     ...     j = ivy.floor(b)
     ...     k = ivy.ceil(c)
     ...     return i, j, k
-    >>> graph = ivy.trace(fn, args=(x,))
+    >>> graph = ivy.compile(fn, args=(x,))
 
-    Notice how the time taken to execute the traced function is lower than
+    Notice how the time taken to execute the compiled function is lower than
     the original function. A typical run:
 
     >>> start = time.time()
@@ -99,7 +97,7 @@ def trace(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-    return _trace(
+    return _compile(
         *objs,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,
@@ -128,10 +126,8 @@ def transpile(
     params_v=None,
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
-    if python_version[1] == "8":
-        from ._compiler_38 import transpile as _transpile
-    else:
-        from ._compiler import transpile as _transpile
+    from ._compiler import transpile as _transpile
+
     """
     Transpile Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
@@ -178,10 +174,8 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
-    if python_version[1] == "8":
-        from ._compiler_38 import unify as _unify
-    else:
-        from ._compiler import unify as _unify
+    from ._compiler import unify as _unify
+
     return _unify(
         *objs,
         source=source,
