@@ -968,39 +968,51 @@ def stft(
         window = np.hanning(n_fft)
     else:
         window = np.asarray(window)
-    
+
     if center:
         pad = max(0, (n_fft - hop_length) // 2)
         signal = np.pad(signal, [(0, 0)] * (np.ndim(signal) - 1) + [(pad, pad)], mode=pad_mode)
-    
+
     num_frames = (signal.shape[-1] - n_fft) // hop_length + 1
-    stft_result = np.empty(
-        signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=np.complex128
-    )
     
+    if return_complex:
+        input_dtype = np.result_type(signal, np.complex64)
+    else:
+        input_dtype = np.result_type(signal)
+
+    if input_dtype == np.float16 or input_dtype == np.float32:
+        output_dtype = np.complex64
+    else:
+        output_dtype = np.complex128
+    
+    stft_result = np.empty(
+        signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=output_dtype
+    )
+
     for i in range(num_frames):
         start = i * hop_length
         end = start + n_fft
         frame = signal[..., start:end]
-        
+
         if win_length is not None:
-            win_len = min(win_length, frame.shape[-1])
+            win_len = min(win_length, frame.shape[axis])
             frame = frame * window[:win_len]
         else:
             frame = frame * window
+
+        stft_frame = np.fft.fft(frame, n=n_fft, axis=axis)
         
-        stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
         if onesided:
             stft_frame = stft_frame[..., : n_fft // 2 + 1]
-        
+
         if detrend:
             detrend_func = np.poly1d if isinstance(detrend, bool) else detrend
             detrended = detrend_func(np.arange(len(frame)))(frame)
-            stft_frame = np.fft.fft(detrended, n=n_fft, axis=-1)
+            stft_frame = np.fft.fft(detrended, n=n_fft, axis=axis)
             if onesided:
-                stft_frame = stft_frame[..., : n_fft // 2 + 1]
-        
-        stft_result[..., i, : n_fft // 2 + 1] = stft_frame
+                stft_frame = stft_frame[..., : n_fft // 2 + 1]        
+
+        stft_result[..., i, :] = stft_frame
     
     return stft_result
         
