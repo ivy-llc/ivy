@@ -5,7 +5,6 @@ import os
 import jax
 from typing import Union, Optional
 import jaxlib.xla_extension
-import inspect
 
 # local
 import ivy
@@ -104,8 +103,6 @@ def handle_soft_device_variable(*args, fn, **kwargs):
     args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
         *args, **kwargs
     )
-    if "device" in inspect.signature(fn).parameters:
-        kwargs["device"] = device_shifting_dev
     with jax.default_device(device_shifting_dev):
         return fn(*args, **kwargs)
 
