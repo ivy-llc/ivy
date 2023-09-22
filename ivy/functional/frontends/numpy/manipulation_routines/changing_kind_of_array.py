@@ -9,3 +9,11 @@ def asmatrix(data, dtype=None):
 
 def asscalar(a):
     return a.item()
+
+
+def asanyarray(a,
+            dtype=None,
+            order=None,
+            *,
+            like=None):
+    return ivy.asarray(a, dtype=dtype)
