@@ -592,8 +592,7 @@ def amin(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-        return ret
+        return ivy.inplace_update(out)
         return np.amin(x1, x2, out=out)
 
 
