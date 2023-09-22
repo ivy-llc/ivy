@@ -114,6 +114,13 @@ def matrix_power(x, n, name=None):
     return ivy.matrix_power(x, n)
 
 
+# mv
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def mv(x, vec, name=None):
+    return ivy.dot(x, vec)
+
+
 # norm
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
