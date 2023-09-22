@@ -1119,7 +1119,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
     
     
     def stft(
-        self: ivy.Array
+        self: ivy.Array,
         n_fft: Union[int, Tuple[int]],
         hop_length: int,
         /,
