@@ -1606,9 +1606,8 @@ def test_torch_where(
 
 @handle_frontend_test(
     fn_tree="torch.column_stack",
-    dtype_value=helpers.dtype_and_values(
+    dtype_value = helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     ),
 )
 def test_torch_columnstack(
