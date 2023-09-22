@@ -51,19 +51,19 @@ def fftshift(x, axes=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def hfft(x, n=None, axis=-1, norm="backward", name=None):
+def hfft(x, n=None, axes=-1, norm="backward", name=None):
     """Compute the FFT of a signal that has Hermitian symmetry, resulting in a real
     spectrum."""
     # Determine the input shape and axis length
     input_shape = x.shape
-    input_len = input_shape[axis]
+    input_len = input_shape[axes]
 
     # Calculate n if not provided
     if n is None:
         n = 2 * (input_len - 1)
 
     # Perform the FFT along the specified axis
-    result = ivy.fft(x, axis, n=n, norm=norm)
+    result = ivy.fft(x, axes, n=n, norm=norm)
 
     return ivy.real(result)
 
@@ -146,7 +146,48 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128")},
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def irfft2(x, s=None, axes=(-2, -1), norm="backward"):
+    # Handle values if None
+    if s is None:
+        s = x.shape
+    if axes is None:
+        axes = (-2, -1)
+
+    # Calculate the normalization factor 'n' based on the shape 's'
+    n = ivy.prod(ivy.array(s))
+
+    result = ivy.ifftn(x, dim=axes[0], norm=norm)
+
+    # Normalize the result based on the 'norm' parameter
+    if norm == "backward":
+        result /= n
+    elif norm == "forward":
+        result *= n
+    elif norm == "ortho":
+        result /= ivy.sqrt(n)
+    return result
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "complex64",
+            "complex128"
+        )
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back

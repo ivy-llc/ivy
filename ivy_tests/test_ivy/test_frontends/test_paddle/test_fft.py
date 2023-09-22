@@ -6,6 +6,11 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# Custom Hypothesis strategy for generating sequences of 2 integers
+def sequence_of_two_integers():
+    return st.lists(st.integers(), min_size=2, max_size=2)
+
+
 @handle_frontend_test(
     fn_tree="paddle.fft.fft",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -260,9 +265,60 @@ def test_paddle_irfft(
         n=n,
         axis=axis,
         norm=norm,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.fft.irfft2",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=2,
         valid_axis=True,
         force_int_axis=True,
-    )
+    ),
+)
+@given(st.data())
+def test_paddle_irfft2(
+    data,
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axes = dtype_x_axis
+    for norm in ["backward", "forward", "ortho"]:
+        s_values = data.draw(s_strategy)
+        axes_values = data.draw(axes_strategy)
+
+        # Ensure s and axes are sequences of 2 integers
+        assert len(s_values) == 2
+        assert len(axes_values) == 2
+
+        # Convert s and axes to tuples as needed
+        s = tuple(s_values)
+        axes = tuple(axes_values)
+
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=True,
+            x=x[0],
+            s=s,
+            axes=axes,
+            norm=norm,
+        )
+
+# Use the custom strategy for s and axes
+axes_strategy = sequence_of_two_integers()
+s_strategy = sequence_of_two_integers()
 
 
 @handle_frontend_test(
