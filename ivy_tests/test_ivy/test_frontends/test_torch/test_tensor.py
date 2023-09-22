@@ -1570,7 +1570,6 @@ def test_torch_index_fill(
         on_device=on_device,
     )
 
-
 # nansum
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1683,7 +1682,6 @@ def test_torch_instance_scatter_(
         method_flags=method_flags,
         on_device=on_device,
     )
-
 
 # scatter_add
 @handle_frontend_method(
