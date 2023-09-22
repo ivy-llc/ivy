@@ -133,8 +133,10 @@ def to_numpy(
         x = x.resolve_neg().resolve_conj()
         if copy:
             # we don't use inbuilt numpy() because it blocks for
-            # bfloat16, which we are supporting here by importin
+            # bfloat16, which we are supporting here by importing
             # ml_dtypes
+            # TODO: use torch's numpy() method once this feature is accepted
+            # https://github.com/pytorch/pytorch/issues/109873
             return np.array(x.tolist(), dtype=ivy.as_ivy_dtype(x.dtype))
         else:
             raise ivy.utils.exceptions.IvyException(
