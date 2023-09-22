@@ -1577,7 +1577,7 @@ def test_torch_index_fill(
     init_tree="torch.tensor",
     method_name="nansum",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-1e04,
         max_value=1e04,
     ),
