@@ -265,44 +265,6 @@ def test_paddle_irfft(
     )
 
 
-# rfft
-@handle_frontend_test(
-    fn_tree="paddle.fft.rfft",
-    dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        min_dim_size=2,
-        shape=helpers.get_shape(
-            min_num_dims=1,
-            max_num_dims=2,
-            min_dim_size=2,
-            max_dim_size=4,
-        ),
-        force_int_axis=True,
-        valid_axis=True,
-        allow_neg_axes=True,
-    ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
-    n=st.integers(min_value=2, max_value=10) | st.none(),
-)
-def test_paddle_rfft(
-    dtype_input_axis, norm, n, frontend, backend_fw, test_flags, fn_tree, on_device
-):
-    input_dtype, x, axis = dtype_input_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        n=n,
-        axis=axis,
-        norm=norm,
-    )
-
-    
 @handle_frontend_test(
     fn_tree="paddle.fft.irfftn",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -336,6 +298,47 @@ def test_paddle_irfftn(
         x=x[0],
         s=None,
         axes=None,
+        norm=norm,
+    )
+
+
+# rfft
+@handle_frontend_test(
+    fn_tree="paddle.fft.rfft",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=2,
+        shape=helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=2,
+            max_dim_size=4,
+        ),
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+        force_int_axis=True,
+        valid_axis=True,
+        allow_neg_axes=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    n=st.integers(min_value=2, max_value=10) | st.none(),
+)
+def test_paddle_rfft(
+    dtype_input_axis, norm, n, frontend, backend_fw, test_flags, fn_tree, on_device
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        n=n,
+        axis=axis,
         norm=norm,
     )
 

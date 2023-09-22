@@ -145,13 +145,6 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     return time_domain
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def rfft(x, n=None, axis=-1, norm="backward", name=None):
-    ret = ivy.dft(x, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
-    return ivy.astype(ret, ret.dtype)
-
-  
 @with_supported_dtypes(
     {"2.5.1 and below": ("complex64", "complex128")},
     "paddle",
@@ -202,6 +195,12 @@ def irfftn(x, s=None, axes=None, norm="backward", name=None):
 
     result_t = ivy.astype(real_result, output_dtype)
     return result_t
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def rfft(x, n=None, axis=-1, norm="backward", name=None):
+    return ivy.dft(x, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
 
 
 @to_ivy_arrays_and_back
