@@ -537,5 +537,5 @@ def amin(
      dtype = x1.dtype
      x1 = tf.caset(x1, tf.float64)
      x2 = tf.cast(x2, tf.float64)
-     return tf.cast((x1 + x2 - tf.mathabs(x1-x2)) / 2, dtype)
+    return tf.cast((x1 + x2 - tf.mathabs(x1-x2)) / 2, dtype)
 
