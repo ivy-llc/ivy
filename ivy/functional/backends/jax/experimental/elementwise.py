@@ -478,9 +478,7 @@ def amin(
        x1: JaxArray,
        x2: JaxArray,
        /, 
-       *
-        ,
-       
+       *,
        out: Optional[JaxArray] = None,
 )  -> JaxArray:
       return jnp.amin(x1,x2)
