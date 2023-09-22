@@ -7,24 +7,7 @@ import multiprocessing as mp
 
 # for enabling numpy's bfloat16 behavior
 from packaging import version
-
-mod_frontend = {
-    "tensorflow": None,
-    "numpy": None,
-    "jax": None,
-    "torch": None,
-    "mindspore": None,
-    "scipy": None,
-    "paddle": None,
-}  # multiversion
-mod_backend = {
-    "numpy": None,
-    "jax": None,
-    "tensorflow": None,
-    "torch": None,
-    "paddle": None,
-    "mxnet": None,
-}  # multiversion
+from .helpers.globals import mod_backend, mod_frontend
 
 multiprocessing_flag = False  # multiversion
 
