@@ -870,6 +870,11 @@ class Tensor:
     def nanmean(self, dim=None, keepdim=False):
         return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    @numpy_to_torch_style_args
+    def nansum(self, dim=None, keepdim=False):
+        return torch_frontend.nansum(self, dim=dim, keepdim=keepdim)
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
