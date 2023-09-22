@@ -14,7 +14,7 @@ class LazyGraph:
     pass
 
 
-def compile(
+def trace(
     *objs: Callable,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -31,7 +31,7 @@ def compile(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    from ._compiler import compile as _compile
+    from ._compiler import compile as _trace
 
     """
     Take `fn` and compiles it into a more efficient composition of backend operations.
@@ -97,7 +97,7 @@ def compile(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-    return _compile(
+    return _trace(
         *objs,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,
