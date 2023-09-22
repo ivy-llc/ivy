@@ -769,12 +769,5 @@ def amin(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x1.dtype in [
-        paddle.float32,
-        paddle.float64,
-        paddle.int32,
-        paddle.int64,
-    ]:
-       
-return paddle.amin(x1, x2).astype(ret_dtype)
+    return paddle.amin(x1, x2).astype(ret_dtype)
 
