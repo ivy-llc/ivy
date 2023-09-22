@@ -459,6 +459,43 @@ def test_paddle_interpolate(
 
 
 @handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.upsample",
+    dtype_x_mode=_interp_args(),
+)
+def test_paddle_upsample(
+    dtype_x_mode,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_x_mode
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+@handle_frontend_test(
     fn_tree="paddle.nn.functional.common.zeropad2d",
     d_type_and_x_paddings=_zero2pad(),
     dataformat=st.sampled_from(["NCHW", "NHWC"]),

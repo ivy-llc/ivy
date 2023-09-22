@@ -179,6 +179,21 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def upsample(
+    x,
+    size=None,
+    scale_factor=None,
+    mode="nearest",
+    align_corners=False,
+    align_mode=0,
+    data_format="NCHW",
+    name=None,
+):
+    return interpolate(x, size, scale_factor, mode, align_corners)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def zeropad2d(x, padding, data_format="NCHW", name=None):
     if ivy.is_array(padding):
         padding = padding.to_list()
