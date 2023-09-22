@@ -1557,7 +1557,8 @@ def bitwise_xor(
 
     >>> x1 = ivy.array([1, 2, 3])
     >>> x2 = ivy.array([3, 5, 7])
-    >>> y = ivy.bitwise_xor(x1, x2)
+    >>> y = ivy.zeros(3, dtype=ivy.int32)
+    >>> ivy.bitwise_xor(x1, x2, out=y)
     >>> print(y)
     ivy.array([2, 7, 4])
 
