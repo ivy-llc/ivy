@@ -104,7 +104,7 @@ def asarray(
         return paddle_backend.squeeze(
             paddle.to_tensor(obj, dtype=dtype, place=device), axis=0
         )
-    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     return paddle.to_tensor(obj, dtype=dtype, place=device)
 
 
@@ -193,9 +193,12 @@ def eye(
         return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
+def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
+    return paddle.utils.dlpack.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    x_d = paddle.utils.dlpack.to_dlpack(x)
-    return paddle.utils.dlpack.from_dlpack(x_d)
+    return paddle.utils.dlpack.from_dlpack(x)
 
 
 def full(
