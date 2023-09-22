@@ -89,6 +89,20 @@ def adjoint(
     return paddle.moveaxis(x, -2, -1).conj()
 
 
+def solve_triangular(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    upper: bool,
+    unit_diagonal: bool,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.linalg.triangular_solve(
+        x1, x2, upper=upper, transpose=False, unitriangular=unit_diagonal
+    )
+
+
 def cond(
     x: paddle.Tensor,
     /,

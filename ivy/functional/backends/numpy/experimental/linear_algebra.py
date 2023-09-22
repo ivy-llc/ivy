@@ -149,6 +149,19 @@ def adjoint(
     return np.conjugate(np.transpose(x, axes=axes))
 
 
+def solve_triangular(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    upper: bool,
+    unit_diagonal: bool,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    # NumPy does not expose an API for `trsm`
+    raise IvyNotImplementedException()
+
+
 def multi_dot(
     x: Sequence[np.ndarray],
     /,

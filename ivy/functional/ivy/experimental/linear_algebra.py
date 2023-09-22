@@ -477,25 +477,20 @@ def solve_triangular(
     /,
     *,
     upper: bool = True,
-    left: bool = True,
     unit_diagonal: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the unique solution to the system of linear equations AX = B if `left` is
-    `True`, or XA = B if `left` is `False`.
+    Return the unique solution to the triangular system of linear equations AX = B.
 
     Parameters
     ----------
     x1
         Triangular coefficient array A of shape (..., N, N), with no zeros on diagonal.
     x2
-        Right-hand side array B of shape (..., N, K) if `left` is `True`, or
-        (..., K, N) if `left` if `False`.
+        Right-hand side array B of shape (..., N, K).
     upper
-        Whether A is an upper triangular matrix.
-    left
-        Whether we are solving for AX = B.
+        Whether A is upper triangular.
     unit_diagonal
         Whether the diagonal elements of A are guaranteed to be all equal to `1`.
     out
@@ -532,7 +527,7 @@ def solve_triangular(
     ivy.array([[-15.28]])
     """
     return current_backend(x1, x2).solve_triangular(
-        x1, x2, upper=upper, left=left, unit_diagonal=unit_diagonal, out=out
+        x1, x2, upper=upper, unit_diagonal=unit_diagonal, out=out
     )
 
 

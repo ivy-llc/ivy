@@ -82,6 +82,21 @@ def adjoint(
     raise IvyNotImplementedException()
 
 
+def solve_triangular(
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    upper: bool,
+    unit_diagonal: bool,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    return mx.nd.linalg.trsm(x1, x2, lower=not upper)
+
+
+solve_triangular.support_native_out = False
+
+
 def multi_dot(
     x: Sequence[Union[(None, mx.ndarray.NDArray)]],
     /,
