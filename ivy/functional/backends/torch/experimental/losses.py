@@ -161,3 +161,42 @@ def poisson_nll_loss(
     return torch.nn.functional.poisson_nll_loss(
         input, target, log_input=log_input, full=full, eps=eps, reduction=reduction
     )
+
+
+@with_unsupported_dtypes(
+
+  {
+    "2.0.1 and below": (
+      "float32",
+      "double64",
+      "int32",
+      "int64",
+    )
+
+  },
+
+  backend_version,
+
+)
+def ctc_loss(
+    input_lengths: Tensor,
+    targets: Tensor,
+    /,
+    *,
+    log_probs: Tensor,
+    target_lengths: Tensor,
+    blank: int = 0,
+    reduction: str = "mean",
+    zero_infinity: bool = False
+    
+    )-> Tensor:
+        if has_torch_function_variadic(log_probs, targets, input_lengths, target_lengths):
+            return handle_torch_function(
+                ctc_loss,
+                (log_probs, targets, input_lengths, target_lengths),
+                log_probs, targets, input_lengths, target_lengths,
+                blank=blank, reduction=reduction, zero_infinity=zero_infinity
+            )
+        return torch.ctc_loss(
+            log_probs, targets, input_lengths, targets_lengths, blank, _Reduction.get_enum(reduction), zero_infinity
+        ) 
