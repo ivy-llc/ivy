@@ -404,4 +404,3 @@ def amin(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.amin(x1, x2, out=out)
-
