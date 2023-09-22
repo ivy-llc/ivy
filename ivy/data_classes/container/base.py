@@ -1545,7 +1545,7 @@ class ContainerBase(dict, abc.ABC):
             v for k, v in self.cont_map(lambda x, kc: x.dtype).cont_to_iterator() if v
         ]
         unique_dtypes = list(set(sub_dtypes))
-        return sub_dtypes[0] if len(unique_dtypes) == 1 else unique_dtypes
+        return sub_dtypes[0] if len(unique_dtypes) == 1 else None
 
     def _cont_get_dev(self, as_native=False):
         sub_devs = [
@@ -4269,7 +4269,11 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_dtype(self):
-        """The dtype of the arrays in the container."""
+        """
+        The dtype of the arrays in the container.
+
+        None is returned if the dtypes are not consistent.
+        """
         return self._cont_get_dtype()
 
     @property
