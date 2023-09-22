@@ -820,3 +820,22 @@ def zero_fraction(value, name="zero_fraction"):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
+
+@to_ivy_arrays_and_back
+def approx_max_k(input_tensor, k, name=None):
+    """
+    Returns the approximate top k values from the input tensor.
+    This function uses a heuristic based on the mean and standard deviation of the tensor values.
+    """
+    # Calculate the mean and standard deviation of the input tensor
+    mean_val = reduce_mean(input_tensor)
+    std_val = reduce_std(input_tensor)
+
+    # Set a threshold based on the mean and std deviation
+    threshold = mean_val + std_val
+
+    # Filter the values in the tensor that are greater than the threshold
+    high_values = ivy.where(input_tensor > threshold, input_tensor, 0.0)
+
+    # Now, fetch the top k values from these filtered high values
+    return top_k(high_values, k)
