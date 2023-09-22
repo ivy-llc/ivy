@@ -3,16 +3,17 @@ title: >-
   Ivy: Templated deep learning for inter-framework
   portability
 message: >-
-  If you are using Ivy, we would really appreciate it if you cite it in your work!
-type: "Journal article/paper"
+  If you are using Ivy, we would really appreciate it if you
+  cite it in your work!
+type: 'Journal article/paper'
 authors:
-  - given-names: 'Daniel '
+  - given-names: Daniel
     family-names: Lenton
   - given-names: Fabio
     family-names: Pardo
   - given-names: Fabian
     family-names: Falck
-  - given-names: 'Stephen '
+  - given-names: Stephen
     family-names: James
   - given-names: Ronald
     family-names: Clark
