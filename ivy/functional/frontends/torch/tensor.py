@@ -1702,6 +1702,21 @@ class Tensor:
         self.ivy_array = self.floor().ivy_array
         return self
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "complex",
+                "float64",
+                "int8",
+                "int64",
+            )
+        },
+        "torch",
+    )
+    def diff(self, n=1, dim=-1, prepend=None, append=None):
+        return torch_frontend.diff(self, n=n, dim=dim, prepend=prepend, append=append)
+
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)
 
@@ -1711,6 +1726,59 @@ class Tensor:
 
     def gather(self, dim, index):
         return torch_frontend.gather(self, dim=dim, index=index)
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_add_(self, dim, index, src):
+        self.ivy_array = ivy.put_along_axis(self.ivy_array, index, src, dim, mode="sum")
+        return self
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_(self, dim, index, src, *, reduce=None):
+        if reduce is None:
+            reduce = "replace"
+        else:
+            mode_mappings = {
+                "add": "sum",
+                "multiply": "mul",
+            }
+            reduce = mode_mappings.get(reduce, reduce)
+        self.ivy_array = ivy.put_along_axis(
+            self.ivy_array, index, src, dim, mode=reduce
+        )
+        return self
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_reduce_(self, dim, index, src, reduce, *, include_self=True):
+        if reduce == "prod":
+            reduce = "mul"
+        self.ivy_array = ivy.put_along_axis(
+            self.ivy_array, index, src, dim, mode=reduce
+        )
+        return self
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_add(self, dim, index, src):
+        return torch_frontend.scatter_add(self, dim, index, src)
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter(self, dim, index, src):
+        return torch_frontend.scatter_reduce(self, dim, index, src, reduce="replace")
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_reduce(self, dim, index, src, reduce, *, include_self=True):
+        return torch_frontend.scatter_reduce(self, dim, index, src, reduce=reduce)
 
     def take_along_dim(self, indices, dim):
         return torch_frontend.take_along_dim(self, indices=indices, dim=dim)
