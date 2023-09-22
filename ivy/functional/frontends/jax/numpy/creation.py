@@ -1,3 +1,4 @@
+from typing import Any
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.array import Array
@@ -310,3 +311,10 @@ def zeros_like(a, dtype=None, shape=None):
     if shape:
         return ivy.zeros(shape, dtype=dtype)
     return ivy.zeros_like(a, dtype=dtype)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def fromstring(string: str, dtype: float, count: int = -1, *, sep: Any):
+    """fromstring"""
+    return None
