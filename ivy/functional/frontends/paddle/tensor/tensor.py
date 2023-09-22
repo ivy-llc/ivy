@@ -504,6 +504,10 @@ class Tensor:
     def divide(self, y, name=None):
         return paddle_frontend.divide(self, y)
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def eigvals(self, name=None):
+        return paddle_frontend.eigvals(self)
+
     @with_unsupported_dtypes(
         {
             "2.5.1 and below": (
