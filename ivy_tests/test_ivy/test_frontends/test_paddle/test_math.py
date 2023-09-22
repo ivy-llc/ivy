@@ -1998,6 +1998,43 @@ def test_paddle_rsqrt(
     )
 
 
+# scale
+@handle_frontend_test(
+    fn_tree="paddle.scale",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    scale=st.integers(min_value=1, max_value=100),
+    bias=st.integers(min_value=1, max_value=100),
+    bias_after_scale=st.booleans(),
+)
+def test_paddle_scale(
+    *,
+    dtype_and_x,
+    scale,
+    bias,
+    bias_after_scale,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        scale=scale,
+        bias=bias,
+        bias_after_scale=bias_after_scale,
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.sgn",
     dtype_and_x=helpers.dtype_and_values(
