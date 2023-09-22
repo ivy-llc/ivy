@@ -127,6 +127,18 @@ def kl_div(
     )
     return loss
 
+
+@with_unsupported_dtypes(
+  {
+    "2.0.1 and below": (
+      "float32",
+      "double64",
+      "int32",
+      "int64",
+    )
+  },
+  backend_version,
+)
 def ctc_loss(
     input_lengths: Tensor,
     targets: Tensor,
