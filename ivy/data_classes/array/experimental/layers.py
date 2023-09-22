@@ -1119,8 +1119,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
     
     
     def stft(
-        self,
-        signal: Union[ivy.Array, ivy.NativeArray],
+        self: ivy.Array
         n_fft: Union[int, Tuple[int]],
         hop_length: int,
         /,
@@ -1144,9 +1143,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         Parameters
         ----------
         self
-            Input volume *[...,d_in,...]*,
-            where d_in indicates the dimension that needs FFT.   
-        signal
             Input tensor representing a real or complex valued signal. 
             For real input, the following shape is expected: [batch_
             size][signal_length][1]. For complex input, the following 
@@ -1225,7 +1221,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.stft(
             self._data,
-            signal,
             n_fft,
             hop_length,
             axis=axis,
