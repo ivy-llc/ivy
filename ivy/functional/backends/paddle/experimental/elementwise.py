@@ -770,4 +770,3 @@ def amin(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.amin(x1, x2)
-
