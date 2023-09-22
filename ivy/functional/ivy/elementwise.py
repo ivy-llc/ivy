@@ -1507,10 +1507,6 @@ def bitwise_xor(
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
-    **Special cases**
-
-    This function does not take floating point operands
-
     Parameters
     ----------
     x1
@@ -1541,54 +1537,57 @@ def bitwise_xor(
 
     Examples
     --------
-    With :class:`ivy.Array` input:
+    With :class:`int` input:
 
-    >>> a = ivy.array([1, 2, 3])
-    >>> b = ivy.array([3, 2, 1])
-    >>> y = ivy.bitwise_xor(a, b)
+    >>> x1 = 4
+    >>> x2 = 5
+    >>> y = ivy.bitwise_xor(x1, x2)
     >>> print(y)
-    ivy.array([2, 0, 2])
+    ivy.array(1)
 
-    >>> a = ivy.array([78, 91, 23])
-    >>> b = ivy.array([66, 77, 88])
-    >>> ivy.bitwise_xor(a, b, out=y)
+    With :class:`bool` input:
+
+    >>> x1 = True
+    >>> x2 = False
+    >>> y = ivy.bitwise_xor(x1, x2)
     >>> print(y)
-    ivy.array([12, 22, 79])
+    ivy.array(True)
 
-    >>> a = ivy.array([1, 2, 3])
-    >>> b = ivy.array([3, 2, 1])
-    >>> y = ivy.zeros(3)
-    >>> ivy.bitwise_xor(a, b, out = a)
-    >>> print(a)
-    ivy.array([2, 0, 2])
+    With :class:`ivy.Array` inputs:
 
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-    >>> a = ivy.array([0, 1, 3, 67, 91])
-    >>> b = ivy.native_array([4, 7, 90, 89, 98])
-    >>> y = ivy.bitwise_xor(a, b)
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([3, 5, 7])
+    >>> y = ivy.zeros(3, dtype=ivy.int32)
+    >>> ivy.bitwise_xor(x1, x2, out=y)
     >>> print(y)
-    ivy.array([ 4,  6, 89, 26, 57])
+    ivy.array([2, 7, 4])
+
+    >>> x1 = ivy.array([[True], [True]])
+    >>> x2 = ivy.array([[False], [True]])
+    >>> ivy.bitwise_xor(x1, x2, out=x2)
+    >>> print(x2)
+    ivy.array([[True], [False]])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a = ivy.array([89]))
-    >>> y = ivy.Container(a = ivy.array([12]))
-    >>> z = ivy.bitwise_xor(x, y)
-    >>> print(z)
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+    >>> x2 = ivy.Container(a=ivy.array([7, 8, 9]), b=ivy.array([10, 11, 12]))
+    >>> y = ivy.bitwise_xor(x1, x2)
+    >>> print(y)
     {
-        a:ivy.array([85])
+        a: ivy.array([6, 10, 10]),
+        b: ivy.array([14, 14, 10])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.array([-67, 21]))
-    >>> b = ivy.array([78, 34])
-    >>> y = ivy.array([12, 13])
-    >>> z = ivy.bitwise_xor(x, y)
-    >>> print(z)
+    >>> x1 = ivy.array([True, True])
+    >>> x2 = ivy.Container(a=ivy.array([True, False]), b=ivy.array([False, True]))
+    >>> y = ivy.bitwise_xor(x1, x2)
+    >>> print(y)
     {
-        a: ivy.array([-79, 24])
+        a: ivy.array([False, True]),
+        b: ivy.array([True, False])
     }
     """
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
