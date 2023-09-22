@@ -1584,7 +1584,7 @@ def test_jax_t(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.ball",
+    fn_tree="jax.random.uniform",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,
