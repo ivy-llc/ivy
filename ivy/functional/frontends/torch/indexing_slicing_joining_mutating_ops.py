@@ -52,7 +52,7 @@ def column_stack(tensors, *, out=None):
     for t in tensors:
         dim_num = ivy.get_num_dims(t, as_array=False)
         if dim_num <= 1:
-            reshaped_tensor = ivy.reshape(t, (-1,1))
+            reshaped_tensor = ivy.reshape(t, (-1, 1))
         else:
             reshaped_tensor = t
         reshaped_tensors.append(reshaped_tensor)
