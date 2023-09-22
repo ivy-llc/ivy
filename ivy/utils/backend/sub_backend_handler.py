@@ -300,12 +300,6 @@ def _clear_current_sub_backends():
         ivy.current_backend().sub_backends._current_sub_backends = []
 
 
-# this is overwritten when setting a backend
-def available_sub_backends():
-    for k, v in _backend_to_sub_backends_dict.items():
-        print(f"backend: {k} supports sub_backends: {v}")
-
-
 def find_available_sub_backends(sub_backends_loc):
     available_sub_backends = []
     for sub_backend in os.listdir(sub_backends_loc):
@@ -344,7 +338,7 @@ def available_sub_backend_implementations(fn_name: str) -> list:
     >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
     []
     """
-    sub_backends = ivy.current_backend().available_sub_backends()
+    sub_backends = ivy.available_sub_backends
     implementations = []
     for sub in sub_backends:
         try:
