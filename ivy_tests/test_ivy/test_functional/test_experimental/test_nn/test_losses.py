@@ -199,6 +199,57 @@ def test_log_poisson_loss(
     )
 
 
+# poisson_nll_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.poisson_nll_loss",
+    dtype_input_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_dim_size=1,
+        min_num_dims=1,
+        min_value=0,
+        max_value=100,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    log_input=st.booleans(),
+    full=st.booleans(),
+    epsilon=st.sampled_from([1e-8, 1e-5, 1e-3]),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(
+        False
+    ),  # value_test are failing if this is set to `True` # noqa
+    ground_truth_backend="torch",
+)
+def test_poisson_nll_loss(
+    dtype_input_target,
+    log_input,
+    full,
+    epsilon,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, inputs = dtype_input_target
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=inputs[0],
+        target=inputs[1],
+        log_input=log_input,
+        full=full,
+        eps=epsilon,
+        reduction=reduction,
+        rtol_=1e-05,
+        atol_=1e-05,
+    )
+
+
 # smooth_l1_loss
 # all loss functions failing for paddle backend due to
 # "There is no grad op for inputs:[0] or it's stop_gradient=True."
