@@ -8,7 +8,6 @@ from typing import Optional, Union, Sequence
 # local
 import ivy
 from paddle.fluid.libpaddle import Place
-from ivy.functional.backends.paddle.device import to_device
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
@@ -50,9 +49,8 @@ def random_uniform(
         _ = paddle.seed(seed)
     random_base = paddle.uniform(shape, min=0.0, max=1.0)
 
-    return to_device(
-        paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(dtype),
-        device,
+    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
+        dtype
     )
 
 
@@ -75,11 +73,11 @@ def random_normal(
     if seed:
         paddle.seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
-        return to_device(paddle.normal(mean, std, shape).cast(dtype), device)
+        return paddle.normal(mean, std, shape).cast(dtype)
     if mean.dtype not in [paddle.float32, paddle.float64]:
         mean = mean.cast("float32")
     std = std.cast(mean.dtype)
-    return to_device(paddle.normal(mean, std).cast(dtype), device)
+    return paddle.normal(mean, std).cast(dtype)
 
 
 @with_supported_device_and_dtypes(
@@ -111,7 +109,7 @@ def multinomial(
     if seed:
         paddle.seed(seed)
     x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
-    return to_device(x, device)
+    return x
 
 
 @with_unsupported_device_and_dtypes(
@@ -139,11 +137,9 @@ def randint(
     range = high - low
     if seed:
         _ = paddle.seed(seed)
-    _retval = to_device(
-        paddle.cast(
-            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
-        ),
-        device,
+
+    _retval = paddle.cast(
+        paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
     )
     return _retval if shape else _retval.squeeze(axis=0)
 

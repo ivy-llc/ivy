@@ -5,6 +5,10 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch.nn.functional import convolution_functions
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _channel_first_input(x, data_format):
     ndims = len(x.shape)
     dims = ndims - 2
@@ -71,6 +75,10 @@ def _conv_transpose(
     )
 
 
+# --- Main --- #
+# ------------ #
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv1d(
@@ -82,38 +90,6 @@ def conv1d(
     dilation=1,
     groups=1,
     data_format="NCL",
-    name=None,
-):
-    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def conv2d(
-    x,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    dilation=1,
-    groups=1,
-    data_format="NCHW",
-    name=None,
-):
-    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def conv3d(
-    x,
-    weight,
-    bias=None,
-    stride=1,
-    padding=0,
-    dilation=1,
-    groups=1,
-    data_format="NCDHW",
     name=None,
 ):
     return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
@@ -141,6 +117,22 @@ def conv1d_transpose(
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def conv2d(
+    x,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    dilation=1,
+    groups=1,
+    data_format="NCHW",
+    name=None,
+):
+    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def conv2d_transpose(
     x,
     weight,
@@ -157,6 +149,22 @@ def conv2d_transpose(
     return _conv_transpose(
         x, weight, bias, stride, padding, output_padding, dilation, groups, data_format
     )
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def conv3d(
+    x,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    dilation=1,
+    groups=1,
+    data_format="NCDHW",
+    name=None,
+):
+    return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")

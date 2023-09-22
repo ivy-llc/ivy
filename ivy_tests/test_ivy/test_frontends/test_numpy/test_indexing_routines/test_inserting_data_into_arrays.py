@@ -9,6 +9,37 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 import ivy.functional.frontends.numpy as np_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _helper_c_(draw):
+    dim = draw(st.integers(1, 3))
+    num_of_elems = draw(st.integers(1, 5))
+    elem_shape = draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim))
+    ret = []
+    if dim == 1:
+        start = draw(st.integers(min_value=-100, max_value=100))
+        step = draw(st.integers(1, 3))
+        stop = start + 1 + (tuple(elem_shape)[0] - 1) * step
+        elem = slice(start, stop, step)
+        ret.append(elem)
+    input_dtypes, x, casting, dtype = draw(
+        np_frontend_helpers.dtypes_values_casting_dtype(
+            arr_func=[
+                lambda: helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("numeric"),
+                    shape=elem_shape,
+                    num_arrays=num_of_elems,
+                    shared_dtype=True,
+                )
+            ],
+        ),
+    )
+    return x + ret
+
+
 @st.composite
 def _helper_r_(draw):
     elems_in_last_dim = draw(st.integers(min_value=2, max_value=8))
@@ -84,31 +115,20 @@ def _helper_r_(draw):
     return ret, elems_in_last_dim, dim
 
 
-@st.composite
-def _helper_c_(draw):
-    dim = draw(st.integers(1, 3))
-    num_of_elems = draw(st.integers(1, 5))
-    elem_shape = draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim))
-    ret = []
-    if dim == 1:
-        start = draw(st.integers(min_value=-100, max_value=100))
-        step = draw(st.integers(1, 3))
-        stop = start + 1 + (tuple(elem_shape)[0] - 1) * step
-        elem = slice(start, stop, step)
-        ret.append(elem)
-    input_dtypes, x, casting, dtype = draw(
-        np_frontend_helpers.dtypes_values_casting_dtype(
-            arr_func=[
-                lambda: helpers.dtype_and_values(
-                    available_dtypes=helpers.get_dtypes("numeric"),
-                    shape=elem_shape,
-                    num_arrays=num_of_elems,
-                    shared_dtype=True,
-                )
-            ],
-        ),
-    )
-    return x + ret
+# --- Main --- #
+# ------------ #
+
+
+@handle_frontend_test(fn_tree="numpy.add", inputs=_helper_c_())  # dummy fn_tree
+def test_numpy_c_(inputs, backend_fw):
+    ret_gt = np.c_.__getitem__(tuple(inputs))
+    with BackendHandler.update_backend(backend_fw):
+        ret = np_frontend.c_.__getitem__(tuple(inputs))
+    if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
+        ret = ret._data
+    else:
+        ret = ret.ivy_array
+    assert np.allclose(ret, ret_gt)
 
 
 @handle_frontend_test(
@@ -153,18 +173,6 @@ def test_numpy_r_(inputs, backend_fw):
     ret_gt = np.r_.__getitem__(tuple(inputs))
     with BackendHandler.update_backend(backend_fw):
         ret = np_frontend.r_.__getitem__(tuple(inputs))
-    if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
-        ret = ret._data
-    else:
-        ret = ret.ivy_array
-    assert np.allclose(ret, ret_gt)
-
-
-@handle_frontend_test(fn_tree="numpy.add", inputs=_helper_c_())  # dummy fn_tree
-def test_numpy_c_(inputs, backend_fw):
-    ret_gt = np.c_.__getitem__(tuple(inputs))
-    with BackendHandler.update_backend(backend_fw):
-        ret = np_frontend.c_.__getitem__(tuple(inputs))
     if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
         ret = ret._data
     else:

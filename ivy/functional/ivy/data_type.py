@@ -24,6 +24,7 @@ from ivy.func_wrapper import (
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
+from collections.abc import Hashable
 
 
 # Helpers #
@@ -477,8 +478,8 @@ def broadcast_to(
     >>> y = ivy.broadcast_to(x, (3, 3))
     >>> print(y)
     ivy.array([[1, 2, 3],
-               [1, 2, 3],
-               [1, 2, 3]])
+            [1, 2, 3],
+            [1, 2, 3]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -486,8 +487,8 @@ def broadcast_to(
     >>> y = ivy.broadcast_to(x, (3, 2))
     >>> print(y)
     ivy.array([[0.1, 0.3],
-               [0.1, 0.3],
-               [0.1, 0.3]])
+            [0.1, 0.3],
+            [0.1, 0.3]])
 
     With :class:`ivy.Container` input:
 
@@ -497,11 +498,11 @@ def broadcast_to(
     >>> print(y)
     {
         a: ivy.array([[1, 2, 3],
-                      [1, 2, 3],
-                      [1, 2, 3]]),
+                    [1, 2, 3],
+                    [1, 2, 3]]),
         b: ivy.array([[4, 5, 6],
-                      [4, 5, 6],
-                      [4, 5, 6]])
+                    [4, 5, 6],
+                    [4, 5, 6]])
     }
     """
     return current_backend(x).broadcast_to(x, shape, out=out)
@@ -518,8 +519,8 @@ def can_cast(
     /,
 ) -> bool:
     """
-    Determine if one data type can be cast to another data type according to
-    :ref:`type-promotion` rules.
+    Determine if one data type can be cast to another data type according to :ref:`type-
+    promotion` rules.
 
     Parameters
     ----------
@@ -546,7 +547,7 @@ def can_cast(
 
     Examples
     --------
-     With :class:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
     True
@@ -580,11 +581,8 @@ def can_cast(
     """
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
-    try:
-        dtype = ivy.promote_types(from_, to)
-        return dtype == to
-    except KeyError:
-        return False
+    dtype = ivy.promote_types(from_, to)
+    return dtype == to
 
 
 @handle_exceptions
@@ -610,24 +608,24 @@ def finfo(
 
         - **bits**: *int*
 
-          number of bits occupied by the floating-point data type.
+        number of bits occupied by the floating-point data type.
 
         - **eps**: *float*
 
-          difference between 1.0 and the next smallest representable floating-point
-          number larger than 1.0 according to the IEEE-754 standard.
+        difference between 1.0 and the next smallest representable floating-point
+        number larger than 1.0 according to the IEEE-754 standard.
 
         - **max**: *float*
 
-          largest representable number.
+        largest representable number.
 
         - **min**: *float*
 
-          smallest representable number.
+        smallest representable number.
 
         - **smallest_normal**: *float*
 
-          smallest positive floating-point number with full precision.
+        smallest positive floating-point number with full precision.
 
 
     This function conforms to the `Array API Standard
@@ -669,7 +667,7 @@ def finfo(
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
         y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
-           max=1.7976931348623157e+308, dtype=float64)
+            max=1.7976931348623157e+308, dtype=float64)
     }
     """
     return current_backend(None).finfo(type)
@@ -698,15 +696,15 @@ def iinfo(
 
         - **bits**: *int*
 
-          number of bits occupied by the type.
+        number of bits occupied by the type.
 
         - **max**: *int*
 
-          largest representable number.
+        largest representable number.
 
         - **min**: *int*
 
-          smallest representable number.
+        smallest representable number.
 
 
     This function conforms to the `Array API Standard
@@ -765,8 +763,8 @@ def result_type(
     :ref:`type-promotion`) to the arguments.
 
     .. note::
-       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
-       will be implementation-specific.
+    If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
+    will be implementation-specific.
 
     Parameters
     ----------
@@ -841,7 +839,6 @@ class DefaultDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -859,7 +856,6 @@ class DefaultFloatDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_float_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -877,7 +873,6 @@ class DefaultIntDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_int_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -895,7 +890,6 @@ class DefaultUintDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_uint_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -913,7 +907,6 @@ class DefaultComplexDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_complex_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -969,11 +962,7 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     ret
         True if data type is hashable else False
     """
-    try:
-        hash(dtype_in)
-        return True
-    except TypeError:
-        return False
+    return isinstance(dtype_in, Hashable)
 
 
 @handle_exceptions
@@ -1695,10 +1684,8 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1748,10 +1735,8 @@ def function_unsupported_dtypes(
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
-        (
-            "supported_dtypes and unsupported_dtypes attributes cannot both exist "
-            "in a particular backend"
-        ),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist "
+        "in a particular backend",
     )
     if hasattr(fn, "partial_mixed_handler"):
         return {
@@ -1845,7 +1830,7 @@ def is_bool_dtype(
             True
             if ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (bool, np.bool)) and not type(x) == int,
+                lambda x: isinstance(x, (bool, np.bool)) and x is not int,
             )
             else False
         )
@@ -1933,7 +1918,7 @@ def is_int_dtype(
                     isinstance(x, (int, np.integer))
                     or (ivy.is_array(x) and "int" in ivy.dtype(x))
                 )
-                and not type(x) == bool,
+                and x is not bool,
             )
             else False
         )
@@ -1955,7 +1940,7 @@ def check_float(x: Any) -> bool:
     ret
         "True" if the input is a float or a float-like object, otherwise "False".
     """
-    return isinstance(x, (int, float)) and not type(x) == bool
+    return isinstance(x, (int, float)) and x is not bool
 
 
 @handle_exceptions
@@ -2131,28 +2116,16 @@ def promote_types(
         The type that both input types promote to
     """
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
-    query.sort(key=lambda x: str(x))
     query = tuple(query)
+    if query not in ivy.promotion_table:
+        query = (query[1], query[0])
 
     def _promote(query):
         if array_api_promotion:
             return ivy.array_api_promotion_table[query]
         return ivy.promotion_table[query]
 
-    try:
-        ret = _promote(query)
-    except KeyError:
-        # try again with the dtypes swapped
-        query = (query[1], query[0])
-        try:
-            ret = _promote(query)
-        except KeyError:
-            raise ivy.utils.exceptions.IvyDtypePromotionError(
-                "these dtypes ({} and {}) are not type promotable, ".format(
-                    type1, type2
-                )
-            )
-    return ret
+    return _promote(query)
 
 
 @handle_exceptions
@@ -2553,7 +2526,4 @@ def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     >>> ivy.is_native_array(ivy.float64)
     False
     """
-    try:
-        return current_backend(None).is_native_dtype(dtype_in)
-    except ValueError:
-        return False
+    return current_backend(None).is_native_dtype(dtype_in)
