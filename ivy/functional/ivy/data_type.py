@@ -478,8 +478,8 @@ def broadcast_to(
     >>> y = ivy.broadcast_to(x, (3, 3))
     >>> print(y)
     ivy.array([[1, 2, 3],
-               [1, 2, 3],
-               [1, 2, 3]])
+            [1, 2, 3],
+            [1, 2, 3]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -487,8 +487,8 @@ def broadcast_to(
     >>> y = ivy.broadcast_to(x, (3, 2))
     >>> print(y)
     ivy.array([[0.1, 0.3],
-               [0.1, 0.3],
-               [0.1, 0.3]])
+            [0.1, 0.3],
+            [0.1, 0.3]])
 
     With :class:`ivy.Container` input:
 
@@ -498,11 +498,11 @@ def broadcast_to(
     >>> print(y)
     {
         a: ivy.array([[1, 2, 3],
-                      [1, 2, 3],
-                      [1, 2, 3]]),
+                    [1, 2, 3],
+                    [1, 2, 3]]),
         b: ivy.array([[4, 5, 6],
-                      [4, 5, 6],
-                      [4, 5, 6]])
+                    [4, 5, 6],
+                    [4, 5, 6]])
     }
     """
     return current_backend(x).broadcast_to(x, shape, out=out)
@@ -547,7 +547,7 @@ def can_cast(
 
     Examples
     --------
-     With :class:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
     True
@@ -608,24 +608,24 @@ def finfo(
 
         - **bits**: *int*
 
-          number of bits occupied by the floating-point data type.
+        number of bits occupied by the floating-point data type.
 
         - **eps**: *float*
 
-          difference between 1.0 and the next smallest representable floating-point
-          number larger than 1.0 according to the IEEE-754 standard.
+        difference between 1.0 and the next smallest representable floating-point
+        number larger than 1.0 according to the IEEE-754 standard.
 
         - **max**: *float*
 
-          largest representable number.
+        largest representable number.
 
         - **min**: *float*
 
-          smallest representable number.
+        smallest representable number.
 
         - **smallest_normal**: *float*
 
-          smallest positive floating-point number with full precision.
+        smallest positive floating-point number with full precision.
 
 
     This function conforms to the `Array API Standard
@@ -667,7 +667,7 @@ def finfo(
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
         y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
-           max=1.7976931348623157e+308, dtype=float64)
+            max=1.7976931348623157e+308, dtype=float64)
     }
     """
     return current_backend(None).finfo(type)
@@ -696,15 +696,15 @@ def iinfo(
 
         - **bits**: *int*
 
-          number of bits occupied by the type.
+        number of bits occupied by the type.
 
         - **max**: *int*
 
-          largest representable number.
+        largest representable number.
 
         - **min**: *int*
 
-          smallest representable number.
+        smallest representable number.
 
 
     This function conforms to the `Array API Standard
@@ -763,8 +763,8 @@ def result_type(
     :ref:`type-promotion`) to the arguments.
 
     .. note::
-       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
-       will be implementation-specific.
+    If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
+    will be implementation-specific.
 
     Parameters
     ----------
