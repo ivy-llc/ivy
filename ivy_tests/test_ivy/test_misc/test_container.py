@@ -1486,7 +1486,7 @@ def test_container_inplace(on_device):
 
     for func_str in special_funcs:
         func = getattr(Container, func_str)
-        ifunc = getattr(Container, func_str[:2] + "i" + func_str[2:])
+        ifunc = getattr(Container, f"{func_str[:2]}i{func_str[2:]}")
 
         for value in [
             const,
