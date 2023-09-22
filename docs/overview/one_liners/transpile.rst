@@ -1,5 +1,5 @@
-``ivy.transpile`` / ``ivy.unify``
-=================================
+``ivy.transpile()``
+=================
 
 ..
 
@@ -56,24 +56,6 @@ Transpiler API
   :param params_v: Parameters of a haiku model, as when transpiling these, the parameters
                    need to be passed explicitly to the function call.
   :rtype: ``Union[Graph, LazyGraph, ModuleType, ivy.Module, torch.nn.Module, tf.keras.Model, hk.Module]``
-  :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is a native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
-
-.. py:function:: ivy.unify(*objs, source = None, args = None, kwargs = None, **transpile_kwargs,)
-
-  Transpiles an object into Ivy code. It's an alias to
-  ``ivy.transpile(..., to="ivy", ...)``
-
-  :param objs: Native callable(s) to transpile.
-  :type objs: ``Callable``
-  :param source: The framework that ``obj`` is from. This must be provided unless ``obj`` is a framework-specific module.
-  :type source: ``Optional[str]``
-  :param args: If specified, arguments that will be used to unify eagerly.
-  :type args: ``Optional[Tuple]``
-  :param kwargs: If specified, keyword arguments that will be used to unify eagerly.
-  :type kwargs: ``Optional[dict]``
-  :param transpile_kwargs: Arbitrary keyword arguments that will be passed to ``ivy.transpile``.
-
-  :rtype: ``Union[Graph, LazyGraph, ModuleType, ivy.Module]``
   :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is a native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
 
 Using the transpiler
@@ -192,26 +174,6 @@ another, at the moment we support ``torch.nn.Module`` when ``to="torch"``,
   params = forward_classifier.init(rng=rng_key, x=x)
 
   ret = forward_classifier.apply(params, None, x)
-
-Ivy.unify
-~~~~~~~~~
-
-As mentioned above, ``ivy.unify`` is an alias for transpilation to Ivy, so you can use it
-exactly in the same way to convert framework specific code to Ivy.
-
-.. code-block:: python
-
-  import ivy
-  ivy.set_backend("jax")
-
-  def test_fn(x):
-      return jax.numpy.sum(x)
-
-  x1 = ivy.array([1., 2.])
-
-  # transpiled_func and unified_func will have the same result
-  transpiled_func = ivy.transpile(test_fn, to="ivy", args=(x1,))
-  unified_func = ivy.unify(test_fn, args=(x1,))
 
 Sharp bits
 ----------
