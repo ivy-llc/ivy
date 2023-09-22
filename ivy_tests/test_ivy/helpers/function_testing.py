@@ -1599,7 +1599,7 @@ def test_method(
         Indices of the returned arrays for which to return computed gradients. If None,
         gradients are returned for all returned arrays. (Default value = None)
     test_trace
-        If True, test for the correctness of compilation.
+        If True, test for the correctness of tracing.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
