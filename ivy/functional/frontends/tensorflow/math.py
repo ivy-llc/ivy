@@ -613,6 +613,23 @@ def scalar_mul(scalar, x, name="scalar_mul"):
 
 
 @to_ivy_arrays_and_back
+def segment_min(data, segment_ids, name=None):
+    if ivy.min(segment_ids) < 0:
+        raise ivy.utils.exceptions.IvyException("segments_ids must be non-negative")
+    if all(segment_ids[i] <= segment_ids[i + 1] for i in range(len(segment_ids) - 1)):
+        raise ivy.utils.exceptions.IvyException("segments_ids must be sorted")
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    num_segments = ivy.max(segment_ids) + 1
+    min_array = ivy.unsorted_segment_min(data, segment_ids, num_segments)
+    for i in range(num_segments):
+        if i not in segment_ids:
+            min_array[i] = ivy.zeros(tuple((list(data.shape))[1:]), dtype=ivy.int64)
+    return min_array
+
+
+@to_ivy_arrays_and_back
 def sigmoid(x, name=None):
     return ivy.sigmoid(x)
 

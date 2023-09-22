@@ -2552,6 +2552,47 @@ def test_tensorflow_scalar_mul(
     )
 
 
+# segment_min
+@handle_frontend_test(
+    fn_tree="tensorflow.math.segment_min",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=(5, 6),
+        min_value=1,
+        max_value=9,
+    ),
+    dtype_and_ids=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=(5,),
+        min_value=0,
+        max_value=4,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_segment_min(
+    *,
+    dtype_and_x,
+    dtype_and_ids,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype1, data = dtype_and_x
+    dtype2, segment_ids = dtype_and_ids
+    helpers.test_frontend_function(
+        input_dtypes=[dtype1, dtype2],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=ivy.sort(segment_ids),
+    )
+
+
 # sigmoid
 @handle_frontend_test(
     fn_tree="tensorflow.math.sigmoid",
