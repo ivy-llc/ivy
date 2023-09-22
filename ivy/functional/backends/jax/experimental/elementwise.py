@@ -483,7 +483,3 @@ def amin(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.amin(x1, x2)
-
-
-
-
