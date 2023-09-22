@@ -8,7 +8,8 @@ import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import assert_all_close
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
     _get_dtype_values_k_axes_for_rot90,
 )
@@ -1705,7 +1706,7 @@ def test_paddle_tensor_eigvals(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    # Test the method
+
     ret, frontend_ret = helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1719,8 +1720,20 @@ def test_paddle_tensor_eigvals(
         on_device=on_device,
         test_values=False,
     )
-    # TODO: Need to test by reproducing output
-    return ret, frontend_ret
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    L, Q = ret
+    frontend_Q, frontend_L = frontend_ret
+
+    assert_all_close(
+        ret_np=Q @ np.diag(L) @ Q.T,
+        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+        atol=1e-2,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
+    )
 
 
 # equal
