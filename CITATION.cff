@@ -1,14 +1,10 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
 title: >-
   Ivy: Templated deep learning for inter-framework
   portability
 message: >-
-  If you are going to use this, please cite it by using this
-  message, and we really appreciate your support.
-type: software
+  If you are using Ivy, we would really appreciate it if you cite it in your work!
+type: "Journal article/paper"
 authors:
   - given-names: 'Daniel '
     family-names: Lenton
