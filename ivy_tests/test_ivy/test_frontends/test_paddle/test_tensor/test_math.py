@@ -23,13 +23,8 @@ def _get_clip_inputs_(draw):
             max_value=50,
         )
     )
-    min = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=0, max_value=25)
-    )
-    max = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=26, max_value=50)
-    )
-    return x_dtype, x, min, max
+
+    return x_dtype, x
 
 
 # --- Main --- #
@@ -68,23 +63,21 @@ def test_paddle_ceil_(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.clip_",
     input_and_ranges=_get_clip_inputs_(),
+    min=st.integers(min_value=0, max_value=5),
+    max=st.integers(min_value=5, max_value=10),
 )
 def test_paddle_clip_(
     *,
     input_and_ranges,
+    min,
+    max,
     frontend,
     fn_tree,
     test_flags,
     backend_fw,
     on_device,
 ):
-    input_dtype, x, min_val, max_val = input_and_ranges
-    if min_val > max_val:
-        max_value = min_val
-        min_value = max_val
-    else:
-        max_value = max_val
-        min_value = min_val
+    input_dtype, x = input_and_ranges
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -94,8 +87,8 @@ def test_paddle_clip_(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        min=min_value,
-        max=max_value,
+        min=min,
+        max=max,
     )
 
 

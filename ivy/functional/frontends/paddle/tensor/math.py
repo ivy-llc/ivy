@@ -32,7 +32,10 @@ def clip_(x, min=None, max=None, name=None):
         min = ivy.min(x)
     if max is None:
         max = ivy.max(x)
-    return ivy.clip(x, min, max)
+    res = ivy.clip(x, min, max)
+    if res.dtype != x.dtype:
+        res = ivy.astype(res, x.dtype)
+    return res
 
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
