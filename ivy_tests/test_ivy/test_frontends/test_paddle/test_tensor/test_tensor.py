@@ -1688,6 +1688,41 @@ def test_paddle_tensor_dtype(
     ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
 
 
+# eigvals
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="eigvals",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_paddle_tensor_eigvals(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    # Test the method
+    ret, frontend_ret = helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        test_values=False,
+    )
+    # TODO: Need to test by reproducing output
+    return ret, frontend_ret
+
+
 # equal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
