@@ -769,5 +769,5 @@ def amin(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.amin(x1, x2).astype(ret_dtype)
+    return paddle.amin(x1, x2).astype(dtype)
 
