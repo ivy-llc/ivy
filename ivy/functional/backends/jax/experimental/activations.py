@@ -6,6 +6,8 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 from jax import lax
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def logit(
@@ -78,3 +80,18 @@ def elu(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+def hardtanh(
+    x: JaxArray,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.where(x > max_val, max_val, jnp.where(x < min_val, min_val, x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

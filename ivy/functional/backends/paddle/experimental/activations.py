@@ -110,19 +110,27 @@ def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return F.silu(x.cast("float32")).cast(x.dtype)
 
 
-def elu(
-    x: paddle.Tensor, /, *, alpha: float = 1.0, out: Optional[paddle.Tensor] = None
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
+def hardtanh(
+    x: paddle.Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
-        return F.elu(x, alpha=alpha)
+        return F.hardtanh(x, min=min_val, max=max_val)
 
     if paddle.is_complex(x):
         ret = (
             paddle_backend.where(
-                paddle_backend.greater(x, 0),
-                x,
-                paddle_backend.multiply(alpha, paddle_backend.expm1(x)),
+                paddle_backend.greater(x, max_val),
+                max_val,
+                paddle_backend.where(paddle_backend.less(x, min_val), min_val, x),
             ),
         )
         return ret
-    return F.elu(x.cast("float32"), alpha).cast(x.dtype)
+    return F.hardtanh(x.cast("float32"), min=min_val, max=max_val).cast(x.dtype)
