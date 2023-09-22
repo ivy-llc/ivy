@@ -721,6 +721,11 @@ def test_frontend_function(
             on_device=on_device,
         )
 
+        # Make copy for arguments for functions that might use
+        # inplace update by default
+        copy_kwargs = copy.deepcopy(kwargs)
+        copy_args = copy.deepcopy(args)
+
         # Frontend array generation
         create_frontend_array = local_importer.import_module(
             f"ivy.functional.frontends.{frontend}"
@@ -733,13 +738,15 @@ def test_frontend_function(
                 frontend_array_fn=create_frontend_array,
                 **kwargs,
             )
+            copy_args, copy_kwargs = args_to_frontend(
+                backend_to_test,
+                *copy_args,
+                frontend_array_fn=create_frontend_array,
+                **copy_kwargs,
+            )
         else:
             args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
-
-        # Make copy for arguments for functions that might use
-        # inplace update by default
-        copy_kwargs = copy.deepcopy(kwargs_for_test)
-        copy_args = copy.deepcopy(args_for_test)
+            copy_args, copy_kwargs = ivy_backend.args_to_ivy(*copy_args, **copy_kwargs)
 
         ret = get_frontend_ret(
             backend_to_test,
