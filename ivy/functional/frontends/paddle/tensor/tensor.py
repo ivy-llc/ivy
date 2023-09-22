@@ -64,7 +64,7 @@ class Tensor:
         {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
         "paddle",
     )
-    def __add__(self, y, name=None):
+    def __add__(self, y, /, name=None):
         return paddle_frontend.add(self, y)
 
     def __getitem__(self, item):
@@ -799,6 +799,12 @@ class Tensor:
     )
     def chunk(self, chunks, axis=0, name=None):
         return paddle_frontend.split(self._ivy_array, num_or_sections=chunks, axis=axis)
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("complex", "uint8", "uint16")}, "paddle"
+    )
+    def numpy(self):
+        return self.ivy_array.to_numpy()
 
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def nonzero(self):
