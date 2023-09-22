@@ -35,10 +35,10 @@ from .assertions import (
 
 
 # Temporary (.so) configuration
-def compiled_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
+def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_trace:
-            fn = ivy_backend.compile(fn, args=args, kwargs=kwargs)
+            fn = ivy_backend.trace(fn, args=args, kwargs=kwargs)
     return fn
 
 
@@ -957,7 +957,7 @@ def test_frontend_function(
     frontend_fw_fn = frontend_fw.__dict__[gt_fn_name]
     frontend_ret = frontend_fw_fn(*args_frontend, **kwargs_frontend)
 
-    # ToDo: only compiles and does inference on ivy arrays for now
+    # ToDo: only traces and does inference on ivy arrays for now
     if test_flags.transpile and hasattr(frontend_config, "backend_str"):
         _get_transpiled_data_if_required(
             frontend_fn,
@@ -1039,7 +1039,7 @@ def test_gradient_backend_computation(
         def _grad_fn(all_args):
             args, kwargs, i = all_args
             call_fn = ivy_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
-            ret = compiled_if_required(
+            ret = traced_if_required(
                 backend_to_test,
                 call_fn,
                 test_trace=test_trace,
@@ -1102,7 +1102,7 @@ def test_gradient_ground_truth_computation(
         def _gt_grad_fn(all_args):
             args, kwargs, i = all_args
             call_fn = gt_backend.__dict__[fn] if isinstance(fn, str) else fn[i]
-            ret = compiled_if_required(
+            ret = traced_if_required(
                 ground_truth_backend,
                 call_fn,
                 test_trace=test_trace,
@@ -2365,7 +2365,7 @@ def get_ret_and_flattened_np_array(
 
     Return the result along with its flattened version.
     """
-    fn = compiled_if_required(
+    fn = traced_if_required(
         backend_to_test, fn, test_trace=test_trace, args=args, kwargs=kwargs
     )
     with BackendHandler.update_backend(backend_to_test) as ivy_backend:
@@ -2393,7 +2393,7 @@ def get_frontend_ret(
     test_trace: bool = False,
     **kwargs,
 ):
-    frontend_fn = compiled_if_required(
+    frontend_fn = traced_if_required(
         backend, frontend_fn, test_trace=test_trace, args=args, kwargs=kwargs
     )
     with BackendHandler.update_backend(backend) as ivy_backend:
@@ -2431,11 +2431,11 @@ def _get_transpiled_data_if_required(
 ):
     iterations = 1
 
-    # to compile the frontend function on ivy arrays
+    # to trace the frontend function on ivy arrays
     with BackendHandler.update_backend(frontend) as ivy_backend:
         args, kwargs = ivy_backend.args_to_ivy(*frontend_fw_args, **frontend_fw_kwargs)
 
-    compiled_fn = compiled_if_required(
+    traced_fn = traced_if_required(
         frontend,
         frontend_fn,
         test_trace=True,
@@ -2447,9 +2447,9 @@ def _get_transpiled_data_if_required(
     frontend_timings = []
     frontend_fw_timings = []
     for i in range(0, iterations):
-        # timing the compiled_fn
+        # timing the traced_fn
         start = time.time()
-        compiled_fn(*args, **kwargs)
+        traced_fn(*args, **kwargs)
         end = time.time()
         frontend_timings.append(end - start)
 
@@ -2459,16 +2459,16 @@ def _get_transpiled_data_if_required(
         end = time.time()
         frontend_fw_timings.append(end - start)
 
-    # compile to get ivy nodes
+    # trace to get ivy nodes
     with BackendHandler.update_backend(frontend) as ivy_backend:
-        compiled_fn_to_ivy = ivy_backend.compile(
+        traced_fn_to_ivy = ivy_backend.trace(
             frontend_fn, to="ivy", args=args, kwargs=kwargs
         )
 
     frontend_time = np.mean(frontend_timings).item()
     frontend_fw_time = np.mean(frontend_fw_timings).item()
-    backend_nodes = len(compiled_fn._functions)
-    ivy_nodes = len(compiled_fn_to_ivy._functions)
+    backend_nodes = len(traced_fn._functions)
+    ivy_nodes = len(traced_fn_to_ivy._functions)
 
     data = {
         "frontend": frontend,
@@ -2578,8 +2578,8 @@ def arrays_to_frontend(backend: str, frontend_array_fn=None):
     return _new_fn
 
 
-def _switch_backend_context(compile: bool):
-    if compile:
+def _switch_backend_context(trace: bool):
+    if trace:
         BackendHandler._update_context(BackendHandlerMode.SetBackend)
     else:
         (

@@ -37,8 +37,7 @@ def _remove_so_log(trace):
             module_st = st
         elif (
             transpile_frame is None
-            and os.path.join("ivy", "compiler")
-            in st.filename  # ! Same here, Compiler Module is being updated?
+            and os.path.join("ivy", "compiler") in st.filename
             and st.name in ["trace", "transpile"]
         ):
             transpile_frame = old_frames[idx]

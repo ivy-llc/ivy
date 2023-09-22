@@ -34,12 +34,12 @@ def trace(
     from ._compiler import compile as _trace
 
     """
-    Take `fn` and compiles it into a more efficient composition of backend operations.
+    Take `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
     objs
-        callable(s) to compile and create a graph of
+        callable(s) to trace and create a graph of
     stateful
         list of instances to be considered stateful during the graph compilation
     arg_stateful_idxs
@@ -57,7 +57,7 @@ def trace(
     static_argnames
         for jax's jit compilation
     graph_caching
-        whether to cache the compiled graph
+        whether to cache the traced graph
     args
         positional arguments for `obj`
     kwargs
@@ -65,7 +65,7 @@ def trace(
 
     Returns
     -------
-    the compiled `Graph` object.
+    the traced `Graph` object.
 
     Examples
     --------
@@ -83,9 +83,9 @@ def trace(
     ...     j = ivy.floor(b)
     ...     k = ivy.ceil(c)
     ...     return i, j, k
-    >>> graph = ivy.compile(fn, args=(x,))
+    >>> graph = ivy.trace(fn, args=(x,))
 
-    Notice how the time taken to execute the compiled function is lower than
+    Notice how the time taken to execute the traced function is lower than
     the original function. A typical run:
 
     >>> start = time.time()
