@@ -122,9 +122,12 @@ def eye(
     return return_mat
 
 
+def to_dlpack(x, /, *, out: Optional[JaxArray] = None):
+    return jax.dlpack.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    capsule = jax.dlpack.to_dlpack(x)
-    return jax.dlpack.from_dlpack(capsule)
+    return jax.dlpack.from_dlpack(x)
 
 
 def full(
