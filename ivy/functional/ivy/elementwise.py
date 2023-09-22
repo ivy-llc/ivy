@@ -6670,7 +6670,7 @@ def erf(
     Parameters
     ----------
     x
-        Value to compute exponential for.
+        input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -6682,9 +6682,33 @@ def erf(
 
     Examples
     --------
-    >>> x = ivy.array([0, 0.3, 0.7, 1.0])
-    >>> ivy.erf(x)
-    ivy.array([0., 0.328, 0.677, 0.842])
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([0, 0.3, 0.7])
+    >>> y = ivy.erf(x)
+    >>> print(y)
+    ivy.array([0., 0.32862675, 0.67780113])
+
+    >>> x = ivy.array([0.1, 0.3, 0.4, 0.5])
+    >>> ivy.erf(x, out=x)
+    >>> print(x)
+    ivy.array([0.11246294, 0.32862675, 0.42839241, 0.52050018])
+
+    >>> x = ivy.array([[0.15, 0.28], [0.41, 1.75]])
+    >>> y = ivy.zeros((2, 2))
+    >>> ivy.erf(x, out=y)
+    >>> print(y)
+    ivy.array([[0.16799599, 0.30787992], [0.43796915, 0.98667163]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.9, 1.1, 1.2]), b=ivy.array([1.3, 1.4, 1.5]))
+    >>> y = ivy.erf(x)
+    >>> print(y)
+    {
+        a: ivy.array([0.79690808, 0.88020504, 0.91031402]),
+        b: ivy.array([0.934008, 0.95228523, 0.96610528])
+    }
     """
     return ivy.current_backend(x).erf(x, out=out)
 
