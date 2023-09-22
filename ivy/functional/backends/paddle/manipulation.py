@@ -384,7 +384,7 @@ def tile(
             "float16",
             "int8",
             "int16",
-            "uint16",
+            "uint8",
         )
     },
     backend_version,
