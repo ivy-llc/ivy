@@ -1572,7 +1572,7 @@ def test_torch_index_fill(
 
 
 # nansum
-@handle_frontend_method(              							
+@handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="nansum",
@@ -1607,6 +1607,7 @@ def test_torch_instance_nansum(
         on_device=on_device,
     )
 
+
 # scatter
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1614,6 +1615,15 @@ def test_torch_instance_nansum(
     method_name="scatter",
     args=put_along_axis_helper(),
 )
+def test_torch_instance_scatter(
+    args,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
     input_dtypes, x, indices, values, axis = args
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
