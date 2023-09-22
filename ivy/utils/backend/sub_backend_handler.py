@@ -191,7 +191,7 @@ def set_sub_backend(sub_backend_str: str):
         )
         return
 
-    if sub_backend_str in ivy.current_sub_backends():
+    if sub_backend_str in ivy.current_sub_backends:
         return
 
     global original_backend_dict
@@ -247,7 +247,7 @@ def _set_sub_backend_as_ivy(
 
 
 def unset_sub_backend(sub_backend_str: str):
-    if sub_backend_str not in ivy.current_sub_backends():
+    if sub_backend_str not in ivy.current_sub_backends:
         return
     global original_backend_dict
 
@@ -287,7 +287,7 @@ def _unset_sub_backend_from_ivy(
 
 
 def clear_sub_backends():
-    if ivy.current_sub_backends():
+    if ivy.current_sub_backends:
         ivy.__dict__.update(original_backend_dict)
         ivy.current_backend().sub_backends._current_sub_backends = []
 
@@ -296,7 +296,7 @@ def clear_sub_backends():
 def _clear_current_sub_backends():
     global original_backend_dict
     original_backend_dict = None
-    if ivy.current_sub_backends():
+    if ivy.current_sub_backends:
         ivy.current_backend().sub_backends._current_sub_backends = []
 
 
