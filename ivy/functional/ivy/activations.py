@@ -26,20 +26,6 @@ def _gelu_jax_like(
     approximate: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Computes the Gaussian Error Linear Unit (GELU) activation function using an approximation method.
-    
-    Args:
-    - x (Union[ivy.Array, ivy.NativeArray]): Input tensor.
-    - fn_original (Optional[Callable]): Original function to be approximated.
-    - approximate (bool): Whether to use the approximation method or not.
-    - out (Optional[ivy.Array]): Output tensor.
-    
-    
-
-    Returns:
-    - ivy.Array: Output tensor with the same shape as the input tensor.
-    """
     # We don't have the exact implementation
     # cuz the erf function doesn't work on complex numbers
     return fn_original(x, approximate=True, out=out)
