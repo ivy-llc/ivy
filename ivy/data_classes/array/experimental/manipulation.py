@@ -1370,3 +1370,22 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         else:
             x = [self._data] + arrays
         return ivy.column_stack(x, out=out)
+
+    def put_along_axis(
+        self: ivy.Array,
+        indices: ivy.Array,
+        values: ivy.Array,
+        axis: int,
+        /,
+        *,
+        mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)

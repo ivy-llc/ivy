@@ -161,7 +161,7 @@ def broadcast(operand, sizes):
 
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "float32",
             "float64",
@@ -308,7 +308,7 @@ def cosh(x):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
+    {"0.4.16 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -399,7 +399,7 @@ def erf(x):
 
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "float32",
             "float64",
@@ -459,7 +459,7 @@ def imag(x):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bool", "bfloat16")},
+    {"0.4.16 and below": ("bool", "bfloat16")},
     "jax",
 )
 @to_ivy_arrays_and_back
