@@ -2532,7 +2532,7 @@ def sliding_window(
             padding=padding,
         )
 
-    if ivy.current_backend_str == "tensorflow":
+    if ivy.current_backend_str() == "tensorflow":
         return ivy.current_backend(input).sliding_window(
             input,
             kernel_size,
@@ -2541,7 +2541,7 @@ def sliding_window(
             padding=padding,
         )
 
-    if ivy.current_backend_str == "paddle":
+    if ivy.current_backend_str() == "paddle":
         return ivy.current_backend(input).sliding_window(
             input,
             kernel_size,
