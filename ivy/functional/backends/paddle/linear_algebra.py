@@ -227,6 +227,7 @@ def matmul(
         paddle.uint8,
         paddle.float16,
         paddle.bool,
+        paddle.bfloat16,
     ]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
 
