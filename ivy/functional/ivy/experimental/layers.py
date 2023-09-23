@@ -3018,11 +3018,11 @@ def _cal_output_shape(
     input_shape,
     padding,
     kernel_size,
-    stride,
+    strides,
 ):
     return [
-        (l - 1) * s - 2 * p + k
-        for l, s, p, k in zip(input_shape, stride, padding, kernel_size)
+        (length - 1) * stride - 2 * pad + ker
+        for length, stride, pad, ker in zip(input_shape, strides, padding, kernel_size)
     ]
 
 
