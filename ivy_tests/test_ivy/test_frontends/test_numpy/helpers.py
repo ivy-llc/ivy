@@ -4,13 +4,13 @@ from hypothesis import strategies as st
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.frontends.numpy as np_frontend
+import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers.pipeline_helper import (
     BackendHandler,
     get_frontend_config,
 )
-import ivy_tests.test_ivy.helpers.globals as test_globals
 
 
 # --- Helpers --- #

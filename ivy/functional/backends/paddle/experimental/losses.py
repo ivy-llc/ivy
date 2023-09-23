@@ -1,14 +1,16 @@
 # global
+import math
 from typing import Optional
+
 import paddle
 import paddle.nn.functional as F
-import math
 
 # local
 from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
+    with_unsupported_device_and_dtypes,
 )
+
 from . import backend_version
 
 

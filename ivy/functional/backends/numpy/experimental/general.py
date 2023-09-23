@@ -1,10 +1,12 @@
 # global
-from typing import Union, Callable, Sequence
+from typing import Callable, Sequence, Union
+
 import numpy as np
+
+from ivy import with_unsupported_dtypes
 
 # local
 from . import backend_version
-from ivy import with_unsupported_dtypes
 
 
 @with_unsupported_dtypes({"1.26.0 and below": ("complex",)}, backend_version)

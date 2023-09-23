@@ -1,12 +1,12 @@
 # global
-from typing import Optional, Union, Sequence, List
+from typing import List, Optional, Sequence, Union
 
-import paddle
-import ivy.functional.backends.paddle as paddle_backend
 import numpy as np
-import ivy
-from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+import paddle
 
+import ivy
+import ivy.functional.backends.paddle as paddle_backend
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 ivy_dtype_dict = {
     paddle.int8: "int8",

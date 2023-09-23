@@ -1,7 +1,9 @@
 """Collection of MXNet network layers, wrapped to fit Ivy syntax and signature."""
 # global
+from typing import Optional, Sequence, Tuple, Union
+
 import mxnet as mx
-from typing import Optional, Tuple, Union, Sequence
+
 import ivy
 
 # local

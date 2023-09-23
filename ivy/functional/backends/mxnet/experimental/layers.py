@@ -1,5 +1,6 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Literal, Optional, Sequence, Tuple, Union
+
 import mxnet as mx
 
 # local

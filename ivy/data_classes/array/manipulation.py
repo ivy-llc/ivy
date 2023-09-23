@@ -1,8 +1,8 @@
 # For Review
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Iterable, Sequence
 from numbers import Number
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
 
 # local
 import ivy

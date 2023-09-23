@@ -1,14 +1,13 @@
+import paddle
+
 import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from ivy.functional.ivy.experimental.sparse_array import (
+    _is_data_not_indices_values_and_shape,
     _verify_coo_components,
     _verify_csr_components,
-    _is_data_not_indices_values_and_shape,
-)
-from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
-import paddle
 
 # local
 from .. import backend_version

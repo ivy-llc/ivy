@@ -1,9 +1,9 @@
 import cProfile
+import logging
 import pstats
 import subprocess
-import logging
-from tempfile import NamedTemporaryFile
 from importlib.util import find_spec
+from tempfile import NamedTemporaryFile
 
 is_snakeviz = find_spec("snakeviz")
 

@@ -4,7 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_frontend_test
 
 
 # --- Helpers --- #

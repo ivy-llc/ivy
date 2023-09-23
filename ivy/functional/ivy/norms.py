@@ -2,16 +2,16 @@
 
 
 # local
-from typing import List, Union, Optional
+from typing import List, Optional, Union
+
 import ivy
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_array_like_without_promotion,
     handle_nestable,
-    handle_array_function,
     inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
-
 
 # Extra #
 # ------#

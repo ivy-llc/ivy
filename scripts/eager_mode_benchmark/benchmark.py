@@ -1,16 +1,17 @@
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-import functools
-import time
-import os
 import copy
+import functools
 import importlib
+import os
+import time
 import warnings
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
-import ivy
 
+import ivy
 
 sns.set()
 LINE_UP = "\033[1A"

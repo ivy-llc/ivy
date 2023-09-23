@@ -1,6 +1,5 @@
-from typing import Callable
 import functools
-
+from typing import Callable
 
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend

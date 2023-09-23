@@ -7,7 +7,6 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
 
-
 # --- Classes ---#
 # ---------------#
 

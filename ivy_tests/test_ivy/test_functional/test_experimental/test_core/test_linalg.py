@@ -1,14 +1,16 @@
 # global
+import itertools
 import math
-from hypothesis import strategies as st
+
 import numpy as np
 import pytest
-import itertools
+from hypothesis import strategies as st
+
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
-import ivy
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_test
 
 
 # --- Helpers --- #

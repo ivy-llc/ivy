@@ -1,6 +1,6 @@
 # global
-import sys
 import importlib
+import sys
 
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import (
     array_helpers_dtype_info_helper,
@@ -10,19 +10,20 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     cast_filter_helper,
 )
 
-# local
-from .testing_helpers import (
-    _get_supported_devices_dtypes_helper,
-    _get_method_supported_devices_dtypes_helper,
-    num_positional_args_helper,
-)
 from .function_testing import (
     test_function_backend_computation,
     test_function_ground_truth_computation,
-    test_method_backend_computation,
-    test_method_ground_truth_computation,
     test_gradient_backend_computation,
     test_gradient_ground_truth_computation,
+    test_method_backend_computation,
+    test_method_ground_truth_computation,
+)
+
+# local
+from .testing_helpers import (
+    _get_method_supported_devices_dtypes_helper,
+    _get_supported_devices_dtypes_helper,
+    num_positional_args_helper,
 )
 
 framework_path = "/opt/fw/"

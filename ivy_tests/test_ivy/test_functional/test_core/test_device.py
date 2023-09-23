@@ -6,21 +6,23 @@ import multiprocessing
 import os
 import re
 import shutil
+import subprocess
 import sys
 import warnings
 
 import numpy as np
 import psutil
-import subprocess
-from hypothesis import strategies as st, assume
-
-# nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_test
+
+# nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+
 
 try:
     import pynvml

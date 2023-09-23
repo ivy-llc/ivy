@@ -1,5 +1,5 @@
 import platform
-from typing import Callable, Optional, List, Union, Iterable, Tuple
+from typing import Callable, Iterable, List, Optional, Tuple, Union
 
 python_version = platform.python_version_tuple()
 

@@ -1,7 +1,7 @@
 import sys
-from pymongo import MongoClient
-from get_all_tests import get_all_tests
 
+from get_all_tests import get_all_tests
+from pymongo import MongoClient
 
 module_map = {
     "core": "test_functional/test_core",

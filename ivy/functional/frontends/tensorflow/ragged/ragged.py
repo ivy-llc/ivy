@@ -1,6 +1,5 @@
 import ivy
 
-
 # TODO: Align behavior with tensorflow, modify so that the elements of the raggedTensor
 #  object are of type EagerTensor
 # ensure that the values and row_splits are of type EagerTensor too

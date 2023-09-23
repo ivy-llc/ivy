@@ -1,6 +1,7 @@
 # global
-import paddle
 from typing import Optional, Union
+
+import paddle
 
 # local
 import ivy

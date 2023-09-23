@@ -1,7 +1,6 @@
 # global
 import math
 
-
 # Array API Standard #
 # -------------------#
 

@@ -1,4 +1,1 @@
-from . import array
-from . import container
-from . import nested_array
-from . import factorized_tensor
+from . import array, container, factorized_tensor, nested_array

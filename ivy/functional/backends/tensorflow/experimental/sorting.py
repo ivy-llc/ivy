@@ -1,6 +1,7 @@
 # global
+from typing import Optional, Union
+
 import tensorflow as tf
-from typing import Union, Optional
 
 
 # invert_permutation

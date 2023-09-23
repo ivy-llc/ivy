@@ -1,10 +1,11 @@
-from typing import Union, Callable, Any, Iterable, Dict
+from typing import Any, Callable, Dict, Iterable, Union
+
 import ivy
-from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     to_native_arrays_and_back,
 )
+from ivy.utils.backend import current_backend
 
 
 def if_else(

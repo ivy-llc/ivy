@@ -1,9 +1,11 @@
-from typing import Union, Optional, Tuple, List
 from numbers import Number
+from typing import List, Optional, Tuple, Union
+
 import mxnet as mx
 
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
+
 from .. import backend_version
 
 

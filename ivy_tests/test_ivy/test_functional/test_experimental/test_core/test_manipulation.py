@@ -1,13 +1,14 @@
 # global
-from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
 import numpy as np
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, create_concatenable_arrays_dtypes
 from ivy.functional.ivy.experimental.manipulation import _check_bounds
+from ivy_tests.test_ivy.helpers import create_concatenable_arrays_dtypes, handle_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 
 

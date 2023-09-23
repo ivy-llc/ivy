@@ -1,18 +1,17 @@
 # global
 import sys
+from numbers import Number
+from typing import Iterable, Tuple, Union
 
 # local
 import ivy
-from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.frontends import set_frontend_to_specific_version
-from typing import Union, Iterable, Tuple
-from numbers import Number
-from .data_type_routines import dtype
-from . import ndarray
-from .ndarray import *
-from . import scalars
-from .scalars import *
+from ivy.utils.exceptions import handle_exceptions
 
+from . import ndarray, scalars
+from .data_type_routines import dtype
+from .ndarray import *
+from .scalars import *
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -469,124 +468,16 @@ def promote_types_of_numpy_inputs(
     return x1, x2
 
 
-from . import creation_routines
-from .creation_routines import *
-from . import data_type_routines
-from .data_type_routines import *
-
-from . import logic
-from .logic import *
-from . import manipulation_routines
-from .manipulation_routines import *
-from . import mathematical_functions
-from .mathematical_functions import *
-from . import sorting_searching_counting
-from .sorting_searching_counting import *
-from . import statistics
-from .statistics import *
-from . import matrix
-from .matrix import *
-from . import random
-from .random import *
-from . import indexing_routines
-from .indexing_routines import *
-from . import broadcast
-from .broadcast import *
-
-from . import ma
-from . import fft
-from . import random
-from .ufunc import ufunc
-
-from . import linalg
-from .linalg.matrix_and_vector_products import (
-    # dot,
-    # vdot,
-    inner,
-    outer,
-    matrix_power,
-    tensordot,
-    # einsum,
-    # einsum_path,
-    kron,
-    cross,
+from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
+    _matmul,
+    dot,
+    einsum,
 )
-
-from .linalg.decompositions import cholesky, qr, svd
-
-from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm, trace
-
-from .linalg.solving_equations_and_inverting_matrices import pinv, inv, solve
-
-# importing private functions for ufunc initialization #
-# -----------------------------------------------------#
-
-from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import (
-    _absolute,
-    _cbrt,
-    _copysign,
-    _fabs,
-    _heaviside,
-    _sign,
-    _sqrt,
-    _square,
-    _lcm,
-    _gcd,
-    _clip,
+from ivy.functional.frontends.numpy.logic.array_type_testing import (
+    _isfinite,
+    _isinf,
+    _isnan,
 )
-
-from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
-    _add,
-    _divide,
-    _float_power,
-    _floor_divide,
-    _fmod,
-    _mod,
-    _modf,
-    _multiply,
-    _remainder,
-    _negative,
-    _positive,
-    _power,
-    _reciprocal,
-    _subtract,
-    _divmod,
-    _remainder,
-)
-
-from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
-    _arccos,
-    _arcsin,
-    _arctan,
-    _cos,
-    _deg2rad,
-    _rad2deg,
-    _sin,
-    _tan,
-    _degrees,
-    _arctan2,
-)
-
-from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
-    _conj,
-)
-
-from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
-    _arccosh,
-    _arcsinh,
-    _arctanh,
-    _cosh,
-    _sinh,
-    _tanh,
-)
-
-from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
-    _ceil,
-    _trunc,
-    _floor,
-    _rint,
-)
-
 from ivy.functional.frontends.numpy.logic.comparison import (
     _equal,
     _greater,
@@ -595,51 +486,138 @@ from ivy.functional.frontends.numpy.logic.comparison import (
     _less_equal,
     _not_equal,
 )
-
-from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
-    _exp,
-    _exp2,
-    _expm1,
-    _log,
-    _log10,
-    _log1p,
-    _log2,
-    _logaddexp,
-    _logaddexp2,
-    _ldexp,
-    _frexp,
-)
-
-from ivy.functional.frontends.numpy.logic.array_type_testing import (
-    _isfinite,
-    _isinf,
-    _isnan,
-)
-
 from ivy.functional.frontends.numpy.logic.logical_operations import (
     _logical_and,
     _logical_not,
     _logical_or,
     _logical_xor,
 )
-
-from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
-    _matmul,
-    dot,
-    einsum,
+from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
+    _add,
+    _divide,
+    _divmod,
+    _float_power,
+    _floor_divide,
+    _fmod,
+    _mod,
+    _modf,
+    _multiply,
+    _negative,
+    _positive,
+    _power,
+    _reciprocal,
+    _remainder,
+    _subtract,
 )
-
+from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
+    _exp,
+    _exp2,
+    _expm1,
+    _frexp,
+    _ldexp,
+    _log,
+    _log1p,
+    _log2,
+    _log10,
+    _logaddexp,
+    _logaddexp2,
+)
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
-    _maximum,
-    _minimum,
     _fmax,
     _fmin,
+    _maximum,
+    _minimum,
 )
-
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
     _nextafter,
     _spacing,
 )
+from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
+    _conj,
+)  # noqa
+from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
+    _arccosh,
+    _arcsinh,
+    _arctanh,
+    _cosh,
+    _sinh,
+    _tanh,
+)
+from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import (
+    _absolute,
+    _cbrt,
+    _clip,
+    _copysign,
+    _fabs,
+    _gcd,
+    _heaviside,
+    _lcm,
+    _sign,
+    _sqrt,
+    _square,
+)
+from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
+    _ceil,
+    _floor,
+    _rint,
+    _trunc,
+)
+from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
+    _arccos,
+    _arcsin,
+    _arctan,
+    _arctan2,
+    _cos,
+    _deg2rad,
+    _degrees,
+    _rad2deg,
+    _sin,
+    _tan,
+)
+
+from . import (
+    broadcast,
+    creation_routines,
+    data_type_routines,
+    fft,
+    indexing_routines,
+    linalg,
+    logic,
+    ma,
+    manipulation_routines,
+    mathematical_functions,
+    matrix,
+    random,
+    sorting_searching_counting,
+    statistics,
+)
+from .broadcast import *
+from .creation_routines import *
+from .data_type_routines import *
+from .indexing_routines import *
+from .linalg.decompositions import cholesky, qr, svd
+from .linalg.matrix_and_vector_products import (  # dot,; vdot,; einsum,; einsum_path,
+    cross,
+    inner,
+    kron,
+    matrix_power,
+    outer,
+    tensordot,
+)
+from .linalg.norms_and_other_numbers import det, matrix_rank, norm, slogdet, trace
+from .linalg.solving_equations_and_inverting_matrices import inv, pinv, solve
+from .logic import *
+from .manipulation_routines import *
+from .mathematical_functions import *
+from .matrix import *
+from .random import *
+from .sorting_searching_counting import *
+from .statistics import *
+from .ufunc import ufunc
+
+# importing private functions for ufunc initialization #
+# -----------------------------------------------------#
+
 
 _frontend_array = array
 

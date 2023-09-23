@@ -2,13 +2,12 @@
 
 # global
 from builtins import map as _map
-from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
-from collections import UserDict, OrderedDict
+from collections import OrderedDict, UserDict
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 # local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
-
 
 # Extra #
 # ------#

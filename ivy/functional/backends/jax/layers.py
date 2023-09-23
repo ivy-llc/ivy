@@ -1,6 +1,8 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 
+from typing import Optional, Sequence, Tuple, Union
+
 # global
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -8,11 +10,10 @@ import jax.numpy as jnp
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
-from typing import Union, Tuple, Optional, Sequence
 from ivy.functional.ivy.layers import (
-    _handle_padding,
     _deconv_length,
     _get_x_data_format,
+    _handle_padding,
 )
 
 

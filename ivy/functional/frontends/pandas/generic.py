@@ -1,8 +1,10 @@
-import ivy
-import numpy as np
 import copy as py_copy
-from ivy.functional.frontends.pandas.func_wrapper import outputs_to_self_class
+
+import numpy as np
+
+import ivy
 import ivy.functional.frontends.pandas.series as series
+from ivy.functional.frontends.pandas.func_wrapper import outputs_to_self_class
 from ivy.functional.frontends.pandas.index import Index
 
 

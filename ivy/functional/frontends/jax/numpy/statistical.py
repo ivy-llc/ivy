@@ -3,8 +3,8 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
     handle_jax_dtype,
+    to_ivy_arrays_and_back,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 

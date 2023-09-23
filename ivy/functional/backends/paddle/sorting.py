@@ -1,10 +1,12 @@
 # global
-import paddle
 from typing import Optional, Union
+
+import paddle
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+
 from . import backend_version
 
 

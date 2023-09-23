@@ -1,6 +1,7 @@
 # global
-from hypothesis import strategies as st
 import importlib
+
+from hypothesis import strategies as st
 
 # local
 import ivy

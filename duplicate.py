@@ -1,6 +1,6 @@
+import glob
 import importlib
 import os
-import glob
 
 
 def get_all_functions_from_directory(root_dir, startswith="test"):

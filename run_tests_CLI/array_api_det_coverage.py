@@ -1,9 +1,10 @@
+import bz2
 import os
 import subprocess
+
+import _pickle as cPickle
 from pydriller import Repository
 from tqdm import tqdm
-import bz2
-import _pickle as cPickle
 
 
 def main():

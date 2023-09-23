@@ -1,8 +1,8 @@
-import pickle
-import numpy as np
 import os
+import pickle
 
-from hypothesis import given, assume
+import numpy as np
+from hypothesis import assume, given
 
 # local
 import ivy

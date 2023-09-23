@@ -1,8 +1,8 @@
 """Collection of tests for unified meta functions."""
 
 # global
-import pytest
 import numpy as np
+import pytest
 from hypothesis import strategies as st
 
 # local

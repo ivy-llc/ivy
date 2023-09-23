@@ -1,3 +1,5 @@
+import types
+
 from .activations import *
 from .constants import *
 from .creation import *
@@ -17,10 +19,9 @@ from .random import *
 from .searching import *
 from .set import *
 from .sorting import *
-from .statistical import *
 from .sparse_array import *
+from .statistical import *
 from .utility import *
-import types
 
 __all__ = [
     name

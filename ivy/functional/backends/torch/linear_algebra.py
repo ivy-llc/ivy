@@ -1,18 +1,17 @@
 # global
 
-import torch
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
-
 from collections import namedtuple
+from typing import List, Literal, NamedTuple, Optional, Sequence, Tuple, Union
 
+import torch
 
 # local
 import ivy
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+
 from . import backend_version
 from .elementwise import _cast_for_unary_op
-
 
 # Array API Standard #
 # -------------------#

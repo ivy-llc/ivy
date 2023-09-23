@@ -1,12 +1,14 @@
-import jax.numpy as jnp
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Sequence, Tuple, Union
 
-from ivy.functional.backends.jax import JaxArray
 import jax.lax as jlax
+import jax.numpy as jnp
+
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+from ivy.functional.backends.jax import JaxArray
+
 from ..statistical import _infer_dtype
+from . import backend_version
 
 
 @with_unsupported_dtypes(

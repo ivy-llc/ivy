@@ -1,6 +1,4 @@
-from . import Generator
-from .Generator import *
-from . import RandomState
-from .RandomState import *
-from . import functions
+from . import Generator, RandomState, functions
 from .functions import *
+from .Generator import *
+from .RandomState import *

@@ -1,14 +1,15 @@
 """Collection of device Ivy functions."""
 
 # global
-import os
-import gc
 import abc
+import gc
 import math
-import psutil
-import warnings
+import os
 import types
-from typing import Type, Optional, Tuple
+import warnings
+from typing import Optional, Tuple, Type
+
+import psutil
 
 # noinspection PyUnresolvedReferences
 try:
@@ -26,16 +27,16 @@ except ImportError:
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
-from typing import Union, Callable, Iterable, Any
+from typing import Any, Callable, Iterable, Union
 
 # local
 import ivy
 from ivy.func_wrapper import (
-    handle_out_argument,
-    to_native_arrays_and_back,
-    handle_nestable,
     handle_array_like_without_promotion,
     handle_backend_invalid,
+    handle_nestable,
+    handle_out_argument,
+    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
 

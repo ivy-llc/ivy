@@ -1,6 +1,7 @@
+from typing import Iterable
+
 import ivy
 import ivy.functional.frontends.pandas.series as series
-from typing import Iterable
 
 
 class Index:

@@ -1,14 +1,15 @@
 # global
-from hypothesis import assume, strategies as st
-import numpy as np
 import sys
+
+import numpy as np
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
+import ivy.functional.frontends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
-import ivy.functional.frontends.numpy as ivy_np
-
 
 CLASS_TREE = "ivy.functional.frontends.numpy.matrix"
 

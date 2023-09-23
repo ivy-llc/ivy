@@ -1,10 +1,11 @@
 # global
 from hypothesis import strategies as st
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-import ivy
 
 
 # --- Helpers --- #

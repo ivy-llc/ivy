@@ -1,12 +1,8 @@
 import ivy
-from ivy.func_wrapper import (
-    with_supported_dtypes,
-    with_unsupported_device_and_dtypes,
-)
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
+from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
+
 from ..tensor.tensor import Tensor
-from ivy.functional.frontends.paddle.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
 
 
 # --- Helpers --- #

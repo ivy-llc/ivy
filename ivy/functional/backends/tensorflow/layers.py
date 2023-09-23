@@ -1,7 +1,7 @@
 """Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional, Sequence, Tuple, Union
 
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -9,12 +9,13 @@ from tensorflow.python.types.core import Tensor
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 from ivy.functional.ivy.layers import (
     _deconv_length,
     _get_x_data_format,
     _handle_padding,
 )
+
+from . import backend_version
 
 
 def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):

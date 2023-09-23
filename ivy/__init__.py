@@ -1,14 +1,14 @@
 # global
-import copy
-import re
-import warnings
 import builtins
-import numpy as np
-import sys
+import copy
 import inspect
 import os
+import re
+import sys
+import warnings
 from collections.abc import Sequence
 
+import numpy as np
 
 import ivy.utils.backend.handler
 from ivy._version import __version__ as __version__
@@ -613,7 +613,6 @@ warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 # local
 import threading
 
-
 # devices
 # ToDo: add gpu and tpu for valid devices when we test for them
 all_devices = ("cpu", "gpu", "tpu")
@@ -759,48 +758,47 @@ invalid_complex_dtypes = ()
 locks = {"backend_setter": threading.Lock()}
 
 
-from .func_wrapper import *
-from .data_classes.array import Array, add_ivy_array_instance_methods
-from .data_classes.array.conversions import *
-from .data_classes.array import conversions as arr_conversions
-from .data_classes.container import conversions as cont_conversions
-from .data_classes.container import (
-    ContainerBase,
-    Container,
-    add_ivy_container_instance_methods,
-)
-from .data_classes.nested_array import NestedArray
-from .data_classes.factorized_tensor import (
-    TuckerTensor,
-    CPTensor,
-    TRTensor,
-    TTTensor,
-    Parafac2Tensor,
-)
 from ivy.utils.backend import (
-    current_backend,
-    compiled_backends,
-    with_backend,
-    set_backend,
-    set_numpy_backend,
-    set_jax_backend,
-    set_tensorflow_backend,
-    set_torch_backend,
-    set_paddle_backend,
-    set_mxnet_backend,
-    previous_backend,
     backend_stack,
     choose_random_backend,
+    compiled_backends,
+    current_backend,
+    previous_backend,
+    set_backend,
+    set_jax_backend,
+    set_mxnet_backend,
+    set_numpy_backend,
+    set_paddle_backend,
+    set_tensorflow_backend,
+    set_torch_backend,
     unset_backend,
+    with_backend,
 )
-from . import func_wrapper
+from ivy.utils.inspection import add_array_specs, fn_array_spec
+
+from . import func_wrapper, functional, stateful
+from .data_classes.array import Array, add_ivy_array_instance_methods
+from .data_classes.array import conversions as arr_conversions
+from .data_classes.array.conversions import *
+from .data_classes.container import (
+    Container,
+    ContainerBase,
+    add_ivy_container_instance_methods,
+)
+from .data_classes.container import conversions as cont_conversions
+from .data_classes.factorized_tensor import (
+    CPTensor,
+    Parafac2Tensor,
+    TRTensor,
+    TTTensor,
+    TuckerTensor,
+)
+from .data_classes.nested_array import NestedArray
+from .func_wrapper import *
+from .functional import *
+from .stateful import *
 from .utils import assertions, exceptions, verbosity
 from .utils.backend import handler
-from . import functional
-from .functional import *
-from . import stateful
-from .stateful import *
-from ivy.utils.inspection import fn_array_spec, add_array_specs
 
 add_array_specs()
 
@@ -812,7 +810,7 @@ try:
 except:
     pass
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler.compiler import compile, transpile, unify
 except:  # noqa: E722
     pass  # Added for the finally statment
 finally:
@@ -1219,12 +1217,11 @@ for backend_framework in _not_imported_backends:
 
 # sub_backends
 from ivy.utils.backend.sub_backend_handler import (
+    available_sub_backend_implementations,
+    clear_sub_backends,
     set_sub_backend,
     unset_sub_backend,
-    clear_sub_backends,
-    available_sub_backend_implementations,
 )
-
 
 available_sub_backends = []
 current_sub_backends = []

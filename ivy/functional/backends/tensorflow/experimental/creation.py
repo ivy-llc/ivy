@@ -1,12 +1,13 @@
 # global
 
-from typing import Union, Optional, Tuple
+from typing import Optional, Tuple, Union
+
 import tensorflow as tf
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
-from .. import backend_version
 
+from .. import backend_version
 
 # Array API Standard #
 # -------------------#
