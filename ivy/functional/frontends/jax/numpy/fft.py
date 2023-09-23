@@ -48,3 +48,19 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     if norm is None:
         norm = "backward"
     return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, "numpy")
+def rfft(a, n=None, axis=-1, norm=None):
+    if n is None:
+        n = a.shape[axis]
+    if norm is None:
+        norm = "backward"
+    result = ivy.dft(
+        a, axis=axis, inverse=False, onesided=False, dft_length=n, norm=norm
+    )
+    slices = [slice(0, a) for a in result.shape]
+    slices[axis] = slice(0, int(ivy.shape(result, as_array=True)[axis] // 2 + 1))
+    result = result[tuple(slices)]
+    return result

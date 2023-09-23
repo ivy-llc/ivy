@@ -214,3 +214,46 @@ def test_jax_numpy_ifft2(
         atol=1e-02,
         rtol=1e-02,
     )
+
+
+# rfft
+@handle_frontend_test(
+    fn_tree="jax.numpy.fft.rfft",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=1,
+        min_dim_size=2,
+        allow_inf=False,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.one_of(
+        st.integers(min_value=2, max_value=10),
+        st.just(None),
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward", None]),
+)
+def test_jax_numpy_rfft(
+    dtype_input_axis, n, norm, frontend, backend_fw, test_flags, fn_tree, on_device
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        n=n,
+        axis=axis,
+        norm=norm,
+        atol=1e-04,
+        rtol=1e-04,
+    )
