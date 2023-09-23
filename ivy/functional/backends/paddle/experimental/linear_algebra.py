@@ -89,6 +89,9 @@ def adjoint(
     return paddle.moveaxis(x, -2, -1).conj()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+)
 def solve_triangular(
     x1: paddle.Tensor,
     x2: paddle.Tensor,

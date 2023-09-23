@@ -157,8 +157,22 @@ def solve_triangular(
     upper: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    # NumPy does not expose an API for `trsm`
-    raise IvyNotImplementedException()
+    # NumPy does not expose an API for `trsm`, so we have to implement substitution
+    # in Python. There is no need to support gradients for this backend.
+    # Pre: `x1` is square, `x1` and `x2` have the same number `n` of rows.
+    n = x1.shape[-2]
+    ret = x2.copy()
+    if upper:
+        for i in reversed(range(n)):
+            ret[..., i, :] /= x1[..., i, np.newaxis, i]
+            ret[..., :i, :] -= x1[..., :i, np.newaxis, i] * ret[..., np.newaxis, i, :]
+    else:
+        for i in range(n):
+            ret[..., i, :] /= x1[..., i, np.newaxis, i]
+            ret[..., i + 1 :, :] -= (
+                x1[..., i + 1 :, np.newaxis, i] * ret[..., np.newaxis, i, :]
+            )
+    return ret
 
 
 def multi_dot(

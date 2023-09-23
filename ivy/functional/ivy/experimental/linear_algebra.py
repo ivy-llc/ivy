@@ -504,15 +504,15 @@ def solve_triangular(
     With :class:`ivy.Array` inputs:
 
     >>> a = ivy.array([[3, 0, 0, 0],
-                       [2, 1, 0, 0],
-                       [1, 0, 1, 0],
-                       [1, 1, 1, 1]], dtype=ivy.float32)
+    ...                [2, 1, 0, 0],
+    ...                [1, 0, 1, 0],
+    ...                [1, 1, 1, 1]], dtype=ivy.float32)
     >>> b = ivy.array([[4],
-                       [2],
-                       [4],
-                       [2]], dtype=ivy.float32)
+    ...                [2],
+    ...                [4],
+    ...                [2]], dtype=ivy.float32)
     >>> x = ivy.solve_triangular(a, b, upper=False)
-    >>> print(ivy.matmul(a, x))
+    >>> ivy.matmul(a, x)
     ivy.array([[4.],
                [2.],
                [4.],
