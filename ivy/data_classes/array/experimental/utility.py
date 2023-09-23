@@ -1,6 +1,6 @@
 # global
-import abc
 from typing import Optional
+import abc
 
 # local
 import ivy

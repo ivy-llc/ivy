@@ -1,17 +1,16 @@
 # global
-import math
-
 from hypothesis import strategies as st
+import math
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_dtype_values_k_axes_for_rot90,
+)
 from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
     _get_repeat_interleaves_args,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
-    _get_dtype_values_k_axes_for_rot90,
-)  # noqa
 
 
 # --- Helpers --- #

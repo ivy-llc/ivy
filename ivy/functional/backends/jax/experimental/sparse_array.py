@@ -1,5 +1,4 @@
 import logging
-
 import ivy
 from ivy.functional.ivy.experimental.sparse_array import (
     _is_valid_format,

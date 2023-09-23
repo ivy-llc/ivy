@@ -1,8 +1,6 @@
 # global
 import math
-
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy

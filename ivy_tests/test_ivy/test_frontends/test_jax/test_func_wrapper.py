@@ -3,14 +3,14 @@ from hypothesis import given
 
 # local
 import ivy
-import ivy.functional.frontends.jax as jax_frontend
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.frontends.jax.array import Array
 from ivy.functional.frontends.jax.func_wrapper import (
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
 )
+from ivy.functional.frontends.jax.array import Array
+import ivy.functional.frontends.jax as jax_frontend
 
 
 # --- Helpers --- #

@@ -1,17 +1,14 @@
 # global
-import builtins
+from typing import Any
 import itertools
 import string
-from typing import Any
+import builtins
 
 # local
 import ivy
-from ivy.func_wrapper import (
-    frontend_outputs_to_ivy_arrays,
-    with_supported_dtypes,
-    with_unsupported_dtypes,
-)
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes, frontend_outputs_to_ivy_arrays
 
 _slice = builtins.slice
 

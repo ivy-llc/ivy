@@ -3,8 +3,8 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 
 
 # corrcoef

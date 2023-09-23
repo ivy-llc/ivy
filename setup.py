@@ -15,15 +15,14 @@
 # ==============================================================================
 __version__ = None
 
-import json
-import os
-import re
-from pathlib import Path
-from urllib import request
-
 import setuptools
-from pip._vendor.packaging import tags
 from setuptools import setup
+from pathlib import Path
+from pip._vendor.packaging import tags
+from urllib import request
+import os
+import json
+import re
 
 
 def _get_paths_from_binaries(binaries, root_dir=""):

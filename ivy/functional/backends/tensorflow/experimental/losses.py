@@ -1,10 +1,10 @@
+import tensorflow as tf
 import math
 from typing import Optional
-
-import tensorflow as tf
-
-from ivy.func_wrapper import with_supported_device_and_dtypes, with_unsupported_dtypes
-
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 

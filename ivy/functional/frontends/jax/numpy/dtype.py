@@ -1,12 +1,12 @@
 # local
 import ivy
-from ivy import with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.jax.numpy import (
     jax_numpy_casting_table,
     promote_types_jax,
 )
 from ivy.functional.frontends.numpy import dtype as np_dtype
+from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back

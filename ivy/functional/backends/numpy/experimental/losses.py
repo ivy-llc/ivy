@@ -1,10 +1,10 @@
-from typing import Optional
-
 import numpy as np
-
-from ivy.func_wrapper import with_supported_device_and_dtypes, with_unsupported_dtypes
+from typing import Optional
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 

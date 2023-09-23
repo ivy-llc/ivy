@@ -1,5 +1,5 @@
-import torch
 from torchvision.ops import nms as torch_nms
+import torch
 
 
 def nms(

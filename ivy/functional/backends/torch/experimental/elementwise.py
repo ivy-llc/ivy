@@ -1,15 +1,16 @@
 # global
+from typing import Optional, Union, Tuple, List
 from numbers import Number
-from typing import List, Optional, Tuple, Union
-
 import torch
 
 # local
 import ivy
 from ivy import promote_types_of_inputs
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
-
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 from .. import backend_version
 
 

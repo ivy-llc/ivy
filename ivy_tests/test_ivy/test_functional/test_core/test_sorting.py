@@ -1,8 +1,8 @@
 """Collection of tests for sorting functions."""
 
 # global
-import numpy as np
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

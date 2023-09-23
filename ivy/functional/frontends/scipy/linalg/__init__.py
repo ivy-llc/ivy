@@ -1,2 +1,2 @@
-from . import interpolative
 from .linalg import *
+from . import interpolative

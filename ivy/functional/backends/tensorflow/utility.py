@@ -1,7 +1,7 @@
 # global
-from typing import Optional, Sequence, Union
-
 import tensorflow as tf
+from typing import Union, Optional, Sequence
+
 
 # local
 import ivy

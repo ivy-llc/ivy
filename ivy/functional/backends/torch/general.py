@@ -3,7 +3,7 @@
 from functools import reduce as _reduce
 from numbers import Number
 from operator import mul
-from typing import Callable, List, Optional, Sequence, Tuple, Union
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 
 try:
     import functorch
@@ -14,10 +14,9 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import _update_torch_views, with_unsupported_dtypes
-
-from ...ivy.general import _broadcast_to
+from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
 from . import backend_version, is_variable
+from ...ivy.general import _broadcast_to
 
 torch_scatter = None
 

@@ -1,24 +1,24 @@
 # global
+from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 import warnings
-from typing import Generator, Iterable, Optional, Sequence, Tuple, Union
 
 # local
 import ivy
-from ivy.func_wrapper import (
-    handle_array_function,
-    handle_array_like_without_promotion,
-    handle_backend_invalid,
-    handle_device_shifting,
-    handle_nestable,
-    handle_out_argument,
-    infer_device,
-    infer_dtype,
-    inputs_to_ivy_arrays,
-    outputs_to_ivy_arrays,
-    to_native_arrays_and_back,
-)
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
+from ivy.func_wrapper import (
+    infer_device,
+    outputs_to_ivy_arrays,
+    handle_nestable,
+    to_native_arrays_and_back,
+    handle_out_argument,
+    infer_dtype,
+    handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
+    handle_device_shifting,
+    handle_backend_invalid,
+    handle_array_function,
+)
 
 
 @handle_exceptions

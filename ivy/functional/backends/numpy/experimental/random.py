@@ -1,6 +1,5 @@
 # global
-from typing import Optional, Sequence, Union
-
+from typing import Optional, Union, Sequence
 import numpy as np
 
 # local

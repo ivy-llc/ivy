@@ -1,8 +1,8 @@
 import ivy
-import ivy.functional.frontends.torch as torch_frontend
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back

@@ -1,21 +1,19 @@
 # global
+from hypothesis import given, strategies as st
 import platform
-
-from hypothesis import given
-from hypothesis import strategies as st
 
 # local
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.numpy.func_wrapper import (
-    from_zero_dim_arrays_to_scalar,
-    handle_numpy_dtype,
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
+    handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
 )
 from ivy.functional.frontends.numpy.ndarray import ndarray
+import ivy.functional.frontends.numpy as np_frontend
 
 
 # --- Helpers --- #

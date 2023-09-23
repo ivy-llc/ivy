@@ -2,22 +2,35 @@
 # global
 import copy
 import functools
+import numpy as np
 from operator import mul
 from typing import Optional
 
-import numpy as np
-
 # local
 import ivy
-from ivy.func_wrapper import handle_view_indexing
-
-from .activations import _ArrayWithActivations
 from .conversions import args_to_native, to_ivy
+from .activations import _ArrayWithActivations
 from .creation import _ArrayWithCreation
 from .data_type import _ArrayWithDataTypes
 from .device import _ArrayWithDevice
 from .elementwise import _ArrayWithElementwise
+from .general import _ArrayWithGeneral
+from .gradients import _ArrayWithGradients
+from .image import _ArrayWithImage
+from .layers import _ArrayWithLayers
+from .linear_algebra import _ArrayWithLinearAlgebra
+from .losses import _ArrayWithLosses
+from .manipulation import _ArrayWithManipulation
+from .norms import _ArrayWithNorms
+from .random import _ArrayWithRandom
+from .searching import _ArrayWithSearching
+from .set import _ArrayWithSet
+from .sorting import _ArrayWithSorting
+from .statistical import _ArrayWithStatistical
+from .utility import _ArrayWithUtility
+from ivy.func_wrapper import handle_view_indexing
 from .experimental import (
+    _ArrayWithSearchingExperimental,
     _ArrayWithActivationsExperimental,
     _ArrayWithConversionsExperimental,
     _ArrayWithCreationExperimental,
@@ -33,26 +46,11 @@ from .experimental import (
     _ArrayWithManipulationExperimental,
     _ArrayWithNormsExperimental,
     _ArrayWithRandomExperimental,
-    _ArrayWithSearchingExperimental,
     _ArrayWithSetExperimental,
     _ArrayWithSortingExperimental,
     _ArrayWithStatisticalExperimental,
     _ArrayWithUtilityExperimental,
 )
-from .general import _ArrayWithGeneral
-from .gradients import _ArrayWithGradients
-from .image import _ArrayWithImage
-from .layers import _ArrayWithLayers
-from .linear_algebra import _ArrayWithLinearAlgebra
-from .losses import _ArrayWithLosses
-from .manipulation import _ArrayWithManipulation
-from .norms import _ArrayWithNorms
-from .random import _ArrayWithRandom
-from .searching import _ArrayWithSearching
-from .set import _ArrayWithSet
-from .sorting import _ArrayWithSorting
-from .statistical import _ArrayWithStatistical
-from .utility import _ArrayWithUtility
 
 
 class Array(
@@ -190,7 +188,7 @@ class Array(
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _is_variable, _variable, _variable_data
+        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
         from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
