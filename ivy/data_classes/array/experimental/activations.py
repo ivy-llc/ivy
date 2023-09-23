@@ -297,7 +297,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([ 0.39, -0.57])
         """
         return ivy.elu(self._data, alpha=alpha, out=out)
-      
+
     def hardtanh(
         self: ivy.Array,
         /,

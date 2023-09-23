@@ -619,6 +619,7 @@ def _celu_jax_like(
     )
     return complex_max + alpha * ivy.expm1(complex_min / alpha)
 
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
