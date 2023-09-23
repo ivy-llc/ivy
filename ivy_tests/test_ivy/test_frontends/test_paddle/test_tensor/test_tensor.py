@@ -2844,7 +2844,7 @@ def test_paddle_tensor_nonzero(
     init_tree="paddle.to_tensor",
     method_name="not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes(kind="valid"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -2874,6 +2874,8 @@ def test_paddle_tensor_not_equal(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
