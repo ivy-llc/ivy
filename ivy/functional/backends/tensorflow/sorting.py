@@ -60,7 +60,7 @@ def searchsorted(
     /,
     *,
     side: Literal["left", "right"] = "left",
-    sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
+    sorter: Optional[Union[tf.Tensor, tf.Variable, List[int]]] = None,
     ret_dtype: tf.DType = tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

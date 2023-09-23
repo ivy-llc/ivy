@@ -8,7 +8,7 @@ from jax.numpy import tril, triu, r_, c_
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
-from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (  # noqa
     _helper_r_,
     _helper_c_,
 )

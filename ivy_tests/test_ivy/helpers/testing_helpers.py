@@ -457,6 +457,7 @@ def handle_test(
             )
         wrapped_test._ivy_test = True
         wrapped_test.ground_truth_backend = ground_truth_backend
+        wrapped_test.original = test_fn
 
         return wrapped_test
 
@@ -591,6 +592,7 @@ def handle_frontend_test(
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
+        wrapped_test.original = test_fn
 
         return wrapped_test
 

@@ -104,7 +104,7 @@ def poisson(
 # bernoulli
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and above": {
+        "2.5.0 to 2.5.1": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         },
