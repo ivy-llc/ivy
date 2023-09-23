@@ -1,11 +1,9 @@
 # global
 from typing import Optional, Tuple
-
 import numpy as np
 
 # local
 from ivy.func_wrapper import with_supported_dtypes
-
 from . import backend_version
 
 

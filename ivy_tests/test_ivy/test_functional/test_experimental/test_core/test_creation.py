@@ -1,6 +1,6 @@
-import numpy as np
 import pytest
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy

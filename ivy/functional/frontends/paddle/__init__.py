@@ -1,12 +1,13 @@
 import sys
+import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
+
 
 # global
 from numbers import Number
-from typing import Iterable, Tuple, Union
+from typing import Union, Tuple, Iterable
 
-import ivy
-from ivy.functional.frontends import set_frontend_to_specific_version
-from ivy.utils.exceptions import handle_exceptions
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -214,7 +215,10 @@ def promote_types_of_paddle_inputs(
     return x1, x2
 
 
-from . import nn, tensor, vision
+from . import nn
+from . import tensor
+from .tensor.tensor import Tensor
+from . import vision
 from .attribute import *
 from .creation import *
 from .fft import *
@@ -225,7 +229,7 @@ from .math import *
 from .random import *
 from .search import *
 from .stat import *
-from .tensor.tensor import Tensor
+
 
 _frontend_array = Tensor
 

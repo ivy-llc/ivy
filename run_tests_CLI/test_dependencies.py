@@ -1,12 +1,11 @@
 # Assert All Dependencies are Importable and Correctly Versioned #
 # ---------------------------------------------------------------#
 
-import argparse
-import faulthandler
-import importlib
 import os
-
+import argparse
 import termcolor
+import importlib
+import faulthandler
 from packaging import version
 
 faulthandler.enable()

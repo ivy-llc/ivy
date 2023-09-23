@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import List, Optional, Sequence, Tuple, Union
+from typing import Union, Optional, List, Sequence, Tuple
 
 import numpy as np
 
@@ -8,16 +8,16 @@ import numpy as np
 import ivy
 from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.ivy.creation import (
-    NestedSequence,
-    SupportsBufferProtocol,
-    _asarray_handle_nestable,
+    _asarray_to_native_arrays_and_back,
     _asarray_infer_device,
     _asarray_infer_dtype,
+    _asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
     _asarray_inputs_to_native_shapes,
-    _asarray_to_native_arrays_and_back,
 )
-
 from .data_type import as_native_dtype
+
 
 # Array API Standard #
 # -------------------#

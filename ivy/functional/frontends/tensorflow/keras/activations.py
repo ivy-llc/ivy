@@ -1,7 +1,8 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy import with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy import with_supported_dtypes
+
 
 ACTIVATION_FUNCTIONS = [
     "gelu",

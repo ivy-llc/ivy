@@ -1,19 +1,18 @@
 # global
-import functools
-from builtins import range as py_range
-from builtins import slice as py_slice
+from builtins import slice as py_slice, range as py_range
 
 # local
 import ivy
-import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import (
-    handle_tf_dtype,
     to_ivy_arrays_and_back,
+    handle_tf_dtype,
     to_ivy_dtype,
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
+import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+import functools
 
 
 # --- Helpers --- #

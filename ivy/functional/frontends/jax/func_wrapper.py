@@ -1,7 +1,7 @@
 # global
 import functools
-import inspect
 from typing import Callable
+import inspect
 
 # local
 import ivy

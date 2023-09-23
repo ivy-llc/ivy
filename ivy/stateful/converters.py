@@ -1,11 +1,12 @@
 """Converters from Native Modules to Ivy Modules."""
 # global
-import inspect
+from typing import Optional, Dict, List
 import re  # noqa
-from typing import Dict, List, Optional
+import inspect
 
 # local
 import ivy
+
 from ivy.utils.backend import current_backend
 
 

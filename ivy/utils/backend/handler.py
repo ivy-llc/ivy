@@ -1,18 +1,16 @@
 # global
-import copy
-import functools
-import gc
-import importlib
 import os
+import copy
 import types
-
-import numpy as np
-
 import ivy
+import importlib
+import functools
+import numpy as np
+import gc
+from ivy.utils import _importlib, verbosity
 
 # local
-from ivy.func_wrapper import _handle_efficient_implementation_available, _wrap_function
-from ivy.utils import _importlib, verbosity
+from ivy.func_wrapper import _wrap_function, _handle_efficient_implementation_available
 from ivy.utils.backend.sub_backend_handler import (
     _clear_current_sub_backends,
     fn_name_from_version_specific_fn_name,

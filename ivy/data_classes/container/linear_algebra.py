@@ -1,10 +1,9 @@
 # global
-from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
-
-import ivy
+from typing import Union, Optional, Tuple, Literal, List, Dict, Sequence
 
 # local
 from ivy.data_classes.container.base import ContainerBase
+import ivy
 
 inf = float("inf")
 

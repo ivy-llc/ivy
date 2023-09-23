@@ -1,16 +1,16 @@
 """Collection of Numpy network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Sequence, Tuple, Union
-
 import numpy as np
+from typing import Union, Tuple, Optional, Sequence
+
 
 # local
 import ivy
 from ivy.functional.ivy.layers import (
+    _handle_padding,
     _deconv_length,
     _get_x_data_format,
-    _handle_padding,
 )
 
 

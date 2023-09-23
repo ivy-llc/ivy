@@ -1,12 +1,12 @@
 # global
-import functools
 import inspect
 from typing import Callable, Dict
+import functools
 
 # local
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
 import ivy.functional.frontends.tensorflow as frontend
+import ivy.functional.frontends.numpy as np_frontend
 
 
 # --- Helpers --- #

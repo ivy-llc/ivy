@@ -1,31 +1,31 @@
 # global
 import ast
-import importlib
-import inspect
 import logging
+import inspect
 import math
-from collections.abc import Hashable
 from numbers import Number
-from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
-
+from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
+import importlib
 
 # local
 import ivy
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
-    handle_array_like_without_promotion,
-    handle_backend_invalid,
-    handle_device_shifting,
-    handle_nestable,
     handle_out_argument,
-    inputs_to_ivy_arrays,
-    inputs_to_native_arrays,
-    inputs_to_native_shapes,
     to_native_arrays_and_back,
+    inputs_to_native_arrays,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
+    inputs_to_native_shapes,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
-from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
+from collections.abc import Hashable
+
 
 # Helpers #
 # --------#
@@ -1910,18 +1910,14 @@ def is_int_dtype(
             else False
         )
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return (
-            True
-            if ivy.nested_argwhere(
-                dtype_in,
-                lambda x: (
-                    isinstance(x, (int, np.integer))
-                    or (ivy.is_array(x) and "int" in ivy.dtype(x))
-                )
-                and x is not bool,
-            )
-            else False
-        )
+
+        def nested_fun(x):
+            return (
+                isinstance(x, (int, np.integer))
+                or (ivy.is_array(x) and "int" in ivy.dtype(x))
+            ) and x is not bool
+
+        return True if ivy.nested_argwhere(dtype_in, nested_fun) else False
     return "int" in ivy.as_ivy_dtype(dtype_in)
 
 

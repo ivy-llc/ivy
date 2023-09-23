@@ -1,12 +1,12 @@
 # local
 import ivy
-import ivy.functional.frontends.paddle as paddle
 from ivy.func_wrapper import with_supported_dtypes
+import ivy.functional.frontends.paddle as paddle
+from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.frontends.paddle.func_wrapper import (
     inputs_to_ivy_arrays,
     to_ivy_arrays_and_back,
 )
-from ivy.utils.exceptions import handle_exceptions
 
 
 # --- Helpers --- #

@@ -1,5 +1,5 @@
 # global
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from typing import Optional, Union, List, Dict, Tuple, Sequence
 
 # local
 import ivy

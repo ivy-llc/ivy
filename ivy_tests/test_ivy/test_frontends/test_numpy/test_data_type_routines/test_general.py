@@ -1,6 +1,5 @@
 # global
-from hypothesis import assume, settings
-from hypothesis import strategies as st
+from hypothesis import strategies as st, settings, assume
 
 # local
 import ivy
