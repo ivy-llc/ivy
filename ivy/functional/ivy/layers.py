@@ -590,8 +590,10 @@ def scaled_dot_product_attention(
     ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
     >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
     ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> mask = ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
-    ...               b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]]))
+    >>> mask = ivy.Container(
+    ...     a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
+    ...     b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]])
+    ... )
     >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,mask=mask)
     >>> print(result)
     {
@@ -708,11 +710,11 @@ def scaled_dot_product_attention(
 @handle_array_function
 def multi_head_attention(
     query: Union[ivy.Array, ivy.NativeArray],
-    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     /,
     *,
-    num_heads: Optional[int] = 8,
+    key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    num_heads: int = 8,
     scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -722,12 +724,12 @@ def multi_head_attention(
     out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    is_causal: Optional[bool] = False,
-    return_attention_weights: Optional[bool] = False,
-    average_attention_weights: Optional[bool] = True,
-    dropout: Optional[float] = 0.0,
-    training: Optional[bool] = False,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    is_causal: bool = False,
+    return_attention_weights: bool = False,
+    average_attention_weights: bool = True,
+    dropout: float = 0.0,
+    training: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Apply multi-head attention to inputs x. This is an implementation of multi-headed
@@ -805,10 +807,8 @@ def multi_head_attention(
     num_dims = query.ndim
     ivy.assertions.check_all(
         num_dims > 1 and num_dims < 4,
-        (
-            "Number of dimensions should be 2 (for unbatched input) or 3 (for batched"
-            f" input), got {num_dims}"
-        ),
+        "Number of dimensions should be 2 (for unbatched input) or 3 (for batched"
+        f" input), got {num_dims}",
     )
     if key is None and value is None:
         key = value = query
@@ -1546,7 +1546,6 @@ def depthwise_conv2d(
                        [[0.],
                         [-6.]]]])
     }
-
     """
     return current_backend(x).depthwise_conv2d(
         x,
@@ -2053,7 +2052,6 @@ def conv(
         The result of the transpose or dilated convolution operation.
     """
     if transpose:
-        assert x_dilations == 1, "x_dilations must be 1 for transpose convolutions."
         return conv_general_transpose(
             x,
             filters,
@@ -2342,3 +2340,86 @@ def _get_num_padded_values(i, p, n, k, s):
     return max(0, left_padding - current_index) + max(
         0, current_index + k - n - left_padding
     )
+
+
+# TODO add paddle backend implementation back,
+#  once paddle.argsort uses a stable algorithm
+#  https://github.com/PaddlePaddle/Paddle/issues/57508
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    change_id = False
+    if score_threshold is not float("-inf") and scores is not None:
+        keep_idx = scores > score_threshold
+        boxes = boxes[keep_idx]
+        scores = scores[keep_idx]
+        change_id = True
+        nonzero = ivy.nonzero(keep_idx)[0].flatten()
+    if scores is None:
+        scores = ivy.ones((boxes.shape[0],), dtype=boxes.dtype)
+
+    if len(boxes) < 2:
+        if len(boxes) == 1:
+            ret = ivy.array([0], dtype=ivy.int64)
+        else:
+            ret = ivy.array([], dtype=ivy.int64)
+    else:
+        x1 = boxes[:, 0]
+        y1 = boxes[:, 1]
+        x2 = boxes[:, 2]
+        y2 = boxes[:, 3]
+
+        areas = (x2 - x1) * (y2 - y1)
+        order = ivy.argsort(
+            (-1 * scores), stable=True
+        )  # get boxes with more ious first
+        keep = []
+
+        while order.size > 0:
+            i = order[0]  # pick maxmum iou box
+            keep.append(i)
+            xx1 = ivy.maximum(x1[i], x1[order[1:]])
+            yy1 = ivy.maximum(y1[i], y1[order[1:]])
+            xx2 = ivy.minimum(x2[i], x2[order[1:]])
+            yy2 = ivy.minimum(y2[i], y2[order[1:]])
+
+            w = ivy.maximum(0.0, xx2 - xx1)  # maximum width
+            h = ivy.maximum(0.0, yy2 - yy1)  # maxiumum height
+            inter = w * h
+            ovr = inter / (areas[i] + areas[order[1:]] - inter)
+            inds = ivy.nonzero(ovr <= iou_threshold)[0]
+
+            order = order[inds + 1]
+
+        ret = ivy.array(keep)
+
+    if len(ret) > 1 and scores is not None:
+        ret = sorted(
+            ret.flatten().tolist(), reverse=True, key=lambda x: (scores[x], -x)
+        )
+        ret = ivy.array(ret, dtype=ivy.int64).flatten()
+
+    if change_id and len(ret) > 0:
+        ret = ivy.array(nonzero[ret], dtype=ivy.int64).flatten()
+
+    return ret.flatten()[:max_output_size]
+
+
+nms.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import tensorflow as tf
@@ -15,6 +15,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[Tensor] = None,
 ) -> Tensor:
     x_dtype = x.dtype
@@ -37,13 +38,16 @@ def thresholded_relu(
     return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def relu6(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu6(x)
 
 
 @with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
-def logsigmoid(input: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def logsigmoid(
+    input: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
+) -> Tensor:
+    if input.dtype in [tf.complex64, tf.complex128]:
+        return tf.math.log(tf.nn.sigmoid(input))
     return tf.math.log_sigmoid(input)
 
 
@@ -72,6 +76,25 @@ def silu(
 def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
     alpha = tf.cast(alpha, x.dtype)
     ret = tf.cast(tf.where(x > 0, x, tf.multiply(alpha, tf.math.expm1(x))), x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def hardtanh(
+    x: Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.where(
+        tf.math.greater(x, max_val),
+        max_val,
+        tf.where(tf.math.less(x, min_val), min_val, x),
+    )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)

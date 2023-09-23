@@ -196,7 +196,7 @@ def batch_norm(
     if scale is not None:
         inv = inv * scale
     xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+        offset - mean * inv if offset is not None else -mean * inv, x.dtype, copy=False
     )
 
     if data_format == "NCS":
@@ -308,8 +308,10 @@ def instance_norm(
     x = x.reshape((1, *S, N * C))
     mean = ivy.tile(mean, N)
     variance = ivy.tile(variance, N)
-    scale = ivy.tile(scale, N)
-    offset = ivy.tile(offset, N)
+    if scale is not None:
+        scale = ivy.tile(scale, N)
+    if offset is not None:
+        offset = ivy.tile(offset, N)
     xnormalized, runningmean, runningvariance = batch_norm(
         x,
         mean,

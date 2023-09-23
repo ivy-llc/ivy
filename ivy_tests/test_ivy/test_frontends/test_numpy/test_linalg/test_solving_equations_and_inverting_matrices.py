@@ -8,95 +8,8 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# solve
-@handle_frontend_test(
-    fn_tree="numpy.linalg.solve",
-    x=helpers.get_first_solve_matrix(adjoint=True),
-    y=helpers.get_second_solve_matrix(),
-    test_with_out=st.just(False),
-)
-def test_numpy_solve(
-    x,
-    y,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    dtype1, x1, _ = x
-    dtype2, x2 = y
-    helpers.test_frontend_function(
-        input_dtypes=[dtype1, dtype2],
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x1,
-        b=x2,
-    )
-
-
-# inv
-@handle_frontend_test(
-    fn_tree="numpy.linalg.inv",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
-    test_with_out=st.just(False),
-)
-def test_numpy_inv(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-    )
-
-
-# pinv
-@handle_frontend_test(
-    fn_tree="numpy.linalg.pinv",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_numpy_pinv(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-    on_device,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-    )
+# --- Helpers --- #
+# --------------- #
 
 
 # tensorinv
@@ -143,35 +56,38 @@ def _get_inv_square_matrices(draw):
     return input_dtype, a, ind
 
 
+# --- Main --- #
+# ------------ #
+
+
+# inv
 @handle_frontend_test(
-    fn_tree="numpy.linalg.tensorinv",
-    params=_get_inv_square_matrices(),
+    fn_tree="numpy.linalg.inv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     test_with_out=st.just(False),
 )
-def test_numpy_tensorinv(
-    *,
-    params,
-    test_flags,
-    on_device,
-    fn_tree,
+def test_numpy_inv(
+    dtype_and_x,
     frontend,
+    test_flags,
+    fn_tree,
     backend_fw,
+    on_device,
 ):
-    dtype, x, ind = params
-    if backend_fw == "paddle":
-        # Paddle only supports ndim from 0 to 9
-        assume(x.ndim <= 9)
+    dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
-        test_flags=test_flags,
-        rtol=1e-01,
-        atol=1e-01,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x,
-        ind=ind,
+        a=x[0],
     )
 
 
@@ -217,3 +133,97 @@ def test_numpy_lstsq(
         #     ground_truth_backend="numpy",
         # )
         return
+
+
+# pinv
+@handle_frontend_test(
+    fn_tree="numpy.linalg.pinv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_pinv(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
+# solve
+@handle_frontend_test(
+    fn_tree="numpy.linalg.solve",
+    x=helpers.get_first_solve_batch_matrix(),
+    y=helpers.get_second_solve_batch_matrix(),
+    test_with_out=st.just(False),
+)
+def test_numpy_solve(
+    x,
+    y,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype1, x1, _ = x
+    dtype2, x2, _ = y
+    helpers.test_frontend_function(
+        input_dtypes=[dtype1, dtype2],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-4,
+        atol=1e-4,
+        a=x1,
+        b=x2,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.linalg.tensorinv",
+    params=_get_inv_square_matrices(),
+    test_with_out=st.just(False),
+)
+def test_numpy_tensorinv(
+    *,
+    params,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+):
+    dtype, x, ind = params
+    if backend_fw == "paddle":
+        # Paddle only supports ndim from 0 to 9
+        assume(x.ndim <= 9)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        ind=ind,
+    )

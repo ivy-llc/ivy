@@ -73,4 +73,3 @@ In order to change the value of a property, setter functions must be used.
     >>> ivy.unset_array_mode()
     >>> ivy.array_mode
     True
-
