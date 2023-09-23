@@ -2583,7 +2583,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.max_unpool1d
+        ivy.Container static method variant of ivy.max_unpool1d.
 
         Parameters
         ----------
