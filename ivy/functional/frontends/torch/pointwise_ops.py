@@ -5,22 +5,28 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_torch_scalar_exception,
+)
 
 
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def abs(input, *, out=None):
     return ivy.abs(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def acos(input, *, out=None):
     return ivy.acos(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def acosh(input, *, out=None):
     return ivy.acosh(input, out=out)
 
@@ -31,6 +37,7 @@ def acosh(input, *, out=None):
 @to_ivy_arrays_and_back
 def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+    print(f"input: {input.dtype} | other: {other.dtype}")
     return ivy.add(input, other, alpha=alpha, out=out)
 
 
@@ -47,30 +54,35 @@ def addcmul(input, tensor1, tensor2, *, value=1, out=None):
 
 
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def angle(input, *, out=None):
     return ivy.angle(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def asin(input, *, out=None):
     return ivy.asin(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def asinh(input, *, out=None):
     return ivy.asinh(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def atan(input, *, out=None):
     return ivy.atan(input, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def atan2(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.atan2(input, other, out=out)
@@ -119,6 +131,7 @@ def bitwise_xor(input, other, *, out=None):
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
+@handle_torch_scalar_exception
 def ceil(input, *, out=None):
     return ivy.ceil(input, out=out)
 
