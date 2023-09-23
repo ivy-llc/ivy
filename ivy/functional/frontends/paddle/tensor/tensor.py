@@ -21,9 +21,8 @@ class Tensor:
 
     def __repr__(self):
         return (
-            str(self._ivy_array.__repr__())
-            .replace("ivy.array", "ivy.frontends.paddle.Tensor")
-            .replace("dev", "place")
+            f"ivy.frontends.paddle.Tensor(shape={self.shape}, dtype={self.dtype}, "
+            + str(self.ivy_array.__repr__()).replace("ivy.array(", "")
         )
 
     # Properties #
@@ -43,7 +42,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return self._ivy_array.shape
+        return list(self.ivy_array.shape.shape)
 
     @property
     def ndim(self):
@@ -61,8 +60,15 @@ class Tensor:
     # Special Methods #
     # -------------------#
 
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __add__(self, y, /, name=None):
+        return paddle_frontend.add(self, y)
+
     def __getitem__(self, item):
-        ivy_args = ivy.nested_map([self, item], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, item])
         ret = ivy.get_item(*ivy_args)
         return paddle_frontend.Tensor(ret)
 
@@ -140,6 +146,10 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def sinh(self, name=None):
         return paddle_frontend.Tensor(ivy.sinh(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def lerp(self, y, weight, name=None):
+        return paddle_frontend.lerp(self, y, weight)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def lerp_(self, y, weight, name=None):
@@ -596,6 +606,13 @@ class Tensor:
     def deg2rad(self, name=None):
         return paddle_frontend.Tensor(ivy.deg2rad(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def digamma(self, name=None):
+        digamma_fun = ivy.digamma
+        return paddle_frontend.Tensor(
+            ivy.astype(digamma_fun(self._ivy_array), self.dtype)
+        )
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64", "bool")}, "paddle"
     )
@@ -720,6 +737,16 @@ class Tensor:
     def trunc(self, name=None):
         return paddle_frontend.Tensor(ivy.trunc(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.1 and below": ("complex64", "complex128")}, "paddle")
+    def as_real(self, name=None):
+        if not ivy.is_complex_dtype(self._ivy_array):
+            raise ivy.exceptions.IvyError(
+                "as_real is only supported for complex tensors"
+            )
+        re_part = ivy.real(self._ivy_array)
+        im_part = ivy.imag(self._ivy_array)
+        return ivy.stack((re_part, im_part), axis=-1)
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def stanh(self, scale_a=0.67, scale_b=1.7159, name=None):
         return paddle_frontend.stanh(self, scale_a=scale_a, scale_b=scale_b)
@@ -741,6 +768,13 @@ class Tensor:
             self._ivy_array, axis=axis, keepdim=keepdim, dtype=dtype
         )
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def topk(self, k, axis=None, largest=True, sorted=True, name=None):
+        return ivy.top_k(self._ivy_array, k, axis=axis, largest=largest, sorted=sorted)
+
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def remainder(self, y, name=None):
         return ivy.remainder(self._ivy_array, y)
@@ -752,3 +786,17 @@ class Tensor:
     def reciprocal_(self, name=None):
         y = self.reciprocal(self)
         return ivy.inplace_update(self, y)
+
+    @with_unsupported_dtypes(
+        {"2.5.1 and below": ("complex", "uint8", "uint16")}, "paddle"
+    )
+    def numpy(self):
+        return self.ivy_array.to_numpy()
+
+    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    def nonzero(self):
+        return paddle_frontend.nonzero(self._ivy_array)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def inner(self, y, name=None):
+        return paddle_frontend.inner(self._ivy_array, y, name)
