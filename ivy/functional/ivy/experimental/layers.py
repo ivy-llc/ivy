@@ -2667,7 +2667,7 @@ sliding_window.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -3006,7 +3006,7 @@ def rfftn(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def stft(
     signals: Union[ivy.Array, ivy.NativeArray],
     frame_length: int,

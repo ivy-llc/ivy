@@ -1764,7 +1764,7 @@ def general_inner_product(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def higher_order_moment(
     x: Union[ivy.Array, ivy.NativeArray],
     order: int,
@@ -1813,7 +1813,7 @@ def higher_order_moment(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def batched_outer(
     tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
