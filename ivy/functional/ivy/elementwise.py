@@ -4236,25 +4236,20 @@ def log2(
     Examples
     --------
     With :class:`ivy.Array` input:
-
     >>> x = ivy.array([5.0, 1, -0.0, -6.0])
     >>> y = ivy.log2(x)
     >>> print(y)
     ivy.array([2.32, 0., -inf, nan])
-
     >>> x = ivy.array([[float('nan'), 1, 6.0, float('+inf')],
     ...               [+0, -2.0, -6, float('-inf')]])
     >>> y = ivy.log2(x)
     >>> print(y)
     ivy.array([[nan, 0., 2.58, inf],[inf, nan, nan, nan]])
-
     With :class:`ivy.NativeArray` input:
-
     >>> x = ivy.native_array([5.0, 1.0, -0.0, -6.0])
     >>> y = ivy.log2(x)
     >>> print(y)
     ivy.array([2.32, 0., -inf, nan])
-
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
     ...                   b=ivy.array([-0., -4.9, float('+inf')]),
@@ -4264,7 +4259,7 @@ def log2(
     {
         a: ivy.array([-inf, nan]),
         b: ivy.array([-inf, nan, inf]),
-        c: ivy.array([3.17, 1.07, 0.])
+        c: ivy.array([3.15, 1.07, 0.])
     }
     """
     return ivy.current_backend(x).log2(x, out=out)
