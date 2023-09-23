@@ -663,6 +663,19 @@ def idct(
     return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
+def irfft(
+    x: torch.Tensor,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[str] = None,
+    *,
+    name: Optional[str] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    # Ignore the `name` parameter for PyTorch
+    return torch.fft.irfft(x, n=n, dim=axis, norm=norm, out=out)
+
+
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (

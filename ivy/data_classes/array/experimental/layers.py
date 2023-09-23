@@ -645,6 +645,70 @@ class _ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
+    def irfft(
+        self: ivy.Array,
+        /,
+        *,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: str = "backward",
+        name: Optional[str] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.ifft. This method simply wraps the
+        function, and so the docstring for ivy.ifft also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self : Array
+            Input tensor.
+        n : int, optional
+            The length of the output transform axis.
+            For n output points, n//2 + 1 input points are necessary.
+            If the length of the input tensor is greater than n, it will be cropped.
+            If it is shorter than this, fill in zero.
+            If n is not given, it is considered to be 2 * (k-1),
+            where k is the length of the input axis specified along the axis.
+        axis : float, optional
+            Axis used to calculate FFT.
+            If not specified, the last axis is used by default.
+        norm : str, optional
+            Indicates which direction to scale the forward or backward transform pair
+            and what normalization factor to use.
+            The parameter value must be one of “forward” or “backward” or “ortho”.
+            Default is “backward”.
+        name : str, optional
+            The default value is None.
+            Normally there is no need for user to set this property.
+        out : Array, optional
+            Optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        Array
+            Real tensor.
+            Truncated or zero fill input for the transformation
+            along the axis indicated by axis, or the last input
+            if axis is not specified.
+            The length of the conversion axis is n, or 2 * k-2, if k is None,
+            where k is the length of the input conversion axis.
+            If the output is an odd number, you need to specify the value of 'n',
+            such as 2 * k-1 in some cases.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import ivy
+        >>> x = ivy.array([1, -1j, -1])
+        >>> irfft_x = x.irfft()
+        >>> print(irfft_x)
+        [0. 1. 0. 0.]
+        """
+        return ivy.irfft(self, n=n, axis=axis, norm=norm, name=name, out=out)
+
     def embedding(
         self: ivy.Array,
         indices: ivy.Array,

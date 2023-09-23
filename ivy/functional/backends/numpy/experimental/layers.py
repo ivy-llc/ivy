@@ -834,6 +834,20 @@ def idct(
     return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
 
 
+def irfft(
+    x: np.ndarray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[str] = None,
+    name: Optional[str] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    # Ignore the `name` and `out` parameter for NumPy
+    return np.fft.irfft(x, n=n, axis=axis, norm=norm)
+
+
 def dropout1d(
     x: np.ndarray,
     prob: float,

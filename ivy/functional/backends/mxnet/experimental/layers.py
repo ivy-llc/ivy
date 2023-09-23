@@ -231,3 +231,16 @@ def interpolate(
     out: Optional[mx.nd.NDArray] = None,
 ):
     raise IvyNotImplementedException()
+
+
+def irfft(
+    x: mx.nd.NDArray,
+    /,
+    *,
+    axis: int = -1,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[mx.nd.NDArray] = None,
+    name: Optional[str] = None,
+) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()

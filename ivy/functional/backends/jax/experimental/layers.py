@@ -513,6 +513,20 @@ def dct(
     return dct_out
 
 
+def irfft(
+    x: JaxArray,
+    /,
+    *,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[str] = None,
+    name: Optional[str] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    # Ignore the `name` and `out` parameters for Jax
+    return jnp.fft.irfft(x, n=n, axis=axis, norm=norm)
+
+
 def idct(
     x: JaxArray,
     /,
