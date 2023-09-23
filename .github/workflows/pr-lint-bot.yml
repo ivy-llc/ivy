@@ -1,53 +1,14 @@
-name: PR Lint Bot
+name: Trigger lint format
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, edited, ready_for_review]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
 
 jobs:
-  format-code:
+  fix-linting:
     name: PR Lint Bot
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️ ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.IVY_BRANCH_TOKEN }}
-          ref: ${{ github.head_ref }}
-          repository: ${{ github.repository }}
-
-      - name: Get changed files
-        id: changed-files
-        uses: KareemMAX/gh-action-get-changed-files@5a5ee034eff88bee239d4f49cd041fed0bec7480
-        with:
-          token: ${{ secrets.IVY_BRANCH_TOKEN }}
-
-      - name: Setup Python 🐍
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
-
-      - name: Run pre-commit 🚀
-        continue-on-error: true
-        uses: pre-commit/action@v3.0.0
-        with:
-          extra_args: ${{ github.event_name == 'pull_request' && format('--files {0}', join(fromJSON(steps.changed-files.outputs.all), ' ')) || '--all-files' }}
-
-      - name: Check if there are changes 📝
-        id: check
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo "changes=true" >> $GITHUB_ENV
-          fi
-
-      - name: Commit changes 📝
-        if: steps.check.outputs.changes == 'true'
-        run: |
-          git config --local user.email "ivy.branch@lets-unify.ai"
-          git config --local user.name "ivy-branch"
-          git add .
-          git commit -m "🤖 Lint code"
-          git push
+    uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@main
+    secrets: inherit
