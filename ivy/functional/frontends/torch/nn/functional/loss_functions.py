@@ -75,12 +75,11 @@ def _get_reduction_string(size_average, reduce):
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
-    reduction = _get_reduction(reduction, size_average, reduce)
-    result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
+    result = ivy.binary_cross_entropy(target, input, epsilon=0.0, reduction=reduction)
 
     if weight is not None:
         result = ivy.multiply(weight, result)
-    result = reduction(result)
+
     return result
 
 
