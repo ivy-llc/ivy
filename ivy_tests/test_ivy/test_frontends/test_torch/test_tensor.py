@@ -1,55 +1,56 @@
 # global
-import pytest
 from types import SimpleNamespace
-import numpy as np
 
+import numpy as np
+import pytest
+from hypothesis import assume, given
+from hypothesis import strategies as st
+
+import ivy
+
+# local
+import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.torch import Tensor
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_frontend_method
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_and_3dbatch_matrices,
+    _get_dtype_input_and_mat_vec,
+    _get_dtype_input_and_matrices,
+)
 from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
     _topk_helper,
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_creation_ops import (
     _as_strided_helper,
 )
-from ivy_tests.test_ivy.test_frontends.test_torch.test_indexing_slicing_joining_mutating_ops import (  # noqa: E501
+from ivy_tests.test_ivy.test_frontends.test_torch.test_indexing_slicing_joining_mutating_ops import (
     _dtype_input_dim_start_length,
-)
+)  # noqa: E501
+from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (
+    _get_dtype_and_matrix,
+)  # noqa
+from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (
+    dtype_value1_value2_axis,
+)  # noqa
 from ivy_tests.test_ivy.test_frontends.test_torch.test_reduction_ops import (
     _get_axis_and_p,
 )
-
-import ivy
-from hypothesis import strategies as st, given, assume
-
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
-    _get_dtype_and_3dbatch_matrices,
-    _get_dtype_input_and_matrices,
-    _get_dtype_input_and_mat_vec,
-)
-from ivy.functional.frontends.torch import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (
+    _get_splits,
+)  # noqa
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
-)
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
-)
-from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import (  # noqa
-    dtype_value1_value2_axis,
-)
-from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
-    _get_dtype_and_matrix,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
     _statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
     put_along_axis_helper,
-)
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
+)  # noqa
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (
     _quantile_helper,
-)
+)  # noqa
 
 try:
     import torch
@@ -1567,6 +1568,43 @@ def test_torch_index_fill(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# nansum
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="nansum",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+)
+def test_torch_instance_nansum(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 
@@ -6092,6 +6130,67 @@ def test_torch_tensor_diagonal(
         backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# diff
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="diff",
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        min_value=-1e09,
+        max_value=1e09,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_torch_tensor_diff(
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "n": n,
+            "dim": axis,
+            "prepend": prepend[0],
+            "append": append[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 

@@ -1,17 +1,19 @@
-from typing import Union, Optional, Tuple, Sequence
+# from ivy.functional.backends.paddle.experimental.statistical import to_positive_axis
+from copy import deepcopy
+from typing import Optional, Sequence, Tuple, Union
+
 import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
+
 import ivy
 from ivy import (
-    with_unsupported_dtypes,
-    with_supported_dtypes,
     with_supported_device_and_dtypes,
+    with_supported_dtypes,
+    with_unsupported_dtypes,
 )
-from .. import backend_version
 
-# from ivy.functional.backends.paddle.experimental.statistical import to_positive_axis
-from copy import deepcopy
+from .. import backend_version
 
 
 def histogram(
@@ -653,6 +655,10 @@ def cov(
     return tf.math.truediv(c, fact)
 
 
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("bool",)},
+    backend_version,
+)
 def cummax(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -663,12 +669,8 @@ def cummax(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
-    if x.dtype in (tf.bool, tf.float16):
-        x = tf.cast(x, tf.float64)
-    elif x.dtype in (tf.int16, tf.int8, tf.uint8):
-        x = tf.cast(x, tf.int64)
-    elif x.dtype in (tf.complex128, tf.complex64):
-        x = tf.cast(tf.math.real(x), tf.float64)
+    if x.dtype in (tf.complex128, tf.complex64):
+        x = tf.math.real(x)
 
     if exclusive or reverse:
         if exclusive and reverse:

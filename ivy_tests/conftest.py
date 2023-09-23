@@ -1,15 +1,15 @@
 # global
 import os
+
 import redis
 from colorama import Fore
-from hypothesis import settings, HealthCheck, Phase
+from hypothesis import HealthCheck, Phase, settings
 from hypothesis.database import (
+    DirectoryBasedExampleDatabase,
     MultiplexedDatabase,
     ReadOnlyDatabase,
-    DirectoryBasedExampleDatabase,
 )
 from hypothesis.extra.redis import RedisExampleDatabase
-
 
 hypothesis_cache = f"{os.getcwd()}/.hypothesis/examples/"
 redis_connect_dev = None

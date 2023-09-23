@@ -1,4 +1,4 @@
-from typing import Optional, Union, Literal
+from typing import Literal, Optional, Union
 
 # global
 import tensorflow as tf
@@ -6,7 +6,8 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+
 from . import backend_version
 
 
@@ -76,6 +77,25 @@ def silu(
 def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
     alpha = tf.cast(alpha, x.dtype)
     ret = tf.cast(tf.where(x > 0, x, tf.multiply(alpha, tf.math.expm1(x))), x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def hardtanh(
+    x: Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.where(
+        tf.math.greater(x, max_val),
+        max_val,
+        tf.where(tf.math.less(x, min_val), min_val, x),
+    )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)

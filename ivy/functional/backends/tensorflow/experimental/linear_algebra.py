@@ -1,13 +1,13 @@
-from typing import Union, Optional, Tuple, List, Sequence
-import tensorflow as tf
 from functools import reduce as _reduce
+from typing import List, Optional, Sequence, Tuple, Union
+
+import tensorflow as tf
 
 import ivy
-
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
-
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
+
 from .. import backend_version
 
 
@@ -94,23 +94,39 @@ def matrix_exp(
     return tf.linalg.expm(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eig(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eig(tf.cast(x, tf.float64))
     return tf.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eigvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eigvals(tf.cast(x, tf.float64))
     return tf.linalg.eigvals(x)
 
 

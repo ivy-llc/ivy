@@ -1,13 +1,13 @@
 # import sys
+# global
+from numbers import Number
+from typing import Iterable, Tuple, Union
+
 import ivy
 from ivy.utils.exceptions import handle_exceptions
 
 # from ivy.functional.frontends import set_frontend_to_specific_version
 
-
-# global
-from numbers import Number
-from typing import Union, Tuple, Iterable
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -250,13 +250,10 @@ def promote_types_of_onnx_inputs(
     return x1, x2
 
 
-from . import helper
-from . import tensor
-from .tensor import *
-from . import elementwise
+from . import elementwise, helper, linalg, tensor
 from .elementwise import *
-from . import linalg
 from .linalg import *
+from .tensor import *
 
 # _frontend_array = Tensor
 

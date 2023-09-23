@@ -1,14 +1,13 @@
 # global
-import inspect
 import abc
+import inspect
 
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
-from .creation import linspace, arange, array
-from .manipulations import transpose, concatenate, expand_dims
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+
+from .creation import arange, array, linspace
+from .manipulations import concatenate, expand_dims, transpose
 
 
 class _AxisConcat(abc.ABC):

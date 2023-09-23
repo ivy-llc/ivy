@@ -1,6 +1,6 @@
 import hypothesis.extra.numpy as hnp
-from hypothesis import strategies as st
 import numpy as np
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

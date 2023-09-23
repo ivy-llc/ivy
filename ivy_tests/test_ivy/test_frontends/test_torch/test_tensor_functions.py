@@ -5,9 +5,9 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa: E501
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
     put_along_axis_helper,
-)
+)  # noqa: E501
 
 
 @handle_frontend_test(

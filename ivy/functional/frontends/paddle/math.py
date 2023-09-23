@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -28,6 +28,14 @@ def acosh(x, name=None):
 @to_ivy_arrays_and_back
 def add(x, y, name=None):
     return ivy.add(x, y)
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def add_(x, y, name=None):
+    return ivy.inplace_update(x, add(x, y))
 
 
 @with_supported_dtypes(

@@ -1,16 +1,15 @@
 # global
-from typing import Iterable
 import math
+from typing import Iterable
 
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 import ivy.functional.frontends.torch.nn.functional as torch_frontend_nn
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
     array as np_frontend_array,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     _to_ivy_array,
     numpy_to_torch_style_args,
@@ -870,6 +869,11 @@ class Tensor:
     def nanmean(self, dim=None, keepdim=False):
         return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    @numpy_to_torch_style_args
+    def nansum(self, dim=None, keepdim=False):
+        return torch_frontend.nansum(self, dim=dim, keepdim=keepdim)
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
@@ -1701,6 +1705,21 @@ class Tensor:
     def floor_(self):
         self.ivy_array = self.floor().ivy_array
         return self
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "complex",
+                "float64",
+                "int8",
+                "int64",
+            )
+        },
+        "torch",
+    )
+    def diff(self, n=1, dim=-1, prepend=None, append=None):
+        return torch_frontend.diff(self, n=n, dim=dim, prepend=prepend, append=append)
 
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)

@@ -1,19 +1,16 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
+from typing import Literal, NamedTuple, Optional, Sequence, Tuple, Union
 
 import jax.numpy as jnp
 
 # local
 import ivy
-from ivy import inf
+from ivy import inf, promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 
 from . import backend_version
-
-from ivy import promote_types_of_inputs
-
 
 # Array API Standard #
 # -------------------#

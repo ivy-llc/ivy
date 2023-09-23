@@ -1,8 +1,8 @@
 # global
 import ivy
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 
 # --- Helpers --- #
@@ -86,6 +86,12 @@ def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
 @to_ivy_arrays_and_back
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool2d
+@to_ivy_arrays_and_back
+def avg_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
+    return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
 
 
 # avg_pool3d

@@ -1,4 +1,5 @@
-from hypothesis import assume, strategies as st
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy

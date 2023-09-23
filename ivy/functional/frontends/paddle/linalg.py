@@ -1,10 +1,8 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.paddle import promote_types_of_paddle_inputs
-from ivy.functional.frontends.paddle.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
 @with_supported_dtypes({"2.4.1 and above": ("int64",)}, "paddle")
@@ -112,6 +110,13 @@ def matmul(x, y, transpose_x=False, transpose_y=False, name=None):
 @to_ivy_arrays_and_back
 def matrix_power(x, n, name=None):
     return ivy.matrix_power(x, n)
+
+
+# mv
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def mv(x, vec, name=None):
+    return ivy.dot(x, vec)
 
 
 # norm

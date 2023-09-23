@@ -1,4 +1,4 @@
-from typing import Optional, Union, Literal
+from typing import Literal, Optional, Union
 
 # global
 import torch
@@ -7,6 +7,7 @@ import torch.nn
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 
@@ -67,6 +68,21 @@ def elu(
     x: torch.Tensor, /, *, alpha: float = 1.0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.nn.functional.elu(x, alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def hardtanh(
+    x: torch.Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    ret = torch.nn.functional.hardtanh(x, max_val=max_val, min_val=min_val)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)

@@ -1,7 +1,7 @@
 """Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional, Sequence, Tuple, Union
 
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -9,12 +9,13 @@ from tensorflow.python.types.core import Tensor
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
 from ivy.functional.ivy.layers import (
     _deconv_length,
     _get_x_data_format,
     _handle_padding,
 )
+
+from . import backend_version
 
 
 def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
@@ -491,3 +492,21 @@ def conv_general_transpose(
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    if scores is None:
+        scores = tf.ones(boxes.shape[0])
+
+    boxes = tf.gather(boxes, [1, 0, 3, 2], axis=1)
+    ret = tf.image.non_max_suppression(
+        boxes, scores, max_output_size or len(boxes), iou_threshold, score_threshold
+    )
+
+    return tf.cast(ret, dtype=tf.int64)

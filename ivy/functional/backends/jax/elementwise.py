@@ -1,18 +1,15 @@
 # global
-from typing import Union, Optional
+from typing import Optional, Union
 
 import jax
 import jax.numpy as jnp
 
 # local
 import ivy
-from ivy import (
-    default_float_dtype,
-    is_float_dtype,
-)
-from ivy import promote_types_of_inputs
-from ivy.functional.backends.jax import JaxArray
+from ivy import default_float_dtype, is_float_dtype, promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax import JaxArray
+
 from . import backend_version
 
 

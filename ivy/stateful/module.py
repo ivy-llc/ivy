@@ -1,21 +1,22 @@
 """Base class for deriving trainable modules."""
 
 # global
-from collections import OrderedDict
-import functools
-import os
 import abc
 import copy
+import functools
+import os
+from collections import OrderedDict
+from typing import Dict, Optional, Tuple
+
 import dill
-from typing import Optional, Tuple, Dict
 
 # local
 import ivy
 from ivy.data_classes.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.functional.ivy.gradients import _is_variable
-from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
+from ivy.stateful.helpers import ModuleHelpers
 
 
 # helpers
@@ -1257,7 +1258,9 @@ class _TorchIvyModule(Module):
                 native.__setattr__(k, v)
             elif isinstance(v, torch.Tensor):
                 # noinspection PyProtectedMember
-                native.__setattr__(k, torch.nn.Parameter(v, requires_grad=v.requires_grad))
+                native.__setattr__(
+                    k, torch.nn.Parameter(v, requires_grad=v.requires_grad)
+                )
             else:
                 raise ivy.utils.exceptions.IvyException(
                     f"found item in variable container {v} which was neither a sub"

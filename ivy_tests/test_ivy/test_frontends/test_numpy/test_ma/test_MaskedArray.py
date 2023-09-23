@@ -3,9 +3,8 @@ from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.functional.frontends.numpy.ma.MaskedArray import MaskedArray
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.frontends.numpy.ma.MaskedArray import MaskedArray
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
