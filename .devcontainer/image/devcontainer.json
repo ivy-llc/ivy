@@ -17,7 +17,7 @@
         "post_create": "bash .devcontainer/post_create_commands.sh", 
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
-	"initializeCommand": "docker pull unifyai/ivy:latest",
+	//"initializeCommand": "docker pull unifyai/ivy:latest",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
