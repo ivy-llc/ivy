@@ -202,7 +202,7 @@ def set_sub_backend(sub_backend_str: str):
     )
     set_sub_backend_to_specific_version(sub_backend)
     _set_sub_backend_as_ivy(ivy.__dict__.copy(), ivy, sub_backend)
-    ivy.current_backend().sub_backends._current_sub_backends.append(sub_backend_str)
+    ivy.current_sub_backends.append(sub_backend_str)
 
 
 # this is very similar to _set_backend_as_ivy in handler.py, with a minor change
@@ -258,7 +258,7 @@ def unset_sub_backend(sub_backend_str: str):
     _unset_sub_backend_from_ivy(
         original_backend_dict, ivy, sub_backend, sub_backend.name
     )
-    ivy.current_backend().sub_backends._current_sub_backends.remove(sub_backend_str)
+    ivy.current_sub_backends.remove(sub_backend_str)
 
 
 def _unset_sub_backend_from_ivy(
@@ -289,7 +289,7 @@ def _unset_sub_backend_from_ivy(
 def clear_sub_backends():
     if ivy.current_sub_backends:
         ivy.__dict__.update(original_backend_dict)
-        ivy.current_backend().sub_backends._current_sub_backends = []
+        ivy.current_sub_backends.clear()
 
 
 # This is only used in set_backend in handler.py
@@ -297,7 +297,7 @@ def _clear_current_sub_backends():
     global original_backend_dict
     original_backend_dict = None
     if ivy.current_sub_backends:
-        ivy.current_backend().sub_backends._current_sub_backends = []
+        ivy.current_sub_backends.clear()
 
 
 def find_available_sub_backends(sub_backends_loc):
