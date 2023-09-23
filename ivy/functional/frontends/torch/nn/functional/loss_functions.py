@@ -19,7 +19,7 @@ def _apply_reduction(reduction, size_average, reduce, to_reduce):
 
 def _get_reduction(reduction, size_average=None, reduce=None):
     if size_average is not None or reduce is not None:
-        return _get_reduction_func(_legacy_get_string(size_average, reduce))
+        return _get_reduction_func(_get_reduction_string(size_average, reduce))
     else:
         return _get_reduction_func(reduction)
 
@@ -53,20 +53,6 @@ def _get_reduction_method(reduction, to_reduce):
 
 
 def _get_reduction_string(size_average, reduce):
-    if size_average is None:
-        size_average = True
-    if reduce is None:
-        reduce = True
-    if size_average and reduce:
-        ret = "mean"
-    elif reduce:
-        ret = "sum"
-    else:
-        ret = "none"
-    return ret
-
-
-def _legacy_get_string(size_average, reduce):
     if size_average is None:
         size_average = True
     if reduce is None:
@@ -212,7 +198,17 @@ def cross_entropy(
     reduction="mean",
     label_smoothing=0.0,
 ):
-    return ivy.cross_entropy(target, input, epsilon=label_smoothing)
+    loss = ivy.cross_entropy(target, input, epsilon=label_smoothing)
+
+    if ignore_index != -100:
+        mask = ivy.not_equal(target, ignore_index)
+        loss = ivy.where(mask, loss, ivy.zeros_like(loss))
+
+    if weight is not None:
+        result = ivy.multiply(weight, loss)
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    return reduction(result).astype(target.dtype)
 
 
 @to_ivy_arrays_and_back
