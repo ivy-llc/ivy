@@ -129,13 +129,8 @@ The following would be a much better solution:
         return res
 
 You will notice that this implementation involves more lines of code, but this should not be confused with added complexity.
-<<<<<<< HEAD
 All Ivy code should be traced for efficiency, and in this case all the :code:`if` and :code:`else` statements are removed, and all that remains is the backend functions which were executed.
-This new implementation will be traced to a graph of either one, three, four or six functions depending on the values of :code:`beta` and :code:`threshold`, while the previous implementation would *always* trace to six functions.
-=======
-All Ivy code should be graph compiled for efficiency, and in this case all the :code:`if` and :code:`else` statements are removed, and all that remains is the backend functions which were executed.
-This new implementation will be compiled to a graph of either one, three, four, or six functions depending on the values of :code:`beta` and :code:`threshold`, while the previous implementation would *always* compile to six functions.
->>>>>>> main
+This new implementation will be traced to a graph of either one, three, four, or six functions depending on the values of :code:`beta` and :code:`threshold`, while the previous implementation would *always* traces to six functions.
 
 This does mean we do not adopt the default values used by PyTorch, but that's okay.
 Implementing the superset does not mean adopting the same default values for arguments, it simply means equipping the Ivy function with the capabilities to execute the superset of behaviours.

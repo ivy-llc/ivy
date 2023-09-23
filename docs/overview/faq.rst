@@ -78,7 +78,7 @@ How will Ivy handle dynamic control flow?
 Will Ivy parse python ASTs?
 
 **A:** For now, Ivy will not support dynamic control flow by parsing ASTs.
-The dynamism of :code:`for` loops and :code:`while` loops will be ignored during tracing, and just the static trace which chains the array operations performed during the forward pass at compile time will be preserved.
+The dynamism of :code:`for` loops and :code:`while` loops will be ignored during tracing, and just the static trace which chains the array operations performed during the forward pass at tracing time will be preserved.
 
 However, Ivy will support the tracing of looping and branching methods such as :code:`lax.scan`, :code:`lax.while`, :code:`tf.while`, :code:`tf.cond` etc.
 In cases where there is not an associated compilable method in other backends, we will strive to implement this as a composition of existing compilable operations.
@@ -137,7 +137,7 @@ Alternative Data Structures
 **Q:** Will Ivy support data structures such as tuples, dictionaries, lists etc.? For example, JAX code is full of them.
 
 **A:** We will of course support these structures in pure python code, but we will not support backend-specific alternative compilable data structures.
-While Ivy will not provide an interface to these data structures directly, Ivy code can easily supplement JAX code which does contain these data structures, and both can be compiled together without issue.
+While Ivy will not provide an interface to these data structures directly, Ivy code can easily supplement JAX code which does contain these data structures, and both can be traced together without issue.
 Ivy can act as a supplementary framework if/when some of the more unique backend-specific data structures are required.
 
 Custom Operations

@@ -3,7 +3,7 @@
 
 ..
 
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
+   ⚠️ **Warning**: The tracer and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
 
 Ivy's Unify function is an alias for ``ivy.transpile(..., to="ivy", ...)``. You can know
 more about the transpiler in the `transpile() <transpile.rst>`_ page.
