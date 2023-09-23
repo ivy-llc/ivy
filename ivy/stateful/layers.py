@@ -408,8 +408,8 @@ class MultiHeadAttention(Module):
         """
         return ivy.multi_head_attention(
             query,
-            key,
-            value,
+            key=key,
+            value=value,
             num_heads=self._num_heads,
             scale=self._scale,
             attention_mask=attention_mask,

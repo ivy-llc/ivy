@@ -477,3 +477,9 @@ def fill_diagonal(
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def column_stack(
+    arrays: Sequence[np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.column_stack(arrays)

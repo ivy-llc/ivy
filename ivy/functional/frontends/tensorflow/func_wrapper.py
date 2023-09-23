@@ -217,7 +217,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
         return ivy.nested_map(
-            ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
+            ret, _ivy_array_to_tensorflow, include_derived={"tuple": True}
         )
 
     _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True

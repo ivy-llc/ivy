@@ -787,6 +787,12 @@ from ivy.utils.inspection import fn_array_spec, add_array_specs
 add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
+
+try:
+    from .engines import XLA as xla
+    from .engines import ivy2xla
+except:
+    pass
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722

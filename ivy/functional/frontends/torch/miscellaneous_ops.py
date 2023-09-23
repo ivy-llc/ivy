@@ -166,6 +166,15 @@ def diag(input, diagonal=0, *, out=None):
     return ivy.diag(input, k=diagonal)
 
 
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+)
+@to_ivy_arrays_and_back
+def diagflat(x, offset=0, name=None):
+    arr = ivy.diagflat(x, offset=offset)
+    return arr
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def diagonal(input, offset=0, dim1=0, dim2=1):

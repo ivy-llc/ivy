@@ -412,3 +412,9 @@ def fill_diagonal(
     a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
     a = jnp.reshape(a, shape)
     return a
+
+
+def column_stack(
+    arrays: Sequence[JaxArray], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.column_stack(arrays)

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import jax
@@ -13,6 +13,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[JaxArray] = None,
 ):
     if eps is None:
@@ -48,7 +49,9 @@ def thresholded_relu(
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
-def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def logsigmoid(
+    input: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return jax.nn.log_sigmoid(input)
 
 
