@@ -1,8 +1,6 @@
 name: Trigger lint format
 
 on:
-  issue_comment:
-    types: [created]
   pull_request:
     types: [opened, synchronize, reopened]
 
