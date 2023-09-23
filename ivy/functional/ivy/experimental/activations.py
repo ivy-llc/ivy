@@ -143,10 +143,8 @@ def prelu(
             n = 0
             for d in x.shape:
                 if d == dim:
-                    new_shape.append(d)
                     n += 1
-                else:
-                    new_shape.append(d)
+                new_shape.append(d)
             if n == 1:
                 xs = x * slope.reshape(tuple(new_shape), out=out)
                 return ivy.where(x > 0, x, xs, out=out)
