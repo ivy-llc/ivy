@@ -2453,3 +2453,159 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_randomised_parafac(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        n_samples: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        max_stagnation: Optional[Union[int, ivy.Container]] = 0,
+        tol: Optional[Union[float, ivy.Container]] = 10e-9,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ):
+        """
+        Randomised CP decomposition via sampled ALS [3]_
+
+        Parameters
+        ----------
+        x
+            Input tensor
+        rank
+            number of components
+        n_samples
+            number of samples per ALS step
+        n_iter_max
+            maximum number of iteration
+        init
+
+        svd
+            function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+        max_stagnation
+            if not zero, the maximum allowed number
+            of iterations with no decrease in fit
+        seed
+            seed to use for random number generation.
+        return_errors
+            if True, return a list of all errors
+        verbose
+            level of verbosity
+
+        Returns
+        -------
+        factors
+            list of positive factors of the CP decomposition
+            element `i` is of shape ``(tensor.shape[i], rank)``
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "randomised_parafac",
+            x,
+            rank,
+            n_samples,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            max_stagnation=max_stagnation,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            callback=callback,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def randomised_parafac(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[int, ivy.Container],
+        n_samples: Union[int, ivy.Container],
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Container]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        max_stagnation: Optional[Union[int, ivy.Container]] = 0,
+        tol: Optional[Union[float, ivy.Container]] = 10e-9,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        callback: Optional[Union[Callable, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ):
+        """
+        Randomised CP decomposition via sampled ALS [3]_
+
+        Parameters
+        ----------
+        self
+            Input tensor
+        rank
+            number of components
+        n_samples
+            number of samples per ALS step
+        n_iter_max
+            maximum number of iteration
+        init
+
+        svd
+            function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+        max_stagnation
+            if not zero, the maximum allowed number
+            of iterations with no decrease in fit
+        seed
+            seed to use for random number generation.
+        return_errors
+            if True, return a list of all errors
+        verbose
+            level of verbosity
+
+        Returns
+        -------
+        factors
+            list of positive factors of the CP decomposition
+            element `i` is of shape ``(tensor.shape[i], rank)``
+        """
+        return self.static_randomised_parafac(
+            self,
+            rank,
+            n_samples,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            max_stagnation=max_stagnation,
+            tol=tol,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            callback=callback,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

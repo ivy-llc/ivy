@@ -346,7 +346,7 @@ class CPTensor(FactorizedTensor):
                 factor = factor * weights
                 weights = ivy.ones((rank,), dtype=factor.dtype)
 
-            scales = ivy.sqrt(ivy.sum(ivy.square(factor), axis=0))
+            scales = ivy.sqrt(ivy.sum(ivy.abs(factor) ** 2, axis=0))
             scales_non_zero = ivy.where(
                 scales == 0, ivy.ones(ivy.shape(scales), dtype=factor.dtype), scales
             )

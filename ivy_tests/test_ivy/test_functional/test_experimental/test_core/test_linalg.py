@@ -1516,10 +1516,10 @@ def test_multi_mode_dot_tensorly_2(shape):
 
 # The following test has been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_cp.py#L34
-@pytest.mark.parametrize("linesearch", [True, False])
-@pytest.mark.parametrize("orthogonalise", [True, False])
+@pytest.mark.parametrize("linesearch", [False, True])
+@pytest.mark.parametrize("orthogonalise", [False, True])
 @pytest.mark.parametrize("true_rank,rank", [(1, 1), (3, 4)])
-@pytest.mark.parametrize("init", ["random", "svd"])
+@pytest.mark.parametrize("init", ["svd", "random"])
 @pytest.mark.parametrize("normalize_factors", [True, False])
 @pytest.mark.parametrize("seed", [1, 1234])
 @pytest.mark.parametrize("complex", [True, False])
@@ -1607,8 +1607,9 @@ def test_parafac(
         assert np.all(np.diff(errors.error) <= 1.0e-7)
 
     rec = ivy.CPTensor.cp_to_tensor(fac)
-    error = ivy.sqrt(ivy.sum(ivy.square(rec - tensor)))
-    error /= ivy.sqrt(ivy.sum(ivy.square(tensor)))
+    error = ivy.sqrt(ivy.sum(ivy.abs(rec - tensor) ** 2))
+    error /= ivy.sqrt(ivy.sum(ivy.abs(tensor) ** 2))
+    ivy.abs(error)
     np.testing.assert_(
         error < tol_norm_2,
         f"norm 2 of reconstruction higher = {error} than tolerance={tol_norm_2}",
@@ -1663,8 +1664,8 @@ def test_parafac(
     )
 
     rec_sparse = ivy.CPTensor.cp_to_tensor(rec_sparse) + sparse_component
-    error = ivy.sqrt(ivy.sum(ivy.square(rec_sparse - tensor)))
-    t_norm = ivy.sqrt(ivy.sum(ivy.square(tensor)))
+    error = ivy.sqrt(ivy.sum(ivy.abs(rec_sparse - tensor) ** 2))
+    t_norm = ivy.sqrt(ivy.sum(ivy.abs(tensor) ** 2))
     error /= t_norm
     np.testing.assert_(
         error < tol_norm_2, "l2 Reconstruction error for sparsity!=None too high"

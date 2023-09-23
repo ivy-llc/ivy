@@ -1826,27 +1826,28 @@ def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=No
 
     Parameters
     ----------
-    tensor : tensor
-    norm_tensor : float
+    tensor
+        tensor
+    norm_tensor
         The l2 norm of tensor.
-    weights : tensor
+    weights
         The current CP weights
-    factors : tensor
+    factors
         The current CP factors
-    sparsity : float or int
+    sparsity
         Whether we allow for a sparse component
-    mask : bool
+    mask
         Whether masking is being performed.
-    mttkrp : tensor or None
+    mttkrp
         The mttkrp product, if available.
 
     Returns
     -------
-    unnorml_rec_error : float
+    unnorml_rec_error
         The unnormalized reconstruction error.
-    tensor : tensor
+    tensor
         The tensor, in case it has been updated by masking.
-    norm_tensor: float
+    norm_tensor
         The tensor norm, in case it has been updated by masking.
     """
     # If we have to update the mask we already have to build the full tensor
@@ -1856,7 +1857,7 @@ def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=No
         # Update the tensor based on the mask
         if mask is not None:
             tensor = tensor * mask + low_rank_component * (1 - mask)
-            norm_tensor = ivy.sqrt(ivy.sum(ivy.square(tensor)))
+            norm_tensor = ivy.sqrt(ivy.sum(ivy.abs(tensor) ** 2))
 
         if sparsity:
             sparse_component = ivy.sparsify_tensor(
@@ -1866,7 +1867,7 @@ def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=No
             sparse_component = 0.0
 
         unnorml_rec_error = ivy.sqrt(
-            ivy.sum(ivy.square(tensor - low_rank_component - sparse_component))
+            ivy.sum(ivy.abs(tensor - low_rank_component - sparse_component) ** 2)
         )
     else:
         if sparsity:
@@ -1875,7 +1876,7 @@ def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=No
                 tensor - low_rank_component, sparsity
             )
             unnorml_rec_error = ivy.sqrt(
-                ivy.sum(ivy.square(tensor - low_rank_component - sparse_component))
+                ivy.sum(ivy.abs(tensor - low_rank_component - sparse_component) ** 2)
             )
         else:
             # ||tensor - rec||^2 = ||tensor||^2 + ||rec||^2 - 2*<tensor, rec>
@@ -1889,6 +1890,94 @@ def _error_calc(tensor, norm_tensor, weights, factors, sparsity, mask, mttkrp=No
             )
 
     return unnorml_rec_error, tensor, norm_tensor
+
+
+def _sample_khatri_rao(
+    x,
+    n_samples,
+    skip_matrix=None,
+    indices_list=None,
+    seed=None,
+    return_sampled_rows=False,
+    random_state=None,
+):
+    """
+    Random subsample of the Khatri-Rao product of the given list of matrices If one
+    matrix only is given, that matrix is directly returned.
+
+    Parameters
+    ----------
+    x
+        list of matrices with the same number of columns, i.e.::
+        for i in len(x):
+            x[i].shape = (n_i, m)
+
+    n_samples
+        number of samples to be taken from the Khatri-Rao product
+
+    skip_matrix
+        if not None, index of a matrix to skip
+
+    indices_list
+        Contains, for each matrix in `matrices`,
+        a list of indices of rows to sample.
+        if None, random indices will be created
+
+    seed
+        seed to use for random number generation.
+
+    returned_sampled_rows
+        if True, also returns a list of the rows sampled from
+        the full khatri-rao product
+
+    Returns
+    -------
+    sampled_Khatri_Rao
+        The sampled matricised tensor Khatri-Rao with
+        `n_samples` rows
+
+    indices
+        a list of indices sampled for each mode
+
+    indices_kr
+        list of length `n_samples` containing the sampled row indices
+    """
+    if skip_matrix is not None:
+        x = [x[i] for i in range(len(x)) if i != skip_matrix]
+
+    # For each matrix, randomly choose n_samples indices for which to compute
+    # the khatri-rao product
+    if indices_list is None:
+        if seed is None or not isinstance(seed, int):
+            logging.warn(
+                "You are creating a new random number generator at each call.\nIf you"
+                " are calling sample_khatri_rao inside a loop this will be slow: best"
+                " to create a rng outside and pass it as argument (random_state=rng)."
+            )
+        else:
+            indices_list = [
+                ivy.randint(0, ivy.shape(m)[0], size=n_samples, dtype=int, seed=seed)
+                for m in x
+            ]
+
+    rank = ivy.shape(x[0])[1]
+    sizes = [ivy.shape(m)[0] for m in x]
+
+    if return_sampled_rows:
+        # Compute corresponding rows of the full khatri-rao product
+        indices_kr = ivy.zeros((n_samples), dtype=int)
+        for size, indices in zip(sizes, indices_list):
+            indices_kr = indices_kr * size + indices
+
+    # Compute the Khatri-Rao product for the chosen indices
+    sampled_kr = ivy.ones((n_samples, rank), dtype=x[0].dtype)
+    for indices, matrix in zip(indices_list, x):
+        sampled_kr = sampled_kr * matrix[indices, :]
+
+    if return_sampled_rows:
+        return sampled_kr, indices_list, indices_kr
+    else:
+        return sampled_kr, indices_list
 
 
 @handle_nestable
@@ -2023,9 +2112,8 @@ def parafac(
         mask=mask,
         svd_mask_repeats=svd_mask_repeats,
     )
-
     rec_errors = []
-    norm_tensor = ivy.sqrt(ivy.sum(ivy.square(x)))
+    norm_tensor = ivy.sqrt(ivy.sum(ivy.abs(x) ** 2))
     if l2_reg:
         Id = ivy.eye(rank, dtype=x.dtype) * l2_reg
     else:
@@ -2309,3 +2397,149 @@ def general_inner_product(
         ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
     )
     return ivy.reshape(inner_product, output_shape, out=out)
+
+
+def randomised_parafac(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: int,
+    n_samples: int,
+    /,
+    *,
+    n_iter_max: Optional[int] = 100,
+    init: Optional[Union[Literal["svd", "random"], ivy.CPTensor]] = "svd",
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    max_stagnation: Optional[int] = 0,
+    tol: Optional[float] = 10e-9,
+    seed: Optional[int] = None,
+    verbose: Optional[bool] = False,
+    return_errors: Optional[bool] = False,
+    callback: Optional[Callable] = None,
+):
+    """
+    Randomised CP decomposition via sampled ALS [3]_
+
+    Parameters
+    ----------
+    tensor
+        Input tensor
+    rank
+        number of components
+    n_samples
+        number of samples per ALS step
+    n_iter_max
+        maximum number of iteration
+    init
+
+    svd
+        function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+    tol
+        tolerance: the algorithm stops when the variation in
+        the reconstruction error is less than the tolerance
+    max_stagnation
+        if not zero, the maximum allowed number
+        of iterations with no decrease in fit
+    seed
+        seed to use for random number generation.
+    return_errors
+        if True, return a list of all errors
+    verbose
+        level of verbosity
+
+    Returns
+    -------
+    factors
+        list of positive factors of the CP decomposition
+        element `i` is of shape ``(tensor.shape[i], rank)``
+
+    References
+    ----------
+    .. [3] Casey Battaglino, Grey Ballard and Tamara G. Kolda,
+           "A Practical Randomized CP Tensor Decomposition",
+    """
+    rank = ivy.CPTensor.validate_cp_rank(ivy.shape(x), rank=rank)
+
+    if return_errors:
+        DeprecationWarning(
+            "return_errors argument will be removed in the next version of TensorLy."
+            " Please use a callback function instead."
+        )
+
+    weights, factors = ivy.initialize_cp(x, rank, init=init, svd=svd, seed=seed)
+    rec_errors = []
+    n_dims = len(x.shape)
+    norm_tensor = ivy.sqrt(ivy.sum(ivy.square(x)))
+    min_error = 0
+
+    weights = ivy.ones(rank, dtype=x.dtype)
+
+    if callback is not None:
+        rec_error = ivy.sqrt(
+            ivy.sum(ivy.square(x - ivy.CPTensor.cp_to_tensor((weights, factors))))
+        )
+        rec_error /= norm_tensor
+
+        callback(ivy.CPTensor((weights, factors)))
+
+    for iteration in range(n_iter_max):
+        for mode in range(n_dims):
+            kr_prod, indices_list = ivy._sample_khatri_rao(
+                factors, n_samples, skip_matrix=mode, seed=seed
+            )
+            indices_list = [i.tolist() for i in indices_list]
+            # Keep all the elements of the currently considered mode
+            indices_list.insert(mode, slice(None, None, None))
+            # MXNet will not be happy if this is a list instead of a tuple
+            indices_list = tuple(indices_list)
+            if mode:
+                sampled_unfolding = x[indices_list]
+            else:
+                sampled_unfolding = ivy.transpose(x[indices_list])
+
+            pseudo_inverse = ivy.dot(ivy.permute_dims(kr_prod, (1, 0)), kr_prod)
+            factor = ivy.dot(ivy.permute_dims(kr_prod, (1, 0)), sampled_unfolding)
+            factor = ivy.permute_dims(ivy.solve(pseudo_inverse, factor), (1, 0))
+            factors[mode] = factor
+
+        if max_stagnation or tol or (callback is not None):
+            rec_error = (
+                ivy.sqrt(
+                    ivy.sum(
+                        ivy.square(x - ivy.CPTensor.cp_to_tensor((weights, factors)))
+                    )
+                )
+                / norm_tensor
+            )
+
+        if callback is not None:
+            retVal = callback(ivy.CPTensor((weights, factors)), rec_error)
+            if retVal is True:
+                if verbose:
+                    print("Received True from callback function. Exiting.")
+                break
+
+        if max_stagnation or tol:
+            if not min_error or rec_error < min_error:
+                min_error = rec_error
+                stagnation = -1
+            stagnation += 1
+
+            rec_errors.append(rec_error)
+
+            if iteration > 1:
+                if verbose:
+                    print(
+                        f"reconstruction error={rec_errors[-1]},"
+                        f" variation={rec_errors[-2]-rec_errors[-1]}."
+                    )
+
+                if (tol and abs(rec_errors[-2] - rec_errors[-1]) < tol) or (
+                    stagnation and (stagnation > max_stagnation)
+                ):
+                    if verbose:
+                        print(f"converged in {iteration} iterations.")
+                    break
+
+    if return_errors:
+        return ivy.CPTensor((weights, factors)), rec_errors
+    else:
+        return ivy.CPTensor((weights, factors))
