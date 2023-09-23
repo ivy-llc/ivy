@@ -115,7 +115,7 @@ def selu(x):
     {"2.13.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
-def serialize(activation, use_legacy_format=False):
+def serialize(activation, use_legacy_format=False, custom_objects=None):
     # If the activation function is None, return None
     if activation is None:
         return None
