@@ -2,7 +2,7 @@ name: Trigger lint format
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
 
 permissions:
   contents: write
