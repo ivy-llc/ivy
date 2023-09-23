@@ -1241,6 +1241,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
     ) -> ivy.Array:
         """
         Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
         Parameters
         ----------
         self

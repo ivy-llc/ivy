@@ -2612,12 +2612,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-    ) -> ivy.Container:
 
         Returns
         -------
         ret
-
             The result of the unpooling operation.
         """
         return ContainerBase.cont_multi_map_in_function(

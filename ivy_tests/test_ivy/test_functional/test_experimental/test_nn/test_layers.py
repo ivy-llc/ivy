@@ -422,14 +422,15 @@ def _x_and_rfftn(draw):
 @st.composite
 def max_unpool1d_helper(
     draw,
-    **data_gen_kwargs
+    **data_gen_kwargs,
 ):
     dts, values, kernel_size, strides, _ = draw(
         helpers.arrays_for_pooling(
             min_dims=3,
             max_dims=3,
             data_format="channel_first",
-            **data_gen_kwargs)
+            **data_gen_kwargs,
+        )
     )
     dts.extend(["int64"])
     values = values[0]
@@ -1245,6 +1246,38 @@ def test_max_pool3d(
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.max_unpool1d",
+    x_k_s_p=max_unpool1d_helper(min_side=2, max_side=5),
+    ground_truth_backend="jax",
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_max_unpool1d(
+    *,
+    x_k_s_p,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, ind, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        input=x,
+        indices=ind,
+        kernel_size=kernel,
+        strides=stride,
+        padding=pad,
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.reduce_window",
     all_args=_reduce_window_helper(_get_reduce_func),
     test_with_out=st.just(False),
@@ -1351,36 +1384,4 @@ def test_stft(
         fft_length=None,
         window_fn=None,
         pad_end=True,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.max_unpool1d",
-    x_k_s_p=max_unpool1d_helper(min_side=2, max_side=5),
-    ground_truth_backend="jax",
-    test_gradients=st.just(False),
-    test_with_out=st.just(False),
-)
-def test_max_unpool1d(
-    *,
-    x_k_s_p,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    dtype, x, ind, kernel, stride, pad = x_k_s_p
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-        fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        input=x,
-        indices=ind,
-        kernel_size=kernel,
-        strides=stride,
-        padding=pad,
     )
