@@ -1,11 +1,10 @@
 # global
 import abc
 from numbers import Number
-from typing import Optional, Union, List
+from typing import List, Optional, Union
 
 # local
 import ivy
-
 
 # Array API Standard #
 # -------------------#

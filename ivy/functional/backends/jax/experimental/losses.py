@@ -1,11 +1,11 @@
-import jax.numpy as jnp
 from typing import Optional
-from ivy.functional.backends.jax import JaxArray
+
+import jax.numpy as jnp
 
 # local
-from ivy.func_wrapper import (
-    with_supported_device_and_dtypes,
-)
+from ivy.func_wrapper import with_supported_device_and_dtypes
+from ivy.functional.backends.jax import JaxArray
+
 from . import backend_version
 
 

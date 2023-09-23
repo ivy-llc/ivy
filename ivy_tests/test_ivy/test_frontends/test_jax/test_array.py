@@ -1,15 +1,16 @@
 # global
-from hypothesis import given, strategies as st, assume
 import numpy as np
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
-from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    _get_castable_dtype,
-)
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_jax.test_numpy.test_manipulations import (
     _get_input_and_reshape,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _get_castable_dtype,
 )
 
 CLASS_TREE = "ivy.functional.frontends.jax.numpy.ndarray"

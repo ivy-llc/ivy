@@ -1,10 +1,11 @@
 # local
+import jax
+from hypothesis import strategies as st
+
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ivy.functional.frontends.jax import vmap
-from hypothesis import strategies as st
-import jax
+from ivy_tests.test_ivy.helpers import BackendHandler, handle_frontend_test
 
 
 # --- Helpers --- #

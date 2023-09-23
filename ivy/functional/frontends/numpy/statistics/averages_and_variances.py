@@ -2,10 +2,10 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
-    to_ivy_arrays_and_back,
-    handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
+    handle_numpy_dtype,
     handle_numpy_out,
+    to_ivy_arrays_and_back,
 )
 
 

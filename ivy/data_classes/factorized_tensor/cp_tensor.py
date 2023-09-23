@@ -1,6 +1,7 @@
 # local
-from .base import FactorizedTensor
 import ivy
+
+from .base import FactorizedTensor
 
 
 class CPTensor(FactorizedTensor):

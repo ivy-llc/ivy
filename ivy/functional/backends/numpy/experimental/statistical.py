@@ -1,11 +1,14 @@
-from typing import Optional, Union, Tuple, Sequence
-import numpy as np
 import math
+from copy import deepcopy
+from typing import Optional, Sequence, Tuple, Union
+
+import numpy as np
+
 import ivy  # noqa
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+
 from ..statistical import _infer_dtype
-from copy import deepcopy
+from . import backend_version
 
 
 @with_unsupported_dtypes(

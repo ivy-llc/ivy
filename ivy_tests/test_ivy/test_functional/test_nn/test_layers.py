@@ -1,15 +1,16 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-from hypothesis import strategies as st, assume
-import ivy
 import numpy as np
+from hypothesis import assume
+from hypothesis import strategies as st
 
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
 from ivy.functional.ivy.layers import _deconv_length
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # --- Helpers --- #
