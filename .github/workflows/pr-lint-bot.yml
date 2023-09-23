@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️ ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.IVY_BRANCH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
           repository: ${{ github.repository }}
 
@@ -23,7 +23,7 @@ jobs:
         id: changed-files
         uses: KareemMAX/gh-action-get-changed-files@5a5ee034eff88bee239d4f49cd041fed0bec7480
         with:
-          token: ${{ secrets.IVY_BRANCH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python 🐍
         uses: actions/setup-python@v4
