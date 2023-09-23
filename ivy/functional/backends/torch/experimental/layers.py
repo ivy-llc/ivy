@@ -665,10 +665,10 @@ def idct(
 
 def irfft(
     x: torch.Tensor,
+    *,
     n: Optional[int] = None,
     axis: int = -1,
     norm: Optional[str] = None,
-    *,
     name: Optional[str] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
