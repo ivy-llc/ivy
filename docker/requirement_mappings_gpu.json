@@ -3,5 +3,5 @@
   "jax": ["dm-haiku", "flax"],
   "numpy": ["numpy"],
   "mxnet": ["mxnet"],
-  "torch": ["torch-scatter"]
+  "torch": ["torch-scatter", "torchvision"]
 }

@@ -91,3 +91,22 @@ def celu(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.math.maximum(0, x) + alpha * tf.math.expm1(tf.math.minimum(0, x) / alpha)
+
+
+@with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+def hardtanh(
+    x: Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.where(
+        tf.math.greater(x, max_val),
+        max_val,
+        tf.where(tf.math.less(x, min_val), min_val, x),
+    )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

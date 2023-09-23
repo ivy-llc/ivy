@@ -131,6 +131,32 @@ def elu(
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
 )
+def hardtanh(
+    x: paddle.Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.hardtanh(x, min=min_val, max=max_val)
+
+    if paddle.is_complex(x):
+        ret = (
+            paddle_backend.where(
+                paddle_backend.greater(x, max_val),
+                max_val,
+                paddle_backend.where(paddle_backend.less(x, min_val), min_val, x),
+            ),
+        )
+        return ret
+    return F.hardtanh(x.cast("float32"), min=min_val, max=max_val).cast(x.dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+)
 def celu(
     x: paddle.Tensor,
     /,

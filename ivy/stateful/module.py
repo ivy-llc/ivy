@@ -1257,7 +1257,9 @@ class _TorchIvyModule(Module):
                 native.__setattr__(k, v)
             elif isinstance(v, torch.Tensor):
                 # noinspection PyProtectedMember
-                native.__setattr__(k, torch.nn.Parameter(v, requires_grad=v.requires_grad))
+                native.__setattr__(
+                    k, torch.nn.Parameter(v, requires_grad=v.requires_grad)
+                )
             else:
                 raise ivy.utils.exceptions.IvyException(
                     f"found item in variable container {v} which was neither a sub"
