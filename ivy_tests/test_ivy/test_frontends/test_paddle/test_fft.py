@@ -316,10 +316,6 @@ def test_paddle_irfft2(
             norm=norm,
         )
 
-# Use the custom strategy for s and axes
-axes_strategy = sequence_of_two_integers()
-s_strategy = sequence_of_two_integers()
-
 
 @handle_frontend_test(
     fn_tree="paddle.fft.irfftn",
@@ -378,3 +374,8 @@ def test_paddle_rfftfreq(
         n=n,
         d=d,
     )
+
+
+# Use the custom strategy for s and axes
+axes_strategy = sequence_of_two_integers()
+s_strategy = sequence_of_two_integers()
