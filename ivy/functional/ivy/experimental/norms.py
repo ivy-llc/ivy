@@ -196,7 +196,7 @@ def batch_norm(
     if scale is not None:
         inv = inv * scale
     xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+        offset - mean * inv if offset is not None else -mean * inv, x.dtype, copy=False
     )
 
     if data_format == "NCS":

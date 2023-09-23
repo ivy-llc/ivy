@@ -1,13 +1,12 @@
 # TODO: uncomment after frontend is not required
 # global
-import ivy
 import sys
 from hypothesis import strategies as st
 import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 
 
 # --- Helpers --- #
@@ -326,13 +325,14 @@ def test_scipy_svd(
     frontend,
     test_flags,
     fn_tree,
-    on_device,
     backend_fw,
+    on_device,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive-definite beforehand
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    x = x[0]
+    x = (
+        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    )  # make symmetric positive-definite
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -341,44 +341,57 @@ def test_scipy_svd(
         test_values=False,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        a=x,
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
-    for u, v in zip(ret, ret_gt):
-        u = ivy.to_numpy(ivy.abs(u))
-        v = ivy.to_numpy(ivy.abs(v))
-        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v, rtol=1e-04, atol=1e-04)
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            u = ivy_backend.to_numpy(ivy_backend.abs(u))
+            v = ivy_backend.to_numpy(ivy_backend.abs(v))
+            helpers.value_test(
+                ret_np_flat=u,
+                ret_np_from_gt_flat=v,
+                rtol=1e-04,
+                atol=1e-04,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
 
 
 # svdvals
 @handle_frontend_test(
     fn_tree="scipy.linalg.svdvals",
-    dtype_x=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
+        min_value=0.1,
         max_value=50,
-        min_num_dims=2,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
+    check_finite=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_scipy_svdvals(
-    dtype_x,
+    dtype_and_x,
+    check_finite,
     frontend,
     test_flags,
     fn_tree,
-    on_device,
     backend_fw,
+    on_device,
 ):
-    dtype, x = dtype_x
+    dtype, x = dtype_and_x
+    x = x[0]
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
+        test_values=False,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        a=x,
+        check_finite=check_finite,
     )
 
 

@@ -723,9 +723,8 @@ def squeeze(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
@@ -864,9 +863,9 @@ def stack(
 @handle_device_shifting
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
-    x_min: Union[Number, ivy.Array, ivy.NativeArray],
-    x_max: Union[Number, ivy.Array, ivy.NativeArray],
     /,
+    x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+    x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1025,8 +1024,8 @@ def constant_pad(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5])
@@ -1287,8 +1286,8 @@ def swapaxes(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[0, 1, 2]])
@@ -1384,8 +1383,8 @@ def tile(
         The tiled output array.
 
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1,2,3,4])

@@ -36,7 +36,7 @@ def PRNGKey(seed):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float32",
             "float64",
         )
@@ -68,7 +68,7 @@ def bernoulli(key, p=0.5, shape=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -83,7 +83,7 @@ def beta(key, a, b, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -107,7 +107,6 @@ def categorical(key, logits, axis, shape=None):
                 +f"Shape {shape} is not compatible with reference shape {batch_shape}"
             )
 
-    shape_prefix = shape[: len(shape) - len(batch_shape)]
     logits_shape = list(shape[len(shape) - len(batch_shape) :])
     logits_shape.insert(axis % len(logits_arr.shape), logits_arr.shape[axis])
 
@@ -133,7 +132,7 @@ def cauchy(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -149,8 +148,26 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
+    {"0.4.16 and below": "uint32"},
+    "jax",
+)
+def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
+    params_shapes = ivy.broadcast_shapes(ivy.shape(loc), ivy.shape(scale))
+    if not shape:
+        shape = params_shapes
+
+    shape = shape + params_shapes
+    maxwell_rvs = maxwell(key, shape=shape, dtype=dtype)
+    random_sign = rademacher(key, shape=shape, dtype=dtype)
+
+    return random_sign * maxwell_rvs * scale + loc
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -176,7 +193,7 @@ def fold_in(key, data):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -192,7 +209,7 @@ def gamma(key, a, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -211,7 +228,7 @@ def generalized_normal(key, p, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -231,12 +248,11 @@ def gumbel(key, shape=(), dtype="float64"):
 
 
 # loggamma
-@to_ivy_arrays_and_back
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -251,6 +267,18 @@ def loggamma(key, a, shape=None, dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
+    {"0.4.16 and below": ("float16", "bfloat16")},
+    "jax",
+)
+def logistic(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    uniform_x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    return ivy.log(ivy.divide(uniform_x, ivy.subtract(1.0, uniform_x)))
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
     {
         "0.3.14 and below": (
             "float16",
@@ -259,20 +287,18 @@ def loggamma(key, a, shape=None, dtype="float64"):
     },
     "jax",
 )
-def maxwell(key, shape=None, dtype="float64"):
+def maxwell(key, shape, dtype="float64"):
     seed = _get_seed(key)
-    # generate uniform random numbers between 0 and 1
-    z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
-    # applying inverse transform sampling
-    x = (z**2) * ivy.exp(-(z**2) / 2)
-    return x
+    shape = shape + (3,)
+    random_normal = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
+    return ivy.vector_norm(random_normal, axis=-1)
 
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -327,7 +353,7 @@ def orthogonal(key, n, shape=(), dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "float16",
             "bfloat16",
         )
@@ -362,7 +388,7 @@ def permutation(key, x, axis=0, independent=False):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("unsigned", "int8", "int16")},
+    {"0.4.16 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def poisson(key, lam, shape=None, dtype=None):
@@ -373,12 +399,13 @@ def poisson(key, lam, shape=None, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("unsigned", "int8", "int16")},
+    {"0.4.16 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def rademacher(key, shape, dtype="int64"):
     seed = _get_seed(key)
-    b = ivy.bernoulli(ivy.array([0.5]), shape=shape, dtype="float32", seed=seed)
+    prob = ivy.full(shape, 0.5, dtype="float32")
+    b = ivy.bernoulli(prob, shape=shape, dtype="float32", seed=seed)
     b = ivy.astype(b, dtype)
     return 2 * b - 1
 
@@ -386,7 +413,7 @@ def rademacher(key, shape, dtype="int64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("unsigned", "int8", "int16")},
+    {"0.4.16 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def randint(key, shape, minval, maxval, dtype="int64"):
@@ -401,6 +428,8 @@ def shuffle(key, x, axis=0):
     return ivy.shuffle(x, seed=seed)
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 def t(key, df, shape=(), dtype="float64"):
     seed = _get_seed(key)
     n = ivy.random_normal(shape=shape, dtype=dtype, seed=seed)
@@ -417,6 +446,8 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
     )
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
     seed = _get_seed(key)
     uniform_x = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)

@@ -543,6 +543,46 @@ def test_jax_ceil(
     )
 
 
+# clip
+@handle_frontend_test(
+    fn_tree="jax.numpy.clip",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        min_value=-1e3,
+        max_value=1e3,
+        max_dim_size=10,
+        max_num_dims=4,
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+    a_min=st.integers(min_value=0, max_value=5),
+    a_max=st.integers(min_value=5, max_value=10),
+)
+def test_jax_clip(
+    *,
+    dtype_and_x,
+    a_min,
+    a_max,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        a_min=a_min,
+        a_max=a_max,
+    )
+
+
 # conj
 @handle_frontend_test(
     fn_tree="jax.numpy.conj",
@@ -1443,6 +1483,49 @@ def test_jax_gcd(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# gradient
+@handle_frontend_test(
+    fn_tree="jax.numpy.gradient",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=("float32", "float16", "float64"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    varargs=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+)
+def test_jax_gradient(
+    dtype_input_axis,
+    varargs,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_input_axis
+    test_flags.num_positional_args = 2
+    kw = {}
+    kw["varargs"] = varargs
+    kw["axis"] = axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        f=x[0],
+        **kw,
     )
 
 

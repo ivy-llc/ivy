@@ -691,7 +691,7 @@ def test_to_device(
 
             # check if native arrays are the same
             # these backends do not support native inplace updates
-            assume(not (backend_fw in ["tensorflow", "jax"]))
+            assume(backend_fw not in ["tensorflow", "jax"])
 
             assert x_on_dev.data is out.data
 
@@ -701,7 +701,7 @@ def test_to_device(
                 device[1:].split(":")[-2:]
             )
         elif backend_fw == "torch":
-            assert type(dev_from_new_x) == type(device)
+            assert type(dev_from_new_x) == type(device)  # noqa: E721
         else:
             assert dev_from_new_x == device
 

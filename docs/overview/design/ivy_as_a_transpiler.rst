@@ -1,7 +1,7 @@
 Ivy as a Transpiler
 ===================
 
-On the :ref:`Building Blocks` page, we explored the role of the Backend functional APIs, the Ivy functional API, the Backend handler, and the Tracer.
+On the `Building Blocks <building_blocks.rst>`_ page, we explored the role of the Backend functional APIs, the Ivy functional API, the Backend handler, and the Tracer.
 These parts are labelled (a) in the image below.
 
 Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks.
