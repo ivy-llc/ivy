@@ -2,7 +2,7 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 
 
 # --- Helpers --- #
@@ -85,7 +85,7 @@ def _legacy_get_string(size_average, reduce):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
@@ -123,7 +123,7 @@ def binary_cross_entropy_with_logits(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def cosine_embedding_loss(
     input1, input2, target, margin=0.0, size_average=None, reduce=None, reduction="mean"
 ):
@@ -216,7 +216,7 @@ def cross_entropy(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("bool", "integer")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
     input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
     target, var = torch_frontend.promote_types_of_torch_inputs(target, var)
@@ -248,7 +248,7 @@ def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def hinge_embedding_loss(
     input,
@@ -283,7 +283,7 @@ def huber_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def kl_div(
     input, target, size_average=None, reduce=None, reduction="mean", log_target=False
 ):
@@ -331,7 +331,7 @@ def l1_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def margin_ranking_loss(
     input1,
     input2,
@@ -350,7 +350,7 @@ def margin_ranking_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.square(input - target)
@@ -359,7 +359,7 @@ def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def multilabel_margin_loss(
     input, target, size_average=None, reduce=None, reduction="mean"
 ):
@@ -379,7 +379,7 @@ def multilabel_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def multilabel_soft_margin_loss(
     input,
     target,
@@ -408,9 +408,7 @@ def multilabel_soft_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "int8", "int16", "int32")}, "torch"
-)
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def nll_loss(
     input,
     target,
@@ -455,7 +453,7 @@ def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def poisson_nll_loss(
     input,
     target,
@@ -482,7 +480,7 @@ def poisson_nll_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def smooth_l1_loss(
     input,
     target,
@@ -495,7 +493,7 @@ def smooth_l1_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def soft_margin_loss(
     input,
     target,
@@ -507,7 +505,7 @@ def soft_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def triplet_margin_loss(
     anchor,
     positive,
@@ -562,7 +560,7 @@ def triplet_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def triplet_margin_with_distance_loss(
     anchor,
     positive,
