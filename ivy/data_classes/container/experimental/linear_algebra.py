@@ -2139,3 +2139,580 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_parafac2(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Optional[Union[Sequence[int], ivy.Container]] = None,
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 2000,
+        init: Optional[
+            Union[
+                Literal["svd", "random"],
+                ivy.CPTensor,
+                ivy.Parafac2Tensor,
+                ivy.Container,
+            ]
+        ] = "random",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        absolute_tol: Optional[Union[float, ivy.Container]] = 1e-13,
+        nn_modes: Optional[Union[Literal["all"], int, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        n_iter_parafac: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        PARAFAC2 decomposition [1]_ of a third order tensor via alternating least
+        squares (ALS) Computes a rank-`rank` PARAFAC2 decomposition of the third-order
+        tensor defined by tensor_slices`. The decomposition is on the form :math:`(A
+        [B_i] C)` such that the i-th frontal slice, :math:`X_i`, of :math:`X` is given
+        by.
+
+        .. math::
+
+            X_i = B_i diag(a_i) C^T,
+
+        where :math:`diag(a_i)` is the diagonal matrix whose nonzero entries
+        are equal to the :math:`i`-th row of the :math:`I times R` factor
+        matrix :math:`A`, :math:`B_i` is a :math:`J_i times R` factor matrix
+        such that the cross product matrix :math:`B_{i_1}^T B_{i_1}` is constant
+        for all :math:`i`, and :math:`C` is a :math:`K times R` factor matrix.
+        To compute this decomposition, we reformulate the expression for
+        :math:`B_i` such that
+
+        .. math::
+
+            B_i = P_i B,
+
+        where :math:`P_i` is a :math:`J_i times R` orthogonal matrix
+        and :math:`B` is a :math:`R times R` matrix.
+
+
+        An alternative formulation of the PARAFAC2 decomposition is that
+        the tensor element :math:`X_{ijk}` is given by
+
+        .. math::
+
+            X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
+
+        with the same constraints hold for :math:`B_i` as above.
+
+
+        Parameters
+        ----------
+        x
+            Either a third order tensor or a list of second order tensors
+            that may have different number of rows. Note that the second
+            mode factor matrices are allowed to change over the first
+            mode, not the third mode as some other implementations use
+            (see note below).
+        rank
+            Number of components.
+        n_iter_max
+            Maximum number of iteration
+        init
+            Type of factor matrix initialization.
+        svd
+            function to use to compute the SVD,
+            acceptable values in tensorly.SVD_FUNS
+        normalize_factors
+            If True, aggregate the weights of each
+            factor in a 1D-tensor of shape (rank, ),
+            which will contain the norms of the factors.
+            Note that there may be some inaccuracies in
+            the component weights.
+        tol
+            Relative reconstruction error decrease tolerance.
+            The algorithm is considered to have converged when
+            :math:`left|| X - hat{X}_{n-1} |^2 - | X -
+            hat{X}_{n} |^2right| < epsilon | X - hat{X}_{n-1} |^2`.
+            That is, when the relative change in sum of squared
+            error is less than the tolerance.
+            .. versionchanged:: 0.6.1
+                Previously, the stopping condition was
+                :math:`left|| X - hat{X}_{n-1} | - | X -
+                hat{X}_{n} |right| < epsilon`.
+        absolute_tol
+            Absolute reconstruction error tolearnce.
+            The algorithm is considered to have
+            converged when :math:`left|| X -
+            hat{X}_{n-1} |^2 - | X - hat{X}_{n} |^2right| < epsilon_text{abs}`.
+            That is, when the relative sum of squared error is less than the
+            specified tolerance. The absolute tolerance is necessary for
+            stopping the algorithm when used on noise-free data that follows
+            the PARAFAC2 constraint.
+            If None, then the machine precision +
+            1000 will be used.
+        nn_modes
+            Used to specify which modes to impose
+            non-negativity constraints on. We cannot impose non-negativity
+            constraints on the the B-mode (mode 1) with the ALS algorithm,
+            so if this mode is among the constrained modes, then a warning
+            will be shown
+        seed
+
+        verbose
+            Level of verbosity
+        return_errors
+            Activate return of iteration errors
+        n_iter_parafac
+            Number of PARAFAC iterations to perform
+            for each PARAFAC2 iteration
+
+        Returns
+        -------
+        Parafac2Tensor
+            * weights : 1D array of shape (rank, )
+                all ones if normalize_factors is False (default),
+                weights of the (normalized) factors otherwise
+            * factors : List of factors of the CP decomposition element `i` is of shape
+                (tensor.shape[i], rank)
+            * projection_matrices : List of projection matrices used to create evolving
+                factors.
+
+        errors
+            A list of reconstruction errors at each iteration of the algorithms.
+
+        References
+        ----------
+        .. [1] Kiers, H.A.L., ten Berge, J.M.F. and Bro, R. (1999),
+                PARAFAC2—Part I. A direct fitting algorithm for the PARAFAC2 model.
+                J. Chemometrics, 13: 275-294.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "parfac2",
+            x,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            tol=tol,
+            absolute_tol=absolute_tol,
+            nn_modes=nn_modes,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            n_iter_parafac=n_iter_parafac,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def parafac2(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Optional[Union[Sequence[int], ivy.Container]] = None,
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 2000,
+        init: Optional[
+            Union[
+                Literal["svd", "random"],
+                ivy.CPTensor,
+                ivy.Parafac2Tensor,
+                ivy.Container,
+            ]
+        ] = "random",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 1e-8,
+        absolute_tol: Optional[Union[float, ivy.Container]] = 1e-13,
+        nn_modes: Optional[Union[Literal["all"], int, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        n_iter_parafac: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        PARAFAC2 decomposition [1]_ of a third order tensor via alternating least
+        squares (ALS) Computes a rank-`rank` PARAFAC2 decomposition of the third-order
+        tensor defined by tensor_slices`. The decomposition is on the form :math:`(A
+        [B_i] C)` such that the i-th frontal slice, :math:`X_i`, of :math:`X` is given
+        by.
+
+        .. math::
+
+            X_i = B_i diag(a_i) C^T,
+
+        where :math:`diag(a_i)` is the diagonal matrix whose nonzero entries
+        are equal to the :math:`i`-th row of the :math:`I times R` factor
+        matrix :math:`A`, :math:`B_i` is a :math:`J_i times R` factor matrix
+        such that the cross product matrix :math:`B_{i_1}^T B_{i_1}` is constant
+        for all :math:`i`, and :math:`C` is a :math:`K times R` factor matrix.
+        To compute this decomposition, we reformulate the expression for
+        :math:`B_i` such that
+
+        .. math::
+
+            B_i = P_i B,
+
+        where :math:`P_i` is a :math:`J_i times R` orthogonal matrix
+        and :math:`B` is a :math:`R times R` matrix.
+
+
+        An alternative formulation of the PARAFAC2 decomposition is that
+        the tensor element :math:`X_{ijk}` is given by
+
+        .. math::
+
+            X_{ijk} = sum_{r=1}^R A_{ir} B_{ijr} C_{kr},
+
+        with the same constraints hold for :math:`B_i` as above.
+
+
+        Parameters
+        ----------
+        self
+            Either a third order tensor or a list of second order tensors
+            that may have different number of rows. Note that the second
+            mode factor matrices are allowed to change over the first
+            mode, not the third mode as some other implementations use
+            (see note below).
+        rank
+            Number of components.
+        n_iter_max
+            Maximum number of iteration
+        init
+            Type of factor matrix initialization.
+        svd
+            function to use to compute the SVD,
+            acceptable values in tensorly.SVD_FUNS
+        normalize_factors
+            If True, aggregate the weights of each
+            factor in a 1D-tensor of shape (rank, ),
+            which will contain the norms of the factors.
+            Note that there may be some inaccuracies in
+            the component weights.
+        tol
+            Relative reconstruction error decrease tolerance.
+            The algorithm is considered to have converged when
+            :math:`left|| X - hat{X}_{n-1} |^2 - | X -
+            hat{X}_{n} |^2right| < epsilon | X - hat{X}_{n-1} |^2`.
+            That is, when the relative change in sum of squared
+            error is less than the tolerance.
+            .. versionchanged:: 0.6.1
+                Previously, the stopping condition was
+                :math:`left|| X - hat{X}_{n-1} | - | X -
+                hat{X}_{n} |right| < epsilon`.
+        absolute_tol
+            Absolute reconstruction error tolearnce.
+            The algorithm is considered to have
+            converged when :math:`left|| X -
+            hat{X}_{n-1} |^2 - | X - hat{X}_{n} |^2right| < epsilon_text{abs}`.
+            That is, when the relative sum of squared error is less than the
+            specified tolerance. The absolute tolerance is necessary for
+            stopping the algorithm when used on noise-free data that follows
+            the PARAFAC2 constraint.
+            If None, then the machine precision +
+            1000 will be used.
+        nn_modes
+            Used to specify which modes to impose
+            non-negativity constraints on. We cannot impose non-negativity
+            constraints on the the B-mode (mode 1) with the ALS algorithm,
+            so if this mode is among the constrained modes, then a warning
+            will be shown
+        seed
+
+        verbose
+            Level of verbosity
+        return_errors
+            Activate return of iteration errors
+        n_iter_parafac
+            Number of PARAFAC iterations to perform
+            for each PARAFAC2 iteration
+
+        Returns
+        -------
+        Parafac2Tensor
+            * weights : 1D array of shape (rank, )
+                all ones if normalize_factors is False (default),
+                weights of the (normalized) factors otherwise
+            * factors : List of factors of the CP decomposition element `i` is of shape
+                (tensor.shape[i], rank)
+            * projection_matrices : List of projection matrices used to create evolving
+                factors.
+
+        errors
+            A list of reconstruction errors at each iteration of the algorithms.
+
+        References
+        ----------
+        .. [1] Kiers, H.A.L., ten Berge, J.M.F. and Bro, R. (1999),
+                PARAFAC2—Part I. A direct fitting algorithm for the PARAFAC2 model.
+                J. Chemometrics, 13: 275-294.
+        """
+        return ivy.static_parafac2(
+            self,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            tol=tol,
+            absolute_tol=absolute_tol,
+            nn_modes=nn_modes,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            n_iter_parafac=n_iter_parafac,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_non_negative_parafac_hals(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Optional[Union[Sequence[int], ivy.Container]] = None,
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[
+                Literal["svd", "random"],
+                ivy.CPTensor,
+                ivy.Parafac2Tensor,
+                ivy.Container,
+            ]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 10e-8,
+        nn_modes: Optional[Union[Literal["all"], int, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity_coefficients: Optional[Union[Sequence[float], ivy.Container]] = None,
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        exact: Optional[Union[bool, ivy.Container]] = False,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ):
+        """
+        Non-negative CP decomposition via HALS.
+
+        Uses Hierarchical ALS (Alternating Least Squares)
+        which updates each factor column-wise (one column at a time while keeping
+        all other columns fixed), see [1]_
+
+        Parameters
+        ----------
+        x
+            ndarray
+        rank
+            number of components
+        n_iter_max
+            maximum number of iteration
+        init
+        svd
+            function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+            Default: 1e-8
+        seed
+        sparsity_coefficients
+            The sparsity coefficients on each factor.
+            If set to None, the algorithm is computed without sparsity
+        fixed_modes: array of integers (between 0 and the number of modes)
+            Has to be set not to update a factor, 0 and 1 for U and V respectively
+            Default: None
+        nn_modes: None, 'all' or array of integers (between 0 and the number of modes)
+            Used to specify which modes to impose non-negativity constraints on.
+            If 'all', then non-negativity is imposed on all modes.
+            Default: 'all'
+        exact
+            If it is True, the algorithm gives a results with high precision
+            but it needs high computational cost.
+            If it is False, the algorithm gives an approximate solution
+        normalize_factors : if True, aggregate the weights of each factor in a 1D-tensor
+            of shape (rank, ), which will contain the norms of the factors
+        verbose
+            Indicates whether the algorithm prints the successive
+            reconstruction errors or not
+        return_errors: boolean
+            Indicates whether the algorithm should return all reconstruction errors
+            and computation time of each iteration or not
+        cvg_criterion :
+            Stopping criterion for ALS, works if `tol` is not None.
+            If 'rec_error',  ALS stops at current iteration
+            if ``(previous rec_error - current rec_error) < tol``.
+            If 'abs_rec_error', ALS terminates when
+            `|previous rec_error - current rec_error| < tol`.
+
+        Returns
+        -------
+        factors : ndarray list
+                list of positive factors of the CP decomposition
+                element `i` is of shape ``(tensor.shape[i], rank)``
+        errors: list
+            A list of reconstruction errors at each iteration of the algorithm.
+
+        References
+        ----------
+        .. [1] N. Gillis and F. Glineur, Accelerated Multiplicative Updates and
+            Hierarchical ALS Algorithms for Nonnegative Matrix Factorization,
+            Neural Computation 24 (4): 1085-1105, 2012.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "non_negative_parafac_hals",
+            x,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            tol=tol,
+            nn_modes=nn_modes,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            sparsity_coefficients=sparsity_coefficients,
+            fixed_modes=fixed_modes,
+            exact=exact,
+            cvg_criterion=cvg_criterion,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def non_negative_parafac_hals(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Optional[Union[Sequence[int], ivy.Container]] = None,
+        /,
+        *,
+        n_iter_max: Optional[Union[int, ivy.Container]] = 100,
+        init: Optional[
+            Union[
+                Literal["svd", "random"],
+                ivy.CPTensor,
+                ivy.Parafac2Tensor,
+                ivy.Container,
+            ]
+        ] = "svd",
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        normalize_factors: Optional[Union[bool, ivy.Container]] = False,
+        tol: Optional[Union[float, ivy.Container]] = 10e-8,
+        nn_modes: Optional[Union[Literal["all"], int, ivy.Container]] = None,
+        seed: Optional[Union[int, ivy.Container]] = None,
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        return_errors: Optional[Union[bool, ivy.Container]] = False,
+        sparsity_coefficients: Optional[Union[Sequence[float], ivy.Container]] = None,
+        fixed_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        exact: Optional[Union[bool, ivy.Container]] = False,
+        cvg_criterion: Optional[
+            Union[Literal["abs_rec_error", "rec_error"], ivy.Container]
+        ] = "abs_rec_error",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ):
+        """
+        Non-negative CP decomposition via HALS.
+
+        Uses Hierarchical ALS (Alternating Least Squares)
+        which updates each factor column-wise (one column at a time
+        while keeping all other columns fixed), see [1]_
+
+        Parameters
+        ----------
+        x
+            ndarray
+        rank
+            number of components
+        n_iter_max
+            maximum number of iteration
+        init
+        svd
+            function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+            Default: 1e-8
+        seed
+        sparsity_coefficients
+            The sparsity coefficients on each factor.
+            If set to None, the algorithm is computed without sparsity
+        fixed_modes: array of integers (between 0 and the number of modes)
+            Has to be set not to update a factor, 0 and 1 for U and V respectively
+            Default: None
+        nn_modes: None, 'all' or array of integers (between 0 and the number of modes)
+            Used to specify which modes to impose non-negativity constraints on.
+            If 'all', then non-negativity is imposed on all modes.
+            Default: 'all'
+        exact
+            If it is True, the algorithm gives a results with high precision
+            but it needs high computational cost.
+            If it is False, the algorithm gives an approximate solution
+        normalize_factors : if True, aggregate the weights of each factor in a 1D-tensor
+            of shape (rank, ), which will contain the norms of the factors
+        verbose
+            Indicates whether the algorithm prints the successive
+            reconstruction errors or not
+        return_errors:
+            Indicates whether the algorithm should
+            return all reconstruction errors
+            and computation time of each iteration or not
+        cvg_criterion : {'abs_rec_error', 'rec_error'}, optional
+            Stopping criterion for ALS, works if `tol` is not None.
+            If 'rec_error',  ALS stops at current iteration if
+            ``(previous rec_error - current rec_error) < tol``.
+            If 'abs_rec_error', ALS terminates when
+            `|previous rec_error - current rec_error| < tol`.
+
+        Returns
+        -------
+        factors : ndarray list
+                list of positive factors of the CP decomposition
+                element `i` is of shape ``(tensor.shape[i], rank)``
+        errors: list
+            A list of reconstruction errors at each iteration of the algorithm.
+
+        References
+        ----------
+        .. [1] N. Gillis and F. Glineur, Accelerated Multiplicative Updates and
+            Hierarchical ALS Algorithms for Nonnegative Matrix Factorization,
+            Neural Computation 24 (4): 1085-1105, 2012.
+        """
+        return ivy.non_negative_parafac_hals(
+            self,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            tol=tol,
+            nn_modes=nn_modes,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            sparsity_coefficients=sparsity_coefficients,
+            fixed_modes=fixed_modes,
+            exact=exact,
+            cvg_criterion=cvg_criterion,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

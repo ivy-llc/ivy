@@ -1456,6 +1456,56 @@ def test_multi_mode_dot_tensorly_2(shape):
         assert np.allclose(res, 1)
 
 
+@pytest.mark.parametrize(
+    "seed, t_shape, rank",
+    [
+        (
+            [1234],
+            (8, 9, 10),
+            3,
+        )
+    ],
+)
+def test_non_negative_parafac_hals(seed, t_shape, rank):
+    weights = ivy.array(ivy.random_uniform(shape=(rank,), seed=seed))
+    A = ivy.array(ivy.random_uniform(shape=(t_shape[0], rank), seed=seed))
+    B = ivy.array(ivy.random_uniform(shape=(t_shape[1], rank), seed=seed))
+    C = ivy.array(ivy.random_uniform(shape=(t_shape[2], rank), seed=seed))
+    cp_tensor = (weights, (A, B, C))
+    X = ivy.CPTensor.cp_to_tensor(cp_tensor)
+
+    nn_estimate, errs = ivy.non_negative_parafac_hals(
+        X,
+        rank,
+        n_iter_max=100,
+        tol=0,
+        init="svd",
+        nn_modes={0, 2},
+        return_errors=True,
+    )
+    X_hat = ivy.CPTensor.cp_to_tensor(nn_estimate)
+    np.testing.assert_(
+        ivy.permute_dims(X - X_hat, (1, 0)) < 1e-3,
+        "Error was too high",
+    )
+
+    # np.testing.assert_(
+    #     congruence_coefficient(A, nn_estimate[1][0], absolute_value=True)[0] > 0.99,
+    #     "Factor recovery not high enough",
+    # )
+    # np.testing.assert_(
+    #     congruence_coefficient(B, nn_estimate[1][1], absolute_value=True)[0] > 0.99,
+    #     "Factor recovery not high enough",
+    # )
+    # np.testing.assert_(
+    #     congruence_coefficient(C, nn_estimate[1][2], absolute_value=True)[0] > 0.99,
+    #     "Factor recovery not high enough",
+    # )
+
+    np.testing.assert_(ivy.all(nn_estimate[1][0] > -1e-10))
+    np.testing.assert_(ivy.all(nn_estimate[1][2] > -1e-10))
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.partial_tucker",
     data=_partial_tucker_data(),

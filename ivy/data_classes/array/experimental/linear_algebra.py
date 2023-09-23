@@ -978,3 +978,109 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             return_errors=return_errors,
             n_iter_parafac=n_iter_parafac,
         )
+
+    def non_negative_parafac_hals(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.CPTensor, ivy.Parafac2Tensor]
+        ] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        normalize_factors: Optional[bool] = False,
+        tol: Optional[float] = 10e-8,
+        nn_modes: Optional[Union[Literal["all"], int]] = None,
+        seed: Optional[int] = None,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
+        sparsity_coefficients: Optional[Sequence[float]] = None,
+        fixed_modes: Optional[Sequence[int]] = None,
+        exact: Optional[bool] = False,
+        cvg_criterion: Optional[
+            Literal["abs_rec_error", "rec_error"]
+        ] = "abs_rec_error",
+    ):
+        """
+        Non-negative CP decomposition via HALS.
+
+        Uses Hierarchical ALS (Alternating Least Squares)
+        which updates each factor column-wise (one column at a time
+        while keeping all other columns fixed), see [1]_
+
+        Parameters
+        ----------
+        self
+            ndarray
+        rank
+            number of components
+        n_iter_max
+            maximum number of iteration
+        init
+        svd
+            function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+        tol
+            tolerance: the algorithm stops when the variation in
+            the reconstruction error is less than the tolerance
+            Default: 1e-8
+        seed
+        sparsity_coefficients
+            The sparsity coefficients on each factor.
+            If set to None, the algorithm is computed without sparsity
+        fixed_modes: array of integers (between 0 and the number of modes)
+            Has to be set not to update a factor, 0 and 1 for U and V respectively
+            Default: None
+        nn_modes: None, 'all' or array of integers (between 0 and the number of modes)
+            Used to specify which modes to impose non-negativity constraints on.
+            If 'all', then non-negativity is imposed on all modes.
+
+        exact
+            If it is True, the algorithm gives a results with high precision but it
+            needs high computational cost. If it is False, the algorithm gives
+            an approximate solution.
+        normalize_factors : if True, aggregate the weights of each factor in a 1D-tensor
+            of shape (rank, ), which will contain the norms of the factors
+        verbose
+            Indicates whether the algorithm prints the successive
+            reconstruction errors or not
+        return_errors:
+            Indicates whether the algorithm should return all reconstruction errors
+            and computation time of each iteration or not
+        cvg_criterion :
+            Stopping criterion for ALS, works if `tol` is not None.
+            If 'rec_error',  ALS stops at current iteration if ``(previous rec_error
+            - current rec_error) < tol``. If 'abs_rec_error', ALS terminates when
+            `|previous rec_error - current rec_error| < tol`.
+
+        Returns
+        -------
+        factors : ndarray list
+                list of positive factors of the CP decomposition
+                element `i` is of shape ``(tensor.shape[i], rank)``
+        errors: list
+            A list of reconstruction errors at each iteration of the algorithm.
+
+        References
+        ----------
+        .. [1] N. Gillis and F. Glineur, Accelerated Multiplicative Updates and
+            Hierarchical ALS Algorithms for Nonnegative Matrix Factorization,
+            Neural Computation 24 (4): 1085-1105, 2012.
+        """
+        return ivy.non_negative_parafac_hals(
+            self._data,
+            rank,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            normalize_factors=normalize_factors,
+            tol=tol,
+            nn_modes=nn_modes,
+            seed=seed,
+            verbose=verbose,
+            return_errors=return_errors,
+            sparsity_coefficients=sparsity_coefficients,
+            fixed_modes=fixed_modes,
+            exact=exact,
+            cvg_criterion=cvg_criterion,
+        )

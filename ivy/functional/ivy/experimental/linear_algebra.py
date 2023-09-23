@@ -2048,7 +2048,8 @@ def parafac2(
         so if this mode is among the constrained modes, then a warning
         will be shown
     seed
-
+        Used to create a random seed distribution
+        when init == 'random'
     verbose
         Level of verbosity
     return_errors
@@ -2206,3 +2207,371 @@ def parafac2(
         return parafac2_tensor, rec_errors
     else:
         return parafac2_tensor
+
+
+def _hals_nnls(
+    UtM,
+    UtU,
+    V=None,
+    n_iter_max=500,
+    tol=10e-8,
+    sparsity_coefficient=None,
+    normalize=False,
+    nonzero_rows=False,
+    exact=False,
+):
+    """
+    Non Negative Least Squares (NNLS)
+
+    Computes an approximate solution of a nonnegative least
+    squares problem (NNLS) with an exact block-coordinate descent scheme.
+    M is m by n, U is m by r, V is r by n.
+    All matrices are nonnegative componentwise.
+
+    This algorithm is defined in [1], as an accelerated version of the HALS algorithm.
+
+    It features two accelerations: an early stop stopping criterion, and a
+    complexity averaging between precomputations and loops, so as to use large
+    precomputations several times.
+
+    This function is made for being used repetively inside an
+    outer-loop alternating algorithm, for instance for computing nonnegative
+    matrix Factorization or tensor factorization.
+
+    Parameters
+    ----------
+    UtM
+        Pre-computed product of the transposed of U and M, used in the update rule
+    UtU
+        Pre-computed product of the transposed of U and U, used in the update rule
+    V
+        Initialized V array
+        By default, is initialized with one non-zero entry per column
+        corresponding to the closest column of U of the corresponding column of M.
+    n_iter_max
+        Upper bound on the number of iterations
+    tol
+        early stop criterion, while err_k > delta*err_0. Set small for
+        almost exact nnls solution, or larger (e.g. 1e-2) for inner loops
+        of a PARAFAC computation.
+    sparsity_coefficient
+        The coefficient controling the sparisty level in the objective function.
+        If set to None, the problem is solved unconstrained.
+    nonzero_rows
+        True if the lines of the V matrix can't be zero,
+        False if they can be zero
+
+    exact
+        If it is True, the algorithm gives a results with high precision but it
+        needs high computational cost. If it is False, the algorithm gives
+        an approximate solution
+
+    Returns
+    -------
+    V: array
+        a r-by-n nonnegative matrix approx argmin_{V >= 0} ||M-UV||_F^2
+    rec_error: float
+        number of loops authorized by the error stop criterion
+    iteration: integer
+        final number of update iteration performed
+    complexity_ratio: float
+        number of loops authorized by the stop criterion
+
+    Notes
+    -----
+    We solve the following problem :math:`min_{V >= 0} ||M-UV||_F^2`
+
+    The matrix V is updated linewise. The update rule for this resolution is::
+
+    .. math::
+        begin{equation}
+            V[k,:]_(j+1) = V[k,:]_(j) + (UtM[k,:] - UtU[k,:]times V_(j))/UtU[k,k]
+        end{equation}
+
+    with j the update iteration.
+
+    This problem can also be defined by adding a sparsity coefficient,
+    enhancing sparsity in the solution [2]. In this sparse version, the
+    update rule becomes::
+
+    .. math::
+        begin{equation}
+            V[k,:]_(j+1) = V[k,:]_(j) + (UtM[k,:] - UtU[k,:]times V_(j)
+            - sparsity_coefficient)/UtU[k,k]
+        end{equation}
+
+    References
+    ----------
+    .. [1]: N. Gillis and F. Glineur, Accelerated Multiplicative Updates and
+       Hierarchical ALS Algorithms for Nonnegative Matrix Factorization,
+       Neural Computation 24 (4): 1085-1105, 2012.
+
+    .. [2] J. Eggert, and E. Korner. "Sparse coding and NMF."
+       2004 IEEE International Joint Conference on Neural Networks
+       (IEEE Cat. No. 04CH37541). Vol. 4. IEEE, 2004.
+    """
+    rank, n_col_M = ivy.shape(UtM)
+    if V is None:  # checks if V is empty
+        V = ivy.solve(UtU, UtM)
+
+        V = ivy.clip(V, a_min=0, a_max=None)
+        # Scaling
+        scale = ivy.sum(UtM * V) / ivy.sum(
+            UtU * ivy.dot(V, ivy.permute_dims(V, (1, 0)))
+        )
+        V = V * scale
+
+    if exact:
+        n_iter_max = 50000
+        tol = 10e-16
+    for iteration in range(n_iter_max):
+        rec_error = 0
+        for k in range(rank):
+            if UtU[k, k]:
+                term = UtM[k, :] - ivy.dot(UtU[k, :], V)
+
+                # Modifying the function for sparsification
+                if sparsity_coefficient is not None:
+                    term -= sparsity_coefficient
+
+                deltaV = ivy.maximum(term / UtU[k, k], -V[k, :])
+                # ToDo
+                # V = .index_update(V, tl.index[k, :], V[k, :] + deltaV)
+
+                rec_error += ivy.dot(deltaV, ivy.permute_dims(deltaV, (1, 0)))
+
+                # Safety procedure, if columns aren't allow to be zero
+                if nonzero_rows and ivy.all(V[k, :] == 0):
+                    V[k, :] = ivy.eps(V.dtype) * ivy.max(V)
+
+            elif nonzero_rows:
+                raise ValueError(f"Column {k} of U is zero with nonzero condition")
+
+            if normalize:
+                norm = ivy.sqrt(ivy.sum(ivy.square(V[k, :])))
+                if norm != 0:
+                    V[k, :] /= norm
+                else:
+                    sqrt_n = 1 / n_col_M ** (1 / 2)
+                    V[k, :] = [sqrt_n for i in range(n_col_M)]
+        if iteration == 0:
+            rec_error0 = rec_error
+
+        numerator = ivy.shape(V)[0] * ivy.shape(V)[1] + ivy.shape(V)[1] * rank
+        denominator = ivy.shape(V)[0] * rank + ivy.shape(V)[0]
+        complexity_ratio = 1 + (numerator / denominator)
+        if exact:
+            if rec_error < tol * rec_error0:
+                break
+        else:
+            if rec_error < tol * rec_error0 or iteration > 1 + 0.5 * complexity_ratio:
+                break
+    return V, rec_error, iteration, complexity_ratio
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def non_negative_parafac_hals(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: Optional[Sequence[int]] = None,
+    /,
+    *,
+    n_iter_max: Optional[int] = 100,
+    init: Optional[
+        Union[Literal["svd", "random"], ivy.CPTensor, ivy.Parafac2Tensor]
+    ] = "svd",
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    normalize_factors: Optional[bool] = False,
+    tol: Optional[float] = 10e-8,
+    nn_modes: Optional[Union[Literal["all"], int]] = None,
+    seed: Optional[int] = None,
+    verbose: Optional[bool] = False,
+    return_errors: Optional[bool] = False,
+    sparsity_coefficients: Optional[Sequence[float]] = None,
+    fixed_modes: Optional[Sequence[int]] = None,
+    exact: Optional[bool] = False,
+    cvg_criterion: Optional[Literal["abs_rec_error", "rec_error"]] = "abs_rec_error",
+):
+    """
+    Non-negative CP decomposition via HALS.
+
+    Uses Hierarchical ALS (Alternating Least Squares)
+    which updates each factor column-wise (one column at a time while
+    keeping all other columns fixed), see [1]_
+
+    Parameters
+    ----------
+    x
+        ndarray
+    rank
+        number of components
+    n_iter_max
+        maximum number of iteration
+    init
+    svd
+        function to use to compute the SVD, acceptable values in tensorly.SVD_FUNS
+    tol
+        tolerance: the algorithm stops when the variation in
+        the reconstruction error is less than the tolerance
+        Default: 1e-8
+    seed
+    sparsity_coefficients
+        The sparsity coefficients on each factor.
+        If set to None, the algorithm is computed without sparsity
+    fixed_modes: array of integers (between 0 and the number of modes)
+        Has to be set not to update a factor, 0 and 1 for U and V respectively
+        Default: None
+    nn_modes: None, 'all' or array of integers (between 0 and the number of modes)
+        Used to specify which modes to impose non-negativity constraints on.
+        If 'all', then non-negativity is imposed on all modes.
+        Default: 'all'
+    exact
+        If it is True, the algorithm gives a results with high precision but
+        it needs high computational cost. If it is False, the algorithm
+        gives an approximate solution.
+    normalize_factors : if True, aggregate the weights of each factor in a 1D-tensor
+        of shape (rank, ), which will contain the norms of the factors
+    verbose
+        Indicates whether the algorithm prints the successive
+        reconstruction errors or not
+    return_errors: boolean
+        Indicates whether the algorithm should return all reconstruction errors
+        and computation time of each iteration or not
+    cvg_criterion : {'abs_rec_error', 'rec_error'}, optional
+        Stopping criterion for ALS, works if `tol` is not None.
+        If 'rec_error',  ALS stops at current iteration if ``(previous rec_error
+          - current rec_error) < tol``.
+        If 'abs_rec_error', ALS terminates when `|previous rec_error
+        - current rec_error| < tol`.
+
+    Returns
+    -------
+    factors : ndarray list
+            list of positive factors of the CP decomposition
+            element `i` is of shape ``(tensor.shape[i], rank)``
+    errors: list
+        A list of reconstruction errors at each iteration of the algorithm.
+
+    References
+    ----------
+    .. [1] N. Gillis and F. Glineur, Accelerated Multiplicative Updates and
+           Hierarchical ALS Algorithms for Nonnegative Matrix Factorization,
+           Neural Computation 24 (4): 1085-1105, 2012.
+    """
+    weights, factors = ivy.initialize_cp(
+        x,
+        rank,
+        init=init,
+        svd=svd,
+        non_negative=True,
+        seed=seed,
+        normalize_factors=normalize_factors,
+    )
+
+    norm_tensor = ivy.sqrt(ivy.sum(ivy.square(x)))
+
+    n_modes = len(x.shape)
+    if sparsity_coefficients is None or isinstance(sparsity_coefficients, float):
+        sparsity_coefficients = [sparsity_coefficients] * n_modes
+
+    if fixed_modes is None:
+        fixed_modes = []
+
+    if nn_modes == "all":
+        nn_modes = set(range(n_modes))
+    elif nn_modes is None:
+        nn_modes = set()
+
+    # Avoiding errors
+    for fixed_value in fixed_modes:
+        sparsity_coefficients[fixed_value] = None
+
+    for mode in range(n_modes):
+        if sparsity_coefficients[mode] is not None:
+            logging.warn("Sparsity coefficient is ignored in unconstrained modes.")
+    # Generating the mode update sequence
+    modes = [mode for mode in range(n_modes) if mode not in fixed_modes]
+
+    # initialisation - declare local varaibles
+    rec_errors = []
+
+    # Iteratation
+    for iteration in range(n_iter_max):
+        # One pass of least squares on each updated mode
+        for mode in modes:
+            # Computing Hadamard of cross-products
+            pseudo_inverse = ivy.array(ivy.ones((rank, rank), dtype=x.dtype))
+            for i, factor in enumerate(factors):
+                if i != mode:
+                    pseudo_inverse = pseudo_inverse * ivy.dot(
+                        ivy.permute_dims(factor, (1, 0)), factor
+                    )
+
+            pseudo_inverse = (
+                ivy.reshape(weights, (-1, 1))
+                * pseudo_inverse
+                * ivy.reshape(weights, (1, -1))
+            )
+            mttkrp = ivy.CPTensor.unfolding_dot_khatri_rao(x, (weights, factors), mode)
+
+            if mode in nn_modes:
+                # Call the hals resolution with nnls, optimizing the current mode
+                nn_factor, _, _, _ = _hals_nnls(
+                    ivy.permute_dims(mttkrp, (1, 0)),
+                    pseudo_inverse,
+                    ivy.permute_dims(factors[mode], (1, 0)),
+                    n_iter_max=100,
+                    sparsity_coefficient=sparsity_coefficients[mode],
+                    exact=exact,
+                )
+                factors[mode] = ivy.permute_dims(nn_factor, (1, 0))
+            else:
+                factor = ivy.solve(
+                    ivy.permute_dims(pseudo_inverse, (1, 0)),
+                    ivy.permute_dims(mttkrp, (1, 0)),
+                )
+                factors[mode] = ivy.permute_dims(factor, (1, 0))
+            if normalize_factors and mode != modes[-1]:
+                weights, factors = ivy.CPTensor.cp_normalize((weights, factors))
+        if tol:
+            factors_norm = ivy.CPTensor.cp_norm((weights, factors))
+            iprod = ivy.sum(ivy.sum(mttkrp * factors[-1], axis=0))
+            rec_error = (
+                ivy.sqrt(ivy.abs(norm_tensor**2 + factors_norm**2 - 2 * iprod))
+                / norm_tensor
+            )
+            rec_errors.append(rec_error)
+            if iteration >= 1:
+                rec_error_decrease = rec_errors[-2] - rec_errors[-1]
+
+                if verbose:
+                    print(
+                        f"iteration {iteration}, reconstruction error: {rec_error},"
+                        f" decrease = {rec_error_decrease}"
+                    )
+
+                if cvg_criterion == "abs_rec_error":
+                    stop_flag = abs(rec_error_decrease) < tol
+                elif cvg_criterion == "rec_error":
+                    stop_flag = rec_error_decrease < tol
+                else:
+                    raise TypeError("Unknown convergence criterion")
+
+                if stop_flag:
+                    if verbose:
+                        print(f"PARAFAC converged after {iteration} iterations")
+                    break
+            else:
+                if verbose:
+                    print(f"reconstruction error={rec_errors[-1]}")
+        if normalize_factors:
+            weights, factors = ivy.CPTensor.cp_normalize((weights, factors))
+    cp_tensor = ivy.CPTensor((weights, factors))
+    if return_errors:
+        return cp_tensor, rec_errors
+    else:
+        return cp_tensor
