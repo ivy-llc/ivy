@@ -47,6 +47,25 @@ def chisquare(df, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def choice(a, size=None, replace=True, p=None):
+    sc_size = 1
+    if isinstance(size, int):
+        sc_size = size
+    elif size is not None:
+        #  If the given shape is, e.g., (m, n, k)
+        #  then m * n * k samples are drawn. As per numpy docs
+        sc_size = 1
+        for s in size:
+            if s is not None:
+                sc_size *= s
+    if isinstance(a, int):
+        a = ivy.arange(a)
+    index = ivy.multinomial(len(a), sc_size, replace=replace, probs=p)
+    return a[index]
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def dirichlet(alpha, size=None):
     return ivy.dirichlet(alpha, size=size)
 
@@ -258,6 +277,33 @@ def uniform(low=0.0, high=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def vonmises(mu, kappa, size=None):
+    t_size = 0
+    # Output shape. If the given shape is, e.g., (m, n, k),
+    # then m * n * k samples are drawn.
+    if size is None or len(size) == 0:
+        t_size = 1
+    else:
+        for x in size:
+            t_size = t_size * x
+    size = t_size
+    li = []
+    while len(li) < size:
+        # Generate samples from the von Mises distribution using numpy
+        u = ivy.random_uniform(low=-ivy.pi, high=ivy.pi, shape=size)
+        v = ivy.random_uniform(low=0, high=1, shape=size)
+
+        condition = v < (1 + ivy.exp(kappa * ivy.cos(u - mu))) / (
+            2 * ivy.pi * ivy.i0(kappa)
+        )
+        selected_samples = u[condition]
+        li.extend(ivy.to_list(selected_samples))
+
+    return ivy.array(li[:size])
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def wald(mean, scale, size=None):
     if size is None:
         size = 1
@@ -282,3 +328,12 @@ def weibull(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.pow(-ivy.log(1 - u), 1 / a)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def zipf(a, size=None):
+    if a <= 1:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.floor(ivy.pow(1 / (1 - u), 1 / a))

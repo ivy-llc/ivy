@@ -2,7 +2,7 @@ FROM debian:buster
 WORKDIR /ivy
 
 ARG fw
-ARG pycon=3.8.10
+ARG pycon=3.10
 # Install miniconda
 ENV CONDA_DIR /opt/miniconda/
 
@@ -52,8 +52,3 @@ RUN python3 multiversion_framework_directory.py  $fw && \
 
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
-
-
-
-
-

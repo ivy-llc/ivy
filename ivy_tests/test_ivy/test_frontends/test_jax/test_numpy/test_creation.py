@@ -772,6 +772,34 @@ def test_jax_ndim(
     )
 
 
+# from_dlpack
+@handle_frontend_test(
+    fn_tree="jax.numpy.from_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_jax_numpy_from_dlpack(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        x=x[0],
+        backend_to_test=backend_fw,
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.frombuffer",
     dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
@@ -834,6 +862,54 @@ def test_jax_numpy_in1d(
         ar2=b[0],
         assume_unique=assume_unique,
         invert=invert,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.setdiff1d",
+    dtype_and_a=helpers.dtype_and_values(
+        min_num_dims=1,
+        max_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    dtype_and_b=helpers.dtype_and_values(
+        min_num_dims=1,
+        max_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    use_size=st.booleans(),
+    size=st.integers(min_value=1, max_value=100),
+    assume_unique=st.booleans(),
+)
+def test_jax_numpy_setdiff1d(
+    *,
+    dtype_and_a,
+    dtype_and_b,
+    use_size,
+    size,
+    assume_unique,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype_a, a = dtype_and_a
+    input_dtype_b, b = dtype_and_b
+    if not use_size:
+        size = None
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype_a + input_dtype_b,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar1=a[0],
+        ar2=b[0],
+        assume_unique=assume_unique,
+        size=size,
     )
 
 

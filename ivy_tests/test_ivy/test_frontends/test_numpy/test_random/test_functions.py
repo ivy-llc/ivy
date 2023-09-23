@@ -146,6 +146,37 @@ def test_numpy_chisquare(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.choice",
+    dtypes=helpers.get_dtypes("float", full=False),
+    a=helpers.ints(min_value=2, max_value=10),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_choice(
+    dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    a,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        size=size,
+        replace=True,
+        p=np.array([1 / a] * a, dtype=dtypes[0]),
+    )
+
+
 # dirichlet
 @handle_frontend_test(
     fn_tree="numpy.random.dirichlet",
@@ -1054,6 +1085,52 @@ def test_numpy_uniform(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.vonmises",
+    input_dtypes=helpers.get_dtypes("float"),
+    mu=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1,
+        exclude_min=True,
+    ),
+    kappa=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=10,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_vonmises(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    mu,
+    kappa,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        mu=mu,
+        kappa=kappa,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.wald",
     input_dtypes=helpers.get_dtypes("float"),
     mean=st.floats(
@@ -1116,6 +1193,43 @@ def test_numpy_wald(
     test_with_out=st.just(False),
 )
 def test_numpy_weibull(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    a,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.zipf",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    a=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_zipf(
     input_dtypes,
     frontend,
     test_flags,

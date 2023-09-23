@@ -556,9 +556,8 @@ def asin(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-2.4, -0, +0, 3.2, float('nan')])
@@ -1108,9 +1107,8 @@ def bitwise_and(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([2, 3, 7])
@@ -1509,10 +1507,6 @@ def bitwise_xor(
     ``x1_i`` of the input array ``x1`` with the respective element ``x2_i`` of the input
     array ``x2``.
 
-    **Special cases**
-
-    This function does not take floating point operands
-
     Parameters
     ----------
     x1
@@ -1541,57 +1535,59 @@ def bitwise_xor(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
+    With :class:`int` input:
 
-    With :class:`ivy.Array` input:
-
-    >>> a = ivy.array([1, 2, 3])
-    >>> b = ivy.array([3, 2, 1])
-    >>> y = ivy.bitwise_xor(a, b)
+    >>> x1 = 4
+    >>> x2 = 5
+    >>> y = ivy.bitwise_xor(x1, x2)
     >>> print(y)
-    ivy.array([2, 0, 2])
+    ivy.array(1)
 
-    >>> a = ivy.array([78, 91, 23])
-    >>> b = ivy.array([66, 77, 88])
-    >>> ivy.bitwise_xor(a, b, out=y)
+    With :class:`bool` input:
+
+    >>> x1 = True
+    >>> x2 = False
+    >>> y = ivy.bitwise_xor(x1, x2)
     >>> print(y)
-    ivy.array([12, 22, 79])
+    ivy.array(True)
 
-    >>> a = ivy.array([1, 2, 3])
-    >>> b = ivy.array([3, 2, 1])
-    >>> y = ivy.zeros(3)
-    >>> ivy.bitwise_xor(a, b, out = a)
-    >>> print(a)
-    ivy.array([2, 0, 2])
+    With :class:`ivy.Array` inputs:
 
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-    >>> a = ivy.array([0, 1, 3, 67, 91])
-    >>> b = ivy.native_array([4, 7, 90, 89, 98])
-    >>> y = ivy.bitwise_xor(a, b)
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([3, 5, 7])
+    >>> y = ivy.zeros(3, dtype=ivy.int32)
+    >>> ivy.bitwise_xor(x1, x2, out=y)
     >>> print(y)
-    ivy.array([ 4,  6, 89, 26, 57])
+    ivy.array([2, 7, 4])
+
+    >>> x1 = ivy.array([[True], [True]])
+    >>> x2 = ivy.array([[False], [True]])
+    >>> ivy.bitwise_xor(x1, x2, out=x2)
+    >>> print(x2)
+    ivy.array([[True], [False]])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a = ivy.array([89]))
-    >>> y = ivy.Container(a = ivy.array([12]))
-    >>> z = ivy.bitwise_xor(x, y)
-    >>> print(z)
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
+    >>> x2 = ivy.Container(a=ivy.array([7, 8, 9]), b=ivy.array([10, 11, 12]))
+    >>> y = ivy.bitwise_xor(x1, x2)
+    >>> print(y)
     {
-        a:ivy.array([85])
+        a: ivy.array([6, 10, 10]),
+        b: ivy.array([14, 14, 10])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.array([-67, 21]))
-    >>> b = ivy.array([78, 34])
-    >>> y = ivy.array([12, 13])
-    >>> z = ivy.bitwise_xor(x, y)
-    >>> print(z)
+    >>> x1 = ivy.array([True, True])
+    >>> x2 = ivy.Container(a=ivy.array([True, False]), b=ivy.array([False, True]))
+    >>> y = ivy.bitwise_xor(x1, x2)
+    >>> print(y)
     {
-        a: ivy.array([-79, 24])
+        a: ivy.array([False, True]),
+        b: ivy.array([True, False])
     }
     """
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
@@ -2707,9 +2703,8 @@ def floor(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2,3,4])
@@ -3122,9 +3117,8 @@ def greater_equal(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
@@ -3500,9 +3494,8 @@ def isfinite(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
@@ -4996,9 +4989,8 @@ def not_equal(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` inputs:
 
     >>> x1 = ivy.array([1, 0, 1, 1])
@@ -5152,9 +5144,8 @@ def positive(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3 ,5, 7])
@@ -5197,8 +5188,8 @@ def positive(
 @handle_array_function
 @handle_device_shifting
 def pow(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[int, float, ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -5208,13 +5199,6 @@ def pow(
     each element ``x1_i`` (the base) of the input array ``x1`` to the power of ``x2_i``
     (the exponent), where ``x2_i`` is the corresponding element of the input array
     ``x2``.
-
-    .. note::
-       If both ``x1`` and ``x2`` have integer data types, the result of ``pow`` when
-       ``x2_i`` is negative (i.e., less than zero) is unspecified and thus
-       implementation-dependent. If ``x1`` has an integer data type and ``x2`` has a
-       floating-point data type, behavior is implementation-dependent (type promotion
-       between data type "kinds" (integer versus floating-point) is unspecified).
 
     **Special cases**
 
@@ -5334,6 +5318,13 @@ def pow(
 
 
 pow.unsupported_gradients = {"torch": ["float16"]}
+
+
+def _complex_to_inf(exponent):
+    if exponent < 0:
+        return float("inf") + ivy.nan * 1j
+    else:
+        return -0 * 1j
 
 
 @handle_exceptions
@@ -6679,7 +6670,7 @@ def erf(
     Parameters
     ----------
     x
-        Value to compute exponential for.
+        input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -6691,9 +6682,33 @@ def erf(
 
     Examples
     --------
-    >>> x = ivy.array([0, 0.3, 0.7, 1.0])
-    >>> ivy.erf(x)
-    ivy.array([0., 0.328, 0.677, 0.842])
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([0, 0.3, 0.7])
+    >>> y = ivy.erf(x)
+    >>> print(y)
+    ivy.array([0., 0.32862675, 0.67780113])
+
+    >>> x = ivy.array([0.1, 0.3, 0.4, 0.5])
+    >>> ivy.erf(x, out=x)
+    >>> print(x)
+    ivy.array([0.11246294, 0.32862675, 0.42839241, 0.52050018])
+
+    >>> x = ivy.array([[0.15, 0.28], [0.41, 1.75]])
+    >>> y = ivy.zeros((2, 2))
+    >>> ivy.erf(x, out=y)
+    >>> print(y)
+    ivy.array([[0.16799599, 0.30787992], [0.43796915, 0.98667163]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.9, 1.1, 1.2]), b=ivy.array([1.3, 1.4, 1.5]))
+    >>> y = ivy.erf(x)
+    >>> print(y)
+    {
+        a: ivy.array([0.79690808, 0.88020504, 0.91031402]),
+        b: ivy.array([0.934008, 0.95228523, 0.96610528])
+    }
     """
     return ivy.current_backend(x).erf(x, out=out)
 

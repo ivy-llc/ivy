@@ -7,24 +7,7 @@ import multiprocessing as mp
 
 # for enabling numpy's bfloat16 behavior
 from packaging import version
-
-mod_frontend = {
-    "tensorflow": None,
-    "numpy": None,
-    "jax": None,
-    "torch": None,
-    "mindspore": None,
-    "scipy": None,
-    "paddle": None,
-}  # multiversion
-mod_backend = {
-    "numpy": None,
-    "jax": None,
-    "tensorflow": None,
-    "torch": None,
-    "paddle": None,
-    "mxnet": None,
-}  # multiversion
+from .helpers.globals import mod_backend, mod_frontend
 
 multiprocessing_flag = False  # multiversion
 
@@ -150,7 +133,7 @@ def pytest_configure(config):
                         target=backend_proc, args=(input_queue, output_queue)
                     )
                     # start the process so that it loads the framework
-                    input_queue.put(fw + "/" + version)
+                    input_queue.put(f"{fw}/{version}")
                     proc.start()
 
                 # we have the process running, the framework imported within,
@@ -179,7 +162,7 @@ def pytest_configure(config):
             proc = mp.Process(target=frontend_proc, args=(queue,))
             # start the process so that it loads the framework
             proc.start()
-            queue.put(fw + "/" + ver)
+            queue.put(f"{fw}/{ver}")
             # we have the process running, the framework imported within,
             # we now pack the queue and the process and store it in dict
             # for future access
@@ -305,6 +288,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-compile-testing"),
             getopt("--with-compile-testing"),
         ),
+        "transpile": (
+            False,
+            getopt("--with-transpile-frontend"),
+        ),
     }
 
     # final mapping for hypothesis value generation
@@ -359,6 +346,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-compile-testing", action="store_true")
+    parser.addoption("--with-transpile-frontend", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
         "--my_test_dump",
@@ -375,7 +363,7 @@ def pytest_collection_finish(session):
     if session.config.option.my_test_dump is not None:
         for item in session.items:
             item_path = os.path.relpath(item.path)
-            print("{}::{}".format(item_path, item.name))
+            print(f"{item_path}::{item.name}")
 
         for backend in mod_backend:
             proc = mod_backend[backend]
