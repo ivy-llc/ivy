@@ -30,6 +30,14 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def add_(x, y, name=None):
+    return ivy.inplace_update(x, add(x, y))
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -132,6 +140,15 @@ def cos(x, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float16", "float32", "float64", "bool")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def count_nonzero(x, axis=None, keepdim=False, name=None):
+    return ivy.astype(ivy.count_nonzero(x, axis=axis, keepdims=keepdim), ivy.int64)
 
 
 @with_supported_dtypes(
@@ -376,6 +393,12 @@ def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def nanmean(x, axis=None, keepdims=False):
+    return ivy.nanmean(x, axis=axis, keepdims=keepdims)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -495,6 +518,25 @@ def stanh(x, scale_a=0.67, scale_b=1.7159, name=None):
 @to_ivy_arrays_and_back
 def subtract(x, y, name=None):
     return ivy.subtract(x, y)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float64",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sum(x, axis=None, dtype=None, keepdim=False, name=None):
+    return ivy.sum(
+        x,
+        axis=axis,
+        keepdims=keepdim,
+        dtype=dtype,
+    )
 
 
 @with_supported_dtypes(
