@@ -14,7 +14,7 @@ from ivy.functional.frontends.torch.nn.functional.loss_functions import (
 @handle_frontend_test(
     fn_tree="torch.nn.functional.binary_cross_entropy",
     dtype_and_vals=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
         shared_dtype=True,
         min_value=1.0013580322265625e-05,
@@ -73,7 +73,7 @@ def test_torch_binary_cross_entropy(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.binary_cross_entropy_with_logits",
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.0,
         max_value=1.0,
         large_abs_safety_factor=2,
@@ -87,7 +87,7 @@ def test_torch_binary_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1.0,
         large_abs_safety_factor=2,
@@ -101,7 +101,7 @@ def test_torch_binary_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_weight=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1.0,
         allow_inf=False,
@@ -114,7 +114,7 @@ def test_torch_binary_cross_entropy(
     reduction=st.sampled_from(["mean", "none", "sum", None]),
     dtype_and_pos_weight=st.one_of(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("float"),
             min_value=0,
             max_value=10,
             allow_inf=False,
@@ -172,7 +172,7 @@ def test_torch_binary_cross_entropy_with_logits(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.cosine_embedding_loss",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=2,
         max_value=5,
         min_num_dims=1,
@@ -241,14 +241,14 @@ def test_torch_cosine_embedding_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.cross_entropy",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.0,
         max_value=1.0,
         allow_inf=False,
@@ -257,7 +257,7 @@ def test_torch_cosine_embedding_loss(
         min_dim_size=2,
     ),
     dtype_and_weights=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -360,7 +360,7 @@ def test_torch_gaussian_nll_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.hinge_embedding_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-100,
         max_value=100,
@@ -410,7 +410,7 @@ def test_torch_hinge_embedding_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.huber_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -451,7 +451,7 @@ def test_torch_huber_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.kl_div",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         shared_dtype=True,
         min_value=0,
@@ -502,7 +502,7 @@ def test_torch_kl_div(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.l1_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -546,7 +546,7 @@ def test_torch_l1_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.margin_ranking_loss",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
         allow_inf=False,
         shared_dtype=True,
@@ -595,7 +595,7 @@ def test_torch_margin_ranking_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.mse_loss",
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.0,
         max_value=1.0,
         large_abs_safety_factor=2,
@@ -609,7 +609,7 @@ def test_torch_margin_ranking_loss(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.0,
         max_value=1.0,
         large_abs_safety_factor=2,
@@ -704,7 +704,7 @@ def test_torch_multilabel_margin_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multilabel_soft_margin_loss",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -747,7 +747,7 @@ def test_torch_multilabel_soft_margin_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.nll_loss",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.01,
         max_value=1.0,
         allow_inf=False,
@@ -757,7 +757,7 @@ def test_torch_multilabel_soft_margin_loss(
         max_dim_size=1,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0.0,
         max_value=1.0,
         allow_inf=False,
@@ -767,7 +767,7 @@ def test_torch_multilabel_soft_margin_loss(
         max_dim_size=1,
     ),
     dtype_and_weights=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -815,7 +815,7 @@ def test_torch_nll_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.poisson_nll_loss",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=0.0,
         max_value=1.0,
@@ -866,7 +866,7 @@ def test_torch_poisson_nll_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.smooth_l1_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -913,7 +913,7 @@ def test_torch_smooth_l1_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.soft_margin_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -957,7 +957,7 @@ def test_torch_soft_margin_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.triplet_margin_loss",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
         allow_inf=False,
         shared_dtype=True,
@@ -1017,7 +1017,7 @@ def test_torch_triplet_margin_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.triplet_margin_with_distance_loss",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
         allow_inf=False,
         shared_dtype=True,
