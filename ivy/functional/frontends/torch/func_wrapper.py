@@ -117,7 +117,16 @@ def _to_ivy_array(x):
     # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
     elif hasattr(x, "ivy_array"):
         return x.ivy_array
-
+    elif not ivy.is_array and ivy.isscalar(x):
+        if isinstance(x, int):
+            ret = ivy.array(x, dtype="int64")
+        elif isinstance(x, float):
+            ret = ivy.array(x, dtype="float64")
+        elif isinstance(x, bool):
+            ret = ivy.array(x, dtype="bool")
+        else:
+            raise Exception("Unknown scalar type")
+        return ret
     # else just return x
     return x
 
