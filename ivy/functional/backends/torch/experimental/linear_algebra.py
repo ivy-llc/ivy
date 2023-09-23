@@ -1,15 +1,15 @@
 # global
 import math
-from typing import Optional, Sequence, Tuple, Union
 
 import torch
+from typing import Optional, Tuple, Sequence, Union
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 from ivy.utils.exceptions import IvyNotImplementedException
-
 from .. import backend_version
+
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)

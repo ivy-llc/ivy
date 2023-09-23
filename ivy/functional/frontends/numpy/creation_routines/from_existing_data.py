@@ -1,7 +1,7 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
-    handle_numpy_dtype,
     to_ivy_arrays_and_back,
+    handle_numpy_dtype,
 )
 
 

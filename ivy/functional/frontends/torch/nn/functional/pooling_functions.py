@@ -4,7 +4,9 @@ from functools import reduce
 # local
 import ivy
 from ivy import with_unsupported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+)
 
 
 # --- Helpers --- #

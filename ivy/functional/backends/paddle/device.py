@@ -2,15 +2,16 @@
 
 # global
 import os
-import time
-from typing import Optional, Union
-
 import paddle
+from typing import Optional, Union
+import time
+import ivy
+from ivy.functional.ivy.device import (
+    _shift_native_arrays_on_default_device,
+    Profiler as BaseProfiler,
+)
 from paddle.device import core
 
-import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
-from ivy.functional.ivy.device import _shift_native_arrays_on_default_device
 
 # API #
 # ----#

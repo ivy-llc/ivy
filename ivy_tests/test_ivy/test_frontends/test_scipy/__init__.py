@@ -1,5 +1,6 @@
 from ivy_tests.test_ivy.test_frontends import NativeClass
 
+
 scipy_classes_to_ivy_classes = {}
 
 

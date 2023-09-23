@@ -1,13 +1,12 @@
-import bz2
 import os
-import pickle  # noqa
 import sys
-
-import _pickle as cPickle
 from pydriller import Repository
+import pickle  # noqa
 from tqdm import tqdm
-
+import bz2
+import _pickle as cPickle
 from run_tests_CLI.get_all_tests import get_all_tests
+
 
 # Shared Map
 tests = {}

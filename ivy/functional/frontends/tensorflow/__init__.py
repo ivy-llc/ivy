@@ -1,14 +1,14 @@
 # global
 import sys
-from numbers import Number
-from typing import Iterable, Tuple, Union
 
 # local
 import ivy
-from ivy.functional.frontends import set_frontend_to_specific_version
 from ivy.utils.exceptions import handle_exceptions
-
+from ivy.functional.frontends import set_frontend_to_specific_version
+from numbers import Number
+from typing import Union, Tuple, Iterable
 from .dtypes import DType
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -83,33 +83,32 @@ def check_tensorflow_casting(x1, x2):
     return x1, x2
 
 
-from . import (
-    compat,
-    dtypes,
-    general_functions,
-    image,
-    keras,
-    linalg,
-    math,
-    nest,
-    nn,
-    quantization,
-    ragged,
-    random,
-    raw_ops,
-    sets,
-    signal,
-    sparse,
-    tensor,
-    variable,
-)
+from . import dtypes
 from .dtypes import DType, as_dtype, cast
-from .general_functions import *
-from .linalg import eig, eye, matmul, norm, tensordot
-from .math import *
+from . import ragged
 from .ragged import *
+from . import tensor
 from .tensor import EagerTensor, Tensor
-from .variable import IndexedSlices, Variable
+from . import variable
+from .variable import Variable, IndexedSlices
+from . import keras
+from . import compat
+from . import image
+from . import linalg
+from .linalg import matmul, tensordot, eig, eye, norm
+from . import math
+from .math import *
+from . import nest
+from . import nn
+from . import quantization
+from . import random
+from . import general_functions
+from .general_functions import *
+from . import raw_ops
+from . import sets
+from . import signal
+from . import sparse
+
 
 _frontend_array = constant
 

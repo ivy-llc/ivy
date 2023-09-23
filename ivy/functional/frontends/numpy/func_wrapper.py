@@ -1,8 +1,8 @@
 # global
 import functools
+from typing import Callable, Any
 import inspect
 import platform
-from typing import Any, Callable
 
 # local
 import ivy

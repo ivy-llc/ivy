@@ -1,8 +1,7 @@
-import bz2
 import os
-
-import _pickle as cPickle
 import git
+import bz2
+import _pickle as cPickle
 
 # The path to your Mapping directory
 mapping_dir = "Mapping/"

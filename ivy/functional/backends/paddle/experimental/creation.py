@@ -1,16 +1,18 @@
 # global
-import math
 from typing import Optional, Tuple, Union
-
+import math
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
 from paddle.device import core
+from ivy.functional.backends.paddle.device import to_device
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
+)
+
 
 # local
 import ivy
-import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
-from ivy.functional.backends.paddle.device import to_device
-
 from .. import backend_version
 
 # noinspection PyProtectedMember

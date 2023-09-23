@@ -1,16 +1,15 @@
 # local
-from typing import Optional, Sequence, Union
-
+from typing import Optional, Union, Sequence
 import ivy
 from ivy.func_wrapper import (
-    handle_backend_invalid,
-    handle_device_shifting,
-    handle_nestable,
     handle_out_argument,
-    infer_device,
-    infer_dtype,
-    inputs_to_native_shapes,
     to_native_arrays_and_back,
+    inputs_to_native_shapes,
+    handle_nestable,
+    infer_dtype,
+    infer_device,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 

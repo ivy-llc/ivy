@@ -1,12 +1,10 @@
-from typing import Optional, Tuple
-
 import paddle
 import paddle.nn.functional as F
-
 import ivy
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
-
+from typing import Optional, Tuple
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 

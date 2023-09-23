@@ -1,1 +1,2 @@
-from . import array_methods, lax_numpy
+from . import lax_numpy
+from . import array_methods

@@ -1,14 +1,12 @@
 # global
-from typing import Optional, Union
-
+from typing import Union, Optional
 import numpy as np
 
 # local
 import ivy
-from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-
 from . import backend_version
 
 

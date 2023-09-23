@@ -1,7 +1,6 @@
 # global
-from typing import Dict, List, Optional, Tuple, Union
-
 import pytest
+from typing import List, Tuple, Dict, Optional, Union
 
 # local
 import ivy

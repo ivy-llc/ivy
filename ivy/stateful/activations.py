@@ -1,10 +1,9 @@
 """Collection of Ivy neural network activations as stateful classes."""
 
 # local
-from typing import Literal, Optional
-
 import ivy
 from ivy.stateful.module import Module
+from typing import Literal, Optional
 
 
 class GELU(Module):

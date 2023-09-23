@@ -1,11 +1,12 @@
 # global
-import numpy as np
-import pytest
 from hypothesis import strategies as st
+import pytest
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+
 
 CLASS_TREE = "ivy.functional.frontends.pandas.DataFrame"
 

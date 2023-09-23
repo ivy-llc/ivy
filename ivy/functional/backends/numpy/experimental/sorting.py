@@ -1,7 +1,6 @@
 # global
-from typing import Optional, Union
-
 import numpy as np
+from typing import Optional, Union
 
 
 # invert_permutation

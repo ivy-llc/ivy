@@ -1,7 +1,7 @@
+import ivy
+
 import numpy as np
 import pytest
-
-import ivy
 
 # These tests have been adapetd from Tensorly
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tests/test_tt_tensor.py

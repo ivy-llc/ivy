@@ -2,8 +2,8 @@
 
 # local
 import ivy
-from ivy.stateful.initializers import Ones, Zeros
 from ivy.stateful.module import Module
+from ivy.stateful.initializers import Zeros, Ones
 
 
 class LayerNorm(Module):

@@ -1,10 +1,9 @@
 # global
-from typing import Callable, Dict, List, Optional, Sequence, Union
-
-import ivy
+from typing import Optional, Union, List, Dict, Callable, Sequence
 
 # local
 from ivy.data_classes.container.base import ContainerBase
+import ivy
 
 
 class _ContainerWithGeneralExperimental(ContainerBase):

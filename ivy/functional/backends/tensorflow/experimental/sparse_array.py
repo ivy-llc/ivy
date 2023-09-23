@@ -1,7 +1,6 @@
 # global
-import logging
-
 import tensorflow as tf
+import logging
 
 # local
 import ivy

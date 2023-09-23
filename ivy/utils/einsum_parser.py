@@ -3,7 +3,6 @@
 
 import itertools
 from typing import Any, Dict, Iterator, List, Tuple, Union
-
 import numpy as np
 
 ArrayType = Any

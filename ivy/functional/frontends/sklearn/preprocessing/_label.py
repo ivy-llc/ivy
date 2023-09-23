@@ -1,5 +1,5 @@
-import ivy
 from ivy.functional.frontends.sklearn.base import BaseEstimator, TransformerMixin
+import ivy
 
 
 class LabelEncoder(TransformerMixin, BaseEstimator):

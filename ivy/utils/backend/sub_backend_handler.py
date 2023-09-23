@@ -1,12 +1,13 @@
-import importlib
-import logging
 import os
 import re
-from types import FunctionType, ModuleType
+from types import ModuleType, FunctionType
+import logging
+import importlib
 
 import ivy
 from ivy.func_wrapper import _wrap_function
 from ivy.utils.exceptions import IvyException
+
 
 _backends_subpackage_path = "ivy.functional.backends"
 _sub_backend_dict: dict[str, str] = {}

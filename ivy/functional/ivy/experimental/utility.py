@@ -3,7 +3,7 @@ from typing import Optional
 
 # local
 import ivy
-from ivy import handle_nestable, handle_out_argument
+from ivy import handle_out_argument, handle_nestable
 from ivy.utils.exceptions import handle_exceptions
 
 

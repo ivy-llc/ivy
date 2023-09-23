@@ -1,11 +1,9 @@
 # global
-import sys
-
-import numpy as np
 import pytest
 from hypothesis import strategies as st
-
 import ivy
+import numpy as np
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

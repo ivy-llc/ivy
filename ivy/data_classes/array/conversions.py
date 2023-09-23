@@ -5,13 +5,13 @@ Collection of Ivy functions for wrapping functions to accept and return
 ivy.Array instances.
 """
 
-from typing import Any, Dict, Iterable, Optional, Tuple, Union
-
 # global
 import numpy as np
+from typing import Any, Union, Tuple, Dict, Iterable, Optional
 
 # local
 import ivy
+
 
 # Helpers #
 # --------#

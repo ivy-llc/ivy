@@ -4,10 +4,8 @@ MXNet device functions.
 Collection of MXNet general functions, wrapped to fit Ivy syntax and
 signature.
 """
-from typing import Optional, Union
-
 import mxnet as mx
-
+from typing import Union, Optional
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 from ivy.utils.exceptions import IvyNotImplementedException

@@ -3,8 +3,8 @@ import functools
 
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @with_supported_dtypes({"2.13.0 and below": ("float",)}, "tensorflow")

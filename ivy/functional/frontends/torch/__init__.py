@@ -1,12 +1,13 @@
 # global
 import sys
 from numbers import Number
-from typing import Iterable, Tuple, Union
+from typing import Union, Tuple, Iterable
 
 # local
 import ivy
-from ivy.functional.frontends import set_frontend_to_specific_version
 from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -248,41 +249,40 @@ def promote_types_of_torch_inputs(
     return x1, x2
 
 
-from . import (
-    blas_and_lapack_ops,
-    comparison_ops,
-    creation_ops,
-    dtype,
-    func,
-    indexing_slicing_joining_mutating_ops,
-    linalg,
-    locally_disabling_gradient_computation,
-    miscellaneous_ops,
-    nn,
-    pointwise_ops,
-    random_sampling,
-    reduction_ops,
-    spectral_ops,
-    tensor,
-    tensor_functions,
-    utilities,
-)
-from .blas_and_lapack_ops import *
-from .comparison_ops import *
-from .creation_ops import *
-from .dtype import *
-from .func import *
-from .indexing_slicing_joining_mutating_ops import *
-from .locally_disabling_gradient_computation import *
-from .miscellaneous_ops import *
-from .nn.functional import relu, softmax
-from .pointwise_ops import *
-from .random_sampling import *
-from .reduction_ops import *
-from .spectral_ops import *
+from . import nn
+from .nn.functional import softmax, relu
+from . import tensor
 from .tensor import *
+from . import blas_and_lapack_ops
+from .blas_and_lapack_ops import *
+from . import comparison_ops
+from .comparison_ops import *
+from . import creation_ops
+from .creation_ops import *
+from . import dtype
+from .dtype import *
+from . import indexing_slicing_joining_mutating_ops
+from .indexing_slicing_joining_mutating_ops import *
+from . import locally_disabling_gradient_computation
+from .locally_disabling_gradient_computation import *
+from . import miscellaneous_ops
+from .miscellaneous_ops import *
+from . import pointwise_ops
+from .pointwise_ops import *
+from . import random_sampling
+from .random_sampling import *
+from . import reduction_ops
+from .reduction_ops import *
+from . import spectral_ops
+from .spectral_ops import *
+from . import tensor_functions
 from .tensor_functions import *
+from . import utilities
 from .utilities import *
+from . import linalg
+from . import func
+from .func import *
+
 
 _frontend_array = tensor
 

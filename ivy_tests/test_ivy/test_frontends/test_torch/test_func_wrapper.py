@@ -1,18 +1,17 @@
 # global
-from hypothesis import given
-from hypothesis import strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.frontends.torch as torch_frontend
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.torch.func_wrapper import (
     inputs_to_ivy_arrays,
-    numpy_to_torch_style_args,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
+    numpy_to_torch_style_args,
 )
 from ivy.functional.frontends.torch.tensor import Tensor
+import ivy.functional.frontends.torch as torch_frontend
 
 
 # --- Helpers --- #

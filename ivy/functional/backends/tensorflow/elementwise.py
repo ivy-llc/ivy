@@ -1,14 +1,12 @@
 # global
-from typing import Optional, Union
-
+from typing import Union, Optional
 import tensorflow as tf
 import tensorflow_probability as tfp
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy import promote_types_of_inputs
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-
 from . import backend_version
 
 

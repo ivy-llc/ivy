@@ -1,10 +1,9 @@
 # local
-from types import ModuleType
+import ivy
 
 # global
-from typing import Callable, Iterable, List, Type
-
-import ivy
+from typing import Callable, Type, List, Iterable
+from types import ModuleType
 
 TO_IGNORE = ["shape"]
 

@@ -1,14 +1,13 @@
 import math
-from typing import Any, Optional, Sequence, Tuple, Union
-
+from typing import Optional, Tuple, Sequence, Union, Any
 import numpy as np
 
 import ivy
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 from ivy.utils.exceptions import IvyNotImplementedException
-
 from .. import backend_version
+
+from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
 def diagflat(

@@ -1,6 +1,6 @@
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.numpy as np_frontend
 
 all_complex_dtypes = ["complex64", "complex128"]
 all_float_dtypes = [

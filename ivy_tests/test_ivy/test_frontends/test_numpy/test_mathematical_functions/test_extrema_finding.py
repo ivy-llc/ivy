@@ -1,13 +1,12 @@
 # global
 import numpy as np
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy import inf
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy import inf
 
 
 # amax

@@ -1,14 +1,12 @@
 # global
 import math
 from numbers import Number
-from typing import List, Optional, Sequence, Tuple, Union
-
+from typing import Union, Tuple, Optional, List, Sequence
 import numpy as np
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-
 from . import backend_version
 
 

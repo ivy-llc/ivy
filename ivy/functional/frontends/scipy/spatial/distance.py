@@ -1,7 +1,7 @@
 # global
 import ivy
-import ivy.functional.frontends.scipy as sc_frontend
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.scipy as sc_frontend
 
 
 # --- Helpers --- #

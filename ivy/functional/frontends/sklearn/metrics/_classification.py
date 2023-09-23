@@ -1,7 +1,6 @@
-from sklearn.utils.multiclass import type_of_target
-
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from sklearn.utils.multiclass import type_of_target
 
 
 @to_ivy_arrays_and_back

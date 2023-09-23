@@ -1,18 +1,17 @@
 # global
 
-from collections import namedtuple
-from typing import List, Literal, NamedTuple, Optional, Sequence, Tuple, Union
-
 import paddle
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+from collections import namedtuple
+
 
 # local
 import ivy
-import ivy.functional.backends.paddle as paddle_backend
 from ivy import inf
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
-
+import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
 
 # Array API Standard #

@@ -1,5 +1,4 @@
-from typing import Optional, Sequence, Union
-
+from typing import Union, Optional, Sequence
 import mxnet as mx
 
 import ivy

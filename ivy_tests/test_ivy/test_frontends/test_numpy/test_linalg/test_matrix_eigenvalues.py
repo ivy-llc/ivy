@@ -1,15 +1,14 @@
 # global
 import sys
-
-import numpy as np
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
-    BackendHandler,
-    assert_all_close,
     handle_frontend_test,
+    assert_all_close,
+    BackendHandler,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,

@@ -1,8 +1,6 @@
 import sys
-
-import mxnet as mx
 import numpy as np
-
+import mxnet as mx
 import ivy
 from ivy.func_wrapper import _dtype_from_version
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -165,45 +163,41 @@ def closest_valid_dtype(type=None, /, as_native=False):
 
 
 backend = "mxnet"
-from . import (
-    activations,
-    control_flow_ops,
-    creation,
-    data_type,
-    device,
-    elementwise,
-    experimental,
-    general,
-    gradients,
-    layers,
-)
-from . import linear_algebra as linalg
-from . import (
-    manipulation,
-    random,
-    searching,
-    set,
-    sorting,
-    statistical,
-    sub_backends,
-    utility,
-)
+from . import activations
 from .activations import *
-from .control_flow_ops import *
+from . import creation
 from .creation import *
+from . import data_type
 from .data_type import *
+from . import device
 from .device import *
+from . import elementwise
 from .elementwise import *
-from .experimental import *
+from . import general
 from .general import *
+from . import gradients
 from .gradients import *
+from . import layers
 from .layers import *
+from . import linear_algebra as linalg
 from .linear_algebra import *
+from . import manipulation
 from .manipulation import *
+from . import random
 from .random import *
+from . import searching
 from .searching import *
+from . import set
 from .set import *
+from . import sorting
 from .sorting import *
+from . import statistical
 from .statistical import *
-from .sub_backends import *
+from . import utility
 from .utility import *
+from . import experimental
+from .experimental import *
+from . import control_flow_ops
+from .control_flow_ops import *
+from . import sub_backends
+from .sub_backends import *

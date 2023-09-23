@@ -5,9 +5,9 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_linear_functions import (
+from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_linear_functions import (  # noqa: E501
     _x_and_linear,
-)  # noqa: E501
+)
 
 
 # --- Helpers --- #

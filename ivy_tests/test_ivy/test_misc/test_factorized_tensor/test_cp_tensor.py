@@ -1,7 +1,7 @@
+import ivy
+
 import numpy as np
 import pytest
-
-import ivy
 
 
 @pytest.mark.parametrize(
