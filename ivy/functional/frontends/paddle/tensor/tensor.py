@@ -268,6 +268,10 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.tanh(self._ivy_array))
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def add(self, y, name=None):
+        return paddle_frontend.Tensor(ivy.add(self._ivy_array, _to_ivy_array(y)))
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def add_(self, y, name=None):
         self.ivy_array = paddle_frontend.Tensor(
             ivy.add(self._ivy_array, _to_ivy_array(y))
