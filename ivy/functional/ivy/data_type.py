@@ -1910,18 +1910,14 @@ def is_int_dtype(
             else False
         )
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return (
-            True
-            if ivy.nested_argwhere(
-                dtype_in,
-                lambda x: (
-                    isinstance(x, (int, np.integer))
-                    or (ivy.is_array(x) and "int" in ivy.dtype(x))
-                )
-                and x is not bool,
-            )
-            else False
-        )
+
+        def nested_fun(x):
+            return (
+                isinstance(x, (int, np.integer))
+                or (ivy.is_array(x) and "int" in ivy.dtype(x))
+            ) and x is not bool
+
+        return True if ivy.nested_argwhere(dtype_in, nested_fun) else False
     return "int" in ivy.as_ivy_dtype(dtype_in)
 
 
