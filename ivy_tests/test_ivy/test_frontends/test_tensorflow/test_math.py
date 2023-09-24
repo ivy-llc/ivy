@@ -3241,6 +3241,7 @@ def test_tensorflow_zeta(
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
+    k=st.integers(min_value=1, max_value=10)  # Adjust the max_value as needed
 )
 def test_tensorflow_approx_max_k(
     *,
@@ -3250,9 +3251,10 @@ def test_tensorflow_approx_max_k(
     fn_tree,
     backend_fw,
     on_device,
+    k
 ):
     input_dtype, x = dtype_and_x
-    k = 5
+    
     test_result = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -3269,4 +3271,5 @@ def test_tensorflow_approx_max_k(
         test_result = test_result.astype(np.int32)
 
     return test_result
+
 
