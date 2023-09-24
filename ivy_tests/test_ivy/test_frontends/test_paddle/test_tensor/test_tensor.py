@@ -3621,6 +3621,43 @@ def test_paddle_tensor_stanh(
     )
 
 
+# std
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="std",
+    dtype_and_x=_statistical_dtype_values(function="std"),
+    keepdim=st.booleans(),
+)
+def test_paddle_tensor_std(
+    dtype_and_x,
+    keepdim,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis, correction = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "unbiased": bool(correction),
+            "keepdim": keepdim,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        backend_to_test=backend_fw,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # subtract
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -4014,42 +4051,5 @@ def test_paddle_tensor_zero_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# std
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="std",
-    dtype_and_x=_statistical_dtype_values(function="std"),
-    keepdim=st.booleans(),
-)
-def test_paddle_tensor_std(
-    dtype_and_x,
-    keepdim,
-    frontend,
-    backend_fw,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, x, axis, correction = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"data": x[0]},
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "axis": axis,
-            "unbiased": bool(correction),
-            "keepdim": keepdim,
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        backend_to_test=backend_fw,
-        method_flags=method_flags,
         on_device=on_device,
     )

@@ -77,6 +77,12 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
+@to_ivy_arrays_and_back
+def put_along_axis(arr, indices, values, axis, reduce="assign"):
+    result = ivy.put_along_axis(arr, indices, values, axis)
+    return result
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
     "paddle",
@@ -182,9 +188,3 @@ def unstack(x, axis=0, name=None):
 
 
 absolute = abs
-
-
-@to_ivy_arrays_and_back
-def put_along_axis(arr, indices, values, axis, reduce='assign'):
-    result = ivy.put_along_axis(arr, indices, values, axis)
-    return result
