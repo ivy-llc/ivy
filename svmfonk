@@ -1,0 +1,50 @@
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+#data stad.
+sc=StandardScaler()
+
+X_train = sc.fit_transform(x_train)
+X_test = sc.transform(x_test)
+
+
+#logistik
+logr = LogisticRegression(random_state=0)
+logr.fit(X_train,y_train)
+
+y_pred = logr.predict(X_test)
+print(y_pred)
+print(y_test)
+
+
+
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+
+
+
+
+
+knn = KNeighborsClassifier(n_neighbors=1, metric='minkowski')
+knn.fit(X_train,y_train)
+
+y_pred = knn.predict(X_test)
+
+cm = confusion_matrix(y_test,y_pred)
+print(cm)
+
+
+
+#svc 
+svc = SVC(kernel='rbf')
+svc.fit(X_train,y_train)
+
+y_pred = svc.predict(X_test)
+
+cm = confusion_matrix(y_test,y_pred)
+print('SVC')
+print(cm)
+
+#muhammed nur çaksü
