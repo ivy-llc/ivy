@@ -2,7 +2,7 @@
 
 You can pick an open issue to contribute from our [ToDo list issues](https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo), which is the placeholder of our subtasks.
 
-We have a clear process for contributors to engage with such ToDo lists:
+Please, follow the next process to choose your subtask:
 
 ## Steps:
 
