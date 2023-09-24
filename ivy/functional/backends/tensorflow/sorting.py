@@ -27,6 +27,21 @@ def argsort(
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
+def invert_permutation(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = tf.convert_to_tensor(x)
+    size = tf.size(x)
+    identity = tf.range(size)
+    inv = tf.zeros_like(x, dtype=tf.int32)
+    inv = tf.tensor_scatter_nd_update(inv, tf.expand_dims(x, axis=-1), identity)
+    return inv
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
 def sort(
     x: Union[tf.Tensor, tf.Variable],
     /,
