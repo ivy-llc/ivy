@@ -182,3 +182,9 @@ def unstack(x, axis=0, name=None):
 
 
 absolute = abs
+
+
+@to_ivy_arrays_and_back
+def put_along_axis(arr, indices, values, axis, reduce='assign'):
+    result = ivy.put_along_axis(arr, indices, values, axis)
+    return result
