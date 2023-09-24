@@ -45,27 +45,6 @@ def test_paddle_layer_norm(
     )
 
 
-
-# instance_norm
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.instance_norm",
-    values_tuple=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    eps=st.floats(min_value=0.01, max_value=0.1),
-)
-def test_paddle_instance_norm(
-    *,
-    eps,
-    test_flags,
-    values_tuple,
-    frontend,
-    on_device,
-    fn_tree,
-):
-    (dtype, x, normalized_shape, scale, offset) = values_tuple
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
 # normalize
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.normalize",
