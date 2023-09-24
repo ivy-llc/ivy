@@ -422,6 +422,7 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
     log_target=False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the Kullback-Leibler divergence loss between two input tensors
@@ -483,7 +484,7 @@ def kl_div(
         loss = ivy.sum(loss_pointwise)
     else:  # reduction == "none"
         loss = loss_pointwise
-    return loss
+    return ivy.inplace_update(out, loss) if out is not None else loss
 
 
 kl_div.mixed_backend_wrappers = {
@@ -491,6 +492,7 @@ kl_div.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_out_argument",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

@@ -137,6 +137,7 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
     log_target=False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if log_target:
         target = paddle.exp(target)

@@ -79,7 +79,6 @@ def test_huber_loss(
     ),
     reduction=st.sampled_from(["none", "sum", "batchmean", "mean"]),
     log_target=st.booleans(),
-    test_with_out=st.just(False),
 )
 def test_kl_div(
     dtype_and_input,

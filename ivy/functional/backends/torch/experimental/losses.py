@@ -114,6 +114,7 @@ def kl_div(
     *,
     reduction: Optional[str] = "mean",
     log_target=False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     loss = torch.nn.functional.kl_div(
         input, target, reduction=reduction, log_target=log_target

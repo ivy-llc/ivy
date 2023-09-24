@@ -259,6 +259,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         *,
         reduction: Optional[str] = "mean",
         log_target=False,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.kl_div. This method simply wraps the
@@ -295,7 +296,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array(0.0916)
         """
         return ivy.kl_div(
-            self._data, target, reduction=reduction, log_target=log_target
+            self._data, target, reduction=reduction, log_target=log_target, out=out
         )
 
     def poisson_nll_loss(
