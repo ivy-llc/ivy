@@ -872,7 +872,7 @@ def irfft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    n: Optional[int] = None,
+    n: Optional[Union[int, List[int]]] = None,
     axis: int = -1,
     norm: str = "backward",
     name: Optional[str] = None,
@@ -888,7 +888,7 @@ def irfft(
     ----------
     x : Array or NativeArray
         The input data. It's a complex.
-    n : int, optional
+    n : int ot List[int], optional
         The length of the output transform axis.
         For n output points, n//2 + 1 input points are necessary.
         If the length of the input tensor is greater than n, it will be cropped.

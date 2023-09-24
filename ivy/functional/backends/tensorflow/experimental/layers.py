@@ -617,7 +617,7 @@ def irfft(
     x: tf.Tensor,
     /,
     *,
-    n: Optional[int] = None,
+    n: Optional[List[int]] = None,
     axis: int = -1,
     norm: str = "backward",
     name: Optional[str] = None,

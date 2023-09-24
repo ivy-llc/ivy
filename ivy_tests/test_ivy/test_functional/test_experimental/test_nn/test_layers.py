@@ -1089,6 +1089,8 @@ def test_interpolate(
     fn_tree="functional.ivy.experimental.irfft",
     dtype_x_and_args=_x_and_irfft(),
     test_gradients=st.just(False),
+    ground_truth_backend="numpy",
+
 )
 def test_irfft(
     *,
