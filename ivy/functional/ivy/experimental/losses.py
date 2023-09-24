@@ -449,25 +449,26 @@ def kl_div(
 
     Examples
     --------
-    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
-    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> input = ivy.array([[0.2, 0.8], [0.5, 0.5]])
+    >>> target = ivy.array([[0.6, 0.4], [0.3, 0.7]])
     >>> ivy.kl_div(input, target)
-    ivy.array(0.0916)
+    ivy.array(-0.555969)
 
-    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
-    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> input = ivy.array([[0.2, 0.8], [0.5, 0.5]])
+    >>> target = ivy.array([[0.6, 0.4], [0.3, 0.7]])
     >>> ivy.kl_div(input, target, reduction='sum')
-    ivy.array(0.1832)
+    ivy.array(-2.223876)
 
-    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
-    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> input = ivy.array([[0.2, 0.8], [0.5, 0.5]])
+    >>> target = ivy.array([[0.6, 0.4], [0.3, 0.7]])
     >>> ivy.kl_div(input, target, reduction='batchmean')
-    ivy.array(0.0916)
+    ivy.array(-1.111938)
 
     >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
     >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
     >>> ivy.kl_div(input, target, reduction='none')
-    ivy.array([0.0378], [0.1453])
+    ivy.array([[-0.42649534, -0.68651628],
+                [-0.51119184, -0.59967244]])
     """
     if not log_target:  # default
         loss_pointwise = target * (ivy.log(target) - input)
