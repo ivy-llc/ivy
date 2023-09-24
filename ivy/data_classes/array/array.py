@@ -446,7 +446,7 @@ class Array(
         return self._data.__contains__(key)
 
     def __getstate__(self):
-        data_dict = dict()
+        data_dict = {}
 
         # only pickle the native array
         data_dict["data"] = self.data

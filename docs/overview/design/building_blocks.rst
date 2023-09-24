@@ -322,7 +322,7 @@ A good example is :func:`ivy.lstm_update`, as shown:
         ct = init_c
 
         # lstm outputs
-        hts_list = list()
+        hts_list = []
 
         # unrolled time dimension with lstm steps
         for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(

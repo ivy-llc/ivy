@@ -553,7 +553,7 @@ class ContainerBase(dict, abc.ABC):
 
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
-        return_dict = dict()
+        return_dict = {}
         all_keys = set(
             [
                 item
@@ -589,7 +589,7 @@ class ContainerBase(dict, abc.ABC):
                 if mode == "all":
                     return_dict[key] = containers[keys_present.index(True)][key]
                 continue
-            diff_dict = dict()
+            diff_dict = {}
             for i, (key_present, cont) in enumerate(zip(keys_present, containers)):
                 if detect_key_diffs:
                     if key_present and mode != "same_only":
@@ -2152,7 +2152,7 @@ class ContainerBase(dict, abc.ABC):
         -------
             ret Container as nested dict.
         """
-        return_dict = dict()
+        return_dict = {}
         for key, value in self.items():
             if isinstance(value, ivy.Container):
                 return_dict[key] = value.cont_to_dict()
@@ -4096,7 +4096,7 @@ class ContainerBase(dict, abc.ABC):
         elif ivy.exists(self._queues):
             ret = self._get_queue_item(query)
             return ret
-        return_dict = dict()
+        return_dict = {}
         for key, value in self.items():
             if isinstance(value, ivy.Container):
                 return_dict[key] = value[query]
