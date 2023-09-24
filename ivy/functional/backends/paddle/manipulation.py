@@ -184,7 +184,7 @@ def squeeze(
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     if x.ndim > 6:
         # Paddle squeeze sets a maximum limit of 6 dims in the input
@@ -257,9 +257,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:
@@ -477,7 +476,7 @@ def unstack(
     if x.ndim == 0:
         return [x]
     if axis is not None:
-        axis = axis % x.ndim
+        axis %= x.ndim
     else:
         axis = 0
     if x.dtype in [

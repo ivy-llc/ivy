@@ -134,7 +134,7 @@ class ContainerBase(dict, abc.ABC):
                     "list_join": self.cont_list_join,
                     "concat": lambda conts: self.concat(conts, 0),
                 }[self._container_combine_method]
-            self._loaded_containers_from_queues = dict()
+            self._loaded_containers_from_queues = {}
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
             self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout)
         if dynamic_backend is not None:
@@ -145,7 +145,7 @@ class ContainerBase(dict, abc.ABC):
             if kwargs:
                 dict_in = dict(**kwargs)
             else:
-                dict_in = dict()
+                dict_in = {}
         elif kwargs:
             raise ivy.utils.exceptions.IvyException(
                 "dict_in and **kwargs cannot both be specified for ivy.Container "
@@ -164,7 +164,7 @@ class ContainerBase(dict, abc.ABC):
             types_to_iteratively_nest=types_to_iteratively_nest,
             alphabetical_keys=alphabetical_keys,
         )
-        self._config = dict()
+        self._config = {}
         self.cont_inplace_update(dict_in, **self._config_in)
 
     # Class Methods #
@@ -316,7 +316,7 @@ class ContainerBase(dict, abc.ABC):
             )
 
         if isinstance(container0, ivy.Container):
-            return_dict = dict()
+            return_dict = {}
             for key in container0.keys():
                 new_list = list()
                 for container in containers:
@@ -351,7 +351,7 @@ class ContainerBase(dict, abc.ABC):
             )
 
         if isinstance(container0, ivy.Container):
-            return_dict = dict()
+            return_dict = {}
             for key in container0.keys():
                 return_dict[key] = ivy.Container.cont_list_stack(
                     [container[key] for container in containers], dim, config
@@ -442,14 +442,12 @@ class ContainerBase(dict, abc.ABC):
 
         # otherwise, check that the keys are aligned between each container, and apply
         # this method recursively
-        return_dict = dict()
-        all_keys = set(
-            [
-                item
-                for sublist in [list(cont.keys()) for cont in containers]
-                for item in sublist
-            ]
-        )
+        return_dict = {}
+        all_keys = {
+            item
+            for sublist in [list(cont.keys()) for cont in containers]
+            for item in sublist
+        }
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
             return_dict[key] = ivy.Container.cont_combine(
@@ -531,7 +529,7 @@ class ContainerBase(dict, abc.ABC):
                 return ivy.Container(**config)
             else:
                 cont_range = range(num_containers)
-                diff_dict = dict()
+                diff_dict = {}
                 cont_dict = dict(zip(cont_range, containers))
                 idxs_added = list()
                 for idx in cont_range:
