@@ -77,6 +77,17 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def logcumsumexp(x, axis=None, dtype=None, name=None):
+    if dtype:
+        x = ivy.array(x, dtype=dtype)
+    if axis is None:
+        x = ivy.flatten(x)
+        return ivy.log(ivy.cumsum(ivy.exp(x)))
+    return ivy.log(ivy.cumsum(ivy.exp(x), axis=axis))
+
+
 @to_ivy_arrays_and_back
 def put_along_axis(arr, indices, values, axis, reduce="assign"):
     result = ivy.put_along_axis(arr, indices, values, axis)
@@ -188,14 +199,3 @@ def unstack(x, axis=0, name=None):
 
 
 absolute = abs
-
-
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-@to_ivy_arrays_and_back
-def logcumsumexp(x, axis=None, dtype=None, name=None):
-    if dtype:
-        x = ivy.array(x, dtype=dtype)
-    if axis is None:
-        x = ivy.flatten(x)
-        return ivy.log(ivy.cumsum(ivy.exp(x)))
-    return ivy.log(ivy.cumsum(ivy.exp(x), axis=axis))

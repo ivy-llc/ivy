@@ -739,7 +739,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def inner(self, y, name=None):
         return paddle_frontend.inner(self, y, name)
-      
+
        @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64")},
         "paddle",
@@ -756,4 +756,3 @@ class Tensor:
     )
     def less_equal(self, y, name=None):
         return paddle_frontend.less_equal(self._ivy_array, y)
-      
