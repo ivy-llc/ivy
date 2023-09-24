@@ -553,7 +553,7 @@ class Tensor:
         return paddle_frontend.Tensor(ivy.rad2deg(self._ivy_array))
     
     @with_supported_dtypes({"2.5.1 and below": ("float16", "float32", "float64", "bool", "int32", "int64")}, "paddle")
-    def diff(self, y, name=None):
+    def diff(self,y, n=1,axis=-1,prepend=None,append=None, name=None):
         self.ivy_array = paddle_frontend.Tensor(
             ivy.diff(self._ivy_array, _to_ivy_array(y))
         ).ivy_array
