@@ -32,7 +32,6 @@ Please, follow the next process to choose your subtask:
 
    - When you open the PR make sure to follow the [conventional commits format](https://www.conventionalcommits.org/en/v1.0.0/).
    - Directly reference the issue in the pull request by adding the following content to the description of the PR: `Close #Issue_number`.
-   - Also, remember to make the PR name well described and if there are some details that can support your changes add them to the description of the PR.
 
 5. **Review Process:**
    - Wait for us to review your PR.
