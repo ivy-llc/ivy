@@ -803,3 +803,9 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def mean(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.mean(self._ivy_array, axis=axis, keepdim=keepdim)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def less_equal(self, y, name=None):
+        return paddle_frontend.less_equal(self._ivy_array, y)
