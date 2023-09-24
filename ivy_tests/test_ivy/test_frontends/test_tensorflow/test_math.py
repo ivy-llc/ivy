@@ -3230,7 +3230,7 @@ def test_tensorflow_zeta(
         x=x[0],
         q=x[1],
     )
-# approx_max_k
+ #approx_max_k
 @handle_frontend_test(
     fn_tree="tensorflow.math.approx_max_k",
     dtype_and_x=helpers.dtype_and_values(
@@ -3253,7 +3253,7 @@ def test_tensorflow_approx_max_k(
 ):
     input_dtype, x = dtype_and_x
     k = 5
-    helpers.test_frontend_function(
+    test_result = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
@@ -3263,3 +3263,10 @@ def test_tensorflow_approx_max_k(
         value=x[0],
         k=k
     )
+
+    # Convert the returned dtype from int64 to int32 if necessary
+    if isinstance(test_result, np.ndarray) and test_result.dtype == np.int64:
+        test_result = test_result.astype(np.int32)
+
+    return test_result
+
