@@ -1,6 +1,6 @@
 # How to Contribute
 
-We make extensive use of [ToDo list issues](https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo), which act as placeholders for tracking many related sub-tasks in a ToDo list.
+You can pick an open issue to contribute from our [ToDo list issues](https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo), which is the placeholder of our subtasks.
 
 We have a clear process for contributors to engage with such ToDo lists:
 
