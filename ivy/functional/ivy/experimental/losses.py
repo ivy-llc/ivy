@@ -421,7 +421,7 @@ def kl_div(
     /,
     *,
     reduction: Optional[str] = "mean",
-    out: Optional[ivy.Array] = None,
+    log_target=False,
 ) -> ivy.Array:
     """
     Compute the Kullback-Leibler divergence loss between two input tensors
@@ -430,9 +430,9 @@ def kl_div(
     Parameters
     ----------
     input : array_like
-        Input probability distribution (first tensor).
+        Input probability distribution (first tensor), refers to y_true
     target : array_like
-        Target probability distribution (second tensor).
+        Target probability distribution (second tensor). refers to y_pred
     reduction : {'mean', 'sum', 'batchmean', 'none'}, optional
         Type of reduction to apply to the output. Default is 'mean'.
     out : array_like, optional
@@ -466,18 +466,20 @@ def kl_div(
     >>> ivy.kl_div(input, target, reduction='none')
     ivy.array([0.0378], [0.1453])
     """
-    size = ivy.shape(input)
+    if not log_target:  # default
+        loss_pointwise = target * (ivy.log(target) - input)
+    else:
+        loss_pointwise = ivy.exp(target) * (target - input)
 
-    loss = ivy.sum(input * ivy.log(input / target), axis=-1)
-
-    if reduction == "sum":
-        loss = ivy.sum(loss, out=out)
-    elif reduction == "mean":
-        loss = ivy.mean(loss, out=out)
-    elif reduction == "batchmean":
-        loss = ivy.sum(loss, out=out) / size[0]
-
-    return ivy.inplace_update(out, loss) if out is not None else loss
+    if reduction == "mean":  # default
+        loss = ivy.mean(loss_pointwise)
+    elif reduction == "batchmean":  # mathematically correct
+        loss = ivy.sum(loss_pointwise) / input.shape[0]
+    elif reduction == "sum":
+        loss = ivy.sum(loss_pointwise)
+    else:  # reduction == "none"
+        loss = loss_pointwise
+    return loss
 
 
 @handle_exceptions

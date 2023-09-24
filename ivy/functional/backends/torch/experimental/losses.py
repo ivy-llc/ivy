@@ -3,6 +3,7 @@ import torch
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_device_and_dtypes,
+    to_native_arrays_and_back,
 )
 from . import backend_version
 
@@ -116,17 +117,17 @@ def soft_margin_loss(
     },
     backend_version,
 )
+@to_native_arrays_and_back
 def kl_div(
     input: torch.Tensor,
     target: torch.Tensor,
     /,
     *,
     reduction: Optional[str] = "mean",
+    log_target=False,
 ) -> torch.Tensor:
     loss = torch.nn.functional.kl_div(
-        input,
-        target,
-        reduction=reduction,
+        input, target, reduction=reduction, log_target=log_target
     )
     return loss
 
