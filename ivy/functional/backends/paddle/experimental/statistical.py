@@ -7,7 +7,6 @@ from copy import deepcopy
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
@@ -331,9 +330,14 @@ def corrcoef(
     *,
     y: Optional[paddle.Tensor] = None,
     rowvar: Optional[bool] = True,
+    name: Optional[str] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.linalg.corrcoef(
+        x=x,
+        rowvar=rowvar,
+        name=name,
+    )
 
 
 def histogram(
