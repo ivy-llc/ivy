@@ -1720,20 +1720,26 @@ def test_paddle_tensor_eigvals(
         on_device=on_device,
         test_values=False,
     )
+
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        ret = [ivy_backend.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
+        # check if Tensor or ivy array
+        try:
+            ret = ret.ivy_array.to_numpy()
+        except AttributeError:
+            ret = ivy_backend.to_numpy(ret)
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
+        # Calculate the magnitude of the complex numbers then sort them for testing
+        ret = np.sort(np.abs(ret)).astype(np.float64)
+        frontend_ret = np.sort(np.abs(frontend_ret)).astype(np.float64)
 
-    L, Q = ret
-    frontend_Q, frontend_L = frontend_ret
-
-    assert_all_close(
-        ret_np=Q @ np.diag(L) @ Q.T,
-        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
-        atol=1e-2,
-        backend=backend_fw,
-        ground_truth_backend=frontend,
-    )
+        assert_all_close(
+            ret_np=ret,
+            ret_from_gt_np=frontend_ret[0],
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+            atol=1e-2,
+            rtol=1e-2,
+        )
 
 
 # equal
