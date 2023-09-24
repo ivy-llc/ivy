@@ -15,9 +15,9 @@ Please, follow the next process to choose your subtask:
 
    Currently, there are three open tasks:
 
-   - Function Formatting
-   - Frontend APIs
-   - Ivy Experimental API
+   - [Function Reformatting](https://github.com/unifyai/ivy/issues?q=is%3Aopen+label%3A%22Function+Reformatting%22++label%3AToDo)
+   - [Frontend APIs](https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+label%3AToDo+Frontend+in%3Atitle)
+   - [Ivy Experimental API](https://github.com/unifyai/ivy/issues?q=is%3Aopen+label%3AToDo+label%3A%22Ivy+API+Experimental%22+)
 
 2. **Create Issue:**
 
@@ -47,4 +47,4 @@ Please, follow the next process to choose your subtask:
 
 [![Video](https://img.youtube.com/vi/wBKTOGmwfbo/0.jpg)](https://www.youtube.com/embed/wBKTOGmwfbo)
 
-For questions, please reach out on [discord](#) in the [todo list issues channel](#)!
+For questions, please reach out on [discord](https://discord.gg/sd2yYCha) in the [todo list issues channel](https://discord.com/channels/799879767196958751/982728618469912627)!
