@@ -486,6 +486,16 @@ def kl_div(
     return loss
 
 
+kl_div.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

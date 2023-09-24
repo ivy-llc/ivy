@@ -3,7 +3,7 @@ import torch
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_device_and_dtypes,
-    to_native_arrays_and_back,
+    with_supported_dtypes,
 )
 from . import backend_version
 
@@ -103,21 +103,10 @@ def soft_margin_loss(
     )
 
 
-@with_unsupported_dtypes(
-    {
-        "2.0.1 and below": (
-            "float16",
-            "uint8",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-        )
-    },
+@with_supported_dtypes(
+    {"2.0.1 and below": "float"},
     backend_version,
 )
-@to_native_arrays_and_back
 def kl_div(
     input: torch.Tensor,
     target: torch.Tensor,

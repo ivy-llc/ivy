@@ -8,7 +8,6 @@ import math
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
-    to_native_arrays_and_back,
 )
 from . import backend_version
 
@@ -131,7 +130,6 @@ def soft_margin_loss(
     {"2.5.1 and below": {"cpu": ("float32", "float64")}},
     backend_version,
 )
-@to_native_arrays_and_back
 def kl_div(
     input: paddle.Tensor,
     target: paddle.Tensor,
