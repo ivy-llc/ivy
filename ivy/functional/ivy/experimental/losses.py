@@ -430,14 +430,16 @@ def kl_div(
     Parameters
     ----------
     input : array_like
-        Input probability distribution (first tensor), refers to y_true
+        Input probability distribution (first tensor), refers to y_pred
     target : array_like
-        Target probability distribution (second tensor). refers to y_pred
+        Target probability distribution (second tensor). refers to y_true
     reduction : {'mean', 'sum', 'batchmean', 'none'}, optional
         Type of reduction to apply to the output. Default is 'mean'.
-    out : array_like, optional
-        Optional output array, for writing the result to.
-        It must have a shape that the inputs broadcast to.
+    log_target : bool
+    A flag indicating whether target is passed in the log space.
+    It is recommended to pass certain distributions (like softmax)
+    in the log space to avoid numerical issues caused by explicit log.
+    Default: False
 
     Returns
     -------
