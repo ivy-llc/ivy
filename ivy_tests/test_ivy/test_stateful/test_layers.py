@@ -1198,6 +1198,45 @@ def test_identity_layer(
     )
 
 
+# IFFT
+@handle_method(
+    method_tree="IFFT.__call__",
+    x_and_ifft=exp_layers_tests._x_and_ifft(),
+)
+def test_ifft_layer(
+    *,
+    x_and_ifft,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    dtype, x, dim, norm, n = x_and_ifft
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dim": dim,
+            "norm": norm,
+            "n": n,
+            "device": on_device,
+            "dtype": dtype[0],
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
 # linear
 @handle_method(
     method_tree="Linear.__call__",
