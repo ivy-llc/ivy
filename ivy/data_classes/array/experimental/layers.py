@@ -649,7 +649,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        n: Optional[int] = None,
+        n: Optional[Union[int, List[int]]] = None,
         axis: int = -1,
         norm: str = "backward",
         name: Optional[str] = None,
@@ -664,7 +664,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ----------
         self : Array
             Input tensor.
-        n : int, optional
+        n : int ot List[int], optional
             The length of the output transform axis.
             For n output points, n//2 + 1 input points are necessary.
             If the length of the input tensor is greater than n, it will be cropped.
