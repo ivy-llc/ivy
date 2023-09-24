@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple, List
 import numpy as np
 from operator import mul
 from functools import reduce as _reduce
@@ -455,3 +455,9 @@ isin.support_native_out = True
 
 def itemsize(x: np.ndarray) -> int:
     return x.itemsize
+
+
+def sequence_length(x: Union[List[np.ndarray], Tuple[np.ndarray]]) -> np.ndarray:
+    if not isinstance(x, (list, tuple)):
+        raise TypeError(f"Input sequence must be a list not {type(x)}.")
+    return np.array(len(x), dtype=np.int64)

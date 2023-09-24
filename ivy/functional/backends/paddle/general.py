@@ -627,3 +627,11 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
+
+
+def sequence_length(
+    x: Union[List[paddle.Tensor], Tuple[paddle.Tensor]]
+) -> paddle.Tensor:
+    if not isinstance(x, (list, tuple)):
+        raise TypeError(f"Input sequence must be a list not {type(x)}.")
+    return paddle.to_tensor(len(x))

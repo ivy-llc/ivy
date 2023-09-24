@@ -547,3 +547,9 @@ isin.support_native_out = True
 
 def itemsize(x: torch.tensor) -> int:
     return x.element_size()
+
+
+def sequence_length(x: Union[List[torch.tensor], Tuple[torch.tensor]]) -> torch.tensor:
+    if not isinstance(x, (list, tuple)):
+        raise TypeError(f"Input sequence must be a list not {type(x)}.")
+    return torch.tensor(len(x), dtype=torch.int64)

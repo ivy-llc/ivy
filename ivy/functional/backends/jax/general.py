@@ -7,7 +7,7 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce as _reduce
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple, List
 import multiprocessing as _multiprocessing
 import importlib
 
@@ -432,3 +432,9 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
+
+
+def sequence_length(x: Union[List[JaxArray], Tuple[JaxArray]]) -> JaxArray:
+    if not isinstance(x, (list, tuple)):
+        raise TypeError(f"Input sequence must be a list not {type(x)}.")
+    return jnp.array(len(x))

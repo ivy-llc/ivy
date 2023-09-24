@@ -6,7 +6,7 @@ and signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple, List
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -536,3 +536,9 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
+
+
+def sequence_length(x: Union[List[tf.Tensor], Tuple[tf.Tensor]]) -> tf.Tensor:
+    if not isinstance(x, (list, tuple)):
+        raise TypeError(f"Input sequence must be a list not {type(x)}.")
+    return tf.constant(len(x), dtype=tf.int64)
