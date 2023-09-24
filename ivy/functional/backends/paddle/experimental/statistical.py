@@ -282,3 +282,19 @@ def unravel_index(
         indices = paddle.floor(indices / dim)
 
     return tuple(reversed(coord))
+
+def average(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = a.dtype
+        a = a.cast("float32")
+        paddle.average(x=a, axis=axis, keepdim=keepdims).cast(dtype)
+    return paddle.average(x=a, axis=axis, keepdim=keepdims).cast(dtype)

@@ -114,3 +114,20 @@ def bincount(
         ret = tf.math.bincount(x, minlength=minlength)
         ret = tf.cast(ret, x.dtype)
     return ret
+
+def average(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
+    return tf.experimental.numpy.average(
+        a,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=dtype,
+        out=out)

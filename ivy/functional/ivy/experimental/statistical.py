@@ -276,3 +276,57 @@ def bincount(
     return ivy.current_backend(x).bincount(
         x, weights=weights, minlength=minlength, out=out
     )
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def average(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+)-> ivy.Array:
+    """Computes the mean of all elements along the specified dimensions.
+     Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the means are computed.
+        The default is to compute the mean of the flattened array.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a. If the value is anything but the default,
+        then keepdims will be passed through to the mean or sum methods of sub-classes
+        of ndarray. If the sub-classes methods does not implement keepdims any
+        exceptions will be raised.
+    dtype
+        The desired data type of returned tensor. Default is None.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The mean of the array elements.
+
+    Examples
+    --------
+    >>> a = ivy.array([0.2294, -0.5481, 1.3288])
+    >>> ivy.average(a)
+    0.3367
+    >>> a = ivy.array([[-0.3841,  0.6320,  0.4254, -0.7384],
+    >>>                [-0.9644,  1.0131, -0.6549, -1.4279],
+    >>>                [-0.2951, -1.3350, -0.7694,  0.5600],
+    >>>                [ 1.0842, -0.9580,  0.3623,  0.2343]])
+    >>> ivy.average(a,1)
+    ivy.array([-0.0163, -0.5085, -0.4599,  0.1807])
+    """
+    return ivy.current_backend(a).average(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+    )

@@ -133,3 +133,18 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def average(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.average(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
+
+
+average.support_native_out = True
