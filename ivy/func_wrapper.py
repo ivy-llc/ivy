@@ -1309,14 +1309,14 @@ def _dtype_device_wrapper_creator(attrib, t):
                         # applied to the function, but they are not same
                         # and aren't in conflicting dict either
                         setattr(func, attrib, val)
-                        setattr(func, "dictionary_info", version_dict)
+                        setattr(func, "dictionary_info", (version_dict, version))
                     elif hasattr(func, "exclusive"):
                         if attrib == attribs:
                             # we see a higher decorator with exclusivity applied
                             # we use this decorator's dict information
                             # and previous decorator's dict information
                             # to update this
-                            old_version_dict = getattr(func, "dictionary_info")
+                            old_version_dict = getattr(func, "dictionary_info")[0]
                             old_version_dict.update(version_dict)
                             val = _versioned_attribute_factory(
                                 lambda: _dtype_from_version(
@@ -1330,7 +1330,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                             pass
             else:
                 setattr(func, attrib, val)
-                setattr(func, "dictionary_info", version_dict)
+                setattr(func, "dictionary_info", (version_dict, version))
             if "frontends" in func.__module__:
                 # it's a frontend func, no casting modes for this
                 return func
@@ -1592,6 +1592,38 @@ def handle_backend_invalid(fn: Callable) -> Callable:
 
     _handle_backend_invalid.handle_backend_invalid = True
     return _handle_backend_invalid
+
+
+def _handle_efficient_implementation_available(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _wrapper(*args, **kwargs):
+        """
+        Throws a warning whenever the function is called, indicating that an efficient
+        implementation is available. This should be used for functions which have an
+        efficient implementation in a sub backend.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function.
+        """
+        ivy.warn(
+            f"An efficient implementation of {fn.__name__} is available "
+            "in these sub backends: "
+            f"{ivy.available_sub_backend_implementations(fn.__name__)}.\n"
+            "use ivy.set_sub_backend('<sub_backend_name>') to use it."
+        )
+        return fn(*args, **kwargs)
+
+    _wrapper.efficient_implementation_available = True
+    return _wrapper
 
 
 attribute_dict = {
