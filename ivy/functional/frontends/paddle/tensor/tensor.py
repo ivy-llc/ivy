@@ -801,3 +801,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def inner(self, y, name=None):
         return paddle_frontend.inner(self._ivy_array, y, name)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def mean(self, axis=None, keepdim=False, name=None):
+        return paddle_frontend.mean(self._ivy_array, axis=axis, keepdim=keepdim)
