@@ -434,7 +434,7 @@ def test_paddle_tensor_abs(
     ),
 )
 def test_paddle_diff(
-    dtype_x_,
+    dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
