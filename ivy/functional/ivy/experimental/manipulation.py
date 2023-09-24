@@ -237,10 +237,6 @@ flatten.mixed_backend_wrappers = {
 }
 
 
-def unflatten():
-    pass
-
-
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion

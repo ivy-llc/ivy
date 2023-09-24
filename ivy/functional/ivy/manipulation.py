@@ -850,6 +850,42 @@ def stack(
     return res
 
 
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def unflatten(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    dim: Union[int, str],
+    sizes: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+) -> ivy.Array:
+    """
+    Unflattens a tensor dim expanding it to a desired shape.
+
+    Parameters
+    ----------
+    x
+        Input array to be unflattened.
+    dim
+        specifies the dimension of the input tensor to be unflattened
+        and it can be either `int` or `str`
+    sizes
+        is the new shape of the unflattened dimension of the tensor
+
+    Returns
+    -------
+    ret
+        an output array having the same data type and elements as x.
+    """
+    return current_backend(x).unflatten(x, dim=dim, sizes=sizes)
+
+
 # Extra #
 # ------#
 
