@@ -1222,13 +1222,12 @@ from ivy.utils.backend.sub_backend_handler import (
     set_sub_backend,
     unset_sub_backend,
     clear_sub_backends,
-    available_sub_backends,
     available_sub_backend_implementations,
 )
 
 
-def current_sub_backends():
-    return []
+available_sub_backends = []
+current_sub_backends = []
 
 
 # casting modes

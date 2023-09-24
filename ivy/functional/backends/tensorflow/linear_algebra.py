@@ -572,7 +572,9 @@ def svdvals(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int16", "int8", "bool", "unsigned")}, backend_version
+)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -583,10 +585,6 @@ def tensordot(
 ) -> Union[tf.Tensor, tf.Variable]:
     # find type to promote to
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-
-    # type casting to float32 which is acceptable for tf.tensordot
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-
     ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
     return ret
 
@@ -611,8 +609,7 @@ def trace(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
-    backend_version,
+    {"2.13.0 and below": ("int16", "int8", "bool", "unsigned")}, backend_version
 )
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
@@ -623,10 +620,6 @@ def vecdot(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-    if dtype != "float64":
-        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    else:
-        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 

@@ -870,6 +870,11 @@ class Tensor:
     def nanmean(self, dim=None, keepdim=False):
         return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    @numpy_to_torch_style_args
+    def nansum(self, dim=None, keepdim=False):
+        return torch_frontend.nansum(self, dim=dim, keepdim=keepdim)
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
@@ -1563,6 +1568,13 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": rshift_dtypes}, "torch")
     def bitwise_right_shift(self, other, *, out=None):
         return torch_frontend.bitwise_right_shift(self._ivy_array, other)
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("uint8", "int8", "int32", "int64")}, "torch"
+    )
+    def bitwise_right_shift_(self, other, *, out=None):
+        self.ivy_array = self.bitwise_right_shift(other, out=out).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
