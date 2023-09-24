@@ -34,7 +34,7 @@ Please, follow the next process to choose your subtask:
    - Directly reference the issue in the pull request by adding the following content to the description of the PR: `Close #Issue_number`.
 
 5. **Review Process:**
-   - Wait for us to review your PR.
+   - Wait for us to review your PR. Please be patient, our engineers will look into your PR based on the queue we have, no need to ping them.
    - Every time you respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
    - Once the PR is in good shape, we will merge into main, and then you become an Ivy contributor!
 
