@@ -18,6 +18,19 @@ from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
 
 
+# helpers
+def _addindent(s_, numSpaces):
+    s = s_.split("\n")
+    # don't do anything for single-line stuff
+    if len(s) == 1:
+        return s_
+    first = s.pop(0)
+    s = [(numSpaces * " ") + line for line in s]
+    s = "\n".join(s)
+    s = first + "\n" + s
+    return s
+
+
 # Base #
 # -----#
 
@@ -139,7 +152,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._submods_to_track = None
         self._track_submod_call_order = False
         self.expected_submod_rets = None
-        self.submod_dict = dict()
+        self.submod_dict = {}
         backend = ivy.with_backend("numpy")
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
@@ -204,7 +217,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def _fn_with_var_arg_wrapper(
         self, *a, fn, v_fn, keychain_mappings, orig_key_chain, **kw
     ):
-        if "v" in kw.keys():
+        if "v" in kw:
             del kw["v"]
         v = v_fn(self.v, keychain_mappings, orig_key_chain)
         return fn(*a, **kw, v=v)
@@ -273,7 +286,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     without_initialisation=without_initialisation,
                 )
                 if ret:
-                    vs["v" + str(i)] = ret
+                    vs[f"v{str(i)}"] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
@@ -383,14 +396,14 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             for i, val in enumerate(obj):
                 self._wrap_call_methods(
                     keychain_mappings,
-                    key=key + "/v" + str(i),
+                    key=f"{key}/v{str(i)}",
                     obj=val,
                     _visited=_visited,
                 )
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
-                k = (key + "/" + k) if key != "" and isinstance(k, str) else k
+                k = f"{key}/{k}" if key != "" and isinstance(k, str) else k
                 self._wrap_call_methods(
                     keychain_mappings, key=k, obj=val, _visited=_visited
                 )
@@ -400,7 +413,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         for k, val in obj.__dict__.items():
             if k[0:2] == "__":
                 continue
-            k = (key + "/" + k) if key != "" else k
+            k = f"{key}/{k}" if key != "" else k
             if val is not None:
                 self._wrap_call_methods(
                     keychain_mappings, key=k, obj=val, _visited=_visited
@@ -428,9 +441,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         """
         created_ids = created.cont_map(lambda x, kc: id(x))
         vs_ids = vs.cont_map(lambda x, kc: id(x))
-        ids = dict()
-        duplicate_keychains = list()
-        keychain_mappings = dict()
+        ids = {}
+        duplicate_keychains = []
+        keychain_mappings = {}
 
         def unique_callback(x, kc):
             ids[x] = kc
@@ -848,7 +861,41 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 ivy.to_device(obj, device=device, obj=obj)
 
     def __repr__(self):
-        return object.__repr__(self)
+        extra_lines = []
+        extra_repr = self.extra_repr()
+        if extra_repr:
+            extra_lines = extra_repr.split("\n")
+        child_lines = []
+        for key, module in self.v.items():
+            if isinstance(getattr(self, key, None), Module):
+                mod_str = repr(getattr(self, key))
+                mod_str = _addindent(mod_str, 2)
+                child_lines.append("(" + key + "): " + mod_str)
+        lines = extra_lines + child_lines
+
+        main_str = self._get_name() + "("
+        if lines:
+            # simple one-liner info, which most builtin Modules will use
+            if len(extra_lines) == 1 and not child_lines:
+                main_str += extra_lines[0]
+            else:
+                main_str += "\n  " + "\n  ".join(lines) + "\n"
+
+        main_str += ")"
+        return main_str
+
+    def extra_repr(self) -> str:
+        r"""
+        Set the extra representation of the module.
+
+        To print customized extra information, you should re-implement
+        this method in your own modules. Both single-line and multi-line
+        strings are acceptable.
+        """
+        return ""
+
+    def _get_name(self):
+        return self.__class__.__name__
 
     # Properties #
     # -----------#
@@ -899,16 +946,14 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
         if name != "buffers":
-            if hasattr(self, "buffers"):
-                if name in self.buffers:
-                    return self.buffers[name]
+            if hasattr(self, "buffers") and name in self.buffers:
+                return self.buffers[name]
         return super().__getattribute__(name)
 
     def __setattr__(self, name, value):
-        if hasattr(self, "buffers"):
-            if name in self.buffers:
-                self.buffers[name] = value
-                return
+        if hasattr(self, "buffers") and name in self.buffers:
+            self.buffers[name] = value
+            return
         return super().__setattr__(name, value)
 
     def __delattr__(self, name):
@@ -946,8 +991,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             return
 
         # we do not need convert the args to source
-        args = ivy.default(args, tuple())
-        kwargs = ivy.default(kwargs, dict())
+        args = ivy.default(args, ())
+        kwargs = ivy.default(kwargs, {})
 
         # shallow copy the kwargs dict
         kwargs = copy.copy(kwargs)
@@ -1042,7 +1087,7 @@ class _HaikuIvyModule(Module):
     def _hk_flat_map_to_dict(self, hk_flat_map):
         from haiku._src.data_structures import FlatMapping
 
-        ret_dict = dict()
+        ret_dict = {}
         for k, v in hk_flat_map.items():
             new_k = k.replace("/", "|")
             if isinstance(v, FlatMapping):
@@ -1054,7 +1099,7 @@ class _HaikuIvyModule(Module):
     def _dict_to_hk_flat_map(self, dict_in):
         from haiku._src.data_structures import FlatMapping
 
-        ret_flat_map = dict()
+        ret_flat_map = {}
         for k, v in dict_in.items():
             new_k = k.replace("|", "/")
             if isinstance(v, dict):
@@ -1212,11 +1257,13 @@ class _TorchIvyModule(Module):
                 native.__setattr__(k, v)
             elif isinstance(v, torch.Tensor):
                 # noinspection PyProtectedMember
-                native.__setattr__(k, torch.nn.Parameter(v))
+                native.__setattr__(
+                    k, torch.nn.Parameter(v, requires_grad=v.requires_grad)
+                )
             else:
                 raise ivy.utils.exceptions.IvyException(
-                    "found item in variable container {} which was neither a "
-                    "sub ivy.Container nor a variable.".format(v)
+                    f"found item in variable container {v} which was neither a sub"
+                    " ivy.Container nor a variable."
                 )
         return native
 

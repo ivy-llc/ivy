@@ -101,7 +101,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -382,10 +382,12 @@ def scatter_nd(
         target = target.at[indices_tuple].min(updates)
     elif reduction == "max":
         target = target.at[indices_tuple].max(updates)
+    elif reduction == "mul":
+        target = target.at[indices_tuple].mul(updates)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            '"sum", "min", "max", "mul" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, target)
@@ -418,7 +420,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,

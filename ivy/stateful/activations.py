@@ -385,8 +385,17 @@ class ReLU6(Module):
 
 
 class Hardswish(Module):
-    def __init__(self):
-        """Apply the HARDSWISH activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the HARDSWISH activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input. See
+             ``ivy.func_wrapper.handle_complex_input`` for more detail.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
     def _forward(self, x):
@@ -402,7 +411,7 @@ class Hardswish(Module):
          ret
             The outputs following the HARDSWISH activation *[batch_shape, d]*
         """
-        return ivy.hardswish(x)
+        return ivy.hardswish(x, complex_mode=self._complex_mode)
 
 
 class Logit(Module):
