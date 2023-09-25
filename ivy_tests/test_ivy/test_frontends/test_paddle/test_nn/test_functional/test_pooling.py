@@ -279,30 +279,31 @@ def test_paddle_avg_pool2d(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.pooling.max_pool3d",
+    fn_tree="paddle.nn.functional.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(
         min_dims=5,
         max_dims=5,
         min_side=2,
-        max_side=6,  # Adjust the min and max_side to control the input size
-        only_explicit_padding=True,
-        data_format="NDHWC",
+        max_side=6,
+        explicit_or_str_padding=True,
+        data_format="channel_first",
         return_dilation=True,
     ),
-    # test_with_out=st.just(False),
+    test_with_out=st.just(False),
     ceil_mode=st.booleans(),
 )
 def test_paddle_max_pool3d(
     *,
     x_k_s_p,
-    ceil_mode,
     test_flags,
-    backend_fw,
     frontend,
-    fn_tree,
     on_device,
+    backend_fw,
+    fn_tree,
+    test_with_out,
+    ceil_mode,
 ):
-    dtype, x, kernel, stride, padding, dilation = x_k_s_p
+    input_dtype, x, kernel, stride, padding = x_k_s_p
 
     if len(stride) == 1:
         stride = (stride[0], stride[0], stride[0])
@@ -312,19 +313,8 @@ def test_paddle_max_pool3d(
         )
     else:
         padding = (0, 0, 0)
-    dims = x[0].shape[2:]
-    # Modify dilation to meet the criteria
-    if isinstance(dilation, int):
-        dilation = (max(1, dilation),) * len(dims)  # Ensure dilation is at least 1
-    if len(dilation) == 1:
-        dilation = (max(1, dilation[0]),) * len(dims)  # Ensure dilation is at least 1
-    if len(dilation) != len(dims):
-        dilation = tuple(dilation[: len(dims)])  # Trim or pad the dilation tuple
-    if min(dilation) < 1:
-        dilation = tuple(max(1, d) for d in dilation)
-
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         frontend=frontend,

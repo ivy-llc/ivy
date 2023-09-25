@@ -108,35 +108,28 @@ def max_pool3d(
     kernel_size,
     stride=None,
     padding=0,
-    dilation=1,
     ceil_mode=False,
-    return_indices=False,
+    data_format="NCDHW",
+    name=None,
 ):
     if stride is None:
         stride = kernel_size
-
-    # Ensure kernel_size, padding, and dilation are in the correct format
-    dims = x.shape[2:]  # Extract the spatial dimensions
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
-    dilation = _broadcast_pooling_helper(dilation, "3d", name="dilation")
-    # Modify dilation to meet the criteria
-    if isinstance(dilation, int):
-        dilation = (max(1, dilation),) * len(dims)  # Ensure dilation is at least 1
-    elif len(dilation) == 1:
-        dilation = (max(1, dilation[0]),) * len(dims)  # Ensure dilation is at least 1
-    elif len(dilation) != len(dims):
-        dilation = tuple(dilation[: len(dims)])  # Trim or pad the dilation tuple
-    if min(dilation) < 1:
-        dilation = tuple(max(1, d) for d in dilation)
+    # Figure out padding string
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
+        padding = "SAME"
+    else:
+        padding = "VALID"
 
     return ivy.max_pool3d(
         x,
         kernel_size,
         stride,
         padding,
-        data_format="NDHWC",
-        dilation=dilation,
+        data_format=data_format,
         ceil_mode=ceil_mode,
     )
 
