@@ -1,8 +1,10 @@
 name: Trigger lint format
 
 on:
+  issue_comment:
+    types: [created, edited, deleted]
   pull_request:
-    types: [opened, edited, synchronize, labeled, unlabeled, ready_for_review, reopened]
+    types: [opened, edited, synchronize, reopened]
 
 permissions:
   contents: write
