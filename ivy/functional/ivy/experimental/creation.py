@@ -978,6 +978,61 @@ def random_tt(
         return ivy.TTTensor(factors)
 
 
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tt_matrix(
+    shape: Sequence[int],
+    rank: Union[Sequence[int], int],
+    /,
+    *,
+    full: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+) -> Union[ivy.TTTensor, ivy.Array]:
+    """
+    Generate a random tensor in TT-Matrix format.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the TT decomposition
+        must verify rank[0] == rank[-1] ==1 (boundary conditions)
+        and len(rank) == len(shape)+1
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    seed
+        seed for generating random numbers
+
+    Returns
+    -------
+        ivy.TTTensor
+    """
+    n_dim = len(shape) // 2
+    left_shape = shape[:n_dim]
+    right_shape = shape[n_dim:]
+
+    rank = ivy.TTMatrix.validate_tt_matrix_rank(shape, rank=rank)
+
+    factors = []
+    for i in range(n_dim):
+        factors.append(
+            ivy.random_uniform(
+                shape=(rank[i], left_shape[i], right_shape[i], rank[i + 1]),
+                dtype=dtype,
+                seed=seed,
+            )
+        )
+
+    if full:
+        return ivy.TTMatrix.tt_matrix_to_tensor(factors)
+    else:
+        return ivy.TTMatrix(factors)
+
+
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
