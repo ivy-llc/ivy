@@ -119,77 +119,6 @@ def max_pool1d(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
-def max_unpool1d(
-    x: ivy.Union[ivy.Array, ivy.NativeArray],
-    indices: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
-    /,
-    *,
-    data_format: str = "NWC",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
-
-    Parameters
-    ----------
-    x
-        Pooled input image *[batch_size, w, d_in]*.
-    indices
-        Indices obtained from the corresponding max pooling operation.
-    kernel
-        Size of the kernel i.e., the sliding window for each
-        dimension of input. *[w]*.
-    strides
-        The stride of the sliding window for each dimension of input.
-    padding
-        SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimension paddings.
-    data_format
-        NWC" or "NCW". Defaults to "NWC".
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        The result of the unpooling operation.
-
-    Both the description and the type hints above assume an array input
-    for simplicity, but this function is *nestable*, and therefore
-    also accepts :class:`ivy.Container` instances in place of any of
-    the arguments.
-
-    Examples
-    --------
-    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> pool_result = ivy.max_pool1d(x, 2, 2, 'SAME')
-    >>> print(pool_result)
-    ivy.array([[[ 4.,  5.,  6.,  7.],
-            [ 8.,  9., 10., 11.]],
-
-           [[16., 17., 18., 19.],
-            [20., 21., 22., 23.]]])
-    >>> unpool_result = ivy.max_unpool1d(pool_result, indices, 2, 2, 'SAME')
-    >>> print(unpool_result)
-    ivy.array([[[ 0.,  4.,  0.,  5.,  0.,  6.,  0.,  7.,  0.,  0.,  0.,  0.],
-            [ 0.,  0.,  0.,  0.,  8.,  0.,  9.,  0., 10.,  0., 11.,  0.]],
-
-           [[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 16.,  0., 17.,  0.],
-            [ 0., 18.,  0., 19.,  0.,  0.,  0.,  0., 20.,  0., 21.,  0.]]])
-    """
-    return ivy.current_backend(x).max_unpool1d(
-        x, indices, kernel, strides, padding, data_format=data_format, out=out
-    )
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device_shifting
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -894,12 +823,12 @@ def idct(
     >>> y = ivy.idct(x, type=3, n=None, norm='ortho')
     >>> print(y)
     {
-        a: ivy.array([1.01823380e+02, -5.15385818e+01, 1.36371466e-06,
-                      -5.38763905e+00, 0.00000000e+00, -1.60722279e+00,
-                      -8.80319249e-08, -4.05617893e-01]),
-        b: ivy.array([1.27279224e+01, -6.44232273e+00, 1.70464332e-07,
-                      -6.73454881e-01, 0.00000000e+00, -2.00902849e-01,
-                      -1.10039906e-08, -5.07022366e-02])
+        a: ivy.array([1.01823380e+02, -5.15385818e+01, 1.36371466e-06, -5.38763905e+00,
+                      0.00000000e+00, -1.60722279e+00, -8.80319249e-08,
+                      -4.05617893e-01]),
+        b: ivy.array([1.27279224e+01, -6.44232273e+00, 1.70464332e-07, -6.73454881e-01,
+                      0.00000000e+00, -2.00902849e-01, -1.10039906e-08,
+                      -5.07022366e-02])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -1391,7 +1320,7 @@ def dft(
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
-        slices[axis] = slice(0, ivy.shape(res, as_array=True)[axis] // 2 + 1)
+        slices[axis] = slice(0, ivy.shape(res)[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
 
@@ -2480,11 +2409,7 @@ def _dilate(operand, factors, fill_value):
         shape + (factors[i] - 1) * (shape - 1)
         for i, shape in enumerate(operand.shape[2:])
     ]
-    out = ivy.full(
-        outspace,
-        ivy.to_scalar(fill_value),
-        dtype=fill_value.dtype,
-    )
+    out = ivy.full(outspace, fill_value, dtype=fill_value.dtype)
     lhs_slices = tuple(_slice(None, None, step) for step in factors)
     out[(_slice(None),) * 2 + lhs_slices] = operand
     return out
@@ -2552,6 +2477,136 @@ avg_pool2d.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+def sliding_window(
+    input: Union[ivy.Array, ivy.NativeArray],
+    kernel_size: Union[int, Sequence[int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
+) -> ivy.Array:
+    """
+    Slide a window of specified dimension over all elements of an array.
+
+    Parameters
+    ----------
+    input
+        An array representing the base area on which the window is going to slide over.
+    window_size
+        Size of the sliding window for each dimension of the input.
+    stride
+        The stride of the sliding window for each dimension of input
+    padding
+        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or a sequence of n (low, high) integer pairs that give the padding to
+        apply before and after each spatial dimension.
+    dilation
+        The stride between elements within a sliding window, must be > 0.
+
+    Returns
+    -------
+    ret
+        The result of the sliding window operation.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 2, 3, 4],
+    >>>                [5, 6, 7, 8],
+    >>>                [9, 10, 11, 12]])
+    >>> ivy.sliding_window(x, (2, 2))
+    ivy.array([[[ 1,  2,  5,  6],
+                [ 2,  3,  6,  7],
+                [ 3,  4,  7,  8]],
+
+                [[ 5,  6,  9, 10],
+                [ 6,  7, 10, 11],
+                [ 7,  8, 11, 12]]])
+    """
+    if ivy.current_backend_str() == "torch":
+        return ivy.current_backend(input).sliding_window(
+            input,
+            kernel_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
+    if ivy.current_backend_str == "tensorflow":
+        return ivy.current_backend(input).sliding_window(
+            input,
+            kernel_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
+    if ivy.current_backend_str == "paddle":
+        return ivy.current_backend(input).sliding_window(
+            input,
+            kernel_size,
+            stride=stride,
+            dilation=dilation,
+            padding=padding,
+        )
+
+    # convert to 2D
+    n = len(input.shape)
+    if n > 2:
+        input = ivy.reshape(input, (input.shape[n - 2 :]))
+
+    k_size, stride, padding, dilation = map(
+        lambda x: tuple([x] * len(input.shape)) if isinstance(x, int) else x,
+        [kernel_size, stride, padding, dilation],
+    )
+
+    k_size = list(k_size)
+    if len(input.shape) != len(k_size):
+        while len(k_size) < len(input.shape):
+            k_size.append(k_size[-1])
+    k_size = tuple(k_size)
+
+    stride = list(stride)
+    if len(input.shape) != len(stride):
+        while len(stride) < len(input.shape):
+            stride.append(stride[-1])
+    stride = tuple(stride)
+
+    if not isinstance(padding, str):
+        if padding[0] == 0 and padding[-1] == 0:
+            padding = "VALID"
+        else:
+            padding = "SAME"
+
+    pads = _padtype_to_pads(input.shape, k_size, stride, padding)
+
+    input = input.reshape((1, 1) + input.shape)
+    if dilation:
+        identity = ivy.array(0)
+        input = _dilate(input, dilation, identity)
+
+    view = _conv_view(input, [1, 1] + list(k_size), stride, pads, identity)[0]
+    view = ivy.reshape(view, (*view.shape[1 : 1 + len(k_size)], -1))
+
+    return view
+
+
+sliding_window.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def reduce_window(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -2604,22 +2659,15 @@ def reduce_window(
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op = operand
-    dims, strides, padding, base_dilation, window_dilation = map(
-        lambda x: tuple([x] * len(op.shape)) if isinstance(x, int) else x,
-        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
-    )
     init_value = _cast_init(init_value, op.dtype)
-    identity = _get_identity(computation, operand.dtype, init_value)
-    if isinstance(padding, str):
-        pads = _padtype_to_pads(op.shape, dims, strides, padding)
-    else:
-        pads = padding
-    op = op.reshape((1, 1) + op.shape)
-    if base_dilation:
-        op = _dilate(op, base_dilation, identity)
-    view = _conv_view(op, [1, 1] + list(dims), strides, pads, identity)[0]
-    view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
-    ret = ivy.reduce(view, init_value, computation, axes=-1)
+    slid_wind_vals = ivy.sliding_window(
+        operand,
+        window_dimensions,
+        stride=window_strides,
+        dilation=base_dilation,
+        padding=padding,
+    )
+    ret = ivy.reduce(slid_wind_vals, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
 
 
@@ -2878,3 +2926,191 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+# stft
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def stft(
+    signals: Union[ivy.Array, ivy.NativeArray],
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional = None,
+    pad_end: bool = False,
+    name: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    ivy.Container static method variant of ivy.stft.
+
+    This method simply wraps the function, and so the docstring for
+    ivy.stft also applies to this method with minimal changes.
+
+    Parameters
+    ----------
+    signals
+        Input Arrays.
+    frame_length
+       An integer scalar Tensor. The window length in samples.
+    frame_step
+        An integer scalar Tensor. The number of samples to step.
+    fft_length, optional
+        An integer scalar Tensor. The size of the FFT to apply.
+        If not provided, uses the smallest power of 2 enclosing frame_length.
+    window_fn, optional
+        A callable that takes a window length and a dtype
+        keyword argument and returns a [window_length] Tensor of samples
+        in the provided datatype. If set to None, no windowing is used.
+    pad_end, optional
+        Whether to pad the end of signals with zeros when the provided frame length
+        and step produces a frame that lies partially past its end.
+    name, optional
+        An optional name for the operation.
+    out, optional
+        Optional output array for writing the result.
+
+    Returns
+    -------
+    ret
+        A [..., frames, fft_unique_bins] Tensor of
+        complex64/complex128 STFT values where fft_unique_bins is
+        fft_length // 2 + 1 (the unique components of the FFT).
+    """
+    return ivy.current_backend(signals).stft(
+        signals,
+        frame_length,
+        frame_step,
+        fft_length=fft_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        name=name,
+        out=out,
+    )
+
+
+def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
+    dims = {"1d": 1, "2d": 2, "3d": 3}
+    if isinstance(x, int):
+        return tuple([x for _ in range(dims[pool_dims])])
+
+    if len(x) == 1:
+        return tuple([x[0] for _ in range(dims[pool_dims])])
+
+    elif len(x) == dims[pool_dims]:
+        return tuple(x)
+
+    elif len(x) != dims[pool_dims]:
+        raise ValueError(
+            f"`{name}` must either be a single int, "
+            f"or a tuple of {dims[pool_dims]} ints. "
+        )
+
+
+def _cal_output_shape(
+    input_shape,
+    padding,
+    kernel_size,
+    strides,
+):
+    return [
+        (length - 1) * stride - 2 * pad + ker
+        for length, stride, pad, ker in zip(input_shape, strides, padding, kernel_size)
+    ]
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_partial_mixed_function
+@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_device_shifting
+def max_unpool1d(
+    input: ivy.Array,
+    indices: ivy.Array,
+    kernel_size: Union[Tuple[int], int],
+    /,
+    *,
+    strides: Union[int, Tuple[int]] = None,
+    padding: Union[int, Tuple[int]] = 0,
+    data_format: Optional[str] = "NCW",
+) -> ivy.Array:
+    """
+    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    input
+        Pooled input image *[batch_size, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel_size
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+    """
+    if strides is None:
+        strides = kernel_size
+    input_shape = input.shape
+    if data_format in ["NCW", "NWC"]:
+        revert = False
+        if data_format == "NWC":
+            x_len = (input_shape[1],)
+            input = input.permute_dims((0, 2, 1))
+            indices = indices.permute_dims((0, 2, 1))
+            revert = True
+        else:
+            x_len = (input_shape[-1],)
+    else:
+        raise ValueError(
+            f"data_format attr should be NCW or NWC but found {data_format}"
+        )
+    input_shape = input.shape
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    strides = _broadcast_pooling_helper(strides, "1d", name="strides")
+    output_len = _cal_output_shape(x_len, padding, kernel_size, strides)
+    output_shape = list(input_shape[:-1]) + output_len
+    one_like_mask = ivy.ones_like(indices, dtype="int32")
+    batch_shape = [input_shape[0], 1, 1]
+    batch_range = ivy.reshape(
+        ivy.arange(0, output_shape[0], dtype="int32"), batch_shape
+    )
+    b = one_like_mask * batch_range
+    feature_range = ivy.arange(0, output_shape[1], dtype="int32").reshape((1, -1, 1))
+    f = one_like_mask * feature_range
+    indices = ivy.stack([b, f, indices]).reshape((3, -1))
+    output = ivy.zeros(output_shape, dtype=input.dtype)
+    indices = tuple(indices)
+    output[indices] = input.reshape((-1,))
+    if revert:
+        output = output.permute_dims([0, 2, 1])
+    return output
+
+
+max_unpool1d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "to_native_arrays_and_back",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}

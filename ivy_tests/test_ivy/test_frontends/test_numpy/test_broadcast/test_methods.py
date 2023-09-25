@@ -9,6 +9,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 @st.composite
 def _broadcastable_arrays(draw):
     num_of_array = draw(st.integers(1, 3))
@@ -23,24 +27,44 @@ def _broadcastable_arrays(draw):
     return xs
 
 
-@handle_frontend_test(
-    fn_tree="numpy.add",  # dummy fn_tree
-    args=_broadcastable_arrays(),
-)
-def test_numpy_broadcast_property_shape(args):
-    ret = broadcast(*args)
-    ret_gt = np.broadcast(*args)
-    assert ret.shape == ret_gt.shape
+# --- Main --- #
+# ------------ #
 
 
 @handle_frontend_test(
     fn_tree="numpy.add",  # dummy fn_tree
     args=_broadcastable_arrays(),
 )
-def test_numpy_broadcast_property_size(args):
+def test_numpy_broadcast_method_reset(args):
     ret = broadcast(*args)
     ret_gt = np.broadcast(*args)
-    assert ret.size == ret_gt.size
+    for _ in zip(ret, ret_gt):
+        pass
+    ret.reset()
+    ret_gt.reset()
+    assert ret.index == ret_gt.index
+
+
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    args=_broadcastable_arrays(),
+)
+def test_numpy_broadcast_property_index(args):
+    ret = broadcast(*args)
+    ret_gt = np.broadcast(*args)
+    assert ret.index == ret_gt.index
+    for _ in zip(ret, ret_gt):
+        assert ret.index == ret_gt.index
+
+
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    args=_broadcastable_arrays(),
+)
+def test_numpy_broadcast_property_iters(args):
+    ret = list(map(list, broadcast(*args).iters))
+    ret_gt = np.array(list(map(list, np.broadcast(*args).iters)))
+    assert ivy.all(ret == ret_gt)
 
 
 @handle_frontend_test(
@@ -77,33 +101,17 @@ def test_numpy_broadcast_property_numiter(args):
     fn_tree="numpy.add",  # dummy fn_tree
     args=_broadcastable_arrays(),
 )
-def test_numpy_broadcast_property_index(args):
+def test_numpy_broadcast_property_shape(args):
     ret = broadcast(*args)
     ret_gt = np.broadcast(*args)
-    assert ret.index == ret_gt.index
-    for _ in zip(ret, ret_gt):
-        assert ret.index == ret_gt.index
+    assert ret.shape == ret_gt.shape
 
 
 @handle_frontend_test(
     fn_tree="numpy.add",  # dummy fn_tree
     args=_broadcastable_arrays(),
 )
-def test_numpy_broadcast_property_iters(args):
-    ret = list(map(list, broadcast(*args).iters))
-    ret_gt = np.array(list(map(list, np.broadcast(*args).iters)))
-    assert ivy.all(ret == ret_gt)
-
-
-@handle_frontend_test(
-    fn_tree="numpy.add",  # dummy fn_tree
-    args=_broadcastable_arrays(),
-)
-def test_numpy_broadcast_method_reset(args):
+def test_numpy_broadcast_property_size(args):
     ret = broadcast(*args)
     ret_gt = np.broadcast(*args)
-    for _ in zip(ret, ret_gt):
-        pass
-    ret.reset()
-    ret_gt.reset()
-    assert ret.index == ret_gt.index
+    assert ret.size == ret_gt.size

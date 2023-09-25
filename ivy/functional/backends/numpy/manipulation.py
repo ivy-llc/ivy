@@ -191,7 +191,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -261,13 +261,24 @@ def unstack(
 
 def clip(
     x: np.ndarray,
-    x_min: Union[Number, np.ndarray],
-    x_max: Union[Number, np.ndarray],
     /,
+    x_min: Optional[Union[Number, np.ndarray]] = None,
+    x_max: Optional[Union[Number, np.ndarray]] = None,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+    return np.clip(x.astype(promoted_type), x_min, x_max, out=out)
 
 
 clip.support_native_out = True

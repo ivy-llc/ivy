@@ -807,6 +807,12 @@ class _ArrayWithGeneral(abc.ABC):
         >>> c = a.array_equal(b)
         >>> print(c)
         True
+
+        >>> i = ivy.array([1, 2])
+        >>> j = ivy.array([1, 2, 3])
+        >>> k = i.array_equal(j)
+        >>> print(k)
+        False
         """
         return ivy.array_equal(self, x)
 
@@ -988,7 +994,7 @@ class _ArrayWithGeneral(abc.ABC):
         """
         return ivy.value_is_nan(self, include_infs=include_infs)
 
-    def exists(self: ivy.Array) -> bool:
+    def exists(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.exists. This method simply wraps the
         function, and so the docstring for ivy.exists also applies to this method with
@@ -1002,7 +1008,7 @@ class _ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            True if x is not None, else False.
+            True if input is not None, else False.
 
         Examples
         --------
@@ -1347,7 +1353,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> b = x.get_num_dims(as_array=False)
         >>> print(b)
         3
-        
+
         >>> b = x.get_num_dims(as_array=True)
         >>> print(b)
         ivy.array(3)
