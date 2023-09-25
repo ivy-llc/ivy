@@ -1594,38 +1594,6 @@ def handle_backend_invalid(fn: Callable) -> Callable:
     return _handle_backend_invalid
 
 
-def _handle_efficient_implementation_available(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _wrapper(*args, **kwargs):
-        """
-        Throws a warning whenever the function is called, indicating that an efficient
-        implementation is available. This should be used for functions which have an
-        efficient implementation in a sub backend.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function.
-        """
-        ivy.warn(
-            f"An efficient implementation of {fn.__name__} is available "
-            "in these sub backends: "
-            f"{ivy.available_sub_backend_implementations(fn.__name__)}.\n"
-            "use ivy.set_sub_backend('<sub_backend_name>') to use it."
-        )
-        return fn(*args, **kwargs)
-
-    _wrapper.efficient_implementation_available = True
-    return _wrapper
-
-
 attribute_dict = {
     "unsupported_dtypes",
     "supported_dtypes",
