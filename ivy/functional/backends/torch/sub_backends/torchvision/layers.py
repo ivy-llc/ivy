@@ -9,6 +9,7 @@ def nms(
     max_output_size=None,
     score_threshold=float("-inf"),
 ):
+    print("REACHED HERE")
     # boxes (Tensor[N, 4])) – boxes to perform NMS on.
     # They are expected to be in (x1, y1, x2, y2) format
     # with 0 <= x1 < x2 and 0 <= y1 < y2.

@@ -10,52 +10,8 @@ from ivy.utils.exceptions import IvyException
 
 
 _backends_subpackage_path = "ivy.functional.backends"
-_sub_backend_dict: dict[str, str] = {}
-_backend_to_sub_backends_dict: dict[str, list] = {}
-
-
-def _detect_sub_backends_dynamically():
-    for backend in os.listdir(
-        os.path.join(
-            ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
-            _backends_subpackage_path.replace(".", os.path.sep),
-        )
-    ):
-        if not backend[0].isalpha():
-            continue
-
-        sub_backends_dir = os.path.join(
-            ivy.__path__[0].rpartition(os.path.sep)[0],
-            _backends_subpackage_path.replace(".", os.path.sep),
-            backend,
-            "sub_backends",
-        )
-        for sub_backend in os.listdir(sub_backends_dir):
-            if not sub_backend[0].isalpha():
-                continue
-            _sub_backend_dict[sub_backend] = (
-                f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
-            )
-            try:
-                _backend_to_sub_backends_dict[backend].append(sub_backend)
-            except KeyError:
-                _backend_to_sub_backends_dict[backend] = [sub_backend]
-
-
-_detect_sub_backends_dynamically()
-
-
-def _get_all_sub_backends():
-    sub_backends = []
-    for v in _backend_to_sub_backends_dict.values():
-        sub_backends.extend(v)
-    return sub_backends
-
-
-_all_sub_backends = _get_all_sub_backends()
-
-
-original_backend_dict = None
+_sub_backend_dict = {}
+_backend_to_sub_backends_dict = {}
 
 
 # version specific sub-backend setting
@@ -166,6 +122,43 @@ def fn_name_from_version_specific_fn_name_sub_backend(
         return name[: v_occurences[0]]
 
 
+# dynamic sub_backend detection
+for backend in os.listdir(
+    os.path.join(
+        ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
+        _backends_subpackage_path.replace(".", os.path.sep),
+    )
+):
+    if not backend[0].isalpha():
+        continue
+
+    sub_backends_dir = os.path.join(
+        ivy.__path__[0].rpartition(os.path.sep)[0],
+        _backends_subpackage_path.replace(".", os.path.sep),
+        backend,
+        "sub_backends",
+    )
+    for sub_backend in os.listdir(sub_backends_dir):
+        if not sub_backend[0].isalpha():
+            continue
+        _sub_backend_dict[sub_backend] = (
+            f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
+        )
+        try:
+            _backend_to_sub_backends_dict[backend].append(sub_backend)
+        except KeyError:
+            _backend_to_sub_backends_dict[backend] = [sub_backend]
+
+
+_all_sub_backends = []
+
+for v in _backend_to_sub_backends_dict.values():
+    _all_sub_backends.extend(v)
+
+
+original_backend_dict = None
+
+
 def set_sub_backend(sub_backend_str: str):
     if ivy.backend == "":
         logging.warning("You must set a backend first")
@@ -197,15 +190,13 @@ def set_sub_backend(sub_backend_str: str):
     global original_backend_dict
     if original_backend_dict is None:
         original_backend_dict = ivy.__dict__.copy()
-    sub_backend = ivy.utils.dynamic_import.import_module(
-        _sub_backend_dict[sub_backend_str]
-    )
+    sub_backend = importlib.import_module(_sub_backend_dict[sub_backend_str])
     set_sub_backend_to_specific_version(sub_backend)
     _set_sub_backend_as_ivy(ivy.__dict__.copy(), ivy, sub_backend)
-    ivy.current_backend().sub_backends._current_sub_backends.append(sub_backend_str)
+    ivy.current_sub_backends.append(sub_backend_str)
 
 
-# this is very similar to _set_backend_as_ivy in handler.py, with a minor change
+# this is very similiar to _set_backend_as_ivy in handler.py, with a minor change
 def _set_sub_backend_as_ivy(
     original: dict, target: ModuleType, sub_backend: ModuleType
 ):
@@ -252,13 +243,11 @@ def unset_sub_backend(sub_backend_str: str):
     global original_backend_dict
 
     # The sub-backend is cached so this is fast
-    sub_backend = ivy.utils.dynamic_import.import_module(
-        _sub_backend_dict[sub_backend_str]
-    )
+    sub_backend = importlib.import_module(_sub_backend_dict[sub_backend_str])
     _unset_sub_backend_from_ivy(
         original_backend_dict, ivy, sub_backend, sub_backend.name
     )
-    ivy.current_backend().sub_backends._current_sub_backends.remove(sub_backend_str)
+    ivy.current_sub_backends.remove(sub_backend_str)
 
 
 def _unset_sub_backend_from_ivy(
@@ -289,7 +278,7 @@ def _unset_sub_backend_from_ivy(
 def clear_sub_backends():
     if ivy.current_sub_backends:
         ivy.__dict__.update(original_backend_dict)
-        ivy.current_backend().sub_backends._current_sub_backends = []
+        ivy.current_sub_backends = []
 
 
 # This is only used in set_backend in handler.py
@@ -297,7 +286,7 @@ def _clear_current_sub_backends():
     global original_backend_dict
     original_backend_dict = None
     if ivy.current_sub_backends:
-        ivy.current_backend().sub_backends._current_sub_backends = []
+        ivy.current_sub_backends = []
 
 
 def find_available_sub_backends(sub_backends_loc):
@@ -312,39 +301,3 @@ def find_available_sub_backends(sub_backends_loc):
             available_sub_backends.append(sub_backend)
 
     return available_sub_backends
-
-
-def available_sub_backend_implementations(fn_name: str) -> list:
-    """
-    Return whether a sub-backend implementation is available for `fn_name`.
-
-    Parameters
-    ----------
-    fn_name : str
-        the object for which to check if a sub-backend implementation is available.
-
-    Returns
-    -------
-    ret : list
-        a list of sub-backend implementations available for `fn_name`.
-
-    Examples
-    --------
-    >>> import ivy
-    >>> ivy.set_backend('torch')
-    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
-    ['xformers']
-    >>> ivy.set_backend('numpy')
-    >>> ivy.available_sub_backend_implementations("scaled_dot_product_attention")
-    []
-    """
-    sub_backends = ivy.available_sub_backends
-    implementations = []
-    for sub in sub_backends:
-        try:
-            sub_backend = ivy.utils.dynamic_import.import_module(_sub_backend_dict[sub])
-        except ModuleNotFoundError:
-            continue
-        if fn_name in sub_backend.__dict__:
-            implementations.append(sub)
-    return implementations

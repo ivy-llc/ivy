@@ -10,7 +10,7 @@ import gc
 from ivy.utils import _importlib, verbosity
 
 # local
-from ivy.func_wrapper import _wrap_function, _handle_efficient_implementation_available
+from ivy.func_wrapper import _wrap_function
 from ivy.utils.backend.sub_backend_handler import (
     _clear_current_sub_backends,
     fn_name_from_version_specific_fn_name,
@@ -207,7 +207,6 @@ def _set_module_backend(
     )
     backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
-        v = _wrap_if_got_efficient_implementations(v) if v else v
         compositional = k not in backend.__dict__
         if compositional:
             if k in invalid_dtypes and k in target.__dict__:
@@ -229,13 +228,6 @@ def _set_module_backend(
                 invalid_dtypes=invalid_dtypes,
                 backend_str=backend_str,
             )
-
-
-def _wrap_if_got_efficient_implementations(v):
-    if callable(v):
-        if ivy.available_sub_backend_implementations(v.__name__):
-            return _handle_efficient_implementation_available(v)
-    return v
 
 
 def _handle_backend_specific_vars(target, backend):
