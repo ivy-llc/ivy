@@ -1320,7 +1320,7 @@ def dft(
 
     if onesided:
         slices = [slice(0, a) for a in res.shape]
-        slices[axis] = slice(0, ivy.shape(res, as_array=True)[axis] // 2 + 1)
+        slices[axis] = slice(0, ivy.shape(res)[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
 
