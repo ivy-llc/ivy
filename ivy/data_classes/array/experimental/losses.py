@@ -369,3 +369,55 @@ class _ArrayWithLossesExperimental(abc.ABC):
             eps=eps,
             reduction=reduction,
         )
+
+import ivy
+
+def ctc_loss(
+            self: ivy.Array,
+            log_probs: Union[ivy.Array, ivy.NativeArray],
+            targets: Union[ivy.Array, ivy.NativeArray],
+            input_lengths: Union[ivy.Array, ivy.NativeArray],
+            target_lengths: Union[ivy.Array, ivy.NativeArray]
+            ) -> ivy.Array:
+    """
+    Compute the Connectionist Temporal Classification (CTC) Loss.
+
+    This function computes the CTC loss between the given log probabilities
+    and target sequences. It is commonly used in sequence-to-sequence tasks
+    such as speech recognition.
+
+    Parameters
+    ----------
+    log_probs : ivy.Array
+        Log probabilities from the network. Shape should be [batch_size, max_seq_len, num_classes].
+
+    targets : ivy.Array
+        Target sequences. Should be a padded tensor with shape [batch_size, max_target_seq_len].
+
+    input_lengths : ivy.Array
+        Lengths of input sequences in the batch. Shape: [batch_size].
+
+    target_lengths : ivy.Array
+        Lengths of target sequences in the batch. Shape: [batch_size].
+
+    Returns
+    -------
+    loss : ivy.Array
+        The CTC loss for the batch.
+
+    Examples
+    --------
+    >>> log_probs = ivy.array([[[0.1, 0.6, 0.2], [0.3, 0.4, 0.3], [0.5, 0.1, 0.4]],
+    ...                       [[0.2, 0.2, 0.6], [0.5, 0.3, 0.2], [0.1, 0.7, 0.2]]], dtype=ivy.float32)
+    >>> targets = ivy.array([[1, 2], [2, 1]], dtype=ivy.int32)
+    >>> input_lengths = ivy.array([3, 3], dtype=ivy.int32)
+    >>> target_lengths = ivy.array([2, 2], dtype=ivy.int32)
+    >>> loss = ctc_loss(log_probs, targets, input_lengths, target_lengths)
+    >>> print(loss)
+    """
+    input_lengths = ivy.aspects.ensure_array(input_lengths)
+    target_lengths = ivy.aspects.ensure_array(target_lengths)
+    log_probs = ivy.transpose(log_probs, (1, 0, 2))
+    loss = ivy.nn.functional.ctc_loss(log_probs, targets, input_lengths, target_lengths)
+    return loss
+
