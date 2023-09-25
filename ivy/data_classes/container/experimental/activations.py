@@ -1115,8 +1115,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = ivy.Container.static_tanhshrink(x)
         >>> print(y)
         {
-            a: ivy.array([0.73105854, -0.27777028]),
-            b: ivy.array([0.23947507, -0.0900332])
+            a: ivy.array([0.23840582, -0.36634541]),
+            b: ivy.array([0.02005103, -0.00262468])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1175,8 +1175,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = x.tanhshrink()
         >>> print(y)
         {
-            a: ivy.array([0.73105854, -0.27777028]),
-            b: ivy.array([0.23947507, -0.0900332])
+            a: ivy.array([0.23840582, -0.36634541]),
+            b: ivy.array([0.02005103, -0.00262468])
         }
         """
         return self._static_tanhshrink(

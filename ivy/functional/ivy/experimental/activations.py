@@ -622,17 +622,18 @@ def tanhshrink(
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.tanhshrink(x)
     >>> print(y)
-    ivy.array([-0.2689,  0.7310,  1.7615])
+    ivy.array([-0.23840582,  0.23840582,  1.03597236])
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = x.tanhshrink()
     >>> print(y)
-    ivy.array([-0.2689,  0.7310,  1.7615])
+    ivy.array([-0.23840582,  0.23840582,  1.03597236])
 
 
     >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.tanhshrink(x)
     >>> print(y)
-    ivy.array([[-0.2784,  3.7168,  1.8708], [ 1.4374,  4.1379, -0.0089]])
+    ivy.array([[-0.43827677,  2.80100036,  1.12954807],
+                [ 0.76459098,  3.20044947, -5.60000372]])
     """
     return current_backend(x).tanhshrink(x, out=out)

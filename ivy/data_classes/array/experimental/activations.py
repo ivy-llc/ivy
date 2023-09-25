@@ -357,6 +357,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1., 0., 1.])
         >>> y = x.tanhshrink()
         >>> print(y)
-        ivy.array([-0.26894143,  0.        ,  0.73105854])
+        ivy.array([-0.23840582,  0.        ,  0.23840582])
         """
         return ivy.tanhshrink(self._data, out=out)
