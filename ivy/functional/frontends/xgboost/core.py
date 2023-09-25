@@ -150,24 +150,24 @@ class Booster:
         ----------
         data
             The array storing the input.
-        output_margin :
+        output_margin
             Whether to output the raw untransformed margin value.
-        pred_leaf :
+        pred_leaf
             When this option is on, the output will be a matrix of (nsample,
             ntrees) with each record indicating the predicted leaf index of
             each sample in each tree.  Note that the leaf index of a tree is
             unique per tree, so you may find leaf 1 in both tree 1 and tree 0.
-        pred_contribs :
+        pred_contribs
             When this is True the output will be a matrix of size (nsample,
             nfeats + 1) with each record indicating the feature contributions
             (SHAP values) for that prediction. The sum of all feature
             contributions is equal to the raw untransformed margin value of the
             prediction. Note the final column is the bias term.
-        approx_contribs :
+        approx_contribs
             Approximate the contributions of each feature.  Used when ``pred_contribs`` or
             ``pred_interactions`` is set to True.  Changing the default of this parameter
             (False) is not recommended.
-        pred_interactions :
+        pred_interactions
             When this is True the output will be a matrix of size (nsample,
             nfeats + 1, nfeats + 1) indicating the SHAP interaction values for
             each pair of features. The sum of each row (or column) of the
@@ -175,22 +175,22 @@ class Booster:
             pred_contribs), and the sum of the entire matrix equals the raw
             untransformed margin value of the prediction. Note the last row and
             column correspond to the bias term.
-        validate_features :
+        validate_features
             When this is True, validate that the Booster's and data's
             feature_names are identical.  Otherwise, it is assumed that the
             feature_names are the same.
-        training :
+        training
             Whether the prediction value is used for training.  This can effect `dart`
             booster, which performs dropouts during training iterations but use all trees
             for inference. If you want to obtain result with dropouts, set this parameter
             to `True`.  Also, the parameter is set to true when obtaining prediction for
             custom objective function.
-        iteration_range :
+        iteration_range
             Specifies which layer of trees are used in prediction.  For example, if a
             random forest is trained with 100 rounds.  Specifying `iteration_range=(10,
             20)`, then only the forests built during [10, 20) (half open set) rounds are
             used in this prediction. Unsupported for gblinear booster.
-        strict_shape :
+        strict_shape
             When set to True, output shape is invariant to whether classification is used.
             For both value and margin prediction, the output shape is (n_samples,
             n_groups), n_groups == 1 when multi-class is not used.  Default to False, in

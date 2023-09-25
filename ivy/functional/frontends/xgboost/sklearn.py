@@ -174,7 +174,7 @@ class XGBModel(XGBModelBase):
 
         Parameters
         ----------
-        X :
+        X
             Feature matrix. See :ref:`py-data` for a list of supported types.
 
             When the ``tree_method`` is set to ``hist``, internally, the
@@ -183,13 +183,13 @@ class XGBModel(XGBModelBase):
             device of input data is not matched with algorithm. For instance, if the
             input is a numpy array on CPU but ``cuda`` is used for training, then the
             data is first processed on CPU then transferred to GPU.
-        y :
+        y
             Labels.
-        sample_weight :
+        sample_weight
             instance weights.
-        base_margin :
+        base_margin
             global bias for each instance.
-        eval_set :
+        eval_set
             A list of (X, y) tuple pairs to use as validation sets, for which
             metrics will be computed.
             Validation metrics will help us track the performance of the model.
@@ -197,29 +197,28 @@ class XGBModel(XGBModelBase):
         eval_metric : str, list of str, or callable, optional(deprecated in fit method).
 
         early_stopping_rounds : int(deprecated in fit method).
-        verbose :
+        verbose
             If `verbose` is True and an evaluation set is used, the evaluation metric
             measured on the validation set is printed to stdout at each boosting stage.
             If `verbose` is an integer, the evaluation metric is printed at each
             `verbose` boosting stage. The last boosting stage / the boosting stage found
             by using `early_stopping_rounds` is also printed.
-        xgb_model :
+        xgb_model
             file name of stored XGBoost model or 'Booster' instance XGBoost model to be
             loaded before training (allows training continuation).
-        sample_weight_eval_set :
+        sample_weight_eval_set
             A list of the form [L_1, L_2, ..., L_n], where each L_i is an array like
             object storing instance weights for the i-th validation set.
-        base_margin_eval_set :
+        base_margin_eval_set
             A list of the form [M_1, M_2, ..., M_n], where each M_i is an array like
             object storing base margin for the i-th validation set.
-        feature_weights :
+        feature_weights
             Weight for each feature, defines the probability of each feature being
             selected when colsample is being used.  All values must be greater than 0,
             otherwise a `ValueError` is thrown.
 
-        callbacks :
+        callbacks
             (deprecated in fit method).
-
         """
         # skip all the validation as we're interested in calculations for now
         # ToDo: add handling for custom objective
