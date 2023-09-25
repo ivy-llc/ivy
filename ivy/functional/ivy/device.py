@@ -212,7 +212,10 @@ def get_all_ivy_arrays_on_dev(
 
 
 @handle_exceptions
-def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
+def num_arrays_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice],
+      /,
+) -> int:
     """
     Return the number of arrays which are currently alive on the specified device.
 
@@ -230,18 +233,18 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     --------
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
     >>> print(y)
     2
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
     >>> print(y)
     0
 
     >>> x = ivy.Container(x1=ivy.array([-1]),
     ...                   x2=ivy.native_array([-1]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
+    >>> y = ivy.num_arrays_on_dev(ivy.default_device())
     >>> print(y)
     1
     """
