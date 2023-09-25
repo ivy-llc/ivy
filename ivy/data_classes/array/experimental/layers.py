@@ -1228,3 +1228,47 @@ class _ArrayWithLayersExperimental(abc.ABC):
             dilation=dilation,
             padding=padding,
         )
+
+    def max_unpool1d(
+        self: ivy.Array,
+        indices: ivy.Array,
+        kernel_size: Union[Tuple[int], int],
+        /,
+        *,
+        strides: Union[int, Tuple[int]] = None,
+        padding: Union[int, Tuple[int]] = 0,
+        data_format: Optional[str] = "NCW",
+    ) -> ivy.Array:
+        """
+        Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+        Parameters
+        ----------
+        self
+            Pooled input image *[batch_size, w, d_in]*.
+        indices
+            Indices obtained from the corresponding max pooling operation.
+        kernel_size
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NWC".
+
+        Returns
+        -------
+        ret
+            The result of the unpooling operation.
+        """
+        return ivy.max_unpool1d(
+            self._data,
+            indices,
+            kernel_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+        )

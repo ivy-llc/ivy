@@ -26,6 +26,24 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
     return x, kernel, strides, depth_pooling
 
 
+def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
+    dims = {"1d": 1, "2d": 2, "3d": 3}
+    if isinstance(x, int):
+        return tuple([x for _ in range(dims[pool_dims])])
+
+    if len(x) == 1:
+        return tuple([x[0] for _ in range(dims[pool_dims])])
+
+    elif len(x) == dims[pool_dims]:
+        return tuple(x)
+
+    elif len(x) != dims[pool_dims]:
+        raise ValueError(
+            f"`{name}` must either be a single int, "
+            f"or a tuple of {dims[pool_dims]} ints. "
+        )
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def max_pool1d(
     x: torch.Tensor,
@@ -1182,3 +1200,57 @@ def sliding_window(
     return torch.nn.functional.unfold(
         input, kernel_size, dilation=dilation, padding=padding, stride=stride
     )
+
+
+def max_unpool1d(
+    input: torch.Tensor,
+    indices: torch.Tensor,
+    kernel_size: Union[Tuple[int], int],
+    /,
+    *,
+    strides: Union[int, Tuple[int]] = None,
+    padding: Union[int, Tuple[int]] = 0,
+    data_format: Optional[str] = "NCW",
+) -> torch.Tensor:
+    if strides is None:
+        strides = kernel_size
+    revert = False
+    if data_format in ["NCW", "NWC"]:
+        if data_format == "NWC":
+            input = input.permute(0, 2, 1)
+            indices = indices.permute(0, 2, 1)
+            revert = True
+    else:
+        raise ValueError(
+            f"data_format attr should be NCW or NWC but found {data_format}"
+        )
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    strides = _broadcast_pooling_helper(strides, "1d", name="strides")
+    ret = torch.nn.functional.max_unpool1d(
+        input,
+        indices,
+        kernel_size,
+        strides,
+        padding,
+    )
+    if revert:
+        ret = ret.permute(0, 2, 1)
+    return ret
+
+
+def _max_unpool1d_mixed_handler(input, indices, kernel_size, **kwargs):
+    dt = kwargs.get("data_format", "NCW")
+    inds = indices.permute(0, 2, 1) if dt == "NWC" else indices
+    flat_inds = inds.reshape((-1,))
+    stride = indices.shape[-1]
+    not_dup = True
+    for i in range(0, flat_inds.numel(), stride):
+        inds = flat_inds[i : (i + stride)]
+        inds = inds.unique()
+        if inds.numel() != stride:
+            not_dup = False
+    return not_dup
+
+
+max_unpool1d.partial_mixed_handler = _max_unpool1d_mixed_handler
