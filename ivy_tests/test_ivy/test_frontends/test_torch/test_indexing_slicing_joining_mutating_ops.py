@@ -413,6 +413,35 @@ def test_torch_chunk(
     )
 
 
+# columnstack
+@handle_frontend_test(
+    fn_tree="torch.column_stack",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_columnstack(
+    *,
+    dtype_value,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
+    )
+
+
+
 # concat
 @handle_frontend_test(
     fn_tree="torch.concat",
@@ -1712,3 +1741,6 @@ def test_torch_where(
             other=xs[1],
             backend_to_test=backend_fw,
         )
+
+
+
