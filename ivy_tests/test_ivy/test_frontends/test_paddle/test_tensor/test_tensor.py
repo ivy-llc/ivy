@@ -802,7 +802,7 @@ def test_paddle_tensor_as_complex(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x},
+        init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
