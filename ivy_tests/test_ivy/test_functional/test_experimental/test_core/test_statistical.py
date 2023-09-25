@@ -590,7 +590,7 @@ def test_median(*, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_
     fn_tree="functional.ivy.experimental.nanmean",
     dtype_x_axis=_statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_gradients=st.just(False),
 )
 def test_nanmean(

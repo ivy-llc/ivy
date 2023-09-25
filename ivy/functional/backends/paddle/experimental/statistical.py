@@ -11,20 +11,8 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.5.1 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "float16",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def median(
@@ -35,21 +23,16 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # keepdims is set to True because in versions up to 2.5.1
-    # there was a problem when the axis was defined and it was the
-    # only axis in the tensor so it needs to be handled manually
-
-    ret_dtype = input.dtype
-    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        if paddle.is_complex(input):
-            ret = paddle.complex(
-                paddle.median(input.real(), axis=axis, keepdim=True),
-                paddle.median(input.imag(), axis=axis, keepdim=True),
-            )
-        else:
-            ret = paddle.median(input.cast("float32"), axis=axis, keepdim=True)
+    if paddle.is_complex(input):
+        ret = paddle.complex(
+            paddle.median(input.real(), axis=axis, keepdim=True),
+            paddle.median(input.imag(), axis=axis, keepdim=True),
+        )
     else:
         ret = paddle.median(input, axis=axis, keepdim=True)
+    # keepdims is set to True because in versions up to 2.5.1
+    # there was a problem when the axis was defined, and it was the
+    # only axis in the tensor, so it needs to be handled manually
     if not keepdims:
         ret = paddle_backend.squeeze(ret, axis=axis)
     # The following code is to simulate other frameworks
@@ -59,9 +42,12 @@ def median(
             axis = None
     if (input.ndim == 1 or axis is None) and not keepdims:
         ret = ret.squeeze()
-    return ret.astype(ret_dtype)
+    return ret.astype(input.dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex", "float32", "float64", "int64")}, backend_version
+)
 def nanmean(
     a: paddle.Tensor,
     /,
@@ -74,20 +60,17 @@ def nanmean(
     ret_dtype = dtype if dtype is not None else a.dtype
     a = a.cast(
         ret_dtype
-    )  # this is necessary to match other FWs behaviour which cast before calculation
-    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
-        if paddle.is_complex(a):
-            ret = paddle.complex(
-                paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
-                paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
-            )
-        else:
-            ret = paddle.nanmean(a.cast("float32"), axis=axis, keepdim=keepdims)
+    )  # this is necessary to match other FWs behavior which cast before calculation
+    if paddle.is_complex(a):
+        ret = paddle.complex(
+            paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
+            paddle.nanmean(a.imag(), axis=axis, keepdim=keepdims),
+        )
     else:
         ret = paddle.nanmean(a, axis=axis, keepdim=keepdims)
 
     # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
+    # output shapes behavior since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
         if len(axis) == a.ndim:
             axis = None
