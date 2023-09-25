@@ -1240,31 +1240,3 @@ def test_numpy_zipf(
         size=size,
     )
 
-
-@handle_frontend_test(
-    fn_tree="numpy.random.exponential",
-    input_dtypes=helpers.get_dtypes("float", full=False),
-)
-def test_numpy_exponential(
-    input_dtypes,
-    shape,
-    scale,
-    size,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    backend_fw,
-):
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        shape=shape,
-        scale=scale,
-        size=size,
-    )
