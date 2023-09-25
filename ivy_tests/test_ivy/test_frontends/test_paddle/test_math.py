@@ -476,32 +476,34 @@ def test_paddle_atanh(
 # broadcast_shape
 @handle_frontend_test(
     fn_tree="paddle.broadcast_shape",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=True,
-        allow_inf=False,
+    input_shape_x=helpers.get_shape(
+        min_num_dims=1,
+    ),
+    input_shape_y=helpers.get_shape(
+        min_num_dims=1,
     ),
 )
 def test_paddle_broadcast_shape(
     *,
-    dtype_and_x,
+    input_shape_x,
+    input_shape_y,
     on_device,
     fn_tree,
     frontend,
     backend_fw,
     test_flags,
 ):
-    input_dtype, x = dtype_and_x
+    x = input_shape_x
+    y = input_shape_y
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=["int32", "int64"],
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        y=x[1],
+        x=x,
+        y=y,
     )
 
 
