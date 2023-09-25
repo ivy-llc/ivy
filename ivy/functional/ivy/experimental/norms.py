@@ -204,16 +204,17 @@ def batch_norm(
             xnormalized, axes=(0, xdims - 1, *range(1, xdims - 1))
         )
 
-    if ivy.exists(out):
-        xnormalized = ivy.inplace_update(out[0], xnormalized)
-        runningmean = ivy.inplace_update(out[1], runningmean)
-        runningvariance = ivy.inplace_update(out[2], runningvariance)
+    ivy.inplace_update(mean, runningmean)
+    ivy.inplace_update(variance, runningvariance)
 
-    return (
-        xnormalized,
-        ivy.inplace_update(mean, runningmean),
-        ivy.inplace_update(variance, runningvariance),
-    )
+    if ivy.exists(out):
+        return (
+            ivy.inplace_update(out[0], xnormalized),
+            ivy.inplace_update(out[1], runningmean),
+            ivy.inplace_update(out[2], runningvariance),
+        )
+
+    return (xnormalized, runningmean, runningvariance)
 
 
 batch_norm.mixed_backend_wrappers = {

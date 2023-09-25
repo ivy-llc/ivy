@@ -76,13 +76,13 @@ class _ArrayWithNormsExperimental(abc.ABC):
         return ivy.l2_normalize(self, axis=axis, out=out)
 
     def batch_norm(
-        self: Union[ivy.NativeArray, ivy.Array],
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
+        self: ivy.Array,
+        mean: ivy.Array,
+        variance: ivy.Array,
         /,
         *,
-        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        offset: Optional[ivy.Array] = None,
+        scale: Optional[ivy.Array] = None,
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
@@ -147,13 +147,13 @@ class _ArrayWithNormsExperimental(abc.ABC):
         )
 
     def instance_norm(
-        self: Union[ivy.NativeArray, ivy.Array],
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
+        self: ivy.Array,
+        mean: ivy.Array,
+        variance: ivy.Array,
         /,
         *,
-        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        offset: Optional[ivy.Array] = None,
+        scale: Optional[ivy.Array] = None,
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,

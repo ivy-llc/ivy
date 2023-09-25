@@ -109,7 +109,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         ret
             A container containing the normalized leaves.
         """
-        return self.static_l1_normalize(
+        return self._static_l1_normalize(
             self,
             axis=axis,
             key_chains=key_chains,
@@ -237,7 +237,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
                           [-0.89442718, -0.44721359]])
         }
         """
-        return self.static_l2_normalize(
+        return self._static_l2_normalize(
             self,
             axis=axis,
             key_chains=key_chains,
@@ -424,7 +424,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
              Tuple of containers containing
               the normalized input, running mean, and running variance.
         """
-        return self.static_batch_norm(
+        return self._static_batch_norm(
             self,
             mean,
             variance,
@@ -614,7 +614,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
              Tuple of containers containing
               the normalized input, running mean, and running variance.
         """
-        return self.static_instance_norm(
+        return self._static_instance_norm(
             self,
             mean,
             variance,
@@ -743,7 +743,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         ret
             The normalized array.
         """
-        return self.static_group_norm(
+        return self._static_group_norm(
             self,
             num_groups,
             scale=scale,
@@ -880,7 +880,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
                           [-0.89442718, -0.44721359]])
         }
         """
-        return self.static_lp_normalize(
+        return self._static_lp_normalize(
             self,
             p=p,
             axis=axis,
