@@ -607,7 +607,3 @@ def triu_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
-
-
-
-

@@ -216,6 +216,44 @@ def cross_entropy(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float32", "double64", "int32", "int64")}, "torch"
+)
+def ctc_loss(
+    input_lengths: Tensor,
+    targets: Tensor,
+    /,
+    *,
+    log_probs: Tensor,
+    target_lengths: Tensor,
+    blank: int = 0,
+    reduction: str = "mean",
+    zero_infinity: bool = False,
+) -> Tensor:
+    if not ivy.is_available():
+        raise NotImplementedError("Ivy backend is not available.")
+
+    input_lengths = ivy.to(input_lengths, ivy.float32)
+    targets = ivy.to(targets, ivy.int32)
+    log_probs = ivy.to(log_probs, ivy.float32)
+    target_lengths = ivy.to(target_lengths, ivy.int32)
+
+    if reduction == "none":
+        loss = ctc_loss
+    elif reduction == "sum":
+        loss = ivy.sum(ctc_loss)
+    elif reduction == "mean":
+        loss = ivy.mean(ctc_loss)
+    else:
+        raise ValueError("Invalid reduction method. Use 'none', 'sum', or 'mean'.")
+
+    if zero_infinity:
+        loss = ivy.where(ivy.is_inf(loss), ivy.zeros_like(loss), loss)
+
+    return loss
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("bool", "integer")}, "torch")
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
     input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
@@ -599,39 +637,3 @@ def triplet_margin_with_distance_loss(
     loss = ivy.maximum(dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0))
 
     return reduction(loss).astype(anchor.dtype)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float32", "double64", "int32", "int64")}, "torch")
-def ctc_loss(
-    input_lengths: Tensor,
-    targets: Tensor,
-    /,
-    *,
-    log_probs: Tensor,
-    target_lengths: Tensor,
-    blank: int = 0,
-    reduction: str = "mean",
-    zero_infinity: bool = False
-) -> Tensor:
-    if not ivy.is_available():
-        raise NotImplementedError("Ivy backend is not available.")
-
-    input_lengths = ivy.to(input_lengths, ivy.float32)
-    targets = ivy.to(targets, ivy.int32)
-    log_probs = ivy.to(log_probs, ivy.float32)
-    target_lengths = ivy.to(target_lengths, ivy.int32)
-
-    if reduction == "none":
-        loss = ctc_loss
-    elif reduction == "sum":
-        loss = ivy.sum(ctc_loss)
-    elif reduction == "mean":
-        loss = ivy.mean(ctc_loss)
-    else:
-        raise ValueError("Invalid reduction method. Use 'none', 'sum', or 'mean'.")
-
-    if zero_infinity:
-        loss = ivy.where(ivy.is_inf(loss), ivy.zeros_like(loss), loss)
-
-    return loss

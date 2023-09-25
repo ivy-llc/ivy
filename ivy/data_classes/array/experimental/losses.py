@@ -370,15 +370,17 @@ class _ArrayWithLossesExperimental(abc.ABC):
             reduction=reduction,
         )
 
+
 import ivy
 
+
 def ctc_loss(
-            self: ivy.Array,
-            log_probs: Union[ivy.Array, ivy.NativeArray],
-            targets: Union[ivy.Array, ivy.NativeArray],
-            input_lengths: Union[ivy.Array, ivy.NativeArray],
-            target_lengths: Union[ivy.Array, ivy.NativeArray]
-            ) -> ivy.Array:
+    self: ivy.Array,
+    log_probs: Union[ivy.Array, ivy.NativeArray],
+    targets: Union[ivy.Array, ivy.NativeArray],
+    input_lengths: Union[ivy.Array, ivy.NativeArray],
+    target_lengths: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
     """
     Compute the Connectionist Temporal Classification (CTC) Loss.
 
@@ -420,4 +422,3 @@ def ctc_loss(
     log_probs = ivy.transpose(log_probs, (1, 0, 2))
     loss = ivy.nn.functional.ctc_loss(log_probs, targets, input_lengths, target_lengths)
     return loss
-

@@ -130,7 +130,7 @@ def kl_div(
     )
     return loss
 
-  
+
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {
@@ -162,7 +162,7 @@ def poisson_nll_loss(
         input, target, log_input=log_input, full=full, eps=eps, reduction=reduction
     )
 
-  
+
   @with_unsupported_dtypes(
   {
     "2.0.1 and below": (
@@ -184,7 +184,7 @@ def ctc_loss(
     blank: int = 0,
     reduction: str = "mean",
     zero_infinity: bool = False
-    
+
     )-> Tensor:
         if has_torch_function_variadic(log_probs, targets, input_lengths, target_lengths):
             return handle_torch_function(
@@ -195,4 +195,4 @@ def ctc_loss(
             )
         return torch.ctc_loss(
             log_probs, targets, input_lengths, targets_lengths, blank, _Reduction.get_enum(reduction), zero_infinity
-        )    
+        )
