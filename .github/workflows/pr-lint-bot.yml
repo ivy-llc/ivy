@@ -1,21 +1,14 @@
 name: Trigger lint format
 
 on:
-  pull_request:
-    types: [ labeled, opened, synchronize, reopened, review_requested ]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
 
 jobs:
-  Debug:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug
-        run: | 
-          echo "secrets.IVY_BRANCH_TOKEN: ${{ secrets.IVY_BRANCH_TOKEN }}"
-
   fix-linting:
     name: PR Lint Bot
-    uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@automatic-lint-pr
+    uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@main
     secrets: inherit
