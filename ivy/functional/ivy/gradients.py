@@ -1000,6 +1000,55 @@ def lars_update(
     -------
     ret
         The new function weights ws_new, following the LARS updates.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> w = ivy.array([[3., 1, 5],
+    ...                [7, 2, 9]])
+    >>> dcdw = ivy.array([[0.3, 0.1, 0.2],
+    ...                   [0.1, 0.2, 0.4]])
+    >>> lr = ivy.array(0.1)
+    >>> new_weights = ivy.lars_update(w, dcdw, lr)
+    >>> print(new_weights)
+    ivy.array([[2.34077978, 0.78025991, 4.56051969],
+    ...        [6.78026009, 1.56051981, 8.12103939]])
+
+    >>> w = ivy.array([3., 1, 5])
+    >>> dcdw = ivy.array([0.3, 0.1, 0.2])
+    >>> lr = ivy.array(0.1)
+    >>> out = ivy.zeros_like(dcdw)
+    >>> ivy.lars_update(w, dcdw, lr, out=out)
+    >>> print(out)
+    ivy.array([2.52565837, 0.8418861 , 4.68377209])
+
+    With one :class:`ivy.Container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([3.2, 2.6, 1.3]),
+    ...                    b=ivy.array([1.4, 3.1, 5.1]))
+    >>> dcdw = ivy.array([0.2, 0.4, 0.1])
+    >>> lr = ivy.array(0.1)
+    >>> new_weights = ivy.lars_update(w, dcdw, lr)
+    >>> print(new_weights)
+    {
+        a: ivy.array([3.01132035, 2.22264051, 1.2056601]),
+        b: ivy.array([1.1324538, 2.56490755, 4.96622658])
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> w = ivy.Container(a=ivy.array([3.2, 2.6, 1.3]),
+    ...                    b=ivy.array([1.4, 3.1, 5.1]))
+    >>> dcdw = ivy.Container(a=ivy.array([0.2, 0.4, 0.1]),
+    ...                       b=ivy.array([0.3,0.1,0.2]))
+    >>> lr = ivy.array(0.1)
+    >>> new_weights = ivy.lars_update(w, dcdw, lr)
+    >>> print(new_weights)
+    {
+        a: ivy.array([3.01132035, 2.22264051, 1.2056601]),
+        b: ivy.array([0.90848625, 2.93616199, 4.77232409])
+    }
     """
     w_norm = ivy.vector_norm(w)
     lr = ivy.stable_divide(w_norm * lr, ivy.vector_norm(dcdw))
