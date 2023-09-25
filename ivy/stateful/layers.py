@@ -449,9 +449,113 @@ class MultiHeadAttention(Module):
 
 # Convolutions #
 # -------------#
+from collections import abc
+from itertools import repeat
 
 
-class Conv1D(Module):
+def _ntuple(n):
+    def parse(x):
+        if isinstance(x, abc.Iterable):
+            return x
+        return tuple(repeat(x, n))
+
+    return parse
+
+
+_single = _ntuple(1)
+_pair = _ntuple(2)
+_triple = _ntuple(3)
+
+
+class _ConvND(Module):
+    def __init__(
+        self,
+        input_channels,
+        output_channels,
+        filter_size,
+        strides,
+        padding,
+        weight_initializer,
+        bias_initializer,
+        with_bias,
+        standard_data_format,
+        num_of_dims,
+        data_format,
+        dilations,
+        device,
+        v,
+        dtype,
+    ):
+        self._input_channels = input_channels
+        self._output_channels = output_channels
+        self._filter_size = filter_size
+        self._strides = strides
+        self._padding = padding
+        self._w_shape = (*filter_size, input_channels, output_channels)
+        self._b_shape = (
+            (1,) * (num_of_dims + 1) + (output_channels,)
+            if data_format == standard_data_format
+            else (1, output_channels) + (1,) * num_of_dims
+        )
+        self._w_init = weight_initializer
+        self._b_init = bias_initializer
+        self._with_bias = with_bias
+        self._data_format = data_format
+        self._dilations = dilations
+        self._standard_data_format = standard_data_format
+        self._dim = num_of_dims
+        Module.__init__(self, device=device, v=v, dtype=dtype)
+
+    def _create_variables(self, device, dtype=None):
+        """
+        Create internal variables for the layer.
+
+        Parameters
+        ----------
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created.
+             Default is ``None``.
+        """
+        v = {
+            "w": self._w_init.create_variables(
+                self._w_shape,
+                device,
+                self._output_channels,
+                self._input_channels,
+                dtype=dtype,
+            )
+        }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
+
+    def extra_repr(self):
+        s = (
+            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
+            " strides={_strides}, padding={_padding}"
+        )
+        if self._dilations not in [1, (1,) * self._dim]:
+            s += ", dilations={_dilations}"
+        if self._with_bias is not True:
+            s += ", with_bias=False"
+        if self._data_format != self._standard_data_format:
+            s += ", data_format={_data_format}"
+        return s.format(**self.__dict__)
+
+
+class Conv1D(_ConvND):
     def __init__(
         self,
         input_channels,
@@ -506,56 +610,24 @@ class Conv1D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
-        self._filter_size = filter_size
-        self._strides = strides
-        self._padding = padding
-        self._w_shape = (filter_size, input_channels, output_channels)
-        self._b_shape = (
-            (1, 1, output_channels) if data_format == "NWC" else (1, output_channels, 1)
+        filter_size = _single(filter_size)
+        super().__init__(
+            input_channels,
+            output_channels,
+            filter_size,
+            strides,
+            padding,
+            weight_initializer,
+            bias_initializer,
+            with_bias,
+            "NWC",
+            1,
+            data_format,
+            dilations,
+            device,
+            v,
+            dtype,
         )
-        self._w_init = weight_initializer
-        self._b_init = bias_initializer
-        self._with_bias = with_bias
-        self._data_format = data_format
-        self._dilations = dilations
-        Module.__init__(self, device=device, v=v, dtype=dtype)
-
-    def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
-
-        Parameters
-        ----------
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
-        dtype
-            the desired data type of the internal variables to be created.
-             Default is ``None``.
-        """
-        v = {
-            "w": self._w_init.create_variables(
-                self._w_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            )
-        }
-        if self._with_bias:
-            v = dict(
-                **v,
-                b=self._b_init.create_variables(
-                    self._b_shape,
-                    device,
-                    self._output_channels,
-                    self._input_channels,
-                    dtype=dtype,
-                ),
-            )
-        return v
 
     def _forward(self, inputs):
         """
@@ -580,21 +652,8 @@ class Conv1D(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
-    def extra_repr(self):
-        s = (
-            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
-            " strides={_strides}, padding={_padding}"
-        )
-        if self._dilations not in [1, (1,)]:
-            s += ", dilations={_dilations}"
-        if self._with_bias is not True:
-            s += ", with_bias=False"
-        if self._data_format != "NWC":
-            s += ", data_format={_data_format}"
-        return s.format(**self.__dict__)
 
-
-class Conv1DTranspose(Module):
+class Conv1DTranspose(_ConvND):
     def __init__(
         self,
         input_channels,
@@ -652,57 +711,25 @@ class Conv1DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
-        self._filter_size = filter_size
-        self._strides = strides
-        self._padding = padding
-        self._w_shape = (filter_size, input_channels, output_channels)
-        self._b_shape = (
-            (1, 1, output_channels) if data_format == "NWC" else (1, output_channels, 1)
+        filter_size = _single(filter_size)
+        super().__init__(
+            input_channels,
+            output_channels,
+            filter_size,
+            strides,
+            padding,
+            weight_initializer,
+            bias_initializer,
+            with_bias,
+            "NWC",
+            1,
+            data_format,
+            dilations,
+            device,
+            v,
+            dtype,
         )
-        self._w_init = weight_initializer
-        self._b_init = bias_initializer
-        self._with_bias = with_bias
         self._output_shape = output_shape
-        self._data_format = data_format
-        self._dilations = dilations
-        Module.__init__(self, device=device, v=v, dtype=dtype)
-
-    def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
-
-        Parameters
-        ----------
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
-        dtype
-            the desired data type of the internal variables to be created if not
-             provided. Default is ``None``.
-        """
-        v = {
-            "w": self._w_init.create_variables(
-                self._w_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            )
-        }
-        if self._with_bias:
-            v = dict(
-                **v,
-                b=self._b_init.create_variables(
-                    self._b_shape,
-                    device,
-                    self._output_channels,
-                    self._input_channels,
-                    dtype=dtype,
-                ),
-            )
-        return v
 
     def _forward(self, inputs):
         """
@@ -729,27 +756,19 @@ class Conv1DTranspose(Module):
         ) + (self.v.b if self._with_bias else 0)
 
     def extra_repr(self):
-        s = (
-            "{_input_channels}, {_output_channels}, filter_size={_filter_size},"
-            " strides={_strides}, padding={_padding}"
-        )
-        if self._dilations not in [1, (1,)]:
-            s += ", dilations={_dilations}"
-        if self._with_bias is not True:
-            s += ", with_bias=False"
+        s = super().extra_repr()
         if self._output_shape is not None:
-            s += ", output_shape={_output_shape}"
-        if self._data_format != "NWC":
-            s += ", data_format={_data_format}"
-        return s.format(**self.__dict__)
+            s += ", output_shape={}".format(self._output_shape)
+
+        return s
 
 
-class Conv2D(Module):
+class Conv2D(_ConvND):
     def __init__(
         self,
         input_channels,
         output_channels,
-        filter_shape,
+        filter_size,
         strides,
         padding,
         /,
@@ -799,58 +818,24 @@ class Conv2D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
-        self._filter_shape = filter_shape
-        self._strides = strides
-        self._padding = padding
-        self._w_shape = filter_shape + [input_channels, output_channels]
-        self._b_shape = (
-            (1, 1, 1, output_channels)
-            if data_format == "NHWC"
-            else (1, output_channels, 1, 1)
+        filter_size = _pair(filter_size)
+        super().__init__(
+            input_channels,
+            output_channels,
+            filter_size,
+            strides,
+            padding,
+            weight_initializer,
+            bias_initializer,
+            with_bias,
+            "NHWC",
+            2,
+            data_format,
+            dilations,
+            device,
+            v,
+            dtype,
         )
-        self._w_init = weight_initializer
-        self._b_init = bias_initializer
-        self._with_bias = with_bias
-        self._data_format = data_format
-        self._dilations = dilations
-        Module.__init__(self, device=device, v=v, dtype=dtype)
-
-    def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
-
-        Parameters
-        ----------
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
-        dtype
-            the desired data type of the internal variables to be created.
-            Default is ``None``.
-        """
-        v = {
-            "w": self._w_init.create_variables(
-                self._w_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            )
-        }
-        if self._with_bias:
-            v = dict(
-                **v,
-                b=self._b_init.create_variables(
-                    self._b_shape,
-                    device,
-                    self._output_channels,
-                    self._input_channels,
-                    dtype=dtype,
-                ),
-            )
-        return v
 
     def _forward(self, inputs):
         """
@@ -875,26 +860,13 @@ class Conv2D(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
-    def extra_repr(self):
-        s = (
-            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
-            " strides={_strides}, padding={_padding}"
-        )
-        if self._dilations not in [1, (1, 1)]:
-            s += ", dilations={_dilations}"
-        if self._with_bias is not True:
-            s += ", with_bias=False"
-        if self._data_format != "NHWC":
-            s += ", data_format={_data_format}"
-        return s.format(**self.__dict__)
 
-
-class Conv2DTranspose(Module):
+class Conv2DTranspose(_ConvND):
     def __init__(
         self,
         input_channels,
         output_channels,
-        filter_shape,
+        filter_size,
         strides,
         padding,
         /,
@@ -947,59 +919,25 @@ class Conv2DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
-        self._filter_shape = filter_shape
-        self._strides = strides
-        self._padding = padding
-        self._w_shape = filter_shape + [input_channels, output_channels]
-        self._b_shape = (
-            (1, 1, 1, output_channels)
-            if data_format == "NHWC"
-            else (1, output_channels, 1, 1)
+        filter_size = _pair(filter_size)
+        super().__init__(
+            input_channels,
+            output_channels,
+            filter_size,
+            strides,
+            padding,
+            weight_initializer,
+            bias_initializer,
+            with_bias,
+            "NHWC",
+            2,
+            data_format,
+            dilations,
+            device,
+            v,
+            dtype,
         )
-        self._w_init = weight_initializer
-        self._with_bias = with_bias
-        self._b_init = bias_initializer
         self._output_shape = output_shape
-        self._data_format = data_format
-        self._dilations = dilations
-        Module.__init__(self, device=device, v=v, dtype=dtype)
-
-    def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
-
-        Parameters
-        ----------
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
-        dtype
-            the desired data type of the internal variables to be created if not
-             provided. Default is ``None``.
-        """
-        v = {
-            "w": self._w_init.create_variables(
-                self._w_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            )
-        }
-        if self._with_bias:
-            v = dict(
-                **v,
-                b=self._b_init.create_variables(
-                    self._b_shape,
-                    device,
-                    self._output_channels,
-                    self._input_channels,
-                    dtype=dtype,
-                ),
-            )
-        return v
 
     def _forward(self, inputs):
         """
@@ -1026,26 +964,18 @@ class Conv2DTranspose(Module):
         ) + (self.v.b if self._with_bias else 0)
 
     def extra_repr(self):
-        s = (
-            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
-            " strides={_strides}, padding={_padding}"
-        )
-        if self._dilations not in [1, (1, 1)]:
-            s += ", dilations={_dilations}"
-        if self._with_bias is not True:
-            s += ", with_bias=False"
+        s = super().extra_repr()
         if self._output_shape is not None:
-            s += ", output_shape={_output_shape}"
-        if self._data_format != "NHWC":
-            s += ", data_format={_data_format}"
-        return s.format(**self.__dict__)
+            s += ", output_shape={}".format(self._output_shape)
+
+        return s
 
 
-class DepthwiseConv2D(Module):
+class DepthwiseConv2D(_ConvND):
     def __init__(
         self,
         num_channels,
-        filter_shape,
+        filter_size,
         strides,
         padding,
         /,
@@ -1093,57 +1023,26 @@ class DepthwiseConv2D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        self._num_channels = num_channels
-        self._filter_shape = filter_shape
-        self._strides = strides
-        self._padding = padding
-        self._w_shape = filter_shape + [num_channels]
-        self._b_shape = (
-            (1, 1, 1, num_channels)
-            if data_format == "NHWC"
-            else (1, num_channels, 1, 1)
+        filter_size = _pair(filter_size)
+        super().__init__(
+            num_channels,
+            num_channels,
+            filter_size,
+            strides,
+            padding,
+            weight_initializer,
+            bias_initializer,
+            with_bias,
+            "NHWC",
+            2,
+            data_format,
+            dilations,
+            device,
+            v,
+            dtype,
         )
-        self._w_init = weight_initializer
-        self._b_init = bias_initializer
-        self._with_bias = with_bias
-        self._data_format = data_format
-        self._dilations = dilations
-        Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _create_variables(self, device, dtype):
-        """
-        Create internal variables for the layer.
-
-        Parameters
-        ----------
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
-        dtype
-            the desired data type of the internal variables to be created if not
-             provided. Default is ``None``.
-        """
-        v = {
-            "w": self._w_init.create_variables(
-                self._w_shape,
-                device,
-                self._num_channels,
-                self._num_channels,
-                dtype=dtype,
-            )
-        }
-        if self._with_bias:
-            v = dict(
-                **v,
-                b=self._b_init.create_variables(
-                    self._b_shape,
-                    device,
-                    self._num_channels,
-                    self._num_channels,
-                    dtype=dtype,
-                ),
-            )
-        return v
+        self._w_shape = filter_size + (num_channels,)
 
     def _forward(self, inputs):
         """
@@ -1170,7 +1069,7 @@ class DepthwiseConv2D(Module):
 
     def extra_repr(self):
         s = (
-            "num_channels={_num_channels}, filter_shape={_filter_shape},"
+            "num_channels={_input_channels}, filter_size={_filter_size},"
             " strides={_strides}, padding={_padding}"
         )
         if self._dilations not in [1, (1, 1)]:
@@ -1182,12 +1081,12 @@ class DepthwiseConv2D(Module):
         return s.format(**self.__dict__)
 
 
-class Conv3D(Module):
+class Conv3D(_ConvND):
     def __init__(
         self,
         input_channels,
         output_channels,
-        filter_shape,
+        filter_size,
         strides,
         padding,
         /,
@@ -1237,58 +1136,24 @@ class Conv3D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
-        self._filter_shape = filter_shape
-        self._strides = strides
-        self._padding = padding
-        self._w_shape = filter_shape + [input_channels, output_channels]
-        self._b_shape = (
-            (1, 1, 1, 1, output_channels)
-            if data_format == "NDHWC"
-            else (1, output_channels, 1, 1, 1)
+        filter_size = _triple(filter_size)
+        super().__init__(
+            input_channels,
+            output_channels,
+            filter_size,
+            strides,
+            padding,
+            weight_initializer,
+            bias_initializer,
+            with_bias,
+            "NDHWC",
+            3,
+            data_format,
+            dilations,
+            device,
+            v,
+            dtype,
         )
-        self._w_init = weight_initializer
-        self._b_init = bias_initializer
-        self._with_bias = with_bias
-        self._data_format = data_format
-        self._dilations = dilations
-        Module.__init__(self, device=device, v=v, dtype=dtype)
-
-    def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
-
-        Parameters
-        ----------
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
-        dtype
-            the desired data type of the internal variables to be created if not
-             provided. Default is ``None``.
-        """
-        v = {
-            "w": self._w_init.create_variables(
-                self._w_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            )
-        }
-        if self._with_bias:
-            v = dict(
-                **v,
-                b=self._b_init.create_variables(
-                    self._b_shape,
-                    device,
-                    self._output_channels,
-                    self._input_channels,
-                    dtype=dtype,
-                ),
-            )
-        return v
 
     def _forward(self, inputs):
         """
@@ -1314,26 +1179,13 @@ class Conv3D(Module):
             dilations=self._dilations,
         ) + (self.v.b if self._with_bias else 0)
 
-    def extra_repr(self):
-        s = (
-            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
-            " strides={_strides}, padding={_padding}"
-        )
-        if self._dilations not in [1, (1, 1, 1)]:
-            s += ", dilations={_dilations}"
-        if self._with_bias is not True:
-            s += ", with_bias=False"
-        if self._data_format != "NDHWC":
-            s += ", data_format={_data_format}"
-        return s.format(**self.__dict__)
 
-
-class Conv3DTranspose(Module):
+class Conv3DTranspose(_ConvND):
     def __init__(
         self,
         input_channels,
         output_channels,
-        filter_shape,
+        filter_size,
         strides,
         padding,
         /,
@@ -1386,60 +1238,26 @@ class Conv3DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
-        self._filter_shape = filter_shape
-        self._strides = strides
-        self._padding = padding
-        self._w_shape = filter_shape + [input_channels, output_channels]
-        self._b_shape = (
-            (1, 1, 1, 1, output_channels)
-            if data_format == "NDHWC"
-            else (1, output_channels, 1, 1, 1)
-        )
-        self._w_init = weight_initializer
-        self._b_init = bias_initializer
-        self._with_bias = with_bias
         self._output_shape = output_shape
-        self._data_format = data_format
-        self._dilations = dilations
         self.dtype = dtype
-        Module.__init__(self, device=device, v=v, dtype=dtype)
-
-    def _create_variables(self, device, dtype=None):
-        """
-        Create internal variables for the layer.
-
-        Parameters
-        ----------
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
-        dtype
-            the desired data type of the internal variables to be created if not
-             provided. Default is ``None``.
-        """
-        v = {
-            "w": self._w_init.create_variables(
-                self._w_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            )
-        }
-        if self._with_bias:
-            v = dict(
-                **v,
-                b=self._b_init.create_variables(
-                    self._b_shape,
-                    device,
-                    self._output_channels,
-                    self._input_channels,
-                    dtype=dtype,
-                ),
-            )
-        return v
+        filter_size = _triple(filter_size)
+        super().__init__(
+            input_channels,
+            output_channels,
+            filter_size,
+            strides,
+            padding,
+            weight_initializer,
+            bias_initializer,
+            with_bias,
+            "NDHWC",
+            3,
+            data_format,
+            dilations,
+            device,
+            v,
+            dtype,
+        )
 
     def _forward(self, inputs):
         """
@@ -1467,19 +1285,10 @@ class Conv3DTranspose(Module):
         ) + (self.v.b if self._with_bias else 0)
 
     def extra_repr(self):
-        s = (
-            "{_input_channels}, {_output_channels}, filter_shape={_filter_shape},"
-            " strides={_strides}, padding={_padding}"
-        )
-        if self._dilations not in [1, (1, 1, 1)]:
-            s += ", dilations={_dilations}"
-        if self._with_bias is not True:
-            s += ", with_bias=False"
+        s = super().extra_repr()
         if self._output_shape is not None:
-            s += ", output_shape={_output_shape}"
-        if self._data_format != "NDHWC":
-            s += ", data_format={_data_format}"
-        return s.format(**self.__dict__)
+            s += ", output_shape={}".format(self._output_shape)
+        return s
 
 
 # LSTM #
