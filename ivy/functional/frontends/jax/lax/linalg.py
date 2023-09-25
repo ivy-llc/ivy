@@ -36,7 +36,7 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"0.4.14 and below": ("float16",)}, "jax")
-def qr(x, /, *, full_matrices="reduced"):
+def qr(x, /, *, full_matrices=False):
     return ivy.qr(x, mode=full_matrices)
 
 

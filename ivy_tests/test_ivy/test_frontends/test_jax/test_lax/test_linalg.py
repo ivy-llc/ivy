@@ -131,7 +131,8 @@ def test_jax_eigh(
         min_value=2,
         max_value=5,
     ),
-    mode=st.sampled_from(("reduced", "complete")),
+    #mode=st.sampled_from(("reduced", "complete"))
+    mode=st.sampled_from((True, False)),
     test_with_out=st.just(False),
 )
 def test_jax_qr(
