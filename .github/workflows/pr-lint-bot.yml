@@ -1,8 +1,8 @@
 name: Trigger lint format
 
 on:
-  issue_comment:
-    types: [created]
+  pull_request:
+    types: [ labeled, opened, synchronize, reopened, review_requested ]
 
 permissions:
   contents: write
@@ -10,5 +10,5 @@ permissions:
 jobs:
   fix-linting:
     name: PR Lint Bot
-    uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@main
+    uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@automatic-lint-pr
     secrets: inherit
