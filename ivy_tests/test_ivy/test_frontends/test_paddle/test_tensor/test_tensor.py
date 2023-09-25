@@ -2170,6 +2170,37 @@ def test_paddle_tensor_inner(
     )
 
 
+# is_empty
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="is_empty",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+    ),
+)
+def test_paddle_tensor_is_empty(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    print("x", x)
+    print("input_dtype", input_dtype)
+    # TODO: Fix AttributeError
+    # ivy.functional.backends.numpy
+    # ivy.functional.backends.jax
+    # ivy.functional.backends.tensorflow
+    # ivy.functional.backends.torch
+    # ivy.functional.backends.paddle
+    # has no attribute 'is_empty'
+
+
 # is_tensor
 @handle_frontend_method(
     class_tree=CLASS_TREE,
