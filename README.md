@@ -92,14 +92,14 @@
 <br clear="all" />
 
 ------------------------------------------------------------------------
-# Highlight:
+# Highlights
 
 Ivy is an open-source machine learning framework that 
 enables you to: 
 
-- 🔥 **Autotunes your model**: for optimal framework, compiler, and hardware selection. 
-- 💥 **Boosts model speed**:  by up to 3x.
-- 🔄 **Converts code code into any framework**: to use and build of top of any model, library, infrastructure or device by converting any code between frameworks.
+- 🔥 **Autotune your model**: for optimal framework, compiler, and hardware selection. 
+- 💥 **Boost model speed**:  by up to 3x.
+- 🔄 **Convert code code into any framework**: to use and build of top of any model, library, infrastructure or device by converting any code between frameworks.
 - ⚒️ **Write framework-agnostic code**: by letting you choose your preferred ML framework as a backend. to leverage all its benefits and tools
 
 
@@ -107,13 +107,13 @@ enables you to:
  
 ------------------------------------------------------------------------
 
-# Getting started: 
+# Getting started:
 
-You can start by reading [our basicss](https://unify.ai/docs/ivy/demos/learn_the_basics.html) and [demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html). 
+You can start by reading [our basics](https://unify.ai/docs/ivy/demos/learn_the_basics.html) and [Demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html). 
 
 here is a good starting point for you:
 
-- [How to Convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html) 
+- [How to convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html) 
 - [How to write a framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html) 
 - Accelerate your development (WIP)
 - Autotune and optimize models (WIP) 
@@ -162,7 +162,7 @@ You can find quite a lot more examples in the corresponding section below, but u
     </details>
 
     <details>
-    <summary>from source</summary>
+    <summary>From Source</summary>
 
     You can also install Ivy from source if you want to take advantage of
     the latest changes, but we can\'t ensure everything will work as
