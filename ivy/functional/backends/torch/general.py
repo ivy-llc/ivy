@@ -132,14 +132,12 @@ def to_numpy(
     elif torch.is_tensor(x):
         x = x.resolve_neg().resolve_conj()
         if copy:
-            if x.dtype is torch.bfloat16:
-                default_dtype = ivy.default_float_dtype(as_native=True)
-                if default_dtype is torch.bfloat16:
-                    x = x.to(torch.float32)
-                else:
-                    x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype("bfloat16")
-            return x.detach().cpu().numpy()
+            # we don't use inbuilt numpy() because it blocks for
+            # bfloat16, which we are supporting here by importing
+            # ml_dtypes
+            # TODO: use torch's numpy() method once this feature is accepted
+            # https://github.com/pytorch/pytorch/issues/109873
+            return np.array(x.tolist(), dtype=ivy.as_ivy_dtype(x.dtype))
         else:
             raise ivy.utils.exceptions.IvyException(
                 "Overwriting the same address is not supported for torch."
