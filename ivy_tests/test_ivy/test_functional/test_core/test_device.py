@@ -691,7 +691,7 @@ def test_to_device(
 
             # check if native arrays are the same
             # these backends do not support native inplace updates
-            assume(not (backend_fw in ["tensorflow", "jax"]))
+            assume(backend_fw not in ["tensorflow", "jax"])
 
             assert x_on_dev.data is out.data
 

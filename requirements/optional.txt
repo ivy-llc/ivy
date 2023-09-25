@@ -27,3 +27,4 @@ autoflake # for backend generation
 snakeviz # for profiling
 cryptography
 xgboost
+torchvision
