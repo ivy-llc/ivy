@@ -255,6 +255,7 @@ Squeeze = to_ivy_arrays_and_back(
 Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 Tile = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.tile))
+TopK = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.top_k))
 Xlogy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xlogy))
 Zeta = to_ivy_arrays_and_back(
     with_supported_dtypes(
@@ -837,4 +838,3 @@ def ZerosLike(*, x, name="ZerosLike"):
 Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
 Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
-TopK = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.top_k))
