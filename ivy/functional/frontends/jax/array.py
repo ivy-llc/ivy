@@ -34,20 +34,6 @@ class Array:
     def dtype(self):
         return self.ivy_array.dtype
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @property
     def shape(self):
         return tuple(self.ivy_array.shape.shape)
