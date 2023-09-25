@@ -2891,7 +2891,21 @@ def floor_divide(
     >>> print(y)
     ivy.array([4., 3., 1.])
 
-    With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+    >>> x1 = ivy.array([13., 7., 8.])
+    >>> x2 = ivy.array([3., 2., 7.])
+    >>> y = ivy.zeros((2, 3))
+    >>> ivy.floor_divide(x1, x2, out=y)
+    >>> print(y)
+    ivy.array([4., 3., 1.])
+
+    >>> x1 = ivy.array([13., 7., 8.])
+    >>> x2 = ivy.array([3., 2., 7.])
+    >>> ivy.floor_divide(x1, x2, out=x1)
+    >>> print(x1)
+    ivy.array([4., 3., 1.])
+
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.array([3., 4., 5.])
     >>> x2 = ivy.native_array([5., 2., 1.])
