@@ -1,5 +1,8 @@
 from ._criterion import Criterion
 import ivy
+
+from ._utils import rand_int
+from ._utils import RAND_R_MAX
 import random
 
 INFINITY = ivy.inf
@@ -142,7 +145,7 @@ class Splitter:
         has_missing : bool
             At least one missing values is in X.
         """
-        # self.random_r_state = self.random_state.randint(0, 2147483647)
+        self.rand_r_state = self.random_state.randint(0, RAND_R_MAX)
 
         n_samples = X.shape[0]
 
@@ -286,6 +289,7 @@ def node_split_best(
     max_features = splitter.max_features
     min_samples_leaf = splitter.min_samples_leaf
     min_weight_leaf = splitter.min_weight_leaf
+    random_state = splitter.rand_r_state
 
     best_split = SplitRecord()
     current_split = SplitRecord()
@@ -338,7 +342,7 @@ def node_split_best(
         #   and aren't constant.
 
         # Draw a feature at random
-        f_j = random.randint(n_drawn_constants, f_i - n_found_constants)
+        f_j = rand_int(n_drawn_constants, f_i - n_found_constants, random_state)
 
         if f_j < n_known_constants:
             features[n_drawn_constants], features[f_j] = (
@@ -521,6 +525,12 @@ def sort(feature_values, samples, n):
 
 
 def swap(feature_values, samples, i, j):
+    print("---swap---")
+    print(f"feature_values: {feature_values}")
+    print(f"samples: {samples}")
+    print(f"i: {i}")
+    print(f"j: {j}")
+    print("---swap---")
     feature_values[samples[i]], feature_values[samples[j]] = (
         feature_values[samples[j]],
         feature_values[samples[i]],
@@ -549,6 +559,12 @@ def median3(feature_values, n):
 
 
 def introsort(feature_values, samples, n, maxd):
+    print("---introsort---")
+    print(f"feature_values: {feature_values}")
+    print(f"samples: {samples}")
+    print(f"n: {n}")
+    print(f"maxd: {maxd}")
+    print("---introsort---")
     while n > 1:
         if maxd <= 0:  # max depth limit exceeded ("gone quadratic")
             # Implement or import heapsort function
@@ -559,22 +575,22 @@ def introsort(feature_values, samples, n, maxd):
         pivot = median3(feature_values, n)
 
         # Three-way partition.
-        i = j = 0
+        i = l = 0
         r = n
         while i < r:
             if feature_values[i] < pivot:
-                swap(feature_values, samples, i, j)
+                swap(feature_values, samples, i, l)
                 i += 1
-                j += 1
+                l += 1
             elif feature_values[i] > pivot:
                 r -= 1
                 swap(feature_values, samples, i, r)
             else:
                 i += 1
 
-        introsort(feature_values[:j], samples[:j], j, maxd)
-        feature_values = feature_values[r:]
-        samples = samples[r:]
+        introsort(feature_values, samples, l, maxd)
+        feature_values += r
+        samples += r
         n -= r
 
 

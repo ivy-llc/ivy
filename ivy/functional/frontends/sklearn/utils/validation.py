@@ -1275,7 +1275,7 @@ def check_non_negative(X, whom):
         raise ValueError("Negative values in data passed to %s" % whom)
 
 
-@to_ivy_arrays_and_back
+#@to_ivy_arrays_and_back
 def check_random_state(seed):
     """
     Turn seed into a np.random.RandomState instance.
