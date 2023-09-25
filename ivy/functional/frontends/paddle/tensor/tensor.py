@@ -670,6 +670,14 @@ class Tensor:
     def pow(self, y, name=None):
         return paddle_frontend.pow(self, y)
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def prod(self, axis=None, keepdim=False, dtype=None, name=None):
+        return paddle_frontend.Tensor(
+            ivy.prod(self._ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+        )
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def atan(self, name=None):
         return paddle_frontend.atan(self)
