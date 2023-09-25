@@ -2360,6 +2360,48 @@ def test_paddle_tanh(
     )
 
 
+# trace
+@handle_frontend_test(
+    fn_tree="paddle.trace",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    offset=st.integers(min_value=-1e04, max_value=1e04),
+    axis1=st.integers(min_value=0, max_value=0),
+    axis2=st.integers(min_value=1, max_value=1),
+)
+def test_paddle_trace(
+    *,
+    dtype_and_x,
+    offset,
+    axis1,
+    axis2,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
+    )
+
+
 # trunc
 @handle_frontend_test(
     fn_tree="paddle.trunc",
