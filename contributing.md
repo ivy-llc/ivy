@@ -2,22 +2,22 @@
 
 You can pick an open issue to contribute from our [ToDo list issues](https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo), which is the placeholder of our subtasks.
 
-Please, follow the next process to choose your subtask:
+Please, follow the next process when you work on your subtask:
 
 ## Steps:
 
-1. **Find a Task:**
+1. **Choosing a Task:**
 
-   - Find a task to work on which:
+   - Choose a task to work on which:
      - is not marked as completed with a tick
      - does not have an issue created
      - is not mentioned in the comments.
 
    Currently, there are three open tasks:
 
-   - [Function Reformatting](https://github.com/unifyai/ivy/issues?q=is%3Aopen+label%3A%22Function+Reformatting%22++label%3AToDo)
-   - [Frontend APIs](https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+label%3AToDo+Frontend+in%3Atitle)
-   - [Ivy Experimental API](https://github.com/unifyai/ivy/issues?q=is%3Aopen+label%3AToDo+label%3A%22Ivy+API+Experimental%22+)
+   - [Function Reformatting](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#function-formatting)
+   - [Frontend APIs](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis)
+   - [Ivy Experimental API](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api)
 
 2. **Create Issue:**
 
@@ -30,8 +30,7 @@ Please, follow the next process to choose your subtask:
 
 4. **Start Working:**
 
-   - When you open the PR make sure to follow the [conventional commits format](https://www.conventionalcommits.org/en/v1.0.0/).
-   - Directly reference the issue in the pull request by adding the following content to the description of the PR: `Close #Issue_number`.
+   - When you have finished PR or need help open the PR make sure to follow our PR template.
 
 5. **Review Process:**
    - Wait for us to review your PR. Please be patient, our engineers will look into your PR based on the queue we have, no need to ping them.
@@ -44,6 +43,8 @@ Please, follow the next process to choose your subtask:
 - Please don't take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.
 
 - Finally, we limit the maximum number of open and incomplete sub-task issues to three per person.
+
+ Feel free to watch the next video:
 
 [![Video](https://img.youtube.com/vi/wBKTOGmwfbo/0.jpg)](https://www.youtube.com/embed/wBKTOGmwfbo)
 
