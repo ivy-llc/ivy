@@ -1,13 +1,13 @@
 Motivation
 ==========
 
-| (a) :ref:`ML Explosion`
+| (a) `ML Explosion <motivation/ml_explosion.rst>`_
 | A huge number of ML tools have exploded onto the scene!
 |
-| (b) :ref:`Why Unify?`
+| (b) `Why Unify? <motivation/why_unify.rst>`_
 | Why should we try to unify them?
 |
-| (c) :ref:`Standardization`
+| (c) `Standardization <motivation/standardization.rst>`_
 | We’re collaborating with The `Consortium for Python Data API Standards <https://data-apis.org>`_
 
 .. toctree::

@@ -1416,7 +1416,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            Input array having shape (..., M, N) and whose innermost two deimensions 
+            Input array having shape (..., M, N) and whose innermost two deimensions
             form MxN matrices. Should have a floating-point data type.
         ord
             Order of the norm. Default is "fro".
@@ -1445,7 +1445,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             Matrix norm of the array at specified axes.
-        
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[1.1, 2.2], [1., 2.]]), \
@@ -1466,7 +1466,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> print(y)
         {
             a: ivy.array([4.24, 11.4, 19.2]),
-            b: ivy.array([[[3.7]], 
+            b: ivy.array([[[3.7]],
                           [[11.2]]])
         }
         """
@@ -1504,7 +1504,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         self
-            Container having shape (..., M, N) and whose innermost two dimensions 
+            Container having shape (..., M, N) and whose innermost two dimensions
             form MxN matrices. Should have a floating-point data type.
         ord
             Order of the norm. Default is "fro".
@@ -1553,8 +1553,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.matrix_norm(ord=ord, axis=axis, keepdims=k)
         >>> print(y)
         {
-            a: ivy.array([[[4.24]], 
-                         [[11.4]], 
+            a: ivy.array([[[4.24]],
+                         [[11.4]],
                          [[19.2]]]),
             b: ivy.array([4., 12.])
         }

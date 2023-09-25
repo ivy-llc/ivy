@@ -10,7 +10,11 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_device_and_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 from .elementwise import _elementwise_helper
 
 
@@ -226,6 +230,7 @@ def matmul(
         paddle.uint8,
         paddle.float16,
         paddle.bool,
+        paddle.bfloat16,
     ]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
 
@@ -490,7 +495,7 @@ def solve(
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
             x2 = paddle.unsqueeze(x2, axis=1)
-    for i in range(len(x1.shape) - 2):
+    for i in range(len(x1.shape) - len(x2.shape)):
         x2 = paddle.unsqueeze(x2, axis=0)
     ret = paddle.linalg.solve(x1, x2)
     if expanded_last:
@@ -498,26 +503,11 @@ def solve(
     return ret
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
-    backend_version,
-)
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
 def svd(
     x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.int32,
-        paddle.int64,
-        paddle.uint8,
-        paddle.float16,
-        paddle.bool,
-    ]:
-        ret = paddle.linalg.svd(x.cast("float32"), full_matrices=full_matrices)
-        ret = tuple(r.cast(x.dtype) for r in ret)
-    else:
-        ret = paddle.linalg.svd(x, full_matrices=full_matrices)
+    ret = paddle.linalg.svd(x, full_matrices=full_matrices)
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
         return results(*ret)
@@ -537,12 +527,7 @@ def svdvals(
 
 
 @with_supported_dtypes(
-    {
-        "2.5.1 and below": (
-             "float32",
-        )
-    },
-    backend_version,
+    {"2.5.1 and below": ("complex", "float32", "float64")}, backend_version
 )
 def tensordot(
     x1: paddle.Tensor,
@@ -552,9 +537,8 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret_dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     ret = paddle.tensordot(x1, x2, axes=axes)
-    return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
+    return ret.squeeze() if x1.ndim == axes else ret
 
 
 @with_unsupported_device_and_dtypes(
@@ -634,6 +618,10 @@ def vector_norm(
 # ----- #
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+    backend_version,
+)
 def diag(
     x: paddle.Tensor,
     /,
@@ -641,19 +629,6 @@ def diag(
     k: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            return paddle.complex(
-                paddle.diag(x.real(), offset=k), paddle.diag(x.imag(), offset=k)
-            )
-        return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
 
 

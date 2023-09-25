@@ -214,7 +214,9 @@ def isreal(input):
     return ivy.isreal(input)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bfloat16", "float16", "bool", "complex")}, "torch"
+)
 @to_ivy_arrays_and_back
 def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     sorted_input = ivy.sort(input, axis=dim)
