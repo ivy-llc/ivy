@@ -1569,6 +1569,13 @@ class Tensor:
     def bitwise_right_shift(self, other, *, out=None):
         return torch_frontend.bitwise_right_shift(self._ivy_array, other)
 
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("uint8", "int8", "int32", "int64")}, "torch"
+    )
+    def bitwise_right_shift_(self, other, *, out=None):
+        self.ivy_array = self.bitwise_right_shift(other, out=out).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
         chol = torch_frontend.cholesky(self)
