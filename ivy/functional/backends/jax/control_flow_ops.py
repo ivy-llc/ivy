@@ -20,3 +20,12 @@ def while_loop(test_fn, body_fn, vars):
     with jax.disable_jit():
         final_loop_vars = jax.lax.while_loop(test_fn_wrapper, body_fn_wrapper, vars)
     return final_loop_vars
+
+
+
+
+
+
+
+
+
