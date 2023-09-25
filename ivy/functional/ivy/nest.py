@@ -531,7 +531,9 @@ def set_nest_at_indices(
     result = list(result) if is_tuple else result
 
     assert type(indices) != None and type(values) != None, TypeError(values, indices)
-    assert len(indices) == len(values), " 'indices' and 'values' must be of the same length"
+    assert len(indices) == len(
+        values
+    ), " 'indices' and 'values' must be of the same length"
 
     for index, value in zip(indices, values):
         result = set_nest_at_index(nest, index, value, _result=result, shallow=shallow)
