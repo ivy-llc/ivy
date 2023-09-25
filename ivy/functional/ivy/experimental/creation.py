@@ -861,6 +861,181 @@ def random_cp(
         return ivy.CPTensor((weights, factors))
 
 
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tr(
+    shape: Sequence[int],
+    rank: Sequence[int],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    seed: Optional[int] = None,
+) -> Union[ivy.TRTensor, ivy.Array]:
+    """
+    Generate a random TR tensor.
+
+    Parameters
+    ----------
+    shape : tuple
+        shape of the tensor to generate
+    rank : Sequence[int]
+        rank of the TR decomposition
+        must verify rank[0] == rank[-1] (boundary conditions)
+        and len(rank) == len(shape)+1
+    full : bool, optional, default is False
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    seed :
+        seed for generating random numbers
+    context : dict
+        context in which to create the tensor
+
+    Returns
+    -------
+    ivy.TRTensor or ivy.Array if full is True
+    """
+    rank = ivy.TRTensor.validate_tr_rank(shape, rank)
+    # Make sure it's not a tuple but a list
+    rank = list(rank)
+    _check_first_and_last_rank_elements_are_equal(rank)
+    factors = [
+        ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed)
+        for i, s in enumerate(shape)
+    ]
+    if full:
+        return ivy.TRTensor.tr_to_tensor(factors)
+    else:
+        return ivy.TRTensor(factors)
+
+
+def _check_first_and_last_rank_elements_are_equal(rank):
+    if rank[0] != rank[-1]:
+        message = (
+            f"Provided rank[0] == {rank[0]} and rank[-1] == {rank[-1]} "
+            "but boundary conditions dictate rank[0] == rank[-1]."
+        )
+        raise ValueError(message)
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_parafac2(
+    shapes: Sequence[int],
+    rank: int,
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    seed: Optional[int] = None,
+    normalise_factors: Optional[bool] = True,
+) -> Union[ivy.Parafac2Tensor, ivy.Array]:
+    """
+    Generate a random PARAFAC2 tensor.
+
+    Parameters
+    ----------
+    shapes
+        A shapes of the tensor to generate
+    rank
+        rank of the Parafac2 decomposition
+    full
+        if True, a full tensor is returned otherwise,
+        the decomposed tensor is returned
+     seed
+        seed for generating random numbers
+    Returns
+    -------
+      ivy.Parafac2Tensor
+    """
+    if not all(shape[1] == shapes[0][1] for shape in shapes):
+        raise ValueError("All matrices must have equal number of columns.")
+
+    projection_matrices = [
+        ivy.qr(ivy.random_uniform(shape=(shape[0], rank), dtype=dtype, seed=seed))[0]
+        for shape in shapes
+    ]
+    weights, factors = ivy.random_cp(
+        [len(shapes), rank, shapes[0][1]],
+        rank,
+        normalise_factors=False,
+        seed=seed,
+        dtype=dtype,
+    )
+
+    parafac2_tensor = ivy.Parafac2Tensor((weights, factors, projection_matrices))
+
+    if normalise_factors:
+        parafac2_tensor = ivy.Parafac2Tensor.parafac2_normalise(parafac2_tensor)
+
+    if full:
+        return ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor)
+    else:
+        return parafac2_tensor
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tt(
+    shape: Sequence[int],
+    rank: Union[Sequence[int], int],
+    /,
+    *,
+    full: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+) -> Union[ivy.TTTensor, ivy.Array]:
+    """
+    Generate a random TT/MPS tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the TT decomposition
+        must verify rank[0] == rank[-1] ==1 (boundary conditions)
+        and len(rank) == len(shape)+1
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    seed
+        seed for generating random numbers
+
+    Returns
+    -------
+        ivy.TTTensor
+    """
+    rank = ivy.TTTensor.validate_tt_rank(shape, rank)
+
+    rank = list(rank)
+    if rank[0] != 1:
+        message = (
+            "Provided rank[0] == {} but boundaring conditions dictatate rank[0] =="
+            " rank[-1] == 1.".format(rank[0])
+        )
+        raise ValueError(message)
+    if rank[-1] != 1:
+        message = (
+            "Provided rank[-1] == {} but boundaring conditions dictatate rank[0] =="
+            " rank[-1] == 1.".format(rank[-1])
+        )
+        raise ValueError(message)
+
+    factors = [
+        (ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed))
+        for i, s in enumerate(shape)
+    ]
+
+    if full:
+        return ivy.TTTensor.tt_to_tensor(factors)
+    else:
+        return ivy.TTTensor(factors)
+
+
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -876,8 +1051,9 @@ def trilu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the upper or lower triangular part of a matrix (or a stack of matrices) ``x``
-    .. note::
+    Return the upper or lower triangular part of a matrix
+    (or a stack of matrices) ``x``.
+     note::
         The upper triangular part of the matrix is defined as the elements
         on and above the specified diagonal ``k``. The lower triangular part
         of the matrix is defined as the elements on and below the specified
@@ -910,3 +1086,55 @@ def trilu(
     instances in place of any of the arguments.
     """
     return current_backend(x).trilu(x, k=k, upper=upper, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    """
+    Generate a MelWeightMatrix that can be used to re-weight a Tensor containing a
+    linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins frequency
+    information based on the [lower_edge_hertz, upper_edge_hertz]
+
+    range on the mel scale. This function defines the mel scale in terms of a frequency
+    in hertz according to the following formula: mel(f) = 2595 * log10(1 + f/700)
+
+    Parameters
+    ----------
+    num_mel_bins
+        The number of bands in the mel spectrum.
+    dft_length
+        The size of the original DFT obtained from (n_fft / 2 + 1).
+    sample_rate
+        Samples per second of the input signal.
+    lower_edge_hertz
+        Lower bound on the frequencies to be included in the mel spectrum.
+    upper_edge_hertz
+        The desired top edge of the highest frequency band.
+
+    Returns
+    -------
+    ret
+        MelWeightMatrix of shape:  [frames, num_mel_bins].
+
+    Examples
+    --------
+    >>> ivy.mel_weight_matrix(3,3,8000)
+    ivy.array([[0.        ,0.        , 0.],
+              [0.        ,0. , 0.75694758],
+              [0.        ,0. , 0.       ]])
+    """
+    return ivy.current_backend().mel_weight_matrix(
+        num_mel_bins,
+        dft_length,
+        sample_rate,
+        lower_edge_hertz,
+        upper_edge_hertz,
+    )

@@ -1,6 +1,6 @@
 # global
 import math
-from typing import Union, Optional, Tuple, List, Literal, Sequence
+from typing import Union, Optional, Tuple, List, Literal, Sequence, Callable
 import tensorflow as tf
 
 # local
@@ -705,6 +705,7 @@ def fft(
     return ret
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def dropout(
     x: Union[tf.Tensor, tf.Variable],
     prob: float,
@@ -1427,3 +1428,127 @@ def rfftn(
     else:
         # return result
         return tf.cast(result, tf.complex128)
+
+
+# stft
+@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def stft(
+    signals: Union[tf.Tensor, tf.Variable],
+    frame_length: int,
+    frame_step: int,
+    /,
+    *,
+    fft_length: Optional[int] = None,
+    window_fn: Optional[Callable] = None,
+    pad_end: Optional[bool] = False,
+    name: Optional[str] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not isinstance(frame_length, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_length)}"
+        )
+
+    if frame_length < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if not isinstance(frame_step, int):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(frame_step)}"
+        )
+
+    if frame_step < 1:
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {frame_length}, expecting frame_length larger than or"
+            " equal to 1"
+        )
+
+    if fft_length is not None:
+        if not isinstance(fft_length, int):
+            raise ivy.utils.exceptions.IvyError(
+                f"Expecting <class 'int'> instead of {type(fft_length)}"
+            )
+
+        if fft_length < 1:
+            raise ivy.utils.exceptions.IvyError(
+                f"Invalid data points {frame_length}, expecting frame_length larger"
+                " than or equal to 1"
+            )
+
+    result = tf.signal.stft(
+        signals,
+        frame_length,
+        frame_step,
+        fft_length=fft_length,
+        window_fn=window_fn,
+        pad_end=pad_end,
+        name=name,
+    )
+
+    if out is not None:
+        return out
+
+    else:
+        return result
+
+
+def _to_4d(x):
+    t = x  # Start with the original tensor
+    while len(t.shape) < 4:  # Continue expanding dimensions until 4D
+        t = tf.expand_dims(t, axis=0)
+    return t
+
+
+def sliding_window(
+    input: Union[tf.Tensor, tf.Variable],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = "VALID",
+) -> Union[tf.Tensor, tf.Variable]:
+    if len(input.shape) != 4:
+        input = _to_4d(input)
+
+    input = tf.transpose(input, (0, 2, 3, 1))
+
+    kernel_size = (
+        [1]
+        + ([kernel_size] * 2 if isinstance(kernel_size, int) else list(kernel_size))
+        + [1]
+    )
+    if len(kernel_size) < 4:
+        kernel_size.append(1)
+
+    stride = [1] + ([stride] * 2 if isinstance(stride, int) else list(stride)) + [1]
+    if len(stride) < 4:
+        stride.append(1)
+
+    dilation = (
+        [1] + ([dilation] * 2 if isinstance(dilation, int) else list(dilation)) + [1]
+    )
+    if len(dilation) < 4:
+        dilation.append(1)
+
+    padding = [padding] * 2 if isinstance(padding, int) else padding
+
+    if isinstance(padding, str) and padding.upper() in ["VALID", "SAME"]:
+        padding = padding
+
+    else:
+        if padding[0] == padding[1] == 0:
+            padding = "VALID"
+        elif padding[0] == padding[1] != 0:
+            padding = "SAME"
+        else:
+            raise ivy.utils.exceptions.IvyError(
+                f"Cannot convert padding sequence {padding} to TensorFlow padding mode"
+            )
+
+    return tf.image.extract_patches(
+        images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding
+    )
