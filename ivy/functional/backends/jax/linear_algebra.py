@@ -10,7 +10,6 @@ from ivy import inf
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from ivy.utils.tensordot_contraction_modes import _batched_modes_is_none
 from . import backend_version
 
 
@@ -386,7 +385,9 @@ def tensordot(
     return jnp.tensordot(x1, x2, axes)
 
 
-tensordot.partial_mixed_handler = _batched_modes_is_none
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @with_unsupported_dtypes(

@@ -10,7 +10,6 @@ import ivy
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.utils.tensordot_contraction_modes import _batched_modes_is_none
 from . import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from .elementwise import _elementwise_helper
@@ -563,7 +562,9 @@ def tensordot(
     return ret.squeeze().cast(ret_dtype) if x1.ndim == axes else ret.cast(ret_dtype)
 
 
-tensordot.partial_mixed_handler = _batched_modes_is_none
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @with_unsupported_device_and_dtypes(

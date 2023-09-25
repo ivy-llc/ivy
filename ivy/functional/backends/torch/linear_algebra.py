@@ -9,7 +9,6 @@ import torch
 import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.utils.tensordot_contraction_modes import _batched_modes_is_none
 from . import backend_version
 from .elementwise import _cast_for_unary_op
 
@@ -440,7 +439,9 @@ def tensordot(
     return torch.tensordot(x1, x2, dims=axes)
 
 
-tensordot.partial_mixed_handler = _batched_modes_is_none
+tensordot.partial_mixed_handler = (
+    lambda _, __, batched_modes, **___: batched_modes is None
+)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)

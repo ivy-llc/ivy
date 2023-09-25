@@ -124,7 +124,3 @@ def _final_modes(x1, modes1, batch_modes1):
             final_modes.append(free_counter + n_batches)
             free_counter += 1
     return final_modes
-
-
-def _batched_modes_is_none(_, __, batched_modes, **___):
-    return batched_modes is None
