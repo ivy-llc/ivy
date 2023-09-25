@@ -456,6 +456,12 @@ def remainder(x, y, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def remainder_(x, y, name=None):
+    return ivy.inplace_update(x, remainder(x, y))
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def round(x, name=None):
     return ivy.round(x)
 
