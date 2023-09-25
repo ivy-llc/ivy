@@ -1,13 +1,25 @@
 """Collection of Ivy neural network layers as stateful classes."""
 # flake8: noqa
+# global
+from collections import abc as _abc
+from itertools import repeat as _repeat
+
 # local
 import ivy
 from ivy.func_wrapper import handle_nestable
 from ivy.stateful.initializers import GlorotUniform, Zeros
 from ivy.stateful.module import Module
 
-# ToDo: update docstrings and typehints according to ivy\layers
 
+# ToDo: update docstrings and typehints according to ivy\layers
+def _ntuple(n):
+    parse = lambda x: x if isinstance(x, _abc.Iterable) else tuple(_repeat(x, n))
+    return parse
+
+
+_single = _ntuple(1)
+_pair = _ntuple(2)
+_triple = _ntuple(3)
 
 # Linear #
 # -------#
@@ -449,22 +461,6 @@ class MultiHeadAttention(Module):
 
 # Convolutions #
 # -------------#
-from collections import abc
-from itertools import repeat
-
-
-def _ntuple(n):
-    def parse(x):
-        if isinstance(x, abc.Iterable):
-            return x
-        return tuple(repeat(x, n))
-
-    return parse
-
-
-_single = _ntuple(1)
-_pair = _ntuple(2)
-_triple = _ntuple(3)
 
 
 class _ConvND(Module):
@@ -791,7 +787,7 @@ class Conv2D(_ConvND):
             Number of input channels for the layer.
         output_channels
             Number of output channels for the layer.
-        filter_shape
+        filter_size
             Shape of the convolutional filter.
         strides
             The stride of the sliding window for each dimension of input.
@@ -890,7 +886,7 @@ class Conv2DTranspose(_ConvND):
             Number of input channels for the layer.
         output_channels
             Number of output channels for the layer.
-        filter_shape
+        filter_size
             Shape of the convolutional filter.
         strides
             The stride of the sliding window for each dimension of input.
@@ -996,7 +992,7 @@ class DepthwiseConv2D(_ConvND):
         ----------
         num_channels
             Number of input channels for the layer.
-        filter_shape
+        filter_size
             Shape of the convolutional filter.
         strides
             The stride of the sliding window for each dimension of input.
@@ -1109,7 +1105,7 @@ class Conv3D(_ConvND):
             Number of input channels for the layer.
         output_channels
             Number of output channels for the layer.
-        filter_shape
+        filter_size
             Shape of the convolutional filter.
         strides
             The stride of the sliding window for each dimension of input.
@@ -1209,7 +1205,7 @@ class Conv3DTranspose(_ConvND):
             Number of input channels for the layer.
         output_channels
             Number of output channels for the layer.
-        filter_shape
+        filter_size
             Shape of the convolutional filter.
         strides
             The stride of the sliding window for each dimension of input.
