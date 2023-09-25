@@ -2074,7 +2074,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
-    ) -> ivy.Container:
+    ) -> Tuple[ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.qr. This method simply wraps the
         function, and so the docstring for ivy.qr also applies to this method with
