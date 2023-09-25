@@ -350,7 +350,7 @@ def test_torch_chunk(
 @handle_frontend_test(
     fn_tree="torch.column_stack",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float32"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_torch_columnstack(
