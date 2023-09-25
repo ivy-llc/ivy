@@ -14,6 +14,10 @@ from ivy.functional.frontends.torch.tensor import Tensor
 import ivy.functional.frontends.torch as torch_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _fn(*args, dtype=None, check_default=False):
     if (
         check_default
@@ -29,6 +33,15 @@ def _fn(*args, dtype=None, check_default=False):
             ivy.default_int_dtype(), "int64", as_array=False
         )
     return args[0]
+
+
+# --- Main --- #
+# ------------ #
+
+
+@numpy_to_torch_style_args
+def mocked_func(dim=None, keepdim=None, input=None, other=None):
+    return dim, keepdim, input, other
 
 
 @given(
@@ -64,6 +77,29 @@ def test_torch_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     assert ivy.all(input_frontend.ivy_array == output)
 
     ivy.previous_backend()
+
+
+@given(
+    dim=st.integers(),
+    keepdim=st.booleans(),
+    input=st.lists(st.integers()),
+    other=st.integers(),
+)
+def test_torch_numpy_to_torch_style_args(dim, keepdim, input, other):
+    # PyTorch-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        dim=dim, keepdim=keepdim, input=input, other=other
+    )
+
+    # NumPy-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        axis=dim, keepdims=keepdim, x=input, x2=other
+    )
+
+    # Mixed-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        axis=dim, keepdim=keepdim, input=input, x2=other
+    )
 
 
 @given(
@@ -159,31 +195,3 @@ def test_torch_to_ivy_arrays_and_back(dtype_and_x, dtype, backend_fw):
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
 
     ivy.previous_backend()
-
-
-@numpy_to_torch_style_args
-def mocked_func(dim=None, keepdim=None, input=None, other=None):
-    return dim, keepdim, input, other
-
-
-@given(
-    dim=st.integers(),
-    keepdim=st.booleans(),
-    input=st.lists(st.integers()),
-    other=st.integers(),
-)
-def test_torch_numpy_to_torch_style_args(dim, keepdim, input, other):
-    # PyTorch-style keyword arguments
-    assert (dim, keepdim, input, other) == mocked_func(
-        dim=dim, keepdim=keepdim, input=input, other=other
-    )
-
-    # NumPy-style keyword arguments
-    assert (dim, keepdim, input, other) == mocked_func(
-        axis=dim, keepdims=keepdim, x=input, x2=other
-    )
-
-    # Mixed-style keyword arguments
-    assert (dim, keepdim, input, other) == mocked_func(
-        axis=dim, keepdim=keepdim, input=input, x2=other
-    )

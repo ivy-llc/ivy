@@ -1,4 +1,5 @@
-# global
+# local
+from ..manipulation import *  # noqa: F401
 import ivy
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -9,7 +10,6 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
     with_supported_device_and_dtypes,
 )
-
 
 @to_ivy_arrays_and_back
 def reshape(x, shape):
@@ -24,16 +24,9 @@ def abs(x, name=None):
 
 absolute = abs
 
-
-@to_ivy_arrays_and_back
-def stack(x, axis=0, name=None):
-    return ivy.stack(x, axis=axis)
-
-
-@with_unsupported_dtypes({"2.5.1 and below": ("int8", "int16")}, "paddle")
-@to_ivy_arrays_and_back
-def concat(x, axis, name=None):
-    return ivy.concat(x, axis=axis)
+# NOTE:
+# Only inplace functions are to be added in this file.
+# Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
 
 
 @with_unsupported_dtypes(
@@ -186,8 +179,9 @@ def take_along_axis(arr, indices, axis):
             "gpu": ("float16",),
         },
     },
-    "paddle",
 )
 @to_ivy_arrays_and_back
-def rot90(x, k=1, axes=(0, 1), name=None):
-    return ivy.rot90(x, k=k, axes=axes)
+def reshape_(x, shape):
+    ret = ivy.reshape(x, shape)
+    ivy.inplace_update(x, ret)
+    return x

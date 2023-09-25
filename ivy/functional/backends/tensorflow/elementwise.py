@@ -353,7 +353,6 @@ def isfinite(
         return tf.math.is_finite(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def isinf(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -362,16 +361,17 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        return tf.zeros_like(x, tf.bool)
-    else:
-        if detect_negative and detect_positive:
-            return tf.math.is_inf(x)
-        elif detect_negative:
-            return tf.experimental.numpy.isneginf(x)
-        elif detect_positive:
-            return tf.experimental.numpy.isposinf(x)
-        return tf.zeros_like(x, tf.bool)
+    if not ivy.is_complex_dtype(x):
+        if ivy.is_int_dtype(x):
+            return tf.zeros_like(x, tf.bool)
+        else:
+            if detect_negative and detect_positive:
+                return tf.math.is_inf(x)
+            elif detect_negative:
+                return tf.experimental.numpy.isneginf(x)
+            elif detect_positive:
+                return tf.experimental.numpy.isposinf(x)
+    return tf.zeros_like(x, tf.bool)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
@@ -399,7 +399,15 @@ def lcm(
     return tf.experimental.numpy.lcm(x1, x2)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bool",
+            "complex",
+        )
+    },
+    backend_version,
+)
 def less(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -555,6 +563,7 @@ def logical_xor(
     return tf.math.logical_xor(tf.cast(x1, tf.bool), tf.cast(x2, tf.bool))
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def multiply(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -566,17 +575,13 @@ def multiply(
     return tf.math.multiply(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
-)
+@with_unsupported_dtypes({"2.13.0 and below": ("bool", "unsigned")}, backend_version)
 def negative(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
-        return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
     return tf.negative(x)
 
 
@@ -600,26 +605,28 @@ def positive(
     return tf.experimental.numpy.positive(x)
 
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64", "float64")},
-    backend_version,
-)
+@with_unsupported_dtypes({"2.13.0 and below": ("bool", "unsigned")}, backend_version)
 def pow(
-    x1: Union[float, tf.Tensor, tf.Variable],
-    x2: Union[float, tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[int, float, tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_complex_dtype(x1) and ivy.any(ivy.isinf(x2)):
+        ret = tf.experimental.numpy.power(x1, x2)
+        return tf.where(
+            ivy.isinf(x2), ivy.nan + ivy.nan * 1j if x2 < 0 else -0 * 1j, ret
+        )
+    if ivy.is_complex_dtype(x2) and ivy.any(x1 == 0):
+        ret = tf.experimental.numpy.power(x1, x2)
+        return tf.where(x1 == 0, ivy.nan + ivy.nan * 1j, ret)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    if isinstance(x1, tf.Tensor) and isinstance(x2, tf.Tensor):
-        if x1.dtype.is_unsigned or x2.dtype.is_unsigned:
-            promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-            if x1.dtype.is_unsigned:
-                x1 = tf.cast(x1, tf.float64)
-            if x2.dtype.is_unsigned:
-                x2 = tf.cast(x2, tf.float64)
-            return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
+    if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
+        return tf.cast(
+            tf.experimental.numpy.power(tf.cast(x1, tf.float32), x2),
+            x1.dtype,
+        )
     return tf.experimental.numpy.power(x1, x2)
 
 
@@ -663,6 +670,7 @@ def round(
         return tf.cast(tf.round(x * factor) / factor_deno, ret_dtype)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("bool", "unsigned")}, backend_version)
 def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -670,12 +678,6 @@ def sign(
     np_variant: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
-        return tf.cast(tf.math.sign(tf.cast(x, tf.float32)), x.dtype)
-    if x.dtype in [tf.complex64, tf.complex128] and np_variant:
-        real = tf.math.real(x)
-        imag = tf.math.imag(x)
-        return tf.cast(tf.where(real != 0, tf.sign(real), tf.sign(imag)), x.dtype)
     return tf.math.sign(x)
 
 
@@ -744,6 +746,7 @@ def tanh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    complex_mode="jax",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.tanh(x)
@@ -798,18 +801,7 @@ def erf(
     return tf.math.erf(x)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.13.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "complex",
-        )
-    },
-    backend_version,
-)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
 def maximum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -819,26 +811,10 @@ def maximum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    dtype = x1.dtype
-    if use_where:
-        return tf.math.maximum(x1, x2)
-    x1 = tf.cast(x1, tf.float64)
-    x2 = tf.cast(x2, tf.float64)
-    return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
+    return tf.math.maximum(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.13.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "complex",
-        )
-    },
-    backend_version,
-)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex", "bool")}, backend_version)
 def minimum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -848,12 +824,7 @@ def minimum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    dtype = x1.dtype
-    if use_where:
-        return tf.math.minimum(x1, x2)
-    x1 = tf.cast(x1, tf.float64)
-    x2 = tf.cast(x2, tf.float64)
-    return tf.cast((x1 + x2 - tf.math.abs(x1 - x2)) / 2, dtype)
+    return tf.math.minimum(x1, x2)
 
 
 @with_unsupported_dtypes(

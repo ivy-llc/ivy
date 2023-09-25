@@ -8,7 +8,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 
 @handle_frontend_test(
-    fn_tree="torch.nn.functional.dropout",
+    fn_tree="torch.nn.functional.alpha_dropout",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -22,7 +22,7 @@ import ivy_tests.test_ivy.helpers as helpers
     training=st.booleans(),
     test_inplace=st.just(False),
 )
-def test_torch_dropout(
+def test_torch_alpha_dropout(
     *,
     dtype_and_x,
     prob,
@@ -54,7 +54,7 @@ def test_torch_dropout(
 
 
 @handle_frontend_test(
-    fn_tree="torch.nn.functional.alpha_dropout",
+    fn_tree="torch.nn.functional.dropout",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -68,7 +68,7 @@ def test_torch_dropout(
     training=st.booleans(),
     test_inplace=st.just(False),
 )
-def test_torch_alpha_dropout(
+def test_torch_dropout(
     *,
     dtype_and_x,
     prob,
