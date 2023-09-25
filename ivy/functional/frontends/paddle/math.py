@@ -582,6 +582,14 @@ def tanh(x, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def trace(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+@with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
