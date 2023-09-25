@@ -966,12 +966,12 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = ivy.Container.static_sigmoid(x)
         >>> print(y)
         {
-            a: ivy.array([0.38999999, -0.57]),
-            b: ivy.array([1., -0.18])
+            a: ivy.array([0.59628272, 0.29943284]),
+            b: ivy.array([0.7310586, 0.45016602])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1025,12 +1025,12 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = x.sigmoid()
         >>> print(y)
         {
-            a: ivy.array([0.38999999, -0.57]),
-            b: ivy.array([1., -0.18])
+            a: ivy.array([0.59628272, 0.29943284]),
+            b: ivy.array([0.7310586, 0.45016602])
         }
         """
         return self._static_sigmoid(

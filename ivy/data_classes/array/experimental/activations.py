@@ -318,6 +318,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([0.39, -0.85])
         >>> y = x.sigmoid()
         >>> print(y)
-        ivy.array([ 0.40, -0.70])
+        ivy.array([0.59628272, 0.29943284])
         """
         return ivy.sigmoid(self._data, out=out)

@@ -525,25 +525,25 @@ def sigmoid(
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([ 0.38999999, -0.57258511])
+    ivy.array([0.59628272, 0.29943284])
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.sigmoid(x, out=y)
     >>> print(y)
-    ivy.array([ 1.5, 0.69999999, -0.90928203])
+    ivy.array([0.8175745 , 0.6681878 , 0.08317269])
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.sigmoid(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.10000002,  2.20000005,  3.29999995],
-           [-0.98772264, -0.99591321, -0.99863964]])
+    ivy.array([[0.75026011, 0.90024954, 0.96442884],
+       [0.01212843, 0.00407014, 0.00135852]])
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
     >>> x = ivy.sigmoid(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([0., -0.69880581]),
-        b: ivy.array([0.40000001, -0.18126924])
+        a: ivy.array([0.5, 0.23147522]),
+        b: ivy.array([0.59868765, 0.45016602])
     }
     """
     return current_backend(x).sigmoid(x, out=out)
