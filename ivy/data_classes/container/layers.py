@@ -1094,10 +1094,10 @@ class _ContainerWithLayers(ContainerBase):
 
     def multi_head_attention(
         self: ivy.Container,
-        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         /,
         *,
+        key: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         num_heads: Union[int, ivy.Container] = 8,
         scale: Optional[Union[float, ivy.Container]] = None,
         attention_mask: Optional[

@@ -57,7 +57,7 @@ def install_deps(pkgs, path_to_json, base="/opt/fw/"):
                         subprocess.run(
                             "pip3 install --upgrade"
                             f" {dep}=={keys[dep][ver]} --target"
-                            f" {path} --default-timeout=100   --no-cache-dir",
+                            f" {path} --default-timeout=100 --upgrade  --no-cache-dir",
                             shell=True,
                         )
                     else:

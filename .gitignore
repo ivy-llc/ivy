@@ -18,7 +18,6 @@ with_time_logs/
 *.csv
 *.csv#
 *.ods
-*.json
 *.jpg
 *.jpeg
 *.png
@@ -29,6 +28,7 @@ internal_automation_tools/
 .vscode/*
 .idea/*
 .ivy/*
+*.so
 .DS_Store*
 fn_path_cache
 

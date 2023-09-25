@@ -362,14 +362,7 @@ def logical_xor(input, other, *, out=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def logit(input, eps=None, *, out=None):
-    if eps is None:
-        eps = -1.0
-    lo = eps
-    hi = 1 - eps
-
-    input = ivy.clip(input, lo, hi, out=out)
-
-    return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+    return ivy.logit(input, eps=eps, out=out)
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
@@ -424,9 +417,25 @@ def positive(input, *, out=None):
     return ivy.positive(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
-    return ivy.pow(input, exponent, out=out)
+    if not ivy.is_array(exponent):
+        if (
+            any(dtype in str(input.dtype) for dtype in ["int8", "int16"])
+            and isinstance(exponent, int)
+        ) or ("float16" in str(input.dtype) and isinstance(exponent, float)):
+            exponent = ivy.array(exponent, dtype=input.dtype)
+        else:
+            exponent = torch_frontend.as_tensor(exponent).ivy_array
+    input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
+    ret_dtype = input.dtype
+    if not ivy.is_int_dtype(exponent) and ivy.is_int_dtype(ret_dtype):
+        ret_dtype = exponent.dtype
+    ret = ivy.pow(input, exponent)
+    if ivy.any(input == 0) and ivy.is_int_dtype(exponent):
+        ret = ivy.where(ivy.bitwise_and(input == 0, exponent < 0), 0, ret, out=out)
+    return ret.astype(ret_dtype)
 
 
 @to_ivy_arrays_and_back
