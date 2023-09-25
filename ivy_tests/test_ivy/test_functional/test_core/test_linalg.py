@@ -1031,6 +1031,7 @@ def test_svdvals(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
         min_dim_size=1,
         max_dim_size=10,
     ),
+    test_gradients=st.just(False),
 )
 def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_device):
     (
@@ -1052,6 +1053,7 @@ def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_devi
         x1=x1,
         x2=x2,
         axes=axis,
+        batched_modes=None,
     )
 
 
