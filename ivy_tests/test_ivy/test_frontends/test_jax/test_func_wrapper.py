@@ -22,6 +22,17 @@ def _fn(x, check_default=False):
         ivy.utils.assertions.check_equal(
             ivy.default_float_dtype(), "float64", as_array=False
         )
+
+
+
+
+
+
+
+
+
+
+        
         ivy.utils.assertions.check_equal(
             ivy.default_int_dtype(), "int64", as_array=False
         )
