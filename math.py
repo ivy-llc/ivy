@@ -305,7 +305,6 @@ def truediv(x, y, name="truediv"):
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
 def segment_mean(x, segment_size, name=None):
-   
     segmented_means = []
     for i in range(0, len(x), segment_size):
         segment = x[i:i+segment_size]
