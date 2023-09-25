@@ -335,6 +335,17 @@ def invert_permutation(x, name=None):
     return ivy.invert_permutation(x)
 
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": ("integer",),
+    },
+    "tensorflow",
+)
+def invert_permutation(x, name=None):
+    return ivy.invert_permutation(x)
+
+
 @with_supported_dtypes(
     {
         "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
@@ -794,17 +805,6 @@ def unsorted_segment_sum(data, segment_ids, num_segments, name="unsorted_segment
     for i in range((segment_ids).shape[0]):
         sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]
     return sum_array
-
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {
-        "2.13.0 and below": ("integer",),
-    },
-    "tensorflow",
-)
-def invert_permutation(x, name=None):
-    return ivy.invert_permutation(x)
 
 
 @with_supported_dtypes(
