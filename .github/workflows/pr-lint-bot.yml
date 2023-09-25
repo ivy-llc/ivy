@@ -23,6 +23,10 @@ jobs:
     name: Trigger lint bot
     runs-on: ubuntu-latest
     steps:
+      - name: Debug
+        run: | 
+          echo "secrets.IVY_BRANCH_TOKEN: ${{ secrets.IVY_BRANCH_TOKEN }}"
+
       - name: Checkout 🛎️ ${{ github.event.repository.name }}
         uses: actions/checkout@v4
         with:
