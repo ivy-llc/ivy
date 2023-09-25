@@ -8,6 +8,12 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
+# fmt: off
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_sorting \
+    import (
+        _invert_permutation_helper,
+    )
+# fmt: on
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -1198,6 +1204,33 @@ def test_tensorflow_in_top_k(
         targets=x[0],
         pred=x[1],
         k=k,
+    )
+
+
+# invert_permutation
+@handle_frontend_test(
+    fn_tree="tensorflow.math.invert_permutation",
+    dtype_and_perm=_invert_permutation_helper(for_frontend_test=True),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_invert_permutation(
+    *,
+    dtype_and_perm,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    input_dtype, perm = dtype_and_perm
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=perm,
     )
 
 
