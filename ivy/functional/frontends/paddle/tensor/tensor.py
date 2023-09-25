@@ -783,6 +783,11 @@ class Tensor:
         return paddle_frontend.is_floating_point(self._ivy_array)
 
     def is_integer(self):
+        if not isinstance(
+            self, (paddle_frontend.Tensor, paddle_frontend.static.Variable)
+        ):
+            raise TypeError(f"Expected Tensor, but received type of x: {type(self)}")
+
         return paddle_frontend.is_integer(self._ivy_array)
 
     @with_unsupported_dtypes(
