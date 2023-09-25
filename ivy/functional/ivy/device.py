@@ -693,8 +693,9 @@ def gpu_is_available() -> bool:
 
     Examples
     --------
+    >>> ivy.set_backend("torch")
     >>> print(ivy.gpu_is_available())
-    False
+    True
     """
     return ivy.current_backend().gpu_is_available()
 
