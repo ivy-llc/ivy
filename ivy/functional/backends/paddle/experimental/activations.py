@@ -134,3 +134,13 @@ def hardtanh(
         )
         return ret
     return F.hardtanh(x.cast("float32"), min=min_val, max=max_val).cast(x.dtype)
+
+
+def tanhshrink(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.tanhshrink(x)
+    if paddle.is_complex(x):
+        return paddle.complex(F.tanhshrink(x.real()), F.tanhshrink(x.imag()))
+    return F.tanhshrink(x.cast("float32")).cast(x.dtype)
