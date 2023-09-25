@@ -606,7 +606,13 @@ class Tensor:
     def floor_divide(self, y, name=None):
         return paddle_frontend.floor_divide(self, y)
 
-
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def floor_mod(self, y, name=None):
+        return paddle_frontend.Tensor(
+            ivy.remainder(self._ivy_array, _to_ivy_array(y))
+        )
 
     # cond
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
