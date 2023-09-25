@@ -3031,7 +3031,7 @@ def _cal_output_shape(
 @handle_partial_mixed_function
 @to_native_arrays_and_back
 @inputs_to_ivy_arrays
-@handle_device_shifting
+@handle_device
 def max_unpool1d(
     input: ivy.Array,
     indices: ivy.Array,
@@ -3110,7 +3110,7 @@ max_unpool1d.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
         "to_native_arrays_and_back",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
