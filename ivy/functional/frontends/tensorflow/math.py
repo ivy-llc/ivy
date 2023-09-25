@@ -326,6 +326,17 @@ def in_top_k(target, pred, k, name=None):
 
 @with_supported_dtypes(
     {
+        "2.13.0 and below": ("int32", "int64"),
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def invert_permutation(x, name=None):
+    return ivy.invert_permutation(x)
+
+
+@with_supported_dtypes(
+    {
         "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
     },
     "tensorflow",
@@ -400,6 +411,8 @@ def log_sigmoid(x, name=None):
 
 @to_ivy_arrays_and_back
 def log_softmax(logits, axis=None):
+    if axis is None:
+        axis = -1
     return ivy.log_softmax(logits, axis=axis)
 
 
