@@ -196,13 +196,13 @@ def solve(x, y, name=None):
     return ivy.solve(x, y)
 
 
+@to_ivy_arrays_and_back
+def svd(input, full_matrices=False, name=None):
+    return ivy.svd(input, full_matrices=full_matrices)
+
+
 # transpose
 @with_unsupported_dtypes({"2.5.1 and below": ("uint8", "int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back
 def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)
-
-
-@to_ivy_arrays_and_back
-def svd(input, full_matrices=False, name=None):
-    return ivy.svd(input, full_matrices=full_matrices)

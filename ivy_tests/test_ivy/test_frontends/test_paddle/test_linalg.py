@@ -932,33 +932,8 @@ def test_paddle_solve(
     )
 
 
-@handle_frontend_test(
-    fn_tree="paddle.transpose",
-    dtype_and_x_perm=_transpose_helper(),
-    test_with_out=st.just(False),
-)
-def test_paddle_transpose(
-    dtype_and_x_perm,
-    frontend,
-    test_flags,
-    backend_fw,
-    fn_tree,
-    on_device,
-):
-    dtype, x, perm = dtype_and_x_perm
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        perm=perm,
-    )
-
-
-@handle_frontendes_test(  class_tree=CLASS_TREE,
+@handle_frontendes_test(
+    class_tree=CLASS_TREE,
     init_tree="paddle.linalg.svd",
     method_name="svd",
     dtype_and_x=helpers.dtype_and_values(
@@ -990,4 +965,30 @@ def test_paddle_svd(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.transpose",
+    dtype_and_x_perm=_transpose_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_transpose(
+    dtype_and_x_perm,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, x, perm = dtype_and_x_perm
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        perm=perm,
     )
