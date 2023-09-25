@@ -30,10 +30,6 @@ class Array:
     def ivy_array(self):
         return self._ivy_array
 
-
-
-
-
     @property
     def dtype(self):
         return self.ivy_array.dtype
@@ -405,10 +401,3 @@ class Array:
 # Jax supports DeviceArray from 0.4.13 and below
 # Hence aliasing it here
 DeviceArray = Array
-
-
-
-
-
-
-
