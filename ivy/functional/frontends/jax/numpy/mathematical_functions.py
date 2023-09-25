@@ -714,3 +714,7 @@ def vdot(a, b):
 
 abs = absolute
 true_divide = divide
+
+@to_ivy_arrays_and_back
+def mean(x1, /):
+    return ivy.mean(x1)
