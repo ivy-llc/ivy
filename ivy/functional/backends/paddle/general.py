@@ -9,8 +9,10 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.utils.exceptions import _check_inplace_update_support
+from . import backend_version
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -45,6 +47,9 @@ def _check_query(query):
     )
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("float16", "int16", "int8")}, backend_version
+)
 def get_item(
     x: paddle.Tensor,
     /,
@@ -52,17 +57,7 @@ def get_item(
     *,
     copy: bool = None,
 ) -> paddle.Tensor:
-    dtype = x.dtype
-    if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
-        ret = x.cast("float32").__getitem__(query).cast(dtype)
-    elif dtype in [paddle.complex64, paddle.complex128]:
-        ret = paddle.complex(
-            x.real().__getitem__(query),
-            x.imag().__getitem__(query),
-        )
-    else:
-        ret = x.__getitem__(query)
-    return ret
+    return x.__getitem__(query)
 
 
 get_item.partial_mixed_handler = (
