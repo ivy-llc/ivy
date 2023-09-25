@@ -8,7 +8,8 @@ import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import assert_all_close
+from ivy_tests.test_ivy.helpers import handle_frontend_method, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
     _get_dtype_values_k_axes_for_rot90,
 )
@@ -1655,6 +1656,59 @@ def test_paddle_tensor_dtype(
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
+
+
+# eigvals
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="eigvals",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_paddle_tensor_eigvals(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+
+    ret, frontend_ret = helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        test_values=False,
+    )
+
+    with BackendHandler.update_backend(backend_fw) as ivy_backend:
+        # check if Tensor or ivy array
+        try:
+            ret = ret.ivy_array.to_numpy()
+        except AttributeError:
+            ret = ivy_backend.to_numpy(ret)
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
+        # Calculate the magnitude of the complex numbers then sort them for testing
+        ret = np.sort(np.abs(ret)).astype(np.float64)
+        frontend_ret = np.sort(np.abs(frontend_ret)).astype(np.float64)
+
+        assert_all_close(
+            ret_np=ret,
+            ret_from_gt_np=frontend_ret,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+            atol=1e-2,
+            rtol=1e-2,
+        )
 
 
 # equal
