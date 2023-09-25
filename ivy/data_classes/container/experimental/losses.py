@@ -1099,3 +1099,86 @@ class _ContainerWithLossesExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+
+class IvyContainerWithCTCLoss(ivy.Container):
+    def ctc_loss(
+        self: ivy.Container,
+        log_probs: ivy.Array,
+        targets: ivy.Array,
+        input_lengths: ivy.Array,
+        target_lengths: ivy.Array,
+        /,
+        *,
+        reduction: Optional[Union[str, ivy.Container]] = "mean",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.ctc_loss.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        log_probs
+            Log probabilities from the network (e.g., output of a softmax layer).
+            Shape: [batch_size, max_seq_len, num_classes].
+        targets
+            Target sequences. Should be a padded tensor.
+            Shape: [batch_size, max_target_seq_len].
+        input_lengths
+            Lengths of input sequences in the batch.
+            Shape: [batch_size].
+        target_lengths
+            Lengths of target sequences in the batch.
+            Shape: [batch_size].
+        reduction
+            Reduction method for the loss.
+            Options are 'none', 'mean', or 'sum'.
+            Default: 'mean'.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If input, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is input.
+        prune_unapplied
+            Whether to prune key-chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map the method to sequences (lists, tuples).
+            Default is False.
+        out
+            Optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The CTC loss for the batch as a container.
+
+        Examples
+        --------
+        >>> log_probs = ivy.array([[[0.1, 0.6, 0.2], [0.3, 0.4, 0.3], [0.5, 0.1, 0.4]],
+        ...                      [[0.2, 0.2, 0.6], [0.5, 0.3, 0.2], [0.1, 0.7, 0.2]]], dtype=ivy.float32)
+        >>> targets = ivy.array([[1, 2], [2, 1]], dtype=ivy.int32)
+        >>> input_lengths = ivy.array([3, 3], dtype=ivy.int32)
+        >>> target_lengths = ivy.array([2, 2], dtype=ivy.int32)
+        >>> losses = ivy.Container(a=log_probs.l1_loss(targets))
+        >>> print(losses)
+        {
+            a: ivy.array(1.),
+        }
+        """
+        loss = ivy.ctc_loss(log_probs, targets, input_lengths, target_lengths)
+        return self._apply_to_keys(
+            loss,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
