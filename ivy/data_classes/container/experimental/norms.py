@@ -5,7 +5,7 @@ import ivy
 
 class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
-    def static_l1_normalize(
+    def _static_l1_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -120,7 +120,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_l2_normalize(
+    def _static_l2_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: Optional[Union[int, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -248,7 +248,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_batch_norm(
+    def _static_batch_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
         variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
@@ -442,7 +442,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_instance_norm(
+    def _static_instance_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
         variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
@@ -632,7 +632,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_group_norm(
+    def _static_group_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         num_groups: Union[int, ivy.Container] = 1,
         /,
@@ -758,7 +758,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_lp_normalize(
+    def _static_lp_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         p: Union[float, ivy.Container] = 2,
         axis: Optional[Union[int, ivy.Container]] = None,
