@@ -41,16 +41,10 @@ def assert_all_close(
     """
     ret_dtype = str(ret_np.dtype)
     ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
-    assert (
-        ret_dtype == ret_from_gt_dtype
-    ), (
-        "the ground truth framework {} returned a {} datatype while "
-        "the backend {} returned a {} datatype".format(
-            ground_truth_backend,
-            ret_from_gt_dtype,
-            backend,
-            ret_dtype,
-        )
+    assert ret_dtype == ret_from_gt_dtype, (
+        f"the ground truth framework {ground_truth_backend} returned a"
+        f" {ret_from_gt_dtype} datatype while the backend {backend} returned a"
+        f" {ret_dtype} datatype"
     )
     # TODO eanble
     # if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
@@ -76,12 +70,32 @@ def assert_same_type_and_shape(values, this_key_chain=None):
             y_d = str(y.dtype).replace("longlong", "int64")
             assert (
                 x.shape == y.shape
-            ), "returned shape = {}, ground-truth returned shape = {}".format(
-                x.shape, y.shape
-            )
+            ), f"returned shape = {x.shape}, ground-truth returned shape = {y.shape}"
             assert (
                 x_d == y_d
-            ), "returned dtype = {}, ground-truth returned dtype = {}".format(x_d, y_d)
+            ), f"returned dtype = {x_d}, ground-truth returned dtype = {y_d}"
+
+
+def assert_same_type(ret_from_target, ret_from_gt, backend_to_test, gt_backend):
+    """
+    Assert that the return types from the target and ground truth frameworks are the
+    same.
+
+    checks with a string comparison because with_backend returns
+    different objects. Doesn't check recursively.
+    """
+
+    def _assert_same_type(x, y):
+        assert_msg = (
+            f"ground truth backend ({gt_backend}) returned"
+            f" {type(y)} but target backend ({backend_to_test}) returned"
+            f" {type(x)}"
+        )
+        assert str(type(x)) == str(type(y)), assert_msg
+
+    ivy.nested_multi_map(
+        lambda x, _: _assert_same_type(x[0], x[1]), [ret_from_target, ret_from_gt]
+    )
 
 
 def value_test(
@@ -124,18 +138,11 @@ def value_test(
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:  # noqa: E721
         ret_np_from_gt_flat = [ret_np_from_gt_flat]
-    assert len(
-        ret_np_flat
-    ) == len(ret_np_from_gt_flat), (
-        "The length of results from backend {} and ground truth "
-        "framework {} does not match\n\n"
-        "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
-        "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-            backend,
-            ground_truth_backend,
-            ret_np_flat,
-            ret_np_from_gt_flat,
-        )
+    assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
+        f"The length of results from backend {backend} and ground truth framework"
+        f" {ground_truth_backend} does not match\n\nlen(ret_np_flat) !="
+        f" len(ret_np_from_gt_flat):\n\nret_np_flat:\n\n{ret_np_flat}\n\n"
+        f"ret_np_from_gt_flat:\n\n{ret_np_from_gt_flat}"
     )
     # value tests, iterating through each array in the flattened returns
     if specific_tolerance_dict is not None:

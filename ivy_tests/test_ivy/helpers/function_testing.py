@@ -9,7 +9,7 @@ import inspect
 from collections import OrderedDict
 
 
-from ivy_tests.test_ivy.conftest import mod_backend
+from .globals import mod_backend
 
 try:
     import tensorflow as tf
@@ -29,6 +29,7 @@ from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.testing_helpers import _create_transpile_report
 from .assertions import (
     value_test,
+    assert_same_type,
     check_unsupported_dtype,
 )
 
@@ -214,7 +215,7 @@ def test_function_backend_computation(
         assert ivy_backend.nested_map(
             lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
             ret_from_target,
-        ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
+        ), f"Ivy function returned non-ivy arrays: {ret_from_target}"
 
         # Assert indices of return if the indices of the out array provided
         if test_flags.with_out and not test_flags.test_compile:
@@ -316,7 +317,7 @@ def test_function_ground_truth_computation(
         assert gt_backend.nested_map(
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
             ret_from_gt,
-        ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
+        ), f"Ground-truth function returned non-ivy arrays: {ret_from_gt}"
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
                 ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
@@ -541,7 +542,7 @@ def test_function(
         test_flags.test_gradients
         and not test_flags.instance_method
         and "bool" not in input_dtypes
-        and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
+        and not any(d in ["complex64", "complex128"] for d in input_dtypes)
     ):
         if backend_to_test not in fw_list or not ivy.nested_argwhere(
             all_as_kwargs_np,
@@ -567,17 +568,6 @@ def test_function(
                 on_device=on_device,
             )
 
-    assert ret_device == ret_from_gt_device, (
-        f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
-        f" device {ret_from_gt_device} but target backend ({backend_to_test})"
-        f" returned array on device {ret_device}"
-    )
-    if ret_device is not None:
-        assert ret_device == on_device, (
-            f"device is set to {on_device}, but ground truth produced array on"
-            f" {ret_device}"
-        )
-
     # assuming value test will be handled manually in the test function
     if not test_values:
         if return_flat_np_arrays:
@@ -599,6 +589,20 @@ def test_function(
         backend=backend_to_test,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
+    assert_same_type(
+        ret_from_target, ret_from_gt, backend_to_test, test_flags.ground_truth_backend
+    )
+
+    assert ret_device == ret_from_gt_device, (
+        f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
+        f" device {ret_from_gt_device} but target backend ({backend_to_test})"
+        f" returned array on device {ret_device}"
+    )
+    if ret_device is not None:
+        assert ret_device == on_device, (
+            f"device is set to {on_device}, but ground truth produced array on"
+            f" {ret_device}"
+        )
 
 
 def test_frontend_function(
@@ -717,13 +721,6 @@ def test_frontend_function(
             on_device=on_device,
         )
 
-        # strip the decorator to get an Ivy array
-        # ToDo, fix testing for jax frontend for x32
-        if frontend == "jax":
-            importlib.import_module("ivy.functional.frontends.jax").config.update(
-                "jax_enable_x64", True
-            )
-
         # Make copy for arguments for functions that might use
         # inplace update by default
         copy_kwargs = copy.deepcopy(kwargs)
@@ -742,7 +739,8 @@ def test_frontend_function(
                 **kwargs,
             )
         else:
-            args_for_test, kwargs_for_test = ivy_backend.args_to_ivy(*args, **kwargs)
+            args_for_test = copy.deepcopy(args)
+            kwargs_for_test = copy.deepcopy(kwargs)
 
         ret = get_frontend_ret(
             backend_to_test,
@@ -909,24 +907,6 @@ def test_frontend_function(
                 _frontend_array_to_ivy, ret, include_derived={"tuple": True}
             )
 
-        def arrays_to_numpy(x):
-            if test_flags.generate_frontend_arrays:
-                return ivy_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
-            return (
-                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
-            )
-
-        gt_args_np = ivy.nested_map(
-            arrays_to_numpy,
-            args_for_test,
-            shallow=False,
-        )
-        gt_kwargs_np = ivy.nested_map(
-            arrays_to_numpy,
-            kwargs_for_test,
-            shallow=False,
-        )
-
     # create frontend framework args
     frontend_config = get_frontend_config(frontend)
     args_frontend = ivy.nested_map(
@@ -939,12 +919,12 @@ def test_frontend_function(
                 else x
             )
         ),
-        gt_args_np,
+        args_np,
         shallow=False,
     )
     kwargs_frontend = ivy.nested_map(
         lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
-        gt_kwargs_np,
+        kwargs_np,
         shallow=False,
     )
 
@@ -971,7 +951,7 @@ def test_frontend_function(
             frontend_fn,
             frontend_fw_fn,
             frontend,
-            fn_name=gt_frontend_submods + "." + gt_fn_name,
+            fn_name=f"{gt_frontend_submods}.{gt_fn_name}",
             frontend_fw_args=args_frontend,
             frontend_fw_kwargs=kwargs_frontend,
         )
@@ -1244,13 +1224,9 @@ def gradient_test(
             ret_grad_idxs,
         )
 
-    assert len(grads_np_flat) == len(
-        grads_np_from_gt_flat
-    ), "result length mismatch: {} ({}) != {} ({})".format(
-        grads_np_flat,
-        len(grads_np_flat),
-        grads_np_from_gt_flat,
-        len(grads_np_from_gt_flat),
+    assert len(grads_np_flat) == len(grads_np_from_gt_flat), (
+        f"result length mismatch: {grads_np_flat} ({len(grads_np_flat)}) !="
+        f" {grads_np_from_gt_flat} ({len(grads_np_from_gt_flat)})"
     )
 
     value_test(
@@ -1513,7 +1489,7 @@ def test_method_ground_truth_computation(
         assert gt_backend.nested_map(
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
             ret_from_gt,
-        ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
+        ), f"Ground-truth method returned non-ivy arrays: {ret_from_gt}"
 
         fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
         # for k, v in fw_list2.items():

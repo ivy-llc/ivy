@@ -228,9 +228,12 @@ def eye(
 eye.support_native_out = True
 
 
+def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+    return torch.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
-    x = x.detach() if x.requires_grad else x
-    return torch.utils.dlpack.from_dlpack(x)
+    return torch.from_dlpack(x)
 
 
 def full(

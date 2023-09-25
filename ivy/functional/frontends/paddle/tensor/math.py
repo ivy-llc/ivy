@@ -139,6 +139,12 @@ def exp_(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def floor_(x, name=None):
+    return ivy.inplace_update(x, floor(x))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def lerp_(x, y, weight, name=None):
     return ivy.inplace_update(x, lerp(x, y, weight))
 
@@ -170,3 +176,9 @@ def sqrt_(x, name=None):
 @to_ivy_arrays_and_back
 def subtract_(x, y, name=None):
     return ivy.inplace_update(x, subtract(x, y))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def tanh_(x, name=None):
+    return ivy.inplace_update(x, tanh(x))
