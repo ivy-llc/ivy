@@ -530,7 +530,9 @@ def set_nest_at_indices(
         result = copy_nest(nest, include_derived=True)
     result = list(result) if is_tuple else result
 
-    assert type(indices) is not None and type(values) is not None, TypeError(values, indices)
+    assert type(indices) is not None and type(values) is not None, TypeError(
+        values, indices
+    )
     assert len(indices) == len(
         values
     ), " 'indices' and 'values' must be of the same length"
