@@ -447,6 +447,13 @@ def minimum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
+def mod(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
+
+
+@to_ivy_arrays_and_back
 def multiply(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.multiply(x, y)
