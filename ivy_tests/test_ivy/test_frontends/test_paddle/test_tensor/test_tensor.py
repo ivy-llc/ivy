@@ -430,8 +430,7 @@ def test_paddle_is_floating_point(
     init_tree="paddle.to_tensor",
     method_name="is_integer",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
+        available_dtypes=["int16", "int32", "int64", "float32", "float64"],
     ),
 )
 def test_paddle_is_integer(
