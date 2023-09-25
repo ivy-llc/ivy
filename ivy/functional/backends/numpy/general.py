@@ -322,10 +322,12 @@ def scatter_nd(
         np.minimum.at(target, indices_tuple, updates)
     elif reduction == "max":
         np.maximum.at(target, indices_tuple, updates)
+    elif reduction == "mul":
+        np.multiply.at(target, indices_tuple, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            '"sum", "min", "max", "mul" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, _to_device(target))
@@ -433,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

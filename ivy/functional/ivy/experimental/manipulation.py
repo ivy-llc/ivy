@@ -29,6 +29,7 @@ from ivy.func_wrapper import (
     handle_device_shifting,
     handle_backend_invalid,
 )
+from ivy.functional.ivy.general import _numel
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1762,10 +1763,12 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
+# ToDo: add 'mean' modes to scatter_nd and then to put_along_axis
 @inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_partial_mixed_function
+@handle_nestable
+@handle_exceptions
 def put_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1773,7 +1776,7 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: str = "raise",
+    mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
     out: Optional[ivy.Array] = None,
 ) -> None:
     """
@@ -1790,17 +1793,15 @@ def put_along_axis(
         The values to put into `arr`.
     axis : int
         The axis over which to put the `values`.
-    mode : {'raise', 'wrap', 'clip'}, optional
-        Specifies how out-of-bounds indices will be handled.
-        The following modes are available:
-
-        - 'raise': a `ValueError` is raised when an index is out of bounds.
-        - 'wrap': the index is wrapped around to the corresponding index
-        at the other end of the axis.
-        - 'clip': the index is clipped to the closest in-bounds index.
+    mode : {'sum', 'min', 'max', 'mul', 'replace'}
+        The reduction operation to apply.
     out : ndarray, optional
         Output array in which to place the result.
         If not specified, a new array is created.
+
+    Note
+    ----
+    In case `indices` contains duplicates, the updates get accumulated in each place.
 
     Returns
     -------
@@ -1811,38 +1812,46 @@ def put_along_axis(
     >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
     >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
     >>> values = ivy.array([[9, 8, 7], [6, 5, 4]])
-    >>> ivy.put_along_axis(arr, indices, values, 1, mode='clip')
+    >>> ivy.put_along_axis(arr, indices, values, 1, mode='replace')
     >>> print(arr)
-    ivy.array([[3, 7, 5],
-               [6, 4, 1]])
+    ivy.array([[9, 7, 5],
+               [4, 2, 6]])
+
+    >>> arr = ivy.array([[10, 30, 20], [60, 40, 50]])
+    >>> axis = 1
+    >>> indices = ivy.argmax(arr, axis=axis, keepdims=True)
+    >>> value = 100
+    >>> ivy.put_along_axis(arr, indices, value, axis, mode='add')
+    >>> print(arr)
+    ivy.array([[ 10, 130, 20],
+               [ 160, 40, 50]])
     """
-    if out is None:
-        out = ivy.zeros_like(arr)
+    arr_shape = arr.shape
 
-    indices = ivy.expand_dims(indices, axis=axis)
-    values = ivy.expand_dims(values, axis=axis)
+    # array containing all flat indices
+    arr_ = ivy.arange(0, _numel(arr_shape)).reshape(arr_shape)
 
-    stacked = ivy.concat((arr, values), axis=axis)
+    # use take_along_axis to get the queried indices
+    arr_idxs = ivy.take_along_axis(arr_, indices, axis)
 
-    sorted_indices = ivy.argsort(indices, axis=axis)
-    sorted_stacked = ivy.take_along_axis(stacked, sorted_indices, axis=axis)
+    # convert the flat indices to multi-D indices
+    arr_idxs = ivy.unravel_index(arr_idxs, arr_shape)
 
-    arr = ivy.where(
-        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
-        sorted_stacked,
-        arr,
-    )
+    # stack the multi-D indices to bring them to scatter_nd format
+    arr_idxs = ivy.stack(arr_idxs, axis=-1).astype(ivy.int64)
 
-    if mode == "clip":
-        indices = ivy.clip(indices, 0, arr.shape[axis] - 1)
-    elif mode == "wrap":
-        indices = ivy.mod(indices, arr.shape[axis])
+    ret = ivy.scatter_nd(arr_idxs, values, reduction=mode, out=ivy.copy_array(arr))
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
-    arr = ivy.where(
-        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis), arr, values
-    )
 
-    ivy.assign(out, arr)
+put_along_axis.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "outputs_to_ivy_arrays",
+        "inputs_to_native_arrays",
+    ),
+    "to_skip": "handle_partial_mixed_function",
+}
 
 
 def _check_bounds(shape0, shape1, strides1, itemsize):
