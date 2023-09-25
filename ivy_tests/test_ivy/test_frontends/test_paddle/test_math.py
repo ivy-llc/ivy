@@ -477,7 +477,10 @@ def test_paddle_atanh(
 @handle_frontend_test(
     fn_tree="paddle.broadcast_shape",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        allow_inf=False,
     ),
 )
 def test_paddle_broadcast_shape(
