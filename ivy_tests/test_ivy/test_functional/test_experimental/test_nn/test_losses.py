@@ -349,3 +349,35 @@ def test_soft_margin_loss(
         target=target[0],
         reduction=reduction,
     )
+
+
+def test_ctc_loss(
+    dtype_and_log_probs,
+    dtype_and_targets,
+    dtype_and_input_lengths,
+    dtype_and_target_lengths,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    log_probs_dtype, log_probs = dtype_and_log_probs
+    targets_dtype, targets = dtype_and_targets
+    input_lengths_dtype, input_lengths = dtype_and_input_lengths
+    target_lengths_dtype, target_lengths = dtype_and_target_lengths
+
+    helpers.test_function(
+        input_dtypes=log_probs_dtype + targets_dtype + input_lengths_dtype + target_lengths_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        log_probs=log_probs[0],
+        targets=targets[0],
+        input_lengths=input_lengths[0],
+        target_lengths=target_lengths[0],
+        reduction=reduction,
+    )
