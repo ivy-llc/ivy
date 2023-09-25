@@ -1,4 +1,3 @@
-import warnings
 import ivy
 import functools
 from typing import Callable
@@ -379,7 +378,7 @@ def _handle_inplace_mode(ivy_pack=None):
         ivy_pack = ivy
     current_backend = ivy_pack.current_backend_str()
     if not ivy_pack.native_inplace_support and ivy_pack.inplace_mode == "lenient":
-        warnings.warn(
+        ivy.warn(
             f"The current backend: '{current_backend}' does not support "
             "inplace updates natively. Ivy would quietly create new arrays when "
             "using inplace updates with this backend, leading to memory overhead "

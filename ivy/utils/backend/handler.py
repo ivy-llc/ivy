@@ -399,7 +399,7 @@ def set_backend(backend: str, dynamic: bool = False):
         if isinstance(backend, str):
             temp_stack = []
             while backend_stack:
-                temp_stack.append(previous_backend())
+                temp_stack.append(previous_backend(warn_inplace_update=False))
             backend = importlib.import_module(_backend_dict[backend])
             for fw in reversed(temp_stack):
                 backend_stack.append(fw)
@@ -480,7 +480,7 @@ def set_mxnet_backend():
 
 
 @prevent_access_locally
-def previous_backend():
+def previous_backend(*, warn_inplace_update=True):
     """
     Unset the current global backend, and adjusts the ivy dict such that either a
     previously set global backend is then used as the backend, otherwise we return to
@@ -543,7 +543,8 @@ def previous_backend():
                 ivy.functional.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint(f"backend stack: {backend_stack}")
-    _handle_inplace_mode()
+    if warn_inplace_update:
+        _handle_inplace_mode()
     return backend
 
 
