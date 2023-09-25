@@ -32,7 +32,8 @@ def test_torch_bartlett_window(
         rtol=1e-02,
         atol=1e-02,
     )
-    
+
+
 @handle_frontend_test(
     window_length=helpers.ints(min_value=1, max_value=10),
     dtype=helpers.get_dtypes("float", full=False),

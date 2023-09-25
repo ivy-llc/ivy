@@ -1,6 +1,7 @@
 import ivy
 from ivy import to_ivy_arrays_and_back
 
+
 @to_ivy_arrays_and_back
 def bartlett_window(
     window_length,
@@ -28,6 +29,7 @@ def bartlett_window(
         )
 
         return res[:-1] if periodic else res
+
 
 @to_ivy_arrays_and_back
 def blackman_window(
