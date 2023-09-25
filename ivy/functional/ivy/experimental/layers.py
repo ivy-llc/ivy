@@ -2994,3 +2994,123 @@ def stft(
         name=name,
         out=out,
     )
+
+
+def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
+    dims = {"1d": 1, "2d": 2, "3d": 3}
+    if isinstance(x, int):
+        return tuple([x for _ in range(dims[pool_dims])])
+
+    if len(x) == 1:
+        return tuple([x[0] for _ in range(dims[pool_dims])])
+
+    elif len(x) == dims[pool_dims]:
+        return tuple(x)
+
+    elif len(x) != dims[pool_dims]:
+        raise ValueError(
+            f"`{name}` must either be a single int, "
+            f"or a tuple of {dims[pool_dims]} ints. "
+        )
+
+
+def _cal_output_shape(
+    input_shape,
+    padding,
+    kernel_size,
+    strides,
+):
+    return [
+        (length - 1) * stride - 2 * pad + ker
+        for length, stride, pad, ker in zip(input_shape, strides, padding, kernel_size)
+    ]
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_partial_mixed_function
+@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_device_shifting
+def max_unpool1d(
+    input: ivy.Array,
+    indices: ivy.Array,
+    kernel_size: Union[Tuple[int], int],
+    /,
+    *,
+    strides: Union[int, Tuple[int]] = None,
+    padding: Union[int, Tuple[int]] = 0,
+    data_format: Optional[str] = "NCW",
+) -> ivy.Array:
+    """
+    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    input
+        Pooled input image *[batch_size, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel_size
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+    """
+    if strides is None:
+        strides = kernel_size
+    input_shape = input.shape
+    if data_format in ["NCW", "NWC"]:
+        revert = False
+        if data_format == "NWC":
+            x_len = (input_shape[1],)
+            input = input.permute_dims((0, 2, 1))
+            indices = indices.permute_dims((0, 2, 1))
+            revert = True
+        else:
+            x_len = (input_shape[-1],)
+    else:
+        raise ValueError(
+            f"data_format attr should be NCW or NWC but found {data_format}"
+        )
+    input_shape = input.shape
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    strides = _broadcast_pooling_helper(strides, "1d", name="strides")
+    output_len = _cal_output_shape(x_len, padding, kernel_size, strides)
+    output_shape = list(input_shape[:-1]) + output_len
+    one_like_mask = ivy.ones_like(indices, dtype="int32")
+    batch_shape = [input_shape[0], 1, 1]
+    batch_range = ivy.reshape(
+        ivy.arange(0, output_shape[0], dtype="int32"), batch_shape
+    )
+    b = one_like_mask * batch_range
+    feature_range = ivy.arange(0, output_shape[1], dtype="int32").reshape((1, -1, 1))
+    f = one_like_mask * feature_range
+    indices = ivy.stack([b, f, indices]).reshape((3, -1))
+    output = ivy.zeros(output_shape, dtype=input.dtype)
+    indices = tuple(indices)
+    output[indices] = input.reshape((-1,))
+    if revert:
+        output = output.permute_dims([0, 2, 1])
+    return output
+
+
+max_unpool1d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "to_native_arrays_and_back",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
