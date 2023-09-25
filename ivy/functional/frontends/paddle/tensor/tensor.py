@@ -223,6 +223,11 @@ class Tensor:
         self.ivy_array = self.floor().ivy_array
         return self
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def round_(self, name=None):
+        self.ivy_array = paddle_frontend.round(self).ivy_array
+        return self
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
