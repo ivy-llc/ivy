@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 
 # local
 import ivy
@@ -273,7 +273,7 @@ class _ArrayWithGradients(abc.ABC):
         epsilon: float = 1e-7,
         stop_gradients: bool = True,
         out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.adam_update. This method simply wraps
         the function, and so the docstring for ivy.adam_update also applies to this
