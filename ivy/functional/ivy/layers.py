@@ -907,39 +907,35 @@ def multi_head_attention(
     scale = 1 / (head_dim**0.5) if not scale else scale
     attn_scores *= scale
 
-    # apply attention mask
-    if is_causal:
-        attention_mask = ivy.where(
-            ivy.tril(ivy.ones((num_queries, num_keys))) == 0.0, 1, 0
-        ).astype(ivy.bool)
+    # mask the attention scores
     if ivy.exists(attention_mask):
         assert (
             attention_mask.dtype in [query.dtype, ivy.bool]
         ), f"was expecting attention_mask of type bool or the same as the input's, but got {attention_mask.dtype}"
+        if ivy.is_bool_dtype(attention_mask):
+            attention_mask = ivy.where(attention_mask, float("-inf"), 0)
+        if is_causal:
+            causal_mask = ivy.triu(ivy.ones((num_queries, num_keys)), k=1)
+            attention_mask *= causal_mask.astype(ivy.int8)
         if attention_mask.ndim == 2:
             attention_mask = ivy.tile(attention_mask, (batch_dim * num_heads, 1, 1))
-        if bias_k is not None and bias_v is not None:
-            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
-        if add_zero_attn:
-            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
-        if ivy.is_bool_dtype(attention_mask):
-            attn_scores = ivy.where(attention_mask, float("-inf"), attn_scores)
-        else:
-            attn_scores += attention_mask
-
-    # apply key_padding_mask
     if key_padding_mask is not None:
         assert (
             ivy.is_bool_dtype(key_padding_mask)
         ), f"was expecting key_padding_mask of type bool, but got {key_padding_mask.dtype}"
         if num_dims == 2:
             key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
-        if add_zero_attn:
-            key_padding_mask = ivy.pad(key_padding_mask, [(0, 0), (0, 1)])
-        if bias_k is not None and bias_v is not None:
-            key_padding_mask = ivy.pad(key_padding_mask, [(0, 0), (0, 1)])
         key_padding_mask = ivy.tile(key_padding_mask, (batch_dim * num_heads, num_queries, 1))
-        attn_scores = ivy.where(key_padding_mask, float("-inf"), attn_scores)
+        if attention_mask is None:
+            attention_mask = key_padding_mask
+        else:
+            attention_mask *= 1 - key_padding_mask.astype(ivy.int8)
+    if ivy.exists(attention_mask):
+        if bias_k is not None and bias_v is not None:
+            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
+        if add_zero_attn:
+            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
+        attn_scores += attention_mask.astype(query.dtype)
 
     # get attention weights
     attn_weights = ivy.softmax(attn_scores, axis=-1)
