@@ -66,7 +66,6 @@ def batch_norm(
             if xdims == 1
             else tf.cast(tf.divide(tf.size(x), tf.shape(x)[-1]), x.dtype)
         )
-        n = tf.cast(n, x.dtype)
         dims = (0, *range(1, xdims - 1))
         batchmean = tf.math.reduce_mean(x, axis=dims)
         batchvariance = tf.math.reduce_variance(x, axis=dims)
