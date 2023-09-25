@@ -44,7 +44,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
     _statistical_dtype_values,
 )
-
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    put_along_axis_helper,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
     _quantile_helper,
 )
@@ -1560,6 +1562,274 @@ def test_torch_index_fill(
             "dim": axis,
             "index": indices,
             "value": value,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# nansum
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="nansum",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+)
+def test_torch_instance_nansum(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# scatter
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter",
+    args=put_along_axis_helper(),
+)
+def test_torch_instance_scatter(
+    args,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_",
+    args=put_along_axis_helper(),
+    reduce=st.sampled_from(["add", "multiply"]),
+)
+def test_torch_instance_scatter_(
+    args,
+    reduce,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+            "reduce": reduce,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_add
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_add",
+    args=put_along_axis_helper(),
+)
+def test_torch_instance_scatter_add(
+    args,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_add_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_add_",
+    args=put_along_axis_helper(),
+)
+def test_torch_instance_scatter_add_(
+    args,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_reduce
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_reduce",
+    args=put_along_axis_helper(),
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
+)
+def test_torch_instance_scatter_reduce(
+    args,
+    mode,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+            "reduce": mode,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# scatter_reduce_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_reduce_",
+    args=put_along_axis_helper(),
+    mode=st.sampled_from(["sum", "prod", "amin", "amax"]),
+)
+def test_torch_instance_scatter_reduce_(
+    args,
+    mode,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, indices, values, axis = args
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["int64", input_dtypes[0]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+            "reduce": mode,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -4541,6 +4811,50 @@ def test_torch_tensor_bitwise_right_shift(
     )
 
 
+# bitwise_right_shift_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="bitwise_right_shift_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_torch_tensor_bitwise_right_shift_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # bitwise_xor
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -5859,6 +6173,67 @@ def test_torch_tensor_diagonal(
         backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# diff
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="diff",
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        min_value=-1e09,
+        max_value=1e09,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("numeric"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_torch_tensor_diff(
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "n": n,
+            "dim": axis,
+            "prepend": prepend[0],
+            "append": append[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 
