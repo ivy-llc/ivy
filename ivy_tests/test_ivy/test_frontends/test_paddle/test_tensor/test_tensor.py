@@ -1697,7 +1697,7 @@ def test_paddle_tensor_eigvals(
 
         assert_all_close(
             ret_np=ret,
-            ret_from_gt_np=frontend_ret[0],
+            ret_from_gt_np=frontend_ret,
             backend=backend_fw,
             ground_truth_backend=frontend,
             atol=1e-2,
