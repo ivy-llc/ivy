@@ -93,12 +93,6 @@ def instance_norm(
     data_format: Optional[str] = "NSC",
     out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    mean.requires_grad = False
-    variance.requires_grad = False
-    if scale is not None:
-        scale.requires_grad = False
-    if offset is not None:
-        offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
     # reshape  from  N, *S, C to N, C, *S
