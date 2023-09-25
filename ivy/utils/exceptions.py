@@ -179,9 +179,7 @@ def _configure_stack_trace(traceback):
     frontend_path = os.path.join("ivy", "functional", "frontends")
     wrapper_path = os.path.join("ivy", "func_wrapper.py")
 
-    while 1:
-        if not tb.tb_next:
-            break
+    while 1 and tb.tb_next:
         frame = tb.tb_next.tb_frame
         file_path = frame.f_code.co_filename
         if trace_mode == "ivy":
@@ -196,14 +194,13 @@ def _configure_stack_trace(traceback):
                 tb = tb.tb_next
             else:
                 tb.tb_next = tb.tb_next.tb_next
-        else:
-            if not show_wrappers:
-                if _check_if_path_found(wrapper_path, file_path):
-                    tb.tb_next = tb.tb_next.tb_next
-                else:
-                    tb = tb.tb_next
+        elif not show_wrappers:
+            if _check_if_path_found(wrapper_path, file_path):
+                tb.tb_next = tb.tb_next.tb_next
             else:
                 tb = tb.tb_next
+        else:
+            tb = tb.tb_next
 
 
 def _add_native_error(default):
@@ -376,12 +373,20 @@ def handle_exceptions(fn: Callable) -> Callable:
 
 # Inplace Update
 
+# to avoid raising warnings on setting the same backend multiple times
+_inplace_warning_cache = dict()
+
 
 def _handle_inplace_mode(ivy_pack=None):
     if not ivy_pack:
         ivy_pack = ivy
     current_backend = ivy_pack.current_backend_str()
-    if not ivy_pack.native_inplace_support and ivy_pack.inplace_mode == "lenient":
+    if (
+        current_backend != ""
+        and not _inplace_warning_cache.get(current_backend, None)
+        and not ivy_pack.native_inplace_support
+        and ivy_pack.inplace_mode == "lenient"
+    ):
         warnings.warn(
             f"The current backend: '{current_backend}' does not support "
             "inplace updates natively. Ivy would quietly create new arrays when "
@@ -391,6 +396,7 @@ def _handle_inplace_mode(ivy_pack=None):
             "should raise an error whenever an inplace update is attempted "
             "with this backend."
         )
+        _inplace_warning_cache[current_backend] = True
 
 
 def _check_inplace_update_support(x, ensure_in_backend):
