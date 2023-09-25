@@ -201,3 +201,8 @@ def solve(x, y, name=None):
 @to_ivy_arrays_and_back
 def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)
+
+
+@to_ivy_arrays_and_back
+def svd(input, full_matrices=False, name=None):
+    return ivy.svd(input, full_matrices=full_matrices)
