@@ -6,6 +6,7 @@ youtube_map = {
     "demos/learn_the_basics/04_transpile_code": "6WCYOF1vdLw",
     "demos/learn_the_basics/05_lazy_vs_eager": "xav4HYfvPOU",
     "demos/learn_the_basics/06_how_to_use_decorators": "fueduIEMkbY",
+    "demos/learn_the_basics/07_transpile_any_library": "j7YkPlm8Pfg",
 }
 
 nbsphinx_execute = 'never'
