@@ -2566,3 +2566,112 @@ class _ContainerWithLayersExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_max_unpool1d(
+        input: ivy.Container,
+        indices: ivy.Container,
+        kernel_size: Union[Tuple[int], int],
+        /,
+        *,
+        strides: Union[int, Tuple[int]] = None,
+        padding: Union[int, Tuple[int]] = 0,
+        data_format: Union[str, ivy.Container] = "NCW",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.max_unpool1d.
+
+        Parameters
+        ----------
+        input
+            Pooled input image *[batch_size, w, d_in]*.
+        indices
+            Indices obtained from the corresponding max pooling operation.
+        kernel_size
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NCW".
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            The result of the unpooling operation.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "max_unpool1d",
+            input,
+            indices,
+            kernel_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def max_unpool1d(
+        self,
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        kernel_size: Union[Tuple[int], int],
+        /,
+        *,
+        strides: Union[int, Tuple[int]] = None,
+        padding: Union[int, Tuple[int]] = 0,
+        data_format: Optional[str] = "NCW",
+    ) -> ivy.Container:
+        """
+        Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+        Parameters
+        ----------
+        self
+            Pooled input image *[batch_size, w, d_in]*.
+        indices
+            Indices obtained from the corresponding max pooling operation.
+        kernel_size
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NCW".
+
+        Returns
+        -------
+        ret
+            The result of the unpooling operation.
+        """
+        return self.static_max_unpool1d(
+            self,
+            indices,
+            kernel_size,
+            strides=strides,
+            padding=padding,
+            data_format=data_format,
+        )
