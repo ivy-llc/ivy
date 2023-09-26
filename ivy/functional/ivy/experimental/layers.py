@@ -2844,6 +2844,7 @@ def ifftn(
 
 
 @handle_out_argument
+@handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 def stft(
