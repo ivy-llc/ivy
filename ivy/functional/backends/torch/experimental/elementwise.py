@@ -99,7 +99,7 @@ def count_nonzero(
             if temp < -1:
                 temp = 0
             return x.unsqueeze(temp)
-        return x.unsqueeze(axis - 1)
+        return x.unsqueeze(axis)
     elif axis is not None:
         for d in sorted(axis):
             x = x.unsqueeze(d - 1)
