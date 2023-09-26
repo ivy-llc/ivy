@@ -316,11 +316,10 @@ def svd(A, /, *, full_matrices=True, driver=None, out=None):
 )
 def svdvals(A, *, driver=None, out=None):
     # TODO: add handling for driver
-    if driver in ["gesvd","gesvdj","gesvda", None]:
+    if driver in ["gesvd", "gesvdj", "gesvda", None]:
         return torch.linalg.svdvals(A, driver=driver, out=out)
-    else :
+    else:
         raise ValueError("Unsupported SVD driver")
-
 
 
 @to_ivy_arrays_and_back
