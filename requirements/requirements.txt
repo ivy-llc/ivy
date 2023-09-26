@@ -12,3 +12,4 @@ requests
 pyvis
 dill
 astunparse
+ml-dtypes # for enabling bfloat16 support in numpy
