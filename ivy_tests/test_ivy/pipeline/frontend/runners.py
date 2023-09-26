@@ -71,9 +71,8 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
         return _new_fn
 
-    def _args_to_frontend(
-        self, *args, frontend_array_fn=None, include_derived=None, **kwargs
-    ):
+    def _args_to_frontend(self, *args, include_derived=None, **kwargs):
+        frontend_array_fn = self._get_frontend_creation_fn()
         frontend_args = self._ivy.nested_map(
             args,
             self._arrays_to_frontend(frontend_array_fn=frontend_array_fn),
@@ -114,29 +113,10 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
         return frontend_fn
 
+    def _flatten_ret_to_np(self, ret_flat):
+        return [self._ivy.to_numpy(x) for x in ret_flat]
+
     def _search_args(self, test_arguments):
-        # args_np, kwargs_np = self._split_args_to_args_and_kwargs(
-        #     num_positional_args=self.test_flags.num_positional_args,
-        #     test_arguments=test_arguments,
-        # )
-        # # Extract all arrays from the arguments and keyword arguments
-        # arg_np_arrays, arrays_args_indices, n_args_arrays = (
-        #   self._get_nested_np_arrays(
-        #       args_np
-        #   )
-        # )
-        # kwarg_np_arrays, arrays_kwargs_indices, n_kwargs_arrays = (
-        #     self._get_nested_np_arrays(kwargs_np)
-        # )
-        #
-        # total_num_arrays = n_args_arrays + n_kwargs_arrays
-        # args_result = TestArgumentsSearchResult(
-        #     args_np, arg_np_arrays, arrays_args_indices
-        # )
-        # kwargs_result = TestArgumentsSearchResult(
-        #     kwargs_np, kwarg_np_arrays, arrays_kwargs_indices
-        # )
-        # return args_result, kwargs_result, total_num_arrays
         arg_searcher = ArgumentsSearcher(test_arguments)
         return arg_searcher.search_args(self.test_flags.num_positional_args)
 
@@ -152,10 +132,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             self.test_flags.native_arrays = [
                 self.test_flags.native_arrays[0] for _ in range(total_num_arrays)
             ]
-        # if len(self.test_flags.container) < total_num_arrays:
-        #     self.test_flags.container = [
-        #         self.test_flags.container[0] for _ in range(total_num_arrays)
-        #     ]
 
         self.test_flags.as_variable = [
             v if self._ivy.is_float_dtype(d) and not self.test_flags.with_out else False
@@ -188,7 +164,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         if self.test_flags.generate_frontend_arrays:
             ret[0], ret[1] = self._args_to_frontend(
                 *ret[0],
-                frontend_array_fn=self._get_frontend_creation_fn(),
                 include_derived={"tuple": True},
                 **ret[1],
             )
@@ -198,8 +173,8 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         # determine the target frontend_fn
         frontend_fn = self._get_frontend_function(args, kwargs)
 
-        # as_ivy_arrays = not self.test_flags.generate_frontend_arrays
         if self.test_flags.generate_frontend_arrays and self.test_flags.test_compile:
+            # convert the args and kwargs to ivy arrays
             args, kwargs = self._ivy.nested_map(
                 (args, kwargs),
                 FunctionTestCaseSubRunner._frontend_array_to_ivy,
@@ -223,22 +198,11 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
             ret = self._ivy.nested_map(
-                ret,
                 FunctionTestCaseSubRunner._frontend_array_to_ivy,
+                ret,
                 include_derived={"tuple": True},
             )
-
-        ret_device = self._ivy.dev(ret) if self._ivy.is_array(ret) else None
-        # got the ret as ivy array
-        # flattening it to numpy array
-        ret_np_flat = self._flatten_and_to_np(ret=ret)
-        # Todo: making all of these a list
-        return TestCaseSubRunnerResult(
-            flatten_elements_np=ret_np_flat,
-            shape=self._ivy.shape(ret),
-            device=ret_device,
-            dtype=self._ivy.dtype(ret),
-        )
+        return self._get_results_from_ret(ret)
 
     def get_results(self, test_arguments):
         # split the arguments into their positional and keyword components
@@ -255,14 +219,27 @@ class GTFunctionTestCaseSubRunner(TestCaseSubRunner):
         self,
         gt_fn_tree,
         fn_tree,
+        test_flags,
         frontend,
+        backend_handler,
         device,
     ):
         self.gt_fn_tree = gt_fn_tree
         self.fn_tree = fn_tree
         self.frontend = frontend
+        self._backend_handler = backend_handler
+        self.test_flags = test_flags
+        self.__ivy = self._backend_handler.set_backend(frontend)
         self.on_device = device
         self.frontend_config = self._get_frontend_config()
+
+    @property
+    def backend_handler(self):
+        return self._backend_handler
+
+    @property
+    def _ivy(self):
+        return self.__ivy
 
     def _get_frontend_config(self):
         config_module = importlib.import_module(
@@ -287,9 +264,25 @@ class GTFunctionTestCaseSubRunner(TestCaseSubRunner):
         return gt_frontend_submods, gt_fn_name
 
     def _get_frontend_fn(self):
-        gt_frontend_submods, gt_fn_name = self._get_frontend_submodule(self.gt_fn_tree)
+        gt_frontend_submods, gt_fn_name = self._get_frontend_submodule()
         frontend_fw = importlib.import_module(gt_frontend_submods)
         return frontend_fw.__dict__[gt_fn_name]
+
+    def _flatten(self, *, ret):
+        if self.frontend_config.isscalar(ret):
+            frontend_ret_flat = [ret]
+        else:
+            # tuplify the frontend return
+            if not isinstance(ret, tuple):
+                frontend_ret = (ret,)
+            frontend_ret_idxs = ivy.nested_argwhere(
+                frontend_ret, self.frontend_config.is_native_array
+            )
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        return frontend_ret_flat
+
+    def _flatten_ret_to_np(self, ret_flat):
+        return [self.frontend_config.to_numpy(x) for x in ret_flat]
 
     def _search_args(self, test_arguments):
         arg_searcher = ArgumentsSearcher(test_arguments)
@@ -332,34 +325,10 @@ class GTFunctionTestCaseSubRunner(TestCaseSubRunner):
             )
         return args_frontend, kwargs_frontend
 
-    def _flatten_and_to_np(self, *, ret):
-        if self.frontend_config.isscalar(ret):
-            frontend_ret_np_flat = [self.frontend_config.to_numpy(ret)]
-        else:
-            # tuplify the frontend return
-            if not isinstance(ret, tuple):
-                frontend_ret = (ret,)
-            frontend_ret_idxs = ivy.nested_argwhere(
-                frontend_ret, self.frontend_config.is_native_array
-            )
-            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-            frontend_ret_np_flat = [
-                self.frontend_config.to_numpy(x) for x in frontend_ret_flat
-            ]
-        return frontend_ret_np_flat
-
     def _call_function(self, args, kwargs):
         frontend_fn = self._get_frontend_fn()
         ret = frontend_fn(*args, **kwargs)
-        ret_np_flat = self._flatten_and_to_np(ret=ret)
-        # ToDo: modify frontend configs to get shape as list and dtype/device as str
-
-        return TestCaseSubRunnerResult(
-            flatten_elements_np=ret_np_flat,
-            # shape=ivy.shape(ret),
-            # device=ret_device,
-            # dtype=ivy.dtype(ret)
-        )
+        return self._get_results_from_ret(ret)
 
     def get_results(self, test_arguments):
         args_result, kwargs_result, _ = self._search_args(test_arguments)
@@ -409,7 +378,9 @@ class FrontendTestCaseRunner(TestCaseRunner):
         sub_runner_gt = GTFunctionTestCaseSubRunner(
             self.gt_fn_tree,
             self.fn_tree,
+            test_flags,
             self.frontend,
+            self.backend_handler,
             self.on_device,
         )
         return sub_runner_gt.get_results(test_arguments)
