@@ -971,10 +971,12 @@ def stft(
 
     if center:
         pad = max(0, (n_fft - hop_length) // 2)
-        signal = np.pad(signal, [(0, 0)] * (np.ndim(signal) - 1) + [(pad, pad)], mode=pad_mode)
+        signal = np.pad(
+            signal, [(0, 0)] * (np.ndim(signal) - 1) + [(pad, pad)], mode=pad_mode
+        )
 
     num_frames = (signal.shape[-1] - n_fft) // hop_length + 1
-    
+
     if return_complex:
         input_dtype = np.result_type(signal, np.complex64)
     else:
@@ -984,7 +986,7 @@ def stft(
         output_dtype = np.complex64
     else:
         output_dtype = np.complex128
-    
+
     stft_result = np.empty(
         signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=output_dtype
     )
@@ -1001,7 +1003,7 @@ def stft(
             frame = frame * window
 
         stft_frame = np.fft.fft(frame, n=n_fft, axis=axis)
-        
+
         if onesided:
             stft_frame = stft_frame[..., : n_fft // 2 + 1]
 
@@ -1010,13 +1012,13 @@ def stft(
             detrended = detrend_func(np.arange(len(frame)))(frame)
             stft_frame = np.fft.fft(detrended, n=n_fft, axis=axis)
             if onesided:
-                stft_frame = stft_frame[..., : n_fft // 2 + 1]        
+                stft_frame = stft_frame[..., : n_fft // 2 + 1]
 
         stft_result[..., i, :] = stft_frame
-    
+
     return stft_result
-        
-    
+
+
 def fft2(
     x: np.ndarray,
     *,

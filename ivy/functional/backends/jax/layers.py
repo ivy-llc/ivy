@@ -455,4 +455,3 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
-   

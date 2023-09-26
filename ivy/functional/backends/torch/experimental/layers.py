@@ -946,7 +946,8 @@ def adaptive_avg_pool1d(input, output_size):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
-    
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def fft2(
     x: torch.Tensor,
@@ -1012,18 +1013,18 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if window is None or window == 'hann':
+    if window is None or window == "hann":
         if win_length is None:
             win_length = n_fft
         window = torch.hann_window(win_length, dtype=torch.float32)
     else:
         window = torch.hann_window(n_fft, dtype=torch.float32)
 
-    if  hop_length <= 0:
+    if hop_length <= 0:
         hop_length = 1
 
-    return_complex = True    
-        
+    return_complex = True
+
     stft_result = torch.stft(
         signal,
         n_fft,

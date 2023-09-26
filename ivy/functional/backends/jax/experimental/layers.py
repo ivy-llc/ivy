@@ -1022,7 +1022,7 @@ def stft(
 
         stft = jnp.stack(stft_result, axis=0)
         return stft
-    
+
     def stft_helper(nested_list, frame_length, frame_step, fft_length):
         nested_list = nested_list
         if len(jnp.shape(nested_list)) > 1:

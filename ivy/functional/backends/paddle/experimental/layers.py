@@ -451,7 +451,7 @@ def adaptive_max_pool2d(
     return paddle.squeeze(ret, axis=0) if squeeze else ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16")}, backend_version)      
+@with_unsupported_dtypes({"2.0.1 and below": "float16"}, backend_version)
 def stft(
     signal: Union[paddle.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
@@ -471,10 +471,10 @@ def stft(
     boundary: Optional[str] = "zeros",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if  hop_length <= 0:
+    if hop_length <= 0:
         hop_length = 1
-    
-    if window is None or window == 'hann':
+
+    if window is None or window == "hann":
         if win_length is None:
             win_length = n_fft
         window = paddle.ones([win_length], dtype=signal.dtype)

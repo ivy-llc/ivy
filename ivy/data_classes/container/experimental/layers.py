@@ -2172,7 +2172,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             out=out,
         )
 
-
     @staticmethod
     def stft(
         signal: Union[ivy.Array, ivy.NativeArray],
@@ -2181,7 +2180,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        onesided:Optional[bool] = True,
+        onesided: Optional[bool] = True,
         fs: Optional[float] = 1.0,
         window: Optional[Union[ivy.Array, list, Tuple[int]]] = None,
         win_length: Optional[int] = None,
@@ -2190,88 +2189,88 @@ class _ContainerWithLayersExperimental(ContainerBase):
         normalized: Optional[bool] = False,
         detrend: Optional[Union[str, callable, bool]] = False,
         return_complex: Optional[bool] = True,
-        boundary: Optional[str] = 'zeros',
+        boundary: Optional[str] = "zeros",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Compute the Short-time Fourier transform  of input.
-        
+
         Parameters
         ----------
         signal
-            Input tensor representing a real or complex valued signal. 
+            Input tensor representing a real or complex valued signal.
             For real input, the following shape is expected: [batch_
-            size][signal_length][1]. For complex input, the following 
-            shape is expected: [batch_size][signal_length][2], where 
-            [batch_size][signal_length][0] represents the real component 
-            and [batch_size][signal_length][1] represents the imaginary 
-            component of the signal.        
+            size][signal_length][1]. For complex input, the following
+            shape is expected: [batch_size][signal_length][2], where
+            [batch_size][signal_length][0] represents the real component
+            and [batch_size][signal_length][1] represents the imaginary
+            component of the signal.
         n_fft
            Size of Fourier transform.
         hop_length
-           An integer scalar Tensor. The number of samples to step.             
+           An integer scalar Tensor. The number of samples to step.
         axis
             The axis on which to perform the DFT. By default this
             value is  set to 1, which corresponds to the first dimension
             after the batch index.
         onesided
             If onesided is True, only values for w in [0, 1, 2, …, floor
-            (n_fft/2) + 1] are returned because the real-to-complex Fourier 
-            transform satisfies the conjugate symmetry, i.e., X[m, w] = 
-            X[m,w]=X[m,n_fft-w]*. Note if the input or window tensors are 
-            complex, then onesided output is not possible.Enabling onesided 
-            with real inputs performs a Real-valued fast Fourier transform 
+            (n_fft/2) + 1] are returned because the real-to-complex Fourier
+            transform satisfies the conjugate symmetry, i.e., X[m, w] =
+            X[m,w]=X[m,n_fft-w]*. Note if the input or window tensors are
+            complex, then onesided output is not possible.Enabling onesided
+            with real inputs performs a Real-valued fast Fourier transform
             (RFFT). When invoked with real or complex valued input, the
             default value is False. Values can be True or False.
         fs
             Sampling frequency of the x time series. Defaults to 1.0.
         window
-            Desired window to use. If window is a string or tuple, 
-            it is passed to get_window to generate the window values, 
-            which are DFT-even by default. See get_window for a list of 
-            windows and required parameters. If window is array_like it 
-            will be used directly as the window and its length must be 
+            Desired window to use. If window is a string or tuple,
+            it is passed to get_window to generate the window values,
+            which are DFT-even by default. See get_window for a list of
+            windows and required parameters. If window is array_like it
+            will be used directly as the window and its length must be
             nperseg. Defaults to a Hann window.
         win_length
-            The size of window frame and STFT filter. Defaults to None.    
-        center  
-            Whether to pad x to make that the t * hop_length at the 
-            center of t-th frame. Default: True.          
-        pad_mode 
+            The size of window frame and STFT filter. Defaults to None.
+        center
+            Whether to pad x to make that the t * hop_length at the
+            center of t-th frame. Default: True.
+        pad_mode
             Choose padding pattern when center is True. See paddle.
             nn.functional.pad for all padding options. Default: “reflect”.
-        normalized 
-            Control whether to scale the output by 1/sqrt(n_fft). 
+        normalized
+            Control whether to scale the output by 1/sqrt(n_fft).
             Default: False
-        detrend 
-            Specifies how to detrend each segment. If detrend is a string, 
-            it is passed as the type argument to the detrend function. If 
-            it is a function, it takes a segment and returns a detrended 
-            segment. If detrend is False, no detrending is done. Defaults 
+        detrend
+            Specifies how to detrend each segment. If detrend is a string,
+            it is passed as the type argument to the detrend function. If
+            it is a function, it takes a segment and returns a detrended
+            segment. If detrend is False, no detrending is done. Defaults
             to False.
         return_complex
-            Whether to return a complex tensor, or a real tensor with an extra 
-            last dimension for the real and imaginary components.            
+            Whether to return a complex tensor, or a real tensor with an extra
+            last dimension for the real and imaginary components.
         boundary
-            Specifies whether the input signal is extended at both ends, and 
-            how to generate the new values, in order to center the first 
-            windowed segment on the first input point. This has the benefit of 
-            enabling reconstruction of the first input point when the employed 
-            window function starts at zero. Valid options are ['even', 'odd', 
-            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding 
-            extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0] 
-            for nperseg=3.     
+            Specifies whether the input signal is extended at both ends, and
+            how to generate the new values, in order to center the first
+            windowed segment on the first input point. This has the benefit of
+            enabling reconstruction of the first input point when the employed
+            window function starts at zero. Valid options are ['even', 'odd',
+            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding
+            extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0]
+            for nperseg=3.
         out
             Optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
         Returns
         -------
         ret
-            The Short-time Fourier Transform of the signals.If onesided is 1, the 
-            output has the shape: [batch_size][frames][dft_unique_bins][2], where 
-            dft_unique_bins is frame_length // 2 + 1 (the unique components of 
+            The Short-time Fourier Transform of the signals.If onesided is 1, the
+            output has the shape: [batch_size][frames][dft_unique_bins][2], where
+            dft_unique_bins is frame_length // 2 + 1 (the unique components of
             the DFT) If onesided is 0, the output has the shape: [batch_size]
-            [frames][frame_length][2], where frame_length is the length of 
+            [frames][frame_length][2], where frame_length is the length of
             the DFT.
         """
         return self.static_stft(

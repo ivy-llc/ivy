@@ -455,6 +455,57 @@ def max_unpool1d_helper(
     return dts, values, indices, kernel_size, strides, padding
 
 
+# stft
+@st.composite
+def stft_arguments(draw):
+    dtype = draw(helpers.get_dtypes("float"))
+    n_fft_type = draw(st.sampled_from(["int", "tuple"]))
+
+    if n_fft_type == "int":
+        n_fft = draw(st.integers(min_value=1, max_value=256))
+    else:
+        n_fft = tuple(draw(st.integers(min_value=1, max_value=256)) for _ in range(2))
+
+    hop_length = draw(st.integers(min_value=1, max_value=256))
+    axis = draw(st.integers(min_value=0))
+    onesided = draw(st.booleans())
+    fs = 1.0
+    window = draw(
+        helpers.array_values(
+            dtype=helpers.get_dtypes("float"),
+            shape=helpers.get_shape(min_num_dims=1, max_num_dims=2),
+        )
+    )
+    win_length = (
+        draw(st.integers(min_value=1, max_value=n_fft))
+        if isinstance(n_fft, int)
+        else draw(st.integers(min_value=1, max_value=n_fft[1]))
+    )
+    center = draw(st.booleans())
+    pad_mode = draw(st.sampled_from(["reflect", "constant"]))
+    normalized = draw(st.booleans())
+    detrend = draw(st.one_of([st.booleans(), st.sampled_from(["linear", "constant"])]))
+    return_complex = draw(st.booleans())
+    boundary = draw(st.sampled_from(["even", "odd", "constant", "zeros", None]))
+
+    return (
+        dtype,
+        n_fft,
+        hop_length,
+        axis,
+        onesided,
+        fs,
+        window,
+        win_length,
+        center,
+        pad_mode,
+        normalized,
+        detrend,
+        return_complex,
+        boundary,
+    )
+
+
 # --- Main --- #
 # ------------ #
 
@@ -1332,65 +1383,32 @@ def test_rfftn(
     )
 
 
-# stft
-@st.composite
-def stft_arguments(draw):
-    dtype = draw(helpers.get_dtypes("float"))
-    n_fft_type = draw(st.sampled_from(["int", "tuple"]))
-    
-    if n_fft_type == "int":
-        n_fft = draw(st.integers(min_value=1, max_value=256))
-    else:
-        n_fft = tuple(
-            draw(st.integers(min_value=1, max_value=256))
-            for _ in range(2))
-    
-    hop_length = draw(st.integers(min_value=1, max_value=256))
-    axis = draw(st.integers(min_value=0))
-    onesided = draw(st.booleans())
-    fs = 1.0
-    window = draw(
-        helpers.array_values(
-            dtype=helpers.get_dtypes('float'),
-            shape=helpers.get_shape(
-                min_num_dims=1, max_num_dims=2
-            ),
-        )
-    )
-    win_length = (
-        draw(st.integers(min_value=1, max_value=n_fft))
-        if isinstance(n_fft, int)
-        else draw(st.integers(min_value=1, max_value=n_fft[1]))
-    )
-    center = draw(st.booleans())
-    pad_mode = draw(st.sampled_from(["reflect", "constant"]))
-    normalized = draw(st.booleans())
-    detrend = draw(st.one_of([st.booleans(), st.sampled_from(["linear", "constant"])]))
-    return_complex = draw(st.booleans())
-    boundary = draw(st.sampled_from(['even', 'odd', 'constant', 'zeros', None]))
-
-    return (
-        dtype,
-        n_fft,
-        hop_length,
-        axis,
-        onesided,
-        fs,
-        window,
-        win_length,
-        center,
-        pad_mode,
-        normalized,
-        detrend,
-        return_complex,
-        boundary,
+@handle_test(
+    fn_tree="functional.ivy.experimental.sliding_window",
+    all_args=helpers.arrays_for_pooling(3, 3, 1, 2, return_dilation=True),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
+    dtypes, input, k, stride, padding, dilation = all_args
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=input,
+        window_size=k,
+        stride=stride[0],
+        dilation=dilation[0],
+        padding=padding,
     )
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes('float'),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=2,
     ),
@@ -1406,7 +1424,7 @@ def test_stft(
     backend_fw,
     fn_name,
     stft_args,
-):      
+):
     dtype, x = dtype_and_x
     (
         dtype,
@@ -1446,29 +1464,7 @@ def test_stft(
         boundary=boundary,
     )
 
-      
-@handle_test(
-    fn_tree="functional.ivy.experimental.sliding_window",
-    all_args=helpers.arrays_for_pooling(3, 3, 1, 2, return_dilation=True),
-    test_with_out=st.just(False),
-    ground_truth_backend="jax",
-)
-def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
-    dtypes, input, k, stride, padding, dilation = all_args
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-        fn_name=fn_name,
-        input=input,
-        window_size=k,
-        stride=stride[0],
-        dilation=dilation[0],
-        padding=padding,
-    )
 
-    
 # test_stft
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",

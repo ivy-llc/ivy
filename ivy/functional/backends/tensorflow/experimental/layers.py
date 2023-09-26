@@ -919,7 +919,7 @@ def interpolate(
         ret = tf.squeeze(ret, axis=-2)
     return ret
 
-    
+
 interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
     (not align_corners and (len(x.shape) - 2) < 2)
     and mode not in ["nearest", "area", "bicubic", "nd"]
@@ -1352,10 +1352,10 @@ def stft(
 
     if hop_length <= 0:
         hop_length = 1
-    
+
     if window is not None:
         window = tf.signal.hann_window(win_length, periodic=True, dtype=signal.dtype)
-    window_fn = lambda *args, **kwargs: window    
+    window_fn = lambda *args, **kwargs: window
 
     return tf.signal.stft(
         signal,
