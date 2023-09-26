@@ -639,7 +639,8 @@ def percent_used_mem_on_dev(
 
 
 @handle_exceptions
-def dev_util(device: Union[ivy.Device, ivy.NativeDevice],
+def dev_util(
+    device: Union[ivy.Device, ivy.NativeDevice],
     /,
 ) -> float:
     """
