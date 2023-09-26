@@ -26,7 +26,11 @@ def linear(
     return torch.nn.functional.linear(x, weight, bias)
 
 
-linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
+def linear_partial_mixed_handler(x, weight, **kwargs):
+    return weight.ndim == 2
+
+
+linear.partial_mixed_handler = linear_partial_mixed_handler
 
 
 def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):

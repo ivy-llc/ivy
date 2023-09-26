@@ -190,8 +190,15 @@ def ifft(
     raise IvyNotImplementedException()
 
 
-@handle_partial_mixed_function(
-    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+def mixed_partial_function(
+    *args,
+    mode="linear",
+    scale_factor=None,
+    recompute_scale_factor=None,
+    align_corners=None,
+    **kwargs,
+):
+    return (
         not align_corners
         and mode
         not in [
@@ -204,6 +211,23 @@ def ifft(
         ]
         and recompute_scale_factor
     )
+
+
+@handle_partial_mixed_function(
+    mixed_partial_function
+    # lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+    #     not align_corners
+    #     and mode
+    #     not in [
+    #         "area",
+    #         "nearest",
+    #         "tf_area",
+    #         "mitchellcubic",
+    #         "gaussian",
+    #         "bicubic",
+    #     ]
+    #     and recompute_scale_factor
+    # )
 )
 def interpolate(
     x: mx.nd.NDArray,

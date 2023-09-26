@@ -42,6 +42,10 @@ def execute_with_gradients(
     return func_ret, None
 
 
+def grad_mapping(x):
+    return ivy.zeros_like(x)
+
+
 def value_and_grad(func):
     logging.warning(
         "NumPy does not support autograd, 'value_and_grad' "
@@ -49,9 +53,7 @@ def value_and_grad(func):
     )
 
     def grad_fn(xs):
-        grads = ivy.nested_map(
-            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
-        )
+        grads = ivy.nested_map(grad_mapping, xs, include_derived=True, shallow=False)
         y = func(xs)
         y = ivy.to_ivy(y)
         return y, grads
@@ -66,9 +68,7 @@ def jac(func):
     )
 
     def grad_fn(xs):
-        jacobian = ivy.nested_map(
-            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
-        )
+        jacobian = ivy.nested_map(grad_mapping, xs, include_derived=True, shallow=False)
         return jacobian
 
     return grad_fn
@@ -81,9 +81,7 @@ def grad(func, argnums=0):
     )
 
     def grad_fn(xs):
-        grad = ivy.nested_map(
-            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
-        )
+        grad = ivy.nested_map(grad_mapping, xs, include_derived=True, shallow=False)
         y = func(xs)
         y = ivy.to_ivy(y)
         return grad

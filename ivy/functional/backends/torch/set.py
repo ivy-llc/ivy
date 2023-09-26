@@ -7,6 +7,15 @@ from collections import namedtuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 import ivy
+from functools import partial
+
+
+def idx_key(x):
+    return tuple(x[1])
+
+
+def inverse_indices_mapping(y, inv_sort_idx):
+    return torch.gather(inv_sort_idx, 0, y)
 
 
 @with_unsupported_dtypes(
@@ -63,16 +72,16 @@ def unique_all(
         values_ = torch.moveaxis(values, axis, 0)
         values_ = torch.reshape(values_, (values_.shape[0], -1))
         sort_idx = torch.tensor(
-            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
+            [i[0] for i in sorted(list(enumerate(values_)), key=idx_key)]
         )
     ivy_torch = ivy.current_backend()
     values = ivy_torch.gather(values, sort_idx, axis=axis)
     counts = ivy_torch.gather(counts, sort_idx)
     indices = ivy_torch.gather(indices, sort_idx)
     inv_sort_idx = ivy_torch.invert_permutation(sort_idx)
-    inverse_indices = torch.vmap(lambda y: torch.gather(inv_sort_idx, 0, y))(
-        inverse_indices
-    )
+    inverse_indices = torch.vmap(
+        partial(inverse_indices_mapping, inv_sort_idx=inv_sort_idx)
+    )(inverse_indices)
 
     return Results(
         values.to(x.dtype),

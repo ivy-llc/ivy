@@ -73,15 +73,19 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
-batch_norm.partial_mixed_handler = (
-    lambda x, mean, variance, scale=None, offset=None, **kwargs: (
+def batch_norm_partial_mixed_handler(
+    x, mean, variance, scale=None, offset=None, **kwargs
+):
+    return (
         x.ndim > 1
         and mean.ndim == 1
         and variance.ndim == 1
         and (scale is None or scale.ndim == 1)
         and (offset is None or offset.ndim == 1)
     )
-)
+
+
+batch_norm.partial_mixed_handler = batch_norm_partial_mixed_handler
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -127,15 +131,19 @@ def instance_norm(
     return xnormalized, runningmean, runningvariance
 
 
-instance_norm.partial_mixed_handler = (
-    lambda x, mean, variance, scale=None, offset=None, **kwargs: (
+def instance_norm_partial_mixed_handler(
+    x, mean, variance, scale=None, offset=None, **kwargs
+):
+    return (
         x.ndim > 1
         and mean.ndim == 1
         and variance.ndim == 1
         and (scale is None or scale.ndim == 1)
         and (offset is None or offset.ndim == 1)
     )
-)
+
+
+instance_norm.partial_mixed_handler = instance_norm_partial_mixed_handler
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)

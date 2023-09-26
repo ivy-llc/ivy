@@ -212,6 +212,10 @@ def trilu(
 trilu.support_native_out = True
 
 
+def _hz_to_mel(f):
+    return 2595 * torch.log10(1 + f / 700)
+
+
 def mel_weight_matrix(
     num_mel_bins: int,
     dft_length: int,
@@ -224,7 +228,7 @@ def mel_weight_matrix(
     upper_edge_hertz = torch.tensor(upper_edge_hertz)
     zero = torch.tensor(0.0)
     # mel transform lambda function
-    hz_to_mel = lambda f: 2595 * torch.log10(1 + f / 700)
+    hz_to_mel = _hz_to_mel
     nyquist_hz = sample_rate / 2
     # define a range of frequencies in HZ
     linear_freqs = torch.linspace(0, nyquist_hz, dft_length)[1:]

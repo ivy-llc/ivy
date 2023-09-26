@@ -735,9 +735,11 @@ def dropout(
     return res
 
 
-dropout.partial_mixed_handler = lambda x, prob, **kwargs: (
-    kwargs.get("noise_shape") is None and kwargs.get("seed") is None
-)
+def dropout_partial_mixed_handler(x, prob, **kwargs):
+    return kwargs.get("noise_shape") is None and kwargs.get("seed") is None
+
+
+dropout.partial_mixed_handler = dropout_partial_mixed_handler
 
 
 @with_unsupported_dtypes(
@@ -902,15 +904,19 @@ def interpolate(
     )
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
-    "tf_area",
-    "nd",
-    "bicubic_tensorflow",
-    "mitchellcubic",
-    "lanczos3",
-    "lanczos5",
-    "gaussian",
-]
+def interpolate_partial_mixed_handler(*args, mode="linear", **kwargs):
+    return mode not in [
+        "tf_area",
+        "nd",
+        "bicubic_tensorflow",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+
+
+interpolate.partial_mixed_handler = interpolate_partial_mixed_handler
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)

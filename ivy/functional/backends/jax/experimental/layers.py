@@ -24,6 +24,7 @@ from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
+from functools import partial
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
@@ -717,10 +718,15 @@ def interpolate(
     )
 
 
-interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    (align_corners is None or not align_corners)
-    and mode
-    not in [
+def partial_mixed_handler(
+    *args,
+    mode="linear",
+    scale_factor=None,
+    recompute_scale_factor=None,
+    align_corners=None,
+    **kwargs,
+):
+    return (align_corners is None or not align_corners) and mode not in [
         "area",
         "nearest",
         "nd",
@@ -729,7 +735,27 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
         "gaussian",
         "bicubic",
     ]
-)
+
+
+interpolate.partial_mixed_handler = partial_mixed_handler
+
+# interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+#     (align_corners is None or not align_corners)
+#     and mode
+#     not in [
+#         "area",
+#         "nearest",
+#         "nd",
+#         "tf_area",
+#         "mitchellcubic",
+#         "gaussian",
+#         "bicubic",
+#     ]
+# )
+
+
+def dimension_mappings(x, operand):
+    return tuple([x] * len(operand.shape)) if isinstance(x, int) else x
 
 
 def reduce_window(
@@ -747,7 +773,8 @@ def reduce_window(
     computation = _correct_ivy_callable(computation)
     computation = output_to_native_arrays(computation)
     window_dimensions, window_strides, padding, base_dilation, window_dilation = map(
-        lambda x: tuple([x] * len(operand.shape)) if isinstance(x, int) else x,
+        # lambda x: tuple([x] * len(operand.shape)) if isinstance(x, int) else x,
+        partial(dimension_mappings, operand=operand),
         [window_dimensions, window_strides, padding, base_dilation, window_dilation],
     )
     if not isinstance(padding, str):

@@ -456,6 +456,10 @@ def cummax(
     return np.maximum.accumulate(x, axis=axis, dtype=x.dtype), indices
 
 
+def sorting_order(i):
+    return i[1]
+
+
 def __find_cummax_indices(
     x: np.ndarray,
     axis: int = 0,
@@ -471,7 +475,7 @@ def __find_cummax_indices(
             indice_list = __get_index(x.tolist())
             indices, n1 = x.copy(), {}
             indices.fill(0)
-            indice_list = sorted(indice_list, key=lambda i: i[1])
+            indice_list = sorted(indice_list, key=sorting_order)
             for y, y_index in indice_list:
                 multi_index = y_index
                 if tuple(multi_index[1:]) not in n1:

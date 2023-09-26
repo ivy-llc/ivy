@@ -131,6 +131,10 @@ def trilu(
     return jnp.tril(x, k)
 
 
+def hz_to_mel(f):
+    return 2595 * jnp.log10(1 + f / 700)
+
+
 def mel_weight_matrix(
     num_mel_bins: int,
     dft_length: int,
@@ -141,7 +145,7 @@ def mel_weight_matrix(
     lower_edge_hertz = jnp.array(lower_edge_hertz)
     upper_edge_hertz = jnp.array(upper_edge_hertz)
     zero = jnp.array(0.0)
-    hz_to_mel = lambda f: 2595 * jnp.log10(1 + f / 700)
+    # hz_to_mel = lambda f: 2595 * jnp.log10(1 + f / 700)
     nyquist_hz = sample_rate / 2
     linear_freqs = jnp.linspace(0, nyquist_hz, dft_length, dtype=jnp.float32)[1:]
     spec_bin_mels = hz_to_mel(linear_freqs)[..., None]

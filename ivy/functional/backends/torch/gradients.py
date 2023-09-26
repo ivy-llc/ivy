@@ -17,6 +17,7 @@ from ivy.functional.ivy.gradients import (
     _set_duplicates,
     _process_func_ret_and_grads,
 )
+from functools import partial
 
 
 def variable(x, /):
@@ -35,11 +36,23 @@ def variable_data(x: torch.Tensor, /) -> torch.Tensor:
     return x.data
 
 
+def _nested_map_mapping(x):
+    return ivy.to_native(ivy.zeros_like(x))
+
+
+def _grad_mapping(x):
+    return 0 if x is None else x
+
+
+def _multi_map_mapping(x):
+    return x[0] + x[1]
+
+
 def _grad_func(y, xs, retain_grads):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
-        lambda x: ivy.to_native(ivy.zeros_like(x)),
+        _nested_map_mapping,
         xs,
         include_derived=True,
         shallow=False,
@@ -69,9 +82,7 @@ def _grad_func(y, xs, retain_grads):
         )
         # Returning zeros if no gradients are computed for consistent results
         if isinstance(grads, ivy.Container):
-            grads = ivy.nested_map(
-                lambda x: 0 if x is None else x, grads, include_derived=True
-            )
+            grads = ivy.nested_map(_grad_mapping, grads, include_derived=True)
             grads += grads_
         else:
             grads = grads_ if grads is None else grads
@@ -88,8 +99,12 @@ def _grad_func(y, xs, retain_grads):
             return grad if grad is not None else 0
 
         grads = ivy.nested_map(grad_, xs, include_derived=True, shallow=False)
-        grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
+        grads = ivy.nested_multi_map(_multi_map_mapping, [grads, grads_])
     return grads
+
+
+def _grad_arr_idxs_mapping(x):
+    return ivy.is_native_array(x)
 
 
 def execute_with_gradients(
@@ -123,7 +138,7 @@ def execute_with_gradients(
         # Gradient calculation for multiple outputs
         # ToDo: use functorch.jacrev if it fixes the issue with broken memory reference
         y = _get_native_y(y)
-        grad_arr_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
+        grad_arr_idxs = ivy.nested_argwhere(y, _grad_arr_idxs_mapping)
         grad_arr_values = ivy.multi_index_nest(y, grad_arr_idxs)
         grads_ = [
             _grad_func(torch.clone(arr_value), xs, retain_grads)
@@ -140,8 +155,12 @@ def execute_with_gradients(
     return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
+def value_grad_fn(xs, func):
+    return ivy.to_native(func(xs))
+
+
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    grad_fn = partial(value_grad_fn, func=func)
 
     def callback_fn(xs):
         y = grad_fn(xs)
@@ -181,17 +200,27 @@ def stop_gradient(
     return x.detach()
 
 
-def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(
+def jac_grad_fn(x_in, func):
+    return ivy.to_native(
         func(ivy.to_ivy(x_in, nested=True)),
         nested=True,
         include_derived=True,
     )
-    callback_fn = lambda x_in: ivy.to_ivy(
-        torch.func.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
+
+
+def jack_callback_fn(x_in, func):
+    return ivy.to_ivy(
+        torch.func.jacfwd(partial(jac_grad_fn, func=func))(
+            (ivy.to_native(x_in, nested=True))
+        ),
         nested=True,
         include_derived=True,
     )
+
+
+def jac(func: Callable):
+    # grad_fn =  partial(jac_grad_fn, func=func)
+    callback_fn = jack_callback_fn
     return callback_fn
 
 

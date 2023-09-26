@@ -334,6 +334,10 @@ def cummax(
     return jlax.cummax(x, axis, reverse=reverse), indices
 
 
+def sorting_order(i):
+    return i[1]
+
+
 def __find_cummax_indices(
     x: JaxArray,
     axis: int = 0,
@@ -349,7 +353,7 @@ def __find_cummax_indices(
             z_list = __get_index(x.tolist())
             indices, n1 = x.copy(), {}
             indices = jnp.zeros(jnp.asarray(indices.shape), dtype=x.dtype)
-            z_list = sorted(z_list, key=lambda i: i[1])
+            z_list = sorted(z_list, key=sorting_order)
             for y, y_index in z_list:
                 multi_index = y_index
                 if tuple(multi_index[1:]) not in n1:

@@ -95,6 +95,10 @@ def _stack_tensors(x, dtype):
     return x
 
 
+def contain_mapping(x):
+    return isinstance(x, torch.Tensor)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 @_asarray_to_native_arrays_and_back
 @_asarray_infer_device
@@ -121,7 +125,7 @@ def asarray(
 ) -> torch.Tensor:
     obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     if isinstance(obj, Sequence) and len(obj) != 0:
-        contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
+        contain_tensor = ivy.nested_any(obj, contain_mapping)
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
         if contain_tensor:

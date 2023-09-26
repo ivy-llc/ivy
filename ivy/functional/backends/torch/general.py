@@ -17,6 +17,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
 from . import backend_version, is_variable
 from ...ivy.general import _broadcast_to
+from functools import partial
 
 torch_scatter = None
 
@@ -95,7 +96,11 @@ def get_item(
     return x.__getitem__(query)
 
 
-get_item.partial_mixed_handler = lambda x, query, **kwargs: not neg_step(query)
+def get_item_partial_mixed_handler(x, query, **kwargs):
+    return not neg_step(query)
+
+
+get_item.partial_mixed_handler = get_item_partial_mixed_handler
 
 
 def set_item(
@@ -114,9 +119,11 @@ def set_item(
     return x
 
 
-set_item.partial_mixed_handler = (
-    lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
-)
+def set_item_partial_mixed_handler(x, query, val, **kwargs):
+    return not neg_step(query) and not x.requires_grad
+
+
+set_item.partial_mixed_handler = set_item_partial_mixed_handler
 
 
 def to_numpy(
@@ -507,6 +514,10 @@ def shape(
         return ivy.Shape(x.shape)
 
 
+def _new_func(*args, func):
+    return ivy.to_native(func(*args))
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def vmap(
     func: Callable,
@@ -516,7 +527,7 @@ def vmap(
     @ivy.output_to_native_arrays
     @ivy.inputs_to_native_arrays
     def _vmap(*args):
-        new_fun = lambda *args: ivy.to_native(func(*args))
+        new_fun = partial(_new_func, func=func)
         new_func = functorch.vmap(new_fun, in_axes, out_axes)
         return new_func(*args)
 

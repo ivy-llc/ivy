@@ -545,6 +545,12 @@ def _EvaluatePolynomial(x, coefficients):
 
 # TODO: Remove this once native function is avilable.
 # Compute an approximation of the error function complement (1 - erf(x)).
+
+
+def is_pos_inf(op):
+    return np.logical_and(np.isinf(op), op > 0)
+
+
 def erfc(
     x: np.ndarray,
     /,
@@ -568,7 +574,7 @@ def erfc(
     y = np.where(abs_x_small, z * pp / pq, z * pr / ps)
     result_no_underflow = np.where(x < 0.0, 2.0 - y, y)
 
-    is_pos_inf = lambda op: np.logical_and(np.isinf(op), op > 0)
+    # is_pos_inf = lambda op: np.logical_and(np.isinf(op), op > 0)
     underflow = np.logical_or(
         z == 0,
         np.logical_or(

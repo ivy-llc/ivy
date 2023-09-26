@@ -113,11 +113,13 @@ def pad(
         ).squeeze(0)
 
 
-pad.partial_mixed_handler = (
-    lambda *args, mode="constant", constant_values=0, reflect_type="even", **kwargs: (
-        _check_torch_pad(mode, reflect_type, args[1], args[0].shape, constant_values)
-    )
-)
+def partial_mixed_handler(
+    *args, mode="constant", constant_values=0, reflect_type="even", **kwargs
+):
+    return _check_torch_pad(mode, reflect_type, args[1], args[0].shape, constant_values)
+
+
+pad.partial_mixed_handler = partial_mixed_handler
 
 
 def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values):
@@ -245,9 +247,13 @@ def flatten(
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
 
 
-flatten.partial_mixed_handler = (
-    lambda *args, copy=None, start_dim=0, end_dim=1, order="C", **kwargs: order == "C"
-)
+def flatten_partial_mixed_handler(
+    *args, copy=None, start_dim=0, end_dim=1, order="C", **kwargs
+):
+    return order == "C"
+
+
+flatten.partial_mixed_handler = flatten_partial_mixed_handler
 
 
 def vsplit(
