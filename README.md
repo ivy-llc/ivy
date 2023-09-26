@@ -132,7 +132,7 @@ reference, but the functions you\'d most likely want to use are:
 
 ``` python
 # Traces an efficient fully-functional graph from a function, removing all wrapping and redundant code
-ivy.trace()
+ivy.trace_graph()
 
 # Converts framework-specific code to a different framework
 ivy.transpile()
