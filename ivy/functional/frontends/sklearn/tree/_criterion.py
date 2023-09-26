@@ -500,7 +500,7 @@ class ClassificationCriterion(Criterion):
         for k in range(self.n_outputs):
             dest[: self.n_classes[k] * 8] = self.sum_total[k, 0 : self.n_classes[k] * 8]
             dest += self.max_n_classes
-        
+
         return dest
 
 
@@ -732,7 +732,7 @@ class RegressionCriterion(Criterion):
     def node_value(self, dest: float):
         for k in range(self.n_outputs):
             dest[k] = self.sum_total[k] / self.weighted_n_node_samples
-        
+
         return dest
 
 
@@ -808,7 +808,7 @@ class Entropy(ClassificationCriterion):
 
         impurity_left = entropy_left / self.n_outputs
         impurity_right = entropy_right / self.n_outputs
-        
+
         return impurity_left, impurity_right
 
 
@@ -903,7 +903,7 @@ class Gini(ClassificationCriterion):
 
         impurity_left = gini_left / self.n_outputs
         impurity_right = gini_right / self.n_outputs
-        
+
         return impurity_left, impurity_right
 
 
@@ -1003,7 +1003,7 @@ class MSE(RegressionCriterion):
 
         impurity_left /= self.n_outputs
         impurity_right /= self.n_outputs
-        
+
         return impurity_left, impurity_right
 
 
@@ -1233,7 +1233,7 @@ class MAE(RegressionCriterion):
         """Computes the node value of sample_indices[start:end] into dest."""
         for k in range(self.n_outputs):
             dest[k] = self.node_medians[k]
-        
+
         return dest
 
     def node_impurity(self):
@@ -1311,7 +1311,7 @@ class MAE(RegressionCriterion):
 
                 impurity_right += ivy.abs(self.y[i, k] - median) * w
         p_impurity_right = impurity_right / (self.weighted_n_right * self.n_outputs)
-        
+
         return p_impurity_left, p_impurity_right
 
 
@@ -1350,7 +1350,7 @@ class Poisson(RegressionCriterion):
         impurity_right = self.poisson_loss(
             pos, end, self.sum_right, self.weighted_n_right
         )
-        
+
         return impurity_left, impurity_right
 
     def poisson_loss(self, start, end, y_sum, weight_sum):
@@ -1376,21 +1376,23 @@ class Poisson(RegressionCriterion):
 
 
 class FriedmanMSE(MSE):
-    """Mean squared error impurity criterion with improvement score by Friedman.
+    """
+    Mean squared error impurity criterion with improvement score by Friedman.
 
     Uses the formula (35) in Friedman's original Gradient Boosting paper:
 
         diff = mean_left - mean_right
         improvement = n_left * n_right * diff^2 / (n_left + n_right)
     """
-    
+
     def proxy_impurity_improvement(self):
-        """Compute a proxy of the impurity reduction.
+        """
+        Compute a proxy of the impurity reduction.
 
         This method is used to speed up the search for the best split.
-        It is a proxy quantity such that the split that maximizes this value
-        also maximizes the impurity improvement. It neglects all constant terms
-        of the impurity decrease for a given split.
+        It is a proxy quantity such that the split that maximizes this
+        value also maximizes the impurity improvement. It neglects all
+        constant terms of the impurity decrease for a given split.
 
         The absolute impurity improvement is only computed by the
         impurity_improvement method once the best split has been found.
@@ -1510,5 +1512,5 @@ def _move_sums_regression(
         sum_2[0:n_bytes] = criterion.sum_total[0:n_bytes]
         weighted_n_1 = 0.0
         weighted_n_2 = criterion.weighted_n_node_samples
-    
+
     return weighted_n_1, weighted_n_2

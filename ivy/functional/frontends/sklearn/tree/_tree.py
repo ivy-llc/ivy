@@ -871,8 +871,10 @@ class DepthFirstTreeBuilder(TreeBuilder):
             is_leaf = is_leaf or impurity <= EPSILON
 
             if not is_leaf:
-                #impurity is passed by value in the original code
-                _, n_constant_features = splitter.node_split(impurity, split, n_constant_features)
+                # impurity is passed by value in the original code
+                _, n_constant_features = splitter.node_split(
+                    impurity, split, n_constant_features
+                )
                 # If EPSILON=0 in the below comparison, float precision
                 # issues stop splitting, producing trees that are
                 # dissimilar to v0.18
@@ -1115,7 +1117,9 @@ class BestFirstTreeBuilder(TreeBuilder):
         weighted_n_node_samples = 0.0
         is_leaf = False
 
-        _, weighted_n_node_samples = splitter.node_reset(start, end, weighted_n_node_samples)
+        _, weighted_n_node_samples = splitter.node_reset(
+            start, end, weighted_n_node_samples
+        )
 
         if is_first:
             impurity = splitter.node_impurity()
@@ -1130,7 +1134,9 @@ class BestFirstTreeBuilder(TreeBuilder):
         )
 
         if not is_leaf:
-            _, n_constant_features = splitter.node_split(impurity, split, n_constant_features)
+            _, n_constant_features = splitter.node_split(
+                impurity, split, n_constant_features
+            )
             is_leaf = (
                 is_leaf
                 or split.pos >= end
