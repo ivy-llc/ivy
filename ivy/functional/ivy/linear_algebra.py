@@ -2445,9 +2445,7 @@ def tensordot(
             x1.shape, x2.shape, batched_modes
         )
         return _tensordot_with_batched_modes(x1, x2, axes, batched_modes)
-    return current_backend(x1, x2).tensordot(
-        x1, x2, axes=axes, batched_modes=batched_modes, out=out
-    )
+    return ivy.tensordot(x1, x2, axes=axes, batched_modes=batched_modes, out=out)
 
 
 tensordot.mixed_backend_wrappers = {
