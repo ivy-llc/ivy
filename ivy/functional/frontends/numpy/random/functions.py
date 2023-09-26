@@ -187,13 +187,13 @@ def noncentral_chisquare(df, nonc, size=None):
     if ivy.has_nans(nonc):
         return ivy.nan
     if ivy.any(nonc == 0):
-        return chisquare(df, size=size)
+        return ivy.array(chisquare(df, size=size))
     if ivy.any(df < 1):
         n = standard_normal() + ivy.sqrt(nonc)
-        return chisquare(df - 1, size=size) + n * n
+        return ivy.array(chisquare(df - 1, size=size) + n * n)
     else:
         i = poisson(nonc / 2.0, size=size)
-        return chisquare(df + 2 * i, size=size)
+        return ivy.array(chisquare(df + 2 * i, size=size))
 
 
 @to_ivy_arrays_and_back
