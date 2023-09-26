@@ -2065,11 +2065,7 @@ def test_torch_logical_xor(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
-        max_num_dims=1,
         min_dim_size=1,
-        max_dim_size=1,
-        min_value=-10,
-        max_value=10,
     ),
     eps=st.sampled_from([1e-05, -1e-05, None]),
 )
@@ -2323,7 +2319,7 @@ def test_torch_pow(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    if 'int' in input_dtype[0] and isinstance(x[1], int) and x[1] < 0:
+    if "int" in input_dtype[0] and isinstance(x[1], int) and x[1] < 0:
         x[1] = -x[1]
     try:
         helpers.test_frontend_function(
