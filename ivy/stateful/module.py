@@ -906,7 +906,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return self._built
 
     @property
-    def device_(self):
+    def device(self):
         return self._device
 
     def show_graph(
