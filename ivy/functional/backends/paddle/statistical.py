@@ -6,12 +6,13 @@ from typing import Union, Optional, Sequence
 
 import paddle
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
 )
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.utils.einsum_parser import legalise_einsum_expr
+from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 
 # local
 from . import backend_version
@@ -346,9 +347,31 @@ def cumsum(
         return paddle_backend.flip(x, axis=axis).cast(dtype)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64", "complex64", "complex128"),
+            "gpu": (
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+                "complex64",
+                "complex128",
+            ),
+        },
+        "2.4.2 and below": {
+            "cpu": ("float32", "float64", "complex64", "complex128"),
+            "gpu": ("float16", "float32", "float64", "complex64", "complex128"),
+        },
+    },
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = _get_promoted_type_of_operands(operands)
+    equation = legalise_einsum_expr(*[equation, *operands])
+    return paddle.einsum(equation, *operands).astype(dtype)
