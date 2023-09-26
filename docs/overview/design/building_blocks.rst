@@ -392,7 +392,7 @@ has a different mix of Ivy and PyTorch code, they all trace to the same graph:
 | x = ivy.array([[1., 2., 3.]])          | x = torch.tensor([[1., 2., 3.]])        | x = ivy.array([[1., 2., 3.]])           |
 |                                        |                                         |                                         |
 | # create graph                         | # create graph                          | # create graph                          |
-| graph = ivy.trace(                     | graph = ivy.trace(                      | graph = ivy.trace(                      |
+| graph = ivy.trace_graph(               | graph = ivy.trace_graph(                | graph = ivy.trace_graph(                |
 |     pure_ivy, x)                       |     pure_torch, x)                      |     mix, x)                             |
 |                                        |                                         |                                         |
 | # call graph                           | # call graph                            | # call graph                            |
@@ -427,8 +427,8 @@ For example, the following 3 pieces of code all result in the exact same computa
 | # input                                | b = ivy.zeros((3,))                     | b = ivy.zeros((3,))                     |
 | x = ivy.array([1., 2., 3.])            |                                         |                                         |
 |                                        | # trace graph                           | # trace graph                           |
-| # trace graph                          | graph = ivy.trace(                      | graph = ivy.trace(                      |
-| net.trace(x)                           |     clean, x, w, b)                     |     unclean, x, w, b)                   |
+| # trace graph                          | graph = ivy.trace_graph(                | graph = ivy.trace_graph(                |
+| net.trace_graph(x)                     |     clean, x, w, b)                     |     unclean, x, w, b)                   |
 |                                        |                                         |                                         |
 | # execute graph                        | # execute graph                         | # execute graph                         |
 | net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
@@ -453,7 +453,7 @@ Let's take another example, but trace to Tensorflow, NumPy, and JAX:
 | x = ivy.array([[1., 2., 3.]])      |
 | y = ivy.array([[2., 3., 4.]])      |
 | # create graph                     |
-| graph = ivy.trace(                 |
+| graph = ivy.trace_graph(           |
 |     ivy_func, x, y)                |
 |                                    |
 | # call graph                       |

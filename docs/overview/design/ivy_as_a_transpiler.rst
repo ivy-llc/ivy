@@ -200,7 +200,7 @@ For the example above, this would look like:
    import jax
    import ivy
 
-   jax_graph = ivy.trace(net, x).to_backend('jax')
+   jax_graph = ivy.trace_graph(net, x).to_backend('jax')
    x = jax.numpy.array([1., 2., 3.])
    jax_graph(x)
 
@@ -223,7 +223,7 @@ We can trace a graph of this network using Ivy’s tracer like so:
 
 .. code-block:: python
 
-   net = net.trace()
+   net = net.trace_graph()
 
 In this case, the learnable weights are treated as inputs to the graph rather than constants.
 

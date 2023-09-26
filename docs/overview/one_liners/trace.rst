@@ -1,4 +1,4 @@
-``ivy.trace()``
+``ivy.trace_graph()``
 =================
 
 ..
@@ -24,7 +24,7 @@ of functions from the backend functional API only, which results in:
 Tracer API
 ------------
 
-.. py:function:: ivy.trace(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to = None, include_generators = True, array_caching = True, return_backend_traced_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
+.. py:function:: ivy.trace_graph(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to = None, include_generators = True, array_caching = True, return_backend_traced_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
 
     Creates a ``Callable`` or set of them into an Ivy graph. If ``args`` or ``kwargs`` are specified,
     compilation is performed eagerly, otherwise, compilation will happen lazily.
@@ -59,7 +59,7 @@ Tracer API
 Using the tracer
 ------------------
 
-To use the ``ivy.trace()`` function, you need to pass a callable object and the corresponding inputs
+To use the ``ivy.trace_graph()`` function, you need to pass a callable object and the corresponding inputs
 to the function.
 
 Let's start with a simple function:
@@ -82,7 +82,7 @@ Let's start with a simple function:
     y = ivy.array([2, 3, 4])
 
     # Trace the function
-    traced_fn = ivy.trace(fn, args=(x, y))
+    traced_fn = ivy.trace_graph(fn, args=(x, y))
 
 In this case, the created graph would be:
 
@@ -130,10 +130,10 @@ use the traced function to compute the outputs directly.
 .. code-block:: python
 
     # Trace the function eagerly (compilation happens here)
-    eager_graph = ivy.trace(fn, args=(x, y))
+    eager_graph = ivy.trace_graph(fn, args=(x, y))
 
     # Trace the function lazily (compilation does not happen here)
-    lazy_graph = ivy.trace(fn)
+    lazy_graph = ivy.trace_graph(fn)
 
     # Trace and return the output
     out = lazy_graph(x, y)
@@ -164,9 +164,9 @@ The tracer is able to cache constant arrays and their operations through the
         z = x ** (a + b)
         return z
 
-    comp_func = ivy.trace(fn, args=(x,))
+    comp_func = ivy.trace_graph(fn, args=(x,))
 
-When calling ``ivy.trace()``, the ``array_caching`` argument is set to ``True`` by
+When calling ``ivy.trace_graph()``, the ``array_caching`` argument is set to ``True`` by
 default, which returns the following graph.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/compiler/figure2.png
@@ -196,7 +196,7 @@ are included as nodes or "baked" into the graph.
         z = x ** a
         return z + torch.rand([1])
 
-    comp_func = ivy.trace(fn, include_generators=True, args=(x,))
+    comp_func = ivy.trace_graph(fn, include_generators=True, args=(x,))
 
 Returns:
 
@@ -215,7 +215,7 @@ And instead,
         z = x * a
         return z + torch.rand([1])
 
-    comp_func = ivy.trace(fn, include_generators=False, args=(x,))
+    comp_func = ivy.trace_graph(fn, include_generators=False, args=(x,))
 
 Returns:
 
@@ -241,7 +241,7 @@ arbitrary classes using the ``stateful`` parameters.
     cont = ivy.Container(x=x)
 
     args = (cont.cont_deep_copy(), x)
-    comp_func = ivy.trace(fn, arg_stateful_idxs=[[0]], args=args)
+    comp_func = ivy.trace_graph(fn, arg_stateful_idxs=[[0]], args=args)
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/compiler/figure6.png
 
@@ -311,7 +311,7 @@ With ivy, you can trace your model to a computation graph for increased performa
 .. code-block:: python
 
     # Compiling the model
-    traced_graph = ivy.trace(model, args=(**inputs,))
+    traced_graph = ivy.trace_graph(model, args=(**inputs,))
 
     # Using the traced function
     logits = traced_graph(**inputs).logits

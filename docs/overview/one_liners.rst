@@ -4,7 +4,7 @@ One liners
 .. grid:: 1 1 3 3
     :gutter: 4
 
-    .. grid-item-card:: ``ivy.trace()``
+    .. grid-item-card:: ``ivy.trace_graph()``
         :link: one_liners/trace.rst
 
         Traces a ``Callable`` or set of them into an Ivy graph.
