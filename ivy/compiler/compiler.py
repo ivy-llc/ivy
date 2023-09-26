@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple
+from typing import Callable, Optional, List, Union, Iterable, Tuple , Any
 
 
 # TODO: create meaningful types for Graph and LazyGraph,
@@ -134,7 +134,7 @@ def transpile(
     arg_stateful_idxs: Optional[List] = None,
     kwarg_stateful_idxs: Optional[List] = None,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Any] = None,
     params_v=None,
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
