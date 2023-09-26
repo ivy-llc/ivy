@@ -1,4 +1,3 @@
-import platform
 from typing import Callable, Optional, List, Union, Iterable, Tuple
 
 
@@ -10,7 +9,8 @@ class Graph:
 
 class LazyGraph:
     pass
-    
+
+
 def compile(
     *objs: Callable,
     stateful: Optional[List] = None,
@@ -28,7 +28,8 @@ def compile(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    """Takes `fn` and compiles it into a more efficient composition of backend operations.
+    """
+    Takes `fn` and compiles it into a more efficient composition of backend operations.
 
     Parameters
     ----------
@@ -118,6 +119,7 @@ def compile(
         kwargs=kwargs,
     )
 
+
 def transpile(
     *objs: Callable,
     source: Optional[str] = None,
@@ -136,9 +138,9 @@ def transpile(
     params_v=None,
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
-    """Transpiles Callable objects passed as arguments. If args and kwargs are
-    specified, transpilation is performed eagerly, otherwise, transpilation
-    will happen lazily.
+    """
+    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
+    transpilation is performed eagerly, otherwise, transpilation will happen lazily.
 
     Parameters
     ----------
@@ -178,6 +180,7 @@ def transpile(
         params_v=params_v,
         v=v,
     )
+
 
 def unify(
     *objs: Callable,
