@@ -905,3 +905,26 @@ def test_zeta(
         x=x[0],
         q=x[1],
     )
+# amin
+@handle_test(
+    fn_tree="functional.ivy.experimental.amin",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
+        num_arrays=2,
+    ),
+    test_gradients=st.just(False),
+)
+def test_amin(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+    )
