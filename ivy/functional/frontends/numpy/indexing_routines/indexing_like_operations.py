@@ -84,46 +84,23 @@ def put_along_axis(arr, indices, values, axis):
 
 
 @to_ivy_arrays_and_back
-def take(arr, indices, axis=None, out=None, mode="raise"):
+def take(arr, indices, axis=None, mode="raise"):
     indices = ivy.array(indices, dtype=ivy.int32)
 
-    if axis is None:
-        arr_flat = ivy.reshape(arr, [-1])
-        axis = 0
-    else:
-        arr_flat = arr
-    out_of_bounds = ivy.logical_or(
-        indices < 0, indices >= ivy.shape(arr_flat, axis=axis)
-    )
+    if axis is not None:
+        pass
+
+    out_of_bounds = ivy.logical_or(indices < 0, indices >= ivy.shape(arr)[0])
 
     if ivy.any(out_of_bounds):
         if mode == "raise":
             raise ValueError("Indices are out of bounds.")
         elif mode == "clip":
-            indices = ivy.clip(indices, 0, ivy.shape(arr_flat, axis=axis) - 1)
+            indices = ivy.clip(indices, 0, ivy.shape(arr)[0] - 1)
         else:
             raise ValueError("Invalid mode. Supported modes are 'raise' and 'clip'.")
 
-    if axis == 0:
-        result = ivy.stack(
-            [
-                ivy.where(out_of_bounds[i], ivy.zeros_like(arr_flat[0]), arr_flat[i])
-                for i in indices
-            ]
-        )
-    else:
-        result = ivy.stack(
-            [
-                ivy.where(
-                    out_of_bounds[i],
-                    ivy.zeros_like(arr_flat[0]),
-                    ivy.gather(arr_flat, i, axis=axis),
-                )
-                for i in indices
-            ],
-            axis=axis,
-        )
-
+    result = ivy.gather(arr, indices)
     return result
 
 
