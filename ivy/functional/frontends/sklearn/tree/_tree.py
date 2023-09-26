@@ -879,6 +879,7 @@ class DepthFirstTreeBuilder(TreeBuilder):
             is_leaf = is_leaf or impurity <= EPSILON
 
             if not is_leaf:
+                #impurity is passed by value in the original code
                 splitter.node_split(impurity, split, n_constant_features)
                 # If EPSILON=0 in the below comparison, float precision
                 # issues stop splitting, producing trees that are

@@ -518,6 +518,11 @@ def node_split_best(
 
 
 def sort(feature_values, samples, n):
+    print("---sort---")
+    print(f"feature_values: {feature_values}")
+    print(f"samples: {samples}")
+    print(f"n: {n}")
+    print("---sort---")
     if n == 0:
         return
     maxd = 2 * int(ivy.log(n))
@@ -589,8 +594,8 @@ def introsort(feature_values, samples, n, maxd):
                 i += 1
 
         introsort(feature_values, samples, l, maxd)
-        feature_values += r
-        samples += r
+        feature_values = feature_values[r:]
+        samples = samples[r:]
         n -= r
 
 
@@ -622,6 +627,11 @@ def sift_down(feature_values, samples, start, end):
 
 
 def heapsort(feature_values, samples, n):
+    print("---heapsort---")
+    print(f"feature_values: {feature_values}")
+    print(f"samples {samples}")
+    print(f"n: {n}")
+    print("---heapsort---")
     # Heapify
     start = (n - 2) // 2
     end = n
@@ -858,6 +868,9 @@ class DensePartitioner:
         self.n_missing = 0
 
     def sort_samples_and_feature_values(self, current_feature: int):
+        print("---sort_samples_and_feature_values---")
+        print(f"current_feature: {current_feature}")
+        print("---sort_samples_and_feature_values---")
         """
         Simultaneously sort based on the feature_values.
 
@@ -906,10 +919,8 @@ class DensePartitioner:
                 feature_values[i] = X[int(samples[i]), int(current_feature)]
         
         sort(
-            # feature_values[self.start], # TODO: Revert back
-            feature_values,
-            # samples[self.start], # TODO: Revert back
-            samples,
+            feature_values[self.start:self.end],
+            samples[self.start:self.end],
             self.end - self.start - n_missing,
         )
         self.n_missing = n_missing
