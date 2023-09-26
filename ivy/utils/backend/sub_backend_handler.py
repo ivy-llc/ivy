@@ -278,7 +278,7 @@ def _unset_sub_backend_from_ivy(
 def clear_sub_backends():
     if ivy.current_sub_backends:
         ivy.__dict__.update(original_backend_dict)
-        ivy.current_sub_backends = []
+        ivy.current_sub_backends.clear()
 
 
 # This is only used in set_backend in handler.py
@@ -286,7 +286,7 @@ def _clear_current_sub_backends():
     global original_backend_dict
     original_backend_dict = None
     if ivy.current_sub_backends:
-        ivy.current_sub_backends = []
+        ivy.current_sub_backends.clear()
 
 
 def find_available_sub_backends(sub_backends_loc):

@@ -418,7 +418,8 @@ def set_backend(backend: str, dynamic: bool = False):
 
         if dynamic:
             convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
-
+        for sub_backend in ivy.available_sub_backends:
+            ivy.set_sub_backend(sub_backend)
         if verbosity.level > 0:
             verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
