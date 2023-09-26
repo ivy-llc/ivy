@@ -50,6 +50,10 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def _ivy(self):
         return self.__ivy
 
+    @property
+    def backend_handler(self):
+        return self._backend_handler
+
     def _arrays_to_frontend(self, frontend_array_fn=None):
         def _new_fn(x, *args, **kwargs):
             if FunctionTestCaseSubRunner._is_frontend_array(x):
@@ -130,10 +134,10 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
             self.test_flags.native_arrays = [
                 self.test_flags.native_arrays[0] for _ in range(total_num_arrays)
             ]
-        if len(self.test_flags.container) < total_num_arrays:
-            self.test_flags.container = [
-                self.test_flags.container[0] for _ in range(total_num_arrays)
-            ]
+        # if len(self.test_flags.container) < total_num_arrays:
+        #     self.test_flags.container = [
+        #         self.test_flags.container[0] for _ in range(total_num_arrays)
+        #     ]
 
         self.test_flags.as_variable = [
             v if self._ivy.is_float_dtype(d) and not self.test_flags.with_out else False
@@ -412,10 +416,10 @@ class FrontendTestCaseRunner(TestCaseRunner):
 
     def run(self, input_dtypes, test_arguments, test_flags):
         # getting results from target and ground truth
-        target_results: TestCaseSubRunnerResult = self._call_target(
+        target_results: TestCaseSubRunnerResult = self._run_target(
             input_dtypes, test_arguments, test_flags
         )
-        ground_truth_results: TestCaseSubRunnerResult = self._call_ground_truth(
+        ground_truth_results: TestCaseSubRunnerResult = self._run_ground_truth(
             input_dtypes, test_arguments, test_flags
         )
 
