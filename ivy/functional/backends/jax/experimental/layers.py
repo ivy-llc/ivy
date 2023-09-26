@@ -877,7 +877,7 @@ def stft(
     if hop_length <= win_length:
         noverlap = win_length - hop_length
     hop_length = noverlap
-    
+
     _, _, stft = jax.scipy.signal.stft(
         signal,
         fs,
@@ -890,7 +890,7 @@ def stft(
         boundary,
         pad_mode,
         axis,
-    )  
+    )
     real_part = jnp.real(stft)
     imag_part = jnp.imag(stft)
     stft = -real_part + 1j * imag_part
