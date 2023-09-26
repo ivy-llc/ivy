@@ -793,3 +793,9 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def kron(self, y, name=None):
+        return paddle_frontend.kron(self._ivy_array, y)
