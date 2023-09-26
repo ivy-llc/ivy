@@ -104,7 +104,7 @@ def soft_margin_loss(
 
 
 @with_supported_dtypes(
-    {"2.0.1 and below": "float"},
+    {"2.0.1 and below": ("float",)},
     backend_version,
 )
 def kl_div(
