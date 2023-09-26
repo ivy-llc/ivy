@@ -28,7 +28,7 @@ def _remove_so_log(trace):
         if ".pyx" in repr(st):
             continue
         if "<string>" in repr(st):
-            if "traced_fn" in repr(st) and module_frame:
+            if "compiled_fn" in repr(st) and module_frame:
                 track = True
                 traced_lineno = st.lineno
 

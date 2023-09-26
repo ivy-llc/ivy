@@ -121,9 +121,7 @@ def _import_module(name, package=None):
     module = module_from_spec(spec)
     import_cache[absolute_name] = module
     if ivy.is_local():
-        spec.loader.exec_module(
-            module, ivy._compiled_id
-        )  # ! Not sure about what this ID is
+        spec.loader.exec_module(module, ivy._compiled_id)
     else:
         spec.loader.exec_module(module)
     if path is not None:
