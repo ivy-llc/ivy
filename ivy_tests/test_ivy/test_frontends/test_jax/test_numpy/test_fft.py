@@ -99,6 +99,32 @@ def test_jax_numpy_fft2(
     )
 
 
+# fftfreq
+@handle_frontend_test(
+    fn_tree="jax.numpy.fft.fftfreq",
+    n=st.integers(min_value=10, max_value=100),
+    sample_rate=st.integers(min_value=1, max_value=10),
+    dtype=st.one_of(helpers.get_dtypes("float", full=False), st.none()),
+)
+def test_jax_numpy_fftfreq(
+    n, sample_rate, dtype, backend_fw, frontend, test_flags, fn_tree, on_device
+):
+    d = 1 / sample_rate
+    dtype = dtype[0] if dtype is not None else None
+    helpers.test_frontend_function(
+        input_dtypes=[int],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        n=n,
+        d=d,
+        dtype=dtype,
+    )
+
+
 # fftshift
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.fftshift",
