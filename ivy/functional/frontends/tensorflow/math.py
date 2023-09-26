@@ -512,3 +512,14 @@ def floormod(x, y, name=None):
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
+
+
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def erf(x, name=None):
+    return ivy.erf(x)

@@ -1823,10 +1823,10 @@ def test_tensorflow_floormod(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        y=x[1], 
+        y=x[1],
     )
 
-    
+
 # greater
 @handle_frontend_test(
     fn_tree="tensorflow.math.greater",
@@ -1854,4 +1854,33 @@ def test_tensorflow_greater(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.erf",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_erf(
+    *,
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        x=x[0],
     )
