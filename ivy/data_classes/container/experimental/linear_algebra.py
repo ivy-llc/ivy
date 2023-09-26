@@ -1308,7 +1308,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-    ):
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
         """
         ivy.Container static method variant of ivy.tensor_train. This method simply
         wraps the function, and so the docstring for ivy.tensor_train also applies to
@@ -1348,7 +1348,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-    ):
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
         """
         ivy.Container instance method variant of ivy.tensor_train. This method simply
         wraps the function, and so the docstring for ivy.tensor_train also applies to

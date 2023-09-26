@@ -417,7 +417,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
         svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
         verbose: Optional[bool] = False,
-    ):
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tensor_train. This method simply wraps
         the function, and so the docstring for ivy.tensor_train also applies to this

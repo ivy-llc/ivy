@@ -1166,7 +1166,7 @@ def tensor_train(
     *,
     svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
     verbose: Optional[bool] = False,
-):
+) -> ivy.TTTensor:
     """
     TT decomposition via recursive SVD.
 
