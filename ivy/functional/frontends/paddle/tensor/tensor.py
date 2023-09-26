@@ -755,6 +755,24 @@ class Tensor:
         y = self.reciprocal(self)
         return ivy.inplace_update(self, y)
 
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def chunk(self, chunks, axis=0, name=None):
+        return paddle_frontend.split(self._ivy_array, num_or_sections=chunks, axis=axis)
+
     @with_unsupported_dtypes(
         {"2.5.1 and below": ("complex", "uint8", "uint16")}, "paddle"
     )
