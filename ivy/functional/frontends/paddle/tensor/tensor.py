@@ -773,11 +773,9 @@ class Tensor:
     def less_equal(self, y, name=None):
         return paddle_frontend.less_equal(self._ivy_array, y)
 
-
     @with_supported_dtypes({"2.5.1 and below": ("complex64", "complex128")}, "paddle")
     def real(self, name=None):
         return paddle_frontend.real(self._ivy_array)
-
 
     @with_supported_dtypes(
         {
@@ -793,7 +791,6 @@ class Tensor:
         },
         "paddle",
     )
-
     def count_nonzero(self, axis=None, keepdim=False, dtype=None, name=None):
         return paddle_frontend.count_nonzero(
             self._ivy_array, axis=axis, keepdim=keepdim, dtype=dtype
