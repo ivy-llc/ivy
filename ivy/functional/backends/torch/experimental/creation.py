@@ -112,7 +112,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: torch.device,
+    device: torch.device = None,
 ) -> Tuple[torch.Tensor, ...]:
     n_cols = n_rows if n_cols is None else n_cols
 
