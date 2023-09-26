@@ -49,6 +49,23 @@ def _valid_stft(draw):
     return dtype, x, frame_length, frame_step
 
 
+# mdct
+@st.composite
+def valid_mdct(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            max_value=65280,
+            min_value=-65280,
+            min_num_dims=1,
+            min_dim_size=2,
+            shared_dtype=True,
+        )
+    )
+    frame_length = draw(helpers.ints(min_value=1, max_value=len(x)))
+    return dtype, x, frame_length
+
+
 # --- Main --- #
 # ------------ #
 
@@ -209,6 +226,36 @@ def test_tensorflow_kaiser_window(
         window_length=window_length,
         beta=beta,
         dtype=dtype,
+    )
+
+
+# Define the test function for mdct without window
+@handle_frontend_test(
+    fn_tree="tensorflow.signal.mdct",
+    dtype_x_and_args=valid_mdct(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_mdct(
+    *,
+    dtype_x_and_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, frame_length = dtype_x_and_args
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        frame_length=frame_length,
+        window=None,  # Ensure window is set to None
+        atol=1e-01,
     )
 
 
