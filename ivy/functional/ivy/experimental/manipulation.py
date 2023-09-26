@@ -26,7 +26,7 @@ from ivy.func_wrapper import (
     handle_view,
     inputs_to_ivy_arrays,
     handle_array_function,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.functional.ivy.general import _numel
@@ -231,7 +231,7 @@ flatten.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -243,7 +243,7 @@ flatten.mixed_backend_wrappers = {
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def moveaxis(
     a: Union[ivy.Array, ivy.NativeArray],
     source: Union[int, Sequence[int]],
@@ -295,7 +295,7 @@ def moveaxis(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def heaviside(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -344,7 +344,7 @@ def heaviside(
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def flipud(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -389,7 +389,7 @@ def flipud(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def vstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -434,7 +434,7 @@ def vstack(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def hstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -478,7 +478,7 @@ def hstack(
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -565,7 +565,7 @@ def rot90(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def top_k(
     x: Union[ivy.Array, ivy.NativeArray],
     k: int,
@@ -647,7 +647,7 @@ def top_k(
 @handle_view
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fliplr(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -694,7 +694,7 @@ def fliplr(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def i0(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1281,7 +1281,7 @@ pad.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -1294,7 +1294,7 @@ pad.mixed_backend_wrappers = {
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1345,7 +1345,7 @@ def vsplit(
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1399,7 +1399,7 @@ def dsplit(
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1442,7 +1442,7 @@ def atleast_1d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -1485,7 +1485,7 @@ def dstack(
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
@@ -1531,7 +1531,7 @@ def atleast_2d(
 @handle_array_like_without_promotion
 @handle_view
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
@@ -1587,7 +1587,7 @@ def atleast_3d(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1640,7 +1640,7 @@ def take_along_axis(
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
@@ -1728,7 +1728,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def expand(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape],
@@ -1932,7 +1932,7 @@ as_strided.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -1944,7 +1944,7 @@ as_strided.mixed_backend_wrappers = {
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def concat_from_sequence(
     input_sequence: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -2138,7 +2138,7 @@ def associative_scan(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_consecutive(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2245,7 +2245,7 @@ fill_diagonal.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2256,7 +2256,7 @@ fill_diagonal.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2289,7 +2289,7 @@ def unfold(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def fold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2329,7 +2329,7 @@ def fold(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def partial_unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2387,7 +2387,7 @@ def partial_unfold(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def partial_fold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2431,7 +2431,7 @@ def partial_fold(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def partial_tensor_to_vec(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2476,7 +2476,7 @@ def partial_tensor_to_vec(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def partial_vec_to_tensor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2512,7 +2512,7 @@ def partial_vec_to_tensor(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def matricize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2571,7 +2571,7 @@ def matricize(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def soft_thresholding(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2631,7 +2631,7 @@ def soft_thresholding(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def choose(
     arr: Union[ivy.Array, ivy.NativeArray],
     choices: Union[ivy.Array, ivy.NativeArray],
@@ -2680,7 +2680,7 @@ def choose(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_device_shifting
+@handle_device
 def column_stack(
     arrays: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
