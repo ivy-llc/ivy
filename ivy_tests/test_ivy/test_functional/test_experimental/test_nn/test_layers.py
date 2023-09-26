@@ -1405,10 +1405,66 @@ def test_sliding_window(*, all_args, test_flags, backend_fw, fn_name, on_device)
     )
 
 
+# stft
+@st.composite
+def stft_arguments(draw):
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    n_fft_type = draw(st.sampled_from(["int", "tuple"]))
+    
+    if n_fft_type == "int":
+        n_fft = draw(st.integers(min_value=1, max_value=256))
+    else:
+        n_fft = tuple(
+            draw(st.integers(min_value=1, max_value=256))
+            for _ in range(2))
+    
+    hop_length = draw(st.integers(min_value=1, max_value=256))
+    axis = draw(st.integers(min_value=0))
+    onesided = draw(st.booleans())
+    fs = 1.0
+    
+    window = draw(
+        helpers.array_values(
+            dtype=helpers.get_dtypes('float'),
+            shape=helpers.get_shape(
+                min_num_dims=1, max_num_dims=2
+            ),
+        )
+    )
+    win_length = (
+        draw(st.integers(min_value=1, max_value=n_fft))
+        if isinstance(n_fft, int)
+        else draw(st.integers(min_value=1, max_value=n_fft[1]))
+    )
+    center = draw(st.booleans())
+    pad_mode = draw(st.sampled_from(["reflect", "constant"]))
+    normalized = draw(st.booleans())
+    detrend = draw(st.one_of([st.booleans(), st.sampled_from(["linear", "constant"])]))
+    return_complex = draw(st.booleans())
+    boundary = draw(st.sampled_from(['even', 'odd', 'constant', 'zeros', None]))
+
+    return (
+        dtype,
+        n_fft,
+        hop_length,
+        axis,
+        onesided,
+        fs,
+        window,
+        win_length,
+        center,
+        pad_mode,
+        normalized,
+        detrend,
+        return_complex,
+        boundary,
+    )
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.stft",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes('float'),
         min_num_dims=1,
         max_num_dims=2,
     ),
@@ -1424,7 +1480,7 @@ def test_stft(
     backend_fw,
     fn_name,
     stft_args,
-):
+):      
     dtype, x = dtype_and_x
     (
         dtype,
@@ -1448,7 +1504,7 @@ def test_stft(
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
-        signal=x[0],
+        input=x[0],
         n_fft=n_fft,
         hop_length=hop_length,
         axis=axis,
