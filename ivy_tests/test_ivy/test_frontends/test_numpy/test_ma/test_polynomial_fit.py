@@ -23,7 +23,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_roots(dtype_values, frontend, backend_fw, test_flags, fn_tree, gt_fn_tree):
+def test_numpy_roots(
+    dtype_values, frontend, backend_fw, test_flags, fn_tree, gt_fn_tree
+):
     input_dtypes, values = dtype_values
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
