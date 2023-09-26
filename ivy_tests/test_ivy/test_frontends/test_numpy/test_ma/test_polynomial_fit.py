@@ -28,6 +28,7 @@ def test_numpy_roots(dtype_values, frontend, backend_fw, test_flags, fn_tree, gt
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
