@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple , Any
+from typing import Callable, Optional, List, Union, Iterable, Tuple, Any
 
 
 # TODO: create meaningful types for Graph and LazyGraph,
@@ -11,7 +11,7 @@ class LazyGraph:
     pass
 
 
-def compile(
+def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -29,12 +29,12 @@ def compile(
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
     """
-    Takes `fn` and compiles it into a more efficient composition of backend operations.
+    Take `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
     objs
-        callable(s) to compile and create a graph of
+        callable(s) to trace and create a graph of
     stateful
         list of instances to be considered stateful during the graph compilation
     arg_stateful_idxs
@@ -54,7 +54,7 @@ def compile(
     mode
         for torch's compilation
     graph_caching
-        whether to cache the compiled graph
+        whether to cache the traced graph
     args
         positional arguments for `obj`
     kwargs
@@ -62,7 +62,7 @@ def compile(
 
     Returns
     -------
-    the compiled `Graph` object.
+    the traced `Graph` object.
 
     Examples
     --------
@@ -83,9 +83,9 @@ def compile(
     ...     return i, j, k
 
 
-    >>> graph = compile(fn, args=(x,))
+    >>> graph = trace_graph(fn, args=(x,))
 
-    Notice how the time taken to execute the compiled function is lower than
+    Notice how the time taken to execute the traced function is lower than
     the original function. A typical run:
 
     >>> start = time.time()
@@ -98,10 +98,9 @@ def compile(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
+    from ._compiler import compile as _trace_graph
 
-    from ._compiler import compile as _compile
-
-    return _compile(
+    return _trace_graph(
         *objs,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,
@@ -159,7 +158,6 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
-
     from ._compiler import transpile as _transpile
 
     return _transpile(

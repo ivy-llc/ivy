@@ -19,7 +19,7 @@ def _remove_so_log(trace):
     transpile_frame = None
     module_frame = None
     module_st = None
-    compiled_lineno = None
+    traced_lineno = None
 
     new_stack_trace = []
     track = False
@@ -30,7 +30,7 @@ def _remove_so_log(trace):
         if "<string>" in repr(st):
             if "compiled_fn" in repr(st) and module_frame:
                 track = True
-                compiled_lineno = st.lineno
+                traced_lineno = st.lineno
 
         if "<module>" in repr(st):
             module_frame = old_frames[idx]
@@ -43,7 +43,7 @@ def _remove_so_log(trace):
             transpile_frame = old_frames[idx]
         elif track:
             ret_st = _align_source(
-                st, transpile_frame, module_frame, module_st, compiled_lineno
+                st, transpile_frame, module_frame, module_st, traced_lineno
             )
             if ret_st:
                 [new_stack_trace.append(r) for r in ret_st]
@@ -56,7 +56,7 @@ def _remove_so_log(trace):
     return new_stack_trace
 
 
-def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno):
+def _align_source(st, transpile_frame, module_frame, module_st, traced_lineno):
     from ivy.compiler.utils.VVX import trace_obj
     from ivy.compiler.utils.IIV import Graph
 
@@ -79,13 +79,13 @@ def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno)
                 curr_obj[1] = traced_data[2]
                 curr_obj[2] = v.__name__
 
-                if compiled_lineno:
-                    line = v._Graph__fn_str.split("\n")[compiled_lineno - 1]
+                if traced_lineno:
+                    line = v._Graph__fn_str.split("\n")[traced_lineno - 1]
                     line = line.split("=")[1].strip()
                     line = line.split("(")[0].strip()
                     target_name = line.split(".")[-1].strip()
                     curr_obj[3] = line
-                    area = compiled_lineno / len(v._Graph__fn_str.strip().split("\n"))
+                    area = traced_lineno / len(v._Graph__fn_str.strip().split("\n"))
 
                     curr_obj = _get_traces(curr_obj, area, t_v.locals, target_name)
 

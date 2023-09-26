@@ -812,7 +812,7 @@ try:
 except:
     pass
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statment
 finally:

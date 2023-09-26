@@ -20,8 +20,8 @@ class Optimizer(abc.ABC):
         inplace: bool = True,
         stop_gradients: bool = True,
         init_on_first_step: bool = False,
-        compile_on_next_step: bool = False,
-        fallback_to_non_compiled: bool = False,
+        trace_on_next_step: bool = False,
+        fallback_to_non_traced: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
         """
@@ -42,11 +42,11 @@ class Optimizer(abc.ABC):
         init_on_first_step
             Whether the optimizer is initialized on the first step.
             Default is ``False``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
-        fallback_to_non_compiled
-            Whether to fall back to non-compiled forward call in the case that an error
-            is raised during the compiled forward pass. Default is ``True``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
+        fallback_to_non_traced
+            Whether to fall back to non-traced forward call in the case that an error
+            is raised during the traced forward pass. Default is ``True``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
@@ -56,12 +56,12 @@ class Optimizer(abc.ABC):
         self._stop_gradients = stop_gradients
         self._init_on_first_step = init_on_first_step
         self._initialized = not init_on_first_step
-        self._compile_on_next_step = compile_on_next_step
-        self._fallback_to_non_compiled = fallback_to_non_compiled
+        self._trace_on_next_step = trace_on_next_step
+        self._fallback_to_non_traced = fallback_to_non_traced
         self._dev = ivy.default(device, ivy.default_device())
         self._count = ivy.array([0], device=self._dev)
-        self._compiled_step_fn = None
-        self._compiled = False
+        self._traced_step_fn = None
+        self._traced = False
 
     # Private #
     # --------#
@@ -167,7 +167,7 @@ class SGD(Optimizer):
         lr: float = 1e-4,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
     ):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
@@ -184,11 +184,11 @@ class SGD(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         """
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step
+            self, lr, inplace, stop_gradients, trace_on_next_step=trace_on_next_step
         )
 
     # Custom Step
@@ -240,7 +240,7 @@ class LARS(Optimizer):
         decay_lambda: float = 0,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
     ):
         """
         Construct a Layer-wise Adaptive Rate Scaling (LARS) optimizer.
@@ -259,12 +259,12 @@ class LARS(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         """
         self._decay_lambda = decay_lambda
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step
+            self, lr, inplace, stop_gradients, trace_on_next_step=trace_on_next_step
         )
 
     # Custom Step
@@ -319,7 +319,7 @@ class Adam(Optimizer):
         epsilon: float = 1e-07,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
         """
@@ -344,8 +344,8 @@ class Adam(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
@@ -356,10 +356,10 @@ class Adam(Optimizer):
         self._mw = None
         self._vw = None
         self._first_pass = True
-        self._should_compile = False
+        self._should_trace = False
 
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, True, compile_on_next_step, device=device
+            self, lr, inplace, stop_gradients, True, trace_on_next_step, device=device
         )
 
     # Custom Step
@@ -428,7 +428,7 @@ class LAMB(Optimizer):
         decay_lambda: float = 0,
         inplace: bool = True,
         stop_gradients: bool = True,
-        compile_on_next_step: bool = False,
+        trace_on_next_step: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
         """
@@ -458,14 +458,14 @@ class LAMB(Optimizer):
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
-        compile_on_next_step
-            Whether to compile the optimizer on the next step. Default is ``False``.
+        trace_on_next_step
+            Whether to trace the optimizer on the next step. Default is ``False``.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. (Default value = None)
         """
         Optimizer.__init__(
-            self, lr, inplace, stop_gradients, True, compile_on_next_step, device=device
+            self, lr, inplace, stop_gradients, True, trace_on_next_step, device=device
         )
         self._beta1 = beta1
         self._beta2 = beta2

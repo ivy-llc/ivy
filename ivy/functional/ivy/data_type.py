@@ -62,7 +62,7 @@ def _handle_nestable_dtype_info(fn):
 
 
 # Unindent every line in the source such that
-# class methods can be compiled as normal methods
+# class methods can be traced as normal methods
 def _lstrip_lines(source: str) -> str:
     # Separate all lines
     source = source.split("\n")
