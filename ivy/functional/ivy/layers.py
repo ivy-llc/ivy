@@ -901,6 +901,7 @@ def multi_head_attention(
         zero_attn_shape = (batch_dim * num_heads, 1, head_dim)
         k = ivy.concat([k, ivy.zeros(zero_attn_shape, dtype=k.dtype)], axis=1)
         v = ivy.concat([v, ivy.zeros(zero_attn_shape, dtype=v.dtype)], axis=1)
+        num_keys = k.shape[1]
 
     # get attention scores
     attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
@@ -912,11 +913,11 @@ def multi_head_attention(
         assert (
             attention_mask.dtype in [query.dtype, ivy.bool]
         ), f"was expecting attention_mask of type bool or the same as the input's, but got {attention_mask.dtype}"
-        if ivy.is_bool_dtype(attention_mask):
-            attention_mask = ivy.where(attention_mask, float("-inf"), 0)
         if is_causal:
-            causal_mask = ivy.triu(ivy.ones((num_queries, num_keys)), k=1)
-            attention_mask *= causal_mask.astype(ivy.int8)
+            mask = ivy.triu(ivy.ones((num_queries, num_keys)), k=1)
+            attention_mask = ivy.where(mask, float("-inf"), 0)
+        elif ivy.is_bool_dtype(attention_mask):
+            attention_mask = ivy.where(attention_mask, float("-inf"), 0)
         if attention_mask.ndim == 2:
             attention_mask = ivy.tile(attention_mask, (batch_dim * num_heads, 1, 1))
     if key_padding_mask is not None:
@@ -932,9 +933,9 @@ def multi_head_attention(
         else:
             attention_mask += key_padding_mask
     if ivy.exists(attention_mask):
-        if bias_k is not None and bias_v is not None:
+        if bias_k is not None and bias_v is not None and not is_causal:
             attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
-        if add_zero_attn:
+        if add_zero_attn and not is_causal:
             attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
         attn_scores += attention_mask.astype(query.dtype)
 

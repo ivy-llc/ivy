@@ -282,7 +282,7 @@ def multi_head_attention_forward(
     if static_v is not None:
         static_v = static_v.reshape((num_batches, num_keys, embed_dim))
     in_proj_weight = in_proj_weight if not use_separate_proj_weight else None
-    if is_causal and need_weights:
+    if is_causal and (need_weights or key_padding_mask is not None):
         is_causal = False
     ret = ivy.multi_head_attention(
         query,
