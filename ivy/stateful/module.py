@@ -66,12 +66,12 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         v=None,
         buffers=None,
         build_mode="on_init",
-        compile_on_next_step=False,
+        trace_on_next_step=False,
         store_vars=True,
         stateful=None,
         arg_stateful_idxs=None,
         kwarg_stateful_idxs=None,
-        fallback_to_non_compiled=False,
+        fallback_to_non_traced=False,
         with_partial_v=False,
         devices=None,
         dtype=None,
@@ -94,8 +94,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             How the Module is built, either on initialization (now),
             explicitly by the user by calling build(), or the first
             time the __call__ method is run. Default is on initialization.
-        compile_on_next_step
-            Whether to compile the network on the next forward pass.
+        trace_on_next_step
+            Whether to trace the network in a graph on the next forward pass.
             Default is ``False``.
         store_vars
             Whether or not to store the variables created. Default is ``True``.
@@ -109,9 +109,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         kwarg_stateful_idxs
             The nested keyword argument indices of stateful items to track as part of
             the forward pass. Used when graph compiling, default is ``None``.
-        fallback_to_non_compiled
-            Whether to fall back to non-compiled forward call in the case that an error
-            is raised during the compiled forward pass. Default is ``True``.
+        fallback_to_non_traced
+            Whether to fall back to non-traced forward call in the case that an error
+            is raised during the traced forward pass. Default is ``True``.
         with_partial_v
             Whether to allow partial specification of variables. Default is ``False``.
         training
@@ -136,13 +136,13 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
         self._kwarg_stateful_idxs = kwarg_stateful_idxs
-        self._fallback_to_non_compiled = fallback_to_non_compiled
+        self._fallback_to_non_traced = fallback_to_non_traced
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._compiled = False
-        self._compiled_fn = None
-        self._compile_on_next_step = compile_on_next_step
+        self._traced = False
+        self._traced_fn = None
+        self._trace_on_next_step = trace_on_next_step
         self._v_in = v if isinstance(v, Container) or v is None else Container(v)
         self.v = v
         self.top_v = None
@@ -162,7 +162,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._kwargs = kwargs
         self._module_graph = None
         self._target = None
-        self._lazy_compiled = False
+        self._lazy_traced = False
         self._dynamic_backend = dynamic_backend
         self.training = training
         if build_mode != "on_init":
@@ -642,17 +642,17 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         -------
         ret
         """
-        if self._lazy_compiled:
-            # we are compiling since we want to transpile module,
+        if self._lazy_traced:
+            # we are creating graph since we want to transpile module,
             # so set the appropriate backend
             if self._target:
                 ivy.set_backend(self._target)
-            self.compile(args=args, kwargs=kwargs)
+            self.trace_graph(args=args, kwargs=kwargs)
             if self._target:
                 ivy.previous_backend()
 
         if self._module_graph:
-            # we need `v` in kwargs, since this is a compiled call
+            # we need `v` in kwargs, since this is a traced call
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
@@ -923,7 +923,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         fname: Optional[str] = None,
     ):
         if not ivy.exists(self._module_graph):
-            raise ValueError("You must compile the module to display the graph.")
+            raise ValueError("You must trace the module to display the graph.")
 
         return self._module_graph.show(
             save_to_disk=save_to_disk,
@@ -964,28 +964,28 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def state_dict(self):
         return {**self.v, **getattr(self, "buffers", {})}
 
-    def compile(
+    def trace_graph(
         self,
         args: Optional[Tuple] = None,
         kwargs: Optional[Dict] = None,
-        **compile_kwargs,
+        **trace_kwargs,
     ):
         """
-        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
+        Trace the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the target
         backend.
 
         Parameters
         ----------
         args:
-            arguments used to compile. Defaults to None.
+            arguments used to trace. Defaults to None.
         kwargs:
-            keyword arguments used to compile. Defaults to None.
-        compile_kwargs:
-            keyword arguments passed to the compile function.
+            keyword arguments used to trace. Defaults to None.
+        trace_kwargs:
+            keyword arguments passed to the trace function.
         """
-        # no arguments given to compile, so delay the compilation
+        # no arguments given to trace, so delay the compilation
         if not (args or kwargs):
-            self._lazy_compiled = True
+            self._lazy_traced = True
             return
 
         # we do not need convert the args to source
@@ -996,13 +996,13 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         kwargs = copy.copy(kwargs)
         kwargs["v"] = self.v
 
-        fn_to_compile = ivy.default(self._module_graph, self._call)
+        fn_to_trace = ivy.default(self._module_graph, self._call)
 
-        self._module_graph = ivy.compile(
-            fn_to_compile, **compile_kwargs, args=args, kwargs=kwargs
+        self._module_graph = ivy.trace_graph(
+            fn_to_trace, **trace_kwargs, args=args, kwargs=kwargs
         )
 
-        self._lazy_compiled = False
+        self._lazy_traced = False
 
     def save(self, filename):
         """
