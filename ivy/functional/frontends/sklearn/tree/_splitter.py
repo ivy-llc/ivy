@@ -1505,4 +1505,5 @@ def swap(feature_values, samples, i, j):
     )
     samples[i], samples[j] = samples[j], samples[i]
 
+
 INFINITY = ivy.inf

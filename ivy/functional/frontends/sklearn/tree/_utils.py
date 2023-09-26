@@ -86,6 +86,7 @@ class WeightedMedianCalculator:
         if self.sum_w_0_k > (self.total_weight / 2.0):
             return self.samples[self.k - 1][0]
 
+
 # =============================================================================
 # Helper functions
 # =============================================================================
