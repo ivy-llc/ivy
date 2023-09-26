@@ -714,5 +714,79 @@ def top_k(operand, k):
 
 
 @to_ivy_arrays_and_back
+def reduce_window(
+    operand,
+    init_value,
+    computation,
+    window_dimensions,
+    window_strides,
+    padding,
+    base_dilation=None,
+    window_dilation=None,
+):
+    computation = frontend_outputs_to_ivy_arrays(computation)
+    return ivy.reduce_window(
+        operand,
+        init_value,
+        computation,
+        window_dimensions,
+        window_strides=window_strides,
+        padding=padding,
+        base_dilation=base_dilation,
+        window_dilation=window_dilation,
+    )
+
+
+@to_ivy_arrays_and_back
+def squeeze(array, dimensions):
+    return ivy.squeeze(array, axis=dimensions)
+
+
+@to_ivy_arrays_and_back
+def real(x):
+    return ivy.real(x)
+
+
+@to_ivy_arrays_and_back
+def nextafter(x1, x2):
+    return ivy.nextafter(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def conj(x):
+    return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def is_finite(x):
+    return ivy.isfinite(x)
+
+
+@with_supported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cbrt(x):
+    return ivy.pow(x, 1 / 3)
+
+
+@to_ivy_arrays_and_back
+def tie_in(x, y):
+    return y
+
+
+@to_ivy_arrays_and_back
+def complex(x, y):
+    return ivy.add(x, y)
+  
+  
 def transpose(operand, permutation):
     return ivy.permute_dims(operand, permutation)
+
