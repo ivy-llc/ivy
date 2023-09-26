@@ -71,7 +71,6 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
 
 
 @to_ivy_arrays_and_back
-
 def ifftshift(x, axes=None):
     # Check if an array
     if not ivy.is_array(x):
@@ -79,7 +78,7 @@ def ifftshift(x, axes=None):
 
     # Get the shape of x
     shape = ivy.shape(x)
-    
+
     # If axes is None, shift all axes
     if axes is None:
         axes = list(range(ivy.ndims(x)))
@@ -98,7 +97,6 @@ def ifftshift(x, axes=None):
     return result
 
 
-
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, "numpy")
 def rfft(a, n=None, axis=-1, norm=None):
@@ -113,4 +111,3 @@ def rfft(a, n=None, axis=-1, norm=None):
     slices[axis] = slice(0, int(ivy.shape(result, as_array=True)[axis] // 2 + 1))
     result = result[tuple(slices)]
     return result
-

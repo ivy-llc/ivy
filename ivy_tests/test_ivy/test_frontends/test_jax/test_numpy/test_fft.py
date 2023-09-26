@@ -304,4 +304,3 @@ def test_jax_numpy_rfft(
         atol=1e-04,
         rtol=1e-04,
     )
-
