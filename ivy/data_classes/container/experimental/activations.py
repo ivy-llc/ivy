@@ -949,7 +949,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         ivy.Container static method variant of ivy.sigmoid. This method simply wraps the
         function, and so the docstring for ivy.sigmoid also applies to this method with
         minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -993,7 +993,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-      
+
     def sigmoid(
         self: ivy.Container,
         /,
@@ -1005,10 +1005,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-         ivy.Container instance method variant of ivy.sigmoid. This method simply wraps
-         the function, and so the docstring for ivy.sigmoid also applies to this method
-         with minimal changes.
-         
+        ivy.Container instance method variant of ivy.sigmoid. This method simply wraps
+        the function, and so the docstring for ivy.sigmoid also applies to this method
+        with minimal changes.
+
           Parameters
         ----------
         self

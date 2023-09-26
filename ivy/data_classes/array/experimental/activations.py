@@ -308,7 +308,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         Ivy.Array instance method variant of ivy.sigmoid. This method simply wraps the
         function, and so the docstring for ivy.sigmoid also applies to this method with
         minimal.
-        
+
         Parameters
         ----------
         self
@@ -330,7 +330,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0.59628272, 0.29943284])
         """
         return ivy.sigmoid(self._data, out=out)
-      
+
     def hardtanh(
         self: ivy.Array,
         /,
@@ -370,4 +370,3 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-1., 1., 1.])
         """
         return ivy.hardtanh(self._data, min_val=min_val, max_val=max_val, out=out)
-

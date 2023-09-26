@@ -92,6 +92,7 @@ def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
 
+
 def hardtanh(
     x: JaxArray,
     /,

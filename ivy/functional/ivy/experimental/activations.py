@@ -538,7 +538,7 @@ def sigmoid(
 ) -> ivy.Array:
     """
     Apply the sigmoid unit function element-wise.
-    
+
     Parameters
     ----------
     x
@@ -551,7 +551,7 @@ def sigmoid(
     -------
     ret
         The input array with sigmoid applied element-wise.
-    
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -588,7 +588,7 @@ def sigmoid(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_array_function    
+@handle_array_function
 def hardtanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

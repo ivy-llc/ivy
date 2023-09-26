@@ -112,6 +112,7 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 sigmoid.support_native_out = True
 
+
 @with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
 @_scalar_output_to_0d_array
 def hardtanh(
