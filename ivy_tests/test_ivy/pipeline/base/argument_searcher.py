@@ -3,6 +3,8 @@ import numpy as np
 
 from dataclasses import dataclass
 
+import ivy
+
 
 @dataclass
 class TestArgumentsSearchResult:
@@ -44,16 +46,16 @@ class ArgumentsSearcher:
         -------
             Items found, indices, and total number of arrays found
         """
-        indices = self._ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
+        indices = ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
 
-        ret = self._ivy.multi_index_nest(nest, indices)
+        ret = ivy.multi_index_nest(nest, indices)
         return ret, indices, len(ret)
 
     def search_args(self, num_positional_args):
         # split the arguments into their positional and keyword components
         args_np, kwargs_np = self._split_args_to_args_and_kwargs(
             num_positional_args=num_positional_args,
-            test_arguments=self.test_arguments,
+            # test_arguments=self.test_arguments,
         )
 
         # Extract all arrays from the arguments and keyword arguments

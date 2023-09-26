@@ -88,6 +88,32 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
         return frontend_args, frontend_kwargs
 
+    def _get_frontend_submodule(self):
+        split_index = self.fn_tree.rfind(".")
+        frontend_submods, fn_name = (
+            self.fn_tree[:split_index],
+            self.fn_tree[split_index + 1 :],
+        )
+        return frontend_submods, fn_name
+
+    def _get_frontend_creation_fn(self):
+        # ToDo: do this through config file
+        return self.local_importer.import_module(
+            f"ivy.functional.frontends.{self.frontend}"
+        )._frontend_array
+
+    def _get_frontend_function(self, args, kwargs):
+        f_submod, fn_name = self._get_frontend_submodule()
+        function_module = self.local_importer.import_module(f_submod)
+        frontend_fn = getattr(function_module, fn_name)
+        frontend_fn = self.compile_if_required(
+            frontend_fn,
+            test_compile=self.test_flags.test_compile,
+            args=args,
+            kwargs=kwargs,
+        )
+        return frontend_fn
+
     def _search_args(self, test_arguments):
         # args_np, kwargs_np = self._split_args_to_args_and_kwargs(
         #     num_positional_args=self.test_flags.num_positional_args,
@@ -113,14 +139,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         # return args_result, kwargs_result, total_num_arrays
         arg_searcher = ArgumentsSearcher(test_arguments)
         return arg_searcher.search_args(self.test_flags.num_positional_args)
-
-    def _get_frontend_submodule(self):
-        split_index = self.fn_tree.rfind(".")
-        frontend_submods, fn_name = (
-            self.fn_tree[:split_index],
-            self.fn_tree[split_index + 1 :],
-        )
-        return frontend_submods, fn_name
 
     def _preprocess_flags(self, total_num_arrays):
         # Make all array-specific test flags and dtypes equal in length
@@ -175,24 +193,6 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 **ret[1],
             )
         return ret[0], ret[1]
-
-    def _get_frontend_creation_fn(self):
-        # ToDo: do this through config file
-        return self.local_importer.import_module(
-            f"ivy.functional.frontends.{self.frontend}"
-        )._frontend_array
-
-    def _get_frontend_function(self, args, kwargs):
-        f_submod, fn_name = self._get_frontend_submodule()
-        function_module = self.local_importer.import_module(f_submod)
-        frontend_fn = getattr(function_module, fn_name)
-        frontend_fn = self.compiled_if_required(
-            frontend_fn,
-            test_compile=self.test_flags.test_compile,
-            args=args,
-            kwargs=kwargs,
-        )
-        return frontend_fn
 
     def _call_function(self, args, kwargs):
         # determine the target frontend_fn
