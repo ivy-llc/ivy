@@ -474,6 +474,7 @@ def erfc(
 ) -> JaxArray:
     return js.special.erfc(x)
 
+
 def amin(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],

@@ -761,6 +761,7 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
     return result
 
+
 def amin(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
