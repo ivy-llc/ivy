@@ -7,7 +7,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @handle_frontend_test(
-    fn_tree="numpy.roots",
+    fn_tree="numpy.ma.polynomial_fit.roots",
+    gt_fn_tree="numpy.roots",
     dtype_values=helpers.dtype_and_values(
         available_dtypes=[
             "float32",
