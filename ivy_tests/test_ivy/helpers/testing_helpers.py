@@ -740,6 +740,7 @@ def handle_frontend_method(
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
+    test_inplace=BuiltInplaceStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
@@ -759,6 +760,42 @@ def handle_frontend_method(
 
     method_name
         Name of the method
+
+    init_num_positional_args
+        A search startegy that generates a number of positional arguments
+        to be passed during instantiation of the class
+
+    init_native_arrays
+        A search strategy that generates a boolean to test the method with native
+        arrays
+
+    init_as_variable_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a Variable array
+
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
+    precision_mode
+        A search strategy that generates a boolean to switch between two different
+        precision modes supported by numpy and (torch, jax) and test the function
+
+    method_num_positional_args
+        A search startegy that generates a number of positional arguments
+        to be passed during call of the class method
+
+    method_native_arrays
+        A search strategy that generates a boolean to test the method with native
+        arrays
+
+    method_as_variable_flags
+        A search strategy that generates a list of boolean flags for array inputs to be
+        passed as a Variable array
+
+    test_inplace
+        A search strategy that generates a boolean to test the method with `inplace`
+        update
     """
     split_index = init_tree.rfind(".")
     framework_init_module = init_tree[:split_index]
@@ -800,6 +837,7 @@ def handle_frontend_method(
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
+                inplace=_get_runtime_flag_value(test_inplace),
                 as_variable=_get_runtime_flag_value(method_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
                 test_trace=_get_runtime_flag_value(test_trace),
