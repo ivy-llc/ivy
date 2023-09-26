@@ -283,7 +283,7 @@ def test_paddle_avg_pool2d(
         min_dims=5,
         max_dims=5,
         min_side=2,
-        max_side=4,
+        max_side=6,
     ),
     ceil_mode=st.booleans(),
     data_format=st.sampled_from(["NCDHW", "NDHWC"]),
