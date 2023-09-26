@@ -104,6 +104,9 @@ def _logical_xor(
     return ret
 
 
+# --- Main --- #
+# ------------ #
+
 
 @handle_numpy_out
 @handle_numpy_dtype
@@ -149,7 +152,7 @@ def my_logical_not(x):
     # Check if the input x is a list
     elif isinstance(x, list):
         check = [type(element) for element in x]
-        
+
         if list in check:
             check_2 = [len(element) for element in x]
             if len(set(check_2)) != 1:
