@@ -441,7 +441,6 @@ def test_torch_columnstack(
     )
 
 
-
 # concat
 @handle_frontend_test(
     fn_tree="torch.concat",
@@ -1741,6 +1740,3 @@ def test_torch_where(
             other=xs[1],
             backend_to_test=backend_fw,
         )
-
-
-
