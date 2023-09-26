@@ -98,6 +98,6 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     if isinstance(normalized_shape, int) and normalized_shape == shape[-1]:
         axis = [-1]
     else:
-        assert normalized_shape == shape[-len(normalized_shape) :]
+        assert ivy.equal(normalized_shape, shape[-len(normalized_shape) :])
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
     return ivy.layer_norm(input, axis, scale=weight, offset=bias, eps=eps)
