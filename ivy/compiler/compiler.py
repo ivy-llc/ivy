@@ -66,7 +66,7 @@ def compile(
     Examples
     --------
     >>> import ivy, time
-    >>> from graph_compiler.compiler import compile
+    >>> from ivy import compile
     >>> ivy.set_backend("torch")
     >>> x = ivy.array([1.])
 
