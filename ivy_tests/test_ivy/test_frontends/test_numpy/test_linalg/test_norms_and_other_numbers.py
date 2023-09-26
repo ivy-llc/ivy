@@ -238,6 +238,7 @@ def test_numpy_trace(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -248,6 +249,7 @@ def test_numpy_trace(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         rtol=1e-2,
         a=x[0],
