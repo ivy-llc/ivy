@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Callable, Literal
 
 # local
 import ivy
@@ -12,9 +12,29 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_out_argument,
     inputs_to_ivy_arrays,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
+    handle_complex_input,
 )
+
+
+def _logit_jax_like(
+    x: Union[float, int, ivy.Array],
+    /,
+    *,
+    fn_original: Optional[Callable] = None,
+    eps: Optional[float] = None,
+    out: Optional[ivy.Array] = None,
+):
+    real = ivy.real(x)
+    imag = ivy.imag(x)
+    if eps is None:
+        real = ivy.where(ivy.logical_or(real > 1, real < 0), ivy.nan, real)
+    else:
+        real = ivy.clip(real, eps, 1 - eps)
+    z = ivy.add(real, ivy.multiply(ivy.array(1j, dtype=x.dtype), imag))
+    z = ivy.log(z / (1 - z))
+    return z
 
 
 @handle_exceptions
@@ -23,12 +43,14 @@ from ivy.func_wrapper import (
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
+@handle_complex_input
 def logit(
     x: Union[float, int, ivy.Array],
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -44,6 +66,9 @@ def logit(
         When eps is None the function outpus NaN where x < 0 or x > 1.
         and inf or -inf where x = 1 or x = 0, respectively.
         Otherwise if eps is defined, x is clamped to [eps, 1 - eps]
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         Optional output array.
 
@@ -65,6 +90,9 @@ def logit(
     ivy.array([ 1.38629448,  1.38629448, -1.38629436])
     """
     return current_backend(x).logit(x, eps=eps, out=out)
+
+
+logit.jax_like = _logit_jax_like
 
 
 @handle_exceptions
@@ -131,7 +159,7 @@ def prelu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -186,6 +214,28 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
+def _relu6_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        ivy.logical_or(
+            ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+        ),
+        ivy.array(0, dtype=x.dtype),
+        ivy.where(
+            ivy.logical_or(
+                ivy.real(x) > 6, ivy.logical_and(ivy.real(x) == 6, ivy.imag(x) > 0)
+            ),
+            ivy.array(6, dtype=x.dtype),
+            x,
+        ),
+    )
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -193,9 +243,14 @@ def thresholded_relu(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
+@handle_complex_input
 def relu6(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the rectified linear unit 6 function element-wise.
@@ -204,6 +259,9 @@ def relu6(
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -232,15 +290,23 @@ def relu6(
     return current_backend(x).relu6(x, out=out)
 
 
+relu6.jax_like = _relu6_jax_like
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
+@handle_complex_input
 def logsigmoid(
-    input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
+    input: Union[ivy.NativeArray, ivy.Array],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply element-wise Log-sigmoid of x.
@@ -251,6 +317,9 @@ def logsigmoid(
     ----------
     input
         Input array.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
 
     Returns
     -------
@@ -290,7 +359,7 @@ def logsigmoid(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -349,7 +418,7 @@ def selu(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -454,35 +523,66 @@ def elu(
     return current_backend(x).elu(x, alpha=alpha, out=out)
 
 
-def sequence_length(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
-) -> ivy.int64:
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def hardtanh(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    max_val: float = 1,
+    min_val: float = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """
-    Produce a scalar (tensor of empty shape) containing the number of tensors in the ivy
-    array input.
+    Apply the hardtanh unit function element-wise.
 
     Parameters
     ----------
     x
-        Can be a sequence of any tensor type: bool, complex128,
-        complex64, double, float, float16, int16, int32, int64,
-        int8, string, uint16, uint32, uint64, uint8
+        Input array.
+    min_val
+        minimum value of the linear region range. Default: -1.
+    max_val
+        maximum value of the linear region range. Default: 1.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
-    length
-        Length of the input sequence, as a scalar (empty shape tensor).
+    ret
+        The input array with elu applied element-wise.
 
     Examples
     --------
-    >>> x = ivy.array([True, False, True])
-    >>> y = ivy.sequence_length(x)
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.hardtanh(x)
     >>> print(y)
-    3
-
-    >>> x = [1.0, 2.5, -3.4, 5.6, -85.3]
-    >>> y = ivy.sequence_length(x)
+    ivy.array([ 0.39, -0.85])
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.hardtanh(x, out=y)
     >>> print(y)
-    5
+    ivy.array([ 1., 0.7, -1.])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-0.4, 0.5, -6.6]])
+    >>> ivy.hardtanh(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.,  1., 1.],
+           [-0.4, 0.5, -1.]])
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.hardtanhx, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -1.]),
+        b: ivy.array([0.4, -0.2])
+    }
     """
-    return current_backend(x).sequence_length(x, out=out)
+    return current_backend(x).hardtanh(x, max_val=max_val, min_val=min_val, out=out)

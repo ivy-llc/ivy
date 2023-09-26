@@ -15,6 +15,24 @@ import ivy
 # --------------- #
 
 
+# batched_outer
+@st.composite
+def _batched_outer_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=3))
+    tensors_num = draw(helpers.ints(min_value=1, max_value=5))
+    dtype, tensors = draw(
+        helpers.dtype_and_values(
+            num_arrays=tensors_num,
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, tensors
+
+
 @st.composite
 def _generate_diag_args(draw):
     x_shape = draw(
@@ -141,6 +159,51 @@ def _generate_diag_args(draw):
     return dtype_x, offset, dtype_padding_value, align, num_rows, num_cols
 
 
+# dot
+@st.composite
+def _generate_dot_dtype_and_arrays(draw):
+    shape_a = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+        )
+    )
+    shape_b = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+        )
+    )
+
+    shape_a = list(shape_a)
+    shape_b = list(shape_b)
+    if len(shape_a) == 1 and len(shape_b) == 1:
+        shape_b[0] = shape_a[0]
+    elif len(shape_a) == 2 and len(shape_b) == 2:
+        shape_b[0] = shape_a[1]
+    elif len(shape_a) >= 2 and len(shape_b) == 1:
+        shape_b[0] = shape_a[-1]
+    elif len(shape_a) >= 1 and len(shape_b) >= 2:
+        shape_a[-1] = shape_b[-2]
+
+    dtype_1, a = draw(
+        helpers.dtype_and_values(
+            shape=shape_a,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    dtype_2, b = draw(
+        helpers.dtype_and_values(
+            shape=shape_b,
+            dtype=dtype_1,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return [dtype_1[0], dtype_2[0]], [a[0], b[0]]
+
+
 @st.composite
 def _generate_eigh_tridiagonal_args(draw):
     dtype, alpha = draw(
@@ -186,6 +249,25 @@ def _generate_eigh_tridiagonal_args(draw):
     eigvals_only = draw(st.booleans())
     tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
     return dtype, alpha, beta, eigvals_only, select, select_range, tol
+
+
+@st.composite
+def _generate_general_inner_product_args(draw):
+    dim = draw(st.integers(min_value=1, max_value=3))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=(dim, dim),
+            min_value=1,
+            max_value=10.0,
+            num_arrays=2,
+            shared_dtype=True,
+            allow_nan=False,
+        )
+    )
+    max_value = dim - 1 if dim > 1 else dim
+    n_modes = draw(st.integers(min_value=1, max_value=max_value) | st.just(None))
+    return x_dtype, x, n_modes
 
 
 # multi_dot
@@ -314,6 +396,23 @@ def _get_dtype_value1_value2_cov(
     )
 
     return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
+
+
+# higher_order_moment
+@st.composite
+def _higher_order_moment_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
+    order = draw(helpers.ints(min_value=0, max_value=5))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, x[0], order
 
 
 # intialize tucker
@@ -700,6 +799,47 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.batched_outer",
+    data=_batched_outer_data(),
+)
+def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, tensors = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        tensors = tensors[:2]
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        tensors=tensors,
+    )
+
+
+# test adapted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_outer_product.py#L22
+@pytest.mark.skip(
+    reason=(
+        "ivy.tensordot does not support batched_modes argument for the moment. "
+        "TODO please remove this when the functionality is added. "
+        "see https://github.com/unifyai/ivy/issues/21914"
+    )
+)
+def test_batched_outer_product():
+    batch_size = 3
+    X = ivy.random_uniform(shape=(batch_size, 4, 5, 6))
+    Y = ivy.random_uniform(shape=(batch_size, 3))
+    Z = ivy.random_uniform(shape=(batch_size, 2))
+    res = ivy.batched_outer([X, Y, Z])
+    true_res = ivy.tensordot(X, Y, (), batched_modes=0)
+    true_res = ivy.tensordot(true_res, Z, (), batched_modes=0)
+    np.testing.assert_array_almost_equal(res, true_res)
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.cond",
     dtype_x=helpers.cond_data_gen_helper(),
     test_with_out=st.just(False),
@@ -789,6 +929,27 @@ def test_diagflat(*, test_flags, backend_fw, fn_name, args_packet, on_device):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.dot",
+    data=_generate_dot_dtype_and_arrays(),
+)
+def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
+    (input_dtypes, x) = data
+    return helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        xs_grad_idxs=[[0, 0]],
+        input_dtypes=input_dtypes,
+        test_values=True,
+        rtol_=0.5,
+        atol_=0.5,
+        a=x[0],
+        b=x[1],
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.eig",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
@@ -810,12 +971,13 @@ def test_diagflat(*, test_flags, backend_fw, fn_name, args_packet, on_device):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eig(dtype_x, test_flags, backend_fw, fn_name):
+def test_eig(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -917,15 +1079,58 @@ def test_eigh_tridiagonal(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eigvals(dtype_x, test_flags, backend_fw, fn_name):
+def test_eigvals(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.general_inner_product",
+    data=_generate_general_inner_product_args(),
+)
+def test_general_inner_product(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, n_modes = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        a=x[0],
+        b=x[1],
+        n_modes=n_modes,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.higher_order_moment",
+    data=_higher_order_moment_data(),
+)
+def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, order = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        order = min(order, 2)
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=x,
+        order=order,
     )
 
 

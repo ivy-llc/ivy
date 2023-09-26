@@ -1540,6 +1540,13 @@ class ContainerBase(dict, abc.ABC):
     def _cont_get_shapes(self):
         return self.cont_map(lambda x, kc: x.shape if hasattr(x, "shape") else None)
 
+    def _cont_get_dtype(self):
+        sub_dtypes = [
+            v for k, v in self.cont_map(lambda x, kc: x.dtype).cont_to_iterator() if v
+        ]
+        unique_dtypes = list(set(sub_dtypes))
+        return sub_dtypes[0] if len(unique_dtypes) == 1 else None
+
     def _cont_get_dev(self, as_native=False):
         sub_devs = [
             v
@@ -3265,7 +3272,7 @@ class ContainerBase(dict, abc.ABC):
                     return_dict[key] = ret
             elif isinstance(value, (list, tuple)) and map_sequences:
                 ret = ivy.nested_map(
-                    value, lambda x: func(x, None), True, shallow=False
+                    lambda x: func(x, None), value, True, shallow=False
                 )
                 if prune_unapplied and not ret:
                     continue
@@ -4199,7 +4206,9 @@ class ContainerBase(dict, abc.ABC):
         state_dict["_config_in"] = config_in
         config = copy.copy(state_dict["_config"])
         config["ivyh"] = (
-            config["ivyh"].current_backend_str() if config["ivyh"] is not None else None
+            config["ivyh"].current_backend_str()
+            if getattr(config, "ivyh", None) is not None
+            else None
         )
         state_dict["_config"] = config
         return state_dict
@@ -4257,6 +4266,15 @@ class ContainerBase(dict, abc.ABC):
         arrays.
         """
         return self._cont_get_shape()
+
+    @property
+    def cont_dtype(self):
+        """
+        The dtype of the arrays in the container.
+
+        None is returned if the dtypes are not consistent.
+        """
+        return self._cont_get_dtype()
 
     @property
     def cont_shapes(self):

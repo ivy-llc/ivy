@@ -67,7 +67,7 @@ def around(a, decimals=0, out=None):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16",)},
+    {"0.4.16 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -220,7 +220,7 @@ def expm1(
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("uint16",)},
+    {"0.4.16 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -287,6 +287,12 @@ def frexp(x, /):
 def gcd(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.gcd(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def gradient(f, *varargs, axis=None, edge_order=None):
+    edge_order = edge_order if edge_order is not None else 1
+    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
 
 
 @to_ivy_arrays_and_back
@@ -384,7 +390,7 @@ def minimum(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, "jax")
+@with_unsupported_dtypes({"0.4.16 and below": ("complex",)}, "jax")
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
@@ -426,7 +432,7 @@ def negative(
 
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.16 and below": (
             "bfloat16",
             "float16",
         )
@@ -471,7 +477,7 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("float16",)},
+    {"0.4.16 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -513,7 +519,7 @@ def polydiv(u, v, *, trim_leading_zeros=False):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("float16",)},
+    {"0.4.16 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back

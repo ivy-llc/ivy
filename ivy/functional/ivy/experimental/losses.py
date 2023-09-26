@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_like_without_promotion,
     handle_array_function,
+    to_native_arrays_and_back,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -66,7 +67,7 @@ def log_poisson_loss(
     --------
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-    >>> print(ivy.log_poisson_loss(x, z))
+    >>> print(ivy.log_poisson_loss(x, y))
     ivy.array([1.28402555, 1.28402555, 1.03402555, 1.28402555])
 
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
@@ -312,8 +313,7 @@ def smooth_l1_loss(
     }
 
     Instance Method Examples
-    ------------------------
-
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.0, 2.0, 3.0])
@@ -348,3 +348,211 @@ def smooth_l1_loss(
         return ivy.sum(loss, out=out)
     elif reduction == "none":
         return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def soft_margin_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the soft-margin hinge loss between predicted scores and true binary labels.
+
+    Parameters
+    ----------
+    input : array_like
+        True binary labels, of shape (batch_size,).
+    target : array_like
+        Predicted scores, of shape (batch_size,).
+    reduction : {'mean', 'sum', 'none'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The soft-margin hinge loss between the predicted scores
+        and true binary labels.
+
+    Examples
+    --------
+    >>> input = ivy.array([1, 0, 1, 0])
+    >>> target = ivy.array([0.8, 0.2, -0.6, 1.5])
+    >>> ivy.soft_margin_loss(input, target)
+    ivy.array(0.6987)
+
+    >>> input = ivy.array([1, 1, 0, 0])
+    >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> ivy.soft_margin_loss(input, target, reduction='sum')
+    ivy.array(2.1606)
+
+    >>> input = ivy.array([1, 1, 0, 0])
+    >>> target = ivy.array([0.8, 0.7, 0.2, 0.1])
+    >>> ivy.soft_margin_loss(input, target, reduction='none')
+    ivy.array([0.3711, 0.4032, 0.6931, 0.6931])
+    """
+    loss = ivy.sum(ivy.log1p(ivy.exp(-input * target))) / input.size
+
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
+    else:
+        return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@inputs_to_ivy_arrays
+@handle_array_function
+def kl_div(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the Kullback-Leibler divergence loss between two input tensors
+    (conventionally, probability distributions).
+
+    Parameters
+    ----------
+    input : array_like
+        Input probability distribution (first tensor).
+    target : array_like
+        Target probability distribution (second tensor).
+    reduction : {'mean', 'sum', 'batchmean', 'none'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The Kullback-Leibler divergence loss between the two input tensors.
+
+    Examples
+    --------
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target)
+    ivy.array(0.0916)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='sum')
+    ivy.array(0.1832)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='batchmean')
+    ivy.array(0.0916)
+
+    >>> input = ivy.array([0.2, 0.8], [0.5, 0.5])
+    >>> target = ivy.array([0.6, 0.4], [0.3, 0.7])
+    >>> ivy.kl_div(input, target, reduction='none')
+    ivy.array([0.0378], [0.1453])
+    """
+    size = ivy.shape(input)
+
+    loss = ivy.sum(input * ivy.log(input / target), axis=-1)
+
+    if reduction == "sum":
+        loss = ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        loss = ivy.mean(loss, out=out)
+    elif reduction == "batchmean":
+        loss = ivy.sum(loss, out=out) / size[0]
+
+    return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+def poisson_nll_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    *,
+    log_input: bool = True,
+    full: bool = False,
+    eps: float = 1e-8,
+    reduction: str = "mean",
+) -> ivy.Array:
+    r"""
+    Compute the Poisson Negative Log Likelihood Loss.
+
+    This function calculates the negative log likelihood loss
+    between the `input` and `target`under the assumption that
+    the target follows a Poisson distribution. By default, the loss
+    is not the exact loss, but the loss minus a constant term [log(z!)].
+    This omission does not affect optimization but can be significant for
+    relative loss comparisons. The Stirling's Approximation is used to
+    approximate the log factorial term when `full` is set to True.
+
+    Parameters
+    ----------
+    input
+        Expectation of the underlying Poisson distribution.
+    target
+        Random sample from the Poisson distribution described by the input.
+    log_input
+        If `True`, the loss is computed as
+        :math:`exp(input) - target * input`. If `False`, the loss is computed as
+        :math:`input - target * log(input + eps)`. Default is `True`.
+    full
+        Whether to compute the full loss, i.e., to add the Stirling approximation term
+        :math:`target * log(target) - target + 0.5 * log(2 * pi * target)`.
+        Default is `False`.
+    eps
+        Small value to prevent evaluation of `log(0)` when `log_input` is `False`.
+        Default is 1e-8.
+    reduction
+        Specifies the reduction applied to the output.
+        Options are 'none', 'mean', or 'sum'.
+        'none': no reduction will be applied.
+        'mean': the output will be averaged.
+        'sum': the output will be summed.
+        Default is 'mean'.
+
+    Returns
+    -------
+    ret
+        An array of the same shape as `input` representing
+        the Poisson Negative Log Likelihood Loss.
+
+    Raises
+    ------
+    ValueError
+        If the `input` and `target` tensors do not have the same shape.
+
+    Examples
+    --------
+    >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
+    >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
+    >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=False)
+    >>> print(loss)
+    ivy.array(0.91097307)
+    """
+    return ivy.current_backend().poisson_nll_loss(
+        input,
+        target,
+        log_input=log_input,
+        full=full,
+        eps=eps,
+        reduction=reduction,
+    )
