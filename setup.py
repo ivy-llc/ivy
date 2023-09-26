@@ -143,6 +143,10 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=["License :: OSI Approved :: Apache Software License"],
+    python_requires="==3.10.*",
+    classifiers=[
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3.10",
+    ],
     license="Apache 2.0",
 )
