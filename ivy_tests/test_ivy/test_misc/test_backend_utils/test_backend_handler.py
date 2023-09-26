@@ -240,16 +240,21 @@ def test_set_backend_no_warning_when_inplace_update_supported(backend):
         ivy.set_backend(backend)
 
 
-@pytest.mark.parametrize("backend", ["tensorflow", "jax", "paddle"])
-def test_set_backend_throw_warning_when_inplace_update_not_supported(backend):
-    with pytest.warns(UserWarning) as record:
-        ivy.set_backend(backend)
-    inplace_update_warning_counter = 0
-    for item in record:
-        if "inplace update" in str(item.message):
-            inplace_update_warning_counter += 1
+def test_set_backend_throw_warning_only_once_when_inplace_update_not_supported(
+    backend_fw,
+):
+    def _assert_number_of_inplace_warnings_is(n):
+        inplace_update_warning_counter = 0
+        for item in record:
+            if "inplace update" in str(item.message):
+                inplace_update_warning_counter += 1
+        assert inplace_update_warning_counter == n
 
-    assert inplace_update_warning_counter == 1
+    if backend_fw in ["tensorflow", "paddle", "jax"]:
+        with pytest.warns(UserWarning) as record:
+            ivy.set_backend(backend_fw)
+            ivy.set_backend(backend_fw)
+        _assert_number_of_inplace_warnings_is(1)
 
 
 def test_unset_backend():
