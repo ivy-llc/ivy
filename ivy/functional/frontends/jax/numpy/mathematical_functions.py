@@ -641,6 +641,16 @@ def remainder(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float32",
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
 def roots(p):
     # here we are using the Companion Matrix Eigenvalue method for better efficiency
     f = ivy.atleast_1d(p)
