@@ -11,7 +11,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_second_matrix_and_dtype,
     _get_dtype_value1_value2_axis_for_tensordot,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import ldexp_args
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import (
+    ldexp_args,
+)
 
 
 # absolute
@@ -2572,7 +2574,7 @@ def test_jax_numpy_ldexp(
         x2=x[1],
     )
 
-    
+
 @handle_frontend_test(
     fn_tree="jax.numpy.imag",
     dtype_and_x=helpers.dtype_and_values(
@@ -2596,5 +2598,3 @@ def test_jax_numpy_imag(
         on_device=on_device,
         x=x[0],
     )
-
-

@@ -781,5 +781,5 @@ isreal.support_native_out = False
 def imag(x: np.ndarray) -> np.ndarray:
     return np.imag(x)
 
-imag.support_native_out = False
 
+imag.support_native_out = False

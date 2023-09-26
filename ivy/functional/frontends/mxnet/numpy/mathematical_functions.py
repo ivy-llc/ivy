@@ -24,4 +24,3 @@ def sin(x, out=None, **kwargs):
 @to_ivy_arrays_and_back
 def imag(x1):
     return ivy.imag(x1)
-
