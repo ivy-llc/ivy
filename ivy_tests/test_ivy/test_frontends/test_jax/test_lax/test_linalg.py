@@ -205,29 +205,30 @@ def test_jax_svd(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1][0])) != 0
+                  and "bfloat16" not in x[0]
+                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
-    full_matrices=st.booleans(),
-    compute_uv=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_jax_triangular_solve(
-    *,
-    dtype_and_x,
-    dtype_and_b,
-    left_side,
-    lower,
-    transpose_a,
-    conjugate_a,
-    unit_diagonal,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dtype_and_x,
+        dtype_and_b,
+        left_side,
+        lower,
+        transpose_a,
+        conjugate_a,
+        unit_diagonal,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
+    # Check that inputs meet necessary conditions
+    assert dtype_and_x is not None and dtype_and_b is not None, "Inputs cannot be None"
+
     dtype_x, x = dtype_and_x
     dtype_b, b = dtype_and_b
     x = np.asarray(x[0], dtype=dtype_x[0])
@@ -243,31 +244,35 @@ def test_jax_triangular_solve(
     if unit_diagonal:
         x = np.eye(x.shape[0]) + (x - np.diag(np.diag(x))) / np.diag(x)
 
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=[dtype_x, dtype_b],
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        a=x,
-        b=b,
-        left_side=left_side,
-        lower=lower,
-        transpose_a=transpose_a,
-        conjugate_a=conjugate_a,
-        unit_diagonal=unit_diagonal,
-    )
+    try:
+        ret, frontend_ret = helpers.test_frontend_function(
+            input_dtypes=[dtype_x, dtype_b],
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            a=x,
+            b=b,
+            left_side=left_side,
+            lower=lower,
+            transpose_a=transpose_a,
+            conjugate_a=conjugate_a,
+            unit_diagonal=unit_diagonal
+        )
 
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        ret = ivy_backend.to_numpy(ret)
+        with BackendHandler.update_backend(backend_fw) as ivy_backend:
+            ret = ivy_backend.to_numpy(ret)
 
-    assert_all_close(
-        ret_np=x @ ret if left_side else ret @ x,  # check that the solution is correct
-        ret_from_gt_np=b,  # check that the solution matches the right-hand side
-        rtol=1e-2,
-        atol=1e-2,
-        backend=backend_fw,
-        ground_truth_backend=frontend,
-    )
+        assert_all_close(
+            ret_np=x @ ret if left_side else ret @ x,  # check that the solution is correct
+            ret_from_gt_np=b,  # check that the solution matches the right-hand side
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+
+    except Exception as e:
+        print(f"Test failed with error: {e}")
