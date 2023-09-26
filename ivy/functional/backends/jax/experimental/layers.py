@@ -861,12 +861,12 @@ def stft(
 ) -> JaxArray:
     if axis is None:
         axis = -1
-        
+
     if n_fft is None:
         n_fft = 1
         while n_fft < win_length:
             n_fft *= 2
-            
+
     if window is None:
         window = jnp.array(jnp.hanning(n_fft), dtype=signal.dtype)
 
