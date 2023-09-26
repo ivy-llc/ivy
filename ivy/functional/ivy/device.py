@@ -212,9 +212,8 @@ def get_all_ivy_arrays_on_dev(
 
 
 @handle_exceptions
-
 def num_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
-
+    """
     Return the number of arrays which are currently alive on the specified device.
 
     Parameters
