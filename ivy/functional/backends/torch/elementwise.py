@@ -61,7 +61,7 @@ def imag(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.imag(val)    
+    return torch.imag(val)
 
 
 imag.support_native_out = False
