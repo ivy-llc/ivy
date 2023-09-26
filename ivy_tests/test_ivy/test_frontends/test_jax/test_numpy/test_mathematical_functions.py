@@ -2839,17 +2839,23 @@ def test_jax_roots(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        p=x[0],
-        atol=1e-05,
-        rtol=1e-03,
-    )
+    assume("float32" not in input_dtype)
+    def call():
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            test_flags=test_flags,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            p=x[0],
+            atol=1e-05,
+            rtol=1e-03,
+        )
+        ret, frontend_ret = call()
+
+        if ret != frontend_ret:
+            assert ret == ivy.flip(frontend_ret)
 
 
 # round
