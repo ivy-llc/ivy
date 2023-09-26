@@ -37,7 +37,7 @@ https://unify.ai/docs/ivy/overview/deep_dive/formatting.html#pre-commit
 
 -->
 
-### Socials:
+### Socials
 
 <!--
 If you have Twitter, please provide it here otherwise just ignore this.
