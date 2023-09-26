@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_out_argument,
     inputs_to_ivy_arrays,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
     handle_complex_input,
 )
@@ -43,7 +43,7 @@ def _logit_jax_like(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def logit(
     x: Union[float, int, ivy.Array],
@@ -159,7 +159,7 @@ def prelu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -243,7 +243,7 @@ def _relu6_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -299,7 +299,7 @@ relu6.jax_like = _relu6_jax_like
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
@@ -359,7 +359,7 @@ def logsigmoid(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -418,7 +418,7 @@ def selu(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

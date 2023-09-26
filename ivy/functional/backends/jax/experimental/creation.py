@@ -72,7 +72,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
 ) -> Tuple[JaxArray, ...]:
     return jnp.tril_indices(n=n_rows, k=k, m=n_cols)
 

@@ -9,7 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -25,7 +25,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -154,7 +154,7 @@ def unique_all(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -263,7 +263,7 @@ def unique_inverse(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -356,7 +356,7 @@ def unique_values(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -24,7 +24,7 @@ def random_uniform(
     high: Union[float, torch.Tensor] = 1.0,
     shape: Optional[Union[torch.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -46,7 +46,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
     seed: Optional[int] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_scale(std)
@@ -71,7 +71,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[torch.Tensor] = None,
     replace: bool = True,
-    device: torch.device,
+    device: torch.device = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -99,7 +99,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: torch.device,
+    device: torch.device = None,
     dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
