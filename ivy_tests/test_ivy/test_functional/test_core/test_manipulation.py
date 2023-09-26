@@ -636,28 +636,6 @@ def test_squeeze(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_devic
     )
 
 
-@handle_test(
-    fn_tree="functional.ivy.stack",
-    dtypes_arrays=_stack_helper(),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"),
-        force_int=True,
-    ),
-)
-def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_device):
-    dtypes, arrays = dtypes_arrays
-
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        arrays=arrays,
-        axis=axis,
-    )
-
-
 # stack
 @handle_test(
     fn_tree="functional.ivy.stack",

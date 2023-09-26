@@ -103,7 +103,7 @@ def _shape_to_native(x):
         if (isinstance(x, (list, tuple)) and len(x) > 0) and (
             isinstance(x[0], ivy.Shape) and ivy.array_mode
         ):
-            x = ivy.nested_map(x, lambda x: x.shape if isinstance(x, ivy.Shape) else x)
+            x = ivy.nested_map(lambda x: x.shape if isinstance(x, ivy.Shape) else x, x)
         elif isinstance(x, ivy.Shape) and ivy.array_mode:
             x = x.shape
     return x
@@ -185,7 +185,7 @@ def _asarray_infer_dtype(fn: Callable) -> Callable:
         if not ivy.exists(dtype):
             arr = args[0]
             # get default dtypes for all elements
-            dtype_list = [ivy.nested_map(arr, lambda x: _infer_dtype(x), shallow=False)]
+            dtype_list = [ivy.nested_map(lambda x: _infer_dtype(x), arr, shallow=False)]
             # flatten the nested structure
             dtype_list = _flatten_nest(dtype_list)
             # keep unique dtypes
@@ -266,11 +266,9 @@ _T_co = TypeVar("_T_co", covariant=True)
 
 
 class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]:
-        ...
+    def __getitem__(self, key: int, /) -> Union[_T_co, NestedSequence[_T_co]]: ...
 
-    def __len__(self, /) -> int:
-        ...
+    def __len__(self, /) -> int: ...
 
 
 # Array API Standard #
@@ -1689,6 +1687,7 @@ def full(
     )
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1696,6 +1695,46 @@ def full(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+def to_dlpack(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+):
+    """
+    Return PyCapsule Object.
+
+    Parameters
+    ----------
+    x  object
+        input (array) object.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Return PyCapsule Object.
+
+        .. admonition:: Note
+           :class: note
+
+           The returned array may be either a copy or a view. See
+           :ref:`data-interchange` for details.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.from_dlpack.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    return current_backend(x).to_dlpack(x, out=out)
+
+
+@handle_backend_invalid
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
