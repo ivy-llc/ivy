@@ -90,8 +90,8 @@ class AssertionChecker:
         )
 
     def _assert_equal_elements(self, target_elements, ground_truth_elements):
-        rtol = self._get_framework_rtol()
-        atol = self._get_framework_atol()
+        rtol = self._get_framework_rtol() if isinstance(self.rtol, dict) else self.rtol
+        atol = self._get_framework_atol() if isinstance(self.atol, dict) else self.atol
         if self.specific_tolerance_dict is not None:
             for ret_np, ret_np_from_gt in zip(target_elements, ground_truth_elements):
                 dtype = str(ret_np_from_gt.dtype)
