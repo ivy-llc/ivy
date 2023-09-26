@@ -295,3 +295,77 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array(0.0916)
         """
         return ivy.kl_div(self._data, target, reduction=reduction, out=out)
+
+    def poisson_nll_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        *,
+        log_input: bool = True,
+        full: bool = False,
+        eps: float = 1e-8,
+        reduction: str = "mean",
+    ) -> ivy.Array:
+        r"""
+        Compute the Poisson Negative Log Likelihood Loss.
+
+        This function calculates the negative log likelihood loss
+        between the `input` and `target`under the assumption that
+        the target follows a Poisson distribution. By default, the loss
+        is not the exact loss, but the loss minus a constant term [log(z!)].
+        This omission does not affect optimization but can be significant for
+        relative loss comparisons. The Stirling's Approximation is used to
+        approximate the log factorial term when `full` is set to True.
+
+        Parameters
+        ----------
+        input
+            Expectation of the underlying Poisson distribution.
+        target
+            Random sample from the Poisson distribution described by the input.
+        log_input
+            If `True`, the loss is computed as
+            :math:`exp(input) - target * input`. If `False`, the loss is computed as
+            :math:`input - target * log(input + eps)`. Default is `True`.
+        full
+            Whether to compute the full loss, i.e.,
+            to add the Stirling approximation term
+            :math:`target * log(target) - target + 0.5 * log(2 * pi * target)`.
+            Default is `False`.
+        eps
+            Small value to prevent evaluation of `log(0)` when `log_input` is `False`.
+            Default is 1e-8.
+        reduction
+            Specifies the reduction applied to the output.
+            Options are 'none', 'mean', or 'sum'.
+            'none': no reduction will be applied.
+            'mean': the output will be averaged.
+            'sum': the output will be summed.
+            Default is 'mean'.
+
+        Returns
+        -------
+        ret
+            An array of the same shape as `input` representing the
+            Poisson Negative Log Likelihood Loss.
+
+        Raises
+        ------
+        ValueError
+            If the `input` and `target` tensors do not have the same shape.
+
+        Examples
+        --------
+        >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
+        >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
+        >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=True)
+        >>> print(loss)
+        ivy.array(16.1978)
+        """
+        return ivy.poisson_nll_loss(
+            self._data,
+            target,
+            log_input=log_input,
+            full=full,
+            eps=eps,
+            reduction=reduction,
+        )

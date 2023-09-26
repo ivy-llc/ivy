@@ -789,6 +789,8 @@ class Tensor:
                 "float16",
                 "float32",
                 "float64",
+                "int8",
+                "int16",
                 "int32",
                 "int64",
             )
