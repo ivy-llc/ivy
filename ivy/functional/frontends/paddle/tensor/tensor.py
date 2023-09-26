@@ -793,3 +793,6 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    def where(self, condition, x, y, name=None):
+        return paddle_frontend.where(self._ivy_array, condition, x, y, name)

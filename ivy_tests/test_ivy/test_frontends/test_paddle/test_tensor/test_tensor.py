@@ -4251,6 +4251,42 @@ def test_paddle_tensor_var(
     )
 
 
+# where
+@handle_frontend_method(
+   class_tree=CLASS_TREE,
+   init_tree="paddle.to_tensor",
+   method_name="where",
+   broadcastables=_broadcastable_trio(),
+)
+def test_paddle_instance_where(
+   broadcastables,
+   frontend,
+   backend_fw,
+   frontend_method_data,
+   init_flags,
+   method_flags,
+   on_device,
+):
+   cond, xs, dtypes = broadcastables
+   helpers.test_frontend_method(
+       init_input_dtypes=dtypes,
+       backend_to_test=backend_fw,
+       init_all_as_kwargs_np={
+           "data": xs[0],
+       },
+       method_input_dtypes=["bool", dtypes[1]],
+       method_all_as_kwargs_np={
+           "condition": cond,
+           "other": xs[1],
+       },
+       frontend_method_data=frontend_method_data,
+       init_flags=init_flags,
+       method_flags=method_flags,
+       frontend=frontend,
+       on_device=on_device,
+   )
+
+
 # zero_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
