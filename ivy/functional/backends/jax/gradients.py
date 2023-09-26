@@ -38,7 +38,7 @@ def _forward_fn(
 ):
     """Forward function for gradient calculation."""
     # Setting x(relevant variables) into xs(all variables)
-    x = ivy.nested_map(x, ivy.to_ivy, include_derived=True)
+    x = ivy.nested_map(ivy.to_ivy, x, include_derived=True)
     x_arr_idxs = ivy.nested_argwhere(x, ivy.is_array)
     x_arr_values = ivy.multi_index_nest(x, x_arr_idxs)
     if xs_grad_idxs is not None:
@@ -131,7 +131,7 @@ def value_and_grad(func):
     grad_fn = lambda xs: ivy.to_native(func(xs))
 
     def callback_fn(xs):
-        xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+        xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
         value, grad = jax.value_and_grad(grad_fn)(xs)
         return ivy.to_ivy(value), ivy.to_ivy(grad)
 

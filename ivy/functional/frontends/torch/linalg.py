@@ -68,14 +68,6 @@ def eig(input, *, out=None):
     return ivy.eig(input, out=out)
 
 
-@to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
-)
-def eigh(a, /, UPLO="L", out=None):
-    return ivy.eigh(a, UPLO=UPLO, out=out)
-
-
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64", "complex128")},
     "torch",
@@ -198,7 +190,7 @@ def multi_dot(tensors, *, out=None):
     {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
 def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
-    if dim is None and not (ord is None):
+    if dim is None and (ord is not None):
         if input.ndim == 1:
             ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
         else:
@@ -271,8 +263,13 @@ def slogdet(A, *, out=None):
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def solve(A, B, *, left=True, out=None):
-    # TODO: Implement left
-    return ivy.solve(A, B, out=out)
+    if left:
+        return ivy.solve(A, B, out=out)
+
+    A_t = ivy.linalg.matrix_transpose(A)
+    B_t = ivy.linalg.matrix_transpose(B if B.ndim > 1 else ivy.reshape(B, (-1, 1)))
+    X_t = ivy.solve(A_t, B_t)
+    return ivy.linalg.matrix_transpose(X_t, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -280,9 +277,17 @@ def solve(A, B, *, left=True, out=None):
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def solve_ex(A, B, *, left=True, check_errors=False, out=None):
-    # TODO: Implement left
     try:
-        result = ivy.solve(A, B, out=out)
+        if left:
+            result = ivy.solve(A, B, out=out)
+        else:
+            A_t = ivy.linalg.matrix_transpose(A)
+            B_t = ivy.linalg.matrix_transpose(
+                B if B.ndim > 1 else ivy.reshape(B, (-1, 1))
+            )
+            X_t = ivy.solve(A_t, B_t)
+            result = ivy.linalg.matrix_transpose(X_t, out=out)
+
         info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
         return result, info
     except RuntimeError as e:

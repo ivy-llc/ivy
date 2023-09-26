@@ -19,6 +19,7 @@ from typing import (
     Literal,
 )
 import einops
+import ml_dtypes  # noqa
 import numpy as np
 
 # local
@@ -38,7 +39,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view_indexing,
-    handle_device_shifting,
+    handle_device,
     handle_partial_mixed_function,
     handle_backend_invalid,
 )
@@ -83,7 +84,6 @@ class PreciseMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_precise_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -174,7 +174,6 @@ class ArrayMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_array_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -189,7 +188,8 @@ def get_referrers_recursive(
     """
     Recursively retrieve referrers for an object.
 
-    This function recursively fetches referrers for the specified `item` up to a given `max_depth`.
+    This function recursively fetches referrers for the specified `item` up to a given
+    `max_depth`.
 
     Parameters
     ----------
@@ -207,7 +207,8 @@ def get_referrers_recursive(
     Returns
     -------
     ivy.Container
-        A container representing referrers and their sub-referrers, respecting the `max_depth`.
+        A container representing referrers and their sub-referrers, respecting the
+        `max_depth`.
 
     Examples
     --------
@@ -641,7 +642,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -782,7 +783,7 @@ def all_equal(
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -855,7 +856,7 @@ def isscalar(x: Any, /) -> bool:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """
     Convert an array with a single element into a scalar.
@@ -912,7 +913,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """
     Create a (possibly nested) list from input array.
@@ -1694,7 +1695,7 @@ def arg_names(receiver):
     >>> x = ivy.arg_names(ivy.optimizers.Adam)
     >>> print(x)
     ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
-    'stop_gradients', 'compile_on_next_step', 'device']
+    'stop_gradients', 'trace_on_next_step', 'device']
     """
     return list(inspect.signature(receiver).parameters.keys())
 
@@ -2777,7 +2778,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2974,7 +2975,7 @@ def _broadcast_to(input, target_shape):
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3154,7 +3155,7 @@ def unset_inplace_mode() -> None:
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3226,7 +3227,7 @@ def inplace_decrement(
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3286,7 +3287,7 @@ def inplace_increment(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3376,7 +3377,7 @@ def scatter_flat(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3461,7 +3462,7 @@ def scatter_nd(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3572,7 +3573,7 @@ def gather(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3674,7 +3675,7 @@ def multiprocessing(context: Optional[str] = None):
 @outputs_to_ivy_shapes
 @outputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def shape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3767,7 +3768,7 @@ def unset_shape_array_mode() -> None:
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
@@ -4152,7 +4153,7 @@ def vmap(
 @handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def isin(
     elements: Union[ivy.Array, ivy.NativeArray],
     test_elements: Union[ivy.Array, ivy.NativeArray],
@@ -4204,7 +4205,7 @@ def isin(
 @handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
+@handle_device
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4237,7 +4238,7 @@ def itemsize(
 
 @handle_exceptions
 @handle_nestable
-@handle_device_shifting
+@handle_device
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
