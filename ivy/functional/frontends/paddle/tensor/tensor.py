@@ -793,3 +793,7 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def flip(self, axis=-1, name=None):
+        return paddle_frontend.flip(self, axis=axis, name=name)

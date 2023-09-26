@@ -880,6 +880,42 @@ def test_paddle_expm1(
     )
 
 
+# flip
+@handle_frontend_test(
+    fn_tree="paddle.flip",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        min_value=-10,
+        max_value=10,
+        force_int_axis=False,
+        allow_nan=False,
+    ),
+)
+def test_paddle_flip(
+    *,
+    dtype_and_x,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        backend_to_test=backend_fw,
+    )
+
+
 # floor
 @handle_frontend_test(
     fn_tree="paddle.floor",
