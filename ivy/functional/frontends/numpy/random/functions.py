@@ -176,7 +176,7 @@ def negative_binomial(n, p, size=None):
 
 
 @with_supported_dtypes(
-    {"1.25.2 and below": ("float16", "float32", "float64")},
+    {"1.25.2 and below": ("float16", "float32")},
     "numpy",
 )
 @to_ivy_arrays_and_back
