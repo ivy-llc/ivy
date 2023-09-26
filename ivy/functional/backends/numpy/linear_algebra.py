@@ -4,7 +4,6 @@ from collections import namedtuple
 
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
-
 import numpy as np
 
 # local
@@ -314,6 +313,7 @@ def tensorsolve(
     return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
+@with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,

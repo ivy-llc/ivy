@@ -4,7 +4,6 @@ import paddle
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 # local
 import ivy
 from ivy import inf
@@ -17,6 +16,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from .elementwise import _elementwise_helper
+
 
 # Array API Standard #
 # -------------------#
