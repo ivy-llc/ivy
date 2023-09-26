@@ -45,7 +45,7 @@ class EagerTensor:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     # Instance Methods #
     # ---------------- #
@@ -115,7 +115,7 @@ class EagerTensor:
         return tf_frontend.raw_ops.GreaterEqual(x=self, y=y, name=name)
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
-        ivy_args = ivy.nested_map([self, slice_spec], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, slice_spec])
         ret = ivy.get_item(*ivy_args)
         return EagerTensor(ret)
 

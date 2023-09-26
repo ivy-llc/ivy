@@ -46,40 +46,43 @@ We're excited for you to get involved! 🦾
 | (k) `Formatting <deep_dive/formatting.rst>`_ 📋
 | How the code is automatically formatted
 |
-| (l) `Function Arguments <deep_dive/function_arguments.rst>`_ 📑
+| (l) `Ivy Lint <deep_dive/ivy_lint.rst>`_ 🧹
+| Ivy's Custom Code Formatters
+|
+| (m) `Function Arguments <deep_dive/function_arguments.rst>`_ 📑
 | How to add the correct function arguments
 |
-| (m) `Docstrings <deep_dive/docstrings.rst>`_ 📄
+| (n) `Docstrings <deep_dive/docstrings.rst>`_ 📄
 | How to properly write docstrings
 |
-| (n) `Docstring Examples <deep_dive/docstring_examples.rst>`_ 💯
+| (o) `Docstring Examples <deep_dive/docstring_examples.rst>`_ 💯
 | How to add useful examples to the docstrings
 |
-| (o) `Array API Tests <deep_dive/array_api_tests.rst>`_ 🤝
+| (p) `Array API Tests <deep_dive/array_api_tests.rst>`_ 🤝
 | How we're borrowing the test suite from the Array API Standard
 |
-| (p) `Ivy Tests <deep_dive/ivy_tests.rst>`_ 🧪
+| (q) `Ivy Tests <deep_dive/ivy_tests.rst>`_ 🧪
 | How to add new tests for each Ivy function
 |
-| (q) `Ivy Frontends <deep_dive/ivy_frontends.rst>`_ ➡
+| (r) `Ivy Frontends <deep_dive/ivy_frontends.rst>`_ ➡
 | How to implement frontend functions
 |
-| (r) `Ivy Frontend Tests <deep_dive/ivy_frontends_tests.rst>`_ 🧪
+| (s) `Ivy Frontend Tests <deep_dive/ivy_frontends_tests.rst>`_ 🧪
 | How to add new tests for each frontend function
 |
-| (s) `Exception Handling <deep_dive/exception_handling.rst>`_ ⚠
+| (t) `Exception Handling <deep_dive/exception_handling.rst>`_ ⚠
 | How to handle exceptions and assertions in a function
 |
-| (t) `Continuous Integration <deep_dive/continuous_integration.rst>`_ 🔁
+| (u) `Continuous Integration <deep_dive/continuous_integration.rst>`_ 🔁
 | Ivy Tests running on the Repository
 |
-| (u) `Gradients <deep_dive/gradients.rst>`_ 🔁
+| (v) `Gradients <deep_dive/gradients.rst>`_ 🔁
 | Everything about our Gradients API
 |
-| (v) `Operating Modes <deep_dive/operating_modes.rst>`_ 🧮
+| (w) `Operating Modes <deep_dive/operating_modes.rst>`_ 🧮
 | Everything about modes Ivy can operate in, along with their purposes
 |
-| (w) `Building the Docs Pipeline <deep_dive/building_the_docs_pipeline.rst>`_ 📚
+| (x) `Building the Docs Pipeline <deep_dive/building_the_docs_pipeline.rst>`_ 📚
 | How are we building our docs
 
 
@@ -99,6 +102,7 @@ We're excited for you to get involved! 🦾
    deep_dive/inplace_updates.rst
    deep_dive/function_wrapping.rst
    deep_dive/formatting.rst
+   deep_dive/ivy_lint.rst
    deep_dive/function_arguments.rst
    deep_dive/docstrings.rst
    deep_dive/docstring_examples.rst
