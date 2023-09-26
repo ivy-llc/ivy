@@ -642,9 +642,6 @@ def test_frontend_function(
         FunctionTestFlags object that stores all testing flags, including:
         num_positional_args, with_out, instance_method, as_variable,
         native_arrays, container, gradient, precision_mode
-    all_aliases
-        a list of strings containing all aliases for that function
-        in the current frontend with their full namespaces.
     frontend
         current frontend (framework).
     fn_tree
@@ -2045,6 +2042,21 @@ def test_frontend_method(
         )
 
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+        # If we have inplace operations, we need to create the frontend arrays
+        # before running the method, so that after running the method
+        # We can check whether the return is still an instance of the frontend array
+        if method_flags.inplace:
+            # make copies of the args and kwargs
+            copy_args_method = copy.deepcopy(args_method)
+            copy_kwargs_method = copy.deepcopy(kwargs_method)
+            copy_ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
+            frontend_ret_ins = copy_ins.__getattribute__(
+                frontend_method_data.method_name
+            )(*copy_args_method, **copy_kwargs_method)
+            assert frontend_ret_ins is copy_ins, (
+                "Inplace method did not return the same instance of the frontend array,"
+                " expected {}, got {}".format(copy_ins, frontend_ret_ins)
+            )
         ret = get_frontend_ret(
             backend_to_test,
             ins.__getattribute__(frontend_method_data.method_name),
