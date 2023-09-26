@@ -2,7 +2,7 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 # --- Helpers --- #
@@ -312,6 +312,7 @@ def kl_div(
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def l1_loss(
     input,
     target,
@@ -319,10 +320,7 @@ def l1_loss(
     reduce=None,
     reduction="mean",
 ):
-    loss = ivy.abs(input - target)
-    reduction = _get_reduction(reduction, size_average, reduce)
-    ret = reduction(loss)
-    return ret
+    return ivy.l1_loss(input, target, reduction=reduction)
 
 
 @to_ivy_arrays_and_back
