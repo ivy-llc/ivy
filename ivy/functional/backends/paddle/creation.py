@@ -36,7 +36,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, paddle.dtype]] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if stop is None:
@@ -84,7 +84,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, paddle.dtype]] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(obj, paddle.Tensor):
@@ -112,7 +112,7 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(shape, int):
@@ -125,7 +125,7 @@ def empty_like(
     /,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.empty(shape=x.shape).cast(dtype)
@@ -155,7 +155,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if n_cols is None:
@@ -206,7 +206,7 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, paddle.dtype]] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if dtype is None:
@@ -232,7 +232,7 @@ def full_like(
     fill_value: Number,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.full(
@@ -351,7 +351,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(start, (paddle.Tensor, int)):
@@ -448,7 +448,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.ones(shape=shape).cast(dtype)
@@ -459,7 +459,7 @@ def ones_like(
     /,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.ones(shape=x.shape, dtype=dtype, device=device)
@@ -507,7 +507,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.zeros(shape=shape).cast(dtype)
@@ -518,7 +518,7 @@ def zeros_like(
     /,
     *,
     dtype: paddle.dtype,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.zeros(shape=x.shape, dtype=dtype, device=device)
@@ -555,7 +555,7 @@ def one_hot(
     off_value: Optional[paddle.Tensor] = None,
     axis: Optional[int] = None,
     dtype: Optional[paddle.dtype] = None,
-    device: core.Place,
+    device: core.Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     on_none = on_value is None
@@ -644,7 +644,7 @@ def triu_indices(
     k: Optional[int] = 0,
     /,
     *,
-    device: core.Place,
+    device: core.Place = None,
 ) -> Tuple[paddle.Tensor]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
     if n_cols == 1 and n_rows == 0:
