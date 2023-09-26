@@ -78,6 +78,12 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 
 
 @to_ivy_arrays_and_back
+def put_along_axis(arr, indices, values, axis, reduce="assign"):
+    result = ivy.put_along_axis(arr, indices, values, axis)
+    return result
+
+
+@to_ivy_arrays_and_back
 def repeat_interleave(x, repeats, axis=None, name=None):
     return ivy.repeat(x, repeats, axis=axis)
 
@@ -178,9 +184,3 @@ def unstack(x, axis=0, name=None):
 
 
 absolute = abs
-
-
-@to_ivy_arrays_and_back
-def put_along_axis(arr, indices, values, axis, reduce='assign'):
-    result = ivy.put_along_axis(arr, indices, values, axis)
-    return result

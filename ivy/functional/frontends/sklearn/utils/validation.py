@@ -86,7 +86,6 @@ def _assert_all_finite(
         raise ValueError(msg_err)
 
 
-
 @to_ivy_arrays_and_back
 def _assert_all_finite_element_wise(
     X, *, xp, allow_nan, msg_dtype=None, estimator_name=None, input_name=""
@@ -1275,7 +1274,7 @@ def check_non_negative(X, whom):
         raise ValueError("Negative values in data passed to %s" % whom)
 
 
-#@to_ivy_arrays_and_back
+# @to_ivy_arrays_and_back
 def check_random_state(seed):
     """
     Turn seed into a np.random.RandomState instance.

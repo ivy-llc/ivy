@@ -1,16 +1,4 @@
-from ..utils._random import our_rand_r
-
 RAND_R_MAX = 2147483647
-
-# =============================================================================
-# Helper functions
-# =============================================================================
-
-
-def rand_int(low, high, random_state):
-    """Generate a random integer in [low; high)."""
-    #return low + our_rand_r(random_state) % (high - low)
-    return low + 1 % (high - low) #TODO: FIX THE RANDOM NUMBER ISSUE
 
 
 class WeightedMedianCalculator:
@@ -97,3 +85,13 @@ class WeightedMedianCalculator:
             return (self.samples[self.k][0] + self.samples[self.k - 1][0]) / 2.0
         if self.sum_w_0_k > (self.total_weight / 2.0):
             return self.samples[self.k - 1][0]
+
+# =============================================================================
+# Helper functions
+# =============================================================================
+
+
+def rand_int(low, high, random_state):
+    """Generate a random integer in [low; high)."""
+    # return low + our_rand_r(random_state) % (high - low)
+    return low + 1 % (high - low)  # TODO: FIX THE RANDOM NUMBER ISSUE
