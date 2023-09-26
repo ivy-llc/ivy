@@ -2005,9 +2005,6 @@ def test_paddle_tensor_floor_divide(
         num_arrays=2,
         min_value=2,
         shared_dtype=True,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
     ),
 )
 def test_paddle_tensor_floor_mod(
