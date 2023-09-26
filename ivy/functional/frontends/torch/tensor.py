@@ -870,6 +870,11 @@ class Tensor:
     def nanmean(self, dim=None, keepdim=False):
         return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    @numpy_to_torch_style_args
+    def nansum(self, dim=None, keepdim=False):
+        return torch_frontend.nansum(self, dim=dim, keepdim=keepdim)
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
@@ -1564,6 +1569,13 @@ class Tensor:
     def bitwise_right_shift(self, other, *, out=None):
         return torch_frontend.bitwise_right_shift(self._ivy_array, other)
 
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("uint8", "int8", "int32", "int64")}, "torch"
+    )
+    def bitwise_right_shift_(self, other, *, out=None):
+        self.ivy_array = self.bitwise_right_shift(other, out=out).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
         chol = torch_frontend.cholesky(self)
@@ -1702,6 +1714,21 @@ class Tensor:
         self.ivy_array = self.floor().ivy_array
         return self
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "complex",
+                "float64",
+                "int8",
+                "int64",
+            )
+        },
+        "torch",
+    )
+    def diff(self, n=1, dim=-1, prepend=None, append=None):
+        return torch_frontend.diff(self, n=n, dim=dim, prepend=prepend, append=append)
+
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)
 
@@ -1711,6 +1738,59 @@ class Tensor:
 
     def gather(self, dim, index):
         return torch_frontend.gather(self, dim=dim, index=index)
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_add_(self, dim, index, src):
+        self.ivy_array = ivy.put_along_axis(self.ivy_array, index, src, dim, mode="sum")
+        return self
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_(self, dim, index, src, *, reduce=None):
+        if reduce is None:
+            reduce = "replace"
+        else:
+            mode_mappings = {
+                "add": "sum",
+                "multiply": "mul",
+            }
+            reduce = mode_mappings.get(reduce, reduce)
+        self.ivy_array = ivy.put_along_axis(
+            self.ivy_array, index, src, dim, mode=reduce
+        )
+        return self
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_reduce_(self, dim, index, src, reduce, *, include_self=True):
+        if reduce == "prod":
+            reduce = "mul"
+        self.ivy_array = ivy.put_along_axis(
+            self.ivy_array, index, src, dim, mode=reduce
+        )
+        return self
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_add(self, dim, index, src):
+        return torch_frontend.scatter_add(self, dim, index, src)
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter(self, dim, index, src):
+        return torch_frontend.scatter_reduce(self, dim, index, src, reduce="replace")
+
+    @with_supported_dtypes(
+        {"2.0.1 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    )
+    def scatter_reduce(self, dim, index, src, reduce, *, include_self=True):
+        return torch_frontend.scatter_reduce(self, dim, index, src, reduce=reduce)
 
     def take_along_dim(self, indices, dim):
         return torch_frontend.take_along_dim(self, indices=indices, dim=dim)

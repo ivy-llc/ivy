@@ -2021,3 +2021,218 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_higher_order_moment(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        order: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.higher_order_moment. This method
+        simply wraps the function, and so the docstring for ivy.higher_order_moment also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order
+            number of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "higher_order_moment",
+            x,
+            order,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def higher_order_moment(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        order: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.higher_order_moment. This method
+        simply wraps the function, and so the docstring for ivy.higher_order_moment also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order
+            number of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> result = ivy.higher_order_moment(a, 3)
+        >>> print(result)
+        ivy.array([[
+            [14, 19],
+            [19, 26]],
+           [[19, 26],
+            [26, 36]
+        ]])
+        """
+        return self.static_higher_order_moment(
+            self,
+            order,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_batched_outer(
+        tensors: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.batched_outer. This method simply
+        wraps the function, and so the docstring for ivy.batched_outer also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        tensors
+            list of tensors of shape (n_samples, J1, ..., JN) ,
+            (n_samples, K1, ..., KM) ...
+
+        Returns
+        -------
+        outer product of tensors
+            of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
+
+        Examples
+        --------
+        >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
+        >>> result = ivy.batched_outer(a, b)
+        >>> print(result)
+        ivy.array([[[[[0.1, 0.2],
+              [0.30000001, 0.40000001]],
+             [[0.2       , 0.40000001],
+              [0.60000002, 0.80000001]]],
+            [[[0.3       , 0.60000001],
+              [0.90000004, 1.20000002]],
+             [[0.40000001, 0.80000001],
+              [1.20000005, 1.60000002]]]],
+           [[[[2.5       , 3.00000012],
+              [3.49999994, 4.00000006]],
+             [[3.        , 3.60000014],
+              [4.19999993, 4.80000007]]],
+            [[[3.5       , 4.20000017],
+              [4.89999992, 5.60000008]],
+             [[4.        , 4.80000019],
+              [5.5999999 , 6.4000001 ]]]]])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "batched_outer",
+            tensors,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def batched_outer(
+        self: ivy.Container,
+        tensors: Sequence[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.batched_outer. This method simply
+        wraps the function, and so the docstring for ivy.batched_outer also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        tensors
+            list of tensors of shape (n_samples, J1, ..., JN) ,
+            (n_samples, K1, ..., KM) ...
+
+        Returns
+        -------
+        outer product of tensors
+            of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
+
+        Examples
+        --------
+        >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
+        >>> result = ivy.batched_outer(a, b)
+        >>> print(result)
+        ivy.array([[[[[0.1, 0.2],
+              [0.30000001, 0.40000001]],
+             [[0.2       , 0.40000001],
+              [0.60000002, 0.80000001]]],
+            [[[0.3       , 0.60000001],
+              [0.90000004, 1.20000002]],
+             [[0.40000001, 0.80000001],
+              [1.20000005, 1.60000002]]]],
+           [[[[2.5       , 3.00000012],
+              [3.49999994, 4.00000006]],
+             [[3.        , 3.60000014],
+              [4.19999993, 4.80000007]]],
+            [[[3.5       , 4.20000017],
+              [4.89999992, 5.60000008]],
+             [[4.        , 4.80000019],
+              [5.5999999 , 6.4000001 ]]]]])
+        """
+        return self.static_batched_outer(
+            (self, *tensors),
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

@@ -16,8 +16,7 @@ from ivy.utils.exceptions import IvyValueError
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "handle_complex_input",
-    "infer_device",
-    "handle_device_shifting",
+    "handle_device",
     "infer_dtype",
     "handle_array_function",
     "outputs_to_ivy_arrays",
@@ -778,42 +777,9 @@ def infer_dtype(fn: Callable) -> Callable:
 # ----------------#
 
 
-def infer_device(fn: Callable) -> Callable:
+def handle_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _infer_device(*args, device=None, **kwargs):
-        """
-        Determine the correct `device`, and then calls the function with the `device`
-        passed explicitly.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        device
-            The device for the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with `device` passed explicitly.
-        """
-        # find the first array argument, if required
-        arr = None if ivy.exists(device) else _get_first_array(*args, **kwargs)
-        # infer the correct device
-        device = ivy.default_device(device, item=arr, as_native=True)
-        # call the function with device provided explicitly
-        return fn(*args, device=device, **kwargs)
-
-    _infer_device.infer_device = True
-    return _infer_device
-
-
-def handle_device_shifting(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _handle_device_shifting(*args, **kwargs):
+    def _handle_device(*args, **kwargs):
         """
         Move all array inputs of the function to `ivy.default_device()`.
 
@@ -856,8 +822,8 @@ def handle_device_shifting(fn: Callable) -> Callable:
             )
         return fn(*args, **kwargs)
 
-    _handle_device_shifting.handle_device_shifting = True
-    return _handle_device_shifting
+    _handle_device.handle_device = True
+    return _handle_device
 
 
 # Inplace Update Handling #
@@ -1071,9 +1037,9 @@ def _wrap_function(
     """
     Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
-    `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to us
-    whether a certain function has been wrapped or not. Also handles wrapping of the
-    `linalg` namespace.
+    `handle_nestable` etc are set during wrapping, hence indicate to us whether a
+    certain function has been wrapped or not. Also handles wrapping of the `linalg`
+    namespace.
 
     Parameters
     ----------
