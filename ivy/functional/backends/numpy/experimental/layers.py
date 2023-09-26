@@ -969,12 +969,12 @@ def stft(
 
     if window is None or window is not None:
         window = np.hanning(n_fft)
-    
+
     if not isinstance(signal, np.ndarray):
         signal = np.asarray(signal)
 
     num_frames = 1 + (signal.shape[-1] - n_fft) // hop_length
-    
+
     if return_complex:
         input_dtype = np.result_type(signal, np.complex64)
     else:
@@ -1001,7 +1001,7 @@ def stft(
             frame = frame * window
 
         stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
-        
+
         if onesided:
             stft_frame = stft_frame[..., : n_fft // 2 + 1]
 
@@ -1010,9 +1010,9 @@ def stft(
             detrended = detrend_func(np.arange(len(frame)))(frame)
             stft_frame = np.fft.fft(detrended, n=n_fft, axis=axis)
             if onesided:
-                stft_frame = stft_frame[..., : n_fft // 2 + 1]        
+                stft_frame = stft_frame[..., : n_fft // 2 + 1]
 
-        stft_result[..., i, :n_fft // 2 + 1] = stft_frame
+        stft_result[..., i, : n_fft // 2 + 1] = stft_frame
 
     return stft_result
 
