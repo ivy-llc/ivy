@@ -34,7 +34,9 @@ def thresholded_relu(
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def relu6(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def relu6(
+    x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     return torch.nn.functional.relu6(x)
 
 
@@ -73,6 +75,20 @@ def elu(
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = torch.nn.functional.sigmoid(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+def hardtanh(
+    x: torch.Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    ret = torch.nn.functional.hardtanh(x, max_val=max_val, min_val=min_val)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
