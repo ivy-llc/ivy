@@ -33,7 +33,7 @@ def random_uniform(
     high: Union[float, paddle.Tensor] = 1.0,
     shape: Optional[Union[paddle.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: paddle.dtype,
-    device: Place,
+    device: Place = None,
     seed=None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -65,7 +65,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
-    device: Place,
+    device: Place = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     _check_valid_scale(std)
@@ -99,7 +99,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[paddle.Tensor] = None,
     replace: bool = True,
-    device: Place,
+    device: Place = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -122,7 +122,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Place,
+    device: Place = None,
     dtype: Optional[Union[paddle.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,

@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
-    handle_device_shifting,
+    handle_device,
     inputs_to_ivy_arrays,
     handle_backend_invalid,
 )
@@ -168,7 +168,7 @@ def eigh_tridiagonal(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -235,7 +235,7 @@ def diagflat(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -278,7 +278,7 @@ def kron(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -321,7 +321,7 @@ def matrix_exp(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -385,7 +385,7 @@ def eig(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -430,7 +430,7 @@ def eigvals(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -518,7 +518,7 @@ def multi_dot(
 
 
 multi_dot.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": ("handle_device",),
     "to_skip": (),
 }
 
@@ -529,7 +529,7 @@ multi_dot.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -578,7 +578,7 @@ def cond(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def kronecker(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     skip_matrix: Optional[int] = None,
@@ -628,7 +628,7 @@ def kronecker(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def khatri_rao(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -731,7 +731,7 @@ def khatri_rao(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -824,7 +824,7 @@ def mode_dot(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def multi_mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
@@ -949,7 +949,7 @@ def _svd_checks(x, n_eigenvecs=None):
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def svd_flip(
     U: Union[ivy.Array, ivy.NativeArray],
     V: Union[ivy.Array, ivy.NativeArray],
@@ -1019,7 +1019,7 @@ def svd_flip(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def make_svd_non_negative(
     x: Union[ivy.Array, ivy.NativeArray],
     U: Union[ivy.Array, ivy.NativeArray],
@@ -1114,7 +1114,7 @@ def make_svd_non_negative(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def truncated_svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1204,7 +1204,7 @@ def _svd_interface(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def initialize_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Sequence[int],
@@ -1317,7 +1317,7 @@ def initialize_tucker(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def partial_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1466,7 +1466,7 @@ def partial_tucker(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1673,7 +1673,7 @@ def dot(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def general_inner_product(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -1764,7 +1764,7 @@ def general_inner_product(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def higher_order_moment(
     x: Union[ivy.Array, ivy.NativeArray],
     order: int,
@@ -1813,7 +1813,7 @@ def higher_order_moment(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def batched_outer(
     tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
