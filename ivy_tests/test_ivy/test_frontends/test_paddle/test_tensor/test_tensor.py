@@ -571,7 +571,7 @@ def test_paddle_tensor_add_(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="addmm",
-    dtype_x_axis=helpers.dtype_values_axis(
+    dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=3, shared_dtype=True
     )
 )

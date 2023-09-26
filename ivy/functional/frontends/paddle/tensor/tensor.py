@@ -276,8 +276,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def addmm(self, x, y, beta=1.0, alpha=1.0, name=None):
         return paddle_frontend.Tensor(alpha * 
-                                      paddle_frontend.multiply(_to_ivy_array(x),
-                                                                       _to_ivy_array(y)) + 
+                                      paddle_frontend.matmul(x,y) + 
                                       beta * self._ivy_array)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
