@@ -30,6 +30,7 @@ def index_add_(x, index, value):
     ivy.inplace_update(x, ret)
     return x
 
+
 # NOTE:
 # Only inplace functions are to be added in this file.
 # Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
