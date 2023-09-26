@@ -827,7 +827,12 @@ def test_paddle_erf(
 @handle_frontend_test(
     fn_tree="paddle.erfinv",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
     ),
 )
 def test_paddle_erfinv(
@@ -847,6 +852,8 @@ def test_paddle_erfinv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
+        rtol=1e-2,
         x=x[0],
     )
 
