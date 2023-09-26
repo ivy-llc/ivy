@@ -19,6 +19,7 @@ from typing import (
     Literal,
 )
 import einops
+import ml_dtypes  # noqa
 import numpy as np
 
 # local
@@ -83,7 +84,6 @@ class PreciseMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_precise_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -174,7 +174,6 @@ class ArrayMode:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_array_mode()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -189,7 +188,8 @@ def get_referrers_recursive(
     """
     Recursively retrieve referrers for an object.
 
-    This function recursively fetches referrers for the specified `item` up to a given `max_depth`.
+    This function recursively fetches referrers for the specified `item` up to a given
+    `max_depth`.
 
     Parameters
     ----------
@@ -207,7 +207,8 @@ def get_referrers_recursive(
     Returns
     -------
     ivy.Container
-        A container representing referrers and their sub-referrers, respecting the `max_depth`.
+        A container representing referrers and their sub-referrers, respecting the
+        `max_depth`.
 
     Examples
     --------
