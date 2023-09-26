@@ -766,13 +766,7 @@ def tpu_is_available() -> bool:
 
 # noinspection PyShadowingNames
 @handle_exceptions
-def default_device(
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    /,
-    *,
-    item: Optional[Union[list, tuple, dict, ivy.Array, ivy.NativeArray]] = None,
-    as_native: bool = None,
-) -> Union[ivy.Device, ivy.NativeDevice]:
+def default_device(device=None, *, item=None, as_native=None):
     """
     Return the input device or the default device. If the as_native flag is set, the
     device will be converted to a native device. If the item is provided, the item's
@@ -780,22 +774,17 @@ def default_device(
     returned. If a default device has not been set, the first gpu is returned if
     available, otherwise the cpu is returned.
 
-    Parameters
-    ----------
-    device
-        The device to be returned or converted.
-    item
-        The item to get the device from.
-    as_native
-        Whether to convert the device to a native device.
+    :param device: The device to be returned or converted.
+    :type device: Union[ivy.Device, ivy.NativeDevice], optional
+    :param item: The item to get the device from.
+    :type item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray], optional
+    :param as_native: Whether to convert the device to a native device.
+    :type as_native: bool, optional
+    :return: Device handle or string.
+    :rtype: Union[ivy.Device, ivy.NativeDevice]
 
-    Returns
-    -------
-    ret
-        Device handle or string.
+    - **Example**
 
-    Examples
-    --------
     >>> ivy.default_device()
     device(type='cpu')
 
@@ -817,12 +806,11 @@ def default_device(
     device(type='gpu', id=0)
     """
     if ivy.exists(device):
-        if as_native is True:
+        if as_native:
             return ivy.as_native_dev(device)
-        elif as_native is False:
-            return ivy.as_ivy_dev(device)
-        return device
-    as_native = ivy.default(as_native, False)
+        return ivy.as_ivy_dev(device)
+    if not as_native:
+        as_native = False
     if ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
