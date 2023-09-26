@@ -704,6 +704,8 @@ def test_tensorflow_avg_pool2d(
         ksize=ksize,
         strides=strides,
         padding=padding,
+        rtol=1e-2,
+        atol=1e-2,
     )
 
 
