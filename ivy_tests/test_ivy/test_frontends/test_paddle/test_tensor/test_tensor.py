@@ -15,6 +15,9 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
+    _broadcastable_trio,
+)
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -327,6 +330,42 @@ def test_paddle_instance_var(
         init_flags=init_flags,
         backend_to_test=backend_fw,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# where
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="where",
+    broadcastables=_broadcastable_trio(),
+)
+def test_paddle_instance_where(
+    broadcastables,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    cond, xs, dtypes = broadcastables
+    helpers.test_frontend_method(
+        init_input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": xs[0],
+        },
+        method_input_dtypes=["bool", dtypes[1]],
+        method_all_as_kwargs_np={
+            "condition": cond,
+            "other": xs[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 
