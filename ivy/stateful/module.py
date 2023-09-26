@@ -854,11 +854,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         for key, obj in self.state_dict().items():
             if isinstance(obj, ivy.Module):
                 obj.to_device(device)
-            elif ivy.is_ivy_array(obj) or isinstance(obj, ivy.Container):
-                obj.to_device(device, out=obj)
-
-            else:
-                ivy.to_device(obj, device=device, obj=obj)
+            elif ivy.is_array(obj) or ivy.is_ivy_container(obj):
+                ivy.to_device(obj, device, out=obj)
+        return self
 
     def __repr__(self):
         extra_lines = []
@@ -909,7 +907,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         return self._built
 
     @property
-    def device_(self):
+    def device(self):
         return self._device
 
     def show_graph(
