@@ -854,7 +854,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         for key, obj in self.state_dict().items():
             if isinstance(obj, ivy.Module):
                 obj.to_device(device)
-            elif ivy.is_ivy_array(obj) or ivy.is_ivy_container(obj):
+            elif ivy.is_array(obj) or ivy.is_ivy_container(obj):
                 ivy.to_device(obj, device, out=obj)
 
     def __repr__(self):
