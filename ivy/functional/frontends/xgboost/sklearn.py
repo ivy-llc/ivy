@@ -96,8 +96,8 @@ class XGBModel(XGBModelBase):
         return hasattr(self, "_Booster")
 
     def get_booster(self):
-        """Get the underlying xgboost Booster of this model.
-
+        """
+        Get the underlying xgboost Booster of this model.
         This will raise an exception when fit was not called
 
         Returns
@@ -108,7 +108,7 @@ class XGBModel(XGBModelBase):
             raise TypeError("need to call fit or load_model beforehand")
         return self._Booster
 
-    def get_params(self, deep =True):
+    def get_params(self, deep=True):
         params = self.__dict__
 
         # if kwargs is a dict, update params accordingly
@@ -166,7 +166,8 @@ class XGBModel(XGBModelBase):
             feature_weights=None,
             callbacks=None,
     ):
-        """Fit gradient boosting model.
+        """
+        Fit gradient boosting model.
 
         Note that calling ``fit()`` multiple times will cause the model object to be
         re-fit from scratch. To resume training from a previous checkpoint, explicitly
@@ -194,9 +195,11 @@ class XGBModel(XGBModelBase):
             metrics will be computed.
             Validation metrics will help us track the performance of the model.
 
-        eval_metric : str, list of str, or callable, optional(deprecated in fit method).
+        eval_metric
+            str, list of str, or callable, optional(deprecated in fit method).
 
-        early_stopping_rounds : int(deprecated in fit method).
+        early_stopping_rounds
+            int(deprecated in fit method).
         verbose
             If `verbose` is True and an evaluation set is used, the evaluation metric
             measured on the validation set is printed to stdout at each boosting stage.
@@ -216,13 +219,12 @@ class XGBModel(XGBModelBase):
             Weight for each feature, defines the probability of each feature being
             selected when colsample is being used.  All values must be greater than 0,
             otherwise a `ValueError` is thrown.
-
         callbacks
             (deprecated in fit method).
         """
         # skip all the validation as we're interested in calculations for now
         # ToDo: add handling for custom objective
-        params = self.get_xgb_params()
+        params = self.get_params()
 
         self._Booster = train(
             params,

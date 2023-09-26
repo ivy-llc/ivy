@@ -17,7 +17,7 @@ def train(
     xgb_model=None,
     callbacks=None,
     custom_metric=None,
-) -> Booster:
+):
     """Train a booster with given parameters.
     Parameters
     ----------
