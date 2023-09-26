@@ -183,7 +183,7 @@ class TTMatrix(FactorizedTensor):
             if not i:
                 res = factor
             else:
-                res = ivy.tensordot(res, factor, ([-1], [0]))
+                res = ivy.tensordot(res, factor, axes=([-1], [0]))
 
         # return ivy.transpose(ivy.reshape(res, full_shape), order)
         return ivy.permute_dims(ivy.reshape(res, full_shape), order)
