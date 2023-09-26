@@ -38,7 +38,7 @@ def _remove_so_log(trace):
         elif (
             transpile_frame is None
             and os.path.join("ivy", "compiler") in st.filename
-            and st.name in ["trace", "transpile"]
+            and st.name in ["compile", "transpile"]
         ):
             transpile_frame = old_frames[idx]
         elif track:
