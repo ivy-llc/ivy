@@ -97,17 +97,16 @@
 Ivy is an open-source machine learning framework that
 enables you to:
 
-- 🔥 **Autotune your model**: for optimal framework, compiler, and hardware selection.
-- 💥 **Boost model speed**:  by up to 3x.
-- 🔄 **Convert code into any framework**: to use and build of top of any model, library, infrastructure or device by converting any code between frameworks.
-- ⚒️ **Write framework-agnostic code**: by letting you choose your preferred ML framework as a backend. to leverage all its benefits and tools
-
+- 🔥 **Autotune your model**: Automatically find the optimal framework, compiler infrastructure and hardware for your specific use case using `ivy.autotune`.
+- 💥 **Boost model speed**:  Speed up your models by up to 3x using the most efficient ML infrastructure with `ivy.compile`.
+- 🔄 **Convert code into any framework**: Use and build on top of any model, library, or device by converting any code from one framework to another using `ivy.transpile`.
+- ⚒️ **Write framework-agnostic code**: Write your code once in ivy and then choose the most appropriate ML framework as the backend to leverage all the benefits and tools.
 
 [Join our growing community](https://discord.com/invite/sXyFF8tDtm) 🌍 to connect with people using Ivy.
 
 ------------------------------------------------------------------------
 
-# Getting started:
+# Getting started
 
 You can start by reading [our basics](https://unify.ai/docs/ivy/demos/learn_the_basics.html) and [Demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html).
 
