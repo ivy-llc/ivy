@@ -2281,6 +2281,72 @@ class Dct(Module):
             s += ", norm={norm}"
         return s.format(**self.__dict__)
 
+class IDct(Module):
+    def __init__(
+        self,
+        *,
+        type=2,
+        n=None,
+        axis=-1,
+        norm=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+
+        Parameters
+        ----------
+        x
+            The input signal.
+        type
+            The type of the idct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger then x is zero-padded.
+        axis
+            The axis to compute the IDCT along.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self.type = type
+        self.n = n
+        self.axis = axis
+        self.norm = norm
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.idct(
+            x,
+            type=self.type,
+            n=self.n,
+            axis=self.axis,
+            norm=self.norm,
+        )
+
+    def extra_repr(self):
+        s = "type={type}"
+        if self.n is not None:
+            s += ", n={n}"
+        if self.axis != -1:
+            s += ", axis={axis}"
+        if self.norm is not None:
+            s += ", norm={norm}"
+        return s.format(**self.__dict__)
 
 # EMBEDDING #
 # ----------#
