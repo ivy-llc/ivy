@@ -320,10 +320,7 @@ def l1_loss(
     reduce=None,
     reduction="mean",
 ):
-    if size_average is not None or reduce is not None:
-        reduction = _legacy_get_string(size_average, reduce)
-    ret = ivy.l1_loss(input, target, reduction=reduction)
-    return ret
+    return ivy.l1_loss(input, target, reduction=reduction)
 
 
 @to_ivy_arrays_and_back
