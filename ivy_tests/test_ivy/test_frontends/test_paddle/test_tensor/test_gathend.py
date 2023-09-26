@@ -1,5 +1,4 @@
 import sys
-sys.path.append(r"C:\Users\xiggy\electionWeb\Unify-Ivy\ivy_dev\lib\site-packages")
 import pytest
 import ivy
 
@@ -18,6 +17,10 @@ def test_gather_nd():
 
     # check the result
     assert result == ivy.array(1.0)
+
+
+sys.path.append(r"C:\Users\xiggy\electionWeb\Unify-Ivy\ivy_dev\lib\site-packages")
+
 
 if __name__ == "__main__":
     pytest.main()
