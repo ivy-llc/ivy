@@ -807,4 +807,3 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
     def nonzero(self):
         return paddle_frontend.nonzero(self._ivy_array)
-
