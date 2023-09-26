@@ -111,10 +111,12 @@ def max_pool3d(
     data_format="NCDHW",
     name=None,
 ):
-    if stride is None:
-        stride = kernel_size
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    stride = _broadcast_pooling_helper(
+        stride if stride is not None else kernel_size, "3d", name="stride"
+    )
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+
     # Figure out padding string
     if all(
         [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
