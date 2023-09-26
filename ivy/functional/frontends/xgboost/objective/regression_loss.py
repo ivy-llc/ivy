@@ -12,7 +12,7 @@ class LogisticRegression:
 
     @staticmethod
     def second_order_gradient(predt, label):
-        return ivy.fmax(predt * (1. - predt), 1e-16)
+        return ivy.fmax(predt * (1.0 - predt), 1e-16)
 
     @staticmethod
     def prob_to_margin(base_score):

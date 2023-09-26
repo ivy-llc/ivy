@@ -6,47 +6,47 @@ from .training import train
 
 class XGBModel(XGBModelBase):
     def __init__(
-            self,
-            max_depth=None,
-            max_leaves=None,
-            max_bin=None,
-            grow_policy=None,
-            learning_rate=None,
-            n_estimators=None,
-            verbosity=None,
-            objective=None,
-            booster=None,
-            tree_method=None,
-            n_jobs=None,
-            gamma=None,
-            min_child_weight=None,
-            max_delta_step=None,
-            subsample=None,
-            sampling_method=None,
-            colsample_bytree=None,
-            colsample_bylevel=None,
-            colsample_bynode=None,
-            reg_alpha=None,
-            reg_lambda=None,
-            scale_pos_weight=None,
-            base_score=None,
-            random_state=None,
-            missing=None,
-            num_parallel_tree=None,
-            monotone_constraints=None,
-            interaction_constraints=None,
-            importance_type=None,
-            device=None,
-            validate_parameters=None,
-            enable_categorical=False,
-            feature_types=None,
-            max_cat_to_onehot=None,
-            max_cat_threshold=None,
-            multi_strategy=None,
-            eval_metric=None,
-            early_stopping_rounds=None,
-            callbacks=None,
-            **kwargs,
+        self,
+        max_depth=None,
+        max_leaves=None,
+        max_bin=None,
+        grow_policy=None,
+        learning_rate=None,
+        n_estimators=None,
+        verbosity=None,
+        objective=None,
+        booster=None,
+        tree_method=None,
+        n_jobs=None,
+        gamma=None,
+        min_child_weight=None,
+        max_delta_step=None,
+        subsample=None,
+        sampling_method=None,
+        colsample_bytree=None,
+        colsample_bylevel=None,
+        colsample_bynode=None,
+        reg_alpha=None,
+        reg_lambda=None,
+        scale_pos_weight=None,
+        base_score=None,
+        random_state=None,
+        missing=None,
+        num_parallel_tree=None,
+        monotone_constraints=None,
+        interaction_constraints=None,
+        importance_type=None,
+        device=None,
+        validate_parameters=None,
+        enable_categorical=False,
+        feature_types=None,
+        max_cat_to_onehot=None,
+        max_cat_threshold=None,
+        multi_strategy=None,
+        eval_metric=None,
+        early_stopping_rounds=None,
+        callbacks=None,
+        **kwargs,
     ):
         self.n_estimators = n_estimators
         self.objective = objective
@@ -97,8 +97,8 @@ class XGBModel(XGBModelBase):
 
     def get_booster(self):
         """
-        Get the underlying xgboost Booster of this model.
-        This will raise an exception when fit was not called
+        Get the underlying xgboost Booster of this model. This will raise an exception
+        when fit was not called.
 
         Returns
         -------
@@ -150,21 +150,21 @@ class XGBModel(XGBModelBase):
         return 100 if not self.n_estimators else self.n_estimators
 
     def fit(
-            self,
-            X,
-            y,
-            *,
-            sample_weight=None,
-            base_margin=None,
-            eval_set=None,
-            eval_metric=None,
-            early_stopping_rounds=None,
-            verbose=True,
-            xgb_model=None,
-            sample_weight_eval_set=None,
-            base_margin_eval_set=None,
-            feature_weights=None,
-            callbacks=None,
+        self,
+        X,
+        y,
+        *,
+        sample_weight=None,
+        base_margin=None,
+        eval_set=None,
+        eval_metric=None,
+        early_stopping_rounds=None,
+        verbose=True,
+        xgb_model=None,
+        sample_weight_eval_set=None,
+        base_margin_eval_set=None,
+        feature_weights=None,
+        callbacks=None,
     ):
         """
         Fit gradient boosting model.
@@ -226,22 +226,17 @@ class XGBModel(XGBModelBase):
         # ToDo: add handling for custom objective
         params = self.get_params()
 
-        self._Booster = train(
-            params,
-            X,
-            y,
-            self.get_num_boosting_rounds()
-        )
+        self._Booster = train(params, X, y, self.get_num_boosting_rounds())
 
         return self
 
     def predict(
-            self,
-            X,
-            output_margin=False,
-            validate_features=True,
-            base_margin=None,
-            iteration_range=None,
+        self,
+        X,
+        output_margin=False,
+        validate_features=True,
+        base_margin=None,
+        iteration_range=None,
     ):
         """
         Parameters

@@ -90,30 +90,34 @@ class DMatrix:
 
 
 class Booster:
-    def __init__(
-        self,
-        params=None,
-        cache=None,
-        model_file=None
-    ):
+    def __init__(self, params=None, cache=None, model_file=None):
         # cache[0] refers to input data while cache[1] refers to input target
         n_feat = cache[0].shape[1]
         n_inst = cache[0].shape[0]
         n_output_group = ivy.unique_values(cache[1]).shape[0]
 
         # by default xgboost calculates the mean of a target if base_score is not provided
-        params["base_score"] = cache[1].mean() if not params["base_score"] else params["base_score"]
+        params["base_score"] = (
+            cache[1].mean() if not params["base_score"] else params["base_score"]
+        )
 
         # add num_feature, num_target and num_instances to params
-        params.update({"num_feature": n_feat, "num_output_group": n_output_group-1, "num_instances": n_inst})
+        params.update(
+            {
+                "num_feature": n_feat,
+                "num_output_group": n_output_group - 1,
+                "num_instances": n_inst,
+            }
+        )
 
         # create gbm(as for now only gblinear booster is available)
         self.gbm = GBLinear(params)
 
     def update(self, dtrain, dlabel, iteration, fobj=None):
         """
-        Update for one iteration, with objective function calculated
-        internally. This function should not be called directly by users.
+        Update for one iteration, with objective function calculated internally. This
+        function should not be called directly by users.
+
         Parameters
         ----------
         dtrain
@@ -131,22 +135,24 @@ class Booster:
         self.gbm.do_boost(dtrain, gpair, iteration)
 
     def predict(
-            self,
-            data,
-            output_margin=False,
-            pred_leaf=False,
-            pred_contribs=False,
-            approx_contribs=False,
-            pred_interactions=False,
-            validate_features=True,
-            training=False,
-            iteration_range=(0, 0),
-            strict_shape=False,
+        self,
+        data,
+        output_margin=False,
+        pred_leaf=False,
+        pred_contribs=False,
+        approx_contribs=False,
+        pred_interactions=False,
+        validate_features=True,
+        training=False,
+        iteration_range=(0, 0),
+        strict_shape=False,
     ):
         """
-        Predict with data. The full model will be used unless `iteration_range` is specified,
-        meaning user have to either slice the model or use the ``best_iteration``
-        attribute to get prediction from best model returned from early stopping.
+        Predict with data. The full model will be used unless `iteration_range` is
+        specified, meaning user have to either slice the model or use the
+        ``best_iteration`` attribute to get prediction from best model returned from
+        early stopping.
+
         Parameters
         ----------
         data
@@ -209,4 +215,4 @@ class Booster:
         pred = self.gbm.obj.pred_transform(pred)
 
         # apply probability thresholding
-        return ivy.where(pred >= 0.5, 1., 0.)
+        return ivy.where(pred >= 0.5, 1.0, 0.0)
