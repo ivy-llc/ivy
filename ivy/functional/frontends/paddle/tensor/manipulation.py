@@ -6,20 +6,6 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 
-# NOTE:
-# Only inplace functions are to be added in this file.
-# Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
-
-
-@with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def reshape_(x, shape):
-    ret = ivy.reshape(x, shape)
-    ivy.inplace_update(x, ret)
-    return x
 
 # Add the index_add_ function
 @with_unsupported_dtypes(
@@ -41,5 +27,20 @@ def index_add_(x, index, value):
     """
     # Implement the index_add_ function
     ret = index_add(x, index, value)
+    ivy.inplace_update(x, ret)
+    return x
+
+# NOTE:
+# Only inplace functions are to be added in this file.
+# Please add non-inplace counterparts to `/frontends/paddle/manipulation.py`.
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def reshape_(x, shape):
+    ret = ivy.reshape(x, shape)
     ivy.inplace_update(x, ret)
     return x
