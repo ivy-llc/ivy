@@ -691,10 +691,9 @@ def test_torch_mish(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
     dtype_mha_args=_mha_helper(same_pre_embed_dim=True).filter(
-        lambda args:
-        args[10] is not None and
-        (not args[22] or args[5] is not None) and
-        len(set(_get_embed_dim(*args[6:10], args[1]))) == 1
+        lambda args: args[10] is not None
+        and (not args[22] or args[5] is not None)
+        and len(set(_get_embed_dim(*args[6:10], args[1]))) == 1
     ),
     test_with_out=st.just(False),
 )
@@ -746,37 +745,41 @@ def test_torch_multi_head_attention_forward(
         num_batches = 1
         num_keys = k.shape[0]
     if static_k is not None:
-        static_k = static_k.reshape(num_batches*heads, num_keys, int(emb_dim//heads))
+        static_k = static_k.reshape(
+            num_batches * heads, num_keys, int(emb_dim // heads)
+        )
     if static_v is not None:
-        static_v = static_v.reshape(num_batches*heads, num_keys, int(emb_dim//heads))
+        static_v = static_v.reshape(
+            num_batches * heads, num_keys, int(emb_dim // heads)
+        )
     # re-order the dtypes to match the order of the frontend arguments, not the order
     # of ivy.multi_head_attention's arguments given by _mha_helper
     kwargs = {
-        'query': q,
-        'key': k,
-        'value': v,
-        'embed_dim_to_check': emb_dim,
-        'num_heads': heads,
-        'in_proj_weight': in_proj_weight,
-        'in_proj_bias': in_proj_bias,
-        'bias_k': bias_k,
-        'bias_v': bias_v,
-        'add_zero_attn': add_zero_attn,
-        'dropout_p': dropout_p,
-        'out_proj_weight': out_proj_weight,
-        'out_proj_bias': out_proj_bias,
-        'training': training,
-        'key_padding_mask': key_padding_mask,
-        'need_weights': need_weights,
-        'attn_mask': attn_mask,
-        'use_separate_proj_weight': in_proj_weight is None,
-        'q_proj_weight': q_proj_weight,
-        'k_proj_weight': k_proj_weight,
-        'v_proj_weight': v_proj_weight,
-        'static_k': static_k,
-        'static_v': static_v,
-        'average_attn_weights': average_attn_weights,
-        'is_causal': is_causal,
+        "query": q,
+        "key": k,
+        "value": v,
+        "embed_dim_to_check": emb_dim,
+        "num_heads": heads,
+        "in_proj_weight": in_proj_weight,
+        "in_proj_bias": in_proj_bias,
+        "bias_k": bias_k,
+        "bias_v": bias_v,
+        "add_zero_attn": add_zero_attn,
+        "dropout_p": dropout_p,
+        "out_proj_weight": out_proj_weight,
+        "out_proj_bias": out_proj_bias,
+        "training": training,
+        "key_padding_mask": key_padding_mask,
+        "need_weights": need_weights,
+        "attn_mask": attn_mask,
+        "use_separate_proj_weight": in_proj_weight is None,
+        "q_proj_weight": q_proj_weight,
+        "k_proj_weight": k_proj_weight,
+        "v_proj_weight": v_proj_weight,
+        "static_k": static_k,
+        "static_v": static_v,
+        "average_attn_weights": average_attn_weights,
+        "is_causal": is_causal,
     }
     helpers.test_frontend_function(
         input_dtypes=[str(r.dtype) for r in kwargs.values() if ivy.is_array(r)],

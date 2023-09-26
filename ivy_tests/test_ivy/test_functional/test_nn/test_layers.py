@@ -229,37 +229,41 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         _num_queries if _self_attention and _qkv_same_dim else _num_keys,
         _embed_dim,
     )
-    static_k = draw(st.one_of(
-        helpers.array_values(
-            shape=_static_shape,
-            dtype=dtype[0],
-            max_value=1000,
-            min_value=-1000,
-            abs_smallest_val=1e-06,
-        ),
-        st.none(),
-    ))
-    static_v = draw(st.one_of(
-        helpers.array_values(
-            shape=_static_shape,
-            dtype=dtype[0],
-            max_value=1000,
-            min_value=-1000,
-            abs_smallest_val=1e-06,
-        ),
-        st.none(),
-    ))
+    static_k = draw(
+        st.one_of(
+            helpers.array_values(
+                shape=_static_shape,
+                dtype=dtype[0],
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
+            ),
+            st.none(),
+        )
+    )
+    static_v = draw(
+        st.one_of(
+            helpers.array_values(
+                shape=_static_shape,
+                dtype=dtype[0],
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
+            ),
+            st.none(),
+        )
+    )
 
     _mask_shape = (
         _num_queries,
         _num_queries if _self_attention and _qkv_same_dim else _num_keys,
     )
     if len(_batch_dim) and draw(st.booleans()):
-        _mask_shape = (_num_batches*num_heads, *_mask_shape)
+        _mask_shape = (_num_batches * num_heads, *_mask_shape)
     attention_mask = draw(
         st.one_of(
             helpers.array_values(
-                dtype=draw(st.sampled_from(['bool', dtype[0]])),
+                dtype=draw(st.sampled_from(["bool", dtype[0]])),
                 allow_inf=True,
                 shape=_mask_shape,
             ),
@@ -270,27 +274,32 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     key_padding_mask = draw(
         st.one_of(
             helpers.array_values(
-                dtype='bool',
+                dtype="bool",
                 shape=(*_batch_dim, _mask_shape[-1]),
             ),
             st.none(),
         )
     )
 
-    _extra_bias = (not _qkv_same_dim or _pre_embed_dim == _embed_dim) and \
-        static_k is None and static_v is None and \
-        draw(st.booleans())
+    _extra_bias = (
+        (not _qkv_same_dim or _pre_embed_dim == _embed_dim)
+        and static_k is None
+        and static_v is None
+        and draw(st.booleans())
+    )
     bias_k = draw(
         helpers.array_values(
             dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
         )
-        if _extra_bias else st.none()
+        if _extra_bias
+        else st.none()
     )
     bias_v = draw(
         helpers.array_values(
             dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
         )
-        if _extra_bias else st.none()
+        if _extra_bias
+        else st.none()
     )
 
     scale = draw(st.one_of(st.floats(min_value=0.001), st.none()))

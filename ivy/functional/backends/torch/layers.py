@@ -47,7 +47,11 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     emb_dim = _get_embed_dim(
-        in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query,
+        in_proj_weights,
+        q_proj_weights,
+        k_proj_weights,
+        v_proj_weights,
+        query,
     )[1]
     num_dims = query.ndim
     if num_dims == 3:
@@ -58,9 +62,13 @@ def multi_head_attention(
         num_batches = 1
         num_keys = key.shape[0]
     if static_k is not None:
-        static_k = static_k.reshape(num_batches*num_heads, num_keys, int(emb_dim//num_heads))
+        static_k = static_k.reshape(
+            num_batches * num_heads, num_keys, int(emb_dim // num_heads)
+        )
     if static_v is not None:
-        static_v = static_v.reshape(num_batches*num_heads, num_keys, int(emb_dim//num_heads))
+        static_v = static_v.reshape(
+            num_batches * num_heads, num_keys, int(emb_dim // num_heads)
+        )
     ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,
@@ -96,16 +104,28 @@ def multi_head_attention(
     return ret[0]
 
 
-multi_head_attention.partial_mixed_handler = lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: \
-    not ivy.exists(scale) and \
-    ivy.exists(out_proj_weights) and \
-    (not is_causal or ivy.exists(attention_mask)) and \
-    (not is_causal or not return_attention_weights) and \
-    (
-        ivy.exists(in_proj_weights) or
-        all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]])
-    ) and \
-    len(set(_get_embed_dim(in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, args[0]))) == 1
+multi_head_attention.partial_mixed_handler = (
+    lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: not ivy.exists(
+        scale
+    )
+    and ivy.exists(out_proj_weights)
+    and (not is_causal or ivy.exists(attention_mask))
+    and (not is_causal or not return_attention_weights)
+    and (
+        ivy.exists(in_proj_weights)
+        or all(
+            [ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]
+        )
+    )
+    and len(
+        set(
+            _get_embed_dim(
+                in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, args[0]
+            )
+        )
+    )
+    == 1
+)
 
 
 def _get_embed_dim(

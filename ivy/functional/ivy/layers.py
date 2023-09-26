@@ -880,17 +880,13 @@ def multi_head_attention(
     # reshape q, k, v for efficient matrix multiplication
     q = ivy.swapaxes(q.reshape((num_queries, batch_dim * num_heads, head_dim)), 0, 1)
     if static_k is None:
-        k = ivy.swapaxes(
-            k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
-        )
+        k = ivy.swapaxes(k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1)
     else:
         k = ivy.swapaxes(
             static_k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
         )
     if static_v is None:
-        v = ivy.swapaxes(
-            v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
-        )
+        v = ivy.swapaxes(v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1)
     else:
         v = ivy.swapaxes(
             static_v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
@@ -910,9 +906,10 @@ def multi_head_attention(
 
     # mask the attention scores
     if ivy.exists(attention_mask):
-        assert (
-            attention_mask.dtype in [query.dtype, ivy.bool]
-        ), f"was expecting attention_mask of type bool or the same as the input's, but got {attention_mask.dtype}"
+        assert attention_mask.dtype in [query.dtype, ivy.bool], (
+            "was expecting attention_mask of type bool or the same as the input's, but"
+            f" got {attention_mask.dtype}"
+        )
         if is_causal:
             mask = ivy.triu(ivy.ones((num_queries, num_keys)), k=1)
             attention_mask = ivy.where(mask, float("-inf"), 0)
@@ -921,13 +918,16 @@ def multi_head_attention(
         if attention_mask.ndim == 2:
             attention_mask = ivy.tile(attention_mask, (batch_dim * num_heads, 1, 1))
     if key_padding_mask is not None:
-        assert (
-            ivy.is_bool_dtype(key_padding_mask)
-        ), f"was expecting key_padding_mask of type bool, but got {key_padding_mask.dtype}"
+        assert ivy.is_bool_dtype(key_padding_mask), (
+            "was expecting key_padding_mask of type bool, but got"
+            f" {key_padding_mask.dtype}"
+        )
         key_padding_mask = ivy.where(key_padding_mask, float("-inf"), 0)
         if num_dims == 2:
             key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
-        key_padding_mask = ivy.tile(key_padding_mask, (batch_dim * num_heads, num_queries, 1))
+        key_padding_mask = ivy.tile(
+            key_padding_mask, (batch_dim * num_heads, num_queries, 1)
+        )
         if attention_mask is None:
             attention_mask = key_padding_mask
         else:
@@ -956,7 +956,9 @@ def multi_head_attention(
         attention_out = attention_out.squeeze(axis=0)
 
     if return_attention_weights:
-        attn_weights = attn_weights.reshape((batch_dim, num_heads, num_queries, num_keys))
+        attn_weights = attn_weights.reshape(
+            (batch_dim, num_heads, num_queries, num_keys)
+        )
         if average_attention_weights:
             attn_weights = attn_weights.mean(axis=1)
         if num_dims == 2:
