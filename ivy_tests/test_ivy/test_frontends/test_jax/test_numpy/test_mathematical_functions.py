@@ -2840,6 +2840,7 @@ def test_jax_roots(
 ):
     input_dtype, x = dtype_and_x
     assume("float32" not in input_dtype)
+
     def call():
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
