@@ -771,7 +771,7 @@ from .data_classes.container import (
 )
 from .data_classes.nested_array import NestedArray
 from .data_classes.factorized_tensor import TuckerTensor, CPTensor, Parafac2Tensor
-from .data_classes.factorized_tensor import TuckerTensor, CPTensor, TTTensor
+from .data_classes.factorized_tensor import TuckerTensor, CPTensor, TTTensor, TTMatrix
 from ivy.utils.backend import (
     current_backend,
     compiled_backends,
