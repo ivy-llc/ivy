@@ -76,7 +76,7 @@ def diagflat(
         ],
         mode="constant",
     )
-    ret = output_array.astype(out_dtype)
+    ret = diagonal_to_add.astype(out_dtype)
 
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
