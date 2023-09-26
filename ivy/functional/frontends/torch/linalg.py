@@ -123,6 +123,7 @@ def cross(input, other, *, dim=None, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def vecdot(x, y, *, dim=-1, out=None):
     return ivy.vecdot(x, y, axis=dim, out=out)
 
