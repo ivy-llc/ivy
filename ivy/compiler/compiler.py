@@ -11,7 +11,7 @@ class LazyGraph:
     pass
 
 
-def trace(
+def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -83,7 +83,7 @@ def trace(
     ...     return i, j, k
 
 
-    >>> graph = trace(fn, args=(x,))
+    >>> graph = trace_graph(fn, args=(x,))
 
     Notice how the time taken to execute the traced function is lower than
     the original function. A typical run:
@@ -98,9 +98,9 @@ def trace(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-    from ._compiler import compile as _trace
+    from ._compiler import compile as _trace_graph
 
-    return _trace(
+    return _trace_graph(
         *objs,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,

@@ -38,7 +38,7 @@ from .assertions import (
 def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_trace:
-            fn = ivy_backend.trace(fn, args=args, kwargs=kwargs)
+            fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
     return fn
 
 
@@ -2461,7 +2461,7 @@ def _get_transpiled_data_if_required(
 
     # trace to get ivy nodes
     with BackendHandler.update_backend(frontend) as ivy_backend:
-        traced_fn_to_ivy = ivy_backend.trace(
+        traced_fn_to_ivy = ivy_backend.trace_graph(
             frontend_fn, to="ivy", args=args, kwargs=kwargs
         )
 

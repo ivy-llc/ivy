@@ -647,7 +647,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             # so set the appropriate backend
             if self._target:
                 ivy.set_backend(self._target)
-            self.trace(args=args, kwargs=kwargs)
+            self.trace_graph(args=args, kwargs=kwargs)
             if self._target:
                 ivy.previous_backend()
 
@@ -966,7 +966,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     def state_dict(self):
         return {**self.v, **getattr(self, "buffers", {})}
 
-    def trace(
+    def trace_graph(
         self,
         args: Optional[Tuple] = None,
         kwargs: Optional[Dict] = None,
@@ -1000,7 +1000,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
         fn_to_trace = ivy.default(self._module_graph, self._call)
 
-        self._module_graph = ivy.trace(
+        self._module_graph = ivy.trace_graph(
             fn_to_trace, **trace_kwargs, args=args, kwargs=kwargs
         )
 
