@@ -127,7 +127,7 @@ class Criterion:
             The memory address where the impurity of the right child should be
             stored
         """
-        pass
+        return impurity_left, impurity_right
 
     def node_value(self, dest):
         """
@@ -141,7 +141,7 @@ class Criterion:
         dest : double pointer
             The memory address where the node value should be stored.
         """
-        pass
+        return dest
 
     def proxy_impurity_improvement(self):
         """
@@ -399,7 +399,7 @@ class ClassificationCriterion(Criterion):
         MemoryError) or 0 otherwise.
         """
         self.pos = self.end
-        _move_sums_classification(
+        self.weighted_n_right, self.weighted_n_left = _move_sums_classification(
             self,
             self.sum_right,
             self.sum_left,
@@ -485,7 +485,7 @@ class ClassificationCriterion(Criterion):
     def node_impurity(self):
         pass
 
-    def children_impurity(self, impurity_left: list, impurity_right: list):
+    def children_impurity(self, impurity_left: float, impurity_right: float):
         pass
 
     def node_value(self, dest):
@@ -500,6 +500,8 @@ class ClassificationCriterion(Criterion):
         for k in range(self.n_outputs):
             dest[: self.n_classes[k] * 8] = self.sum_total[k, 0 : self.n_classes[k] * 8]
             dest += self.max_n_classes
+        
+        return dest
 
 
 class RegressionCriterion(Criterion):
@@ -639,7 +641,7 @@ class RegressionCriterion(Criterion):
     def reset(self):
         """Reset the criterion at pos=start."""
         self.pos = self.start
-        self._move_sums_regression(
+        self.weighted_n_left, self.weighted_n_right = self._move_sums_regression(
             self.sum_left,
             self.sum_right,
             self.weighted_n_left,
@@ -651,7 +653,7 @@ class RegressionCriterion(Criterion):
     def reverse_reset(self):
         """Reset the criterion at pos=end."""
         self.pos = self.end
-        self._move_sums_regression(
+        self.weighted_n_right, self.weighted_n_left = self._move_sums_regression(
             self.sum_right,
             self.sum_left,
             self.weighted_n_right,
@@ -724,12 +726,14 @@ class RegressionCriterion(Criterion):
     def node_impurity(self):
         pass
 
-    def children_impurity(self):
-        pass
+    def children_impurity(self, impurity_left: float, impurity_right: float):
+        return impurity_left, impurity_right
 
     def node_value(self, dest: float):
         for k in range(self.n_outputs):
             dest[k] = self.sum_total[k] / self.weighted_n_node_samples
+        
+        return dest
 
 
 class Entropy(ClassificationCriterion):
@@ -771,7 +775,7 @@ class Entropy(ClassificationCriterion):
 
         return entropy / self.n_outputs
 
-    def children_impurity(self, impurity_left: list, impurity_right: list):
+    def children_impurity(self, impurity_left: float, impurity_right: float):
         """
         Evaluate the impurity in children nodes.
 
@@ -802,8 +806,10 @@ class Entropy(ClassificationCriterion):
                     count_k /= self.weighted_n_right
                     entropy_right -= count_k * ivy.log(count_k)
 
-        impurity_left[0] = entropy_left / self.n_outputs
-        impurity_right[0] = entropy_right / self.n_outputs
+        impurity_left = entropy_left / self.n_outputs
+        impurity_right = entropy_right / self.n_outputs
+        
+        return impurity_left, impurity_right
 
 
 class Gini(ClassificationCriterion):
@@ -895,8 +901,10 @@ class Gini(ClassificationCriterion):
                 self.weighted_n_right * self.weighted_n_right
             )
 
-        impurity_left[0] = gini_left / self.n_outputs
-        impurity_right[0] = gini_right / self.n_outputs
+        impurity_left = gini_left / self.n_outputs
+        impurity_right = gini_right / self.n_outputs
+        
+        return impurity_left, impurity_right
 
 
 class MSE(RegressionCriterion):
@@ -957,7 +965,7 @@ class MSE(RegressionCriterion):
             + proxy_impurity_right / self.weighted_n_right
         )
 
-    def children_impurity(self, impurity_left: list, impurity_right: list):
+    def children_impurity(self, impurity_left: float, impurity_right: float):
         """
         Evaluate the impurity in children nodes.
 
@@ -986,15 +994,17 @@ class MSE(RegressionCriterion):
 
         sq_sum_right = self.sq_sum_total - sq_sum_left
 
-        impurity_left[0] = sq_sum_left / self.weighted_n_left
-        impurity_right[0] = sq_sum_right / self.weighted_n_right
+        impurity_left = sq_sum_left / self.weighted_n_left
+        impurity_right = sq_sum_right / self.weighted_n_right
 
         for k in range(self.n_outputs):
-            impurity_left[0] -= (self.sum_left[k] / self.weighted_n_left) ** 2.0
-            impurity_right[0] -= (self.sum_right[k] / self.weighted_n_right) ** 2.0
+            impurity_left -= (self.sum_left[k] / self.weighted_n_left) ** 2.0
+            impurity_right -= (self.sum_right[k] / self.weighted_n_right) ** 2.0
 
-        impurity_left[0] /= self.n_outputs
-        impurity_right[0] /= self.n_outputs
+        impurity_left /= self.n_outputs
+        impurity_right /= self.n_outputs
+        
+        return impurity_left, impurity_right
 
 
 class MAE(RegressionCriterion):
@@ -1219,10 +1229,12 @@ class MAE(RegressionCriterion):
         self.pos = new_pos
         return 0
 
-    def node_value(self, dest):
+    def node_value(self, dest: float):
         """Computes the node value of sample_indices[start:end] into dest."""
         for k in range(self.n_outputs):
             dest[k] = self.node_medians[k]
+        
+        return dest
 
     def node_impurity(self):
         """
@@ -1253,7 +1265,7 @@ class MAE(RegressionCriterion):
 
         return impurity / (self.weighted_n_node_samples * self.n_outputs)
 
-    def children_impurity(self, p_impurity_left: list, p_impurity_right: list):
+    def children_impurity(self, p_impurity_left: float, p_impurity_right: float):
         """
         Evaluate the impurity in children nodes.
 
@@ -1287,7 +1299,7 @@ class MAE(RegressionCriterion):
                     w = sample_weight[i]
 
                 impurity_left += ivy.abs(self.y[i, k] - median) * w
-        p_impurity_left[0] = impurity_left / (self.weighted_n_left * self.n_outputs)
+        p_impurity_left = impurity_left / (self.weighted_n_left * self.n_outputs)
 
         for k in range(self.n_outputs):
             median = right_child[k].get_median()
@@ -1298,7 +1310,9 @@ class MAE(RegressionCriterion):
                     w = sample_weight[i]
 
                 impurity_right += ivy.abs(self.y[i, k] - median) * w
-        p_impurity_right[0] = impurity_right / (self.weighted_n_right * self.n_outputs)
+        p_impurity_right = impurity_right / (self.weighted_n_right * self.n_outputs)
+        
+        return p_impurity_left, p_impurity_right
 
 
 class Poisson(RegressionCriterion):
@@ -1325,17 +1339,19 @@ class Poisson(RegressionCriterion):
 
         return -proxy_impurity_left - proxy_impurity_right
 
-    def children_impurity(self, impurity_left, impurity_right):
+    def children_impurity(self, impurity_left: float, impurity_right: float):
         start = self.start
         pos = self.pos
         end = self.end
 
-        impurity_left[0] = self.poisson_loss(
+        impurity_left = self.poisson_loss(
             start, pos, self.sum_left, self.weighted_n_left
         )
-        impurity_right[0] = self.poisson_loss(
+        impurity_right = self.poisson_loss(
             pos, end, self.sum_right, self.weighted_n_right
         )
+        
+        return impurity_left, impurity_right
 
     def poisson_loss(self, start, end, y_sum, weight_sum):
         y_mean = 0.0
@@ -1360,10 +1376,25 @@ class Poisson(RegressionCriterion):
 
 
 class FriedmanMSE(MSE):
-    def __init__(self, n_outputs):
-        self.n_outputs = n_outputs
+    """Mean squared error impurity criterion with improvement score by Friedman.
 
+    Uses the formula (35) in Friedman's original Gradient Boosting paper:
+
+        diff = mean_left - mean_right
+        improvement = n_left * n_right * diff^2 / (n_left + n_right)
+    """
+    
     def proxy_impurity_improvement(self):
+        """Compute a proxy of the impurity reduction.
+
+        This method is used to speed up the search for the best split.
+        It is a proxy quantity such that the split that maximizes this value
+        also maximizes the impurity improvement. It neglects all constant terms
+        of the impurity decrease for a given split.
+
+        The absolute impurity improvement is only computed by the
+        impurity_improvement method once the best split has been found.
+        """
         total_sum_left = 0.0
         total_sum_right = 0.0
 
@@ -1477,5 +1508,7 @@ def _move_sums_regression(
         sum_1[0:n_bytes] = 0
         # Assigning sum_2 = sum_total for all outputs.
         sum_2[0:n_bytes] = criterion.sum_total[0:n_bytes]
-        weighted_n_1[0] = 0.0
-        weighted_n_2[0] = criterion.weighted_n_node_samples
+        weighted_n_1 = 0.0
+        weighted_n_2 = criterion.weighted_n_node_samples
+    
+    return weighted_n_1, weighted_n_2
