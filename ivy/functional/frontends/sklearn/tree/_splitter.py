@@ -62,7 +62,7 @@ class Splitter:
         max_features: int,
         min_samples_leaf: int,
         min_weight_leaf: float,
-        random_state,
+        random_state, 
         *args
     ):
         """
@@ -289,7 +289,7 @@ def node_split_best(
     max_features = splitter.max_features
     min_samples_leaf = splitter.min_samples_leaf
     min_weight_leaf = splitter.min_weight_leaf
-    random_state = splitter.rand_r_state
+    random_state = splitter.rand_r_state #this is a pointer in the original code
 
     best_split = SplitRecord()
     current_split = SplitRecord()
@@ -311,7 +311,7 @@ def node_split_best(
     # n_total_constants = n_known_constants + n_found_constants
     n_total_constants = n_known_constants
 
-    _init_split(best_split, end)
+    _init_split(best_split, end) #best_split is a pointer to the original code
 
     partitioner.init_node_split(start, end)
 
@@ -403,7 +403,7 @@ def node_split_best(
             p = start
 
             while p < end_non_missing:
-                partitioner.next_p(p_prev, p)
+                partitioner.next_p(p_prev, p) #these are pointers
 
                 if p >= end_non_missing:
                     continue
@@ -495,20 +495,25 @@ def node_split_best(
         criterion.missing_go_to_left = best_split.missing_go_to_left
         criterion.reset()
         criterion.update(best_split.pos)
-
+        #these are pointers
         criterion.children_impurity(best_split.impurity_left, best_split.impurity_right)
 
         best_split.improvement = criterion.impurity_improvement(
             impurity, best_split.impurity_left, best_split.impurity_right
         )
-
+        #best split is a pointer
         shift_missing_values_to_left_if_required(best_split, samples, end)
 
     # Respect invariant for constant features: the original order of
     # element in features[:n_known_constants] must be preserved for sibling
     # and child nodes
+    #ORIGINAL memcpy(&features[0], &constant_features[0], sizeof(SIZE_t) * n_known_constants)
     features[0:n_known_constants * 4] = constant_features[0:n_known_constants * 4]
     # Copy newly found constant features
+    #TODO ORIGINAL
+    # memcpy(&constant_features[n_known_constants],
+    #        &features[n_known_constants],
+    #        sizeof(SIZE_t) * n_found_constants)
     constant_features[n_known_constants:n_found_constants * 4] = features[n_known_constants:n_found_constants * 4]
 
     # Return Values
@@ -674,6 +679,8 @@ def node_split_random(
     max_features = splitter.max_features
     min_samples_leaf = splitter.min_samples_leaf
     min_weight_leaf = splitter.min_weight_leaf
+    #TODO this is passed by pointer
+    random_state = splitter.rand_r_state
 
     best_split = SplitRecord()
     current_split = SplitRecord()
@@ -692,7 +699,7 @@ def node_split_random(
     n_visited_features = 0
     min_feature_value = 0
     max_feature_value = 0
-
+    #TODO this is passed by pointer
     _init_split(best_split, end)
 
     partitioner.init_node_split(start, end)
@@ -749,6 +756,7 @@ def node_split_random(
         current_split.feature = features[f_j]
 
         # Find min, max
+        #TODO min_feature_value and max_feature_value are passed by reference
         partitioner.find_min_max(
             current_split.feature, min_feature_value, max_feature_value
         )
@@ -812,6 +820,7 @@ def node_split_random(
 
         criterion.reset()
         criterion.update(best_split.pos)
+        #TODO these  are passed as pointers
         criterion.children_impurity(best_split.impurity_left, best_split.impurity_right)
         best_split.improvement = criterion.impurity_improvement(
             impurity, best_split.impurity_left, best_split.impurity_right
@@ -820,6 +829,8 @@ def node_split_random(
     # Respect invariant for constant features: the original order of
     # element in features[:n_known_constants] must be preserved for sibling
     # and child nodes
+    #TODO wrong implementation
+    #ORIGINAL memcpy(&features[0], &constant_features[0], sizeof(SIZE_t) * n_known_constants)
     features[0 : n_known_constants * 4] = constant_features[0 : n_known_constants * 4]
 
     # Copy newly found constant features
