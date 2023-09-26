@@ -1328,9 +1328,7 @@ def ifftn(
         return result
 
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16")}, backend_version
-)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float16")}, backend_version)
 def stft(
     signal: Union[tf.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
