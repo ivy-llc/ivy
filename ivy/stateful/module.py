@@ -856,6 +856,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 obj.to_device(device)
             elif ivy.is_array(obj) or ivy.is_ivy_container(obj):
                 ivy.to_device(obj, device, out=obj)
+        return self
 
     def __repr__(self):
         extra_lines = []
