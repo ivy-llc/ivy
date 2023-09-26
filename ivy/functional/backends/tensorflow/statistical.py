@@ -52,6 +52,7 @@ def max(
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,

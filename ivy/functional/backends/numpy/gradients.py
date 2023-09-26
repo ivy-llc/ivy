@@ -50,7 +50,7 @@ def value_and_grad(func):
 
     def grad_fn(xs):
         grads = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         y = func(xs)
         y = ivy.to_ivy(y)
@@ -67,7 +67,7 @@ def jac(func):
 
     def grad_fn(xs):
         jacobian = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         return jacobian
 
@@ -82,7 +82,7 @@ def grad(func, argnums=0):
 
     def grad_fn(xs):
         grad = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         y = func(xs)
         y = ivy.to_ivy(y)

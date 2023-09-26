@@ -55,7 +55,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if stop is None:
@@ -116,10 +116,10 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
+    obj = ivy.nested_map(_remove_np_bfloat16, obj, shallow=False)
     if isinstance(obj, Sequence) and len(obj) != 0:
         contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
         # if `obj` is a list of specifically tensors or
@@ -141,7 +141,7 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.empty(
@@ -160,7 +160,7 @@ def empty_like(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.empty_like(x, dtype=dtype, device=device)
@@ -175,7 +175,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if n_cols is None:
@@ -228,9 +228,12 @@ def eye(
 eye.support_native_out = True
 
 
+def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+    return torch.to_dlpack(x)
+
+
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
-    x = x.detach() if x.requires_grad else x
-    return torch.utils.dlpack.from_dlpack(x)
+    return torch.from_dlpack(x)
 
 
 def full(
@@ -238,7 +241,7 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
@@ -262,7 +265,7 @@ def full_like(
     fill_value: Number,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
@@ -284,7 +287,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -430,7 +433,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones(shape, dtype=dtype, device=device, out=out)
@@ -444,7 +447,7 @@ def ones_like_v_0p4p0_and_above(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, dtype=dtype, device=device)
@@ -455,7 +458,7 @@ def ones_like_v_0p3p0_to_0p3p1(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, out=out)
@@ -466,7 +469,7 @@ def ones_like_v_0p1p12_to_0p2p0(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) == 1:
@@ -500,7 +503,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
@@ -514,7 +517,7 @@ def zeros_like(
     /,
     *,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.zeros_like(x, dtype=dtype, device=device)
@@ -547,7 +550,7 @@ def one_hot(
     off_value: Optional[torch.Tensor] = None,
     axis: Optional[int] = None,
     dtype: Optional[torch.dtype] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     on_none = on_value is None
@@ -596,7 +599,7 @@ def triu_indices(
     k: int = 0,
     /,
     *,
-    device: torch.device,
+    device: torch.device = None,
 ) -> Tuple[torch.Tensor]:
     n_cols = n_rows if n_cols is None else n_cols
     return tuple(
