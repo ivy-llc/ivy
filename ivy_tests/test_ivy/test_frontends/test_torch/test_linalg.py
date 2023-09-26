@@ -1156,7 +1156,7 @@ def test_torch_svd(
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
     dtype_and_x=_get_dtype_and_matrix(batch=True),
-    driver= st.sampled_from([None ,"gesvd","gesvdj","gesvda"]),
+    driver=st.sampled_from([None, "gesvd", "gesvdj", "gesvda"]),
 )
 def test_torch_svdvals(
     *,
@@ -1167,7 +1167,6 @@ def test_torch_svdvals(
     frontend,
     test_flags,
     backend_fw,
-
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
