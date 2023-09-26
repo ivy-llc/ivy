@@ -185,6 +185,11 @@ def clamp(min, x, max):
 
 
 @to_ivy_arrays_and_back
+def complex(x, y):
+    return ivy.add(x, y)
+
+
+@to_ivy_arrays_and_back
 def concatenate(operands, dimension):
     return ivy.concat(operands, axis=dimension)
 
