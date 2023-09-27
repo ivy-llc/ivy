@@ -72,6 +72,16 @@ def dirichlet(alpha, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def exponential(scale=1.0, size=None, dtype="float64"):
+    if scale > 0:
+        # Generate samples that are uniformly distributed based on given parameters
+        u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype=dtype)
+        return ivy.exp(scale, out=u)
+    return 0  # if scale parameter is less than or equal to 0
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def f(dfn, dfd, size=None):
     # Generate samples from the uniform distribution
     x1 = ivy.gamma(ivy.to_scalar(ivy.divide(dfn, 2)), 2.0, shape=size, dtype="float64")
@@ -273,6 +283,33 @@ def triangular(left, mode, right, size=None):
 @from_zero_dim_arrays_to_scalar
 def uniform(low=0.0, high=1.0, size=None):
     return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def vonmises(mu, kappa, size=None):
+    t_size = 0
+    # Output shape. If the given shape is, e.g., (m, n, k),
+    # then m * n * k samples are drawn.
+    if size is None or len(size) == 0:
+        t_size = 1
+    else:
+        for x in size:
+            t_size = t_size * x
+    size = t_size
+    li = []
+    while len(li) < size:
+        # Generate samples from the von Mises distribution using numpy
+        u = ivy.random_uniform(low=-ivy.pi, high=ivy.pi, shape=size)
+        v = ivy.random_uniform(low=0, high=1, shape=size)
+
+        condition = v < (1 + ivy.exp(kappa * ivy.cos(u - mu))) / (
+            2 * ivy.pi * ivy.i0(kappa)
+        )
+        selected_samples = u[condition]
+        li.extend(ivy.to_list(selected_samples))
+
+    return ivy.array(li[:size])
 
 
 @to_ivy_arrays_and_back

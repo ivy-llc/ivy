@@ -3,6 +3,7 @@ import paddle.nn.functional as F
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Tuple
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
@@ -104,6 +105,7 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 )
 
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
 def l1_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:

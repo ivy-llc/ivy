@@ -106,6 +106,7 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -331,9 +332,9 @@ def swapaxes(
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
-    x_min: Union[Number, tf.Tensor, tf.Variable],
-    x_max: Union[Number, tf.Tensor, tf.Variable],
     /,
+    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

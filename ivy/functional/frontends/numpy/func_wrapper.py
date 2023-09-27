@@ -413,14 +413,6 @@ def handle_numpy_out(fn: Callable) -> Callable:
                 **kwargs,
             }
             args = args[:out_pos]
-        if "out" in kwargs:
-            out = kwargs["out"]
-            if ivy.exists(out) and not ivy.nested_any(
-                out, lambda x: isinstance(x, np_frontend.ndarray)
-            ):
-                raise ivy.utils.exceptions.IvyException(
-                    "Out argument must be an ivy.frontends.numpy.ndarray object"
-                )
         return fn(*args, **kwargs)
 
     _handle_numpy_out.handle_numpy_out = True
@@ -453,7 +445,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*ivy_args, **ivy_kwargs)
 
-    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays = True
+    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays_numpy = True
     return _inputs_to_ivy_arrays_np
 
 
@@ -519,7 +511,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
+    _outputs_to_frontend_arrays.outputs_to_frontend_arrays_numpy = True
     return _outputs_to_frontend_arrays
 
 
