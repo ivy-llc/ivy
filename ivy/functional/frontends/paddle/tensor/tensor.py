@@ -546,7 +546,7 @@ class Tensor:
         self.ivy_array = paddle_frontend.Tensor(
             ivy.diff(self._ivy_array, _to_ivy_array(y))
         ).ivy_array
-        return paddle_frontend.Tensor(self)
+        return self
 
     @with_unsupported_dtypes(
         {
