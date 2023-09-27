@@ -867,7 +867,7 @@ def multi_head_attention(
         else:
             emb_dim = q.shape[-1]
 
-    batch_dim, num_queries = query.shape[:2]
+    num_batches, num_queries = query.shape[:2]
     ivy.assertions.check_true(
         emb_dim % num_heads == 0, "features must be divisible by number of heads"
     )
@@ -879,25 +879,25 @@ def multi_head_attention(
             not (ivy.exists(static_k) or ivy.exists(static_v)),
             "bias cannot be added to static key or value",
         )
-        k = ivy.concat([k, ivy.tile(bias_k, (batch_dim, 1, 1))], axis=1)
-        v = ivy.concat([v, ivy.tile(bias_v, (batch_dim, 1, 1))], axis=1)
+        k = ivy.concat([k, ivy.tile(bias_k, (num_batches, 1, 1))], axis=1)
+        v = ivy.concat([v, ivy.tile(bias_v, (num_batches, 1, 1))], axis=1)
 
     num_keys = k.shape[1]
 
     # reshape q, k, v for efficient matrix multiplication
-    q = ivy.swapaxes(q.reshape((num_queries, batch_dim * num_heads, head_dim)), 0, 1)
+    q = ivy.swapaxes(q.reshape((num_queries, num_batches * num_heads, head_dim)), 0, 1)
     if static_k is None:
-        k = ivy.swapaxes(k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1)
+        k = ivy.swapaxes(k.reshape((num_keys, num_batches * num_heads, head_dim)), 0, 1)
     else:
         k = static_k
     if static_v is None:
-        v = ivy.swapaxes(v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1)
+        v = ivy.swapaxes(v.reshape((num_keys, num_batches * num_heads, head_dim)), 0, 1)
     else:
         v = static_v
 
     # add extra batch of zeros to k, v
     if add_zero_attn:
-        zero_attn_shape = (batch_dim * num_heads, 1, head_dim)
+        zero_attn_shape = (num_batches * num_heads, 1, head_dim)
         k = ivy.concat([k, ivy.zeros(zero_attn_shape, dtype=k.dtype)], axis=1)
         v = ivy.concat([v, ivy.zeros(zero_attn_shape, dtype=v.dtype)], axis=1)
         num_keys = k.shape[1]
@@ -919,7 +919,7 @@ def multi_head_attention(
         elif ivy.is_bool_dtype(attention_mask):
             attention_mask = ivy.where(attention_mask, float("-inf"), 0)
         if attention_mask.ndim == 2:
-            attention_mask = ivy.tile(attention_mask, (batch_dim * num_heads, 1, 1))
+            attention_mask = ivy.tile(attention_mask, (num_batches * num_heads, 1, 1))
     if key_padding_mask is not None:
         assert ivy.is_bool_dtype(key_padding_mask), (
             "was expecting key_padding_mask of type bool, but got"
@@ -929,7 +929,7 @@ def multi_head_attention(
         if num_dims == 2:
             key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
         key_padding_mask = ivy.tile(
-            key_padding_mask, (batch_dim * num_heads, num_queries, 1)
+            key_padding_mask, (num_batches * num_heads, num_queries, 1)
         )
         if attention_mask is None:
             attention_mask = key_padding_mask
@@ -949,7 +949,7 @@ def multi_head_attention(
     # get attention output
     attention_out = ivy.matmul(attn_weights, v)
     attention_out = ivy.swapaxes(attention_out, 0, 1).reshape(
-        (batch_dim, num_queries, emb_dim)
+        (num_batches, num_queries, emb_dim)
     )
     if ivy.exists(out_proj_weights):
         attention_out = ivy.linear(attention_out, out_proj_weights, bias=out_proj_bias)
@@ -960,7 +960,7 @@ def multi_head_attention(
         attention_out = attention_out.swapaxes(0, 1)
     if return_attention_weights:
         attn_weights = attn_weights.reshape(
-            (batch_dim, num_heads, num_queries, num_keys)
+            (num_batches, num_heads, num_queries, num_keys)
         )
         if average_attention_weights:
             attn_weights = attn_weights.mean(axis=1)
