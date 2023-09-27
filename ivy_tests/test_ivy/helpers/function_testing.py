@@ -2449,7 +2449,6 @@ def _get_transpiled_data_if_required(
     frontend_fw_kwargs,
 ):
     iterations = 1
-
     # for backend transpilation
     with BackendHandler.update_backend(backend) as ivy_backend:
         if generate_frontend_arrays:
@@ -2498,6 +2497,8 @@ def _get_transpiled_data_if_required(
     data = {
         "frontend": frontend,
         "frontend_func": fn_name,
+        "args": str(args_for_test),
+        "kwargs": str(kwargs_for_test),
         "frontend_time": frontend_time,
         "frontend_fw_time": frontend_fw_time,
         "backend_nodes": backend_nodes,
