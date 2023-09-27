@@ -30,6 +30,14 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def add_(x, y, name=None):
+    return ivy.inplace_update(x, add(x, y))
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
@@ -132,6 +140,15 @@ def cos(x, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float16", "float32", "float64", "bool")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def count_nonzero(x, axis=None, keepdim=False, name=None):
+    return ivy.astype(ivy.count_nonzero(x, axis=axis, keepdims=keepdim), ivy.int64)
 
 
 @with_supported_dtypes(
@@ -324,6 +341,11 @@ def log1p(x, name=None):
 def log2(x, name=None):
     return ivy.log2(x)
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
+
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -439,6 +461,12 @@ def remainder(x, y, name=None):
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def remainder_(x, y, name=None):
+    return ivy.inplace_update(x, remainder(x, y))
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def round(x, name=None):
     return ivy.round(x)
 
@@ -504,6 +532,25 @@ def subtract(x, y, name=None):
 
 
 @with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float64",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sum(x, axis=None, dtype=None, keepdim=False, name=None):
+    return ivy.sum(
+        x,
+        axis=axis,
+        keepdims=keepdim,
+        dtype=dtype,
+    )
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
 )
 @to_ivy_arrays_and_back
@@ -537,6 +584,14 @@ def tan(x, name=None):
 @to_ivy_arrays_and_back
 def tanh(x, name=None):
     return ivy.tanh(x)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def trace(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes(

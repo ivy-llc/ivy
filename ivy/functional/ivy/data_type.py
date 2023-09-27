@@ -20,7 +20,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     inputs_to_native_shapes,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -62,7 +62,7 @@ def _handle_nestable_dtype_info(fn):
 
 
 # Unindent every line in the source such that
-# class methods can be compiled as normal methods
+# class methods can be traced as normal methods
 def _lstrip_lines(source: str) -> str:
     # Separate all lines
     source = source.split("\n")
@@ -252,7 +252,7 @@ Iinfo = None
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -359,7 +359,7 @@ def astype(
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """
     Broadcasts one or more arrays against one another.
@@ -441,7 +441,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -478,8 +478,8 @@ def broadcast_to(
     >>> y = ivy.broadcast_to(x, (3, 3))
     >>> print(y)
     ivy.array([[1, 2, 3],
-               [1, 2, 3],
-               [1, 2, 3]])
+            [1, 2, 3],
+            [1, 2, 3]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -487,8 +487,8 @@ def broadcast_to(
     >>> y = ivy.broadcast_to(x, (3, 2))
     >>> print(y)
     ivy.array([[0.1, 0.3],
-               [0.1, 0.3],
-               [0.1, 0.3]])
+            [0.1, 0.3],
+            [0.1, 0.3]])
 
     With :class:`ivy.Container` input:
 
@@ -498,11 +498,11 @@ def broadcast_to(
     >>> print(y)
     {
         a: ivy.array([[1, 2, 3],
-                      [1, 2, 3],
-                      [1, 2, 3]]),
+                    [1, 2, 3],
+                    [1, 2, 3]]),
         b: ivy.array([[4, 5, 6],
-                      [4, 5, 6],
-                      [4, 5, 6]])
+                    [4, 5, 6],
+                    [4, 5, 6]])
     }
     """
     return current_backend(x).broadcast_to(x, shape, out=out)
@@ -512,7 +512,7 @@ def broadcast_to(
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -547,7 +547,7 @@ def can_cast(
 
     Examples
     --------
-     With :class:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
     True
@@ -588,7 +588,7 @@ def can_cast(
 @handle_exceptions
 @handle_backend_invalid
 @inputs_to_native_arrays
-@handle_device_shifting
+@handle_device
 def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -608,24 +608,24 @@ def finfo(
 
         - **bits**: *int*
 
-          number of bits occupied by the floating-point data type.
+        number of bits occupied by the floating-point data type.
 
         - **eps**: *float*
 
-          difference between 1.0 and the next smallest representable floating-point
-          number larger than 1.0 according to the IEEE-754 standard.
+        difference between 1.0 and the next smallest representable floating-point
+        number larger than 1.0 according to the IEEE-754 standard.
 
         - **max**: *float*
 
-          largest representable number.
+        largest representable number.
 
         - **min**: *float*
 
-          smallest representable number.
+        smallest representable number.
 
         - **smallest_normal**: *float*
 
-          smallest positive floating-point number with full precision.
+        smallest positive floating-point number with full precision.
 
 
     This function conforms to the `Array API Standard
@@ -667,7 +667,7 @@ def finfo(
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
         y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
-           max=1.7976931348623157e+308, dtype=float64)
+            max=1.7976931348623157e+308, dtype=float64)
     }
     """
     return current_backend(None).finfo(type)
@@ -676,7 +676,7 @@ def finfo(
 @handle_exceptions
 @handle_backend_invalid
 @inputs_to_native_arrays
-@handle_device_shifting
+@handle_device
 def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -696,15 +696,15 @@ def iinfo(
 
         - **bits**: *int*
 
-          number of bits occupied by the type.
+        number of bits occupied by the type.
 
         - **max**: *int*
 
-          largest representable number.
+        largest representable number.
 
         - **min**: *int*
 
-          smallest representable number.
+        smallest representable number.
 
 
     This function conforms to the `Array API Standard
@@ -754,7 +754,7 @@ def iinfo(
 @handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
+@handle_device
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
@@ -763,8 +763,8 @@ def result_type(
     :ref:`type-promotion`) to the arguments.
 
     .. note::
-       If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
-       will be implementation-specific.
+    If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
+    will be implementation-specific.
 
     Parameters
     ----------
@@ -839,7 +839,6 @@ class DefaultDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -857,7 +856,6 @@ class DefaultFloatDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_float_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -875,7 +873,6 @@ class DefaultIntDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_int_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -893,7 +890,6 @@ class DefaultUintDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_uint_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -911,7 +907,6 @@ class DefaultComplexDtype:
     def __exit__(self, exc_type, exc_val, exc_tb):
         unset_default_complex_dtype()
         if self and (exc_type is not None):
-            print(exc_tb)
             raise exc_val
         return self
 
@@ -1518,7 +1513,7 @@ def default_uint_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
-@handle_device_shifting
+@handle_device
 def default_complex_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1615,7 +1610,7 @@ def default_complex_dtype(
 @handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
+@handle_device
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
@@ -1915,18 +1910,14 @@ def is_int_dtype(
             else False
         )
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return (
-            True
-            if ivy.nested_argwhere(
-                dtype_in,
-                lambda x: (
-                    isinstance(x, (int, np.integer))
-                    or (ivy.is_array(x) and "int" in ivy.dtype(x))
-                )
-                and x is not bool,
-            )
-            else False
-        )
+
+        def nested_fun(x):
+            return (
+                isinstance(x, (int, np.integer))
+                or (ivy.is_array(x) and "int" in ivy.dtype(x))
+            ) and x is not bool
+
+        return True if ivy.nested_argwhere(dtype_in, nested_fun) else False
     return "int" in ivy.as_ivy_dtype(dtype_in)
 
 
