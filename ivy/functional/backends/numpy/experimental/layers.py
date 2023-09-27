@@ -975,6 +975,8 @@ def stft(
 
     num_frames = 1 + (signal.shape[-1] - n_fft) // hop_length
 
+    return_complex = False
+    
     if return_complex:
         input_dtype = np.result_type(signal, np.complex64)
     else:
