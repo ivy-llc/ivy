@@ -165,6 +165,7 @@ def test_torch_adaptive_max_pool2d(
         atol=1e-2,
     )
 
+
 # avg_pool1d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.avg_pool1d",
