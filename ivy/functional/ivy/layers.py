@@ -2342,6 +2342,176 @@ def _get_num_padded_values(i, p, n, k, s):
     )
 
 
+# TODO : integrate logic for adaptive sampling points in ivy.interpolate
+def _bilinear_interpolate(
+    input,  # [N, C, H, W]
+    roi_batch_ind,  # [K]
+    y,  # [K, PH, IY]
+    x,  # [K, PW, IX]
+    ymask,  # [K, IY]
+    xmask,  # [K, IX]
+):
+    _, channels, height, width = input.shape
+
+    # deal with inverse element out of feature map boundary
+    y = y.clip(0, None)
+    x = x.clip(0, None)
+    y_low = y.astype(ivy.int32)
+    x_low = x.astype(ivy.int32)
+    y_high = ivy.where(y_low >= height - 1, height - 1, y_low + 1)
+    y_low = ivy.where(y_low >= height - 1, height - 1, y_low)
+    y = ivy.where(y_low >= height - 1, y.astype(input.dtype), y)
+
+    x_high = ivy.where(x_low >= width - 1, width - 1, x_low + 1)
+    x_low = ivy.where(x_low >= width - 1, width - 1, x_low)
+    x = ivy.where(x_low >= width - 1, x.astype(input.dtype), x)
+
+    ly = y - y_low
+    lx = x - x_low
+    hy = 1.0 - ly
+    hx = 1.0 - lx
+
+    def masked_index(
+        y,  # [K, PH, IY]
+        x,  # [K, PW, IX]
+    ):
+        if ymask is not None:
+            assert xmask is not None
+            y = ivy.where(ymask[:, None, :], y, 0)
+            x = ivy.where(xmask[:, None, :], x, 0)
+        return input[
+            roi_batch_ind[:, None, None, None, None, None],
+            ivy.arange(channels, device=input.device)[None, :, None, None, None, None],
+            y[:, None, :, None, :, None],  # prev [K, PH, IY]
+            x[:, None, None, :, None, :],  # prev [K, PW, IX]
+        ]  # [K, C, PH, PW, IY, IX]
+
+    v1 = masked_index(y_low, x_low)
+    v2 = masked_index(y_low, x_high)
+    v3 = masked_index(y_high, x_low)
+    v4 = masked_index(y_high, x_high)
+
+    # all ws preemptively [K, C, PH, PW, IY, IX]
+    def outer_prod(y, x):
+        return y[:, None, :, None, :, None] * x[:, None, None, :, None, :]
+
+    w1 = outer_prod(hy, hx)
+    w2 = outer_prod(hy, lx)
+    w3 = outer_prod(ly, hx)
+    w4 = outer_prod(ly, lx)
+
+    val = w1 * v1 + w2 * v2 + w3 * v3 + w4 * v4
+    return val
+
+
+def _convert_boxes_to_roi_format(boxes):
+    concat_boxes = ivy.concat(boxes, axis=0)
+    temp = []
+    for i, b in enumerate(boxes):
+        temp.append(ivy.full_like(b[:, :1], i))
+    ids = ivy.concat(temp, axis=0)
+    rois = ivy.concat([ids, concat_boxes], axis=1)
+    return rois
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def roi_align(
+    input, boxes, output_size, spatial_scale=1.0, sampling_ratio=-1, aligned=False
+):
+    pooled_height, pooled_width = (
+        (output_size, output_size) if isinstance(output_size, int) else output_size
+    )
+
+    if not isinstance(boxes, ivy.Array):
+        boxes = _convert_boxes_to_roi_format(boxes)
+    orig_dtype = input.dtype
+
+    _, _, height, width = input.shape
+
+    ph = ivy.arange(pooled_height, device=input.device)  # [PH]
+    pw = ivy.arange(pooled_width, device=input.device)  # [PW]
+
+    # input: [N, C, H, W]
+    # boxes: [K, 5]
+
+    roi_batch_ind = boxes[:, 0].astype(ivy.int32)  # [K]
+    offset = 0.5 if aligned else 0.0
+    roi_start_w = boxes[:, 1] * spatial_scale - offset  # [K]
+    roi_start_h = boxes[:, 2] * spatial_scale - offset  # [K]
+    roi_end_w = boxes[:, 3] * spatial_scale - offset  # [K]
+    roi_end_h = boxes[:, 4] * spatial_scale - offset  # [K]
+
+    roi_width = roi_end_w - roi_start_w  # [K]
+    roi_height = roi_end_h - roi_start_h  # [K]
+    if not aligned:
+        roi_width = ivy.clip(roi_width, 1.0, None)  # [K]
+        roi_height = ivy.clip(roi_height, 1.0, None)  # [K]
+
+    bin_size_h = roi_height / pooled_height  # [K]
+    bin_size_w = roi_width / pooled_width  # [K]
+
+    exact_sampling = sampling_ratio > 0
+
+    roi_bin_grid_h = (
+        sampling_ratio if exact_sampling else ivy.ceil(roi_height / pooled_height)
+    )  # scalar or [K]
+    roi_bin_grid_w = (
+        sampling_ratio if exact_sampling else ivy.ceil(roi_width / pooled_width)
+    )  # scalar or [K]
+    """Iy, ix = dims(2)"""
+
+    if exact_sampling:
+        count = max(roi_bin_grid_h * roi_bin_grid_w, 1)  # scalar
+        iy = ivy.arange(roi_bin_grid_h, device=input.device)  # [IY]
+        ix = ivy.arange(roi_bin_grid_w, device=input.device)  # [IX]
+        ymask = None
+        xmask = None
+    else:
+        count = ivy.clip(roi_bin_grid_h * roi_bin_grid_w, 1, None)  # [K]
+        iy = ivy.arange(height, device=input.device)  # [IY]
+        ix = ivy.arange(width, device=input.device)  # [IX]
+        ymask = iy[None, :] < roi_bin_grid_h[:, None]  # [K, IY]
+        xmask = ix[None, :] < roi_bin_grid_w[:, None]  # [K, IX]
+
+    def from_K(t):
+        return t[:, None, None]
+
+    y = (
+        from_K(roi_start_h)
+        + ph[None, :, None] * from_K(bin_size_h)
+        + (iy[None, None, :] + 0.5).astype(input.dtype)
+        * from_K(bin_size_h / roi_bin_grid_h)
+    )  # [K, PH, IY]
+    x = (
+        from_K(roi_start_w)
+        + pw[None, :, None] * from_K(bin_size_w)
+        + (ix[None, None, :] + 0.5).astype(input.dtype)
+        * from_K(bin_size_w / roi_bin_grid_w)
+    )  # [K, PW, IX]
+    val = _bilinear_interpolate(
+        input, roi_batch_ind, y, x, ymask, xmask
+    )  # [K, C, PH, PW, IY, IX]
+
+    # Mask out samples that weren't actually adaptively needed
+    if not exact_sampling:
+        val = ivy.where(ymask[:, None, None, None, :, None], val, 0)
+        val = ivy.where(xmask[:, None, None, None, None, :], val, 0)
+
+    output = val.sum(axis=(-1, -2))  # remove IY, IX ~> [K, C, PH, PW]
+    if isinstance(count, ivy.Array):
+        output /= count[:, None, None, None]
+    else:
+        output /= count
+
+    output = output.astype(orig_dtype)
+
+    return output
+
+
 # TODO add paddle backend implementation back,
 #  once paddle.argsort uses a stable algorithm
 #  https://github.com/PaddlePaddle/Paddle/issues/57508
