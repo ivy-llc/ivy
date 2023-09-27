@@ -223,6 +223,11 @@ class Tensor:
         self.ivy_array = self.floor().ivy_array
         return self
 
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def round_(self, name=None):
+        self.ivy_array = paddle_frontend.round(self).ivy_array
+        return self
+
     @with_supported_dtypes(
         {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
@@ -767,3 +772,24 @@ class Tensor:
     )
     def less_equal(self, y, name=None):
         return paddle_frontend.less_equal(self._ivy_array, y)
+
+    @with_supported_dtypes({"2.5.1 and below": ("complex64", "complex128")}, "paddle")
+    def real(self, name=None):
+        return paddle_frontend.real(self._ivy_array)
+
+    @with_supported_dtypes(
+        {
+            "2.5.1 and below": (
+                "bool",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "uint8",
+            )
+        },
+        "paddle",
+    )
+    def cast(self, dtype):
+        return paddle_frontend.cast(self, dtype)
