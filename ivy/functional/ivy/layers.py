@@ -800,9 +800,9 @@ def multi_head_attention(
     bias_v
         An additional bias added to the value sequence. Shape: `(E,)`.
     static_k
-        A static key to be used in the attention operators. Shape: same as `key`.
+        A static key to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
     static_v
-        A static value to be used in the attention operators. Shape: same as `value`.
+        A static value to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
     add_zero_attn
         A boolean flag indicating whether to add a batch of zeros to key and value.
     return_attention_weights
@@ -867,11 +867,11 @@ def multi_head_attention(
         else:
             emb_dim = q.shape[-1]
 
-    batch_dim, num_queries, pre_embed_dim = q.shape
+    batch_dim, num_queries = query.shape[:2]
     ivy.assertions.check_true(
         emb_dim % num_heads == 0, "features must be divisible by number of heads"
     )
-    head_dim = pre_embed_dim // num_heads
+    head_dim = emb_dim // num_heads
 
     # apply extra bias
     if bias_k is not None and bias_v is not None:
@@ -889,15 +889,11 @@ def multi_head_attention(
     if static_k is None:
         k = ivy.swapaxes(k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1)
     else:
-        k = ivy.swapaxes(
-            static_k.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
-        )
+        k = static_k
     if static_v is None:
         v = ivy.swapaxes(v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1)
     else:
-        v = ivy.swapaxes(
-            static_v.reshape((num_keys, batch_dim * num_heads, head_dim)), 0, 1
-        )
+        v = static_v
 
     # add extra batch of zeros to k, v
     if add_zero_attn:

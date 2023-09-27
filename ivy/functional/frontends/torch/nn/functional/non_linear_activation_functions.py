@@ -270,15 +270,6 @@ def multi_head_attention_forward(
     assert (
         embed_dim == embed_dim_to_check
     ), f"was expecting embedding dimension of {embed_dim_to_check}, but got {embed_dim}"
-    if query.ndim == 3:
-        num_batches = query.shape[1]
-    else:
-        num_batches = 1
-    num_keys = key.shape[0]
-    if static_k is not None:
-        static_k = static_k.reshape((num_batches, num_keys, embed_dim))
-    if static_v is not None:
-        static_v = static_v.reshape((num_batches, num_keys, embed_dim))
     return ivy.multi_head_attention(
         query,
         key=key,

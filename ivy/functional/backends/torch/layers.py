@@ -55,22 +55,8 @@ def multi_head_attention(
         query,
     )[1]
     num_dims = query.ndim
-    if num_dims == 3:
-        num_batches = query.shape[0]
-        num_keys = key.shape[1]
-        if batch_first:
-            query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
-    else:
-        num_batches = 1
-        num_keys = key.shape[0]
-    if static_k is not None:
-        static_k = static_k.reshape(
-            num_batches * num_heads, num_keys, int(emb_dim // num_heads)
-        )
-    if static_v is not None:
-        static_v = static_v.reshape(
-            num_batches * num_heads, num_keys, int(emb_dim // num_heads)
-        )
+    if num_dims == 3 and batch_first:
+        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
     ret = torch.nn.functional.multi_head_attention_forward(
         query,
         key,

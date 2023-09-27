@@ -733,30 +733,15 @@ def test_torch_multi_head_attention_forward(
         average_attn_weights,
         batch_first,
     ) = dtype_mha_args
-    # bringing the arguments from ivy to torch format
     if k is None and v is None:
         k = v = q
-    emb_dim = q.shape[-1]
-    if q.ndim == 3:
-        num_batches = q.shape[1]
-    else:
-        num_batches = 1
-    num_keys = k.shape[0]
-    if static_k is not None:
-        static_k = static_k.reshape(
-            num_batches * heads, num_keys, int(emb_dim // heads)
-        )
-    if static_v is not None:
-        static_v = static_v.reshape(
-            num_batches * heads, num_keys, int(emb_dim // heads)
-        )
     # re-order the dtypes to match the order of the frontend arguments, not the order
     # of ivy.multi_head_attention's arguments given by _mha_helper
     kwargs = {
         "query": q,
         "key": k,
         "value": v,
-        "embed_dim_to_check": emb_dim,
+        "embed_dim_to_check": q.shape[-1],
         "num_heads": heads,
         "in_proj_weight": in_proj_weight,
         "in_proj_bias": in_proj_bias,
