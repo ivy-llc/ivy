@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -77,20 +78,23 @@ def test_huber_loss(
         min_dim_size=3,
     ),
     reduction=st.sampled_from(["none", "sum", "batchmean", "mean"]),
-    test_with_out=st.just(False),
+    log_target=st.booleans(),
 )
 def test_kl_div(
     dtype_and_input,
     dtype_and_target,
     reduction,
+    log_target,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
     input_dtype, input = dtype_and_input
+    input[0] = np.log(input[0])
     target_dtype, target = dtype_and_target
-
+    if log_target:
+        target[0] = np.log(target[0])
     helpers.test_function(
         input_dtypes=input_dtype + target_dtype,
         test_flags=test_flags,
@@ -101,6 +105,7 @@ def test_kl_div(
         input=input[0],
         target=target[0],
         reduction=reduction,
+        log_target=log_target,
     )
 
 
