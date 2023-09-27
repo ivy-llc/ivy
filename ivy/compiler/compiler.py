@@ -123,16 +123,22 @@ def transpile(
     *objs: Callable,
     source: Optional[str] = None,
     to: Optional[str] = None,
-    with_numpy: bool = False,
+    with_numpy: bool = True,
+    backend_compile: bool = False,
+    static_argnums: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
+    mode: Optional[str] = None,
+    graph_caching: bool = False,
+    stateful: Optional[List] = None,
+    arg_stateful_idxs: Optional[List] = None,
+    kwarg_stateful_idxs: Optional[List] = None,
     args: Optional[Tuple] = None,
-    kwargs: Optional[dict] = None,
+    kwargs: Optional[Any] = None,
     params_v=None,
-    v=None, 
+    v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
-    from ._compiler import transpile as _transpile
-
     """
-    Transpile Callable objects passed as arguments. If args and kwargs are specified,
+    Transpiles Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
 
     Parameters
@@ -143,10 +149,6 @@ def transpile(
         The framework that `obj` is from.
     to
         The target framework to transpile `obj` to.
-    debug_mode
-        Whether to transpile to ivy first, before the final compilation
-        to the target framework. If the target is ivy, then this flag
-        makes no difference.
     args
         If specified, arguments that will be used to transpile eagerly.
     kwargs
@@ -156,11 +158,21 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
+    from ._compiler import transpile as _transpile
+
     return _transpile(
         *objs,
         source=source,
         to=to,
         with_numpy=with_numpy,
+        backend_compile=backend_compile,
+        static_argnums=static_argnums,
+        static_argnames=static_argnames,
+        mode=mode,
+        graph_caching=graph_caching,
+        stateful=stateful,
+        arg_stateful_idxs=arg_stateful_idxs,
+        kwarg_stateful_idxs=kwarg_stateful_idxs,
         args=args,
         kwargs=kwargs,
         params_v=params_v,
