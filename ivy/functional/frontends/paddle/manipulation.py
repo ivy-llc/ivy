@@ -23,7 +23,7 @@ def abs(x, name=None):
 @to_ivy_arrays_and_back
 def broadcast_tensors(input):
     output = ivy.broadcast_arrays(input)
-    return output
+    return output[0]
 
 
 @with_supported_dtypes(
