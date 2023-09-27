@@ -272,23 +272,23 @@ def test_numpy_nanmean(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
-    if "bfloat16" not in input_dtypes + dtype or []:
-        helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            frontend=frontend,
-            backend_to_test=backend_fw,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            rtol=1e-2,
-            atol=1e-2,
-            a=a[0],
-            axis=axis,
-            dtype=dtype[0],
-            out=None,
-            keepdims=keep_dims,
-            where=where,
-        )
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        a=a[0],
+        axis=axis,
+        dtype=dtype[0],
+        out=None,
+        keepdims=keep_dims,
+        where=where,
+    )
 
 
 @handle_frontend_test(
