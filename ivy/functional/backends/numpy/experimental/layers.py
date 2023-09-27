@@ -2,7 +2,7 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence
 
 # local
 import ivy
