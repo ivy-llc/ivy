@@ -2276,7 +2276,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             [frames][frame_length][2], where frame_length is the length of
             the DFT.
         """
-        return  ContainerBase.cont_multi_map_in_function(
+        return ContainerBase.cont_multi_map_in_function(
             "stft",
             signal,
             n_fft,
@@ -2294,7 +2294,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             boundary=boundary,
             out=out,
         )
-    
+
     def stft(
         self: ivy.Container,
         n_fft: Optional[Union[int, Tuple[int]]],
@@ -2316,7 +2316,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     ):
         """
         Compute the Short-time Fourier transform  of input.
-        
+
         Parameters
         ----------
         signal
@@ -2354,14 +2354,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
             will be used directly as the window and its length must be
             nperseg. Defaults to a Hann window.
         win_length
-            The size of window frame and STFT filter. Defaults to None.    
-            The size of window frame and STFT filter. Defaults to None.    
+            The size of window frame and STFT filter. Defaults to None.
+            The size of window frame and STFT filter. Defaults to None.
         noverlap
-            Number of points to overlap between segments. If None, 
+            Number of points to overlap between segments. If None,
             noverlap = nperseg // 2. Defaults to None.
             The size of window frame and STFT filter. Defaults to None.
         noverlap
-            Number of points to overlap between segments. If None, 
+            Number of points to overlap between segments. If None,
             noverlap = nperseg // 2. Defaults to None.
         center
             Whether to pad x to make that the t * hop_length at the
