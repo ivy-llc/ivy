@@ -238,6 +238,32 @@ def _mha_helper(draw):
 
 
 @st.composite
+def _nms_helper(draw):
+    img_width = draw(st.integers(250, 1250))
+    img_height = draw(st.integers(250, 1250))
+    num_boxes = draw(st.integers(5, 50))
+    bbox = {}
+    for _ in range(num_boxes):
+        x1 = draw(st.integers(0, img_width - 20))
+        w = draw(st.integers(5, img_width - x1))
+        y1 = draw(st.integers(0, img_height - 20))
+        h = draw(st.integers(5, img_height - y1))
+
+        bbox[(x1, y1, x1 + w, y1 + h)] = draw(st.floats(0.2, 1))
+
+    iou_threshold = draw(st.floats(0.2, 1))
+    max_output_size = draw(st.integers(1, num_boxes))
+    score_threshold = draw(st.floats(0, 1))
+    return (
+        np.array(list(bbox.keys()), dtype=np.float32),
+        np.array(list(bbox.values()), dtype=np.float32),
+        iou_threshold,
+        max_output_size,
+        score_threshold,
+    )
+
+
+@st.composite
 def _roi_align_helper(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))[0]
     N = draw(st.integers(1, 5))
@@ -279,31 +305,6 @@ def _roi_align_helper(draw):
         spatial_scale,
         sampling_ratio,
         aligned,
-
-
-@st.composite
-def _nms_helper(draw):
-    img_width = draw(st.integers(250, 1250))
-    img_height = draw(st.integers(250, 1250))
-    num_boxes = draw(st.integers(5, 50))
-    bbox = {}
-    for _ in range(num_boxes):
-        x1 = draw(st.integers(0, img_width - 20))
-        w = draw(st.integers(5, img_width - x1))
-        y1 = draw(st.integers(0, img_height - 20))
-        h = draw(st.integers(5, img_height - y1))
-
-        bbox[(x1, y1, x1 + w, y1 + h)] = draw(st.floats(0.2, 1))
-
-    iou_threshold = draw(st.floats(0.2, 1))
-    max_output_size = draw(st.integers(1, num_boxes))
-    score_threshold = draw(st.floats(0, 1))
-    return (
-        np.array(list(bbox.keys()), dtype=np.float32),
-        np.array(list(bbox.values()), dtype=np.float32),
-        iou_threshold,
-        max_output_size,
-        score_threshold,
     )
 
 
@@ -1339,8 +1340,6 @@ def test_multi_head_attention(
     )
 
 
-
-
 @handle_test(
     fn_tree="functional.ivy.nms",
     inputs=_nms_helper(),
@@ -1368,7 +1367,6 @@ def test_nms(
         max_output_size=max_output_size,
         score_threshold=score_threshold,
     )
-
 
 
 @handle_test(

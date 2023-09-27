@@ -494,17 +494,3 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.transpose(0, *range(2, dims + 2), 1)
     return res
-
-
-# def roi_align(input, boxes, output_size, spatial_scale = 1.0,
-# sampling_ratio= - 1, aligned = False):
-#     input = paddle.cast(input,paddle.float32)
-#     boxes = boxes.sort(axis=0)
-#     num_box_dict = Counter(boxes[:,0].tolist())
-#     box_num = paddle.zeros(input.shape[0],dtype=paddle.int32).flatten()
-#     for id in num_box_dict:
-#         box_num[int(id)] = num_box_dict[int(id)]
-#     ret = paddle.vision.ops.roi_align(input,boxes[:,1:],box_num ,
-#     output_size, spatial_scale,sampling_ratio,aligned )
-#     # print(ret)
-#     return ret
