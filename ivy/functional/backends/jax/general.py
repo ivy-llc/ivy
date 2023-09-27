@@ -7,7 +7,7 @@ import jax.numpy as jnp
 from numbers import Number
 from operator import mul
 from functools import reduce as _reduce
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Optional, Union, Sequence, Callable, Tuple, List, Type
 import multiprocessing as _multiprocessing
 import importlib
 
@@ -22,7 +22,17 @@ from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 
 
-def container_types():
+def container_types() -> List[Type]:
+    """
+    Gets list of container types supported.
+
+    Returns:
+        List[Type]: List containing the FlatMapping container type.
+
+    Examples:
+        >>> container_types()
+        [FlatMapping]
+    """
     flat_mapping_spec = importlib.util.find_spec(
         "FlatMapping", "haiku._src.data_structures"
     )
@@ -30,6 +40,7 @@ def container_types():
         from haiku._src.data_structures import FlatMapping
     else:
         FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
+
     return [FlatMapping]
 
 
