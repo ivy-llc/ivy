@@ -1,5 +1,7 @@
 # global
 import importlib
+import inspect
+
 import numpy as np
 
 # local
@@ -54,16 +56,17 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
     def backend_handler(self):
         return self._backend_handler
 
-    def _arrays_to_frontend(self, frontend_array_fn=None):
+    def _arrays_to_frontend(self):
         def _new_fn(x, *args, **kwargs):
             if FunctionTestCaseSubRunner._is_frontend_array(x):
                 return x
             elif self._ivy.is_array(x):
+                frontend_array_fn = self._get_frontend_creation_fn()
                 if tuple(x.shape) == ():
                     try:
                         ret = frontend_array_fn(x, dtype=self._ivy.Dtype(str(x.dtype)))
                     except self._ivy.utils.exceptions.IvyException:
-                        ret = self._ivy(x, dtype=self._ivy.array(x).dtype)
+                        ret = frontend_array_fn(x, dtype=self._ivy.array(x).dtype)
                 else:
                     ret = frontend_array_fn(x)
                 return ret
@@ -72,16 +75,15 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         return _new_fn
 
     def _args_to_frontend(self, *args, include_derived=None, **kwargs):
-        frontend_array_fn = self._get_frontend_creation_fn()
         frontend_args = self._ivy.nested_map(
+            self._arrays_to_frontend(),
             args,
-            self._arrays_to_frontend(frontend_array_fn=frontend_array_fn),
             include_derived,
             shallow=False,
         )
         frontend_kwargs = self._ivy.nested_map(
+            self._arrays_to_frontend(),
             kwargs,
-            self._arrays_to_frontend(frontend_array_fn=frontend_array_fn),
             include_derived,
             shallow=False,
         )
@@ -115,6 +117,28 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
     def _flatten_ret_to_np(self, ret_flat):
         return [self._ivy.to_numpy(x) for x in ret_flat]
+
+    def _test_inplace(self, frontend_fn, args, kwargs):
+        if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
+            kwargs["inplace"] = True
+        array_fn = self._ivy.is_array
+        conversion_fn = self._ivy.asarray
+        if (
+            self.test_flags.generate_frontend_arrays
+            and not self.test_flags.test_compile
+        ):
+            array_fn = FunctionTestCaseSubRunner._is_frontend_array
+            conversion_fn = FunctionTestCaseSubRunner._frontend_array_to_ivy
+        first_array = self._ivy.func_wrapper._get_first_array(
+            *args, array_fn=array_fn, **kwargs
+        )
+        with self._ivy.PreciseMode(self.test_flags.precision_mode):
+            ret = frontend_fn(*args, **kwargs)
+        assert (
+            first_array is ret
+        ), "Inplace function did not return the inputted array reference: " + str(ret)
+        ret = self._ivy.nested_map(conversion_fn, ret, include_derived={"tuple": True})
+        return ret
 
     def _search_args(self, test_arguments):
         arg_searcher = ArgumentsSearcher(test_arguments)
@@ -180,28 +204,32 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
                 FunctionTestCaseSubRunner._frontend_array_to_ivy,
                 include_derived={"tuple": True},
             )
-        with self._ivy.PreciseMode(self.test_flags.precision_mode):
-            ret = frontend_fn(*args, **kwargs)
-        if self.test_flags.test_compile:
-            ret = self._ivy.nested_map(
-                ret, self._ivy.asarray, include_derived={"tuple": True}
-            )
+        # test inplace
+        if self.test_flags.inplace:
+            ret = self._test_inplace(frontend_fn, args, kwargs)
         else:
-            # asserting the returned arrays are frontend arrays
-            assert self._ivy.nested_map(
-                lambda x: (
-                    FunctionTestCaseSubRunner._is_frontend_array(x)
-                    if self._ivy.is_array(x)
-                    else True
-                ),
-                ret,
-            ), "Frontend function returned non-frontend arrays: {}".format(ret)
+            with self._ivy.PreciseMode(self.test_flags.precision_mode):
+                ret = frontend_fn(*args, **kwargs)
+            if self.test_flags.test_compile:
+                ret = self._ivy.nested_map(
+                    ret, self._ivy.asarray, include_derived={"tuple": True}
+                )
+            else:
+                # asserting the returned arrays are frontend arrays
+                assert self._ivy.nested_map(
+                    lambda x: (
+                        FunctionTestCaseSubRunner._is_frontend_array(x)
+                        if self._ivy.is_array(x)
+                        else True
+                    ),
+                    ret,
+                ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
-            ret = self._ivy.nested_map(
-                FunctionTestCaseSubRunner._frontend_array_to_ivy,
-                ret,
-                include_derived={"tuple": True},
-            )
+                ret = self._ivy.nested_map(
+                    FunctionTestCaseSubRunner._frontend_array_to_ivy,
+                    ret,
+                    include_derived={"tuple": True},
+                )
         return self._get_results_from_ret(ret)
 
     def get_results(self, test_arguments):
@@ -383,7 +411,9 @@ class FrontendTestCaseRunner(TestCaseRunner):
             self.backend_handler,
             self.on_device,
         )
-        return sub_runner_gt.get_results(test_arguments)
+        ret = sub_runner_gt.get_results(test_arguments)
+        sub_runner_gt.exit()
+        return ret
 
     def run(self, input_dtypes, test_arguments, test_flags):
         # getting results from target and ground truth
