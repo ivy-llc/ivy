@@ -705,7 +705,7 @@ def scaled_dot_product_attention(
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
-# @handle_array_like_without_promotion
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 def multi_head_attention(
@@ -714,6 +714,7 @@ def multi_head_attention(
     *,
     key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    batch_first: bool = True,
     num_heads: int = 8,
     scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -725,6 +726,12 @@ def multi_head_attention(
     in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     is_causal: bool = False,
+    key_padding_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    bias_k: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    bias_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    static_k: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    static_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    add_zero_attn: bool = False,
     return_attention_weights: bool = False,
     average_attention_weights: bool = True,
     dropout: float = 0.0,
@@ -743,50 +750,69 @@ def multi_head_attention(
     value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
     softmaxed to obtain attention probabilities. The value tensors are then interpolated
     by these probabilities, then concatenated back to a single tensor. Finally, the
-    result tensor with the last dimension as value_dim can take an linear projection and
+    result tensor with the last dimension as value_dim can take a linear projection and
     return.
 
     Parameters
     ----------
     query
-        query embeddings *[batch_shape,num_queries,query_dim]*.
+        The query embeddings. Shape: `(L, Q)` or `(N, L, Q)`, where L is the number of
+        queries, N is the batch size, Q is the query embedding dimension.
     key
-        key embeddings *[batch_shape,num_queries,key_dim]*.
+        The key embeddings. Shape: `(S, K)` or `(N, S, K)`, where S is the number of
+        keys, N is the batch size, K is the key embedding dimension.
     value
-        value embeddings *[batch_shape,num_queries,value_dim]*.
+        The value embeddings. Shape `(S, V)` or `(N, S, V)`, where S is the number of
+        keys, N is the batch size, V is the value embedding dimension.
+    batch_first
+        If False, `query`, `key` and `value` will have shapes `(L, N, Q)`, `(S, N, K)`
+        and `(S, N, V)` respectively (if batched).
     num_heads
         The number of attention heads to use.
     scale
         The value by which to scale the query-key similarity measure before softmax.
     attention_mask
-        The mask to apply to the query-key values. Default is ``None``.
-        *[batch_shape,num_queries,num_keys]*.
+        The mask to apply to the query-key values. Shape: `(L, S)` or
+        `(N*num_heads, L, S)`.
     in_proj_weights
-        The weights used to project query, key and value *[3*E, E].
+        The weights used to project query, key and value. Shape: `(3*E, E')`,  where E
+        is the new embedding dimension and E' is the input embedding dimension, i.e.
+        `E' = Q = K = V`.
     q_proj_weights
-        The weights used to project query if in_proj_weights is None *[new_E, E].
+        The weights used to project query if `in_proj_weights` is None. Shape: `(E, Q)`.
     k_proj_weights
-        The weights used to project key if in_proj_weights is None *[new_E, E].
+        The weights used to project key if `in_proj_weights` is None. Shape: `(E, K)`.
     v_proj_weights
-        The weights used to project value if in_proj_weights is None *[new_E, E].
+        The weights used to project value if `in_proj_weights` is None. Shape: `(E, V)`.
     out_proj_weights
-        The weights used to project the output.
+        The weights used to project the attention output. Shape: `(O, E)`, where O is
+        the output embedding dimension.
     in_proj_bias
-        The bias used when projecting with query, key and value.
+        The bias used when projecting query, key and value. Shape: `(3*E,)`.
     out_proj_bias
-        The bias used when projecting the output.
+        The bias used when projecting the output. Shape: `(O,)`.
     is_causal
-        If True, Uses a causal attention mask and ignores provided attention_mask.
+        If True, use a causal attention mask and ignore the provided `attention_mask`.
+    key_padding_mask
+        A binary mask to apply to the key sequence. Shape: `(S,)` or `(N, S)`.
+    bias_k
+        An additional bias added to the key sequence. Shape: `(E,)`.
+    bias_v
+        An additional bias added to the value sequence. Shape: `(E,)`.
+    static_k
+        A static key to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+    static_v
+        A static value to be used in the attention operators. Shape: `(N*num_heads, S, E//num_heads)`.
+    add_zero_attn
+        A boolean flag indicating whether to add a batch of zeros to key and value.
     return_attention_weights
-        If True, returns attention_weights alongside the output
-        as a tuple (output, attenion_weights). Defaults to `False`.
+        If True, return the attention weights alongside the attention output.
     average_attention_weights
-        If true, indicates that the returned ``attention_weights`` should be averaged
-        across heads. Otherwise, ``attention_weights`` are provided separately per head.
-        Note that this flag only has an effect when ``return_attention_weights=True``.
-        Default: ``True`` (i.e. average weights across heads)
+        If True, the returned attention weights will be averaged across heads.
+        Otherwise, the attention weights will be provided separately per head.
+        Note that this flag only has an effect when `return_attention_weights=True`.
     dropout
-        Specifies the dropout probablity, dropout is applied to attention_weights.
+        Specifies the dropout probability. Dropout is applied on the attention weights.
     training
         If True, dropout is used, otherwise dropout is not activated.
     out
@@ -796,9 +822,11 @@ def multi_head_attention(
     Returns
     -------
     ret
-        The output following application of multi-head attention.
-        *[batch_shape,num_queries,out_feat_dim]* if input is batched
-        otherwise *[num_queries, out_feat_dim]
+        The output following the application of multi-head attention. Either `output`
+        or `(output, attention_weights)`. `output` will have shape `(L, E)` if the
+        inputs were unbatched or `(N, L, E)` otherwise, and `attention_weights` will
+        have shape `(L, S)` or `(N, L, S)` respectively. If `batch_first` is False and
+        the inputs were batched, the `output` will have shape `(L, N, E)`.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -814,8 +842,13 @@ def multi_head_attention(
         key = value = query
     if num_dims == 2:
         query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+    elif not batch_first:
+        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+
+    # project query, key and value
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
+        emb_dim = int(in_proj_weights.shape[0] / 3)
     elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
         if ivy.exists(in_proj_bias):
             b_q, b_k, b_v = ivy.split(in_proj_bias, num_or_size_splits=3)
@@ -826,59 +859,128 @@ def multi_head_attention(
             ivy.linear(key, k_proj_weights, bias=b_k),
             ivy.linear(value, v_proj_weights, bias=b_v),
         )
+        emb_dim = q_proj_weights.shape[0]
     else:
         q, k, v = query, key, value
-    batch_size, q_seq_length, emb_dim = q.shape[0], q.shape[1], q.shape[-1]
-    k_seq_length = k.shape[1]
+        if ivy.exists(out_proj_weights):
+            emb_dim = out_proj_weights.shape[-1]
+        else:
+            emb_dim = q.shape[-1]
+
+    num_batches, num_queries = query.shape[:2]
     ivy.assertions.check_true(
         emb_dim % num_heads == 0, "features must be divisible by number of heads"
     )
-    dims_per_head = emb_dim // num_heads
-    # isolate heads
-    q = q.reshape((batch_size, q_seq_length, num_heads, dims_per_head)).permute_dims(
-        (0, 2, 1, 3)
-    )
-    k = k.reshape((batch_size, k_seq_length, num_heads, dims_per_head)).permute_dims(
-        (0, 2, 3, 1)
-    )
-    v = v.reshape((batch_size, k_seq_length, num_heads, dims_per_head)).permute_dims(
-        (0, 2, 1, 3)
-    )
-    # perform bmm
-    attn_scores = ivy.matmul(q, k)
-    # scale
-    scale = 1 / (dims_per_head**0.5) if not scale else scale
+    head_dim = emb_dim // num_heads
+
+    # apply extra bias
+    if bias_k is not None and bias_v is not None:
+        ivy.assertions.check_true(
+            not (ivy.exists(static_k) or ivy.exists(static_v)),
+            "bias cannot be added to static key or value",
+        )
+        k = ivy.concat([k, ivy.tile(bias_k, (num_batches, 1, 1))], axis=1)
+        v = ivy.concat([v, ivy.tile(bias_v, (num_batches, 1, 1))], axis=1)
+
+    num_keys = k.shape[1]
+
+    # reshape q, k, v for efficient matrix multiplication
+    q = ivy.swapaxes(q.reshape((num_queries, num_batches * num_heads, head_dim)), 0, 1)
+    if static_k is None:
+        k = ivy.swapaxes(k.reshape((num_keys, num_batches * num_heads, head_dim)), 0, 1)
+    else:
+        k = static_k
+    if static_v is None:
+        v = ivy.swapaxes(v.reshape((num_keys, num_batches * num_heads, head_dim)), 0, 1)
+    else:
+        v = static_v
+
+    # add extra batch of zeros to k, v
+    if add_zero_attn:
+        zero_attn_shape = (num_batches * num_heads, 1, head_dim)
+        k = ivy.concat([k, ivy.zeros(zero_attn_shape, dtype=k.dtype)], axis=1)
+        v = ivy.concat([v, ivy.zeros(zero_attn_shape, dtype=v.dtype)], axis=1)
+        num_keys = k.shape[1]
+
+    # get attention scores
+    attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
+    scale = 1 / (head_dim**0.5) if not scale else scale
     attn_scores *= scale
-    # apply attention mask
-    if ivy.exists(attention_mask) or is_causal:
+
+    # mask the attention scores
+    if ivy.exists(attention_mask):
+        assert attention_mask.dtype in [query.dtype, ivy.bool], (
+            "was expecting attention_mask of type bool or the same as the input's, but"
+            f" got {attention_mask.dtype}"
+        )
         if is_causal:
-            # create causal mask
-            attention_mask = ivy.tril(ivy.ones((q_seq_length, k_seq_length)))
-        attention_mask = attention_mask.astype("bool")
-        attn_scores = ivy.where(attention_mask, attn_scores, -ivy.inf)
-    # perform softmax
+            mask = ivy.triu(ivy.ones((num_queries, num_keys)), k=1)
+            attention_mask = ivy.where(mask, float("-inf"), 0)
+        elif ivy.is_bool_dtype(attention_mask):
+            attention_mask = ivy.where(attention_mask, float("-inf"), 0)
+        if attention_mask.ndim == 2:
+            attention_mask = ivy.tile(attention_mask, (num_batches * num_heads, 1, 1))
+    if key_padding_mask is not None:
+        assert ivy.is_bool_dtype(key_padding_mask), (
+            "was expecting key_padding_mask of type bool, but got"
+            f" {key_padding_mask.dtype}"
+        )
+        key_padding_mask = ivy.where(key_padding_mask, float("-inf"), 0)
+        if num_dims == 2:
+            key_padding_mask = ivy.expand_dims(key_padding_mask, axis=0)
+        key_padding_mask = ivy.tile(
+            key_padding_mask, (num_batches * num_heads, num_queries, 1)
+        )
+        if attention_mask is None:
+            attention_mask = key_padding_mask
+        else:
+            attention_mask += key_padding_mask
+    if ivy.exists(attention_mask):
+        if bias_k is not None and bias_v is not None and not is_causal:
+            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
+        if add_zero_attn and not is_causal:
+            attention_mask = ivy.pad(attention_mask, [(0, 0), (0, 0), (0, 1)])
+        attn_scores += attention_mask.astype(query.dtype)
+
+    # get attention weights
     attn_weights = ivy.softmax(attn_scores, axis=-1)
-    # perform dropout
     attn_weights = ivy.dropout(attn_weights, dropout, training=training)
-    # bmm with values
+
+    # get attention output
     attention_out = ivy.matmul(attn_weights, v)
-    attention_out = attention_out.permute_dims((0, 2, 1, 3)).reshape(
-        (batch_size, q_seq_length, -1)
+    attention_out = ivy.swapaxes(attention_out, 0, 1).reshape(
+        (num_batches, num_queries, emb_dim)
     )
-    # proj out if out_proj_weight exists
     if ivy.exists(out_proj_weights):
         attention_out = ivy.linear(attention_out, out_proj_weights, bias=out_proj_bias)
-    # if input was unbatched, unbatchify the output
+
     if num_dims == 2:
         attention_out = attention_out.squeeze(axis=0)
+    elif not batch_first:
+        attention_out = attention_out.swapaxes(0, 1)
     if return_attention_weights:
+        attn_weights = attn_weights.reshape(
+            (num_batches, num_heads, num_queries, num_keys)
+        )
         if average_attention_weights:
             attn_weights = attn_weights.mean(axis=1)
-            if num_dims == 2:
-                attn_weights = attn_weights.squeeze(axis=0)
+        if num_dims == 2:
+            attn_weights = attn_weights.squeeze(axis=0)
         return attention_out, attn_weights
     else:
         return attention_out
+
+
+multi_head_attention.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
 
 
 # Convolutions #

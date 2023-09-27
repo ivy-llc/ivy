@@ -6,9 +6,127 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
+
+
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex")},
+    backend_version,
+)
+def multi_head_attention(
+    query: torch.Tensor,
+    /,
+    *,
+    key: torch.Tensor = None,
+    value: torch.Tensor = None,
+    batch_first: bool = True,
+    num_heads: Optional[int] = 8,
+    scale: Optional[float] = None,
+    attention_mask: torch.Tensor = None,
+    in_proj_weights: torch.Tensor = None,
+    q_proj_weights: torch.Tensor = None,
+    k_proj_weights: torch.Tensor = None,
+    v_proj_weights: torch.Tensor = None,
+    out_proj_weights: torch.Tensor = None,
+    in_proj_bias: torch.Tensor = None,
+    out_proj_bias: torch.Tensor = None,
+    is_causal: Optional[bool] = False,
+    key_padding_mask: Optional[torch.Tensor] = None,
+    bias_k: Optional[torch.Tensor] = None,
+    bias_v: Optional[torch.Tensor] = None,
+    static_k: Optional[torch.Tensor] = None,
+    static_v: Optional[torch.Tensor] = None,
+    add_zero_attn: bool = False,
+    return_attention_weights: Optional[bool] = False,
+    average_attention_weights: Optional[bool] = True,
+    dropout: Optional[float] = 0.0,
+    training: Optional[bool] = False,
+    out: torch.Tensor = None,
+) -> torch.Tensor:
+    if key is None and value is None:
+        key = value = query
+    emb_dim = _get_embed_dim(
+        in_proj_weights,
+        q_proj_weights,
+        k_proj_weights,
+        v_proj_weights,
+        query,
+    )[1]
+    num_dims = query.ndim
+    if num_dims == 3 and batch_first:
+        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
+    ret = torch.nn.functional.multi_head_attention_forward(
+        query,
+        key,
+        value,
+        emb_dim,
+        num_heads,
+        in_proj_weights,
+        in_proj_bias,
+        bias_k,
+        bias_v,
+        add_zero_attn,
+        dropout,
+        out_proj_weights,
+        out_proj_bias,
+        training=training,
+        key_padding_mask=key_padding_mask,
+        need_weights=return_attention_weights,
+        attn_mask=attention_mask,
+        use_separate_proj_weight=not ivy.exists(in_proj_weights),
+        q_proj_weight=q_proj_weights,
+        k_proj_weight=k_proj_weights,
+        v_proj_weight=v_proj_weights,
+        static_k=static_k,
+        static_v=static_v,
+        average_attn_weights=average_attention_weights,
+        is_causal=is_causal,
+    )
+    ret = list(ret) if isinstance(ret, tuple) else [ret]
+    if num_dims == 3 and batch_first:
+        ret[0] = ret[0].swapaxes(0, 1)
+    if return_attention_weights:
+        return tuple(ret)
+    return ret[0]
+
+
+multi_head_attention.partial_mixed_handler = (
+    lambda *args, scale=None, out_proj_weights=None, is_causal=False, attention_mask=None, return_attention_weights=False, in_proj_weights=None, q_proj_weights=None, k_proj_weights=None, v_proj_weights=None, **kwargs: not ivy.exists(
+        scale
+    )
+    and ivy.exists(out_proj_weights)
+    and (not is_causal or ivy.exists(attention_mask))
+    and (not is_causal or not return_attention_weights)
+    and (
+        ivy.exists(in_proj_weights)
+        or all(
+            [ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]
+        )
+    )
+    and len(
+        set(
+            _get_embed_dim(
+                in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, args[0]
+            )
+        )
+    )
+    == 1
+)
+
+
+def _get_embed_dim(
+    in_proj_weights, q_proj_weights, k_proj_weights, v_proj_weights, query
+):
+    pre_embed_dim = query.shape[-1]
+    if ivy.exists(in_proj_weights):
+        embed_dim = in_proj_weights.shape[0] / 3
+    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+        embed_dim = q_proj_weights.shape[0]
+    else:
+        embed_dim = None
+    return pre_embed_dim, embed_dim
 
 
 @with_unsupported_dtypes(
