@@ -424,11 +424,7 @@ svdvals.support_native_out = True
 
 # ToDo: re-add int32 support once
 # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-@with_supported_dtypes({
-    "2.0.1 and below": (
-            "float32",
-    )
-}, backend_version)
+@with_supported_dtypes({"2.0.1 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
