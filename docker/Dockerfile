@@ -6,6 +6,7 @@ ARG pycon=3.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+
 # Install miniconda
 ENV CONDA_DIR /opt/miniconda/
 
@@ -81,3 +82,7 @@ RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf optional.txt && \
     rm -rf tmp.txt && \
     rm -rf test_dependencies.py
+
+# Install Python 3
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip
