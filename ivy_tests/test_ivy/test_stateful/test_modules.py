@@ -136,7 +136,7 @@ class ModuleWithBuffer(ivy.Module):
     def __init__(self, *args, **kwargs):
         pass
 
-    def _forward(*args, **kwargs):
+    def _forward(self, *args, **kwargs):
         pass
 
 
@@ -396,7 +396,7 @@ def test_module_to_device(dummy, on_device):
         if getattr(mod, "buffers", None):
             for key, obj in mod.buffers.items():
                 if isinstance(obj, ivy.Container) or isinstance(obj, dict):
-                    ivy.nested_map(obj, lambda x: assertion(x.device, on_device))
+                    ivy.nested_map(lambda x: assertion(x.device, on_device), obj)
                 else:
                     assertion(obj.device, on_device)
 
@@ -680,7 +680,7 @@ def test_module_training(batch_shape, input_channels, output_channels, on_device
     assert ivy.max(ivy.abs(grads.linear1.w)) > 0
     assert ivy.max(ivy.abs(grads.linear2.b)) > 0
     assert ivy.max(ivy.abs(grads.linear2.w)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
@@ -728,7 +728,7 @@ def test_module_training_with_duplicate(batch_shape, channels, same_layer, on_de
     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
     if not same_layer:
         assert ivy.max(ivy.abs(grads.linear1.b)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
@@ -781,7 +781,7 @@ def test_module_w_dict_training(
     assert ivy.max(ivy.abs(grads.layers.linear1.w)) > 0
     assert ivy.max(ivy.abs(grads.layers.linear2.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.linear2.w)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return
@@ -834,7 +834,7 @@ def test_module_w_list_training(
     assert ivy.max(ivy.abs(grads.layers.v1.w)) > 0
     assert ivy.max(ivy.abs(grads.layers.v2.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.v2.w)) > 0
-    # compilation test
+    # tracing test
     if ivy.current_backend_str() == "torch":
         # pytest scripting does not support **kwargs
         return

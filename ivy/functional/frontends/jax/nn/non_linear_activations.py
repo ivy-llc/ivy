@@ -273,7 +273,7 @@ def relu(x):
 
 @to_ivy_arrays_and_back
 def relu6(x):
-    res = ivy.relu6(x)
+    res = ivy.relu6(x, complex_mode="jax")
     return _type_conversion_64(res)
 
 
@@ -291,7 +291,7 @@ def sigmoid(x):
 
 
 @with_supported_dtypes(
-    {"0.4.14 and below": ("complex", "float")},
+    {"0.4.16 and below": ("complex", "float")},
     "jax",
 )
 @to_ivy_arrays_and_back
