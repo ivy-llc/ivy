@@ -17,6 +17,12 @@ def ceil_(x, name=None):
 
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def erfinv_(x, name=None):
+    return ivy.inplace_update(x, erf(x))
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def exp_(x, name=None):
     return ivy.inplace_update(x, exp(x))
 
