@@ -196,7 +196,7 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
 
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    return ivy.promote_types(arrays_and_dtypes[0].dtype, arrays_and_dtypes[1].dtype)
+    return ivy.promote_types_of_inputs(*arrays_and_dtypes)[0].dtype
 
 
 # Extra #
