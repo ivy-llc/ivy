@@ -751,6 +751,11 @@ class Tensor:
         return paddle_frontend.is_floating_point(self)
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def tanh_(self, name=None):
+        y = self.tanh(self)
+        return ivy.inplace_update(self, y)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def reciprocal_(self, name=None):
         y = self.reciprocal(self)
         return ivy.inplace_update(self, y)
