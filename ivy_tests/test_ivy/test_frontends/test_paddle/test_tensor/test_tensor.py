@@ -1077,6 +1077,46 @@ def test_paddle_tensor_bitwise_xor(
     )
 
 
+# broadcast_tensors
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="broadcast_tensors",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        # valid_axis=True,
+        # force_int_axis=True,
+        # min_num_dims=1,
+        # min_value=-5,
+        # max_value=5,
+    ),
+)
+def test_paddle_tensor_broadcast_tensors(
+    dtype_x_axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": [x],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # cast
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1110,46 +1150,6 @@ def test_paddle_tensor_cast(
         method_all_as_kwargs_np={
             "dtype": dtype[0],
         },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# broadcast_tensors
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="broadcast_tensors",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        # valid_axis=True,
-        # force_int_axis=True,
-        # min_num_dims=1,
-        # min_value=-5,
-        # max_value=5,
-    ),
-)
-def test_paddle_tensor_broadcast_tensors(
-    dtype_x_axis,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x, axis = dtype_x_axis
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": [x],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
