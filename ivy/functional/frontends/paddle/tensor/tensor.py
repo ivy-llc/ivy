@@ -272,12 +272,12 @@ class Tensor:
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def tanh(self, name=None):
         return paddle_frontend.Tensor(ivy.tanh(self._ivy_array))
-    
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def addmm(self, x, y, beta=1.0, alpha=1.0, name=None):
-        return paddle_frontend.Tensor(alpha * 
-                                      paddle_frontend.matmul(x,y) + 
-                                      beta * self._ivy_array)
+        return paddle_frontend.Tensor(
+            alpha * paddle_frontend.matmul(x, y) + beta * self._ivy_array
+        )
 
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def add_(self, y, name=None):

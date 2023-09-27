@@ -564,8 +564,8 @@ def test_paddle_tensor_add_(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
+
 # addmm
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -585,7 +585,7 @@ def test_paddle_tensor_addmm(
     frontend_method_data,
     init_flags,
     method_flags,
-    frontend, 
+    frontend,
     on_device,
     backend_fw,
 ):
@@ -593,13 +593,13 @@ def test_paddle_tensor_addmm(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        init_all_as_kwargs_np={ "data": x[0],},
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "x": x[1],
-            "y": x[2],
-            "alpha": alpha,
-            "beta": beta},
+            "y": x[2]},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
