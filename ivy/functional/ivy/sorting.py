@@ -202,7 +202,7 @@ def sort(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([7, 8, 6])
+    >>> x = ivy.array([7, 6, 8])
     >>> y = ivy.sort(x)
     >>> print(y)
     ivy.array([6, 7, 8])
