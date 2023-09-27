@@ -1,6 +1,8 @@
 import os
 import logging
 import json
+from pip._vendor.packaging import tags
+from urllib import request
 
 
 def _get_paths_from_binaries(binaries, root_dir=""):
@@ -40,8 +42,8 @@ def check_for_binaries():
                         "\tSome binaries seem to be missing in your system. This could "
                         "be either because we don't have compatible binaries for your "
                         "system or that newer binaries were available. In the latter "
-                        "case, running a ``pip install -e .`` should update the "
-                        "binaries. Feel free to create an issue on "
+                        "case, calling ivy.utils.clean_and_fetch_binaries() should "
+                        "fetch the binaries binaries. Feel free to create an issue on "
                         "https://github.com/unifyai/ivy.git in case of the former\n"
                     )
                     logging.warning(
@@ -52,3 +54,54 @@ def check_for_binaries():
                 logging.warning(f"\t{path} not found.")
         if not initial:
             print()
+
+
+def cleanup_and_fetch_binaries(clean=True):
+    folder_path = os.sep.join(__file__.split(os.sep)[:-3])
+    binaries_path = os.path.join(folder_path, "binaries.json")
+    available_configs_path = os.path.join(folder_path, "available_configs.json")
+    if os.path.exists(binaries_path):
+        binaries_dict = json.load(open(binaries_path))
+        available_configs = json.load(open(available_configs_path))
+        binaries_exts = set(
+            [path.split(".")[-1] for path in _get_paths_from_binaries(binaries_dict)]
+        )
+
+        # clean up existing binaries
+        if clean:
+            print("Cleaning up existing binaries...")
+            for root, _, files in os.walk(folder_path, topdown=True):
+                for file in files:
+                    if file.split(".")[-1] in binaries_exts:
+                        os.remove(os.path.join(root, file))
+
+        print("Downloading new binaries...")
+        all_tags = list(tags.sys_tags())
+        binaries_paths = _get_paths_from_binaries(binaries_dict)
+        version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
+        terminate = False
+
+        # download binaries for the tag with highest precedence
+        for tag in all_tags:
+            if terminate:
+                break
+            for path in binaries_paths:
+                module = path.split(os.sep)[1]
+                if os.path.exists(path) or str(tag) not in available_configs[module]:
+                    continue
+                folders = path.split(os.sep)
+                folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
+                file_name = f"{file_path[:-3]}_{tag}.so"
+                search_path = f"{module}/{file_name}"
+                try:
+                    response = request.urlopen(
+                        "https://github.com/unifyai/binaries/raw/"
+                        f"{version}/{search_path}",
+                        timeout=40,
+                    )
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    with open(path, "wb") as f:
+                        f.write(response.read())
+                    terminate = path == binaries_paths[-1]
+                except request.HTTPError:
+                    break
