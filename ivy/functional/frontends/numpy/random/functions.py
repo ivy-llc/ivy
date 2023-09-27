@@ -5,6 +5,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
 )
+from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -182,6 +183,27 @@ def negative_binomial(n, p, size=None):
         size = (size,)
     lambda_ = ivy.gamma(n, scale, shape=size)
     return ivy.poisson(lam=lambda_, shape=size)
+
+
+@with_supported_dtypes(
+    {"1.25.2 and below": ("float16", "float32")},
+    "numpy",
+)
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def noncentral_chisquare(df, nonc, size=None):
+    if ivy.any(df <= 0):
+        raise ValueError("Degree of freedom must be greater than 0")
+    if ivy.has_nans(nonc):
+        return ivy.nan
+    if ivy.any(nonc == 0):
+        return chisquare(df, size=size)
+    if ivy.any(df < 1):
+        n = standard_normal() + ivy.sqrt(nonc)
+        return chisquare(df - 1, size=size) + n * n
+    else:
+        i = poisson(nonc / 2.0, size=size)
+        return chisquare(df + 2 * i, size=size)
 
 
 @to_ivy_arrays_and_back
