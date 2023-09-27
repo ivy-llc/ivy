@@ -278,37 +278,19 @@ def huber_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 def kl_div(
     input, target, size_average=None, reduce=None, reduction="mean", log_target=False
 ):
-    size = ivy.shape(input)
-
-    if len(size) < 1:
-        size = [1]
-
-    def loss_fn():
-        if log_target:
-            return ivy.exp(target) * (target - input)
-        return target * (ivy.log(target) - input)
-
-    def batchmean(x):
-        if not reduce:
-            return x / size[0]
-
-        if size_average:
-            return ivy.mean(x) / size[0]
-
-        return ivy.sum(x) / size[0]
-
-    loss = ivy.nan_to_num(loss_fn())
-
-    if reduction == "batchmean":
-        reduction = batchmean
+    orig_red = reduction
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
     else:
-        reduction = _get_reduction(reduction, size_average, reduce)
-
-    return reduction(loss)
+        reduction = reduction if reduction != "batchmean" else "sum"
+    ret = ivy.kl_div(input, target, reduction=reduction, log_target=log_target)
+    if orig_red == "batchmean" and input.ndim != 0:
+        ret = ret / input.shape[0]
+    return ret
 
 
 @to_ivy_arrays_and_back
