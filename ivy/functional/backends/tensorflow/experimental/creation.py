@@ -73,7 +73,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: str,
+    device: str = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable], ...]:
     n_cols = n_rows if n_cols is None else n_cols
 
@@ -138,3 +138,19 @@ def trilu(
     if upper:
         return tf.experimental.numpy.triu(x, k)
     return tf.experimental.numpy.tril(x, k)
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 125.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    return tf.signal.linear_to_mel_weight_matrix(
+        num_mel_bins,
+        dft_length,
+        sample_rate,
+        lower_edge_hertz=lower_edge_hertz,
+        upper_edge_hertz=upper_edge_hertz,
+    )

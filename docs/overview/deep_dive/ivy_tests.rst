@@ -13,7 +13,7 @@ Ivy Tests
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
 .. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
-.. _`Function Types`: https://unify.ai/docs/ivy/overview/deep_dive/function_types.html
+.. _`Function Types`: function_types.rst
 .. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
@@ -53,9 +53,15 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
-.. _`Setting Up Testing in PyCharm`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-testing-in-pycharm
-.. _`Setting up for Free`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-for-free
+.. _`array_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L15
+.. _`array_bools`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L17
+.. _`reshape_shapes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L16
+.. _`get_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L178
+.. _`get_shape`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L67
+.. _`get_bounds`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L145
+.. _`subsets`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L48
+.. _`num_positional_args`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/testing_helpers.py#L78
+.. _`CI Pipeline`: continuous_integration.rst
 .. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -252,7 +258,7 @@ Writing Ivy Tests
 ^^^^^^^^^^^^^^^^^
 
 As mentioned previously, testing Ivy functions needs a lot of pre-processing and past-processing, using only :code:`given` decorator would not be sufficient
-to write an effective test, the following example describes how to implement a test for the function :code:`ivy.abs, using our test decorators and test helpers.
+to write an effective test, the following example describes how to implement a test for the function :code:`ivy.abs`, using our test decorators and test helpers.
 
 .. code-block:: python
     @handle_test(
@@ -306,7 +312,7 @@ One thing to note here is the :code:`test_flags` variable in the test function. 
 The test flags can also be generated explicitly like this -:
 
 .. code-block:: python
-    
+
     @handle_test(
         as_variable_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any>),
         native_array_flags = st.lists(st.booleans(), min_size = <any>, max_size = <any> ),
@@ -485,7 +491,7 @@ Meaning if the input is to be treated as a container, at the same time, is it a 
 
 The generated values are then passed to the array creation functions inside the test function as tuples.
 
-9. `valid_axes`_ - This function generates valid axes for a given array dimension.
+9. valid_axes - This function generates valid axes for a given array dimension.
    For example -:
 
 .. code-block:: python
@@ -561,7 +567,7 @@ This function should be used in places where the result doesn’t depend on the 
 
 **Note** - Under the hood, **array_values** strategy is called if the data type is *integer*, and **none_or_list_of_floats** is called when the data type is *float*.
 
-15. `get_probs`_ -  This is used to generate a tuple containing two values.
+15. get_probs -  This is used to generate a tuple containing two values.
     The first one being the *unnormalized probabilities* for all elements in a population, the second one being the *population size*.
     For example-:
 
@@ -616,7 +622,7 @@ It would be helpful to keep in mind the following points while writing test -:
 
 Testing Partial Mixed Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-As explained in the :ref:`Function Types` section, partial mixed functions are a special type of mixed functions that either utilize the compositional implementation
+As explained in the `Function Types <function_types.rst>`_ section, partial mixed functions are a special type of mixed functions that either utilize the compositional implementation
 or the primary implementation depending on some conditions on the input. Therefore, the data-types supported by partial mixed functions depend on which implementation will
 be used for the given input. For example, when :code:`function_supported_dtypes` is called with respect to `ivy.linear` with torch backend, the following output is returned:
 
@@ -625,7 +631,7 @@ be used for the given input. For example, when :code:`function_supported_dtypes`
     {'compositional': ('float32', 'int8', 'uint8', 'float64', 'int16', 'int32', 'int64'), 'primary': ('bool', 'float32', 'int8', 'uint8', 'float64', 'int64', 'int16', 'int32')}
 
 As can be seen from the above output that the data-types supported will depend on the implementation used for the given input. It's because of this reason that we need a slightly
-different pipeline for testing partial mixed functions. Basically, while writing the strategies for the tests of these functions, we need to first determine which implementation 
+different pipeline for testing partial mixed functions. Basically, while writing the strategies for the tests of these functions, we need to first determine which implementation
 will be used and then based on that generate the data to test the function. Here's an example from the test of :code:`ivy.linear` function:
 
 
@@ -678,8 +684,8 @@ will be used and then based on that generate the data to test the function. Here
 
 As can be seen from the above code, a boolean parameter :code:`mixed_fn_compos` is generated first to determine whether to generate test data for
 the compositional implementation or the primary one. When it is equal to :code:`True`, the relevant data for the compositional implementation should
-be generated and when :code:`False`, data corresponding to the primary implementation should be generated. Another boolean, :code:`is_torch_backend` 
-is to be used to determine if the current backend is :code:`torch`. Then these booleans are used together in this :code:`if` condition: 
+be generated and when :code:`False`, data corresponding to the primary implementation should be generated. Another boolean, :code:`is_torch_backend`
+is to be used to determine if the current backend is :code:`torch`. Then these booleans are used together in this :code:`if` condition:
 :code:`if is_torch_backend and not mixed_fn_compos` and :code:`weight_shape` is updated to be 2 dimensional because the torch backend implementation
 only supports 2 dimensional weights. Notice that the parameter :code:`mixed_fn_compos` is also be passed to :code:`helpers.get_dtypes` and
 :code:`helpers.ints` functions so that the dtypes corresponding to the implementation to be tested are returned. In general, :code:`helpers.get_dtypes`,
@@ -843,7 +849,7 @@ You will need to make sure the Ivy Test is passing for each Ivy function you int
 If a test fails on the CI, you can see details about the failure under `Details -> Run Ivy <module> Tests` as shown in `CI Pipeline`_.
 
 You can also run the tests locally before making a PR. The instructions differ according to the IDE you are using. For
-PyCharm and Visual Studio Code you can refer to the `Setting Up Testing in PyCharm`_ section and `Setting up for Free`_
+PyCharm and Visual Studio Code you can refer to the :ref:`overview/contributing/setting_up:Setting Up Testing in PyCharm` section and :ref:`overview/contributing/setting_up:Setting up for Free`
 section respectively.
 
 Re-Running Failed Ivy Tests

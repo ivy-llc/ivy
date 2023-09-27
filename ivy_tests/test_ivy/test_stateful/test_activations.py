@@ -237,11 +237,12 @@ def test_leaky_relu(
     )
 
 
+# LogSoftmax
 @handle_method(
     method_tree="stateful.activations.LogSoftmax.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_num_dims=2,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -273,8 +274,8 @@ def test_log_softmax(
         method_flags=method_flags,
         init_input_dtypes=input_dtype,
         method_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={},
-        method_all_as_kwargs_np={"x": x[0], "axis": axis},
+        init_all_as_kwargs_np={"axis": axis},
+        method_all_as_kwargs_np={"x": x[0]},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,
@@ -288,7 +289,7 @@ def test_log_softmax(
 @handle_method(
     method_tree="stateful.activations.Logit.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -671,10 +672,10 @@ def test_silu(
 @handle_method(
     method_tree="stateful.activations.Softmax.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
         safety_factor_scale="log",
     ),
     axis=helpers.ints(min_value=-1, max_value=0),

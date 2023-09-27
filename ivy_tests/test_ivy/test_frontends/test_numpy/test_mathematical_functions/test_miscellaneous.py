@@ -585,11 +585,17 @@ def test_numpy_nan_to_num(
 # real_if_close
 @handle_frontend_test(
     fn_tree="numpy.real_if_close",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_dim_size=1,
+        min_num_dims=1,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+    tol=st.integers(min_value=1, max_value=1000),
     test_with_out=st.just(False),
 )
 def test_numpy_real_if_close(
     dtype_and_x,
+    tol,
     frontend,
     test_flags,
     fn_tree,
@@ -605,6 +611,7 @@ def test_numpy_real_if_close(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        tol=tol,
     )
 
 
