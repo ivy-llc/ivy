@@ -348,6 +348,8 @@ class ClassificationCriterion(Criterion):
         This method assumes that caller placed the missing samples in
         self.sample_indices[-n_missing:]
         """
+        print(f"init_missing: {n_missing=}")
+        input()
         i = 0
         p = 0
         k = 0
