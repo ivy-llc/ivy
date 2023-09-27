@@ -1,7 +1,5 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-
-import jax
 from jax._src import core
 
 
@@ -40,17 +38,6 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 def qdwh(
     x, /, *, is_hermitian=False, max_iterations=None, eps=None, dynamic_shape=None
 ):
-    # I wasn't sure where to put my questions about, so i'm writing here.
-    # I need to define/use other functions too, however if i do that,
-    # the code will be very long. It did not feel right,
-    # i'm not sure what should i do. I hope it's not an unprofessional thought
-    # My unsure things: from jax._src import core / defining _mask() / defining _qdwh
-    def _mask():
-        pass
-
-    def _qdwh():
-        pass
-
     is_hermitian = core.concrete_or_error(
         bool,
         is_hermitian,
@@ -68,17 +55,17 @@ def qdwh(
 
     if dynamic_shape is not None:
         m, n = dynamic_shape
-        x = _mask(x, (m, n))
+        x = ivy._mask(x, (m, n))
 
     else:
         m, n = M, N
 
-    with jax.default_matmul_precision("float32"):
-        u, h, num_iters, is_converged = _qdwh(
+    with ivy.jax.default_matmul_precision("float32"):
+        u, h, num_iters, is_converged = ivy._qdwh(
             x, m, n, is_hermitian, max_iterations, eps
         )
 
-    return u, h, num_iters, is_converged
+    return ivy.qdwh(u, h, num_iters, is_converged)
 
 
 @to_ivy_arrays_and_back
