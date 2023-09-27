@@ -1339,7 +1339,7 @@ def test_multi_head_attention(
     )
 
 
-      
+
 
 @handle_test(
     fn_tree="functional.ivy.nms",
@@ -1368,9 +1368,9 @@ def test_nms(
         max_output_size=max_output_size,
         score_threshold=score_threshold,
     )
-      
-      
-      
+
+
+
 @handle_test(
     fn_tree="functional.ivy.roi_align",
     inputs=_roi_align_helper(),
