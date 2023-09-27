@@ -721,6 +721,43 @@ def test_paddle_tile(
     )
 
 
+# unbind
+@handle_frontend_test(
+    fn_tree="paddle.unbind",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=2,
+        max_dim_size=1,
+    ),
+    number_positional_args=st.just(1),
+    axis=st.integers(-1, 0),
+    test_with_out=st.just(False),
+)
+def test_paddle_unbind(
+    *,
+    dtypes_values,
+    axis,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x = dtypes_values
+    axis = axis
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+    )
+
+
 # unstack
 @handle_frontend_test(
     fn_tree="paddle.unstack",

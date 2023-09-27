@@ -172,6 +172,18 @@ def tile(x, repeat_times, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def unbind(input, axis=0):
+    shape = list(input.shape)
+    num_splits = shape[axis]
+    shape.pop(axis)
+    return tuple([x.reshape(tuple(shape)) for x in split(input, num_splits, axis=axis)])
+
+
+@with_supported_dtypes(
     {
         "2.5.1 and below": (
             "float32",
