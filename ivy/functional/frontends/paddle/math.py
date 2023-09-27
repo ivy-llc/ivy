@@ -228,6 +228,14 @@ def floor_divide(x, y, name=None):
     return ivy.floor_divide(x, y)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def floor_mod(x, y, name=None):
+    return ivy.remainder(x, y)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
@@ -341,6 +349,11 @@ def log1p(x, name=None):
 def log2(x, name=None):
     return ivy.log2(x)
 
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def log10(x, name=None):
+    return ivy.log10(x)
+
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -452,6 +465,12 @@ def reciprocal(x, name=None):
 @to_ivy_arrays_and_back
 def remainder(x, y, name=None):
     return ivy.remainder(x, y)
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def remainder_(x, y, name=None):
+    return ivy.inplace_update(x, remainder(x, y))
 
 
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
@@ -573,6 +592,14 @@ def tan(x, name=None):
 @to_ivy_arrays_and_back
 def tanh(x, name=None):
     return ivy.tanh(x)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("int32", "int64", "float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def trace(x, offset=0, axis1=0, axis2=1, name=None):
+    return ivy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_supported_dtypes(
