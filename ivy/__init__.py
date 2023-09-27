@@ -11,6 +11,7 @@ from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
+from ivy.utils.binaries_utils import check_for_binaries
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -1531,3 +1532,7 @@ if (
     ].__class__ = IvyWithGlobalProps
 else:
     sys.modules[__name__].__class__ = IvyWithGlobalProps
+
+
+# check if all expected binaries are present
+check_for_binaries()
