@@ -3,11 +3,7 @@ import numpy as np
 
 import ivy_tests.test_ivy.helpers as helpers
 
-from ivy_tests.test_ivy.helpers import handle_method, BackendHandler
-from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
-    not_too_close_to_zero,
-    pow_helper,
-)
+from ivy_tests.test_ivy.helpers import handle_method
 
 
 @handle_method(
@@ -215,7 +211,6 @@ def test_shape__gt__(
         class_name=class_name,
         method_name=method_name,
     )
-
 
 
 @handle_method(
@@ -462,8 +457,6 @@ def test_shape__mul__(
         class_name=class_name,
         method_name=method_name,
     )
-
-
 
 
 @handle_method(
