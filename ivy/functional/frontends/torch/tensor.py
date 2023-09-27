@@ -105,7 +105,7 @@ class Tensor:
         if self.device == "cpu":
             return -1
         else:
-            return int(self.device.split(':')[-1])
+            return int(self.device.split(":")[-1])
 
     # Setters #
     # --------#
@@ -2056,7 +2056,7 @@ class Tensor:
     def xlogy_(self, *, other, out=None):
         self.ivy_array = torch_frontend.xlogy(self, other, out=out).ivy_array
         return self
-      
+
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
@@ -2074,7 +2074,6 @@ class Tensor:
     def ne(self, other):
         return self.not_equal(other)
 
-
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
@@ -2091,7 +2090,7 @@ class Tensor:
     )
     def ne_(self, other):
         return self.not_equal_(other)
-      
+
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
