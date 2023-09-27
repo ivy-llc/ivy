@@ -167,7 +167,7 @@ class ndarray:
 
     def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
-            self.ivy_array,
+            self,
             axis=axis,
             dtype=dtype,
             out=out,

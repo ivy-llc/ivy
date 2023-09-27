@@ -2792,8 +2792,6 @@ def test_numpy_ndarray_mean(
         input_dtype=input_dtypes,
         test_flags=method_flags,
     )
-    if "bfloat16" in input_dtypes + dtype or []:
-        return
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -2812,8 +2810,8 @@ def test_numpy_ndarray_mean(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        rtol_=1e-1,
-        atol_=1e-1,
+        rtol_=1e-2,
+        atol_=1e-2,
         on_device=on_device,
     )
 
