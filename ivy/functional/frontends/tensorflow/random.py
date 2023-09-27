@@ -45,6 +45,24 @@ def shuffle(value, seed=None, name=None):
     {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
+def stateless_gamma(
+        shape,
+        seed,
+        alpha,
+        beta=None,
+        dtype=ivy.float32,
+        name=None
+):
+    return ivy.ivy.gamma(alpha,
+                         beta,
+                         shape=shape,
+                         dtype=dtype,
+                         seed=seed[0] + seed[1]
+)
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
 def stateless_normal(
     shape, seed, mean=0.0, stddev=1.0, dtype=ivy.float32, name=None, alg="auto_select"
 ):

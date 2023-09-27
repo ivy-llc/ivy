@@ -206,6 +206,57 @@ def test_tensorflow_shuffle(
         seed=seed,
     )
 
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_gamma",
+    dtype=helpers.array_dtypes(
+        available_dtypes=("float32", "float64"),
+    ),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    alpha=st.floats(
+        allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=3
+    ),
+    beta=st.floats(
+        allow_infinity=False, allow_nan=False, width=32, min_value=1, max_value=3
+    ),
+    seed=helpers.ints(
+        available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
+    ),
+    test_with_out=st.just(False),
+)
+
+def test_tensorflow_stateless_gamma(
+    frontend,
+    fn_tree,
+    on_device,
+    shape,
+    alpha,
+    beta,
+    dtype,
+    seed,
+    test_flags,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
+        alpha=alpha,
+        beta=beta,
+        dtype=dtype[0],
+        seed=seed,
+        test_values=False,
+    )
+
 
 # stateless_normal
 @handle_frontend_test(
