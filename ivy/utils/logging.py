@@ -1,11 +1,9 @@
 import logging
 
 logging_modes = ["DEBUG", "INFO", "WARNING", "ERROR"]
-logging_mode_stack = []
-
 # Set up the initial logging mode
 logging.basicConfig(level=logging.WARNING)
-logging_mode_stack.append(logging.WARNING)
+logging_mode_stack = [logging.WARNING]
 
 
 def set_logging_mode(mode):
