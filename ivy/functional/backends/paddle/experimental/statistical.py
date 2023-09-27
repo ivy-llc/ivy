@@ -1,12 +1,15 @@
 # global
-from typing import Optional, Union, Tuple, Sequence
+from typing import Optional, Union, Tuple, Sequence, Any
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
 from copy import deepcopy
 
 # local
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_dtypes,
+)
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
@@ -58,9 +61,7 @@ def nanmean(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = dtype if dtype is not None else a.dtype
-    a = a.cast(
-        ret_dtype
-    )  # this is necessary to match other FWs behavior which cast before calculation
+    a = a.cast(ret_dtype)
     if paddle.is_complex(a):
         ret = paddle.complex(
             paddle.nanmean(a.real(), axis=axis, keepdim=keepdims),
@@ -99,10 +100,7 @@ def _validate_quantile(q):
     return True
 
 
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float64", "float32")},
-    backend_version,
-)
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
 def nanprod(
     a: paddle.Tensor,
     /,
@@ -120,12 +118,8 @@ def nanprod(
     a = a.cast(dtype)
     if initial is None:
         initial = 1
-    if a.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        a = paddle.nan_to_num(a.cast("float64"), nan=1.0)
-        ret = paddle.prod(a, axis=axis, keepdim=keepdims) * initial
-    else:
-        a = paddle.nan_to_num(a, nan=1.0)
-        ret = paddle.prod(a, axis=axis, keepdim=keepdims) * initial
+    a = paddle.nan_to_num(a, nan=1.0)
+    ret = paddle.prod(a, axis=axis, keepdim=keepdims) * initial
 
     if isinstance(axis, Sequence):
         if len(axis) == a.ndim:
@@ -342,6 +336,9 @@ def histogram(
     return paddle.histogram(a, bins=bins, min=min_range, max=max_range)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
 def nanmedian(
     input: paddle.Tensor,
     /,
@@ -352,12 +349,9 @@ def nanmedian(
     overwrite_input: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if input.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
-        if dtype is None:
-            dtype = input.dtype
-        input = input.cast("float32")
-        paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
-    return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims).cast(dtype)
+    if dtype is None:
+        dtype = input.dtype
+    return paddle.nanmedian(x=input, axis=axis, keepdim=keepdims)
 
 
 @with_unsupported_device_and_dtypes(
@@ -380,7 +374,7 @@ def unravel_index(
     /,
     *,
     out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
+) -> tuple[Any, ...]:
     if indices.ndim == 0:
         indices = indices.unsqueeze(0)
     coord = []
@@ -516,8 +510,9 @@ def cov(
     )
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+@with_supported_dtypes(
+    {"2.5.1 and below": ("complex", "bool", "float32", "float64")},
+    backend_version,
 )
 def cummax(
     x: paddle.Tensor,
@@ -529,12 +524,8 @@ def cummax(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    if x.dtype in (paddle.bool, paddle.float16):
-        x = paddle.cast(x, "float64")
-    elif x.dtype in (paddle.int16, paddle.int8, paddle.uint8):
-        x = paddle.cast(x, "int64")
-    elif x.dtype in (paddle.complex128, paddle.complex64):
-        x = paddle.cast(paddle.real(x), "float64")
+    if x.dtype in (paddle.complex128, paddle.complex64):
+        x = x.real()
 
     if not (exclusive or reverse):
         return __find_cummax(x, axis=axis)

@@ -616,7 +616,7 @@ def test_nanmean(
     fn_tree="functional.ivy.experimental.nanmedian",
     dtype_x_axis=_statistical_dtype_values(function="nanmedian"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     overwriteinput=st.booleans(),
     test_gradients=st.just(False),
 )
