@@ -2420,10 +2420,6 @@ def _get_transpiled_data_if_required(
 ):
     iterations = 1
 
-    # to compile the frontend function on ivy arrays
-    with BackendHandler.update_backend(frontend) as ivy_backend:
-        args, kwargs = ivy_backend.args_to_ivy(*frontend_fw_args, **frontend_fw_kwargs)
-
     # for backend transpilation
     with BackendHandler.update_backend(backend) as ivy_backend:
         if generate_frontend_arrays:
@@ -2438,11 +2434,11 @@ def _get_transpiled_data_if_required(
             )
 
     compiled_fn = compiled_if_required(
-        frontend,
+        backend,
         frontend_fn,
         test_compile=True,
-        args=args,
-        kwargs=kwargs,
+        args=args_for_test,
+        kwargs=kwargs_for_test,
     )
 
     # running inference to get runtime
@@ -2451,7 +2447,7 @@ def _get_transpiled_data_if_required(
     for i in range(0, iterations):
         # timing the compiled_fn
         start = time.time()
-        compiled_fn(*args, **kwargs)
+        compiled_fn(*args_for_test, **kwargs_for_test)
         end = time.time()
         frontend_timings.append(end - start)
 
@@ -2462,9 +2458,9 @@ def _get_transpiled_data_if_required(
         frontend_fw_timings.append(end - start)
 
     # compile to get ivy nodes
-    with BackendHandler.update_backend(frontend) as ivy_backend:
+    with BackendHandler.update_backend(backend) as ivy_backend:
         compiled_fn_to_ivy = ivy_backend.compile(
-            frontend_fn, to="ivy", args=args, kwargs=kwargs
+            frontend_fn, to="ivy", args=args_for_test, kwargs=kwargs_for_test
         )
 
     frontend_time = np.mean(frontend_timings).item()
@@ -2482,7 +2478,7 @@ def _get_transpiled_data_if_required(
     }
 
     # creating json object and creating a file
-    _create_transpile_report(data, "report.json")
+    _create_transpile_report(data, backend, "report.json")
 
 
 def args_to_container(array_args):
