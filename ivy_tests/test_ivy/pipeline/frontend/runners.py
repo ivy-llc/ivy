@@ -119,7 +119,9 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         return [self._ivy.to_numpy(x) for x in ret_flat]
 
     def _test_inplace(self, frontend_fn, args, kwargs):
+        inplace_kwarg = False
         if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
+            inplace_kwarg = True
             kwargs["inplace"] = True
         array_fn = self._ivy.is_array
         conversion_fn = self._ivy.asarray
@@ -134,9 +136,25 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
         )
         with self._ivy.PreciseMode(self.test_flags.precision_mode):
             ret = frontend_fn(*args, **kwargs)
-        assert (
-            first_array is ret
-        ), "Inplace function did not return the inputted array reference: " + str(ret)
+        if self.test_flags.test_compile:
+            if (
+                self.test_flags.generate_frontend_arrays
+                or not self.test_flags.native_arrays[0]
+            ):
+                assert first_array.data is ret
+            else:
+                assert first_array is ret
+        else:
+            if inplace_kwarg:
+                assert first_array is ret
+            else:
+                if self.test_flags.generate_frontend_arrays:
+                    assert first_array is ret
+                elif self.test_flags.native_arrays[0]:
+                    assert first_array is ret.ivy_array.data
+                else:
+                    assert first_array is ret.ivy_array
+
         ret = self._ivy.nested_map(conversion_fn, ret, include_derived={"tuple": True})
         return ret
 
