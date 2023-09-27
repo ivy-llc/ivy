@@ -109,7 +109,6 @@ def _broadcast_tensors_helper(draw):
     return xs, input_dtypes
 
 
-
 # broadcast_to
 @st.composite
 def _broadcast_to_helper(draw):
