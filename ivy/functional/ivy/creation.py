@@ -101,7 +101,6 @@ def _shape_to_native(x: Iterable) -> Tuple[int]:
     def nested_map_shape_fn(x: Iterable) -> List:
         return x.shape if isinstance(x, ivy.Shape) else x
 
-
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x = list(x) if isinstance(x, tuple) else x
