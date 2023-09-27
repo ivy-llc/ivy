@@ -1695,7 +1695,7 @@ def arg_names(receiver):
     >>> x = ivy.arg_names(ivy.optimizers.Adam)
     >>> print(x)
     ['lr', 'beta1', 'beta2', 'epsilon', 'inplace',
-    'stop_gradients', 'compile_on_next_step', 'device']
+    'stop_gradients', 'trace_on_next_step', 'device']
     """
     return list(inspect.signature(receiver).parameters.keys())
 
