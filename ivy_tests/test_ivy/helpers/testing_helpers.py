@@ -901,13 +901,27 @@ def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
 
 
-def _create_transpile_report(data: dict, file_name: str):
-    json_object = json.dumps(data, indent=6)
+def _create_transpile_report(data: dict, backend: str, file_name: str):
     if os.path.isfile(file_name):
         with open(file_name, "r") as outfile:
             # Load the file's existing data
-            data = json.load(outfile)
-            if data["backend_nodes"] > data["backend_nodes"]:
+            file_data = json.load(outfile)
+            if file_data["backend_nodes"].get(backend, 0) > data["backend_nodes"]:
                 return
+            file_data["backend_nodes"][backend] = data["backend_nodes"]
+            file_data["frontend_time"][backend] = data["frontend_time"]
+            file_data["args"][backend] = data["args"]
+            file_data["kwargs"][backend] = data["kwargs"]
+            file_data["ivy_nodes"] = data["ivy_nodes"]
+            file_data["frontend_fw_time"] = data["frontend_fw_time"]
+            json_object = json.dumps(file_data, indent=6)
+            with open(file_name, "w") as outfile:
+                outfile.write(json_object)
+            return
+    data["backend_nodes"] = {backend: data["backend_nodes"]}
+    data["frontend_time"] = {backend: data["frontend_time"]}
+    data["args"] = {backend: data["args"]}
+    data["kwargs"] = {backend: data["kwargs"]}
+    json_object = json.dumps(data, indent=6)
     with open(file_name, "w") as outfile:
         outfile.write(json_object)
