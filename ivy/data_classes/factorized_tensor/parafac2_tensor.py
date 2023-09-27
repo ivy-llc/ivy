@@ -89,7 +89,7 @@ class Parafac2Tensor(FactorizedTensor):
             return factors_params
 
     @classmethod
-    def from_CPTensor(self, cp_tensor, parafac2_tensor_ok=False):
+    def from_CPTensor(cls, cp_tensor, parafac2_tensor_ok=False):
         """
         Create a Parafac2Tensor from a CPTensor.
 
