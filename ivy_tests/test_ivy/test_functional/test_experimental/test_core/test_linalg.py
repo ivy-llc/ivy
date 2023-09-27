@@ -1633,8 +1633,8 @@ def test_tensor_train_tensorly_3(shape, rank, tol):
     tensor = ivy.random_uniform(shape=shape)
     factors = ivy.tensor_train(tensor, rank)
     reconstructed_tensor = ivy.TTTensor.tt_to_tensor(factors)
-    error = ivy.sum(ivy.matrix_norm(tensor - reconstructed_tensor, ord=2))
-    error /= ivy.sum(ivy.matrix_norm(tensor, ord=2))
+    error = ivy.vector_norm(ivy.matrix_norm(tensor - reconstructed_tensor, ord=2))
+    error /= ivy.vector_norm(ivy.matrix_norm(tensor, ord=2))
     np.testing.assert_(error < tol, "norm 2 of reconstruction higher than tol")
 
 
