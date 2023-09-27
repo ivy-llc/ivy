@@ -94,7 +94,7 @@ def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bool", "float16")}, "torch")
 @to_ivy_arrays_and_back
 def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
     # this implementation is based on scipy.integrate.cumulative_trapezoid
@@ -103,6 +103,11 @@ def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
         list_ = list(t)
         list_[i] = value
         return tuple(list_)
+
+    if x is not None:
+        y, x = torch_frontend.promote_types_of_torch_inputs(y, x)
+
+    dtype = y.dtype if "int" not in y.dtype else ivy.float32
 
     if x is None:
         d = dx if dx is not None else 1
@@ -123,7 +128,7 @@ def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
     nd = len(y.shape)
     slice1 = tupleset((slice(None),) * nd, dim, slice(1, None))
     slice2 = tupleset((slice(None),) * nd, dim, slice(None, -1))
-    return ivy.cumsum(d * (y[slice1] + y[slice2]) / 2.0, axis=dim)
+    return ivy.cumsum(d * (y[slice1] + y[slice2]) / 2.0, axis=dim, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
