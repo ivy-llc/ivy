@@ -1117,7 +1117,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
 
-
     def stft(
         self: ivy.Array,
         n_fft: Union[int, Tuple[int]],
@@ -1125,7 +1124,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
-        onesided:Optional[bool] = True,
+        onesided: Optional[bool] = True,
         fs: Optional[float] = 1.0,
         window: Optional[Union[ivy.Array, list, Tuple[int]]] = None,
         win_length: Optional[int] = None,
@@ -1134,7 +1133,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         normalized: Optional[bool] = False,
         detrend: Optional[Union[str, callable, bool]] = False,
         return_complex: Optional[bool] = True,
-        boundary: Optional[str] = 'zeros',
+        boundary: Optional[str] = "zeros",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1237,7 +1236,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
-
     def sliding_window(
         self: ivy.Array,
         window_size: Union[int, Tuple[int, int], Tuple[int, int, int]],
@@ -1292,7 +1290,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             dilation=dilation,
             padding=padding,
         )
-
 
     def max_unpool1d(
         self: ivy.Array,
