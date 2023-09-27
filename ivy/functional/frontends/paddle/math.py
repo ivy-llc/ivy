@@ -277,13 +277,14 @@ def _ndtri(y):
         6.79019408009981274425E-9,
     ]
     sign_change = False
-    sign_indices = ivy.argwhere(y<=1.0 - ivy.exp(-2.0))
+    sign_indices = ivy.array([])
     if y.size == 1:
       if y < 1-ivy.exp(-2.0):
         sign_change = True
       else:
         y = 1.0 - y
     else:
+        sign_indices = ivy.argwhere(y<=1.0 - ivy.exp(-2.0))
         y = ivy.where(y<=1.0 - ivy.exp(-2.0),y,1.0 - y)
     
     
