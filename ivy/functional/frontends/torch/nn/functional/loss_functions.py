@@ -95,6 +95,8 @@ def binary_cross_entropy_with_logits(
     reduction="mean",
     pos_weight=None,
 ):
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
     result = ivy.binary_cross_entropy(
         target,
         input,
