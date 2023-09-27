@@ -16,8 +16,6 @@ def gelu(
     x: JaxArray,
     /,
     *,
-
-    
     approximate: bool = False,
     complex_mode="jax",
     out: Optional[JaxArray] = None,
