@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence
 
 # local
 import ivy
@@ -2400,7 +2400,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             out=out,
         )
 
-   
     @staticmethod
     def _static_sliding_window(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
