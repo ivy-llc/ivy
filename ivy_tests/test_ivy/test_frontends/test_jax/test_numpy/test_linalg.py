@@ -820,8 +820,8 @@ def test_jax_slogdet(
 # solve
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.solve",
-    x=helpers.get_first_solve_matrix(adjoint=False),
-    y=helpers.get_second_solve_matrix(),
+    x=helpers.get_first_solve_batch_matrix(),
+    y=helpers.get_second_solve_batch_matrix(),
     test_with_out=st.just(False),
 )
 def test_jax_solve(
@@ -835,7 +835,7 @@ def test_jax_solve(
     backend_fw,
 ):
     input_dtype1, x1, _ = x
-    input_dtype2, x2 = y
+    input_dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         frontend=frontend,
@@ -843,8 +843,8 @@ def test_jax_solve(
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
+        rtol=1e-4,
+        atol=1e-4,
         a=x1,
         b=x2,
     )

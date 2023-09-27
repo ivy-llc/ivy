@@ -198,10 +198,6 @@ def flipud(
     return paddle.flip(m, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
-    backend_version,
-)
 def vstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -209,10 +205,8 @@ def vstack(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        if arrays[0].ndim >= 2:
-            return ivy.concat(arrays, axis=0)
-        else:
-            return ivy.stack(arrays, axis=0)
+        arrays = [ivy.reshape(x, shape=(1, -1)) if x.ndim < 2 else x for x in arrays]
+        return ivy.concat(arrays, axis=0)
 
 
 @with_unsupported_device_and_dtypes(
@@ -351,7 +345,7 @@ def flatten(
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if x.ndim == 0:
-        return x
+        return x.reshape((-1,))
 
     def _flatten(x, start_dim, end_dim):
         if x.dtype in [
@@ -712,3 +706,33 @@ def fill_diagonal(
     a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, backend_version
+)
+def put_along_axis(
+    arr: paddle.Tensor,
+    indices: paddle.Tensor,
+    values: Union[int, paddle.Tensor],
+    axis: int,
+    /,
+    *,
+    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    mode_mappings = {
+        "sum": "add",
+        "mul": "mul",
+        "replace": "assign",
+    }
+    mode = mode_mappings.get(mode, mode)
+    ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
+
+
+put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
+    "replace",
+    "sum",
+    "mul",
+]

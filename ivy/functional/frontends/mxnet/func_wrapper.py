@@ -38,33 +38,22 @@ def _to_ivy_array(x):
 
 def handle_mxnet_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _handle_mxnet_out(*args, out=None, **kwargs):
-        if len(args) > (out_pos + 1):
-            out = args[out_pos]
+    def _handle_mxnet_out(*args, **kwargs):
+        if "out" not in kwargs:
+            keys = list(inspect.signature(fn).parameters.keys())
+            out_pos = keys.index("out")
             kwargs = {
                 **dict(
                     zip(
-                        list(inspect.signature(fn).parameters.keys())[
-                            out_pos + 1 : len(args)
-                        ],
-                        args[out_pos + 1 :],
+                        keys[keys.index("out") :],
+                        args[out_pos:],
                     )
                 ),
                 **kwargs,
             }
             args = args[:out_pos]
-        elif len(args) == (out_pos + 1):
-            out = args[out_pos]
-            args = args[:-1]
-        if ivy.exists(out):
-            if not isinstance(out, ndarray):
-                raise ivy.utils.exceptions.IvyException(
-                    "Out argument must be an ivy.frontends.mxnet.numpy.ndarray object"
-                )
-            return fn(*args, out=out.ivy_array, **kwargs)
         return fn(*args, **kwargs)
 
-    out_pos = list(inspect.signature(fn).parameters).index("out")
     _handle_mxnet_out.handle_numpy_out = True
     return _handle_mxnet_out
 

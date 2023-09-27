@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
-    handle_device_shifting,
+    handle_device,
     inputs_to_ivy_arrays,
     handle_backend_invalid,
 )
@@ -168,7 +168,7 @@ def eigh_tridiagonal(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -235,7 +235,7 @@ def diagflat(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -278,7 +278,7 @@ def kron(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -321,7 +321,7 @@ def matrix_exp(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -385,7 +385,7 @@ def eig(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -430,7 +430,7 @@ def eigvals(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -518,7 +518,7 @@ def multi_dot(
 
 
 multi_dot.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": ("handle_device",),
     "to_skip": (),
 }
 
@@ -529,7 +529,7 @@ multi_dot.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -578,7 +578,7 @@ def cond(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def kronecker(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     skip_matrix: Optional[int] = None,
@@ -628,7 +628,7 @@ def kronecker(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def khatri_rao(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -731,7 +731,7 @@ def khatri_rao(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -824,7 +824,7 @@ def mode_dot(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def multi_mode_dot(
     x: Union[ivy.Array, ivy.NativeArray],
     mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
@@ -949,7 +949,7 @@ def _svd_checks(x, n_eigenvecs=None):
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def svd_flip(
     U: Union[ivy.Array, ivy.NativeArray],
     V: Union[ivy.Array, ivy.NativeArray],
@@ -1019,7 +1019,7 @@ def svd_flip(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def make_svd_non_negative(
     x: Union[ivy.Array, ivy.NativeArray],
     U: Union[ivy.Array, ivy.NativeArray],
@@ -1114,7 +1114,7 @@ def make_svd_non_negative(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def truncated_svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1204,7 +1204,7 @@ def _svd_interface(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def initialize_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Sequence[int],
@@ -1317,7 +1317,7 @@ def initialize_tucker(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def partial_tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1466,7 +1466,7 @@ def partial_tucker(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def tucker(
     x: Union[ivy.Array, ivy.NativeArray],
     rank: Optional[Sequence[int]] = None,
@@ -1609,6 +1609,76 @@ def tucker(
             return ivy.TuckerTensor((core, factors))
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def tt_matrix_to_tensor(
+    tt_matrix: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the full tensor whose TT-Matrix decomposition is given by 'factors' Re-
+    assembles 'factors', which represent a tensor in TT-Matrix format into the
+    corresponding full tensor.
+
+    Parameters
+    ----------
+    tt_matrix
+            array of 4D-arrays
+            TT-Matrix factors (known as core) of shape
+            (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns
+    -------
+    output_tensor: array
+                tensor whose TT-Matrix decomposition was given by 'factors'
+
+    Examples
+    --------
+    >>> x = ivy.array([[[[[0.49671414],
+    ...                      [-0.1382643]],
+    ...
+    ...                     [[0.64768857],
+    ...                      [1.5230298]]]],
+    ...                   [[[[-0.23415337],
+    ...                      [-0.23413695]],
+    ...
+    ...                     [[1.57921278],
+    ...                      [0.76743472]]]]])
+    >>> y = ivy.tt_matrix_to_tensor(x)
+    >>> print(y)
+    ivy.array([[[[-0.1163073 , -0.11629914],
+    [ 0.03237505,  0.03237278]],
+
+    [[ 0.78441733,  0.38119566],
+    [-0.21834874, -0.10610882]]],
+
+
+    [[[-0.15165846, -0.15164782],
+    [-0.35662258, -0.35659757]],
+
+    [[ 1.02283812,  0.49705869],
+    [ 2.40518808,  1.16882598]]]])
+    """
+    _, in_shape, out_shape, _ = zip(*(f.shape for f in tt_matrix))
+    ndim = len(in_shape)
+    full_shape = sum(zip(*(in_shape, out_shape)), ())
+    order = list(range(0, ndim * 2, 2)) + list(range(1, ndim * 2, 2))
+    for i, factor in enumerate(tt_matrix):
+        if not i:
+            res = factor
+        else:
+            res = ivy.tensordot(res, factor, axes=([len(res.shape) - 1], [0]))
+    return ivy.permute_dims(ivy.reshape(res, full_shape), axes=order, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -1673,7 +1743,7 @@ def dot(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def general_inner_product(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -1753,3 +1823,142 @@ def general_inner_product(
         ivy.reshape(a, (-1, common_size)), ivy.reshape(b, (common_size, -1))
     )
     return ivy.reshape(inner_product, output_shape, out=out)
+
+
+# This function has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/moments.py#L5
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device
+def higher_order_moment(
+    x: Union[ivy.Array, ivy.NativeArray],
+    order: int,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the Higher-Order Moment.
+
+    Parameters
+    ----------
+    x
+        matrix of size (n_samples, n_features)
+        or tensor of size(n_samples, D1, ..., DN)
+
+    order
+        number of the higher-order moment to compute
+
+    Returns
+    -------
+    tensor
+        if tensor is a matrix of size (n_samples, n_features),
+        tensor of size (n_features, )*order
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> result = ivy.higher_order_moment(a, 3)
+    >>> print(result)
+    ivy.array([[
+        [14, 19],
+        [19, 26]],
+       [[19, 26],
+        [26, 36]
+    ]])
+    """
+    moment = ivy.copy_array(x)
+    for _ in range(order - 1):
+        moment = ivy.batched_outer([moment, x])
+    return ivy.mean(moment, axis=0, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device
+def batched_outer(
+    tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return a generalized outer product of the tensors.
+
+    Parameters
+    ----------
+    tensors
+        list of tensors of shape (n_samples, J1, ..., JN) ,
+        (n_samples, K1, ..., KM) ...
+
+    Returns
+    -------
+    outer product of tensors
+        of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
+
+    Examples
+    --------
+    >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
+    >>> result = ivy.batched_outer([a, b])
+    >>> print(result)
+    ivy.array([[[[[0.1, 0.2],
+          [0.30000001, 0.40000001]],
+         [[0.2       , 0.40000001],
+          [0.60000002, 0.80000001]]],
+        [[[0.3       , 0.60000001],
+          [0.90000004, 1.20000002]],
+         [[0.40000001, 0.80000001],
+          [1.20000005, 1.60000002]]]],
+       [[[[2.5       , 3.00000012],
+          [3.49999994, 4.00000006]],
+         [[3.        , 3.60000014],
+          [4.19999993, 4.80000007]]],
+        [[[3.5       , 4.20000017],
+          [4.89999992, 5.60000008]],
+         [[4.        , 4.80000019],
+          [5.5999999 , 6.4000001 ]]]]])
+    """
+    result = None
+    result_size = None
+    result_shape = None
+    for i, tensor in enumerate(tensors):
+        if i:
+            current_shape = ivy.shape(tensor)
+            current_size = len(current_shape) - 1
+
+            n_samples = current_shape[0]
+
+            _check_same_batch_size(i, n_samples, result_shape)
+
+            shape_1 = result_shape + (1,) * current_size
+            shape_2 = (n_samples,) + (1,) * result_size + tuple(current_shape[1:])
+
+            result = ivy.reshape(result, shape_1) * ivy.reshape(tensor, shape_2)
+        else:
+            result = tensor
+
+        result_shape = ivy.shape(result)
+        result_size = len(result_shape) - 1
+
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
+
+    return result
+
+
+def _check_same_batch_size(i, n_samples, result_shape):
+    if n_samples != result_shape[0]:
+        raise ValueError(
+            f"Tensor {i} has a batch-size of {n_samples} but those before had a"
+            f" batch-size of {result_shape[0]}, all tensors should have the"
+            " same batch-size."
+        )
