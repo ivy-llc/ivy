@@ -72,6 +72,16 @@ def dirichlet(alpha, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def exponential(scale=1.0, size=None, dtype="float64"):
+    if scale > 0:
+        #Generate samples that are uniformly distributed based on given parameters
+        u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype=dtype)
+        return ivy.exp(scale, out=u)
+    return 0    #if scale parameter is less than or equal to 0
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def f(dfn, dfd, size=None):
     # Generate samples from the uniform distribution
     x1 = ivy.gamma(ivy.to_scalar(ivy.divide(dfn, 2)), 2.0, shape=size, dtype="float64")
@@ -337,3 +347,4 @@ def zipf(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.floor(ivy.pow(1 / (1 - u), 1 / a))
+
