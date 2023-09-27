@@ -798,3 +798,8 @@ class Tensor:
     )
     def cast(self, dtype):
         return paddle_frontend.cast(self, dtype)
+
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+    def exponential_(self, name=None):
+        self._ivy_array = paddle_frontend.exp(self._ivy_array, name=name)
+        return self
