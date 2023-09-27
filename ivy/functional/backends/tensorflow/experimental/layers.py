@@ -1,6 +1,6 @@
 # global
 import math
-from typing import Union, Optional, Tuple, List, Literal, Sequence, Callable
+from typing import Union, Optional, Tuple, List, Literal, Sequence
 import tensorflow as tf
 
 # local
