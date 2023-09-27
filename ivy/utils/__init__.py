@@ -2,4 +2,3 @@ from . import backend
 from . import dynamic_import
 from .dynamic_import import *
 from .binaries import *
-from . import binaries
