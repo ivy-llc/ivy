@@ -916,6 +916,8 @@ def _create_transpile_report(data: dict, backend: str, file_name: str):
             with open(file_name, "w") as outfile:
                 outfile.write(json_object)
             return
+    data["backend_nodes"] = {backend: data["backend_nodes"]}
+    data["frontend_time"] = {backend: data["frontend_time"]}
     json_object = json.dumps(data, indent=6)
     with open(file_name, "w") as outfile:
         outfile.write(json_object)
