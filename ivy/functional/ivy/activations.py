@@ -447,6 +447,7 @@ def sigmoid(
     >>> print(y)
     {
         a: ivy.array([0.5]),
+
         b: {
             c: ivy.array([0.7310586]),
             d: ivy.array([0.88079703])

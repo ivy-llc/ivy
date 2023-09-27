@@ -1009,7 +1009,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         the function, and so the docstring for ivy.sigmoid also applies to this method
         with minimal changes.
 
-          Parameters
+        Parameters
         ----------
         self
             input container.
