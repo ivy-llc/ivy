@@ -279,9 +279,6 @@ def multi_head_attention_forward(
         static_k = static_k.reshape((num_batches, num_keys, embed_dim))
     if static_v is not None:
         static_v = static_v.reshape((num_batches, num_keys, embed_dim))
-    in_proj_weight = in_proj_weight if not use_separate_proj_weight else None
-    if is_causal and (need_weights or key_padding_mask is not None):
-        is_causal = False
     return ivy.multi_head_attention(
         query,
         key=key,
@@ -289,14 +286,14 @@ def multi_head_attention_forward(
         batch_first=False,
         num_heads=num_heads,
         attention_mask=attn_mask,
-        in_proj_weights=in_proj_weight,
+        in_proj_weights=in_proj_weight if not use_separate_proj_weight else None,
         q_proj_weights=q_proj_weight,
         k_proj_weights=k_proj_weight,
         v_proj_weights=v_proj_weight,
         out_proj_weights=out_proj_weight,
         in_proj_bias=in_proj_bias,
         out_proj_bias=out_proj_bias,
-        is_causal=is_causal,
+        is_causal=is_causal and not (need_weights or key_padding_mask is not None),
         key_padding_mask=key_padding_mask,
         bias_k=bias_k,
         bias_v=bias_v,

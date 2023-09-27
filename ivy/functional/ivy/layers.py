@@ -826,9 +826,7 @@ def multi_head_attention(
         or `(output, attention_weights)`. `output` will have shape `(L, E)` if the
         inputs were unbatched or `(N, L, E)` otherwise, and `attention_weights` will
         have shape `(L, S)` or `(N, L, S)` respectively. If `batch_first` is False and
-        the inputs were batched, the `output` will have shape `(L, N, E)`. If
-        `average_attention_weights` is False, `attention_weights` will have shape
-        `(num_heads, L, S)` or `(N, num_heads, L, S)`
+        the inputs were batched, the `output` will have shape `(L, N, E)`.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
