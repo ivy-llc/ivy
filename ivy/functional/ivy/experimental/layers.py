@@ -3060,7 +3060,6 @@ def rfftn(
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
 
 
-       
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
     if isinstance(x, int):
