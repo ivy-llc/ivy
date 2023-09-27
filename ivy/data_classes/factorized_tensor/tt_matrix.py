@@ -267,8 +267,8 @@ class TTMatrix(FactorizedTensor):
 
         if n_dim * 2 != len(tensorized_shape):
             msg = (
-                "The order of the give tensorized shape is not a multiple of"
-                " 2.However, there should be as many dimensions for the left side"
+                "The order of the given tensorized shape is not a multiple of"
+                " 2. However, there should be as many dimensions for the left side"
                 " (number of rows) as of the right side (number of columns).  For"
                 " instance, to convert a matrix of size (8, 9) to the TT-format,  it"
                 " can be tensorized to (2, 4, 3, 3) but NOT to (2, 2, 2, 3, 3)."
