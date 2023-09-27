@@ -818,6 +818,11 @@ class Tensor:
     def matmul(self, other):
         return torch_frontend.matmul(self, other)
 
+    @numpy_to_torch_style_args
+    @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float")}, "torch")
+    def matrix_power(self, n, *, out=None):
+        return torch_frontend.linalg.matrix_power(self.ivy_array, n, out=out)
+
     def argwhere(self):
         return torch_frontend.argwhere(self)
 
