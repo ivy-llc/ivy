@@ -443,7 +443,7 @@ def test_paddle_diff(
     on_device,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x #noqa
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
