@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Union, Iterable, Tuple
+from typing import Callable, Optional, List, Union, Iterable, Tuple, Any
 
 
 # TODO: create meaningful types for Graph and LazyGraph,
@@ -11,7 +11,7 @@ class LazyGraph:
     pass
 
 
-def compile(
+def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
     arg_stateful_idxs: Optional[List] = None,
@@ -19,23 +19,22 @@ def compile(
     to: Optional[str] = None,
     include_generators: bool = True,
     array_caching: bool = True,
-    with_numpy: bool = False,
-    return_backend_compiled_fn: bool = False,
+    with_numpy: bool = True,
+    backend_compile: bool = False,
     static_argnums: Optional[Union[int, Iterable[int]]] = None,
     static_argnames: Optional[Union[str, Iterable[str]]] = None,
-    # dynamic: bool = False, # for torch.jit.script compilation
+    mode: Optional[str] = None,
     graph_caching: bool = False,
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    from ._compiler import compile as _compile
     """
-    Take `fn` and compiles it into a more efficient composition of backend operations.
+    Take `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
     objs
-        callable(s) to compile and create a graph of
+        callable(s) to trace and create a graph of
     stateful
         list of instances to be considered stateful during the graph compilation
     arg_stateful_idxs
@@ -46,14 +45,16 @@ def compile(
         include array creation/generation functions as part of the graph
     array_caching
         cache the constant arrays that appear as arguments to the functions in the graph
-    return_backend_compiled_fn
+    backend_compile
         whether to apply the native compilers, i.e. tf.function, after ivy's compilation
     static_argnums
         for jax's jit compilation
     static_argnames
         for jax's jit compilation
+    mode
+        for torch's compilation
     graph_caching
-        whether to cache the compiled graph
+        whether to cache the traced graph
     args
         positional arguments for `obj`
     kwargs
@@ -61,13 +62,15 @@ def compile(
 
     Returns
     -------
-    the compiled `Graph` object.
+    the traced `Graph` object.
 
     Examples
     --------
     >>> import ivy, time
+    >>> from ivy import compile
     >>> ivy.set_backend("torch")
     >>> x = ivy.array([1.])
+
     >>> def fn(x):
     ...     y = ivy.sum(x)
     ...     z = ivy.prod(x)
@@ -78,19 +81,26 @@ def compile(
     ...     j = ivy.floor(b)
     ...     k = ivy.ceil(c)
     ...     return i, j, k
-    >>> graph = ivy.compile(fn, args=(x,))
-    Notice how the time taken to execute the compiled function is lower than
+
+
+    >>> graph = trace_graph(fn, args=(x,))
+
+    Notice how the time taken to execute the traced function is lower than
     the original function. A typical run:
+
     >>> start = time.time()
     >>> fn(x)
     >>> print(time.time() - start)
     0.0003559589385986328
+
     >>> start = time.time()
     >>> graph(x)
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-    return _compile(
+    from ._compiler import compile as _trace_graph
+
+    return _trace_graph(
         *objs,
         stateful=stateful,
         arg_stateful_idxs=arg_stateful_idxs,
@@ -99,10 +109,10 @@ def compile(
         include_generators=include_generators,
         array_caching=array_caching,
         with_numpy=with_numpy,
-        return_backend_compiled_fn=return_backend_compiled_fn,
+        backend_compile=backend_compile,
         static_argnums=static_argnums,
         static_argnames=static_argnames,
-        # dynamic: bool = False, # for torch.jit.script compilation
+        mode=mode,
         graph_caching=graph_caching,
         args=args,
         kwargs=kwargs,
@@ -113,14 +123,14 @@ def transpile(
     *objs: Callable,
     source: Optional[str] = None,
     to: Optional[str] = None,
-    debug_mode: bool = False,
     with_numpy: bool = False,
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
     params_v=None,
-    v=None,  # Make this cleaner
+    v=None, 
 ) -> Union[Graph, LazyGraph]:
     from ._compiler import transpile as _transpile
+
     """
     Transpile Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
@@ -150,7 +160,6 @@ def transpile(
         *objs,
         source=source,
         to=to,
-        debug_mode=debug_mode,
         with_numpy=with_numpy,
         args=args,
         kwargs=kwargs,
@@ -159,13 +168,13 @@ def transpile(
     )
 
 
-# TODO: include docstring
 def unify(
     *objs: Callable,
     source: Optional[str] = None,
+    graph_caching: bool = False,
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
-    with_numpy: bool = False,
+    with_numpy: bool = True,
     **transpile_kwargs,
 ) -> Callable:
     from ._compiler import unify as _unify
@@ -173,6 +182,7 @@ def unify(
     return _unify(
         *objs,
         source=source,
+        graph_caching=graph_caching,
         args=args,
         kwargs=kwargs,
         with_numpy=with_numpy,

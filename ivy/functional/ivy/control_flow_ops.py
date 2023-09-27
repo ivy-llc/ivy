@@ -1,10 +1,9 @@
-from typing import Union, Callable, Any, Iterable
+from typing import Union, Callable, Any, Iterable, Dict
 import ivy
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     to_native_arrays_and_back,
-    to_ivy_arrays_and_back,
 )
 
 
@@ -12,7 +11,7 @@ def if_else(
     cond: Callable,
     body_fn: Callable,
     orelse_fn: Callable,
-    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
+    vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
     Take a condition function and two functions as input. If the condition is True, the
@@ -57,19 +56,16 @@ def if_else(
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
-    def _if_else(cond, body_fn, orelse_fn, vars):
+    def _if_else(cond, body_fn, orelse_fn, **vars):
         return current_backend().if_else(cond, body_fn, orelse_fn, vars)
 
-    body_fn = to_ivy_arrays_and_back(body_fn)
-    orelse_fn = to_ivy_arrays_and_back(orelse_fn)
-
-    return _if_else(cond, body_fn, orelse_fn, vars)
+    return _if_else(cond, body_fn, orelse_fn, **vars)
 
 
 def while_loop(
     test_fn: Callable,
     body_fn: Callable,
-    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
+    vars: Dict[str, Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
     Take a test function, a body function and a set of variables as input. The body
@@ -112,13 +108,10 @@ def while_loop(
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
-    def _while_loop(test_fn, body_fn, vars):
+    def _while_loop(test_fn, body_fn, **vars):
         return current_backend().while_loop(test_fn, body_fn, vars)
 
-    test_fn = to_ivy_arrays_and_back(test_fn)
-    body_fn = to_ivy_arrays_and_back(body_fn)
-
-    return _while_loop(test_fn, body_fn, vars)
+    return _while_loop(test_fn, body_fn, **vars)
 
 
 def for_loop(
@@ -147,17 +140,15 @@ def for_loop(
 
     Example
     ----
-    ```
-    def body_fn(k, args):
-        print(k+1)
-        return args
-
-    lst = [5,6]
-
-    ivy.for_loop(lst, body_fn, ())
-    >>> 5
-    >>> 6
-    ```
+    >>> def body_fn(k, args):
+    >>>     print(k+1)
+    >>>     return args
+    >>>
+    >>> lst = [5,6]
+    >>>
+    >>> ivy.for_loop(lst, body_fn, ())
+    5
+    6
     """
     iterator = iterable.__iter__()
 
@@ -182,6 +173,17 @@ def for_loop(
     packed_vars = (iterator, body_fn, vars_dict)
 
     return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])
+
+
+def try_except(
+    body1: Callable,
+    body2: Callable,
+    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
+):
+    try:
+        return body1(*vars)
+    except Exception as e:
+        return body2(*vars, e)
 
 
 # todo (nightcrab) find a better place for these cmp functions

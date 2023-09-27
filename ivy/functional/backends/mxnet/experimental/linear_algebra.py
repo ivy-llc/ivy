@@ -101,16 +101,14 @@ def cond(
     raise IvyNotImplementedException()
 
 
-def cov(
-    x1: None,
-    x2: None = None,
+def dot(
+    a: mx.ndarray.NDArray,
+    b: mx.ndarray.NDArray,
     /,
     *,
-    rowVar: bool = True,
-    bias: bool = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[None] = None,
-    aweights: Optional[None] = None,
-    dtype: Optional[type] = None,
-) -> None:
-    raise IvyNotImplementedException()
+    out: Optional[mx.ndarray.NDArray] = None,
+) -> mx.ndarray.NDArray:
+    return mx.symbol.dot(a, b, out=out)
+
+
+dot.support_native_out = True

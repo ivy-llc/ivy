@@ -2,11 +2,15 @@ import math
 from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
+
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.utils.exceptions import IvyNotImplementedException
+from . import backend_version
 
 
 def diagflat(
@@ -113,9 +117,10 @@ def eig(
     return jnp.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {"0.4.14 and below": ("complex", "float32", "float64")}, backend_version
+)
 def eigvals(x: JaxArray, /) -> JaxArray:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        x = x.astype(jnp.float64)
     return jnp.linalg.eigvals(x)
 
 
@@ -150,37 +155,24 @@ def cond(
     return jnp.linalg.cond(x, p=p)
 
 
-def cov(
-    x1: JaxArray,
-    x2: JaxArray = None,
+def lu_factor(
+    x: JaxArray,
     /,
     *,
-    rowVar: bool = True,
-    bias: bool = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[JaxArray] = None,
-    aweights: Optional[JaxArray] = None,
-    dtype: Optional[jnp.dtype] = None,
+    pivot: Optional[bool] = True,
+    out: Optional[JaxArray] = None,
+) -> Tuple[JaxArray]:
+    raise IvyNotImplementedException()
+
+
+def dot(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not dtype:
-        x1 = jnp.asarray(x1, dtype=jnp.float64)
+    return jnp.dot(a, b)
 
-    if jnp.ndim(x1) > 2:
-        raise ValueError("x1 has more than 2 dimensions")
 
-    if x2 is not None:
-        if jnp.ndim(x2) > 2:
-            raise ValueError("x2 has more than 2 dimensions")
-
-    if fweights is not None:
-        fweights = jnp.asarray(fweights, dtype=jnp.int64)
-
-    return jnp.cov(
-        m=x1,
-        y=x2,
-        rowvar=rowVar,
-        bias=bias,
-        ddof=ddof,
-        fweights=fweights,
-        aweights=aweights,
-    )
+dot.support_native_out = True

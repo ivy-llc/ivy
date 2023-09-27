@@ -15,8 +15,10 @@ import importlib
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.jax.device import _to_device, _to_array
+from ivy.functional.backends.jax.device import _to_array, _to_device
+from ivy.functional.ivy.general import _broadcast_to
 from ivy.functional.backends.jax import JaxArray, NativeArray
+from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 
 
@@ -49,23 +51,57 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
+def _mask_to_index(query, x):
+    if query.shape != x.shape:
+        if len(query.shape) > len(x.shape):
+            raise ivy.exceptions.IvyException("too many indices")
+        elif not len(query.shape):
+            query = jnp.tile(query, x.shape[0])
+    expected_shape = x[query].shape
+    return jnp.where(query), expected_shape
+
+
 def get_item(
     x: JaxArray,
     /,
-    query: JaxArray,
+    query: Union[JaxArray, Tuple],
     *,
     copy: bool = None,
 ) -> JaxArray:
-    if copy:
-        return x.__getitem__(query).copy()
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if not len(query.shape):
+            if not query:
+                return jnp.array([], dtype=x.dtype)
+            else:
+                return jnp.expand_dims(x, 0)
+        query, _ = _mask_to_index(query, x)
+    elif isinstance(query, list):
+        query = (query,)
     return x.__getitem__(query)
+
+
+def set_item(
+    x: JaxArray,
+    query: Union[JaxArray, Tuple],
+    val: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> JaxArray:
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        query, expected_shape = _mask_to_index(query, x)
+        val = _broadcast_to(val, expected_shape)._data
+    ret = x.at[query].set(val)
+    if copy:
+        return ret
+    return ivy.inplace_update(x, _to_device(ret))
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -113,7 +149,7 @@ def gather(
             result.append(r)
         result = jnp.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def gather_nd_helper(params, indices):
@@ -174,7 +210,7 @@ def gather_nd(
             result.append(r)
         result = jnp.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, int]:
@@ -216,10 +252,7 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        if ensure_in_backend or ivy.is_native_array(x):
-            raise ivy.utils.exceptions.IvyException(
-                "JAX does not natively support inplace updates"
-            )
+        _check_inplace_update_support(x, ensure_in_backend)
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
@@ -321,26 +354,6 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    # parse numeric inputs
-    if (
-        indices != Ellipsis
-        and not (
-            isinstance(indices, (tuple, list))
-            and (Ellipsis in indices or len(indices) != 0)
-        )
-        and not isinstance(indices, slice)
-        and not (
-            isinstance(indices, (tuple, list))
-            and any(isinstance(k, slice) for k in indices)
-        )
-    ):
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = jnp.array(indices)
-        if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, -1)
-    # keep below commented out, array API tests are passing without this
-    # updates = [updates] if isinstance(updates, Number) else updates
-
     updates = jnp.array(
         updates,
         dtype=(
@@ -349,26 +362,8 @@ def scatter_nd(
             else ivy.default_dtype(item=updates)
         ),
     )
-
-    # handle Ellipsis
-    if isinstance(indices, tuple) or indices is Ellipsis or isinstance(indices, slice):
-        indices_tuple = indices
-    else:
-        expected_shape = (
-            indices.shape[:-1] + out.shape[indices.shape[-1] :]
-            if ivy.exists(out)
-            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
-        )
-        if sum(updates.shape) < sum(expected_shape):
-            updates = ivy.broadcast_to(updates, expected_shape)._data
-        elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(
-                indices, updates.shape[:1] + (indices.shape[-1],)
-            )._data
-        indices_flat = indices.reshape(-1, indices.shape[-1]).T
-        indices_tuple = tuple(indices_flat) + (Ellipsis,)
-
-    # implementation
+    indices_flat = indices.reshape(-1, indices.shape[-1]).T
+    indices_tuple = tuple(indices_flat) + (Ellipsis,)
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -377,25 +372,26 @@ def scatter_nd(
         )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
-        reduction = "replace"
+        target = jnp.zeros(shape, dtype=updates.dtype)
+    updates = _broadcast_to(updates, target[indices_tuple].shape)._data
     if reduction == "sum":
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":
-        if not target_given:
-            target = jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].set(updates)
     elif reduction == "min":
         target = target.at[indices_tuple].min(updates)
     elif reduction == "max":
         target = target.at[indices_tuple].max(updates)
+    elif reduction == "mul":
+        target = target.at[indices_tuple].mul(updates)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            '"sum", "min", "max", "mul" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))
-    return _to_device(target)
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_nd.support_native_out = True
@@ -424,7 +420,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -438,8 +434,3 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
-
-
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
-def strides(x: JaxArray) -> Tuple[int]:
-    return to_numpy(x).strides
