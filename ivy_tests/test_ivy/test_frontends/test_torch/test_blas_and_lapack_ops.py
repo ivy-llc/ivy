@@ -131,14 +131,10 @@ def _get_dtype_and_matrices_and_dims(draw):
     shape = draw(st.tuples(*dims))
 
     matr1 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=shape, min_value=2, max_value=10
-        )
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=2, max_value=10)
     )
     matr2 = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=shape, min_value=2, max_value=10
-        )
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=2, max_value=10)
     )
 
     dim = draw(helpers.get_axis(shape=shape, force_int=True))
