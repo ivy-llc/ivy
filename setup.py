@@ -50,7 +50,7 @@ binaries_paths = _get_paths_from_binaries(binaries_dict)
 terminate = False
 version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
 configs_response = request.urlopen(
-    "https://github.com/unifyai/binaries/raw/main/available_configs.json",
+    f"https://github.com/unifyai/binaries/raw/{version}/available_configs.json",
     timeout=40,
 )
 available_configs = json.loads(
@@ -143,6 +143,10 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=["License :: OSI Approved :: Apache Software License"],
+    python_requires="==3.10.*",
+    classifiers=[
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3.10",
+    ],
     license="Apache 2.0",
 )

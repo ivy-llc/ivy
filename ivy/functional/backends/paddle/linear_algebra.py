@@ -4,7 +4,6 @@ import paddle
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 # local
 import ivy
 from ivy import inf
@@ -17,6 +16,7 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 from .elementwise import _elementwise_helper
+
 
 # Array API Standard #
 # -------------------#
@@ -230,6 +230,7 @@ def matmul(
         paddle.uint8,
         paddle.float16,
         paddle.bool,
+        paddle.bfloat16,
     ]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
 
@@ -494,7 +495,7 @@ def solve(
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
             x2 = paddle.unsqueeze(x2, axis=1)
-    for i in range(len(x1.shape) - 2):
+    for i in range(len(x1.shape) - len(x2.shape)):
         x2 = paddle.unsqueeze(x2, axis=0)
     ret = paddle.linalg.solve(x1, x2)
     if expanded_last:

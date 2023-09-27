@@ -376,27 +376,6 @@ class Shape(Sequence):
     def __dir__(self):
         return self._shape.__dir__()
 
-    def __pow__(self, power, modulo=None):
-        pass
-
-    def __index__(self):
-        pass
-
-    def __rdivmod__(self, other):
-        pass
-
-    def __truediv__(self, other):
-        pass
-
-    def __rtruediv__(self, other):
-        pass
-
-    def __rfloordiv__(self, other):
-        pass
-
-    def __ne__(self, other):
-        pass
-
     @property
     def shape(self):
         return self._shape
@@ -812,7 +791,7 @@ try:
 except:
     pass
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler.compiler import transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statment
 finally:
@@ -1222,13 +1201,11 @@ from ivy.utils.backend.sub_backend_handler import (
     set_sub_backend,
     unset_sub_backend,
     clear_sub_backends,
-    available_sub_backends,
-    available_sub_backend_implementations,
 )
 
 
-def current_sub_backends():
-    return []
+available_sub_backends = []
+current_sub_backends = []
 
 
 # casting modes
