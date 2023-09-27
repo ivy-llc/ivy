@@ -120,6 +120,7 @@ class FunctionTestCaseSubRunner(TestCaseSubRunner):
 
     def _test_inplace(self, frontend_fn, args, kwargs):
         inplace_kwarg = False
+        # ToDO: Move this to the decorators and pass in inplace kwarg from there
         if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
             inplace_kwarg = True
             kwargs["inplace"] = True
