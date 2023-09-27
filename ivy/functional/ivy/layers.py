@@ -2342,6 +2342,7 @@ def _get_num_padded_values(i, p, n, k, s):
     )
 
 
+# TODO : integrate logic for adaptive sampling points in ivy.interpolate
 def _bilinear_interpolate(
     input,  # [N, C, H, W]
     roi_batch_ind,  # [K]
