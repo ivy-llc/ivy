@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence
 import paddle
 from ivy.functional.ivy.layers import (
     _handle_padding,
