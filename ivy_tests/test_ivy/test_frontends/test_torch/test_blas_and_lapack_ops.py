@@ -123,6 +123,29 @@ def _get_dtype_and_matrices(draw):
     return dtype, matr1, matr2
 
 
+@st.composite
+def _get_dtype_and_matrices_and_dims(draw):
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    n_dims = draw(helpers.ints(min_value=2, max_value=5))
+    dims = [st.integers(min_value=2, max_value=7) for i in range(n_dims)]
+    shape = draw(st.tuples(*dims))
+
+    matr1 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=shape, min_value=2, max_value=10
+        )
+    )
+    matr2 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=shape, min_value=2, max_value=10
+        )
+    )
+
+    dim = draw(helpers.get_axis(shape=shape, force_int=True))
+
+    return dtype, matr1, matr2, dim
+
+
 # helpers
 @st.composite
 def _get_dtype_and_square_matrix(draw):
@@ -561,15 +584,13 @@ def test_torch_cholesky(
 @handle_frontend_test(
     fn_tree="torch.cumulative_trapezoid",
     test_with_out=st.just(False),
-    dtype_y_x=_get_dtype_and_matrices(),
+    dtype_y_x_dim=_get_dtype_and_matrices_and_dims(),
     use_x=st.booleans(),
-    dim=st.integers(min_value=0, max_value=1),
     dx=st.floats(),
 )
 def test_torch_cumulative_trapezoid(
-    dtype_y_x,
+    dtype_y_x_dim,
     use_x,
-    dim,
     dx,
     on_device,
     fn_tree,
@@ -577,10 +598,10 @@ def test_torch_cumulative_trapezoid(
     test_flags,
     backend_fw,
 ):
-    dtype, y, x = dtype_y_x
+    dtype, y, x, dim = dtype_y_x_dim
     if use_x:
         test_flags.num_positional_args = 2
-        kwargs = {"y": y, "x": x, "dim": -1}
+        kwargs = {"y": y, "x": x, "dim": dim}
     else:
         test_flags.num_positional_args = 1
         kwargs = {"y": y, "dx": dx, "dim": dim}
