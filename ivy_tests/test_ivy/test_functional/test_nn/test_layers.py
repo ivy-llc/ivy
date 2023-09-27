@@ -263,6 +263,51 @@ def _nms_helper(draw):
     )
 
 
+@st.composite
+def _roi_align_helper(draw):
+    dtype = draw(helpers.get_dtypes("float", full=False))[0]
+    N = draw(st.integers(1, 5))
+    C = draw(st.integers(1, 5))
+    H = W = draw(st.integers(5, 20))
+
+    img_width = img_height = draw(st.integers(50, 100))
+
+    spatial_scale = H / img_height
+
+    output_size = draw(st.integers(H - 2, H + 5))
+
+    sampling_ratio = draw(st.one_of(st.just(-1), st.integers(1, 3)))
+
+    aligned = draw(st.booleans())
+    input = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=(N, C, H, W),
+            min_value=-3,
+            max_value=3,
+        )
+    )
+    bbox = {}
+    for i in range(N):
+        num_boxes = draw(st.integers(1, 5))
+        for _ in range(num_boxes):
+            x1 = draw(st.integers(0, img_width - 20))
+            w = draw(st.integers(5, img_width - x1))
+            y1 = draw(st.integers(0, img_height - 20))
+            h = draw(st.integers(5, img_height - y1))
+            bbox[(i, x1, y1, x1 + w, y1 + h)] = 1
+
+    return (
+        [dtype],
+        input,
+        np.array(list(bbox.keys()), dtype=dtype).reshape((-1, 5)),
+        output_size,
+        spatial_scale,
+        sampling_ratio,
+        aligned,
+    )
+
+
 # Convolutions #
 # -------------#
 
@@ -1321,6 +1366,40 @@ def test_nms(
         iou_threshold=iou_threshold,
         max_output_size=max_output_size,
         score_threshold=score_threshold,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.roi_align",
+    inputs=_roi_align_helper(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_roi_align(
+    *,
+    inputs,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, input, boxes, output_size, spatial_scale, sampling_ratio, aligned = inputs
+
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=input,
+        boxes=boxes,
+        output_size=output_size,
+        spatial_scale=spatial_scale,
+        sampling_ratio=sampling_ratio,
+        aligned=aligned,
+        rtol_=1e-5,
+        atol_=1e-5,
     )
 
 
