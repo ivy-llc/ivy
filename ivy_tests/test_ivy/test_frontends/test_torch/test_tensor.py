@@ -1458,6 +1458,7 @@ def test_torch__array__(
         allow_subnormal=False,
         allow_infinity=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_baddbmm_(
     dtype_and_matrices,
@@ -1882,6 +1883,7 @@ def test_torch_instance_sinc(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_instance_sinc_(
     *,
@@ -1951,6 +1953,7 @@ def test_torch_isnan(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_rsqrt_(
     dtype_and_x,
@@ -2043,6 +2046,7 @@ def test_torch_tensor_abs(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_abs_(
     dtype_and_x,
@@ -2116,6 +2120,7 @@ def test_torch_tensor_acos(
         max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_acos_(
     dtype_and_x,
@@ -2188,6 +2193,7 @@ def test_torch_tensor_acosh(
         min_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_acosh_(
     dtype_and_x,
@@ -2266,12 +2272,18 @@ def test_torch_tensor_add(
     init_tree="torch.tensor",
     method_name="add_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
     ),
+    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_add_(
     dtype_and_x,
+    alpha,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -2289,6 +2301,7 @@ def test_torch_tensor_add_(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": x[1],
+            "alpha": alpha,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -2373,6 +2386,7 @@ def test_torch_tensor_addbmm(
         allow_subnormal=False,
         allow_infinity=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_addbmm_(
     dtype_and_matrices,
@@ -2468,6 +2482,7 @@ def test_torch_tensor_addcdiv(
         shared_dtype=True,
     ),
     value=st.floats(min_value=-100, max_value=100),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_addcdiv_(
     dtype_and_x,
@@ -2561,6 +2576,7 @@ def test_torch_tensor_addcmul(
         shared_dtype=True,
     ),
     value=st.floats(min_value=-100, max_value=100),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_addcmul_(
     dtype_and_x,
@@ -2668,6 +2684,7 @@ def test_torch_tensor_addmm(
         allow_subnormal=False,
         allow_infinity=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_addmm_(
     dtype_and_matrices,
@@ -2778,6 +2795,7 @@ def test_torch_tensor_addmv(
         allow_subnormal=False,
         allow_infinity=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_addmv_(
     dtype_and_matrices,
@@ -2888,6 +2906,7 @@ def test_torch_tensor_addr(
         allow_subnormal=False,
         allow_infinity=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_addr_(
     dtype_and_vecs,
@@ -3214,6 +3233,7 @@ def test_torch_tensor_any(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_apply_(
     dtype_and_values,
@@ -3294,6 +3314,7 @@ def test_torch_tensor_arccos(
         max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_arccos_(
     dtype_and_x,
@@ -3368,6 +3389,7 @@ def test_torch_tensor_arccosh(
         max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_arccosh_(
     dtype_and_x,
@@ -3441,6 +3463,7 @@ def test_torch_tensor_arcsin(
         max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_arcsin_(
     dtype_and_x,
@@ -3515,6 +3538,7 @@ def test_torch_tensor_arcsinh(
         max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_arcsinh_(
     dtype_and_x,
@@ -3663,6 +3687,7 @@ def test_torch_tensor_arctan2_(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_arctan_(
     dtype_and_x,
@@ -3737,6 +3762,7 @@ def test_torch_tensor_arctanh(
         max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_arctanh_(
     dtype_and_x,
@@ -4100,6 +4126,7 @@ def test_torch_tensor_asinh(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_asinh_(
     dtype_and_x,
@@ -4212,6 +4239,7 @@ def test_torch_tensor_atan2(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_atan2_(
     dtype_and_x,
@@ -4250,6 +4278,7 @@ def test_torch_tensor_atan2_(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_atan_(
     dtype_and_x,
@@ -4324,6 +4353,7 @@ def test_torch_tensor_atanh(
         max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_atanh_(
     dtype_and_x,
@@ -4552,6 +4582,7 @@ def test_torch_tensor_bitwise_and(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_bitwise_and_(
     dtype_and_x,
@@ -4664,6 +4695,7 @@ def test_torch_tensor_bitwise_not(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_bitwise_not_(
     dtype_and_x,
@@ -4738,6 +4770,7 @@ def test_torch_tensor_bitwise_or(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_bitwise_or_(
     dtype_and_x,
@@ -4902,6 +4935,7 @@ def test_torch_tensor_bitwise_xor(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_bitwise_xor_(
     dtype_and_x,
@@ -5044,6 +5078,7 @@ def test_torch_tensor_ceil(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_ceil_(
     dtype_and_x,
@@ -5200,6 +5235,7 @@ def test_torch_tensor_clamp(
     init_tree="torch.tensor",
     method_name="clamp_",
     dtype_and_x_min_max=_get_clamp_inputs(),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_clamp_(
     dtype_and_x_min_max,
@@ -5442,6 +5478,7 @@ def test_torch_tensor_contiguous(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_copy_(
     dtype_and_x,
@@ -5520,6 +5557,7 @@ def test_torch_tensor_copysign(
         min_num_dims=1,
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_copysign_(
     dtype_and_x,
@@ -5594,6 +5632,7 @@ def test_torch_tensor_cos(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_cos_(
     dtype_and_x,
@@ -5666,6 +5705,7 @@ def test_torch_tensor_cosh(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_cosh_(
     dtype_and_x,
@@ -5936,6 +5976,7 @@ def test_torch_tensor_cumsum(
         allow_neg=True,
         force_int=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_cumsum_(
     dtype_value,
@@ -6043,6 +6084,7 @@ def test_torch_tensor_detach(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_detach_(
     dtype_and_x,
@@ -6330,6 +6372,7 @@ def test_torch_tensor_div(
         safety_factor_scale="log",
     ),
     rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_div_(
     dtype_and_x,
@@ -6544,6 +6587,7 @@ def test_torch_tensor_dtype(dtype_x, backend_fw):
         max_value=1e04,
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_eq_(
     dtype_and_x,
@@ -6660,6 +6704,7 @@ def test_torch_tensor_erf(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_erf_(
     dtype_and_x,
@@ -6730,6 +6775,7 @@ def test_torch_tensor_exp(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_exp_(
     dtype_and_x,
@@ -6882,6 +6928,7 @@ def test_torch_tensor_expm1(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_expm1_(
     dtype_and_x,
@@ -6918,6 +6965,7 @@ def test_torch_tensor_expm1_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     value=helpers.floats(min_value=1, max_value=10),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_fill_(
     dtype_and_x,
@@ -6993,6 +7041,7 @@ def test_torch_tensor_fix(
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_fix_(
     dtype_value,
@@ -7216,6 +7265,7 @@ def test_torch_tensor_floor(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_floor_(
     dtype_and_x,
@@ -7370,6 +7420,7 @@ def test_torch_tensor_fmod(
         min_value=-100,
         max_value=100,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_fmod_(
     dtype_and_x,
@@ -7553,6 +7604,7 @@ def test_torch_tensor_greater(
         max_value=1e04,
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_greater_(
     dtype_and_x,
@@ -7635,6 +7687,7 @@ def test_torch_tensor_greater_equal(
         max_value=1e04,
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_greater_equal_(
     dtype_and_x,
@@ -7846,6 +7899,7 @@ def test_torch_tensor_index_add(
     method_name="index_add_",
     xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
     alpha=st.integers(min_value=1, max_value=2),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_index_add_(
     *,
@@ -8280,6 +8334,7 @@ def test_torch_tensor_lcm(
         max_dim_size=3,
         shared_dtype=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_lcm_(
     dtype_and_x,
@@ -8362,6 +8417,7 @@ def test_torch_tensor_less(
         max_value=1e04,
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_less_(
     dtype_and_x,
@@ -8444,6 +8500,7 @@ def test_torch_tensor_less_equal(
         max_value=1e04,
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_less_equal_(
     dtype_and_x,
@@ -8554,6 +8611,7 @@ def test_torch_tensor_log10(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_log10_(
     dtype_and_x,
@@ -8623,6 +8681,7 @@ def test_torch_tensor_log1p(
         available_dtypes=helpers.get_dtypes("valid"),
         max_value=1e37,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_log1p_(
     dtype_x,
@@ -8693,6 +8752,7 @@ def test_torch_tensor_log2(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_log2_(
     dtype_and_x,
@@ -8729,6 +8789,7 @@ def test_torch_tensor_log2_(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_log_(
     dtype_and_x,
@@ -8916,6 +8977,7 @@ def test_torch_tensor_logical_not(
         num_arrays=1,
         large_abs_safety_factor=12,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_logical_not_(
     dtype_and_x,
@@ -9513,6 +9575,7 @@ def test_torch_tensor_mul(
         num_arrays=2,
         shared_dtype=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_mul_(
     dtype_and_x,
@@ -9589,6 +9652,7 @@ def test_torch_tensor_multiply(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_multiply_(
     dtype_and_x,
@@ -9828,6 +9892,7 @@ def test_torch_tensor_neg(
         max_value=1e04,
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_neg_(
     dtype_and_x,
@@ -10422,6 +10487,7 @@ def test_torch_tensor_pow(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_pow_(
     dtype_and_x,
@@ -10561,6 +10627,7 @@ def test_torch_tensor_quantile(
         max_num_dims=5,
     ),
     to=helpers.ints(min_value=1, max_value=100),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_random_(
     dtype_and_x,
@@ -10687,6 +10754,7 @@ def test_torch_tensor_reciprocal(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=1,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_reciprocal_(
     dtype_and_x,
@@ -10805,6 +10873,7 @@ def test_torch_tensor_remainder(
         shared_dtype=True,
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_remainder_(
     dtype_and_x,
@@ -11027,6 +11096,7 @@ def test_torch_tensor_round(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     decimals=st.integers(min_value=0, max_value=5),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_round_(
     dtype_and_x,
@@ -11189,6 +11259,7 @@ def test_torch_tensor_sigmoid(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_sigmoid_(
     dtype_x,
@@ -11257,6 +11328,7 @@ def test_torch_tensor_sign(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_sign_(
     dtype_x,
@@ -11327,6 +11399,7 @@ def test_torch_tensor_sin(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_sin_(
     dtype_and_x,
@@ -11399,6 +11472,7 @@ def test_torch_tensor_sinh(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_sinh_(
     dtype_and_x,
@@ -11650,6 +11724,7 @@ def test_torch_tensor_sqrt(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_sqrt_(
     dtype_x,
@@ -11761,6 +11836,7 @@ def test_torch_tensor_squeeze(
         force_int_axis=True,
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_squeeze_(
     dtype_value_axis,
@@ -11912,6 +11988,7 @@ def test_torch_tensor_sub(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_subtract_(
     dtype_and_x,
@@ -12182,6 +12259,7 @@ def test_torch_tensor_tan(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_tan_(
     dtype_and_x,
@@ -12254,6 +12332,7 @@ def test_torch_tensor_tanh(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_tanh_(
     dtype_and_x,
@@ -12605,6 +12684,7 @@ def test_torch_tensor_tril(
         min_num_dims=2,  # Torch requires this.
     ),
     diagonal=st.integers(min_value=-100, max_value=100),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_tril_(
     dtype_and_values,
@@ -12647,6 +12727,7 @@ def test_torch_tensor_tril_(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_true_divide_(
     dtype_and_x,
@@ -12721,6 +12802,7 @@ def test_torch_tensor_trunc(
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_trunc_(
     dtype_value,
@@ -12961,6 +13043,7 @@ def test_torch_tensor_unsqueeze(
         allow_neg=True,
         force_int=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_unsqueeze_(
     dtype_value,
@@ -13247,6 +13330,7 @@ def test_torch_tensor_xlogy(
         max_value=100,
         shared_dtype=True,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_xlogy_(
     dtype_and_x,
@@ -13285,6 +13369,7 @@ def test_torch_tensor_xlogy_(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
     ),
+    test_inplace=st.just(True),
 )
 def test_torch_tensor_zero_(
     dtype_and_x,
