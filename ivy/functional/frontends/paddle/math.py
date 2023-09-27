@@ -228,6 +228,14 @@ def floor_divide(x, y, name=None):
     return ivy.floor_divide(x, y)
 
 
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def floor_mod(x, y, name=None):
+    return ivy.remainder(x, y)
+
+
 @with_unsupported_dtypes({"2.5.1 and below": "bfloat16"}, "paddle")
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
