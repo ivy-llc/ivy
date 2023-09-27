@@ -21,6 +21,7 @@ def multi_head_attention(
     *,
     key: torch.Tensor = None,
     value: torch.Tensor = None,
+    batch_first: bool = True,
     num_heads: Optional[int] = 8,
     scale: Optional[float] = None,
     attention_mask: torch.Tensor = None,
@@ -57,7 +58,8 @@ def multi_head_attention(
     if num_dims == 3:
         num_batches = query.shape[0]
         num_keys = key.shape[1]
-        query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
+        if batch_first:
+            query, key, value = [torch.swapaxes(x, 0, 1) for x in [query, key, value]]
     else:
         num_batches = 1
         num_keys = key.shape[0]
@@ -97,7 +99,7 @@ def multi_head_attention(
         is_causal=is_causal,
     )
     ret = list(ret) if isinstance(ret, tuple) else [ret]
-    if num_dims == 3:
+    if num_dims == 3 and batch_first:
         ret[0] = ret[0].swapaxes(0, 1)
     if return_attention_weights:
         return tuple(ret)

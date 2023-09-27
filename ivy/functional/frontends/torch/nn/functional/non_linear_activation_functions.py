@@ -271,12 +271,10 @@ def multi_head_attention_forward(
         embed_dim == embed_dim_to_check
     ), f"was expecting embedding dimension of {embed_dim_to_check}, but got {embed_dim}"
     if query.ndim == 3:
-        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
-        num_batches = query.shape[0]
-        num_keys = key.shape[1]
+        num_batches = query.shape[1]
     else:
         num_batches = 1
-        num_keys = key.shape[0]
+    num_keys = key.shape[0]
     if static_k is not None:
         static_k = static_k.reshape((num_batches, num_keys, embed_dim))
     if static_v is not None:
@@ -284,10 +282,11 @@ def multi_head_attention_forward(
     in_proj_weight = in_proj_weight if not use_separate_proj_weight else None
     if is_causal and (need_weights or key_padding_mask is not None):
         is_causal = False
-    ret = ivy.multi_head_attention(
+    return ivy.multi_head_attention(
         query,
         key=key,
         value=value,
+        batch_first=False,
         num_heads=num_heads,
         attention_mask=attn_mask,
         in_proj_weights=in_proj_weight,
@@ -309,12 +308,6 @@ def multi_head_attention_forward(
         dropout=dropout_p,
         training=training,
     )
-    ret = list(ret) if isinstance(ret, tuple) else [ret]
-    if len(query.shape) == 3:
-        ret[0] = ret[0].swapaxes(0, 1)
-    if need_weights:
-        return tuple(ret)
-    return ret[0]
 
 
 @to_ivy_arrays_and_back

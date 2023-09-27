@@ -68,10 +68,11 @@ def _dropout_helper(draw):
 
 
 @st.composite
-def _mha_helper(draw, same_pre_embed_dim=False):
+def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
     _qkv_same_dim = draw(st.booleans())
     _self_attention = draw(st.booleans())
     _same_pre_embed_dim = _self_attention or same_pre_embed_dim or draw(st.booleans())
+    batch_first = draw(st.booleans()) and not batch_second
     num_heads = draw(helpers.ints(min_value=1, max_value=3))
     _embed_dim = draw(helpers.ints(min_value=4, max_value=16)) * num_heads
     _batch_dim = draw(st.sampled_from([(), (1,)]))
@@ -310,6 +311,9 @@ def _mha_helper(draw, same_pre_embed_dim=False):
     return_attention_weights = draw(st.booleans())
     average_attention_weights = draw(st.booleans())
 
+    if len(q.shape) == 3 and not batch_first:
+        q, k, v = [np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v]]
+
     ret = (
         q,
         k,
@@ -335,6 +339,7 @@ def _mha_helper(draw, same_pre_embed_dim=False):
         is_causal,
         return_attention_weights,
         average_attention_weights,
+        batch_first,
     )
     ret_dtypes = [str(r.dtype) for r in ret if ivy.is_array(r)]
     return ret_dtypes, *ret
@@ -1345,6 +1350,7 @@ def test_multi_head_attention(
         is_causal,
         return_attention_weights,
         average_attention_weights,
+        batch_first,
     ) = dtype_mha
     helpers.test_function(
         input_dtypes=dtype,
@@ -1358,6 +1364,7 @@ def test_multi_head_attention(
         query=q,
         key=k,
         value=v,
+        batch_first=batch_first,
         num_heads=num_heads,
         scale=scale,
         attention_mask=attention_mask,

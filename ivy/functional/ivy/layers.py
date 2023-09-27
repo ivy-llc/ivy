@@ -714,6 +714,7 @@ def multi_head_attention(
     *,
     key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    batch_first: bool = True,
     num_heads: int = 8,
     scale: Optional[float] = None,
     attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -763,6 +764,9 @@ def multi_head_attention(
     value
         The value embeddings. Shape `(S, V)` or `(N, S, V)`, where S is the number of
         keys, N is the batch size, V is the value embedding dimension.
+    batch_first
+        If False, `query`, `key` and `value` will have shapes `(L, N, Q)`, `(S, N, K)`
+        and `(S, N, V)` respectively (if batched).
     num_heads
         The number of attention heads to use.
     scale
@@ -819,9 +823,12 @@ def multi_head_attention(
     -------
     ret
         The output following the application of multi-head attention. Either `output`
-        or `(output, attention_weights)`, where `output` is the attention output, of
-        shape `(L, E)` or `(N, L, E)`, and `attention_weights` are the attention
-        weights, of shape `(L, S)` or `(N, L, S)`.
+        or `(output, attention_weights)`. `output` will have shape `(L, E)` if the
+        inputs were unbatched or `(N, L, E)` otherwise, and `attention_weights` will
+        have shape `(L, S)` or `(N, L, S)` respectively. If `batch_first` is False and
+        the inputs were batched, the `output` will have shape `(L, N, E)`. If
+        `average_attention_weights` is False, `attention_weights` will have shape
+        `(num_heads, L, S)` or `(N, num_heads, L, S)`
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -837,6 +844,8 @@ def multi_head_attention(
         key = value = query
     if num_dims == 2:
         query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+    elif not batch_first:
+        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
 
     # project query, key and value
     if ivy.exists(in_proj_weights):
@@ -951,10 +960,10 @@ def multi_head_attention(
     if ivy.exists(out_proj_weights):
         attention_out = ivy.linear(attention_out, out_proj_weights, bias=out_proj_bias)
 
-    # if input was unbatched, unbatchify the output
     if num_dims == 2:
         attention_out = attention_out.squeeze(axis=0)
-
+    elif not batch_first:
+        attention_out = attention_out.swapaxes(0, 1)
     if return_attention_weights:
         attn_weights = attn_weights.reshape(
             (batch_dim, num_heads, num_queries, num_keys)

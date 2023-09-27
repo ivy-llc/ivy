@@ -690,7 +690,7 @@ def test_torch_mish(
 # multi_head_attention_forward
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multi_head_attention_forward",
-    dtype_mha_args=_mha_helper(same_pre_embed_dim=True).filter(
+    dtype_mha_args=_mha_helper(same_pre_embed_dim=True, batch_second=True).filter(
         lambda args: args[10] is not None
         and (not args[22] or args[5] is not None)
         and len(set(_get_embed_dim(*args[6:10], args[1]))) == 1
@@ -732,18 +732,17 @@ def test_torch_multi_head_attention_forward(
         is_causal,
         need_weights,
         average_attn_weights,
+        batch_first,
     ) = dtype_mha_args
     # bringing the arguments from ivy to torch format
     if k is None and v is None:
         k = v = q
     emb_dim = q.shape[-1]
     if q.ndim == 3:
-        num_batches = q.shape[0]
-        num_keys = k.shape[1]
-        q, k, v = [np.swapaxes(x, 0, 1) for x in [q, k, v]]
+        num_batches = q.shape[1]
     else:
         num_batches = 1
-        num_keys = k.shape[0]
+    num_keys = k.shape[0]
     if static_k is not None:
         static_k = static_k.reshape(
             num_batches * heads, num_keys, int(emb_dim // heads)
