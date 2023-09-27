@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.unique_all",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
         force_int_axis=True,
@@ -46,7 +46,7 @@ def test_unique_all(
 @handle_test(
     fn_tree="functional.ivy.unique_counts",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         min_dim_size=2,
     ),
@@ -71,7 +71,7 @@ def test_unique_counts(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devic
 @handle_test(
     fn_tree="functional.ivy.unique_inverse",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         min_dim_size=2,
     ),
