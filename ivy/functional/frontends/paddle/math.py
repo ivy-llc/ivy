@@ -311,7 +311,7 @@ def _ndtri(y):
           x1 = z * _polevl(z, P2) / _polevl(z, [1.0] + Q2)
 
     x = x0 - x1
-    if sign_indices.size > 1:
+    if sign_indices.size >= 1:
         for ind in sign_indices:
           x[ind] = -1.0*x[ind]
     elif sign_change:
