@@ -1350,16 +1350,16 @@ def stft(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(n_fft, tuple):
         n_fft = n_fft[0]
-    
+
     signal_length = tf.shape(signal)[-1]
-    
+
     if signal_length < n_fft:
         n_fft = signal_length
 
     if len(window) != win_length:
         win_length = len(window)
         n_fft = win_length
-    
+
     if hop_length <= 0:
         hop_length = 1
 
