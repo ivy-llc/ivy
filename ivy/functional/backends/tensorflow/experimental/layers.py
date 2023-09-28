@@ -1359,6 +1359,7 @@ def stft(
     if len(window) != win_length:
         win_length = len(window)
         n_fft = win_length
+    
     if hop_length <= 0:
         hop_length = 1
 
